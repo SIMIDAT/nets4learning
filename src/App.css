@@ -1,0 +1,12 @@
+#root {
+  /* Para los \n de i18next */
+  white-space: pre-line;
+}
+
+
+.body {
+  background-color: #E8EaEd;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}

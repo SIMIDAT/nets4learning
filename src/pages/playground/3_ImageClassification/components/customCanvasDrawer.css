@@ -1,0 +1,32 @@
+.btn-custom-canvas {
+  outline: none;
+  display: block;
+  border: 0;
+  font-size: 13px;
+  /* padding: 16px 40px; */
+  border-radius: 15px;
+  /* background-color: #0081d5; */
+  cursor: pointer;
+  color: white;
+  transition: all 0.1s linear;
+  height: 50px;
+  width: 90px;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+
+.btn-group-canvas {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.border-canvas {
+  border: 1px solid black;
+}
+
+.container-canvas {
+  display: flex;
+  justify-content: center;
+}

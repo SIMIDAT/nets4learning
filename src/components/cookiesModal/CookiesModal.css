@@ -1,0 +1,10 @@
+.n4l-cookies .modal-dialog {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+.n4l-cookies .modal-content {
+  width: 100%;
+}

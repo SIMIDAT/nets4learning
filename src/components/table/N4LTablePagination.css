@@ -1,0 +1,18 @@
+.n4l-table-paginator-table-wrapper-scroll-x {
+  display: block;
+  overflow-x: scroll;
+}
+.n4l-table-paginator-table-wrapper-scroll-x::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.n4l-table-paginator-table-wrapper-scroll-x::-webkit-scrollbar-thumb {
+  background-color: #9d9d9d;
+}
+.n4l-table-paginator-table-wrapper-scroll-x::-webkit-scrollbar {
+  width: 8px; /*ancho del scroll vertical*/
+  height: 8px; /*alto del scroll horizontal*/
+}
+
+.n4l-table-paginator-table {
+
+}

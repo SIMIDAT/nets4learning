@@ -1,0 +1,59 @@
+.btn-custom {
+  outline: none;
+  display: block;
+  border: 0;
+  font-size: 20px;
+  padding: 16px 40px;
+  border-radius: 30px;
+  background-color: #0081d5;
+  cursor: pointer;
+  color: white;
+  transition: all 0.1s linear;
+  height: 100%;
+  width: 100%;
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+  background-color: #005c99;
+}
+
+.btn-custom:active {
+  background-color: #003659;
+}
+
+.borde {
+  border: 2px solid black;
+  border-radius: 15%;
+}
+
+.vl {
+  border-left: 2px solid white;
+  height: 100%;
+  min-height: 2rem;
+  margin-left: 50%;
+}
+
+.vl-clear {
+  border-left: 0 solid white;
+  min-height: 2rem;
+  height: 100%;
+  margin-left: 50%;
+}
+
+.smargen {
+  margin-top: 0;
+}
+
+.details-menu {
+  padding: 2rem 2rem 2rem 2rem;
+  background-color: white;
+  border: 2px solid white;
+  border-radius: 2%;
+  color: black;
+  box-shadow: 0 2px 2px rgb(0 0 0 / 20%);
+}
+
+h3 {
+  color: black;
+}

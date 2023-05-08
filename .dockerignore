@@ -1,0 +1,8 @@
+.git
+.DS_Store
+.env
+.env.development
+.env.simidat
+node_modules
+#.env.production
+#build

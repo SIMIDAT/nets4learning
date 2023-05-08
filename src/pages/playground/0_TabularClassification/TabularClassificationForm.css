@@ -1,0 +1,12 @@
+.n4l-hr-container {
+  width: 100%;
+  height: 20px;
+  border-bottom: 1px solid black;
+  text-align: center;
+}
+
+.n4l-hr-title {
+  font-size: 1.5rem;
+  background-color: #ffffff;
+  padding: 0 10px;
+}

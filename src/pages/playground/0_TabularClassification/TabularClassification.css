@@ -1,0 +1,9 @@
+.n4l-list ol {
+  list-style: none;
+  counter-increment: start -1;
+}
+
+.n4l-list li:before {
+  content: counter(start, mycounter) ": ";
+  counter-increment: start;
+}
