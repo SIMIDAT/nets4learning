@@ -1,0 +1,14 @@
+/* stylesheet.scss */
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+
+/* Your customizations here */
+// $body-bg: #000;
+
+$n4l-switch-color: rgba($primary, .7);
+$form-switch-bg-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$n4l-switch-color}'/></svg>");
+
+@import "bootstrap";

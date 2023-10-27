@@ -1,20 +1,16 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import "./index.css";
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-//import reportWebVitals from "./reportWebVitals";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './globals.css'
+import './polyfills'
+// import reportWebVitals from './reportWebVitals'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './i18n'
 
-import App from "./App";
+const container = document.getElementById('root')
+const root = createRoot(container)
+root.render(<App />)
 
-const app = (<BrowserRouter><App /></BrowserRouter>);
-
-
-ReactDOM.render(app, document.getElementById("root"));
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-if (process.env.REACT_APP_ENVIRONMENT === "production") {
-  // reportWebVitals()
+if (process.env.REACT_APP_ENVIRONMENT === 'development') {
+  // Learn more: https://bit.ly/CRA-vitals
+  // reportWebVitals(console.debug)
 }

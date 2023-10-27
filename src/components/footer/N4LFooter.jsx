@@ -1,38 +1,78 @@
-import React from "react"
-import "./N4LFooter.css"
-import { Container, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+// import './N4LFooter.css'
+import React from 'react'
+import { Col, Container, Row } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { Trans, useTranslation } from 'react-i18next'
 
-export default function N4LFooter() {
-  const { t } = useTranslation();
+export default function N4LFooter () {
+  const { t } = useTranslation()
 
   return (
     <>
-      <footer className="footer mt-auto py-3 bg-light">
+      <footer className="bg-body-tertiary footer mt-auto py-3">
         <Container>
           <Row>
-            <div className="col-xs-12 col-sm-12 col-md-4 item text">
-              <h4>Nets4Learning</h4>
-              <p>
-                {t("footer.description-app")}
-              </p>
-            </div>
-            <div className="col-xs-12 col-sm-12 col-md-8 item">
-              <h3>{t("footer.about-us")}</h3>
-              <ul style={{ padding: "0 1em" }}>
-                <li>{t("footer.author")}: <a href="https://github.com/Davavico22" target="_blank" rel="noreferrer" className="link-secondary">David Valdivia Vico</a></li>
-                <li>{t("footer.directors")}:{" "}
-                  <a href="https://simidat.ujaen.es/members/arivera/" target="_blank" rel="noreferrer" className="link-secondary">Antonio Jesús Rivera Rivas</a>,
-                  <a href="https://simidat.ujaen.es/members/lperez/" target="_blank" rel="noreferrer" className="link-secondary">María Dolores Pérez Godoy</a>
+            <Col xs={12} sm={12} md={7}>
+              <h3><Trans i18nKey={'footer.about-us'} /></h3>
+              <ul style={{ padding: '0 1em' }}>
+                <li>
+                  <Trans i18nKey={'footer.directors'} />:{' '}
+                  <a href="https://simidat.ujaen.es/members/arivera/" target="_blank" rel="noreferrer" className="link-secondary">Antonio Jesús Rivera Rivas</a>,{' '}
+                  <a href="https://simidat.ujaen.es/members/lperez/" target="_blank" rel="noreferrer" className="link-secondary">María Dolores Pérez Godoy</a>,{' '}
+                  <a href="https://simidat.ujaen.es/members/mjjesus/" target="_blank" rel="noreferrer" className="link-secondary">María José del Jesus Díaz</a>
                 </li>
-                <li>{t("footer.maintainers")}: Alejandro Cruz Fernandez de Moya, Antonio Mudarra Machuca</li>
-                <li><a href="https://dasci.es/" target="_blank" rel="noreferrer" className="link-secondary">Instituto Andaluz Interuniversitario en Data Science and Computational Intelligence</a></li>
-                <li><a href="https://ujaen.es" target="_blank" rel="noreferrer" className="link-secondary">Universidad de Jaén</a></li>
-                <li><a href="https://simidat.ujaen.es/" target="_blank" rel="noreferrer" className="link-secondary">Grupo de investigación del SIMIDAT</a></li>
-                <li><Link to={"/terms-and-conditions/"} className="link-secondary">Términos y condiciones</Link></li>
+                <li>
+                  <Trans i18nKey={'footer.developers'} />:{' '}
+                  <a href="https://github.com/nonodev96/" target="_blank" rel="noreferrer" className="link-secondary">Antonio Mudarra Machuca</a>,{' '}
+                  <a href="https://github.com/Davavico22" target="_blank" rel="noreferrer" className="link-secondary">David Valdivia Vico</a>
+                </li>
+                <li>
+                  <Link to={'/terms-and-conditions'} className="link-secondary">
+                    <Trans i18nKey={'footer.terms'} />
+                  </Link>
+                </li>
+                <li>
+                  <Link to={'/contribute'} className="link-secondary">
+                    <Trans i18nKey={'footer.contribute'} />
+                  </Link>
+                </li>
+                <li>
+                  <Link to={'/version'} className="link-secondary">
+                    <Trans i18nKey={'footer.version'} />
+                  </Link>
+                </li>
               </ul>
-            </div>
+            </Col>
+            <Col xs={12} sm={12} md={5}>
+              <h4>Nets4Learning</h4>
+              <p>{t('footer.description-app')}</p>
+              <Row className="align-items-center text-center">
+                <Col>
+                  <a href="https://simidat.ujaen.es" target="_blank" rel="noreferrer">
+                    <img src={process.env.REACT_APP_PATH + '/assets/logo-simidat-2023.png'}
+                         className={'img-fluid w-100'}
+                         alt="SIMIDAT"
+                    />
+                  </a>
+                </Col>
+                <Col>
+                  <a href="https://ujaen.es" target="_blank" rel="noreferrer">
+                    <img src={process.env.REACT_APP_PATH + '/assets/uja.svg'}
+                         className={'img-fluid w-50'}
+                         alt="Universidad de Jaén"
+                    />
+                  </a>
+                </Col>
+                <Col>
+                  <a href="https://dasci.es" target="_blank" rel="noreferrer">
+                    <img src={process.env.REACT_APP_PATH + '/assets/DaSCI_logo-1.png'}
+                         className={'img-fluid w-100'}
+                         alt="DaSCI"
+                    />
+                  </a>
+                </Col>
+              </Row>
+            </Col>
           </Row>
         </Container>
       </footer>

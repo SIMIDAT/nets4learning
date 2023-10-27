@@ -1,72 +1,83 @@
-import React from "react"
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap"
-import { useHistory } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
-import { ReactComponent as IconMenuES } from "../../assets/es.svg"
-import { ReactComponent as IconMenuGB } from "../../assets/gb.svg"
+// import './N4LNavbar.css'
+import React, { useEffect, useState } from 'react'
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
+import { Trans, useTranslation } from 'react-i18next'
+import { ReactComponent as IconLangES } from '../../assets/es.svg'
+import { ReactComponent as IconLangGB } from '../../assets/gb.svg'
+import { ReactComponent as IconThemeLight } from '../../assets/sun.svg'
+import { ReactComponent as IconThemeDark } from '../../assets/moon.svg'
+import { ReactComponent as IconGithub } from '../../assets/github.svg'
 
-export default function N4LNavbar() {
-  const history = useHistory();
+export default function N4LNavbar () {
+  const { t, i18n } = useTranslation()
+  const [dataTheme, setDataTheme] = useState('light')
 
-  const { t, i18n } = useTranslation();
-
-  const handleClick_GoHomePage = () => {
-    history.push("/");
-  }
-
-  const handleClick_GoManualPage = () => {
-    history.push("/manual/");
-  }
-
-  const handleClick_GoGlossaryPage = () => {
-    history.push("/glossary/");
-  }
-
-  const handleClick_GoDatasets = () => {
-    history.push("/datasets/");
-  }
+  useEffect(() => {
+    const htmlElement = document.querySelector('html')
+    htmlElement.setAttribute('data-bs-theme', dataTheme)
+    htmlElement.setAttribute('data-theme', dataTheme)
+  }, [dataTheme])
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
+      <Navbar expand="lg" className={'bg-body-tertiary'}>
         <Container>
-          <Navbar.Brand onClick={() => handleClick_GoHomePage()}>
-            <img
-              src={process.env.REACT_APP_PATH + "/without_background.png"}
-              width="30"
-              height="30"
-              className="d-inline-block align-top"
-              alt="N4L"
-            />
+          <Navbar.Brand as={Link} to={'/'}>
+            <img src={process.env.REACT_APP_PATH + '/without_background.png'}
+                 width="30"
+                 height="30"
+                 className="d-inline-block align-top"
+                 alt="N4L" />
             Nets4Learning
           </Navbar.Brand>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link onClick={() => handleClick_GoHomePage()}>
-                {t("header.home")}
-              </Nav.Link>
-              <Nav.Link onClick={() => handleClick_GoManualPage()}>
-                {t("header.manual")}
-              </Nav.Link>
-              <Nav.Link onClick={() => handleClick_GoGlossaryPage()}>
-                {t("header.glossary")}
-              </Nav.Link>
-              <Nav.Link onClick={() => handleClick_GoDatasets()}>
-                {t("header.datasets")}
-              </Nav.Link>
+              <Nav.Item><Nav.Link as={Link} to={'/'}><Trans i18nKey={'header.home'} /></Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link as={Link} to={'/manual'}><Trans i18nKey={'header.manual'} /></Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link as={Link} to={'/glossary'}><Trans i18nKey={'header.glossary'} /></Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link as={Link} to={'/datasets'}><Trans i18nKey={'header.datasets'} /></Nav.Link></Nav.Item>
+              {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
+                <Nav.Item><Nav.Link as={Link} to={'/analyze'}><Trans i18nKey={'header.analyze'} /></Nav.Link></Nav.Item>
+              }
+              {/*<Nav.Link onClick={() => handleClick_GoTo__PAGE__('/contribute/')}>*/}
+              {/*  <Trans i18nKey={'header.contribute'} />*/}
+              {/*</Nav.Link>*/}
+              {/*<Nav.Link onClick={() => handleClick_GoTo__PAGE__('/documentation/')}>*/}
+              {/*  <Trans i18nKey={'header.documentation'} />*/}
+              {/*</Nav.Link>*/}
             </Nav>
-            <NavDropdown title={t('header.language')} id="change-language-nav-dropdown">
-              <NavDropdown.Item onClick={() => i18n.changeLanguage('en')}>
-                <IconMenuGB width={"1rem"} className={"me-2"} style={{ verticalAlign: "unset" }} />
-                Ingles
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => i18n.changeLanguage('es')}>
-                <IconMenuES width={"1rem"} className={"me-2"} style={{ verticalAlign: "unset" }} />
-                Español
-              </NavDropdown.Item>
-            </NavDropdown>
+            <Nav>
+              <Nav.Item>
+                <Nav.Link href={'https://github.com/SIMIDAT/nets4learning'}>
+                  <IconGithub width={'1rem'} className={'me-2'} />
+                </Nav.Link>
+              </Nav.Item>
+              <NavDropdown title={t('header.language')} id="change-language-nav-dropdown">
+                <NavDropdown.Item onClick={() => i18n.changeLanguage('en')}>
+                  <IconLangGB width={'1rem'} className={'me-2'} style={{ verticalAlign: 'unset' }} />
+                  Ingles
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => i18n.changeLanguage('es')}>
+                  <IconLangES width={'1rem'} className={'me-2'} style={{ verticalAlign: 'unset' }} />
+                  Español
+                </NavDropdown.Item>
+              </NavDropdown>
+              {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
+                <NavDropdown title={t('header.theme')} id="change-theme-nav-dropdown">
+                  <NavDropdown.Item onClick={() => setDataTheme('light')}>
+                    <IconThemeLight width={'1rem'} className={'me-2'} />
+                    Light
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => setDataTheme('dark')}>
+                    <IconThemeDark width={'1rem'} className={'me-2'} />
+                    Dark
+                  </NavDropdown.Item>
+                </NavDropdown>
+              }
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>

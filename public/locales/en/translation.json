@@ -1,30 +1,191 @@
 {
   "welcome": "Welcome to Nets4learning",
   "welcome-2": "To continue select one of these disciplines",
-  "list_map": "<1> </1>",
-  "map_item": "<0> </0>",
-  "loading": "Charging",
-  "upload": "Increase",
+  "list_map": "<1></1>",
+  "layer-id": "Layer {{index}}",
+  "map_item": "<0></0>",
+  "loading": "Loading",
+  "upload": "Upload Image",
   "example-i": "Example {{i}}",
   "Files": "Files",
+  "wait-document": "Waiting for a document",
+  "references": "References",
   "download": "Download",
+  "DataFrame": "DataFrame",
+  "Features": "Features",
+  "{{X_feature}} x {{target}}": "{{X_feature}} x {{target}}",
+  "Predicted": "Predicted",
+  "Waiting": "Waiting",
+  "and": "and",
+  "model": {
+    "__index__": "Model {{index}}"
+  },
+  "more-information-in-link": "More information in the following <link1>link</link1>",
+  "more-information-in-tutorial": "You can follow this <link1>tutorial</link1>",
+  "downloaded": "Downloaded",
+  "downloading": "Downloading",
+  "Data set processing": "Data set processing",
+  "Column target": "Column to predict",
+  "Scaler": "Scaler",
+  "Processed": "Processed",
+  "Default": "Default",
+  "Need permissions": "Need permissions",
+  "equations": {
+    "title": "Equations",
+    "title-metrics": "Metric functions formulas",
+    "title-losses": "Loss functions formulas",
+    "title-activation": "Formulas of activation functions",
+    "title-optimization": "Optimization functions formulas",
+    "loss-functions": {
+      "huber-loss": {
+        "title": "Huber Loss",
+        "text-1": "It’s less sensitive to outliers than the $ MSE $ as it treats error as square only inside an interval."
+      },
+      "cross-entropy": {
+        "title": "Cross entropy",
+        "text-1": "In binary classification, where the number of classes $ M = 2 $, Binary Cross-Entropy(BCE) can be calculated as:",
+        "text-2": "$ M > 2 $ (i.e. multiclass classification), we calculate a separate loss for each class label per observation and sum the result.",
+        "text-3": "$M$: number of classes <br />$log$: the natural log <br />$y$: binary indicator (0 or 1) if class label $c$ is the correct classification for observation $o$<br />$p$: predicted probability observation $o$ is of class $c$"
+      },
+      "negative-log": {
+        "title": "Negative Loglikelihood",
+        "text-1": "Minimizing negative loglikelihood",
+        "text-2": "is equivalent to Maximum Likelihood Estimation (MLE)."
+      },
+      "kj-divergence": {
+        "title": "KL/JS divergence"
+      },
+      "hinge-loss": {
+        "title": "Hinge loss"
+      },
+      "mae": {
+        "title": "Mean Absolute Error (MAE)"
+      },
+      "mse": {
+        "title": "Mean Squared Error (MSE)"
+      },
+      "rmse": {
+        "title": "Root Mean Square Error (RMSE)"
+      },
+      "cosine-distance": {
+        "title": "Cosine Proximity / Cosine Similarity"
+      }
+    },
+    "metric-functions": {
+      "accuracy": {
+        "title": "Accuracy"
+      },
+      "precision": {
+        "title": "Precision"
+      },
+      "recall": {
+        "title": "Recall"
+      },
+      "f1": {
+        "title": "F1"
+      },
+      "sensitivity": {
+        "title": "Sensitivity"
+      },
+      "acc-prec-recall-f1": {
+        "title": "Accuracy, Precision, Recall, F1"
+      },
+      "sen-spe-auc": {
+        "title": "Sensitivity, Specificity and AUC",
+        "text-1": "AUC is calculated as the Area Under the $Sensitivity$ (TPR) - $(1-Specificity)$ (FPR) Curve."
+      }
+    }
+  },
   "datasets": {
     "title": "Data sets",
+    "upload-dataset": null,
     "text-0": "Download data sets for tabular classification",
     "dataset-name": "Data set name",
     "dataset-size": "Number of samples",
     "dataset-web": "Original website",
-    "download-dataset-car": "Download car evaluation data set",
-    "download-dataset-hepatitis-c": "Download Hepatitis C data set",
-    "download-dataset-iris": "Download Iris data set",
-    "download-dataset-titanic": "Download titanic survival data set*",
-    "download-dataset-new-thyroid": "Download new thyroid data set",
-    "download-dataset-wine": "Download wine survival data set",
-    "download-dataset-ecoli": "Download ecoli data set"
+    "download-dataset-car": "Car evaluation data set",
+    "download-dataset-hepatitis-c": "Hepatitis C data set",
+    "download-dataset-iris": "Iris data set",
+    "download-dataset-titanic": "Titanic survival data set*",
+    "download-dataset-new-thyroid": "New thyroid data set",
+    "download-dataset-wine": "Wine survival data set",
+    "download-dataset-ecoli": "Ecoli data set",
+    "download": {
+      "dataset": {
+        "1-linear-regression": {
+          "salary": "Salary data set",
+          "auto-mpg": "Data set Fuel consumption",
+          "boston": "Boston Houses Data set",
+          "breast-cancer-wdbc": "Data set Breast Cancer Wisconsin (Diagnostic)",
+          "breast-cancer-wpbc": "Data set Breast Cancer Wisconsin (Prognostic)",
+          "student-performance-mathematics": "Mathematics student Data set",
+          "student-performance-portuguese": "Portuguese student Data set",
+          "wine-red": "Tinto wine data set",
+          "wine-white": "White wine data set"
+        }
+      }
+    }
   },
-  "dataframe-form": "Dataframe form",
-  "dataframe-original": "Original dataframe",
-  "dataframe-processed": "Processed dataframe",
+  "dataframe-original": "DataFrame | Original",
+  "dataframe-form": "DataFrame | Pre-processing data set form",
+  "dataframe-processed": "DataFrame | Processed",
+  "dataframe": {
+    "dataset": {
+      "title": "Data set"
+    },
+    "correlation-matrix": {
+      "title": "Dataframe | Correlation matrix",
+      "description": {
+        "0": "Pearson's correlation coefficient, also known as a linear correlation or product-moment correlation coefficient, is a statistical measure used to quantify the linear relationship between two quantitative variables. It is one of the most commonly used correlation statistics and provides information about the strength and direction of the relationship between the variables.",
+        "1": "Pearson's correlation coefficient varies between -1 and 1:",
+        "2": "A value of -1 indicates a perfectly negative linear correlation, which means that as one variable increases, the other decreases in an inverse linear relationship.",
+        "3": "A value of 1 indicates a perfectly positive linear correlation, which means that as one variable increases, the other also increases in a direct linear ratio.",
+        "4": "A value of 0 indicates that there is no linear correlation between the variables, which implies that there is no linear relationship between them.",
+        "5": "Pearson's correlation coefficient calculation is based on covariances and standard deviations of the two variables. Mathematically, it is calculated as follows:",
+        "6": "Where:",
+        "7": "are the values of the two variables in each observation.",
+        "8": "are the stockings of the two variables, respectively.",
+        "9": "Pearson's correlation coefficient is a useful tool to analyze the linear relationship between two variables and determine if there is an association between them. It is widely used in various areas, such as scientific research, economics, psychology, sociology and many others, to understand how two variables behave together. However, it is important to highlight that Pearson's correlation coefficient only measures the linear relationship and does not capture other types of nonlinear relationships between the variables.",
+        "title": "Description"
+      },
+      "link": "Consult more information in the following <link1> link </link1>",
+      "plot": "Correlation matrix"
+    },
+    "describe": {
+      "title": "DataFrame | Describe",
+      "description": {
+        "0": "This function is used to generate a statistical summary of the numerical columns of a dataframe. It provides key descriptive statistics, such as average, standard deviation, minimum, maximum and several quantiles of numerical columns. This is useful to obtain a rapid understanding of the distribution and data trends.",
+        "1": "This function is useful to obtain a quick idea of data distribution and can help you identify atypical values or anomalies in your data.",
+        "title": "Description"
+      },
+      "link": "Consult more information in the following <link1> link </link1>"
+    },
+    "query": {
+      "title": "DataFrame | Query",
+      "description": {
+        "0": "Query the DataFrame by the result of a logical comparison or boolean mask.",
+        "1": "Query the DataFrame by the result of a logical comparison or boolean mask.",
+        "title": "Description"
+      },
+      "query": "Query",
+      "link": "Consult more information in the following <link1>link</link1>"
+    },
+    "plot": {
+      "link": "Consult more information in the following <link1> link </link1>"
+    }
+  },
+  "dataframe-scatterplot": {
+    "title": "Scatter plot"
+  },
+  "model-selector": {
+    "title": "Model selector"
+  },
+  "form": {
+    "select-dataset": {
+      "title": "Select the data set",
+      "info": "Select the data set"
+    }
+  },
   "preprocessing": {
     "title": "Preprocessing",
     "transformations-columns": "Column transformations",
@@ -48,21 +209,64 @@
     "model-selected": "Model selection error",
     "tensor-shape": "Incorrect tensioner shape",
     "tensor-shape-description": "Wrong tensor shape, you expected the shape [{{target_tensor_shape_0}},{{target_tensor_shape_1}}}], but you received a tensor with shape [{{tensor_shape_0}},{{tensor_shape_1}}}], possibly you should modify the last layer.",
-    "tensor-shape-change": "The output layer has the shape (*, {{last_layer_units}}). <br> must have the form (*, {{class_length}})"
+    "tensor-shape-change": "The output layer has the shape (*, {{last_layer_units}}). <br> must have the form (*, {{class_length}})",
+    "need-one-feature": "You need at least one feature.",
+    "new-element-need-to-be-unique": "The element of set X must be unique.",
+    "layers-length": "You must have at least one layer with the number of neurons and their actvation function",
+    "parsing-csv": "Error, parsing data set",
+    "file-not-valid": "Error, file not valid",
+    "metrics-length": "Error, the number of metrics must be between 1 and 10"
+  },
+  "warning": {
+    "the-first-layer-need-to-be-__value__": "Warning, the first layer must be of type {{value}}",
+    "not-more-layers": "Warning, no more layers can be added",
+    "error-layers": "Warning, you must have between 1 and 10 layers",
+    "need-a-model": "Warning, you must first create and train the model."
+  },
+  "success": {
+    "file-upload": "File upload successful"
+  },
+  "info": {
+    "the-class-is-__value__": "Does the class have the index {{value}}?"
+  },
+  "alert": {
+    "menu": {
+      "need-select-dataset": "You must select a data set",
+      "need-select-model": "You must select a model"
+    },
+    "0-tabular-classification": {
+      "not-more-layers": "No more layers can be added"
+    },
+    "model-load-success": "Loaded model",
+    "error": "Error",
+    "warning": "Warning",
+    "success": "Success",
+    "info": "Info",
+    "model-train-success": "model trained successfully",
+    "prediction": "The prediction is: {{index}}",
+    "file-upload-success": "Successfully loaded file",
+    "file-upload-error-incorrect-format": "The file could not be loaded, it is not the correct format"
   },
   "header": {
     "language": "Language",
     "manual": "Manual",
     "glossary": "Glossary",
     "home": "Home",
-    "datasets": "Data sets"
+    "datasets": "Data sets",
+    "theme": "Theme",
+    "dataframe": "DataFrame",
+    "analyze": "Analyze"
   },
   "footer": {
-    "description-app": "This web application is part of an end of the degree of computer engineering from the University of Jaén \"Web platform for the design and execution of deep learning models\"",
+    "description-app": "Web platform for the design and execution of deep learning models.",
     "about-us": "About us",
-    "author": "Author",
+    "developers": "Developers",
     "directors": "Directors",
-    "maintainers": "Maintenance and improvements"
+    "maintainers": "Maintenance and improvements",
+    "terms": "Terms and conditions",
+    "contribute": "Contribute",
+    "documentation": "Documentation",
+    "version": "Version"
   },
   "drag-and-drop": {
     "label-files-one": "File:",
@@ -77,23 +281,6 @@
     "validate": "Validate",
     "clear": "Clean"
   },
-  "alert": {
-    "menu": {
-      "need-select-dataset": "You must select a data set",
-      "need-select-model": "You must select a model"
-    },
-    "0-tabular-classification": {
-      "not-more-layers": "No more layers can be added"
-    },
-    "model-load-success": "Loaded model",
-    "error": "Error",
-    "warning": "Warning",
-    "success": "Success",
-    "model-train-success": "model trained successfully",
-    "prediction": "The prediction is: {{index}}",
-    "file-upload-success": "Successfully loaded file",
-    "file-upload-error-incorrect-format": "The file could not be loaded, it is not the correct format"
-  },
   "table": {
     "dataset": "Dataset"
   },
@@ -101,7 +288,7 @@
     "0": "Tabular classification",
     "1": "Linear regression",
     "2": "Object identification",
-    "3": "Image classifier",
+    "3": "Image classification",
     "tabular-classification": "Tabular classification",
     "linear-regression": "Linear regression",
     "object-detection": "Object identification",
@@ -120,41 +307,41 @@
         }
       },
       "car": {
-        "title": "CAR - Car Classification",
+        "title": "CAR - Car classification",
         "description": {
           "text-1": "The dataset <i> car evaluation </i> allows to evaluate vehicles through the following structure",
           "text-2": "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>",
           "details-1": {
             "title": "Information",
             "list": {
-              "1": "<b> Buying: </b> Purchase price.",
-              "2": "<b> Maint: </b> Maintenance cost.",
-              "3": "<b> doors: </b> Number of doors.",
-              "4": "<b> Persians: </b> Number of places.",
-              "5": "<b> lug_boot: </b> Trunk size.",
-              "6": "<b> Safety: </b> Estimated vehicle security."
+              "1": "<b>buying:</b> Purchase price.",
+              "2": "<b>maint: </b> Maintenance cost.",
+              "3": "<b>doors: </b> Number of doors.",
+              "4": "<b>persons: </b> Number of places.",
+              "5": "<b>lug_boot: </b> Trunk size.",
+              "6": "<b>safety: </b> Estimated vehicle security."
             }
           },
           "details-2": {
             "title": "Input data",
             "text-1": "Characteristics of the car",
             "list": {
-              "1": "<b> Buying: </b> vhigh, high, med, low.",
-              "2": "<b> Maint: </b> vhigh, high, med, low.",
-              "3": "<b> doors: </b> 2, 3, 4, 5more.",
-              "4": "<b> Persians: </b> 2, 4, more.",
-              "5": "<b> Lug_Boot: </b> small, med, big.",
-              "6": "<b> Safety: </b> low, med, high."
+              "1": "<b>buying: </b> vhigh, high, med, low.",
+              "2": "<b>maint: </b> vhigh, high, med, low.",
+              "3": "<b>doors: </b> 2, 3, 4, 5more.",
+              "4": "<b>persons: </b> 2, 4, more.",
+              "5": "<b>lug_boot: </b> small, med, big.",
+              "6": "<b>safety: </b> low, med, high."
             }
           },
           "details-3": {
             "title": "Output data",
             "text-1": "Vehicle acceptance",
             "list": {
-              "1": "<b> unacc </b>: Inaccessible",
-              "2": "<b> acc </b>: Accessible",
-              "3": "<b> good </b>: Good",
-              "4": "<b> vgood </b>: Very good"
+              "1": "<b>unacc </b>: Inaccessible",
+              "2": "<b>acc </b>: Accessible",
+              "3": "<b>good </b>: Good",
+              "4": "<b>vgood </b>: Very good"
             }
           },
           "details-4": {
@@ -165,30 +352,30 @@
           }
         },
         "html-example": {
-          "text": "Enter separate by point and eat the following values corresponding to the car to be evaluated:",
+          "text": "Enter the values corresponding to the car to be evaluated:",
           "items": "(Buying; Maint; Doors; Persons; Lug_boot; Safety)",
           "examples": "Examples:"
         }
       },
       "iris": {
-        "title": "Iris - Flor Iris classification",
+        "title": "IRIS - Iris classification",
         "description": {
           "text-1": "The Iris-Data dataset allows to detect what type of iris plant is from the altitude and length of its petal and sepalo.",
           "details-1": {
             "title": "Input data",
             "list": {
-              "1": "Sepal length in cm",
-              "2": "Sepal width in cm",
-              "3": "Petal length in cm",
-              "4": "Petal width in cm"
+              "1": "<b>Sepal length</b>: continuous",
+              "2": "<b>Sepal width</b>: continuous",
+              "3": "<b>Petal length</b>: continuous",
+              "4": "<b>Petal width</b>: continuous"
             }
           },
           "details-2": {
             "title": "Output data",
             "list": {
-              "1": "Setosa",
-              "2": "Versicolor",
-              "3": "Virginica"
+              "1": "<b>0</b>: Setosa",
+              "2": "<b>1</b>: Versicolor",
+              "3": "<b>2</b>: Virginica"
             }
           },
           "details-3": {
@@ -199,13 +386,13 @@
           }
         },
         "html-example": {
-          "text": "Enter separate by point and eat the following values corresponding to the plant to be evaluated:",
+          "text": "Enter the values corresponding to the plant to be evaluated:",
           "items": "(sepal length; sepalo width; petal length; petal width).",
           "examples": "Examples:"
         }
       },
       "lymphography": {
-        "title": "lymphography data classification",
+        "title": "LYMPHOGRAPHY - Lymphoma data classification",
         "description": {
           "text-1": "The dataset of <i> Lymphography </i> allows to detect that possible phases of a lymphoma and in what state it is.",
           "details-input": {
@@ -248,20 +435,385 @@
           }
         },
         "html-example": {
-          "text": "Enter separate by point and eat the following values corresponding to the plant to be evaluated:",
+          "text": "Enter the corresponding values of the patient to be evaluated:",
           "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in).",
           "examples": "Examples:"
         }
       },
       "list-datasets": {
         "0-option-1": "Data set - Car classification",
-        "0-option-2": "Data set - Flor Iris classification",
-        "0-option-3": "Data set - Lymphomas classification"
+        "0-option-2": "Data set - Iris classification",
+        "0-option-3": "Data set - Lymphoma classification"
       },
       "list-models": {
         "0-option-1": "Model - Car classification",
-        "0-option-2": "Model - Flor Iris classification",
+        "0-option-2": "Model - Iris classification",
         "0-option-3": "Model - Lymphomas classification"
+      },
+      "joyride": {
+        "title": "Activate the tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "You can check the information search manual"
+          },
+          "dataset-info": {
+            "title": "Data set information",
+            "content": "Analyze the data set"
+          },
+          "dataset": {
+            "title": "Data set",
+            "content": "You can see the data set and extract statistics from your descriptions"
+          },
+          "dataset-plot": {
+            "title": "Data set plot",
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizer of the layers of the neuronal network",
+            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+          },
+          "layer-editor": {
+            "title": "Layer editor",
+            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+          },
+          "params-editor": {
+            "title": "Hyperparameter editor",
+            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+          },
+          "list-of-models": {
+            "title": "Model list",
+            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the classification."
+          },
+          "classify-and-visualizer": {
+            "title": "Classify and visualize",
+            "content": "Once our model for tabular classification can be loaded, you can classify and visualize the results"
+          }
+        }
+      }
+    },
+    "1-linear-regression": {
+      "salary": {
+        "title": "Salary for years of experience",
+        "description": {
+          "text": {
+            "0": "The \"Salary\" data set is a collection of information that relates the number of years of work experience of an individual with their corresponding salary.",
+            "1": "Each entry in the data set consists of two main variables: \"Years of Experience\" (years of experience) and \"Salary\" (salary). The variable \"Years of Experience\" represents the amount of years that an employee has worked in his specific field, while the variable \"Salary\" represents the amount of money that said employee earns annually."
+          },
+          "link": "For more information about this data set, visit the repository <link1>www.kaggy.com</link1>",
+          "details-1-input": {
+            "title": "Input",
+            "list": {
+              "0": "Years of Experience - Years of Experience",
+              "1": "Salary - Salary"
+            }
+          },
+          "details-2-output": {
+            "title": "Output",
+            "list": {
+              "0": "Calculated linear regression (<b>Salary</b>)"
+            }
+          },
+          "details-3-references": {
+            "title": "References",
+            "list": {
+              "0": "Data set"
+            }
+          }
+        }
+      },
+      "auto-mpg": {
+        "title": "Auto MPG",
+        "description": {
+          "text": {
+            "0": "The <i>AUTO MPG</i> dataset was taken from the StatLib library maintained at Carnegie Mellon University. The dataset was used at the 1983 American Statistical Association Exposition.",
+            "1": "The term \"Auto MPG\" refers to miles per gallon, a unit of fuel efficiency measurement commonly used in the United States. This measure indicates how many miles a vehicle can travel on one gallon of fuel. However, \"Auto MPG\" is an English term and there is no direct translation in Spanish.\n\nIn Spanish, terms such as \"consumo de combustible\" or \"rendimiento de combustible\" are often used to refer to the fuel efficiency of a car. These terms indicate how many kilometres or miles a vehicle can travel on one litre or gallon of fuel, respectively.\n\nIt is important to note that different countries use different units of measurement for fuel consumption. For example, in some places the litre per 100 kilometres travelled (L/100 km) is used to indicate fuel efficiency."
+          },
+          "link": "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>",
+          "details-0": {
+            "title": "Information",
+            "list": {
+              "0": "<b>MPG</b>: MPG is Miles Per Gallon. This is the amount of fuel consumed by the particular vehicle of an instance. This varable can also be used as the variable to be predicted for any car",
+              "1": "<b>cylinders</b>: This attribute describes the number of cylinders of each car. This is a discrete valued attribute",
+              "2": "<b>displacement</b>: This is another attribute of the vehicle which has a quantitative continuous value describing the engine displacement",
+              "3": "<b>horsepower</b>: This attribute tells about the horsepower of a car and is a continuous valued variable",
+              "4": "<b>weight</b>: This refers to the weight of each car which is a continuous valued quantitative variable",
+              "5": "<b>acceleration</b>: The acceleration of the car",
+              "6": "<b>model year</b>: The year the model was released is mentioned in this attribute",
+              "7": "<b>origin</b>: The origin attribute has 3 discrete values. 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
+              "8": "<b>car name</b>: This is the name of the car in string"
+            }
+          },
+          "details-1": {
+            "title": "Input data",
+            "list": {
+              "0": "<b>MPG</b>: continuous",
+              "1": "<b>cylinders</b>: multi-valued discrete, 4, 6, 8",
+              "2": "<b>displacement</b>: continuous",
+              "3": "<b>horsepower</b>: continuous",
+              "4": "<b>weight</b>: continuous",
+              "5": "<b>acceleration</b>: continuous",
+              "6": "<b>model Year</b>: multi-valued discrete",
+              "7": "<b>origin</b>: multi-valued discrete, 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
+              "8": "<b>car name</b>: string (unique for each instance)"
+            }
+          },
+          "details-2": {
+            "title": "Output data",
+            "list": {
+              "0": "Calculated linear regression (<b>MPG/b>)"
+            }
+          },
+          "details-3": {
+            "title": "References",
+            "list": {
+              "0": "<link1>Auto MPG</link1>"
+            }
+          }
+        }
+      },
+      "boston-housing": {
+        "title": "The Boston Housing",
+        "description": {
+          "text": {
+            "0": null,
+            "1": "The data set is designed to address regression and modeling problems of housing prices in different neighborhoods of Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research."
+          },
+          "link": "<link1>UCI data set info</link1>",
+          "details-1-input": {
+            "title": "Input",
+            "list": {
+              "0": "<strong>CRIM</strong> per capita crime rate by town",
+              "1": "<strong>ZN</strong> proportion of residential land zoned for lots over 25,000 sq.ft.",
+              "2": "<strong>INDUS</strong> proportion of non-retail business acres per town",
+              "3": "<strong>CHAS</strong> Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)",
+              "4": "<strong>NOX</strong> nitric oxides concentration (parts per 10 million)",
+              "5": "<strong>RM</strong> average number of rooms per dwelling",
+              "6": "<strong>AGE</strong> proportion of owner-occupied units built prior to 1940",
+              "7": "<strong>DIS</strong> weighted distances to five Boston employment centres",
+              "8": "<strong>RAD</strong> index of accessibility to radial highways",
+              "9": "<strong>TAX</strong> full-value property-tax rate per $10,000",
+              "10": "<strong>PTRATIO</strong> pupil-teacher ratio by town",
+              "11": "<strong>B</strong> 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town",
+              "12": "<strong>LSTAT</strong> % lower status of the population",
+              "13": "<strong>MEDV</strong> Median value of owner-occupied homes in $1000's"
+            }
+          },
+          "details-2-output": {
+            "title": "Output",
+            "list": {
+              "0": "Calculated linear regression"
+            }
+          },
+          "details-3-references": {
+            "title": "References",
+            "list": {
+              "0": "<link1>UCI data set info</link1>",
+              "1": "<link1>Boston housing dataset controversy</link1>"
+            }
+          }
+        }
+      },
+      "breast-cancer": {
+        "title": "Breast Cancer Wisconsin (Diagnostic and prognostic)",
+        "description": {
+          "text": {
+            "0": "It is a data set of the Hospital of the University of Wisconsin related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
+            "1": "Each record represents the monitoring data of a breast cancer case. These are cases attended since 1984 by Dr. Wolberg, only includes those cases that have invasive breast cancer and without evidence of metastases.",
+            "2": "The first 30 characteristics are calculated from a digitized image of a fine needle aspiration (FNAB) of the breast mass, these data describe the characteristics of the cell nuclei present in the image, some images can be found in <link1>cs wisc</link1>",
+            "3": "The file <kbd>wdbc.csv</kbd> corresponds to the diagnostic data set and <kbd>wpbc.csv</kbd> corresponds to the prognostic data set."
+          },
+          "link": "<link1>UCI data set input </link1>",
+          "details-1-input": {
+            "title": "Input",
+            "list": {
+              "0": "<strong>ID number</strong>",
+              "1": "<strong>Outcome</strong> (R = recur, N = nonrecur)",
+              "2": "<strong>Time</strong> (recurrence time if field 2 = R, disease-free time if field 2 = N)",
+              "3": "4-33 Ten real-valued features are computed for each cell nucleus:",
+              "4": "<strong>radius</strong> (mean of distances from center to points on the perimeter)",
+              "5": "<strong>texture</strong> (standard deviation of gray-scale values)",
+              "6": "<strong>perimeter</strong>",
+              "7": "<strong>area</strong>",
+              "8": "<strong>smoothness</strong> (local variation in radius lengths)",
+              "9": "<strong>compactness</strong> (perimeter^2 / area - 1.0)",
+              "10": "<strong>concavity</strong> (severity of concave portions of the contour)",
+              "11": "<strong>concave points</strong> (number of concave portions of the contour)",
+              "12": "<strong>symmetry</strong>",
+              "13": "<strong>fractal dimension</strong> (\"coastline approximation\" - 1)"
+            }
+          },
+          "details-2-output": {
+            "title": "Output",
+            "list": {
+              "0": "Calculated linear regression"
+            }
+          },
+          "details-3-references": {
+            "title": "References",
+            "list": {
+              "0": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
+              "1": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
+            }
+          }
+        }
+      },
+      "student-performance": {
+        "title": "Student Performance",
+        "description": {
+          "text": {
+            "0": null,
+            "1": null,
+            "2": null,
+            "3": null
+          },
+          "link": "<link1>UCI data set input </link1>",
+          "details-1-input": {
+            "title": "Input",
+            "list": {
+              "0": "<strong>school</strong> - student's school (binary: 'GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)",
+              "1": "<strong>sex</strong> - student's sex (binary: 'F' - female or 'M' - male)",
+              "2": "<strong>age</strong> - student's age (numeric: from 15 to 22)",
+              "3": "<strong>address</strong> - student's home address type (binary: 'U' - urban or 'R' - rural)",
+              "4": "<strong>famsize</strong> - family size (binary: 'LE3' - less or equal to 3 or 'GT3' - greater than 3)",
+              "5": "<strong>Pstatus</strong> - parent's cohabitation status (binary: 'T' - living together or 'A' - apart)",
+              "6": "<strong>Medu</strong> - mother's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
+              "7": "<strong>Fedu</strong> - father's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
+              "8": "<strong>Mjob</strong> - mother's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
+              "9": "<strong>Fjob</strong> - father's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
+              "10": "<strong>reason</strong> - reason to choose this school (nominal: close to 'home', school 'reputation', 'course' preference or 'other')",
+              "11": "<strong>guardian</strong> - student's guardian (nominal: 'mother', 'father' or 'other')",
+              "12": "<strong>traveltime</strong> - home to school travel time (numeric: 1 - <15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - >1 hour)",
+              "13": "<strong>studytime</strong> - weekly study time (numeric: 1 - <2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - >10 hours)",
+              "14": "<strong>failures</strong> - number of past class failures (numeric: n if 1 &lg;=n &lg;3, else 4)",
+              "15": "<strong>schoolsup</strong> - extra educational support (binary: yes or no)",
+              "16": "<strong>famsup</strong> - family educational support (binary: yes or no)",
+              "17": "<strong>paid</strong> - extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)",
+              "18": "<strong>activities</strong> - extra-curricular activities (binary: yes or no)",
+              "19": "<strong>nursery</strong> - attended nursery school (binary: yes or no)",
+              "20": "<strong>higher</strong> - wants to take higher education (binary: yes or no)",
+              "21": "<strong>internet</strong> - Internet access at home (binary: yes or no)",
+              "22": "<strong>romantic</strong> - with a romantic relationship (binary: yes or no)",
+              "23": "<strong>famrel</strong> - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)",
+              "24": "<strong>freetime</strong> - free time after school (numeric: from 1 - very low to 5 - very high)",
+              "25": "<strong>goout</strong> - going out with friends (numeric: from 1 - very low to 5 - very high)",
+              "26": "<strong>Dalc</strong> - workday alcohol consumption (numeric: from 1 - very low to 5 - very high)",
+              "27": "<strong>Walc</strong> - weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)",
+              "28": "<strong>health</strong> - current health status (numeric: from 1 - very bad to 5 - very good)",
+              "29": "<strong>absences</strong> - number of school absences (numeric: from 0 to 93)"
+            }
+          },
+          "details-2-output": {
+            "title": "Output",
+            "list": {
+              "0": "Calculated linear regression"
+            }
+          },
+          "details-3-references": {
+            "title": "References",
+            "list": {
+              "0": "<link1>Student Performance</link1>"
+            }
+          }
+        }
+      },
+      "wine": {
+        "title": "Wine Quality",
+        "description": {
+          "text": {
+            "0": "The two data sets are related, as they include the variants of red wine and Portuguese white wine. This data set only includes physicochemical variables (inputs) and sensory (outputs), the data set does not include grape types data, wine brand or wine sale price.",
+            "1": "The data set contains multivariate data, real -type attributes, 4898 instances and 12 different attributes.",
+            "2": "Said data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
+            "3": "The <kbd> wine-qualy-red.csv </kbd> file corresponds to the red wine data set and <kbd> wine-qualy-white.csv </kbd> corresponds to the white wine data set."
+          },
+          "link": "For more information about this data set, visit the <link1> archive.ics.uci.edu </link1> repository.",
+          "details-1-input": {
+            "title": "Input",
+            "list": {
+              "0": "<strong>Fixed Acidity</strong>: Fixed acidity refers to the concentration of non-volatile acids in wine, mainly tartaric acid. It contributes to the freshness and stability of the wine.",
+              "1": "<strong>Volatile Acidity</strong>: Volatile acidity refers to the concentration of volatile acids, such as acetic acid, which can give an unpleasant taste if present in excess.",
+              "2": "<strong>Citric Acid</strong>: Citric acid is one of the natural organic acids present in wine. It can influence the flavor and freshness of the wine.",
+              "3": "<strong>Residual Sugar</strong>: It is the amount of sugar that remains in the wine after fermentation. A wine can be dry (little residual sugar) or sweet (more residual sugar).",
+              "4": "<strong>Chlorides</strong>: The concentration of chlorides in wine can affect its flavor and aroma, and high levels can indicate problems in production.",
+              "5": "<strong>Free Sulfur Dioxide</strong>: Sulfur dioxide is a common preservative in wine that helps prevent oxidation and the growth of unwanted microorganisms.",
+              "6": "<strong>Total Sulfur Dioxide</strong>: Represents the sum of free sulfur dioxide and sulfur dioxide bound to other molecules in the wine. It is also related to the conservation of wine.",
+              "7": "<strong>Density</strong>: Density refers to the mass of the wine per unit of volume. It can provide information on alcohol and sugar concentration.",
+              "8": "<strong>pH</strong>: The pH measures the acidity or alkalinity of the wine. A low pH indicates acidity, while a high pH indicates alkalinity. It can influence flavor perception.",
+              "9": "<strong>Sulphates</strong>: Sulfates are additives that are sometimes used in wine production. They can influence the stability and aroma of the wine.",
+              "10": "<strong>Alcohol</strong>: The concentration of alcohol in wine can vary and affects both the flavor and mouthfeel.",
+              "11": "<strong>Quality</strong>: This is the overall quality score of the wine, generally on a scale of 0 to 10, with higher values indicating better quality wines as assessed by tasters."
+            }
+          },
+          "details-2-output": {
+            "title": "Output",
+            "list": {
+              "0": "Calculated linear regression"
+            }
+          },
+          "details-3-references": {
+            "title": "References",
+            "list": {
+              "0": "<link1>Wine quality</link1>"
+            }
+          }
+        }
+      },
+      "list-datasets": {
+        "salary": "Data set - Salary",
+        "auto-mpg": "Data set - Auto MPG",
+        "boston-housing": "Data set - Boston Housing",
+        "breast-cancer": "Data set - Breast cancer",
+        "student-performance": "Data set - Student performance",
+        "wine": "Data set - Wine"
+      },
+      "list-models": {
+        "salary": "Model - Salary",
+        "auto-mpg": "Model - Auto MPG",
+        "boston-housing": "Model - Boston Housing",
+        "breast-cancer": "Model - Breast cancer",
+        "student-performance": "Model - Student performance",
+        "wine": "Model - Wine"
+      },
+      "joyride": {
+        "title": "Activate the tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "You can check the information search manual"
+          },
+          "dataset-info": {
+            "title": "Data set information",
+            "content": "Check the information set information"
+          },
+          "dataset": {
+            "title": "Data set",
+            "content": "You can see the data set and extract statistics from your descriptions"
+          },
+          "dataset-plot": {
+            "title": "Data set plot",
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizer of the layers of the neuronal network",
+            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+          },
+          "layer-editor": {
+            "title": "Layer editor",
+            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+          },
+          "params-editor": {
+            "title": "Hyperparameter editor",
+            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+          },
+          "list-of-models": {
+            "title": "Model list",
+            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the predictions."
+          },
+          "predict-and-visualizer": {
+            "title": "Prediction and visualization",
+            "content": "Once our model for linear regression can be loaded you can make predictions and visualize the results"
+          }
+        }
       }
     },
     "2-object-detection": {
@@ -269,7 +821,7 @@
         "process-webcam": {
           "title": "Realtime recognition",
           "sub-title": "Webcam",
-          "button": "Use Webcam"
+          "button": "Webcam"
         },
         "process-image": {
           "title": "Images processing",
@@ -277,7 +829,7 @@
         }
       },
       "face-detection": {
-        "title": "Face Detector - Facial Geometry",
+        "title": "FaceDetector - Facial Geometry",
         "description": {
           "text-0": "This model is able to recognize from an entry image or video different parts of the face, such as eyes, ears, nose and mouth.",
           "details-input": {
@@ -301,7 +853,7 @@
         }
       },
       "face-mesh": {
-        "title": "Face Mesh - Facial Mesh",
+        "title": "FaceMesh  - Facial Mesh",
         "description": {
           "text-0": "This model from an input image or video is able to recognize different points of the face to finally make a mesh of it.",
           "details-input": {
@@ -325,9 +877,9 @@
         }
       },
       "move-net--pose-net": {
-        "title": "Move Net - joint detector",
+        "title": "MoveNet - Joint detector",
         "description": {
-          "text-0": "PoseNet is an automatic learning model capable of recognizing the body's position in real time. It can be used to estimate only one pose or several at the same time.",
+          "text-0": "MoveNet is an automatic learning model capable of recognizing the body's position in real time. It can be used to estimate only one pose or several at the same time.",
           "text-1": "In the following example, so that its impact on performance is less only detects one pose at the same time.",
           "details-input": {
             "title": "Input data",
@@ -338,13 +890,14 @@
           "details-output": {
             "title": "Output data",
             "list": {
-              "0": "Same input element with a series of points and lines that delimit different points of the face in addition to shoulders, elbows, hands, feet, knees and hip."
+              "0": "Same input element with a series of points and lines that delimit different parts of the face in addition to shoulders, elbows, hands, feet, knees and hip."
             }
           },
           "details-references": {
             "title": "References",
             "list": {
-              "0": "<link1> Paper </link1>"
+              "0": "<link1>Tensorflow repository entry</link1>",
+              "1": "<link1>TFHub model</link1>"
             }
           }
         }
@@ -365,7 +918,7 @@
           "details-output": {
             "title": "Output data",
             "list": {
-              "0": "Same input element with a series of points that delimit the different points of the objects, in addition to the name of the object."
+              "0": "Same input element with a series of boxes that delimit the different objects, as well as their labels."
             }
           },
           "details-references": {
@@ -377,16 +930,16 @@
         }
       },
       "list-models": {
-        "2-option-1": "Model - Face Detector - Facial Geometry",
-        "2-option-2": "Model - Face Mesh - Facial Mesh",
-        "2-option-3": "Model - Move Net - joint detector",
-        "2-option-4": "Model - Coco SSD - Object detector"
+        "2-option-1": "Model - FaceDetector  - Facial Geometry",
+        "2-option-2": "Model - FaceMesh  - Facial Mesh",
+        "2-option-3": "Model - MoveNet - Joint detector",
+        "2-option-4": "Model - COCO SSD - Object detector"
       }
     },
     "3-image-classifier": {
       "interface": {
         "0-upload": {
-          "title": "Load your own model.",
+          "title": "Load your model.",
           "sub-title": "First the .json file and then the .bin file"
         },
         "process-examples": {
@@ -407,7 +960,7 @@
         }
       },
       "mnist": {
-        "title": "MNIST - Number classifier",
+        "title": "MNIST - Number classification",
         "description": {
           "text-0": "The <strong> mnist database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of automatic learning.",
           "text-1": "The samples of the original NIST data sets were created \"re-mixing\".",
@@ -430,7 +983,7 @@
         }
       },
       "mobilenet": {
-        "title": "MobileNet - Image classifier",
+        "title": "MobileNet - Image classification",
         "description": {
           "text-0": "Mobilenet V2 is a family of neural networks for the classification of similar images and tasks.",
           "text-1": "This model is able to differentiate between 1001 categories, identifying the main context of the image.",
@@ -460,44 +1013,329 @@
       },
       "list-models": {
         "3-option-1": "Model - MNIST - Number Classification",
-        "3-option-2": "Model - Mobilenet - Image Classifier",
-        "3-option-3": "Model - Resnet - Image classifier"
+        "3-option-2": "Model - MobileNet - Image Classifier",
+        "3-option-3": "Model - ResNet - Image classifier"
+      }
+    },
+    "3-image-classification": {
+      "list-datasets": {
+        "mnist": "Data set - MNIST"
+      },
+      "joyride": {
+        "title": "Activate the tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "You can check the information search manual"
+          },
+          "dataset-info": {
+            "title": "Data set information",
+            "content": "Check the information set information"
+          },
+          "dataset": {
+            "title": "Data set",
+            "content": "You can see the data set and extract statistics from your descriptions"
+          },
+          "dataset-plot": {
+            "title": "Data set plot",
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizer of the layers of the neuronal network",
+            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+          },
+          "layer-editor": {
+            "title": "Layer editor",
+            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+          },
+          "params-editor": {
+            "title": "Hyperparameter editor",
+            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+          },
+          "list-of-models": {
+            "title": "Model list",
+            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the predictions."
+          },
+          "classify": {
+            "title": "Prediction and visualization",
+            "content": "Once our model for linear regression can be loaded you can make predictions and visualize the results"
+          }
+        }
+      }
+    }
+  },
+  "dataframe-plot": {
+    "title": "DataFrame | Plot",
+    "info": "Information",
+    "description": {
+      "title": "Description of the type of graphics"
+    },
+    "configuration": {
+      "title": "Setting",
+      "reset": "Restart",
+      "select-all-columns": "Select all columns",
+      "delete-all-columns": "Discard all columns",
+      "layout": {
+        "plot": {
+          "title": "Graphic title",
+          "x-axis": "Title Axis X",
+          "y-axis": "Title Axis Y"
+        },
+        "title": "Layout"
+      },
+      "columns": {
+        "title": "DataFrame columns"
+      }
+    },
+    "buttons": {
+      "configuration": "Setting",
+      "description": "Description"
+    },
+    "bar-charts": {
+      "title": "Bar Charts",
+      "description": {
+        "intro": {
+          "0": "The bar or bar charts are a visual representation that shows the comparison of different categories or groups by rectangular bars.\nThis type of graph uses the length or height of the bars to represent the magnitude or amount of a specific variable.",
+          "1": "In a bar chart, the horizontal axis represents the categories or groups, while the vertical axis shows the magnitude or frequency of the variable that is being analyzed.\nEach category has an individual bar, and the length or height of the bar is proportional to the corresponding value or amount.\nThe bars can be horizontal or vertical, depending on the orientation of the graph.",
+          "2": "The bar charts have several features and outstanding applications:"
+        },
+        "list": {
+          "0": "Comparison of categories: bar graphics are ideal to visually compare different categories or groups.\nWhen observing the bars, it is possible to quickly identify the differences in the magnitude or the amount between the categories.",
+          "1": "Representation of categorical or discreet data: bar graphics are suitable for representing categorical or discrete variables.\nEach bar represents a specific category and the height or length of the bar shows the magnitude or amount associated with that category.",
+          "2": "Categories ordering: The categories in a bar chart can be ordered based on different criteria, such as alphabetical order, order of magnitude or any other logical order.\nThis allows to highlight specific patterns or trends between the categories.",
+          "3": "View of frequencies or percentages: bar graphics are also used to represent frequencies or percentages.\nIn this case, the height or length of the bars represents the proportion or percentage corresponding to each category.",
+          "4": "Effective presentation: bar graphics are an effective tool to present information clearly and concisely.\nIts simple structure and their ability to highlight the differences between the categories make them widely used in reports, presentations and documents.",
+          "5": "Barra -type graphics are an effective way to visualize and compare categories or groups depending on their magnitude or quantity.\nThey are ideal to represent categorical or discreet data and allow an effective presentation of information.\nTheir simplicity and ability to highlight the differences make them a tool commonly used in data analysis and communication."
+        },
+        "end": {
+          "0": "Barra -type graphics are an effective way to visualize and compare categories or groups depending on their magnitude or quantity.\nThey are ideal to represent categorical or discreet data and allow an effective presentation of information.\nTheir simplicity and ability to highlight the differences make them a tool commonly used in data analysis and communication."
+        }
+      }
+    },
+    "box-plots": {
+      "title": "Box Plot",
+      "description": {
+        "intro": {
+          "0": "Box type graphics, also known as cash diagrams and mustaches or boxplots in English, are a visual representation used to show the distribution and statistical summaries of a numerical data set.\nThis type of graph is based on a rectangle that represents the interquotile range (IQR), where the central line indicates the median and extended lines, known as mustaches, represent the range of\nvalues beyond the IQR.",
+          "1": "In a boxing chart, the rectangle is traced vertically or horizontally, and is delimited by two lines, one at the bottom and one in the upper part.\nThe line in the middle of the rectangle represents the median, which is the value that divides the data ordered into two equal parts.\nThe mustaches extend from the edges of the rectangle to the extreme values, with a length determined by the variability of the data.",
+          "2": "Box type graphics have several features and outstanding applications:"
+        },
+        "list": {
+          "0": "Statistical summary: Box type graphics provide a visual summary of the key statistics of a data set.\nIn addition to the median, you can also show quartiles (Q1 and Q3), which divide data into four equal parts, and atypical values, which are shown as points or asterisks outside the mustaches.",
+          "1": "Identification of asymmetries and atypical values: when observing a box of the box type, it is possible to identify asymmetries in the distribution of the data.\nIf the mustaches do not have the same length, it can indicate an asymmetry towards one of the ends.\nIn addition, the atypical values that are outside the mustaches can be easily highlighted.",
+          "2": "Comparison between groups or categories: Box type graphs are also used to compare the distribution of data between different groups or categories.\nBy superimposing several cash diagrams on the same graph, it is possible to visualize the differences in medium -sized, interquile ranges and the presence of atypical values between the groups.",
+          "3": "Detect biases and distributions: Box type graphs allow visually identifying if the distribution of the data is symmetrical or biased towards one end.\nIf the central line of the rectangle is not in the middle, you can indicate a bias towards the opposite direction.",
+          "4": "Dispersions visualization: In addition to providing information on the central position and data variability, box type graphs also allow visualizing the dispersion and variability of the data in a single graph.\nThis can be useful to have a quick idea of the distribution and general variability of the data."
+        },
+        "end": {
+          "0": "Box type graphs are a useful tool to visualize the distribution, statistical summaries and the variability of a numerical data set.\nThey allow to identify asymmetries, atypical values and compare distributions between groups.\nTheir concise and effective visual representation makes them a tool commonly used in data analysis and communication."
+        }
+      }
+    },
+    "histograms": {
+      "title": "Histograms",
+      "description": {
+        "intro": {
+          "0": "Histogram type graphs are a visual representation used to show the distribution of numerical or continuous data.\nThis type of graph is based on a set of adjacent rectangular bars, where the width of each bar represents an interval of values and the height of the bar indicates the frequency or amount of observations within that\ninterval.",
+          "1": "In a histogram type graph, the horizontal axis is used to represent the range of values of the variable under study, divided into intervals or bins.\nThe vertical axis represents the frequency or amount of observations in each interval.\nThe height of each bar shows how many observations fall within that specific interval.",
+          "2": "Histogram type graphics have several features and outstanding applications:"
+        },
+        "list": {
+          "0": "Distribution visualization: Histograms allow visualizing the form and distribution of numerical data.\nThey can show if the data follow a symmetric, biased, multimodal or uniform distribution.",
+          "1": "Identification of atypical values: when observing a histogram, it is possible to identify atypical or extreme values that are outside the range of most data.\nThese values will be represented as isolated bars or as bars that extend beyond the main range of values.",
+          "2": "Trend and patterns analysis: histograms can reveal patterns and trends in the data.\nFor example, a biased distribution to the left or to the right indicates an asymmetry in the data, while a normal distribution shows approximate symmetry.",
+          "3": "Comparison of groups or categories: histograms can also be used to compare the distribution of data between different groups or categories.\nBy superimposing several histograms in the same chart, it is possible to visualize the differences and similarities between the groups.",
+          "4": "Density estimate: in addition to showing the absolute frequency, histograms can also provide a visual estimate of the data probability.\nWhen normalizing the heights of the bars, it is possible to obtain a relative representation of the probability of occurrence of the values in each interval."
+        },
+        "end": {
+          "0": "Histogram type graphs are a useful tool to visualize the distribution and patterns of numerical data.\nThey allow to identify atypical values, analyze trends and compare distributions between groups.\nTheir clear and concise visual representation makes them an effective tool to communicate information on the distribution of the data in an understandable way."
+        }
+      }
+    },
+    "line-charts": {
+      "title": "Line Charts",
+      "description": {
+        "intro": {
+          "0": "Line type graphics, also known as series or trend graphs graphics, are a visual representation that shows the relationship and evolution of data over time or a continuous variable.\nThese graphics are constructed by drawing data points in a Cartesian coordinate system, where each point represents a specific measurement or value of the variable in the vertical axis depending on the time or variable\nindependent on the horizontal axis.",
+          "1": "In a line -type graph, the data points are connected by straight lines, which creates a series of connected points.\nThese lines allow to visualize the trajectory and pattern of data change over time or the independent variable.\nThe slope of the line may indicate an increasing or decreasing trend, while variations in the direction and shape of the line can reveal additional patterns in the data.",
+          "2": "Line type graphics have several features and outstanding applications:"
+        },
+        "list": {
+          "0": "Trend representation: Line type graphics are especially useful for showing trends and changes over time.\nThey can reveal growth patterns, decline or fluctuation in the data as they occur over time.",
+          "1": "Identification of changes and variations: when observing a line type chart, it is possible to identify abrupt changes or variations in the data.\nThese changes may indicate significant events or factors that influence the measured variable.",
+          "2": "Comparison of multiple series: Line type graphics also allow comparing multiple data series in a single graph.\nThis is useful for analyzing and visualizing the relationship between different variables as they evolve over time.",
+          "3": "Seasonality analysis and cycles: If the data exhibits seasonal or cyclical patterns, line -type graphics can help identify and analyze these patterns.\nThis can be useful in fields such as economics, meteorology and sales analysis, where there are recurring fluctuations in the data.",
+          "4": "Forecast and projection: Line type graphics are also used to perform forecasts and projections based on historical data.\nWhen observing past trends, it is possible to infer and predict how the data will behave in the future."
+        },
+        "end": {
+          "0": "Line type graphics are a valuable tool to visualize and analyze the relationship and evolution of the data over time or a continuous variable.\nThey allow to identify trends, changes and patterns in the data, as well as make comparisons and forecasts.\nTheir clear and concise visual representation makes them an effective tool to communicate complex information understandably."
+        }
+      }
+    },
+    "pie-charts": {
+      "title": "Pie Charts",
+      "description": {
+        "intro": {
+          "0": "Circular or sectors graphics are a visual representation that shows the proportion of different categories or parts in relation to the whole.\nThese graphics are based on a circle divided into sectors, where each sector represents a specific category and its relative size reflects the proportion that this category represents in the data set.",
+          "1": "In a sectors type graph, the complete circle represents 100% or total data.\nEach sector is shown as a portion of the circle and is labeled with the name or label corresponding to the category it represents.\nThe measure of the sector angle is proportional to the proportion that this category has in the data set.",
+          "2": "Foot -type graphics have several features and outstanding applications:"
+        },
+        "list": {
+          "0": "Representation of proportions: foot graphics are ideal for representing proportions and percentages.\nThey allow to quickly visualize the relative contribution of each category in the total data set.",
+          "1": "Identification of dominant categories: the relative sizes of the sectors in the foot chart help to easily identify the dominant or more significant categories.\nThe largest sectors indicate the categories that have a greater proportion or contribution in relation to others.",
+          "2": "Comparison between categories: While foot graphics are useful to show the proportions of the categories, they can be limited to make precise comparisons between them.\nThis is because human perception can have difficulties in precisely evaluating differences in sizes of angles or sectors.\nHowever, the relative comparison between sectors sizes can still provide general information about the proportions between categories.",
+          "3": "Representation of categorical data: foot -type graphics are especially useful for representing categorical data, where categories are mutually exclusive and do not have an inherent order.\nFor example, they can be used to show the percentage distribution of income in different categories of expenses.",
+          "4": "Improvement of the visual presentation: Pie type graphics are commonly used in presentations and documents to communicate information visually attractive and easily understandable.\nThe circular shape and the colors used can quickly capture attention and highlight the proportional relationships between the categories."
+        },
+        "end": {
+          "0": "Type of sectors graphics are an effective tool to represent proportions and percentages of categories in a data set.\nThey allow to identify the dominant categories and provide an attractive visual presentation.\nHowever, it is important to take into account its limitations in terms of precise comparison between categories and its focus on categorical data."
+        }
+      }
+    },
+    "scatter-plots": {
+      "title": "Scatter Plots",
+      "description": {
+        "intro": {
+          "0": "A dispersion chart, also known as points graph or Scatter Plot in English, is a visual representation that uses Cartesian coordinates to show the relationship between two variables.\nIn this type of graph, the data is represented as individual points in the two -dimensional space, where each point represents a couple of values corresponding to the two variables.",
+          "1": "In a dispersion graph, the horizontal axis is generally assigned to the independent variable, while the vertical axis is assigned to the dependent variable.\nEach point in the graph represents an individual observation and its position in the graph is determined by the values it has for both variables.\nThe relative location of the points in the graph reveals patterns and relationships between the two variables.",
+          "2": "Dispersion graphics have several applications and prominent characteristics:"
+        },
+        "list": {
+          "0": "Relationship between variables: Dispersion graphics allow analyzing the relationship between two variables.\nThey can show if there is a positive correlation (the points tend to group in an ascending direction), a negative correlation (the points tend to group in a descending direction) or a lack of correlation (the points do not show a definite pattern).",
+          "1": "Trends identification: A dispersion chart can reveal trends or patterns in the data.\nWhen observing the general direction of the points, it is possible to identify whether there is a linear, non -linear relationship or even a curvilinear relationship between the variables.",
+          "2": "Detection of atypical values: Dispersion graphics can help identify atypical or extreme values in the data.\nThese points stand out and are far from the main group, suggesting unusual or exceptional observations that may require additional analysis.",
+          "3": "Analysis of clusters or groups: If the points in the dispersion graph are grouped or form different patterns, this may indicate the presence of clusters or groups.\nThis may be useful in data classification or classification analysis.",
+          "4": "Multidimensional data display: If additional colors or sizes are used, dispersion graphics can also represent additional information in a two -dimensional space.\nThis allows to visualize multidimensional data more intuitively."
+        },
+        "end": {
+          "0": "Dispersion graphics are a powerful tool to explore and visualize the relationship between two variables.\nThey allow identifying patterns, trends and atypical values in the data, and are useful in various applications, such as correlation analysis, clusters detection and visualization of multidimensional data."
+        }
+      }
+    },
+    "time-series-plots": {
+      "title": "Time Series Plots",
+      "description": {
+        "intro": {
+          "0": "A time series graph is a visual representation of data that are collected and recorded in regular intervals over time.\nThese graphics are widely used in various disciplines, such as economy, finance, meteorology, engineering and many others, to analyze and understand how the data changed as time elapses.",
+          "1": "The horizontal axis of the graph represents the time, while the vertical axis shows the values of the data that is being observed or recorded.\nThe data points are connected with lines, which allows identifying patterns and trends over time.",
+          "2": "Time series graphics offer various advantages and practical applications:"
+        },
+        "list": {
+          "0": "Trend analysis: Time series graphs allow to identify and analyze long -term trends in the data.\nThis can be useful to predict how data will behave in the future and make informed decisions.",
+          "1": "Identification of seasonal patterns: in many data sets, there are seasonal patterns that are repeated regularly over time, such as Christmas sales or seasonal fluctuations in agricultural production.\nTime series graphics help identify these seasonal patterns and understand their impact on data.",
+          "2": "DETECTION OF CHANGES AND ANOMALIES: When observing a time series graph, it is possible to identify sudden changes or abnormalities in the data.\nThese changes may indicate important or unusual events that require greater research and analysis.",
+          "3": "Modeling and prognosis: Time series graphics are a fundamental tool for developing models and forecasts.\nWhen observing past patterns, it is possible to build mathematical or statistical models that capture relationships and allow predictions about the future.",
+          "4": "Comparative analysis: Time series graphs are also used to compare different data sets that are collected during the same period of time.\nThis can help identify differences, similarities and relationships between the observed variables."
+        },
+        "end": {
+          "0": "Time series graphics are an essential tool to analyze and understand how data changes over time.\nThey provide valuable information about trends, seasonal patterns, changes and forecasts, allowing informed decisions and comparative analysis."
+        }
+      },
+      "index-info": "The selected index must contain a unique series and should not select the index next to the columns to show",
+      "form": {
+        "index": "Index"
+      }
+    },
+    "time-series": {
+      "warning": {
+        "index": "This dataframe does not allow adequate visualization by not fulfilling the condition of a characteristic with unique values"
+      }
+    },
+    "violin-plots": {
+      "title": "Violin Plots",
+      "description": {
+        "intro": {
+          "0": "A violin type graph is a visual representation that combines characteristics of a cash and mustaches chart with a probability density function.\nThis type of graph provides a detailed vision of data distribution and allows you to compare multiple groups or categories in a single graphic.",
+          "1": "The appearance of a violin chart resembles the shape of a violin, hence its name.\nIt has a central line that represents the median data and two shaded areas on both sides that represent the distribution of probability density.\nThese shaded symmetry areas along the central line to reflect the symmetry or asymmetry of the data.",
+          "2": "The shape of the violin chart provides information on the distribution of the data.\nFor example, a wider violin chart in a particular section indicates a higher data density in that area, while a narrower section indicates a lower density.\nIn addition, violin graphs can have multiple violins grouped or overlapping to allow visual comparison of different groups or categories.",
+          "3": "Violin graphics have several practical applications:"
+        },
+        "list": {
+          "0": "Comparison of distributions: violin graphics allow comparing data distributions between different groups or categories.\nThis is useful for identifying differences or similarities in the form, dispersion and data trends.",
+          "1": "Identification of atypical values: violin graphs provide visual information about the presence of atypical or extreme values in the data.\nThese values are represented as points outside the shaded areas and may indicate unusual observations that may require additional analysis.",
+          "2": "Probability density display: violin graphics also offer a graphic representation of data probability density.\nThis allows to easily identify high or low density areas, as well as possible biases or asymmetries in the distribution.",
+          "3": "Effective data communication: violin graphics are an effective way to communicate complex information on data distribution in a visually attractive way.\nThey can summarize the information in a concise manner and help transmit important patterns and characteristics to a non -technical audience."
+        },
+        "end": {
+          "0": "Violin graphics are a useful tool to visualize and compare data distributions.\nThey allow analyzing the form, dispersion, symmetry and presence of atypical values in the data, and are especially useful when comparison is required between multiple groups or categories.\nTheir attractive and concise graphic representation makes them an effective tool to communicate complex information understandably."
+        }
       }
     }
   },
   "pages": {
+    "version": {
+      "title": "Version"
+    },
     "index": {
       "tabular-classification": {
         "1-title": "Tabular classification",
-        "1-description-1": "The classification is a technique to determine the class to which the dependent belongs according to one or more independent variables.",
-        "1-description-2": "The classification is used to predict discrete answers.",
-        "1-button": "Trained models",
-        "2-title": "Design, create and edit an architecture to classify",
+        "1-description-1": "Classification is a task to determine the class to which an element (dependent variable) belongs from its characteristics (independent variables).",
+        "1-description-2": "It is a predictive task that has a discrete variable whose values are the different classes to which the element to be classified can belong.",
+        "1-button": "Pre-trained models",
+        "2-title": "Design, create and edit an architecture network",
         "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
-        "2-description-2": "Designing, creating, training and evaluating a personalized architecture.",
+        "2-description-2": "To design, create, train and evaluate a personalized architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
           "2": "Define the training rate.",
-          "3": "Define the number of iterations.",
+          "3": "Define the number of epochs.",
           "4": "Define the optimizer.",
           "5": "Define the loss function.",
-          "6": "Define the metric for evaluation."
+          "6": "Define the metric function."
         },
-        "2-description-footer": "The classification is used to predict discrete answers.",
         "2-button": "Train a model"
+      },
+      "linear-regression": {
+        "1-title": "Linear regression",
+        "2-title": "Design, create and edit an architecture to calculate a linear regression",
+        "1-description-1": "Linear regression is a task to determine a specific numerical value (dependent variable) based on its characteristics (independent variables).",
+        "1-description-2": "It is a predictive task that has a continuous variable, where it is sought to find a straight line that best suits the data and allows predicting the numerical value of the dependent variable depending on the independent variables.",
+        "1-button": "Pre-trained models",
+        "2-description-1": "Through this tool we can create a neuronal network to make preditions.",
+        "2-description-2": "Define the independent variables, which will be used in the model, define the dependent variable, which will be the numerical value that is sought to predict.",
+        "2-description-3": null,
+        "2-description-list": {
+          "1": "Establish an activation function or a linear function for the layers of linear regression.",
+          "2": "Define the value of the learning rate.",
+          "3": "Define the number of times.",
+          "4": "Define the optimizer.",
+          "5": "Define the loss function",
+          "6": "Define the metric for evaluation",
+          "title": "To apply linear regression and model the relationship between variables, we must follow the following steps:"
+        }
       },
       "object-detection": {
         "1-title": "Object identification",
         "1-description-1": "The classification of objects consists in organizing the elements according to their differences and similarities.",
         "1-description-2": "These models are trained with a multitude of different images that allow them to learn little by little what characterizes each object.",
-        "1-button": "Trained models",
+        "1-button": "Pre-trained models",
         "2-title": "Object identification"
       },
       "image-classification": {
-        "1-title": "Image classifier",
+        "1-title": "Image classification",
         "1-description-1": "The classification of images in the same way that the classical classification helps us to determine the class to which the dependent belongs according to one or more independent variables.",
-        "1-description-2": "In this case the input variable will be an image.",
-        "1-button": "Trained models"
+        "1-button": "Pre-trained models",
+        "2-title": "Design, create and edit an architecture network for classifying images.",
+        "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
+        "2-description-2": "To design, create, train and evaluate a personalized architecture, we must:",
+        "2-description-list": {
+          "1": "Define the number of layers, their activation functions.",
+          "2": "Define the training rate.",
+          "3": "Define the number of epochs.",
+          "4": "Define the optimizer.",
+          "5": "Define the loss function.",
+          "6": "Define the metric function."
+        },
+        "2-button": "Train a model"
+      }
+    },
+    "contribute": {
+      "title": "Contribute",
+      "github": {
+        "title": "Project in GitHub"
+      },
+      "license": {
+        "title": "License"
       }
     },
     "menu-selection-dataset": {
@@ -509,13 +1347,17 @@
       "form-label": "Select a dataset",
       "form-option-_-1": "Select a dataset",
       "form-upload-description": "Now if you wish you can load your own architecture, otherwise click on continuing and an architecture will be loaded by example default.",
-      "form-submit": "Continue"
+      "form-submit": "Continue",
+      "1-linear-regression": {
+        "csv": "Upload dataset - CSV",
+        "csv-text": "Upload a file with a dataset treated in <Oce> .CSV format </code>"
+      }
     },
     "menu-selection-model": {
       "form-description-1": "Select the trained model on which you are going to work.",
-      "form-description-2": "If you want to use your own, use the drop -down option and load the files in the following view.",
-      "form-label": "Select a trained model",
-      "form-option-_-1": "Select a trained model",
+      "form-description-2": "-",
+      "form-label": "Select a pre-trained model",
+      "form-option-_-1": "Select a pre-trained model",
       "form-submit": "Continue"
     },
     "playground": {
@@ -527,14 +1369,17 @@
         "parameter-float": "Simple precision floating parameter",
         "parameter-double": "Double precision floating parameter",
         "parameter-categorical": "Categorical parameter",
-        "vector-to-check": "Vector to try",
+        "data-to-check": "Data to test",
+        "vector-to-check": "Vector to test",
         "button-check-result": "Predict"
       },
       "0-tabular-classification": {
         "general": {
           "model": "Model",
           "description-input": "Data entry description",
-          "description-features": "Feature editor"
+          "description-features": "Features edit form",
+          "description-data": "Form data",
+          "description-vector": "Data vector"
         },
         "0_upload": {
           "upload": "Upload",
@@ -543,119 +1388,43 @@
           "button-upload-your-model": "Load model"
         },
         "generator": {
-          "dataset": {
-            "title": "Data set",
-            "upload-dataset": "Upload data set",
-            "attributes": {
-              "title": "Attributes",
-              "int32": "Numeric",
-              "float32": "Decimal",
-              "string": "Text",
-              "label-encoder": "Label Encoder",
-              "one-hot-encoder": "ONE HOT Encoder",
-              "classes": "Classes"
-            }
-          },
-          "layers": {
-            "title": "Layer design",
-            "page-info": "You can visit the <link1> Netron.app"
-          },
-          "editor-layers": {
-            "title": "Layer editor",
-            "add-layer-start": "Add a layer to the start",
-            "add-layer-end": "Add a layer to the end",
-            "delete-layer": "Delete layer {{value}}",
-            "layer-id": "Layer {{value}}",
-            "units": "Layer units",
-            "units-placeholder": "Enter the number of units in the layer",
-            "activation-function-select": "Select the activation function",
-            "activation-function-info": "It will be the optimizer that will be used to activate the function"
-          },
-          "general-parameters": {
-            "title": "Hyper parameter editor",
-            "learning-rate": "Learning rate",
-            "learning-rate-placeholder": "Enter the learning rate",
-            "learning-rate-info": "Remember to be a value between 0 and 100 (it is a percentage)",
-            "number-of-epochs": "Number of iterations",
-            "number-of-epochs-placeholder": "Number of iterations",
-            "number-of-epochs-info": "The higher it, the more training will be executed",
-            "train-rate": "Test set size",
-            "train-rate-placeholder": "Enter the size of the test bank",
-            "train-rate-info": "Remember to be a value between 0 and 100 (it is a percentage)",
-            "optimizer-id": "Select the optimized",
-            "optimizer-id-info": "It will be the optimizer that will be used to correct the error.",
-            "loss-id": "Select the loss function",
-            "loss-id-info": "It will be the function that will be used to evaluate the error of the neurons.",
-            "metrics-id": "Select the metric",
-            "metrics-id-info": "It will be the type of metric that will be used for training evaluation."
-          },
-          "models": {
-            "title": "Models",
-            "history-train": "Training history",
-            "train": "Training",
-            "button-submit": "Create and train model",
-            "open-visor": "Open visor",
-            "close-visor": "Close visor",
-            "export-current-model": "Export current model"
-          },
-          "table": {
-            "id": "Id",
-            "load": "Load",
-            "learning-rate": "Learning rate",
-            "number-of-epochs": "Nº of iterations",
-            "train-rate": "Train rate",
-            "layers": "Layers",
-            "optimizer-id": "Optimizer",
-            "loss-id": "Loss",
-            "metric-id": "Metrics",
-            "download": "Download"
-          },
-          "dynamic-form-dataset": {
-            "title": "Prediction",
-            "text-0": "Introduces separately by point and coma the corresponding values to predict",
-            "select-option": "Select an option",
-            "input-vector": "Enter the vector to try",
-            "test-vector": "Vector to try"
-          },
           "manual": {
-            "title": "Manual",
+            "title": "Model Generator Manual",
             "details-edit-layers": {
               "title": "Editor of the Layers",
               "text-0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
               "list": {
-                "0": "<b> Cap units </b>: <br /> Each unit in a layer is connected to all units of the anterior layer and the following layer. <br /> Each unit in a layer has a set of associated weights that determine the force and direction of the signal that is transmitted between the units. <br /> We can edit the number of inputs and outputs of the layer.",
-                "1": "<b> Activation function </b>: <br /> The activation function in a layer of a neuronal network refers to the mathematical function that is applied to the output of each unit in the layer, before passing the signal To the following layer, we can edit each of the activation functions of all layers."
+                "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
+                "1": "<b>Activation function</b>: <br /> The activation function of a neuron refers to the mathematical function that calculates its output. We can edit the activation function of the neurons of each layer."
               }
             },
             "details-hyper-parameters-editor": {
-              "title": "Hyper parameter editor",
+              "title": "Hyperparameter editor",
               "text-0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:",
               "list": {
-                "0": "<b> Learning rate </b>: <br /> Value between 0 and 100 which indicates to the network what amount of data you should use for training.",
-                "1": "<b> Number of iterations </b>: <br /> Amount of cycles that the network is going to make (the greatest number, it takes longer to train).",
-                "2": "<b> Test set size </b>: <br /> Percentage of the dataset to be used for training and evaluation.",
-                "3": "<b> Optimizer </b>: <br /> It is a function that as its name indicates is used to optimize the models. <br /> This is frequently used to avoid stagnating in a local maximum.",
-                "4": "<b> loss function </b>: <br /> It is a method to assess how well a specific algorithm models the data granted.",
-                "5": "<b> Metric function </b>: <br /> It is the evaluation to assess the performance of an automatic learning model."
+                "0": "<b>Learning rate</b>: <br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "1": "<b>Number of epochs</b>: <br /> Number of times the network training set (the greatest number, it takes longer to train).",
+                "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
+                "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
+                "4": "<b>loss function</b>: <br /> It is a error calculation method to measure model efficiency during training.",
+                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
               }
             },
             "details-hyper-parameters-info": {
-              "title": "Hyper parameters information",
+              "title": "Hyperparameters information",
               "list": {
-                "0": "<b> Learning rate </b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
-                "1": "<b> Number of iterations </b>: <br /> The number of iterations refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
-                "2": "<b> Test set size </b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
-                "3": "<b> Optimizer </b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
-                "4": "<b> loss function </b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
               }
             },
             "details-create-and-train-models": {
               "title": "Create and train model",
               "text-0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
               "text-1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
-              "text-2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data.",
-              "text-3": "In summary, <b> ACC </b> refers to precision in the training set and <b> Val_acc </b> refers to precision in the validation dataset. Both metrics are important to evaluate the model capacity to generalize new data.",
-              "text-4": "If everything has been correct a new entry will be added to the list of models generated with the selected dataset, we will be allowed to load in memory previously trained models."
+              "text-2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
             },
             "details-export-models": {
               "title": "Export model",
@@ -664,20 +1433,340 @@
             "details-prediction": {
               "title": "Prediction",
               "text-0": "The final form allows us to select the main characteristics used to determine the class.",
-              "text-1": "The output value will be an index of the class list, to perform the class prediction based on the features we must press the \"See Result\" button."
+              "text-1": "By pressing the \"See Result\" button, from the input features of the element you get the prediction of its output class."
+            }
+          }
+        }
+      },
+      "generator": {
+        "prediction": {
+          "class_id_name": "The id of target <strong>{{class_target_id}}</strong> corresponds to the class <strong>{{name}}</strong>"
+        },
+        "layer-design": "Layer design",
+        "neural_network_modes": {
+          "title": "Visualization modes",
+          "compact": "Compact mode",
+          "extend": "Extended mode"
+        },
+        "dataset": {
+          "title": "Data set",
+          "upload-dataset": "Upload data set",
+          "attributes": {
+            "title": "Attributes",
+            "int32": "Numeric",
+            "float32": "Decimal",
+            "string": "Text",
+            "label-encoder": "Label Encoder",
+            "one-hot-encoder": "OneHot Encoder",
+            "classes": "Classes"
+          },
+          "details": {
+            "description-original": "Description of the original DataFrame",
+            "description-processed": "Description of the processed DataFrame",
+            "data": "Data set information",
+            "info": "Information"
+          }
+        },
+        "layers": {
+          "title": "Layer design",
+          "page-info": "You can visit the <link1> Netron.app"
+        },
+        "editor-layers": {
+          "title": "Layer editor",
+          "add-layer-start": "Add a layer to the start",
+          "add-layer-end": "Add a layer to the end",
+          "delete-layer": "Delete layer {{index}}",
+          "layer-id": "Layer {{index}}",
+          "kernel-size": "Kernel size",
+          "kernel-size-placeholder": "Enter the kernel size of the layer.",
+          "filters-size": "Filter size",
+          "filters-size-placeholder": "Enter the filter of the layer.",
+          "units": "Layer neurons",
+          "units-placeholder": "Enter the number of cape neurons",
+          "activation-function-select": "Select the activation function",
+          "activation-function-info": "It will be the optimizer that will be used to activate the function",
+          "strides": "Strides",
+          "strides-placeholder": "Enter the strides of the layer",
+          "pool-size": "Pool size",
+          "pool-size-placeholder": "Enter the pool size of the layer"
+        },
+        "editor-feature-selector": {
+          "title": "Feature selector",
+          "feature-selector-x": "Feature selector / Set (x)",
+          "feature-selector-y": "Feature selector / Target (Y)",
+          "add-feature": "Add feature",
+          "delete-feature": "Delete feature {{value}}"
+        },
+        "general-parameters": {
+          "title": "Hyperparameter editor",
+          "learning-rate": "Learning rate",
+          "learning-rate-placeholder": "Enter the learning rate",
+          "learning-rate-info": "A value between 0 and 100 (it is a percentage)",
+          "number-of-epochs": "N. epochs",
+          "number-of-epochs-placeholder": "Number of epochs",
+          "number-of-epochs-info": "The higher it, the more training will be executed",
+          "train-rate": "Test set size",
+          "train-rate-placeholder": "Enter the size of the test bank",
+          "train-rate-info": "A value between 0 and 100 (it is a percentage)",
+          "optimizer-id": "Select the optimizer",
+          "optimizer-id-info": "It will be the optimizer that will be used to correct the error.",
+          "loss-id": "Select the loss function",
+          "loss-id-info": "It will be the function that will be used to evaluate the error of the neurons.",
+          "metrics-id": "Select the metric",
+          "metrics-id-info": "It will be the type of metric that will be used for training evaluation.",
+          "test-size": "Test set size",
+          "test-size-placeholder": "Test set size",
+          "test-size-info": "Value between 0 and 100 (is a percentage) of the size of the test set",
+          "delete-metric": "Delete metric function {{index}}",
+          "add-metric": "Add metric function",
+          "metric-id-__index__": "Metric {{index}}",
+          "metric-id-select": "Select the metric function",
+          "metric-id-info": "It will be one of the metric functions"
+        },
+        "loaded": "Loaded",
+        "load": "Load",
+        "waiting-for-file": "Waiting for file",
+        "waiting-for-process": "Waiting for data set processing",
+        "models": {
+          "title": "Models",
+          "history-train": "Training history",
+          "train": "Training",
+          "button-submit": "Create and train model",
+          "open-visor": "Open visor",
+          "close-visor": "Close visor",
+          "export-current-model": "Export current model"
+        },
+        "table": {
+          "id": "Id",
+          "load": "Load",
+          "learning-rate": "Learning rate",
+          "number-of-epochs": "N. Epochs",
+          "train-rate": "Test set size",
+          "layers": "Layers",
+          "optimizer-id": "Optimizer",
+          "loss-id": "Loss",
+          "metric-id": "Metrics",
+          "download": "Download"
+        },
+        "dynamic-form-dataset": {
+          "title": "Prediction",
+          "text-0-__column_name_target__": "Enter the values of each entry feature of the example to predictc <b>{{column_name_target}}</b>",
+          "select-option": "Select an option",
+          "input-data": "Enter the data to test",
+          "input-vector": "Enter the vector to test",
+          "test-vector": "Vector to test",
+          "test-input-data": "Form data",
+          "test-input-vector": "Vector to test",
+          "selector-entity": "Select the entity",
+          "selector-model": "Select the model"
+        },
+        "list-models-generated": "List generated models",
+        "visor": {
+          "title": "Configuration of visor",
+          "rmse": "RMSE",
+          "val_rmse": "VAL RMSE",
+          "mae": "MAE",
+          "val_mae": "VAL MAE",
+          "history-train": "Training history",
+          "train": "Training history",
+          "summary": "Summary",
+          "scatterplot": {
+            "__feature____target__": "{{feature}} x {{target}}"
+          },
+          "original-vs-predictions": "Original data / prediction",
+          "model": "Model",
+          "dataset": "Data set",
+          "predictions": "Predicted",
+          "predicted": "Foretold",
+          "confusion-matrix": "Confusion matrix",
+          "line-chart": "Line chart"
+        },
+        "waiting-for-models": "Waiting for the creation of a model"
+      },
+      "1-linear-regression": {
+        "generator": {
+          "manual": {
+            "title": "Model generator manual",
+            "simple-linear-regression": "Simple linear regression",
+            "multiple-linear-regression": "Multiple linear regression",
+            "details-edit-layers": {
+              "title": "Editor of the Layers",
+              "text": {
+                "0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end."
+              },
+              "list": {
+                "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
+                "1": "<b>Activation function</b>: <br /> The activation function of a neuron refers to the mathematical function that calculates its output. We can edit the activation function of the neurons of each layer."
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "Hyperparameter editor",
+              "text": {
+                "0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:"
+              },
+              "list": {
+                "0": "<b>Learning rate</b>:<br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "1": "<b>Number of epochs</b>:<br /> Number of times the network training set (the greatest number, it takes longer to train).",
+                "2": "<b>Test set size</b>:<br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
+                "3": "<b>Optimizer</b>:<br /> It is a function that is used to adjust the weights of the network.",
+                "4": "<b>loss function</b>:<br /> It is a error calculation method to measure model efficiency during training.",
+                "5": "<b>Metric function</b>:<br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "Hyperparameters information",
+              "list": {
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "Create and train model",
+              "text": {
+                "0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
+                "1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
+                "2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
+              }
+            },
+            "details-export-models": {
+              "title": "Export model",
+              "text": {
+                "0": "If we have created the model correctly an entry will be added to the table of models generated, we are allowed to export the models generated and save them locally."
+              }
+            },
+            "details-plot-models": {
+              "title": "Plot of predictions",
+              "text": {
+                "0": "We can use a sparse graph for this task, so that we represent the original data in a cloud of points and we use a line to draw the predictions of the model, depending on the architecture we use it will give us a straight line with a certain slope or a line which will fit and curve more to the data. To do this, 100 distant <i>x</i> predictions are made, from the first value to the last value."
+              }
             }
           },
-          "prediction": {
-            "class_id_name": "The id of target <strong>{{class_target_id}}</strong> corresponds to the class <strong>{{name}}</strong>"
+          "simple-linear-regression": "Simple linear regression",
+          "multiple-linear-regression": "Multiple linear regression"
+        },
+        "predict": {
+          "title": "Predict",
+          "instance": {
+            "__index__": "Instance {{index}}"
+          },
+          "model": {
+            "__index__": "Model {{index}}"
+          },
+          "button-submit": "Predict",
+          "list-models-generated": "List of models generated",
+          "list-instances": "Lista of instancies"
+        },
+        "model-selector": {
+          "title": "Model selector",
+          "option": "Select a model"
+        }
+      },
+      "3-image-classification": {
+        "generator": {
+          "manual": {
+            "title": "Model Generator Manual",
+            "details-edit-layers": {
+              "title": "Editor of the Layers",
+              "text-0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
+              "list": {
+                "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
+                "1": "<b>Activation function</b>: <br /> The activation function of a neuron refers to the mathematical function that calculates its output. We can edit the activation function of the neurons of each layer."
+              }
+            },
+            "details-edit-layers-more-info": {
+              "title": "Additional information Layers",
+              "text-0": "Additionally there are two more layers that are common to other automatic learning networks focused on image classification",
+              "list": {
+                "0": "<b>dense</b><br />Creates a dense (fully connected) layer.",
+                "1": "<b>dropout</b><br />Dropout consists in randomly setting a fraction rate of input units to 0 at each update during training time, which helps prevent overfitting.",
+                "2": "<b>embedding</b><br />Maps positive integers (indices) into dense vectors of fixed size. eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]",
+                "3": "<b>flatten</b><br />A Flatten layer flattens each batch in its inputs to 1D (making the output 2D).",
+                "4": "<b>permute</b><br />Permutes the dimensions of the input according to a given pattern.",
+                "5": "<b>repeatVector</b><br />Repeats the input n times in a new dimension.",
+                "6": "<b>reshape</b><br />Reshapes an input to a certain shape.",
+                "7": "<b>spatialDropout1d</b><br />Spatial 1D version of Dropout."
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "Hyperparameter editor",
+              "text-0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:",
+              "list": {
+                "0": "<b>Learning rate</b>: <br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "1": "<b>Number of epochs</b>: <br /> Number of times the network training set (the greatest number, it takes longer to train).",
+                "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
+                "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
+                "4": "<b>loss function</b>: <br /> It is a error calculation method to measure model efficiency during training.",
+                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "Hyperparameters information",
+              "list": {
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "Create and train model",
+              "text-0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
+              "text-1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
+              "text-2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
+            },
+            "details-export-models": {
+              "title": "Export model",
+              "text-0": "If we have created the model correctly an entry will be added to the table of models generated, we are allowed to export the models generated and save them locally."
+            },
+            "details-prediction": {
+              "title": "Clasification",
+              "text-0": "The final form allows us to select the main characteristics used to determine the class.",
+              "text-1": "By pressing the \"See Result\" button, from the input features of the element you get the prediction of its output class."
+            }
           }
         }
       }
     },
+    "dataframe": {
+      "title": "Analyze data set",
+      "upload-csv": "Upload data set"
+    },
+    "documentation": {
+      "title": "Documentation"
+    },
     "manual": {
+      "title": "Manual",
+      "00-tabular-classification": {
+        "upload-and-process": {
+          "title": "Step 1: Upload and process the data set"
+        },
+        "dataset": {
+          "title": "Step 2: Analyze the data set"
+        },
+        "layer-design": {
+          "title": "Step 3: Visualize the layer design of the neural network."
+        },
+        "editor-layers": {
+          "title": "Step 4: Edit the neural network layers"
+        },
+        "editor-hyperparameters": {
+          "title": "Step 5: Edit training hyperparameters"
+        },
+        "table-models": {
+          "title": "Step 6: Training and table of models"
+        },
+        "prediction": {
+          "title": "Step 7: Prediction"
+        }
+      },
       "app": {
-        "title": "Objectives",
-        "description-1": "This project shows different tasks that can perform neuronal networks when they are trained by automatic learning, which is why we are going to address from three approaches (classification, identify objects, classify images), each of these approaches are explained below in the following Tickets with a brief description of the technique and how to use the tool with that technique.",
-        "description-2": "Some of the reasons why learning neural networks are the following:",
+        "title": "Tool objectives",
+        "description-1": "This application shows some of the most important tasks that artificial neural networks can perform, such as: tabular classification, image classification and object identification. Networks are artificial intelligence techniques belonging to the field of automatic learning, in which models that train (or learn) are developed from data sets.",
+        "description-2": "Some of the reasons why work with neural networks are the following:",
         "list": {
           "0": {
             "title": "Practical applications",
@@ -697,45 +1786,64 @@
       },
       "0-tabular-classification": {
         "title": "Tabular classification",
-        "1-title": "Trained models",
-        "1-description-1": "We must access the section of trained models and select one of the two available.",
-        "1-list-options": {
-          "0": "Classification of the evaluation by car characteristics",
-          "1": "Flower type classification by flower characteristics"
-        },
+        "1-title": "Pre-trained models",
+        "1-description-1": "We must access the pre-questioned models section and select one of the available ones.",
         "1-description-2": "The tool has a list of representative examples that allow to alter the characteristics form.",
-        "1-description-3": "By accessing the tool section on both models we can edit the characteristics of the element to predict. The tool has a dynamic form that allows changing the types of neuronal network input data.",
+        "1-description-3": "By accessing the section section on the models we can edit the characteristics of the elements to be predicted. The tool has a dynamic form that allows changing the types of neuronal network input data.",
         "2-title": "Train models",
         "2-description-1": "The tool has a data display that allows you to show the classes and attributes of the dataset. As well as a manager to create, design, train and export a data model.",
-        "2-description-2": "On the left we have an editor of the different layers that the neuronal network has. It should be allowed the last network layer to have the same number of units as classes to predict.",
-        "2-description-3": "On the right we have an editor of the different types of data for training, learning rate, iterations number, test bank size, optimizing function, loss function, metric function.",
-        "2-description-4": "We must press the \"Create and train model\" button to start the training process of the neuronal network. If all the configuration and selection of the functions are correct then an entry with the different trained models will be added in the table below.",
-        "2-description-5": "Once trained data model we can make predictions, for this a dynamic form is included with the characteristics of the dataset. Depending on training and selected options, our model will predicted different target classes with greater or lesser precision."
+        "2-description-2": "On the left we have an editor of the different layers that the neuronal network has. It should be allowed the last network layer to have the same number of neurons as classes to predict.",
+        "2-description-3": "<b> Number of Epochs </b>: <br /> The Number of iterations to the Number of Times the Training Data is present to the neuronal Network During the Training Process. Each iteration impies an update of the weights of the network as a function of the calculated error.",
+        "2-description-4": "We must press the \"Create and train model\" button to start the training process of the neuronal network. If all the configuration and selection of the functions is correct then an entry with the trained models will be added in the table below.",
+        "2-description-5": "Once a model from the data is trained we can make predictions, for this a dynamic form is included with the characteristics of the data set. The precision of the model in the prediction may be greater or less depending on the training and the selected options."
+      },
+      "1-linear-regression": {
+        "title": "Linear regression",
+        "1-title": "Pre-trained models",
+        "1-description": {
+          "0": "We must access the pre-questioned models section and select one of the available ones.",
+          "1": null,
+          "2": null
+        },
+        "2-title": "Train models",
+        "2-description": {
+          "0": "The section has the possibility to raise your data sets, prepared data sets, descriptions, graphic and statistical visualization tools.",
+          "1": "It has a generator of linear regression models. It manages layers of the neuronal network, hyperparameters, optimization functions, loss and metric functions. as well as the characteristics selector.",
+          "2": "We must press the \"Create and train model\" button to start the training process of the neuronal network. If all the configuration and selection of the functions are correct then an entry with the trained models will be added in the list.",
+          "3": null
+        },
+        "2-link": "Consult more information in the following <link1> link </link1>"
       },
       "2-object-identification": {
         "title": "Object identification",
-        "1-title": "Trained models",
+        "1-title": "Pre-trained models",
         "1-description-1": "Within the identification of objects we have four models, to use this tool it is as simple as activating the option to use webcam or upload an image.",
-        "1-description-2": "The tool section has four objects of identification of objects, these models have been optimized to be functional on mobile devices.",
+        "1-description-2": "In this section the tool offers four objects of identification of objects, these models have been optimized to be functional on mobile devices. These models are:",
+        "1-description-3": "In case of using the webcam as an input, a filter will be generated so that the points that are being detected can be seen in real time. In case of using the option to upload images we can attach a file in PNG or JPG format. As a result, the original image, the generated filter and the image with the applied filter will be displayed.",
         "1-list": {
           "0": "Identification of facial geometry.",
           "1": "Identification of a complete facial mesh.",
           "2": "Identification of the joints.",
           "3": "Object identification (it is also a classifier)."
-        },
-        "1-description-3": "The tool in case of activating webcam identification will activate the filter so that the points that are being detected can be seen in real time. In case of using the option to upload images we can attach a file in PNG or JPG format, said file will be loaded in the same section in three sections, original image, applied filter, image with the filter detected."
+        }
       },
       "3-image-classification": {
-        "title": "Image classifier",
+        "title": "Image classification",
         "1-title": "Trained models",
         "1-description-1": "In the image classifier section we can select between two very representative examples of the neural networks. These are the set of mnist images and the set of images.",
         "1-list": {
-          "0": "MNIST, image classifier that detects numbers.",
-          "1": "Mobilenet, image classifier that can detect 1001 categories."
+          "0": "MNIST, image classification that detects numbers.",
+          "1": "Mobilenet, classification of images belonging to 1001 categories."
         },
         "1-description-2": "In the MNIST model it is allowed to select from a list of images that contain a number, draw in a dog the number to predict or upload an image of a number.",
-        "1-description-3": "In the Mobilenet model, a list of example images that can be selected or we can upload an image that the neuronal network will analyze to be able to classify have been included.",
-        "1-description-4": "For both models the system will make a prediction that will indicate the percentage of precision that it has detected."
+        "1-description-3": "In the Mobilenet model a list of example images that can be selected or we can upload an image that the neuronal network will classify have been included.",
+        "1-description-4": "For both models the system will show the prediction with the percentage of calculated precision."
+      },
+      "layer-editor": {
+        "title": "Layer editor"
+      },
+      "hyperparameters-editor": {
+        "title": "Hyperparameter editor"
       }
     },
     "glossary": {
@@ -748,32 +1856,45 @@
         "function": "Function"
       },
       "tabular-classification": {
-        "title": "Description Tabular classification",
-        "text-1": "Tabular classification is a supervised type of learning in which a set of data labeled to train an automatic learning model that can predict the class of a new dataset can be used. In the tabular classification, the input and output data is represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
-        "text-2": "For example, if you want to predict whether a bank of a bank is solvent or not, the characteristics or attributes that can be used are: income, debts, credit history, age, etc. In the tabular classification, each instance or example of the dataset will have values for each of these characteristics and a label that indicates whether the client is solvent or not.",
+        "title": "Tabular classification",
+        "text-1": "The tabular classification is a supervised type of learning in which a set of data labeled to train an automatic learning model is used, so that the model can predict the class of new examples of data not used in training. In the tabular classification, the input and output data is represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
+        "text-2": "For example, if you want to predict whether a bank of a bank is solvent or not, the characteristics or attributes that can be used are: income, debts, credit history, age, etc. In the tabular classification, each instance or example of the data set will have values for each of these characteristics and a label (class) that indicates whether the client is solvent or not.",
         "text-3": "Once you have a set of data labeled, an automatic learning algorithm is used to train a model that can predict the label of new data sets. This model can be used to perform precise and fast predictions on new data instances.",
         "text-4": "Tabular classification is a very useful technique to solve classification problems in a wide variety of fields, such as medicine, electronic commerce, banking, safety and many others."
       },
+      "linear-regression": {
+        "title": "Linear regression",
+        "text": {
+          "0": "Linear regression is a statistical analysis method used in automatic learning to model the linear relationship between an independent variable and a dependent variable, seeking to find the best straight line that adjusts the data and allows predictions to be made.",
+          "1": "In the linear regression, the data is generally represented as dispersed points in a Cartesian plane, where the independent variable is placed on the X axis and the dependent variable on the Y axis. The objective is to find the equation of a straight line (y = = mx + b) that minimizes the distance between this line and the data points. Once this equation has been obtained, it can be used to make predictions on future values of the dependent variable depending on the values of the independent variable.",
+          "2": "For example, if we are analyzing the relationship between the amount of advertising on a website and the sales of a product, the amount of advertising would be the independent variable, and the sales of the product would be the dependent variable. Linear regression would help us determine if there is a linear relationship between investment in advertising and sales, and if so, it would allow us to predict future sales based on advertising spending.",
+          "3": "Linear regression is a powerful tool in data analysis and is used in a variety of fields, including economy, social science, medical research and many other disciplines to understand and predict relationships between variables."
+        }
+      },
       "object-identification": {
-        "title": "Description Object Identification",
+        "title": "Object identification",
         "text-1": "The identification of objects in neuronal networks is a technique used in the field of automatic learning and computer vision to detect and recognize objects in images or videos. It is an important task in image analysis and is used in applications such as faces recognition, real -time objects, the classification of objects in medical images and the detection of objects in autonomous vehicles.",
         "text-2": "The neural networks used for the identification of objects are deep learning models that are trained in data sets labeled. The training process implies providing the neurons network for a large number of images tagged, and adjusting the weights of connections between neurons so that the network can identify objects in new images with high precision.",
         "text-3": "Once the neuronal network has been trained, it is used to identify objects in new images. The network examines the image and, by processing multiple layers, extracts important characteristics that are used to identify objects of interest. Then, the network uses these characteristics to assign a label to each object detected in the image.",
-        "text-4": "In summary, the identification of objects in neuronal networks is an important technique in computer vision and automatic learning used to detect and recognize objects in images and videos. It is based on the use of deep neural networks trained in data sets labeled to identify and classify objects in new images with high precision."
+        "text-4": "In summary, the identification of objects in neural networks is an important technique in computer vision and automatic learning used to detect and recognize objects in images and videos. It is based on the use of deep neural networks trained in data sets labeled to identify and classify objects in new images with high precision."
       },
       "image-classification": {
-        "title": "Description Image classifier",
-        "text-1": "The image classifier is a technique used in neural networks to classify images into different categories or labels. The objective of an image classifier is to take an input image and predict what class it belongs, based on a set of predefined categories or labels.",
+        "title": "Image classification",
+        "text-1": "Image classification is a technique used in neural networks to classify images in different categories or labels. The objective of an image classifier is to take an input image and predict what class it belongs, based on a set of predefined categories or labels.",
         "text-2": "In deep learning, image classifiers are based on convolutional neural networks (CNN), which are a specialized architecture to process images. These neuronal networks have multiple layers and convolution operations that allow them to extract important characteristics from the images, such as edges, shapes and textures.",
         "text-3": "To train an image classifier, a set of labeled data is used that contains images and their respective class labels. Then, the neuronal network is trained using this dataset to learn to identify patterns in the images and associate them with the corresponding class labels.",
         "text-4": "Once the neuronal network has been trained, it can be used to classify new images in different categories. The image classifier examines the input image and processes it through the neuronal network to extract important characteristics and predict what class the image belongs.",
-        "text-5": "In summary, the image classifier in neuronal networks is a technique that uses convolutional neural networks to classify images into different categories or labels. It is based on the use of a dataset labeled to train the neuronal network and the extraction of important characteristics of the images to predict which class a new entrance image belongs."
+        "text-5": "In summary, the classification of images in neuronal networks is a technique that uses convolutional neural networks to classify images into different categories or labels. It is based on the use of a data set labeled to train the neuronal network and the extraction of important characteristics of the images to predict which class a new entrance image belongs."
       },
       "activation-functions": {
         "title": "Activation functions",
-        "text-1": "An activation function is a mathematical function used in an artificial neuronal network to determine the output of a neuron or a set of neurons based on the entry received. The activation function introduces non -linearity in the neuronal network, allowing the network to learn more complex patterns in the input data. Common examples of activation functions are the sigmoid function, the reluct function and the hyperbolic tangent function.",
+        "sub-title-1": "Linear Layers",
+        "sub-title-2": "Non-linear Activations (weighted sum, nonlinearity)",
+        "sub-title-3": "Non-linear Activations (other)",
+        "text-1": "An activation function is a mathematical function used in an artificial neuronal network to determine the output of a neuron or a set of neurons based on the entry received. The activation function introduces non -linearity in the neuronal network, allowing the network to learn more complex patterns in the input data. Common examples of activation functions are:",
         "table": {
           "softmax": {
+            "title": "Softmax",
             "description": "Transforms outputs to a representation in the form of probabilities, so that the sum of all probabilities gives 1",
             "characteristics": {
               "0": "Bounded between 0 and 1",
@@ -782,19 +1903,129 @@
             }
           },
           "sigmoid": {
-            "description": "Transforma, the input values where the highest tend to 1 and the lowest values tend to 0",
+            "title": "Sigmoid",
+            "description": "The sigmoid function transforms the input values into a range between 0 and 1. is commonly used in neural networks for binary classification problems.",
             "characteristics": {
-              "0": "Bounded between 0 and 1",
-              "1": "Slow convergence",
-              "2": "Good in final layers"
+              "0": "Results with the range [0, 1].",
+              "1": "Useful in the output layer of binary classifiers.",
+              "2": "You can suffer the problem of fading of the gradient in deep networks."
+            }
+          },
+          "hard-sigmoid": {
+            "title": "Hard Sigmoid",
+            "description": "Hardsigmoid is a simplified version of the sigmoid function used for computational efficiency.",
+            "characteristics": {
+              "0": "It is faster to calculate than sigmoid.",
+              "1": "Less soft in the transition between 0 and 1."
             }
           },
           "relu": {
-            "description": "Transforms the input values by zeroing the negative values and leaving as the positive data were-",
+            "title": "ReLU (Rectified Linear Unit)",
+            "description": "The ReLU function is simple and effective when returning zero for negative values and maintaining positive values without changes",
             "characteristics": {
-              "0": "It is not limited",
-              "1": "Good performance with convolutional networks"
+              "0": "Efficient in terms of computation.",
+              "1": "Mitigate the gradient fading problem.",
+              "2": "It can activate neurons sparsely."
             }
+          },
+          "relu6": {
+            "title": "ReLU 6",
+            "description": "Similar to ReLU, but with a higher limitation of 6 for positive values, which can help avoid the explosion of gradients.",
+            "characteristics": {
+              "0": "Mitigate the gradient fading problem.",
+              "1": "Useful in networks with unstable gradients."
+            }
+          },
+          "leaky-relu": {
+            "title": "LeakyReLU",
+            "description": "Leaky ReLU is a ReLU variant that allows a small fraction of negative values to pass through the function.",
+            "characteristics": {
+              "0": "Mitigate the death problem of neurons compared to reluct.",
+              "1": "It helps maintain information in negative gradients."
+            }
+          },
+          "elu": {
+            "title": "ELU (Exponential Linear Unit)",
+            "description": "ELU is a function that resembles ReLU in positive values, but also has a defined gradient for negative values.",
+            "characteristics": {
+              "0": "Reduce the problem of fading of the gradient.",
+              "1": "It helps keep more neurons active."
+            }
+          },
+          "tanh": {
+            "title": "Tanh (hyperbolic tangent)",
+            "description": "The hyperbolic tangent function transforms the input values into a range [-1, 1].",
+            "characteristics": {
+              "0": "Results in the range [-1, 1].",
+              "1": "Useful in binary classification problems.",
+              "2": "Suffers from fading of the gradient in deep networks."
+            }
+          },
+          "soft-plus": {
+            "title": "SoftPlus",
+            "description": "SoftPlus is a soft function that is often used as a soft alternative to reluct.",
+            "characteristics": {
+              "0": "Soft and derivable everywhere.",
+              "1": "It can be useful in generative and regression networks."
+            }
+          },
+          "mish": {
+            "title": "Mish",
+            "description": "Mish is a relatively new activation function that combines characteristics of other functions such as hyperbolic tangent and sigmoid function.",
+            "characteristics": {
+              "0": "Softness and derivability in its entire range.",
+              "1": "It provides better performance in some applications."
+            }
+          },
+          "selu": {
+            "title": "SELU (Scaled Exponential Linear Unit)",
+            "description": "SELU is a function that benefits from specific standardization and can help maintain network stability.",
+            "characteristics": {
+              "0": "Autocalibration: stable statistical propagates through the layers.",
+              "1": "It can be useful in networks with self-chire architecture."
+            }
+          }
+        }
+      },
+      "editor-layers": {
+        "title": "Layers editor",
+        "table": {
+          "activation-function": {
+            "title": "Layer Neurons",
+            "description": "These are the individual units or nodes in a specific layer of the network. Each neuron receives inputs, performs computations and produces an output that is transmitted to the next layer. The number of neurons in a layer can vary and is usually a hyperparameter of the model. The choice of the number of neurons in a layer affects the model's ability to learn representations of the data."
+          },
+          "units": {
+            "title": "Layer Activation Function",
+            "description": "At each neuron in a layer of a neural network, an activation function is applied to introduce non-linearity into the model. The activation function determines the output of the neuron as a function of its input and associated weights."
+          }
+        }
+      },
+      "editor-hyperparameters": {
+        "title": "Hyperparameter editor",
+        "table": {
+          "learning-rate": {
+            "title": "Learning Rate",
+            "description": "The learning rate is a crucial hyperparameter in machine learning algorithms and neural networks. It determines how much the model weights must be updated at each iteration during the training process. A high learning rate can lead to fast convergence, but can result in instability, while a low rate can lead to slow convergence or get stuck in local minima."
+          },
+          "number-or-epochs": {
+            "title": "Number of Epochs",
+            "description": "Epochs refer to the number of times the entire training data set has been passed through the model during the training process. A higher number of epochs generally allows the model to fit the data better, but can also lead to overfitting if a certain limit is exceeded."
+          },
+          "test-size": {
+            "title": "Test Size",
+            "description": "The amount of data that is set aside to evaluate the performance of the model after training. The test set is used to measure the accuracy and overall performance of the model on unseen data."
+          },
+          "optimizer": {
+            "title": "Optimiser",
+            "description": "The optimiser is an algorithm that adjusts the parameters of a machine learning model during training. Its goal is to minimise the loss function by updating the model weights efficiently. Examples of common optimisers include Stochastic Gradient Descent (SGD), Adam and RMSprop."
+          },
+          "loss-function": {
+            "title": "Loss Function",
+            "description": "The loss function is a measure that quantifies how well the model is performing in its predictions. It helps to calculate the difference between the model's predictions and the actual values of the data set. The goal of training is to minimise this function, as a low loss value indicates that the model is a better fit to the data."
+          },
+          "metric-function": {
+            "title": "Metric Function",
+            "description": "Unlike the loss function, which is used to optimise the model during training, metric functions are used to evaluate the performance of the model after training. These metrics provide information on accuracy, recall, precision, F1-score, etc., and help to understand how the model performs on specific tasks."
           }
         }
       },
@@ -826,19 +2057,23 @@
           "adam": {
             "references": "Adaptive estimation of the mo\n (Adaptive Moment Estimation)\n (Velasco, 2020)",
             "description": "It is a combination of <i> AdaGrad </i> and <i> RMSProp </i>. A parameter training factor is maintained and <i> RMSProp </i> is calculated, in addition each training factor is affected by the <i> momentum </i> of the gradient."
+          },
+          "adamax": {
+            "description": "It combines techniques of <i> Momentum </i> and adaptation of learning to accelerate convergence during neural networks. Automatically adjust the learning rate and use a gradient scaling to avoid divergence problems."
           }
         }
       },
       "loss-functions": {
         "title": "Loss functions",
-        "text-1": "In automatic learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
-        "text-2": "The objective of an automatic learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
-        "text-3": "There are different loss functions for different types of automatic learning problems, such as regression, binary classification and multiclase classification. Common examples of loss functions include the average quadratic error (MSE) for regression, binary cross entropy for binary classification and categorical cross entropy for multiclase classification.",
-        "text-4": "In tensorflow.js there are different loss functions and the application of each of them depends on the type of problem we want to face.",
+        "text": {
+          "0": "In automatic learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
+          "1": "The objective of an automatic learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
+          "2": "In tensorflow.js there are different loss functions and the application of each of them depends on the type of problem we want to face. Some examples are shown below:"
+        },
         "table": {
           "AbsoluteDifference": {
             "references": "Absolute difference\n (Privolima, s.f.)",
-            "description": "Calculate the distance to the target. This function is used in regression problems."
+            "description": "Calculate the distance to the target."
           },
           "ComputeWeightedLoss": {
             "references": "Weighted average\n (Privolima, s.f.)",
@@ -854,7 +2089,7 @@
           },
           "HuberLoss": {
             "references": "(Huber loss)",
-            "description": "It is used in regression problems, it calculates the loss caused by the estimate procedure."
+            "description": "Calculate the loss caused by the estimate procedure."
           },
           "LogLoss": {
             "references": "Logarithmic loss\n (Shen, 2005)",
@@ -880,9 +2115,10 @@
       },
       "metric-functions": {
         "title": "Metric functions",
-        "text-1": "They are used to evaluate the performance of the neuronal network model in a test dataset. The metric function takes the predictions made by the model and compare them with the real values of the test data to determine the precision of the model.",
+        "text-1": "They are used to evaluate the performance of the neuronal network model in a test data set. The metric function takes the predictions made by the model and compare them with the real values of the test data to determine the precision of the model.",
         "text-2": "There are different types of metric functions that can be used in a neuronal network, depending on the type of problem that is being addressed. For example, for a problem of binary classification, precision (Accuracy) could be used as metric, while for a regression problem the average quadratic error could be used (Mean Squared Error).",
         "text-3": "In summary, a metric function is an important tool to assess the ability of a neuronal network to perform precise predictions in a test dataset and to help adjust the model parameters to improve its performance.",
+        "text-4": "We mainly use the <i>accuracy</i> function. In multi-label classification, this function calculates subset precision: the predicted set of labels for a sample must exactly match the corresponding set of labels in y",
         "table": {
           "BinaryAccuracy": {
             "references": "Binary precision <br /> (Aumervolima, s.f.)",
@@ -919,22 +2155,140 @@
         }
       }
     },
+    "menu": {
+      "select-model": {
+        "description": "Description"
+      },
+      "select-dataset": {
+        "description": "Description"
+      }
+    },
     "terms": {
       "title": "Privacy Policies and Cookies",
       "privacy-title": "Privacy policies",
       "privacy-text": "On our website, we only collect statistical information about visits in order to improve the performance and functionality of the site. We do not collect or store any personal information from our users. We use cookies to account for the number of visitors and improve the navigation experience. If you have any questions or doubt about our privacy policy, do not hesitate to contact us through our contact page.",
-      "cookies-title": "cookies",
+      "cookies-title": "Cookies",
       "cookies-text": "Our website uses Google Analytics cookies to account for the number of visitors we receive. These cookies allow us to collect anonymous statistical information about the use of our website and help us improve their performance and functionality. Google Analytics cookies do not collect personal information from users. When navigating our website, you accept the use of these cookies. If you want to get more information about how we use cookies, please consult our privacy policy."
     }
+  },
+  "generator": {
+    "table-models": {
+      "list-models-generated": "List generated models",
+      "learning-rate": "Learning rate",
+      "test-size": "Test set size",
+      "n-of-epochs": "N. epochs",
+      "n-epochs": "N. epochs",
+      "id-optimizer": "Optimizer",
+      "id-loss": "Loss",
+      "id-metrics": "Metric",
+      "layers": "Layers",
+      "download": "Download",
+      "features": "Features",
+      "open-visor": "Open visor",
+      "close-visor": "Close visor"
+    }
+  },
+  "hr": {
+    "information": "Information",
+    "editor": "Editor",
+    "dataset": "Data set",
+    "model": "Model",
+    "generated-models": "Models generated",
+    "predict": "Predict",
+    "classify": "Classify",
+    "tasks": "Tasks",
+    "00-tabular-classification": "Tabular Classification",
+    "tutorial-00-tabular-classification": "Train a model for Tabular classification",
+    "01-linear-regression": "Linear Regression",
+    "02-object-detection": "Object Detection",
+    "03-image-classification": "Image Classification",
+    "optimization-function": "Optimization functions",
+    "activation-functions": "Activation functions",
+    "loss-functions": "Loss functions",
+    "metric-function": "Metric functions",
+    "process-dataset": "Data set processing",
+    "project": "Project",
+    "add-model-dataset": "Add model to project",
+    "dataframe": "DataFrame"
   },
   "form-dataframe": {
     "int32": "Integer",
     "float32": "Floating",
     "string": "Text",
     "label-encoder": "Label Encoder",
-    "one-hot-encoder": "ONE HOT Encoder",
+    "one-hot-encoder": "OneHot Encoder",
     "drop": "Drop",
     "ignored": "Ignore",
     "submit": "Process dataframe"
+  },
+  "joyride": {
+    "back": "Back",
+    "close": "Close",
+    "last": "Last",
+    "next": "Next",
+    "open": "Open",
+    "skip": "Skip"
+  },
+  "upload-dataset-info": "You must upload a dataset to perform the task.",
+  "upload-model-info": "You must upload a model to perform the task.",
+  "select-attr": "Select attribute",
+  "upload-dataset": "Upload dataset",
+  "00-tc": {
+    "car": {
+      "buying": "Buying price",
+      "maint": "Price of the maintenance",
+      "doors": "number of doors",
+      "persons": "Capacity in terms of persons to carry",
+      "lug_boot": "The size of luggage boot",
+      "safety": "Estimated safety of the car",
+      "result": "Resultado",
+      "unacc": "Unacceptable",
+      "acc": "Aceptable",
+      "good": "Good",
+      "vgood": "Very good"
+    },
+    "iris": {
+      "sepal_length": "Sepal length",
+      "sepal_width": "Sepal width",
+      "petal_length": "Petal length",
+      "petal_width": "Petal width",
+      "class": "Class",
+      "Iris-setosa": "Iris setosa",
+      "Iris-versicolor": "Iris versicolor",
+      "Iris-virginica": "Iris virginica"
+    },
+    "lymphography": {
+      "lymphatics": "lymphatics",
+      "block of affere": "block of affere",
+      "bl": {
+        " of lymph": {
+          " c": "bl. of lymph. c",
+          " s": "bl. of lymph. s"
+        }
+      },
+      "by pass": "by pass",
+      "extravasates": "extravasates",
+      "regeneration": "regeneration",
+      "early uptake in": "early uptake in",
+      "lym": {
+        "nodes dimin": "lym.nodes dimin",
+        "nodes enlar": "lym.nodes enlar"
+      },
+      "changes in lym": "changes in lym",
+      "defect in node": "defect in node",
+      "changes in node": "changes in node",
+      "changes in stru": "changes in stru",
+      "special forms": "special forms",
+      "dislocation of": "dislocation of",
+      "exclusion of": "exclusion of",
+      "no": {
+        " of nodes in": "no. of nodes in"
+      },
+      "Category": "Category",
+      "normal find": "normal find",
+      "metastases": "metastases",
+      "malign lymph": "malign lymph",
+      "fibrosis": "fibrosis"
+    }
   }
 }

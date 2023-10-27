@@ -1,4 +1,4 @@
-export function resample_single(canvas, width, height, resize_canvas) {
+export function resample_single (canvas, width, height, resize_canvas) {
   let width_source = canvas.width
   let height_source = canvas.height
   width = Math.round(width)

@@ -1,27 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row, Form, CloseButton, Button, Container, Card, Accordion } from 'react-bootstrap'
-import ReactGA from "react-ga4";
-
+import ReactGA from 'react-ga4'
 import * as tf from '@tensorflow/tfjs'
-import * as classificationHelper_MNIST from '../3_ImageClassification/models/MODEL_MNIST'
-import * as alertHelper from "../../../utils/alertHelper"
 
-import CustomCanvasDrawer from '../3_ImageClassification/components/customCanvasDrawer'
-import GraphicRed from '../../../utils/graphicRed/GraphicRed'
+import alertHelper from '@utils/alertHelper'
+import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import {
   TYPE_CLASS,
   TYPE_OPTIMIZER,
   TYPE_LOSSES,
-  TYPE_METRICS
-} from "../../../core/nn-utils/ArchitectureTypesHelper";
-import { DATASET_DESCRIPTION, getKeyDatasetByID_TabularClassification, LIST_MODEL_OPTIONS } from "../../../DATA_MODEL"
+  TYPE_METRICS,
+} from '@core/nn-utils/ArchitectureTypesHelper'
 
-export default function ObjectDetection(props) {
+import CustomCanvasDrawer from '../3_ImageClassification/components/customCanvasDrawer'
+import * as classificationHelper_MNIST from '../3_ImageClassification/custom/Train_MNIST'
+
+// TODO
+export default function ObjectDetection (props) {
   const { dataset } = props
 
-  // TODO: DEPENDIENDO DEL TIPO QUE SEA SE PRE CARGAN UNOS AJUSTES U OTROS
   const [Layer, setLayer] = useState([])
-  const [ActiveLayer, setActiveLayer] = useState()
+  const [ActiveLayer, setActiveLayer] = useState(0)
   const [Contador, setContador] = useState(0)
 
   const NumberEpochs = 10
@@ -29,14 +28,16 @@ export default function ObjectDetection(props) {
   const [Optimizer, setOptimizer] = useState('Adam')
   const [LossValue, setLossValue] = useState('CategoricalCrossentropy')
   const [MetricsValue, setMetricsValue] = useState('Accuracy')
-  const [Model, setModel] = useState()
+  /**
+   * @typedef ObjectDetectionModel_t
+   * @property {Function} predict
+   */
+  const [Model, setModel] = useState(/**@type ObjectDetectionModel_t*/{})
   const [NoEpochs, setNoEpochs] = useState(2)
   const [Recarga, setRecarga] = useState(false)
 
   useEffect(() => {
-    const dataset_ID = parseInt(dataset)
-    const dataset_key = getKeyDatasetByID_TabularClassification(dataset_ID)
-    ReactGA.send({ hitType: "pageview", page: "/ObjectDetection/" + dataset_key, title: dataset_key });
+    ReactGA.send({ hitType: 'pageview', page: '/ObjectDetection/' + dataset, title: dataset })
   }, [dataset])
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function ObjectDetection(props) {
           {
             class   : 'MaxPooling2D',
             poolSize: [2, 2],
-            strides2: [2, 2]
+            strides2: [2, 2],
           },
           {
             class            : 'Conv2D',
@@ -80,7 +81,7 @@ export default function ObjectDetection(props) {
           {
             class   : 'MaxPooling2D',
             poolSize: [2, 2],
-            strides2: [2, 2]
+            strides2: [2, 2],
           },
         ])
         setRecarga(true)
@@ -101,7 +102,7 @@ export default function ObjectDetection(props) {
         MetricsValue,
       )
       setModel(model)
-      await alertHelper.alertSuccess("Modelo entrenado con éxito")
+      await alertHelper.alertSuccess('Modelo entrenado con éxito')
     } else {
       await alertHelper.alertWarning('La primera capa debe de ser tel tipo Conv2D')
     }
@@ -138,7 +139,6 @@ export default function ObjectDetection(props) {
       const tensor4 = tf.tensor4d(arr)
       const resultados = Model.predict(tensor4).dataSync()
       const mayorIndice = resultados.indexOf(Math.max.apply(null, resultados))
-      console.log('Predicción', mayorIndice)
       document.getElementById('demo').innerHTML = mayorIndice.toString()
 
       await alertHelper.alertInfo('¿El número es un ' + mayorIndice + '?', mayorIndice)
@@ -177,7 +177,7 @@ export default function ObjectDetection(props) {
     let resultados = Model.predict(tensor4).dataSync()
     let mayorIndice = resultados.indexOf(Math.max.apply(null, resultados))
 
-    console.log('Predicción', mayorIndice)
+    console.log('Predicción', { mayorIndice })
     document.getElementById('demo').innerHTML = mayorIndice.toString()
 
     await alertHelper.alertInfo('¿El número es un ' + mayorIndice + '?', mayorIndice)
@@ -337,14 +337,14 @@ export default function ObjectDetection(props) {
     const canvas = document.getElementById('imageCanvas')
     const ctx = canvas.getContext('2d')
 
-    function draw() {
+    function draw () {
       canvas.width = 200
       canvas.height = 200
       ctx.drawImage(this, 0, 0)
     }
 
-    function failed() {
-      console.error("The provided file couldn't be loaded as an Image media")
+    function failed () {
+      console.error('The provided file couldn\'t be loaded as an Image media')
     }
 
     const img = new Image()
@@ -355,7 +355,7 @@ export default function ObjectDetection(props) {
 
   return (
     <>
-      <Form onSubmit={handleClickPlay} id={"ObjectDetection"}>
+      <Form onSubmit={handleClickPlay} id={'ObjectDetection'}>
         <Container>
           <Row>
             <Col>
@@ -371,23 +371,27 @@ export default function ObjectDetection(props) {
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             <Col>
               <Card>
-                <Card.Header><h3>{LIST_MODEL_OPTIONS[3][dataset]}</h3></Card.Header>
+                <Card.Header>
+                  <h2>Clasificador</h2>
+                </Card.Header>
                 <Card.Body>
                   <Card.Text>
-                    {DATASET_DESCRIPTION[3][dataset]}
+                    DESCRIPTION
                   </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             <Col>
               <Card>
-                <Card.Header><h3>{LIST_MODEL_OPTIONS[3][dataset]}</h3></Card.Header>
+                <Card.Header>
+                  <h2>Clasificador</h2>
+                </Card.Header>
                 <Card.Body>
                   <p>Ahora vamos a ver la interfaz de edición de arquitectura.</p>
                   <ul>
@@ -457,34 +461,27 @@ export default function ObjectDetection(props) {
 
 
           {/* BLOCK 1 */}
-          <Row className={"mt-3"}>
-            <Col xl={12}>
-              <Card>
-                <Card.Header><h3>Diseño de capas</h3></Card.Header>
-                <Card.Body>
-                  <GraphicRed layer={Layer} setActiveLayer={setActiveLayer} />
-                </Card.Body>
-              </Card>
-            </Col>
+          <Row className={'mt-3'}>
+            <N4LLayerDesign layers={[]} />
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             {/* SPECIFIC PARAMETERS */}
             <Col xl={6}>
               {/* TODO: falta el foreach */}
               {/* ADD LAYER */}
               <div className="d-grid gap-2">
-                <Button type="button"
-                        onClick={() => handlerAddLayer()}
-                        size={"lg"}
-                        variant="primary">
+                <Button variant={'primary'}
+                        size={'lg'}
+                        type={'button'}
+                        onClick={() => handlerAddLayer()}>
                   Añadir capa
                 </Button>
               </div>
 
-              <Accordion className={"mt-3"} defaultActiveKey={["0"]} alwaysOpen>
+              <Accordion className={'mt-3'} defaultActiveKey={['0']} alwaysOpen>
                 {ActiveLayer !== undefined ? (
-                  <Accordion.Item eventKey={"0"}>
+                  <Accordion.Item eventKey={'0'}>
                     <Accordion.Header>Capa {ActiveLayer + 1}</Accordion.Header>
 
                     {/* UNITS */}
@@ -495,7 +492,7 @@ export default function ObjectDetection(props) {
                                   controlId={'formClass' + ActiveLayer}>
                         <Form.Label>Clase de la capa</Form.Label>
                         <Form.Select aria-label="Default select example"
-                                     defaultValue={Layer[ActiveLayer].class}
+                                     value={Layer[ActiveLayer]._class}
                                      onChange={handleChange_Class}>
                           {TYPE_CLASS.map(({ key, label }, index) => {
                             return (<option key={index} value={key}>{<label for=""></label>}</option>)
@@ -504,14 +501,14 @@ export default function ObjectDetection(props) {
                       </Form.Group>
                     </Accordion.Body>
                   </Accordion.Item>
-                ) : ("")}
+                ) : ('')}
               </Accordion>
 
             </Col>
 
             {/* GENERAL PARAMETERS */}
             <Col xl={6}>
-              <Card className={"sticky-top"}>
+              <Card className={'sticky-top'}>
                 <Card.Body>
                   {/* LEARNING RATE */}
                   <Form.Group className="mb-3" controlId="formTrainRate">
@@ -587,7 +584,7 @@ export default function ObjectDetection(props) {
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             <Col>
               <Card>
                 <Card.Body>
@@ -611,20 +608,20 @@ export default function ObjectDetection(props) {
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             {/* BLOCK  BUTTON */}
             <Col xl={12}>
               <div className="d-grid gap-2">
-                <Button type="submit"
-                        size={"lg"}
-                        variant="primary">
+                <Button variant={'primary'}
+                        size={'lg'}
+                        type={'submit'}>
                   Crear y entrenar modelo
                 </Button>
               </div>
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             <Col xl={12}>
               <Card>
                 <Card.Body>
@@ -638,7 +635,7 @@ export default function ObjectDetection(props) {
             </Col>
           </Row>
 
-          <Row className={"mt-3"}>
+          <Row className={'mt-3'}>
             <Col xl={12}>
               <Card>
                 <Card.Body>
@@ -649,13 +646,13 @@ export default function ObjectDetection(props) {
           </Row>
 
           {Model === undefined ? ('') : (
-            <Row className={"mt-3"}>
+            <Row className={'mt-3'}>
               <Col xl={12}>
                 <div className="d-grid gap-2">
-                  <Button type="button"
-                          onClick={handleDownloadModel}
-                          size={"lg"}
-                          variant="primary">
+                  <Button variant={'primary'}
+                          type={'button'}
+                          size={'lg'}
+                          onClick={handleDownloadModel}>
                     Exportar modelo
                   </Button>
                 </div>
@@ -688,9 +685,9 @@ export default function ObjectDetection(props) {
                            name="doc"
                            onChange={handleChange_FileUpload}></input>
                     <canvas height="200" width="200" id="imageCanvas"></canvas>
-                    <button type="button"
-                            onClick={handleVectorTestImageUpload}
-                            className="btn-custom-canvas green">
+                    <button className={'btn-custom-canvas green'}
+                            type={'button'}
+                            onClick={handleVectorTestImageUpload}>
                       Validar
                     </button>
                   </Col>
@@ -718,7 +715,7 @@ export default function ObjectDetection(props) {
             <Row>
               <Col>
                 <Card>
-                  <Card.Header><h3>Resultados</h3></Card.Header>
+                  <Card.Header><h2>Resultados</h2></Card.Header>
                   <Card.Body>
                     <div id="demo" className="console">
                       Aquí se muestran los resultados

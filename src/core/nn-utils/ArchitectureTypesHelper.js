@@ -1,20 +1,20 @@
 const TYPE_GRADIENTS = [
-  { key: "grad", label: "grad" },
-  { key: "grads", label: "grads" },
-  { key: "customGrad", label: "customGrad" },
-  { key: "valueAndGrad", label: "valueAndGrad" },
-  { key: "valueAndGrads", label: "valueAndGrads" },
-  { key: "variableGrads", label: "variableGrads" }
+  { key: 'grad', label: 'grad' },
+  { key: 'grads', label: 'grads' },
+  { key: 'customGrad', label: 'customGrad' },
+  { key: 'valueAndGrad', label: 'valueAndGrad' },
+  { key: 'valueAndGrads', label: 'valueAndGrads' },
+  { key: 'variableGrads', label: 'variableGrads' }
 ]
 
 const TYPE_OPTIMIZER = [
   { key: 'sgd', label: 'SGD' },
-  { key: 'momentum', label: 'Momentum' },
   { key: 'adagrad', label: 'Adagrad' },
   { key: 'adadelta', label: 'Adadelta' },
   { key: 'adam', label: 'Adam' },
   { key: 'adamax', label: 'Adamax' },
-  { key: 'rmsprop', label: 'RMSProp' }
+  { key: 'rmsprop', label: 'RMSProp' },
+  // { key: 'momentum', label: 'Momentum' },
 ]
 
 // tf.losses.absoluteDifference
@@ -37,7 +37,7 @@ const TYPE_LOSSES = [
   { key: 'sigmoidCrossEntropy', label: 'SigmoidCrossEntropy' },
   { key: 'softmaxCrossEntropy', label: 'SoftmaxCrossEntropy' },
 // Metrics
-  { key: 'categoricalCrossentropy', label: "CategoricalCrossentropy" }
+  { key: 'categoricalCrossentropy', label: 'CategoricalCrossentropy' }
 ]
 
 // Metrics
@@ -70,22 +70,24 @@ const TYPE_METRICS = [
 const TYPE_ACTIVATION = [
   { key: 'sigmoid', label: 'Sigmoid' },
   { key: 'softmax', label: 'Softmax' },
-  { key: 'elu', label: 'Elu' },
+  { key: 'elu', label: 'ELU' },
   { key: 'hardSigmoid', label: 'Hard Sigmoid' },
   { key: 'linear', label: 'Linear' },
-  { key: 'relu', label: 'ReLu' },
-  { key: 'relu6', label: 'ReLu6' },
-  { key: 'selu', label: 'SeLu' },
-  { key: 'softplus', label: 'Softplus' },
-  { key: 'softsign', label: 'Softsign' },
+  { key: 'relu', label: 'ReLU' },
+  { key: 'relu6', label: 'ReLU6' },
+  { key: 'selu', label: 'SeLU' },
+  { key: 'softplus', label: 'SoftPlus' },
+  { key: 'softsign', label: 'SoftSign' },
   { key: 'tanh', label: 'Tanh' },
   { key: 'swish', label: 'Swish' },
   { key: 'mish', label: 'Mish' },
 ]
 
 const TYPE_CLASS = [
-  { key: 'Conv2D', label: 'Conv2D' },
-  { key: 'MaxPooling2D', label: 'MaxPooling2D' }
+  { key: 'conv2d', label: 'Conv2D' },
+  { key: 'maxPooling2d', label: 'MaxPooling2D' },
+  { key: 'flatten', label: 'Flatten' },
+  { key: 'dense', label: 'Dense' },
 ]
 
 export {

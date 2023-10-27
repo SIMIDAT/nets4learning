@@ -1,0 +1,29 @@
+.n4l_hr_row {
+  width: 100%;
+  height: 20px;
+  border-bottom: 1px solid black;
+  text-align: center;
+}
+
+.n4l_hr_title {
+  font-size: 1.5rem;
+  background-color: #e7e9ec;
+  padding: 0 10px;
+}
+
+.border_blue {
+  border: 1px solid blue;
+}
+
+.border_green {
+  border: 1px solid green;
+}
+
+.border_red {
+  border: 1px solid red;
+}
+
+.table-scroll {
+  max-height: clamp(20em, 10vh, 250px);
+  overflow: auto;
+}

@@ -1,6 +1,4 @@
-import { MODEL_CAR } from "../../pages/playground/0_TabularClassification/models/MODEL_CAR";
-import { MODEL_IRIS } from "../../pages/playground/0_TabularClassification/models/MODEL_IRIS";
-import { MODEL_LYMPHOGRAPHY } from "../../pages/playground/0_TabularClassification/models/MODEL_LYMPHOGRAPHY";
+import { MODEL_CAR, MODEL_IRIS, MODEL_LYMPHOGRAPHY } from '@pages/playground/0_TabularClassification/models'
 
 export {
   MODEL_CAR,

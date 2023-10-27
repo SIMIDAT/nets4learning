@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+Default_CodeStyle.xml
 
 # testing
 /coverage
@@ -20,14 +21,19 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-package-lock.json
+#package-lock.json
 
 .env
 .env.development
+.env.netlify
+.env.netlify-snapshot
 .env.production
 .env.simidat
+.env.simidat-beta
 
 deploy.sh
-deploy.zip
+deploy-beta.sh
+
 build.zip
-Default_CodeStyle.xml
+
+moveToN4L.sh

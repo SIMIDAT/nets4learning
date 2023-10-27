@@ -1,70 +1,85 @@
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
-const MySwal = withReactContent(Swal);
+const MySwal = withReactContent(Swal)
 
-export async function alertError(text, params = { title: "Opps..." }) {
-  MySwal.fire({
-    didOpen: () => {
-      MySwal.clickConfirm();
-    },
-  }).then(() => {
-    return MySwal.fire({
-      icon              : "error",
-      title             : params.title,
-      confirmButtonColor: "#0081D5",
-      text              : text,
-    });
-  });
-}
-
-export async function alertInfo(text, title, footer = "") {
-  return MySwal.fire({
-    didOpen: () => {
-      MySwal.clickConfirm();
-    },
-  }).then(() => {
-    return MySwal.fire({
-      icon              : "question",
+export default class AlertHelper {
+  /**
+   *
+   * @param {string} title
+   * @param {{text: string, footer: string, html: JSX.Element}} params
+   * @param {object} props
+   * @return {Promise<SweetAlertResult<T>>}
+   */
+  static async alertError (title, params = { text: 'Error', footer: '', html: <></> }, { ...props } = {}) {
+    return await MySwal.fire({
+      icon              : 'error',
       title             : title,
-      text              : text,
-      footer            : footer,
-      confirmButtonColor: "#0081D5",
-    });
-  });
-}
+      text              : params.text,
+      footer            : params.footer,
+      html              : params.html,
+      confirmButtonColor: '#0081D5',
+      ...props
+    })
+  }
 
-export async function alertWarning(title, params = { text: "", footer: "", html: <></> }) {
-  return MySwal.fire({
-    didOpen: () => {
-      MySwal.clickConfirm();
-    },
-  }).then(() => {
-    return MySwal.fire({
-      icon              : "warning",
+  /**
+   *
+   * @param {string} title
+   * @param {{text: string, footer: string, html: JSX.Element}} params
+   * @param {object} props
+   * @return {Promise<SweetAlertResult<T>>}
+   */
+  static async alertWarning (title, params = { text: 'Warning', footer: '', html: <></> }, { ...props } = {}) {
+    return await MySwal.fire({
+      icon              : 'warning',
       title             : title,
       text              : params.text,
       html              : params.html,
       footer            : params.footer,
-      confirmButtonColor: "#0081D5",
-    });
-  });
-}
+      confirmButtonColor: '#0081D5',
+      ...props
+    })
+  }
 
-export async function alertSuccess(title, params = { text: "", html: <></> }) {
-  return MySwal.fire({
-    didOpen: () => {
-      MySwal.clickConfirm();
-    },
-  }).then(() => {
-    return MySwal.fire({
+  /**
+   *
+   * @param {string} title
+   * @param {{text: string, footer: string, html: JSX.Element}} params
+   * @param {object} props
+   * @return {Promise<SweetAlertResult<T>>}
+   */
+  static async alertInfo (title, params = { text: 'Info', footer: '', html: <></> }, { ...props } = {}) {
+    return await MySwal.fire({
+      icon              : 'question',
+      title             : title,
+      text              : params.text,
+      html              : params.html,
+      footer            : params.footer,
+      confirmButtonColor: '#0081D5',
+      ...props
+    })
+  }
+
+  /**
+   *
+   * @param {string} title
+   * @param {{text: string, footer: string, html: JSX.Element}} params
+   * @param {object} props
+   * @return {Promise<SweetAlertResult<T>>}
+   */
+  static async alertSuccess (title, params = { text: 'Success', footer: '', html: <></> }, { ...props } = {}) {
+    const { text = 'Error', footer = '', html = <></> } = params || {}
+    return await MySwal.fire({
       // position: 'top-end',
-      icon             : "success",
+      icon             : 'success',
       showConfirmButton: false,
       timer            : 1500,
       title            : title,
-      text             : params.text,
-      html             : params.html,
-    });
-  });
+      text             : text,
+      html             : html,
+      footer           : footer,
+      ...props
+    })
+  }
 }

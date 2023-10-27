@@ -2,29 +2,190 @@
   "welcome": "Bienvenido a Nets4Learning",
   "welcome-2": "Para continuar selecciona una de estas disciplinas",
   "list_map": "<1></1>",
+  "layer-id": "Layer {{index}}",
   "map_item": "<0></0>",
   "loading": "Cargando",
   "upload": "Subir",
   "example-i": "Ejemplo {{i}}",
   "Files": "Ficheros",
+  "wait-document": "Esperando documento",
+  "references": "Referencias",
   "download": "Descargar",
+  "DataFrame": "DataFrame",
+  "Features": "Características",
+  "{{X_feature}} x {{target}}": "{{X_feature}} x {{target}}",
+  "Predicted": "Predicción",
+  "Waiting": "Esperando",
+  "and": "y",
+  "model": {
+    "__index__": "Model {{index}}"
+  },
+  "more-information-in-link": "Más información en el siguiente <link1>enlace</link1>",
+  "more-information-in-tutorial": "Puedes seguir este <link1>tutorial</link1>",
+  "downloaded": "Descargado",
+  "downloading": "Descargando",
+  "Data set processing": "Procesamiento del conjunto de datos",
+  "Column target": "Columna a predecir",
+  "Scaler": "Escalador",
+  "Processed": "Procesado",
+  "Default": "Por defecto",
+  "Need permissions": "Necesitas permisos",
+  "equations": {
+    "title": "Formulas",
+    "title-metrics": "Formulas de las funciones de métricas",
+    "title-losses": "Formulas de las funciones de perdida",
+    "title-activation": "Formulas de las funciones de activación",
+    "title-optimization": "Formulas de las funciones de optimización",
+    "loss-functions": {
+      "huber-loss": {
+        "title": "Huber Loss",
+        "text-1": "Es menos sensible a los valores atípicos que el $ MSE $, ya que trata el error como un cuadrado solo dentro de un intervalo."
+      },
+      "cross-entropy": {
+        "title": "Cross entropy",
+        "text-1": "En la clasificación binaria, donde el número de clases $ M = 2 $, la entropía cruzada binaria (BCE) se puede calcular como:",
+        "text-2": "$ M > 2 $ (es decir, clasificación multiclase), calculamos una pérdida separada para cada etiqueta de clase por observación y sumamos el resultado.",
+        "text-3": "$M$: número de clases <br />$log$: logaritmo natural  <br />$y$: indicador binario (0 ó 1) si la etiqueta de clase $c$ es la clasificación correcta para la observación $o$ <br />$p$: probabilidad prevista de que la observación $o$ pertenezca a la clase $c$"
+      },
+      "negative-log": {
+        "title": "Negative Loglikelihood",
+        "text-1": "Minimizar loglikelilidad negativa",
+        "text-2": "es equivalente a la estimación de máxima verosimilitud (MLE)."
+      },
+      "kj-divergence": {
+        "title": "KL/JS divergence"
+      },
+      "hinge-loss": {
+        "title": "Hinge loss"
+      },
+      "mae": {
+        "title": "Mean Absolute Error (MAE)"
+      },
+      "mse": {
+        "title": "Mean Squared Error (MSE)"
+      },
+      "rmse": {
+        "title": "Root Mean Square Error (RMSE)"
+      },
+      "cosine-distance": {
+        "title": "Cosine Proximity / Cosine Similarity"
+      }
+    },
+    "metric-functions": {
+      "accuracy": {
+        "title": "Accuracy"
+      },
+      "precision": {
+        "title": "Precision"
+      },
+      "recall": {
+        "title": "Recall"
+      },
+      "f1": {
+        "title": "F1"
+      },
+      "sensitivity": {
+        "title": "Sensitivity"
+      },
+      "acc-prec-recall-f1": {
+        "title": "Accuracy, Precision, Recall, F1"
+      },
+      "sen-spe-auc": {
+        "title": "Sensitivity, Specificity y AUC",
+        "text-1": "El AUC se calcula como el área bajo la curva $Sensitivity$ (TPR)-$(1-Specificity)$ (FPR)."
+      }
+    }
+  },
   "datasets": {
     "title": "Conjuntos de datos",
+    "upload-dataset": null,
     "text-0": "Descargar conjuntos de datos para la clasificación tabular",
     "dataset-name": "Nombre del conjunto de datos",
     "dataset-size": "Número de muestras",
     "dataset-web": "Web original",
-    "download-dataset-car": "Descargar conjunto de datos de evaluación de coches",
-    "download-dataset-hepatitis-c": "Descargar conjunto de datos de hepatitis C",
-    "download-dataset-iris": "Descargar conjunto de datos de iris",
-    "download-dataset-titanic": "Descargar conjunto de datos de supervivencia del titanic*",
-    "download-dataset-new-thyroid": "Descargar conjunto de datos de new-thyroid",
-    "download-dataset-wine": "Descargar conjunto de datos de vino",
-    "download-dataset-ecoli": "Descargar conjunto de datos de ecoli"
+    "download-dataset-car": "Conjunto de datos de evaluación de coches",
+    "download-dataset-hepatitis-c": "Conjunto de datos de hepatitis C",
+    "download-dataset-iris": "Conjunto de datos de iris",
+    "download-dataset-titanic": "Conjunto de datos de supervivencia del titanic*",
+    "download-dataset-new-thyroid": "Conjunto de datos de new-thyroid",
+    "download-dataset-wine": "Conjunto de datos de vino",
+    "download-dataset-ecoli": "Conjunto de datos de ecoli",
+    "download": {
+      "dataset": {
+        "1-linear-regression": {
+          "salary": "Conjunto de datos de salarios",
+          "auto-mpg": "Conjunto de datos consumo de combustible",
+          "boston": "Conjunto de datos casas de Boston",
+          "breast-cancer-wdbc": "Conjunto de datos Breast Cancer Wisconsin (Diagnostic)",
+          "breast-cancer-wpbc": "Conjunto de datos Breast Cancer Wisconsin (Prognostic)",
+          "student-performance-mathematics": "Conjunto de datos de de estudiantes de matemáticas",
+          "student-performance-portuguese": "Conjunto de datos de estudiantes de Portugués",
+          "wine-red": "Conjunto de datos de vino tinto",
+          "wine-white": "Conjunto de datos de vino blanco"
+        }
+      }
+    }
   },
-  "dataframe-form": "Formulario DataFrame",
-  "dataframe-original": "DataFrame original",
-  "dataframe-processed": "DataFrame procesado",
+  "dataframe-original": "DataFrame | Original",
+  "dataframe-form": "DataFrame | Formulario de procesamiento",
+  "dataframe-processed": "DataFrame | Procesado",
+  "dataframe": {
+    "dataset": {
+      "title": "Conjunto de datos"
+    },
+    "correlation-matrix": {
+      "title": "DataFrame | Matriz de correlación",
+      "description": {
+        "0": "El coeficiente de correlación de Pearson, también conocido como correlación lineal o coeficiente de correlación producto-momento, es una medida estadística utilizada para cuantificar la relación lineal entre dos variables cuantitativas. Es uno de los estadísticos de correlación más comúnmente utilizados y proporciona información sobre la fuerza y la dirección de la relación entre las variables.",
+        "1": "El coeficiente de correlación de Pearson varía entre -1 y 1:",
+        "2": "Un valor de -1 indica una correlación lineal perfectamente negativa, lo que significa que a medida que aumenta una variable, la otra disminuye en una relación lineal inversa.",
+        "3": "Un valor de 1 indica una correlación lineal perfectamente positiva, lo que significa que a medida que aumenta una variable, la otra también aumenta en una relación lineal directa.",
+        "4": "Un valor de 0 indica que no hay una correlación lineal entre las variables, lo que implica que no hay una relación lineal entre ellas.",
+        "5": "El cálculo del coeficiente de correlación de Pearson se basa en las covarianzas y las desviaciones estándar de las dos variables. Matemáticamente, se calcula de la siguiente manera:",
+        "6": "Donde:",
+        "7": "son los valores de las dos variables en cada observación.",
+        "8": "son las medias de las dos variables, respectivamente.",
+        "9": "El coeficiente de correlación de Pearson es una herramienta útil para analizar la relación lineal entre dos variables y determinar si existe una asociación entre ellas. Se utiliza ampliamente en diversas áreas, como la investigación científica, la economía, la psicología, la sociología y muchas otras, para entender cómo se comportan dos variables en conjunto. Sin embargo, es importante destacar que el coeficiente de correlación de Pearson solo mide la relación lineal y no captura otros tipos de relaciones no lineales entre las variables.",
+        "title": "Descripción"
+      },
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>",
+      "plot": "Matriz de correlación"
+    },
+    "describe": {
+      "title": "DataFrame | Describe",
+      "description": {
+        "0": "Esta función se utiliza para generar un resumen estadístico de las columnas numéricas de un DataFrame. Proporciona estadísticas descriptivas clave, como la media, la desviación estándar, el mínimo, el máximo y varios cuantiles de las columnas numéricas. Esto es útil para obtener una comprensión rápida de la distribución y las tendencias de los datos.",
+        "1": "Esta función es útil para obtener una idea rápida de la distribución de los datos y puede ayudarte a identificar valores atípicos o anomalías en tus datos.",
+        "title": "Descripción"
+      },
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+    },
+    "query": {
+      "title": "DataFrame | Consulta",
+      "description": {
+        "0": "Consulta el DataFrame por el resultado de una comparación lógica o máscara booleana.",
+        "1": "Puedes realizar tus propias consultas concatenando comparaciones lógicas, aquí tienes algunos ejemplos de como realizar las comparaciones.",
+        "title": "Descripción"
+      },
+      "query": "Consulta",
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+    },
+    "plot": {
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+    }
+  },
+  "dataframe-scatterplot": {
+    "title": "Gráfico de dispersión"
+  },
+  "model-selector": {
+    "title": "Selector de modelos"
+  },
+  "form": {
+    "select-dataset": {
+      "title": "Selecciona el conjunto de datos",
+      "info": "Selecciona el conjunto de datos"
+    }
+  },
   "preprocessing": {
     "title": "Preprocesamiento",
     "transformations-columns": "Transformaciones por columnas",
@@ -48,21 +209,64 @@
     "model-selected": "Error en la selección del modelo",
     "tensor-shape": "Forma del tensor incorrecta",
     "tensor-shape-description": "Forma del tensor incorrecta, se esperaba la forma [{{target_tensor_shape_0}},{{target_tensor_shape_1}}], pero se recibió un tensor con forma [{{tensor_shape_0}},{{tensor_shape_1}}], posiblemente debas modificar la última capa.",
-    "tensor-shape-change": "La capa de salida tiene la forma (* ,{{last_layer_units}}). <br> Debe tener la forma (*, {{classes_length}})"
+    "tensor-shape-change": "La capa de salida tiene la forma (* ,{{last_layer_units}}). <br> Debe tener la forma (*, {{classes_length}})",
+    "need-one-feature": "Necesitas al menos una característica.",
+    "new-element-need-to-be-unique": "El elemento del conjunto X debe ser único.",
+    "layers-length": "Debes tener al menos una capa con el número de neuronas y su función de actvación",
+    "parsing-csv": "Error en la preparación del conjunto de datos",
+    "file-not-valid": "Error, fichero no válido",
+    "metrics-length": "Error, el numero de metricas debe estar entre 1 y 10"
+  },
+  "warning": {
+    "the-first-layer-need-to-be-__value__": "Advertencia, la primera capa debe ser de tipo {{value}}",
+    "not-more-layers": "Advertencia, no se pueden añadir más capas",
+    "error-layers": "Advertencia, se debe tener entre 1 y 10 capas",
+    "need-a-model": "Advertencia, antes debes de crear y entrenar el modelo."
+  },
+  "success": {
+    "file-upload": "Archivo cargado correctamente"
+  },
+  "info": {
+    "the-class-is-__value__": "¿La clase tiene el indice {{value}}?"
+  },
+  "alert": {
+    "menu": {
+      "need-select-dataset": "Debes de seleccionar un conjunto de datos",
+      "need-select-model": "Debes de seleccionar un modelo"
+    },
+    "0-tabular-classification": {
+      "not-more-layers": "No se pueden añadir más capas"
+    },
+    "model-load-success": "Modelo cargado",
+    "error": "Error",
+    "warning": "Advertencia",
+    "success": "Correcto",
+    "info": "Información",
+    "model-train-success": "Modelo entrenado con éxito",
+    "prediction": "La predicción es: {{index}}",
+    "file-upload-success": "Fichero cargado con éxito",
+    "file-upload-error-incorrect-format": "El fichero no se ha podido cargar, no es el formato correcto"
   },
   "header": {
     "language": "Idioma",
     "manual": "Manual",
     "glossary": "Glosario",
-    "Home": "Inicio",
-    "datasets": "Conjuntos de datos"
+    "home": "Inicio",
+    "datasets": "Conjuntos de datos",
+    "theme": "Tema",
+    "dataframe": "DataFrame",
+    "analyze": "Analizar"
   },
   "footer": {
-    "description-app": "Esta aplicación web forma parte de un Trabajo de Fin de Grado de Ingeniería Informática de la Universidad de Jaén \"Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo\"",
+    "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
     "about-us": "Sobre nosotros",
-    "author": "Autor",
-    "directors": "Directores",
-    "maintainers": "Mantenimiento y mejoras"
+    "developers": "Desarrolladores",
+    "directors": "Dirección",
+    "maintainers": "Mantenimiento y mejoras",
+    "terms": "Términos y condiciones",
+    "contribute": "Contribuye",
+    "documentation": "Documentación",
+    "version": "Versión"
   },
   "drag-and-drop": {
     "label-files-one": "Fichero:",
@@ -77,23 +281,6 @@
     "validate": "Validar",
     "clear": "Limpiar"
   },
-  "alert": {
-    "menu": {
-      "need-select-dataset": "Debes de seleccionar un conjunto de datos",
-      "need-select-model": "Debes de seleccionar un modelo"
-    },
-    "0-tabular-classification": {
-      "not-more-layers": "No se pueden añadir más capas"
-    },
-    "model-load-success": "Modelo cargado",
-    "error": "Error",
-    "warning": "Advertencia",
-    "success": "Correcto",
-    "model-train-success": "Modelo entrenado con éxito",
-    "prediction": "La predicción es: {{index}}",
-    "file-upload-success": "Fichero cargado con éxito",
-    "file-upload-error-incorrect-format": "El fichero no se ha podido cargar, no es el formato correcto"
-  },
   "table": {
     "dataset": "Conjunto de datos"
   },
@@ -101,7 +288,7 @@
     "0": "Clasificación tabular",
     "1": "Regresión lineal",
     "2": "Identificación de objetos",
-    "3": "Clasificador de imágenes",
+    "3": "Clasificación de imágenes",
     "tabular-classification": "Clasificación tabular",
     "linear-regression": "Regresión lineal",
     "object-detection": "Identificación de objetos",
@@ -165,30 +352,30 @@
           }
         },
         "html-example": {
-          "text": "Introduce separado por punto y coma los siguientes valores correspondientes a el coche que se va a evaluar:",
+          "text": "Introduce los valores correspondientes a el coche que se va a evaluar:",
           "items": "(buying; maint; doors; persons; lug_boot; safety)",
           "examples": "Ejemplos:"
         }
       },
       "iris": {
-        "title": "IRIS - Clasificación de flor iris",
+        "title": "IRIS - Clasificación de iris",
         "description": {
           "text-1": "El conjunto de datos de Iris-Data permite detectar que tipo de planta iris es a partir de altitud y longitud de su pétalo y sépalo.",
           "details-1": {
             "title": "Datos de entrada",
             "list": {
-              "1": "Longitud del sépalo en cm",
-              "2": "Anchura del sépalo en cm",
-              "3": "Longitud del pétalo en cm",
-              "4": "Anchura del pétalo en cm"
+              "1": "<b>Longitud del sépalo</b>: continuo",
+              "2": "<b>Anchura del sépalo</b>: continuo",
+              "3": "<b>Longitud del pétalo</b>: continuo",
+              "4": "<b>Anchura del pétalo</b>: continuo"
             }
           },
           "details-2": {
             "title": "Datos de salida",
             "list": {
-              "1": "Iris Setosa",
-              "2": "Iris Versicolor",
-              "3": "Iris Virginica"
+              "1": "<b>0</b>: Iris Setosa",
+              "2": "<b>1</b>: Iris Versicolor",
+              "3": "<b>2</b>: Iris Virginica"
             }
           },
           "details-3": {
@@ -199,13 +386,13 @@
           }
         },
         "html-example": {
-          "text": "Introduce separado por punto y coma los siguientes valores correspondientes a la planta que se va a evaluar:",
+          "text": "Introduce los valores correspondientes a la flor que se va a evaluar:",
           "items": "(longitud sépalo; anchura sépalo; longitud petalo; anchura petalo).",
           "examples": "Ejemplos:"
         }
       },
       "lymphography": {
-        "title": "Clasificación por datos de linfomas",
+        "title": "LYMPHOGRAPHY - Clasificación por datos de linfomas",
         "description": {
           "text-1": "El conjunto de datos de <i>lymphography</i> permite detectar que posibles fases de un linfoma y en que estado se encuentra.",
           "details-input": {
@@ -248,7 +435,7 @@
           }
         },
         "html-example": {
-          "text": "Introduce separado por punto y coma los siguientes valores correspondientes a la planta que se va a evaluar:",
+          "text": "Introduce los valores correspondientes del paciente que se va a evaluar:",
           "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in).",
           "examples": "Ejemplos:"
         }
@@ -262,20 +449,379 @@
         "0-option-1": "Modelo - Clasificación de coches",
         "0-option-2": "Modelo - Clasificación de flor iris",
         "0-option-3": "Modelo - Clasificación de linfomas"
+      },
+      "joyride": {
+        "title": "Activar el tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "Puedes consultar el manual en busqueda de información"
+          },
+          "dataset-info": {
+            "title": "Información del conjunto de datos",
+            "content": "Analiza el conjunto de datos"
+          },
+          "dataset": {
+            "title": "Conjuto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+          },
+          "dataset-plot": {
+            "title": "Graficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizador de las capas de la red neuronal",
+            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
+          },
+          "layer-editor": {
+            "title": "Editor de capas",
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+          },
+          "params-editor": {
+            "title": "Editor de hiperparametros",
+            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
+          },
+          "list-of-models": {
+            "title": "Lista de modelos",
+            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar la clasificación."
+          },
+          "classify-and-visualizer": {
+            "title": "Clasificar y visualizar",
+            "content": "Una vez cargado nuestro modelo para la clasificación tabular puedes realizar la clasificación y visualizar los resultados"
+          }
+        }
       }
     },
     "1-linear-regression": {
+      "salary": {
+        "title": "Salario por años de experiencia",
+        "description": {
+          "text": {
+            "0": "El conjunto de datos \"Salary\" es una colección de información que relaciona la cantidad de años de experiencia laboral de un individuo con su salario correspondiente.",
+            "1": "Cada entrada en el conjunto de datos consta de dos variables principales: \"Years of Experience\" (Años de experiencia) y \"Salary\" (Salario). La variable \"Years of Experience\" representa la cantidad de años que un empleado ha trabajado en su campo específico, mientras que la variable \"Salary\" representa la cantidad de dinero que dicho empleado gana anualmente."
+          },
+          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>www.kaggle.com</link1>.",
+          "details-1-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "Years of experience - Años de experiencia",
+              "1": "Salary - Salario"
+            }
+          },
+          "details-2-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada (<b>Salary</b>)"
+            }
+          },
+          "details-3-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "Conjunto de datos"
+            }
+          }
+        }
+      },
+      "auto-mpg": {
+        "title": "Rendimiento de combustible",
+        "description": {
+          "text": {
+            "0": "El conjunto de datos <i>AUTO MPG</i> se tomó de la biblioteca StatLib que se mantiene en la Universidad Carnegie Mellon. El conjunto de datos se utilizó en la Exposición de la Asociación Estadounidense de Estadística de 1983.",
+            "1": "El término \"Auto MPG\" se refiere a las millas por galón, una unidad de medida de eficiencia de combustible utilizada comúnmente en los Estados Unidos. Esta medida indica cuántas millas puede recorrer un vehículo con un galón de combustible. Sin embargo, \"Auto MPG\" es un término en inglés y no hay una traducción directa en español.\n\nEn español, para referirse a la eficiencia de combustible de un automóvil, se suelen utilizar términos como \"consumo de combustible\" o \"rendimiento de combustible\". Estos términos indican cuántos kilómetros o millas puede recorrer un vehículo con un litro o galón de combustible, respectivamente.\n\nEs importante tener en cuenta que en diferentes países se utilizan unidades de medida distintas para el consumo de combustible. Por ejemplo, en algunos lugares se utiliza el litro por cada 100 kilómetros recorridos (L/100 km) para indicar la eficiencia de combustible."
+          },
+          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>ics.uci.edu</link1>.",
+          "details-0": {
+            "title": "Información",
+            "list": {
+              "0": "<b>MPG</b>: MPG son las siglas en inglés de Millas por Galón. Es la cantidad de combustible consumido por el vehículo particular de una instancia. Esta variable también se puede utilizar como la variable a predecir para cualquier coche.",
+              "1": "<b>cylinders</b>: Este atributo describe el número de cilindros de cada coche. Se trata de un atributo de valor discreto",
+              "2": "<b>displacement</b>: Este es otro atributo del vehículo que tiene un valor cuantitativo continuo que describe el desplazamiento del motor",
+              "3": "<b>horsepower</b>: Este atributo informa sobre los caballos de un coche y es una variable de valor continuo",
+              "4": "<b>weight</b>: Se refiere al peso de cada coche que es una variable cuantitativa de valor continuo",
+              "5": "<b>acceleration</b>: La aceleración del coche",
+              "6": "<b>model year</b>: El año de lanzamiento del modelo",
+              "7": "<b>origin</b>: El atributo origen tiene 3 valores discretos. 1 se refiere a coches fabricados en EE.UU., 2 para Europa y 3 para Asia",
+              "8": "<b>car name</b>: Es el nombre del coche en cadena."
+            }
+          },
+          "details-1": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "<b>MPG</b>: continuo",
+              "1": "<b>cylinders</b>: discreto multivalor, 4, 6, 8",
+              "2": "<b>displacement</b>: continuo",
+              "3": "<b>horsepower</b>: continua",
+              "4": "<b>weight</b>: continuo",
+              "5": "<b>acceleration</b>: continua",
+              "6": "<b>model Year</b>: discreto de varios valores",
+              "7": "<b>origin</b>: discreto multivalor, 1 se refiere a automóviles fabricados en EE. UU., 2 para Europa y 3 para Asia",
+              "8": "<b>car name</b>: texto (única para cada instancia)"
+            }
+          },
+          "details-2": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada (<b>MPG</b>)"
+            }
+          },
+          "details-3": {
+            "title": "Referencias",
+            "list": {
+              "0": "<link1>Auto MPG</link1>"
+            }
+          }
+        }
+      },
+      "boston-housing": {
+        "title": "Las viviendas en Boston",
+        "description": {
+          "text": {
+            "0": "El conjunto de datos de viviendas de Boston se deriva de la información recopilada por el Servicio del Censo de EE. UU. sobre viviendas en el área de Boston.",
+            "1": "El conjunto de datos está diseñado para abordar problemas de regresión y modelado de precios de viviendas en diferentes vecindarios de Boston, Massachusetts, Estados Unidos. Este conjunto de datos es comúnmente utilizado para ejemplos y prácticas en la educación y la investigación."
+          },
+          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
+          "details-1-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "<strong>CRIM</strong> Tasa de criminalidad del crimen per cápita por ciudad",
+              "1": "<strong>Zn</strong> Proporción de tierras residenciales zonas por lotes de más de 25,000 pies cuadrados.",
+              "2": "<strong>INDUS</strong> Proporción de acres comerciales no reales por ciudad",
+              "3": "<strong>CHAS</strong> Charles River Variable Dummy (= 1 if tract bounds river; 0 en otro caso)",
+              "4": "<strong>NOX</strong> Concentración de óxidos nítricos (partes por 10 millones)",
+              "5": "<strong>RM</strong> Número promedio de habitaciones por vivienda",
+              "6": "<strong>AGE</strong> Proporción de unidades ocupadas por los propietarios construidas antes de 1940",
+              "7": "<strong>DIS</strong> Distancias ponderadas a cinco centros de empleo de Boston",
+              "8": "<strong>RAD</strong> Índice de accesibilidad a carreteras radiales",
+              "9": "<strong>TAX</strong> Impuesto a la propiedad de la propiedad de valor completo por cada $ 10,000",
+              "10": "<strong>PRATIO</strong> Ratio alumnos-profesor por ciudad",
+              "11": "<strong>B</strong> 1000 (BK - 0.63)^2 donde BK es la proporción de negros por ciudad",
+              "12": "<strong>LSTAT</strong> LSTAT % más bajo estado de la población",
+              "13": "<strong>MEDV</strong>Valor mediano de las casas ocupadas por el propietario en $ 1000"
+            }
+          },
+          "details-2-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada"
+            }
+          },
+          "details-3-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "<link1>Entrada del conjunto de datos UCI</link1>",
+              "1": "<link1>Controversia sobre el conjunto de datos de vivienda de Boston</link1>"
+            }
+          }
+        }
+      },
+      "breast-cancer": {
+        "title": "Cáncer de mama Wisconsin (diagnóstico y pronóstico)",
+        "description": {
+          "text": {
+            "0": "Es un conjunto de datos del Hospital de la Universidad de Wisconsin relacionados con el cáncer de mama. Dicho conjunto de datos es útil para la predicción y discriminación de un tumor de cancer de mama, diferenciando si es benigno o no.",
+            "1": "Cada registro representa los datos de seguimiento de un caso de cáncer de mama. Estos son casos atendidos desde 1984 por el Dr. Wolberg, solo incluye aquellos casos que presentan cáncer de mama invasivo y sin evidencia de metástasis.",
+            "2": "Las primeras 30 características se calculan a partir de una imagen digitalizada de una aspiración con aguja fina (PAAF) de la masa mamaria, dichos datos describen las características de los núcleos celulares presentes en la imagen, algunas imágenes se pueden encontrar en <link1>cs wisc</link1>.",
+            "3": "El fichero <kbd>wdbc.csv</kbd> corresponde al conjunto de datos de diagnóstico y <kbd>wpbc.csv</kbd> corresponde al conjunto de datos de pronóstico."
+          },
+          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
+          "details-1-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "<strong>Número de identificación</strong>",
+              "1": "<strong>Resultado</strong> (R = recurrente, N = no recurrente)",
+              "2": "<strong>Tiempo</strong> (tiempo de recurrencia si el campo 2 = R, tiempo libre de enfermedad si el campo 2 = N)",
+              "3": "4-33 Se calculan diez características de valor real para cada núcleo celular:",
+              "4": "<strong>radio</strong> (media de distancias desde el centro a puntos del perímetro)",
+              "5": "<strong>textura</strong> (desviación estándar de los valores de escala de grises)",
+              "6": "<strong>perímetro</strong>",
+              "7": "<strong>área</strong>",
+              "8": "<strong>suavidad</strong> (variación local en la longitud del radio)",
+              "9": "<strong>compacidad</strong> (perímetro^2 / área - 1,0)",
+              "10": "<strong>concavidad</strong> (severidad de las porciones cóncavas del contorno)",
+              "11": "<strong>puntos cóncavos</strong> (número de porciones cóncavas del contorno)",
+              "12": "<strong>simetría</strong>",
+              "13": "<strong>dimensión fractal</strong> (\"aproximación de la línea costera\" - 1)"
+            }
+          },
+          "details-2-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada"
+            }
+          },
+          "details-3-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
+              "1": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
+            }
+          }
+        }
+      },
+      "student-performance": {
+        "title": "Rendimiento de estudiantes",
+        "description": {
+          "text": {
+            "0": "El conjunto de datos incluye datos del rendimiento académico de alumnos de dos centros escolares portugueses. Los datos incluyen características demográficas, sociales, calificaciones de los estudiantes, etc. Se incluyen dos conjuntos de datos uno con el desempeño de dos materias distintas: Matemáticas (mat) y lengua portuguesa (por).",
+            "1": "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 649 instancias y 12 atributos distintos.",
+            "2": "Nota importante: el atributo objetivo G3 tiene una fuerte correlación con los atributos G2 y G1. Esto ocurre porque G3 es la calificación del último año (emitida en el 3er período), mientras que G1 y G2 corresponden a las calificaciones del 1er y 2do período. Es más difícil predecir G3 sin G2 y G1, pero dicha predicción es mucho más útil.",
+            "3": "El fichero <kbd>student-por.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de portugués y <kbd>student-mat.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de matemáticas."
+          },
+          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
+          "details-1-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "<strong>school</strong> - escuela del estudiante (binario: 'GP' - Gabriel Pereira o 'MS' - Mousinho da Silveira)",
+              "1": "<strong>sex</strong> - sexo del estudiante (binario: 'F' - femenino o 'M' - masculino)",
+              "2": "<strong>age</strong> - edad del estudiante (numérica: de 15 a 22)",
+              "3": "<strong>address</strong>: tipo de dirección particular del estudiante (binario: 'U' - urbana o 'R' - rural)",
+              "4": "<strong>famsize</strong> - tamaño de la familia (binario: 'LE3' - menor o igual a 3 o 'GT3' - mayor que 3)",
+              "5": "<strong>Pstatus</strong> - estado de convivencia de los padres (binario: 'T' - viviendo juntos o 'A' - separados)",
+              "6": "<strong>Medu</strong> - educación de la madre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
+              "7": "<strong>Fedu</strong> - educación del padre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
+              "8": "<strong>Mjob</strong> - trabajo de la madre (nominal: 'maestra', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
+              "9": "<strong>Fjob</strong> - trabajo del padre (nominal: 'maestro', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
+              "10": "<strong>razón</strong>: motivo para elegir esta escuela (nominal: cerca de \"casa\", \"reputación\" de la escuela, preferencia de \"curso\" u \"otro\")",
+              "11": "<strong>tutor</strong> - tutor del estudiante (nominal: 'madre', 'padre' u 'otro')",
+              "12": "<strong>tiempo de viaje</strong>: tiempo de viaje de casa a la escuela (numérico: 1 - <15 min., 2 - 15 a 30 min., 3 - 30 min. a 1 hora, o 4 - >1 hora)",
+              "13": "<strong>tiempo de estudio</strong>: tiempo de estudio semanal (numérico: 1 - <2 horas, 2 - 2 a 5 horas, 3 - 5 a 10 horas o 4 - >10 horas)",
+              "14": "<strong>reprobados</strong>: número de reprobados en clases anteriores (numérico: n si 1 &lg;=n &lg;3, en caso contrario 4)",
+              "15": "<strong>schoolsup</strong> - apoyo educativo adicional (binario: sí o no)",
+              "16": "<strong>famsup</strong> - apoyo educativo familiar (binario: sí o no)",
+              "17": "<strong>pagado</strong> - clases extra pagadas dentro de la materia del curso (Matemáticas o Portugués) (binario: sí o no)",
+              "18": "<strong>actividades</strong> - actividades extracurriculares (binario: sí o no)",
+              "19": "<strong>guardería</strong>: asistió a la guardería (binario: sí o no)",
+              "20": "<strong>superior</strong> - quiere cursar estudios superiores (binario: sí o no)",
+              "21": "<strong>internet</strong> - Acceso a Internet en casa (binario: sí o no)",
+              "22": "<strong>romántico</strong> - con una relación romántica (binario: sí o no)",
+              "23": "<strong>famrel</strong> - calidad de las relaciones familiares (numérica: de 1 - muy mala a 5 - excelente)",
+              "24": "<strong>tiempo libre</strong>: tiempo libre después de la escuela (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "25": "<strong>goout</strong> - salir con amigos (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "26": "<strong>Dalc</strong> - consumo de alcohol en jornada laboral (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "27": "<strong>Walc</strong> - consumo de alcohol durante el fin de semana (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "28": "<strong>salud</strong>: estado de salud actual (numérico: de 1: muy malo a 5: muy bueno)",
+              "29": "<strong>ausencias</strong> - número de ausencias escolares (numérico: de 0 a 93)"
+            }
+          },
+          "details-2-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada"
+            }
+          },
+          "details-3-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "<link1>Student Performance</link1>"
+            }
+          }
+        }
+      },
+      "wine": {
+        "title": "Calidad del vino",
+        "description": {
+          "text": {
+            "0": "Los dos conjuntos de datos están relacionados, pues incluyen las variantes de vino tinto y vino blanco portugués. Dicho conjunto de datos solo incluye variables fisicoquímicas (entradas) y sensoriales (salidas), el conjunto de datos no incluye datos de tipos de uva, marca de vino o precio de venta del vino.",
+            "1": "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 4898 instancias y 12 atributos distintos.",
+            "2": "Dicho conjunto de datos puede ser usado para tareas de clasificación o de regresión. Las clases están ordenadas, aunque el conjunto de datos se encuentra desbalanceado.",
+            "3": "El fichero <kbd>wine-quality-red.csv</kbd> corresponde al conjunto de datos de vino tinto y <kbd>wine-quality-white.csv</kbd> corresponde al conjunto de datos de vino blanco."
+          },
+          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>archive.ics.uci.edu</link1>.",
+          "details-1-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "<strong>Fixed Acidity (Acidez Fija)</strong>: La acidez fija se refiere a la concentración de ácidos no volátiles en el vino, principalmente ácido tartárico. Contribuye a la frescura y estabilidad del vino.",
+              "1": "<strong>Volatile Acidity (Acidez Volátil)</strong>: La acidez volátil se refiere a la concentración de ácidos volátiles, como el ácido acético, que pueden dar un sabor desagradable si están presentes en exceso.",
+              "2": "<strong>Citric Acid (Ácido Cítrico)</strong>: El ácido cítrico es uno de los ácidos orgánicos naturales presentes en el vino. Puede influir en el sabor y la frescura del vino.",
+              "3": "<strong>Residual Sugar (Azúcar Residual)</strong>: Es la cantidad de azúcar que queda en el vino después de la fermentación. Un vino puede ser seco (poco azúcar residual) o dulce (más azúcar residual).",
+              "4": "<strong>Chlorides (Cloruros)</strong>: La concentración de cloruros en el vino puede afectar su sabor y aroma, y niveles altos pueden indicar problemas en la producción.",
+              "5": "<strong>Free Sulfur Dioxide (Dióxido de Azufre Libre)</strong>: El dióxido de azufre es un conservante común en el vino que ayuda a prevenir la oxidación y el crecimiento de microorganismos no deseados.",
+              "6": "<strong>Total Sulfur Dioxide (Dióxido de Azufre Total)</strong>: Representa la suma de dióxido de azufre libre y dióxido de azufre unido a otras moléculas en el vino. También se relaciona con la conservación del vino.",
+              "7": "<strong>Density (Densidad)</strong>: La densidad se refiere a la masa del vino por unidad de volumen. Puede proporcionar información sobre la concentración de alcohol y azúcar.",
+              "8": "<strong>pH</strong>: El pH mide la acidez o alcalinidad del vino. Un pH bajo indica acidez, mientras que un pH alto indica alcalinidad. Puede influir en la percepción del sabor.",
+              "9": "<strong>Sulphates (Sulfatos)</strong>: Los sulfatos son aditivos que se utilizan a veces en la producción de vino. Pueden influir en la estabilidad y el aroma del vino.",
+              "10": "<strong>Alcohol</strong>: La concentración de alcohol en el vino puede variar y afecta tanto el sabor como la sensación en boca.",
+              "11": "<strong>Quality (Calidad)</strong>: Esta es la puntuación general de calidad del vino, generalmente en una escala de 0 a 10, donde valores más altos indican vinos de mejor calidad según la evaluación de los catadores."
+            }
+          },
+          "details-2-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Regresión lineal calculada"
+            }
+          },
+          "details-3-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "<link1>Calidad del vino</link1>"
+            }
+          }
+        }
+      },
       "list-datasets": {
+        "salary": "Conjunto de datos - Salary",
+        "auto-mpg": "Conjunto de datos - Auto MPG",
+        "boston-housing": "Conjunto de datos - Boston Housing",
+        "breast-cancer": "Conjunto de datos - Breast cancer",
+        "student-performance": "Conjunto de datos - Student performance",
+        "wine": "Conjunto de datos - Wine"
       },
       "list-models": {
+        "salary": "Modelo - Salary",
+        "auto-mpg": "Modelo - Auto MPG",
+        "boston-housing": "Modelo - Boston Housing",
+        "breast-cancer": "Modelo - Breast cancer",
+        "student-performance": "Modelo - Student performance",
+        "wine": "Modelo - Wine"
+      },
+      "joyride": {
+        "title": "Activar el tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "Puedes consultar el manual en busqueda de información"
+          },
+          "dataset-info": {
+            "title": "Información del conjunto de datos",
+            "content": "Consulta la información del conjunto de datos"
+          },
+          "dataset": {
+            "title": "Conjuto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+          },
+          "dataset-plot": {
+            "title": "Graficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizador de las capas de la red neuronal",
+            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
+          },
+          "layer-editor": {
+            "title": "Editor de capas",
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+          },
+          "params-editor": {
+            "title": "Editor de hiperparametros",
+            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
+          },
+          "list-of-models": {
+            "title": "Lista de modelos",
+            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar las predicciones."
+          },
+          "predict-and-visualizer": {
+            "title": "Predicción y visualización",
+            "content": "Una vez cargado nuestro modelo para la regresión lineal puedes realizar predicciones y visualizar los resultados"
+          }
+        }
       }
     },
     "2-object-detection": {
       "interface": {
         "process-webcam": {
           "title": "Reconocimiento en tiempo real",
-          "sub-title": "WebCam",
-          "button": "usar webcam"
+          "sub-title": "Webcam",
+          "button": "Webcam"
         },
         "process-image": {
           "title": "Procesamiento de images",
@@ -283,7 +829,7 @@
         }
       },
       "face-detection": {
-        "title": "FACE DETECTOR - Geometría facial",
+        "title": "FaceDetector - Geometría facial",
         "description": {
           "text-0": "Este modelo es capaz de reconocer a partir de una imagen o vídeo de entrada diferentes partes de la cara, como los ojos, orejas, nariz y boca.",
           "details-input": {
@@ -307,7 +853,7 @@
         }
       },
       "face-mesh": {
-        "title": "FACE MESH - Malla facial",
+        "title": "FaceMesh - Malla facial",
         "description": {
           "text-0": "Este modelo a partir de una imagen o vídeo de entrada, es capaz de reconocer diferentes puntos de la cara para finalmente hacer una malla de la misma.",
           "details-input": {
@@ -331,9 +877,9 @@
         }
       },
       "move-net--pose-net": {
-        "title": "MOVE NET - Detector de articulaciones",
+        "title": "MoveNet - Detector de articulaciones",
         "description": {
-          "text-0": "PoseNet es un modelo de aprendizaje automático capaz de reconocer la posición del cuerpo en tiempo real. Se puede usar para estimar una sola pose o varias a la vez.",
+          "text-0": "MoveNet es un modelo de aprendizaje automático capaz de reconocer la posición del cuerpo en tiempo real. Se puede usar para estimar una sola pose o varias a la vez.",
           "text-1": "En el siguiente ejemplo, para que su impacto en el rendimiento sea menor solamente detecta una pose a la vez.",
           "details-input": {
             "title": "Datos de entrada",
@@ -344,13 +890,14 @@
           "details-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Mismo elemento de entrada con una serie de puntos y líneas que delimitan diferentes puntos de la cara además de hombros, codos, manos, pies, rodillas y cadera."
+              "0": "Mismo elemento de entrada con una serie de puntos y líneas que delimitan diferentes partes de la cara además de hombros, codos, manos, pies, rodillas y cadera."
             }
           },
           "details-references": {
             "title": "Referencias",
             "list": {
-              "0": "<link1>Paper</link1>"
+              "0": "<link1>Entrada al repositorio de tensorflow</link1>",
+              "1": "<link1>Modelo de TFHub</link1>"
             }
           }
         }
@@ -371,7 +918,7 @@
           "details-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Mismo elemento de entrada con una serie de puntos que delimitan los diferentes puntos de los objetos, además del nombre del objeto."
+              "0": "Mismo elemento de entrada con una serie de cajas que delimitan los diferentes objetos, así como las etiquetas de los mismos."
             }
           },
           "details-references": {
@@ -382,12 +929,10 @@
           }
         }
       },
-      "list-datasets": {
-      },
       "list-models": {
-        "2-option-1": "Modelo - FACE DETECTOR - Geometría facial",
-        "2-option-2": "Modelo - FACE MESH - Malla facial",
-        "2-option-3": "Modelo - MOVE NET - Detector de articulaciones",
+        "2-option-1": "Modelo - FaceDetector  - Geometría facial",
+        "2-option-2": "Modelo - FaceMesh - Malla facial",
+        "2-option-3": "Modelo - MoveNet - Detector de articulaciones",
         "2-option-4": "Modelo - COCO SSD - Detector de objetos"
       }
     },
@@ -405,7 +950,7 @@
         },
         "process-image": {
           "title": "Procesamiento de imágenes",
-          "sub-title": "",
+          "sub-title": "-",
           "validate": "Validar"
         },
         "result": "Resultado",
@@ -415,7 +960,7 @@
         }
       },
       "mnist": {
-        "title": "MNIST - Clasificador de números",
+        "title": "MNIST - Clasificación de números",
         "description": {
           "text-0": "La base de datos <strong>MNIST</strong> es una gran base de datos de dígitos escritos a mano. La base de datos se usa ampliamente para capacitación y pruebas en el campo del aprendizaje automático.",
           "text-1": "Fue creado \"re-mezclando\" las muestras de los conjuntos de datos originales del NIST.",
@@ -433,13 +978,12 @@
             }
           },
           "details-references": {
-            "title": "Referencias",
-            "list": {}
+            "title": "Referencias"
           }
         }
       },
       "mobilenet": {
-        "title": "MOBILENET - Clasificador de imágenes",
+        "title": "MobileNet - Clasificación de imágenes",
         "description": {
           "text-0": "MobileNet V2 es una familia de arquitecturas de redes neuronales para la clasificación de imágenes y tareas similares.",
           "text-1": "Este modelo es capaz de diferenciar entre 1001 categorías, identificando el contexto principal de la imagen.",
@@ -465,53 +1009,333 @@
         }
       },
       "face-mesh": {
-        "title": "",
-        "description": {}
-      },
-      "list-datasets": {
+        "title": "-"
       },
       "list-models": {
         "3-option-1": "Modelo - MNIST - Clasificación de números",
-        "3-option-2": "Modelo - MOBILENET - Clasificador de imágenes",
-        "3-option-3": "Modelo - RESNET - Clasificador de imágenes"
+        "3-option-2": "Modelo - MobileNet - Clasificación de imágenes",
+        "3-option-3": "Modelo - ResNet - Clasificación de imágenes"
+      }
+    },
+    "3-image-classification": {
+      "list-datasets": {
+        "mnist": "Conjunto de datos - MNIST"
+      },
+      "joyride": {
+        "title": "Activar el tutorial",
+        "steps": {
+          "manual": {
+            "title": "Manual",
+            "content": "Puedes consultar el manual en busqueda de información"
+          },
+          "dataset-info": {
+            "title": "Información del conjunto de datos",
+            "content": "Consulta la información del conjunto de datos"
+          },
+          "dataset": {
+            "title": "Conjuto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+          },
+          "dataset-plot": {
+            "title": "Graficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+          },
+          "layer-visualizer": {
+            "title": "Visualizador de las capas de la red neuronal",
+            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
+          },
+          "layer-editor": {
+            "title": "Editor de capas",
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+          },
+          "params-editor": {
+            "title": "Editor de hiperparametros",
+            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
+          },
+          "list-of-models": {
+            "title": "Lista de modelos",
+            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar las predicciones."
+          },
+          "classify": {
+            "title": "Predicción y visualización",
+            "content": "Una vez cargado nuestro modelo para la regresión lineal puedes realizar predicciones y visualizar los resultados"
+          }
+        }
+      }
+    }
+  },
+  "dataframe-plot": {
+    "title": "DataFrame | Graficos",
+    "info": "Información",
+    "description": {
+      "title": "Descripción del tipo de gráfica"
+    },
+    "configuration": {
+      "title": "Configuración",
+      "reset": "Reiniciar",
+      "select-all-columns": "Seleccionar todos las columnas",
+      "delete-all-columns": "Descartar todos las columnas",
+      "layout": {
+        "plot": {
+          "title": "Titulo del gráfico",
+          "x-axis": "Título eje X",
+          "y-axis": "Título eje Y"
+        },
+        "title": "Disposición"
+      },
+      "columns": {
+        "title": "Columnas del DataFrame"
+      }
+    },
+    "buttons": {
+      "configuration": "Configuración",
+      "description": "Descripción"
+    },
+    "bar-charts": {
+      "title": "Grafico de Barras",
+      "description": {
+        "intro": {
+          "0": "Los gráficos de tipo barra o barras, son una representación visual que muestra la comparación de diferentes categorías o grupos mediante barras rectangulares.\nEste tipo de gráfico utiliza la longitud o altura de las barras para representar la magnitud o la cantidad de una variable específica.",
+          "1": "En un gráfico de tipo barra, el eje horizontal representa las categorías o grupos, mientras que el eje vertical muestra la magnitud o la frecuencia de la variable que se está analizando.\nCada categoría tiene una barra individual, y la longitud o altura de la barra es proporcional al valor o la cantidad correspondiente.\nLas barras pueden ser horizontales o verticales, dependiendo de la orientación del gráfico.",
+          "2": "Los gráficos de tipo barra tienen varias características y aplicaciones destacadas:"
+        },
+        "list": {
+          "0": "Comparación de categorías: Los gráficos de tipo barra son ideales para comparar visualmente diferentes categorías o grupos.\nAl observar las barras, es posible identificar rápidamente las diferencias en la magnitud o la cantidad entre las categorías.",
+          "1": "Representación de datos categóricos o discretos: Los gráficos de tipo barra son adecuados para representar variables categóricas o discretas.\nCada barra representa una categoría específica y la altura o longitud de la barra muestra la magnitud o la cantidad asociada a esa categoría.",
+          "2": "Ordenamiento de categorías: Las categorías en un gráfico de tipo barra se pueden ordenar en función de diferentes criterios, como orden alfabético, orden de magnitud o cualquier otro orden lógico.\nEsto permite resaltar patrones o tendencias específicas entre las categorías.",
+          "3": "Visualización de frecuencias o porcentajes: Los gráficos de tipo barra también se utilizan para representar frecuencias o porcentajes.\nEn este caso, la altura o longitud de las barras representa la proporción o el porcentaje correspondiente a cada categoría.",
+          "4": "Presentación efectiva: Los gráficos de tipo barra son una herramienta efectiva para presentar información de manera clara y concisa.\nSu estructura simple y su capacidad para resaltar las diferencias entre las categorías los hacen ampliamente utilizados en informes, presentaciones y documentos.",
+          "5": "Los gráficos de tipo barra son una forma eficaz de visualizar y comparar categorías o grupos en función de su magnitud o cantidad.\nSon ideales para representar datos categóricos o discretos y permiten una presentación efectiva de la información.\nSu simplicidad y capacidad para resaltar las diferencias los convierten en una herramienta comúnmente utilizada en el análisis de datos y la comunicación."
+        },
+        "end": {
+          "0": "Los gráficos de tipo barra son una forma eficaz de visualizar y comparar categorías o grupos en función de su magnitud o cantidad.\nSon ideales para representar datos categóricos o discretos y permiten una presentación efectiva de la información.\nSu simplicidad y capacidad para resaltar las diferencias los convierten en una herramienta comúnmente utilizada en el análisis de datos y la comunicación."
+        }
+      }
+    },
+    "box-plots": {
+      "title": "Grafico de Bigotes",
+      "description": {
+        "intro": {
+          "0": "Los gráficos de tipo Box, también conocidos como diagramas de caja y bigotes o boxplots en inglés, son una representación visual utilizada para mostrar la distribución y los resúmenes estadísticos de un conjunto de datos numéricos.\nEste tipo de gráfico se basa en un rectángulo que representa el rango intercuartil (IQR, por sus siglas en inglés), donde la línea central indica la mediana y las líneas extendidas, conocidas como bigotes, representan el rango de\nvalores más allá del IQR.",
+          "1": "En un gráfico de tipo Box, el rectángulo se traza de manera vertical u horizontal, y está delimitado por dos líneas, una en la parte inferior y otra en la parte superior.\nLa línea en el medio del rectángulo representa la mediana, que es el valor que divide a los datos ordenados en dos partes iguales.\nLos bigotes se extienden desde los bordes del rectángulo hacia los valores extremos, con una longitud determinada por la variabilidad de los datos.",
+          "2": "Los gráficos de tipo Box tienen varias características y aplicaciones destacadas:"
+        },
+        "list": {
+          "0": "Resumen estadístico: Los gráficos de tipo Box proporcionan un resumen visual de los estadísticos clave de un conjunto de datos.\nAdemás de la mediana, también se pueden mostrar los cuartiles (Q1 y Q3), que dividen los datos en cuatro partes iguales, y los valores atípicos, que se muestran como puntos o asteriscos fuera de los bigotes.",
+          "1": "Identificación de asimetrías y valores atípicos: Al observar un gráfico de tipo Box, es posible identificar asimetrías en la distribución de los datos.\nSi los bigotes no tienen la misma longitud, puede indicar una asimetría hacia uno de los extremos.\nAdemás, los valores atípicos que se encuentran fuera de los bigotes pueden resaltarse fácilmente.",
+          "2": "Comparación entre grupos o categorías: Los gráficos de tipo Box también se utilizan para comparar la distribución de los datos entre diferentes grupos o categorías.\nAl superponer varios diagramas de caja en el mismo gráfico, es posible visualizar las diferencias en las medianas, los rangos intercuartiles y la presencia de valores atípicos entre los grupos.",
+          "3": "Detectar sesgos y distribuciones: Los gráficos de tipo Box permiten identificar visualmente si la distribución de los datos es simétrica o sesgada hacia un extremo.\nSi la línea central del rectángulo no está en el medio, puede indicar un sesgo hacia la dirección opuesta.",
+          "4": "Visualización de dispersiones: Además de proporcionar información sobre la posición central y la variabilidad de los datos, los gráficos de tipo Box también permiten visualizar la dispersión y la variabilidad de los datos en un solo gráfico.\nEsto puede ser útil para tener una idea rápida de la distribución y la variabilidad general de los datos."
+        },
+        "end": {
+          "0": "Los gráficos de tipo Box son una herramienta útil para visualizar la distribución, los resúmenes estadísticos y la variabilidad de un conjunto de datos numéricos.\nPermiten identificar asimetrías, valores atípicos y comparar distribuciones entre grupos.\nSu representación visual concisa y efectiva los convierte en una herramienta comúnmente utilizada en el análisis de datos y la comunicación."
+        }
+      }
+    },
+    "histograms": {
+      "title": "Grafico de tipo Histograma",
+      "description": {
+        "intro": {
+          "0": "Los gráficos de tipo histograma son una representación visual utilizada para mostrar la distribución de los datos numéricos o continuos.\nEste tipo de gráfico se basa en un conjunto de barras rectangulares adyacentes, donde el ancho de cada barra representa un intervalo de valores y la altura de la barra indica la frecuencia o la cantidad de observaciones dentro de ese\nintervalo.",
+          "1": "En un gráfico de tipo histograma, el eje horizontal se utiliza para representar el rango de valores de la variable en estudio, dividido en intervalos o bins.\nEl eje vertical representa la frecuencia o la cantidad de observaciones en cada intervalo.\nLa altura de cada barra muestra cuántas observaciones caen dentro de ese intervalo específico.",
+          "2": "Los gráficos de tipo histograma tienen varias características y aplicaciones destacadas:"
+        },
+        "list": {
+          "0": "Visualización de distribuciones: Los histogramas permiten visualizar la forma y la distribución de los datos numéricos.\nPueden mostrar si los datos siguen una distribución simétrica, sesgada, multimodal o uniforme.",
+          "1": "Identificación de valores atípicos: Al observar un histograma, es posible identificar valores atípicos o extremos que se encuentren fuera del rango de la mayoría de los datos.\nEstos valores se representarán como barras aisladas o como barras que se extienden más allá del rango principal de valores.",
+          "2": "Análisis de tendencias y patrones: Los histogramas pueden revelar patrones y tendencias en los datos.\nPor ejemplo, una distribución sesgada hacia la izquierda o hacia la derecha indica una asimetría en los datos, mientras que una distribución normal muestra una simetría aproximada.",
+          "3": "Comparación de grupos o categorías: Los histogramas también pueden ser utilizados para comparar la distribución de datos entre diferentes grupos o categorías.\nAl superponer varios histogramas en el mismo gráfico, es posible visualizar las diferencias y similitudes entre los grupos.",
+          "4": "Estimación de densidad: Además de mostrar la frecuencia absoluta, los histogramas también pueden proporcionar una estimación visual de la densidad de probabilidad de los datos.\nAl normalizar las alturas de las barras, es posible obtener una representación relativa de la probabilidad de ocurrencia de los valores en cada intervalo."
+        },
+        "end": {
+          "0": "Los gráficos de tipo histograma son una herramienta útil para visualizar la distribución y los patrones de los datos numéricos.\nPermiten identificar valores atípicos, analizar tendencias y comparar distribuciones entre grupos.\nSu representación visual clara y concisa los convierte en una herramienta efectiva para comunicar información sobre la distribución de los datos de manera comprensible."
+        }
+      }
+    },
+    "line-charts": {
+      "title": "Grafico de tipo Linea",
+      "description": {
+        "intro": {
+          "0": "Los gráficos de tipo línea, también conocidos como gráficos de series o gráficos de tendencia, son una representación visual que muestra la relación y la evolución de los datos a lo largo del tiempo o de una variable continua.\nEstos gráficos se construyen trazando puntos de datos en un sistema de coordenadas cartesianas, donde cada punto representa una medición o un valor específico de la variable en el eje vertical en función del tiempo o de la variable\nindependiente en el eje horizontal.",
+          "1": "En un gráfico de tipo línea, los puntos de datos se conectan mediante líneas rectas, lo que crea una serie de puntos conectados.\nEstas líneas permiten visualizar la trayectoria y el patrón de cambio de los datos a lo largo del tiempo o de la variable independiente.\nLa pendiente de la línea puede indicar una tendencia creciente o decreciente, mientras que las variaciones en la dirección y la forma de la línea pueden revelar patrones adicionales en los datos.",
+          "2": "Los gráficos de tipo línea tienen varias características y aplicaciones destacadas:"
+        },
+        "list": {
+          "0": "Representación de tendencias: Los gráficos de tipo línea son especialmente útiles para mostrar tendencias y cambios a lo largo del tiempo.\nPueden revelar patrones de crecimiento, declive o fluctuación en los datos a medida que se suceden en el tiempo.",
+          "1": "Identificación de cambios y variaciones: Al observar un gráfico de tipo línea, es posible identificar cambios abruptos o variaciones en los datos.\nEstos cambios pueden indicar eventos significativos o factores que influyen en la variable medida.",
+          "2": "Comparación de múltiples series: Los gráficos de tipo línea también permiten comparar múltiples series de datos en un solo gráfico.\nEsto es útil para analizar y visualizar la relación entre diferentes variables a medida que evolucionan en el tiempo.",
+          "3": "Análisis de estacionalidad y ciclos: Si los datos exhiben patrones estacionales o cíclicos, los gráficos de tipo línea pueden ayudar a identificar y analizar estos patrones.\nEsto puede ser útil en campos como la economía, la meteorología y el análisis de ventas, donde existen fluctuaciones recurrentes en los datos.",
+          "4": "Pronóstico y proyección: Los gráficos de tipo línea también se utilizan para realizar pronósticos y proyecciones basadas en los datos históricos.\nAl observar las tendencias pasadas, es posible inferir y predecir cómo se comportarán los datos en el futuro."
+        },
+        "end": {
+          "0": "Los gráficos de tipo línea son una herramienta valiosa para visualizar y analizar la relación y la evolución de los datos a lo largo del tiempo o de una variable continua.\nPermiten identificar tendencias, cambios y patrones en los datos, así como realizar comparaciones y pronósticos.\nSu representación visual clara y concisa los convierte en una herramienta efectiva para comunicar información compleja de manera comprensible."
+        }
+      }
+    },
+    "pie-charts": {
+      "title": "Grafico de Sectores",
+      "description": {
+        "intro": {
+          "0": "Los gráficos circulares o de sectores, son una representación visual que muestra la proporción de diferentes categorías o partes en relación con el todo.\nEstos gráficos se basan en un círculo dividido en sectores, donde cada sector representa una categoría específica y su tamaño relativo refleja la proporción que esa categoría representa en el conjunto de datos.",
+          "1": "En un gráfico de tipo sectores, el círculo completo representa el 100% o el total de los datos.\nCada sector se muestra como una porción del círculo y se etiqueta con el nombre o la etiqueta correspondiente a la categoría que representa.\nLa medida del ángulo del sector es proporcional a la proporción que esa categoría tiene en el conjunto de datos.",
+          "2": "Los gráficos de tipo pie tienen varias características y aplicaciones destacadas:"
+        },
+        "list": {
+          "0": "Representación de proporciones: Los gráficos de tipo pie son ideales para representar proporciones y porcentajes.\nPermiten visualizar rápidamente la contribución relativa de cada categoría en el conjunto de datos total.",
+          "1": "Identificación de categorías dominantes: Los tamaños relativos de los sectores en el gráfico de tipo pie ayudan a identificar fácilmente las categorías dominantes o más significativas.\nLos sectores más grandes indican las categorías que tienen una mayor proporción o contribución en relación con las demás.",
+          "2": "Comparación entre categorías: Si bien los gráficos de tipo pie son útiles para mostrar las proporciones de las categorías, pueden resultar limitados para realizar comparaciones precisas entre ellas.\nEsto se debe a que la percepción humana puede tener dificultades para evaluar con precisión las diferencias en los tamaños de los ángulos o sectores.\nSin embargo, la comparación relativa entre los tamaños de los sectores aún puede proporcionar información general sobre las proporciones entre categorías.",
+          "3": "Representación de datos categóricos: Los gráficos de tipo pie son especialmente útiles para representar datos categóricos, donde las categorías son mutuamente excluyentes y no tienen un orden inherente.\nPor ejemplo, se pueden usar para mostrar la distribución porcentual de ingresos en diferentes categorías de gastos.",
+          "4": "Mejora de la presentación visual: Los gráficos de tipo pie se utilizan comúnmente en presentaciones y documentos para comunicar información de manera visualmente atractiva y fácilmente comprensible.\nLa forma circular y los colores utilizados pueden captar rápidamente la atención y resaltar las relaciones proporcionales entre las categorías."
+        },
+        "end": {
+          "0": "Los gráficos de tipo de sectores son una herramienta efectiva para representar proporciones y porcentajes de categorías en un conjunto de datos.\nPermiten identificar las categorías dominantes y proporcionan una presentación visual atractiva.\nSin embargo, es importante tener en cuenta sus limitaciones en términos de comparación precisa entre categorías y su enfoque en datos categóricos."
+        }
+      }
+    },
+    "scatter-plots": {
+      "title": "Grafico de tipo Dispersión",
+      "description": {
+        "intro": {
+          "0": "Un gráfico de dispersión, también conocido como gráfico de puntos o scatter plot en inglés, es una representación visual que utiliza coordenadas cartesianas para mostrar la relación entre dos variables.\nEn este tipo de gráfico, los datos se representan como puntos individuales en el espacio bidimensional, donde cada punto representa un par de valores correspondientes a las dos variables.",
+          "1": "En un gráfico de dispersión, el eje horizontal generalmente se asigna a la variable independiente, mientras que el eje vertical se asigna a la variable dependiente.\nCada punto en el gráfico representa una observación individual y su posición en el gráfico se determina por los valores que tiene para ambas variables.\nLa ubicación relativa de los puntos en el gráfico revela patrones y relaciones entre las dos variables.",
+          "2": "Los gráficos de dispersión tienen varias aplicaciones y características destacadas:"
+        },
+        "list": {
+          "0": "Relación entre variables: Los gráficos de dispersión permiten analizar la relación entre dos variables.\nPueden mostrar si hay una correlación positiva (los puntos tienden a agruparse en una dirección ascendente), una correlación negativa (los puntos tienden a agruparse en una dirección descendente) o una falta de correlación (los puntos no muestran un patrón definido).",
+          "1": "Identificación de tendencias: Un gráfico de dispersión puede revelar tendencias o patrones en los datos.\nAl observar la dirección general de los puntos, es posible identificar si existe una relación lineal, no lineal o incluso una relación curvilínea entre las variables.",
+          "2": "Detección de valores atípicos: Los gráficos de dispersión pueden ayudar a identificar valores atípicos o extremos en los datos.\nEstos puntos se destacan y se encuentran lejos de la agrupación principal, lo que sugiere observaciones inusuales o excepcionales que pueden requerir un análisis adicional.",
+          "3": "Análisis de clusters o grupos: Si los puntos en el gráfico de dispersión se agrupan o forman patrones distintos, esto puede indicar la presencia de clusters o grupos.\nEsto puede ser útil en análisis de segmentación o clasificación de datos.",
+          "4": "Visualización de datos multidimensionales: Si se utilizan colores o tamaños de puntos adicionales, los gráficos de dispersión también pueden representar información adicional en un espacio bidimensional.\nEsto permite visualizar datos multidimensionales de manera más intuitiva."
+        },
+        "end": {
+          "0": "Los gráficos de dispersión son una herramienta poderosa para explorar y visualizar la relación entre dos variables.\nPermiten identificar patrones, tendencias y valores atípicos en los datos, y son útiles en diversas aplicaciones, como análisis de correlación, detección de clusters y visualización de datos multidimensionales."
+        }
+      }
+    },
+    "time-series-plots": {
+      "title": "Grafico de tipo Series Temporales",
+      "description": {
+        "intro": {
+          "0": "Un gráfico de tipo series de tiempo es una representación visual de datos que se recopilan y registran en intervalos regulares a lo largo del tiempo.\nEstos gráficos son ampliamente utilizados en diversas disciplinas, como la economía, las finanzas, la meteorología, la ingeniería y muchas otras, para analizar y comprender cómo cambian los datos a medida que transcurre el tiempo.",
+          "1": "El eje horizontal del gráfico representa el tiempo, mientras que el eje vertical muestra los valores de los datos que se están observando o registrando.\nLos puntos de datos se conectan con líneas, lo que permite identificar patrones y tendencias a lo largo del tiempo.",
+          "2": "Los gráficos de series de tiempo ofrecen varias ventajas y aplicaciones prácticas:"
+        },
+        "list": {
+          "0": "Análisis de tendencias: Los gráficos de series de tiempo permiten identificar y analizar tendencias a largo plazo en los datos.\nEsto puede ser útil para predecir cómo se comportarán los datos en el futuro y tomar decisiones informadas.",
+          "1": "Identificación de patrones estacionales: En muchos conjuntos de datos, existen patrones estacionales que se repiten regularmente en el tiempo, como las ventas navideñas o las fluctuaciones estacionales en la producción agrícola.\nLos gráficos de series de tiempo ayudan a identificar estos patrones estacionales y comprender su impacto en los datos.",
+          "2": "Detección de cambios y anomalías: Al observar un gráfico de series de tiempo, es posible identificar cambios bruscos o anomalías en los datos.\nEstos cambios pueden indicar eventos importantes o inusuales que requieren una mayor investigación y análisis.",
+          "3": "Modelado y pronóstico: Los gráficos de series de tiempo son una herramienta fundamental para desarrollar modelos y pronósticos.\nAl observar los patrones pasados, es posible construir modelos matemáticos o estadísticos que capturen las relaciones y permitan hacer predicciones sobre el futuro.",
+          "4": "Análisis comparativo: Los gráficos de series de tiempo también se utilizan para comparar diferentes conjuntos de datos que se recopilan durante el mismo período de tiempo.\nEsto puede ayudar a identificar diferencias, similitudes y relaciones entre las variables observadas."
+        },
+        "end": {
+          "0": "Los gráficos de series de tiempo son una herramienta esencial para analizar y comprender cómo cambian los datos a lo largo del tiempo.\nProporcionan información valiosa sobre las tendencias, patrones estacionales, cambios y pronósticos, lo que permite tomar decisiones informadas y realizar análisis comparativos."
+        }
+      },
+      "index-info": "El indice seleccionado debe contener una serie única y no debe seleccionar el índice junto a las columnas a mostrar",
+      "form": {
+        "index": "Indice"
+      }
+    },
+    "time-series": {
+      "warning": {
+        "index": "Este dataframe no permite una visualización adecuada al no cumplir la condición de una característica con valores únicos"
+      }
+    },
+    "violin-plots": {
+      "title": "Grafico de tipo Violin",
+      "description": {
+        "intro": {
+          "0": "Un gráfico de tipo violín es una representación visual que combina características de un gráfico de caja y bigotes con una función de densidad de probabilidad.\nEste tipo de gráfico proporciona una visión detallada de la distribución de los datos y permite comparar múltiples grupos o categorías en un solo gráfico.",
+          "1": "La apariencia de un gráfico de violín se asemeja a la forma de un violín, de ahí su nombre.\nTiene una línea central que representa la mediana de los datos y dos áreas sombreadas a ambos lados que representan la distribución de la densidad de probabilidad.\nEstas áreas sombreadas de simetría a lo largo de la línea central para reflejar la simetría o asimetría de los datos.",
+          "2": "La forma del gráfico de violín proporciona información sobre la distribución de los datos.\nPor ejemplo, un gráfico de violín más ancho en una sección particular indica una mayor densidad de datos en esa área, mientras que una sección más estrecha indica una menor densidad.\nAdemás, los gráficos de violín pueden tener múltiples violines agrupados o superpuestos para permitir la comparación visual de diferentes grupos o categorías.",
+          "3": "Los gráficos de violín tienen varias aplicaciones prácticas:"
+        },
+        "list": {
+          "0": "Comparación de distribuciones: Los gráficos de violín permiten comparar las distribuciones de datos entre diferentes grupos o categorías.\nEsto es útil para identificar diferencias o similitudes en la forma, dispersión y tendencias de los datos.",
+          "1": "Identificación de valores atípicos: Los gráficos de violín proporcionan información visual sobre la presencia de valores atípicos o extremos en los datos.\nEstos valores se representan como puntos fuera de las áreas sombreadas y pueden indicar observaciones inusuales que pueden requerir un análisis adicional.",
+          "2": "Visualización de densidad de probabilidad: Los gráficos de violín también ofrecen una representación gráfica de la densidad de probabilidad de los datos.\nEsto permite identificar fácilmente áreas de alta o baja densidad, así como posibles sesgos o asimetrías en la distribución.",
+          "3": "Comunicación efectiva de datos: Los gráficos de violín son una forma efectiva de comunicar información compleja sobre la distribución de los datos de una manera visualmente atractiva.\nPueden resumir la información de manera concisa y ayudar a transmitir patrones y características importantes a un público no técnico."
+        },
+        "end": {
+          "0": "Los gráficos de violín son una herramienta útil para visualizar y comparar distribuciones de datos.\nPermiten analizar la forma, dispersión, simetría y presencia de valores atípicos en los datos, y son especialmente útiles cuando se requiere la comparación entre múltiples grupos o categorías.\nSu representación gráfica atractiva y concisa los convierte en una herramienta efectiva para comunicar información compleja de manera comprensible."
+        }
       }
     }
   },
   "pages": {
+    "version": {
+      "title": "Versión"
+    },
     "index": {
       "tabular-classification": {
         "1-title": "Clasificación tabular",
-        "1-description-1": "La clasificación es una técnica para determinar la clase a la que pertenece el dependiente según una o más variables independientes.",
-        "1-description-2": "La clasificación se utiliza para predecir respuestas discretas.",
-        "1-button": "Modelos entrenados",
+        "1-description-1": "La clasificación es una tarea para determinar la clase a la que pertenece un elemento (variable dependiente) a partir de sus características (variables independientes).",
+        "1-description-2": "Es una tarea predictiva que tiene como salida una variable discreta cuyos valores son las diferentes clases a las que puede pertenecer el elemento a clasificar.",
+        "1-button": "Modelos pre-entrenados",
         "2-title": "Diseñar, crear y editar una arquitectura para clasificar",
-        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multi-etiqueta.",
-        "2-description-2": "Diseñando, creando, entrenando y evaluando una arquitectura personalizada.",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multiclase.",
+        "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
           "1": "Definir el número de capas, sus funciones de activación.",
           "2": "Definir la tasa de entrenamiento.",
-          "3": "Definir el número de iteraciones.",
+          "3": "Definir el número de épocas.",
           "4": "Definir el optimizador.",
           "5": "Definir la función de perdida.",
           "6": "Definir la métrica para la evaluación."
         },
-        "2-description-footer": "La clasificación se utiliza para predecir respuestas discretas.",
         "2-button": "Entrenar un modelo"
       },
       "linear-regression": {
+        "1-title": "Regresión linear",
+        "2-title": "Diseñar, crear y editar una arquitectura para calcular una regresión lineal",
+        "1-description-1": "La regresión lineal es una tarea para determinar un valor numérico específico (variable dependiente) a partir de sus características (variables independientes).",
+        "1-description-2": "Es una tarea predictiva que tiene como salida una variable continua, donde se busca encontrar una línea recta que mejor se ajuste a los datos y permita predecir el valor numérico de la variable dependiente en función de las variables independientes.",
+        "1-button": "Modelos pre-entrenados",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para realizar prediciones.",
+        "2-description-2": "Definir las variables independientes, que se utilizarán en el modelo, definir la variable dependiente, que será el valor numérico que se busca predecir.",
+        "2-description-3": null,
+        "2-description-list": {
+          "1": "Establecer una función de activación o una función lineal para las capas de la regresión lineal.",
+          "2": "Definir el valor de la tasa de aprendizaje.",
+          "3": "Definir el número de épocas.",
+          "4": "Definir el optimizador.",
+          "5": "Definir la función de perdida",
+          "6": "Defininir la métrica para la evaluación",
+          "title": "Para aplicar la regresión lineal y modelar la relación entre variables, debemos seguir los siguientes pasos:"
+        }
       },
       "object-detection": {
         "1-title": "Identificación de objetos",
-        "1-description-1": "La clasificación de objetos consiste en organizar los elementos de acuerdo a sus diferencias y semejanzas.",
+        "1-description-1": "La identificación de objetos consiste en detectar y clasificar diferentes elementos en una imagen.",
         "1-description-2": "Estos modelos son entrenados con multitud de imágenes diferentes que les permite aprender poco a poco qué caracteriza a cada objeto.",
-        "1-button": "Modelos entrenados",
+        "1-button": "Modelos pre-entrenados",
         "2-title": "Identificación de objetos"
       },
       "image-classification": {
-        "1-title": "Clasificador de imágenes",
-        "1-description-1": "La clasificación de imágenes de igual forma que la clasificación clásica nos sirve para determinar la clase a la que pertenece el dependiente según una o más variables independientes.",
-        "1-description-2": "En este caso la variable de entrada será una imagen.",
-        "1-button": "Modelos entrenados"
+        "1-title": "Clasificación de imágenes",
+        "1-description-1": "La clasificación de imágenes de igual forma que la clasificación tabular sirve para determinar la clase a la que pertenece la imagen dependiendo de los elementos que la forman.",
+        "1-button": "Modelos pre-entrenados",
+        "2-title": "Diseñar, crear y editar una arquitectura para clasificar imágenes",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multiclase.",
+        "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
+        "2-description-list": {
+          "1": "Definir el número de capas, sus funciones de activación.",
+          "2": "Definir la tasa de entrenamiento.",
+          "3": "Definir el número de épocas.",
+          "4": "Definir el optimizador.",
+          "5": "Definir la función de perdida.",
+          "6": "Definir la métrica para la evaluación."
+        },
+        "2-button": "Entrenar un modelo"
+      }
+    },
+    "contribute": {
+      "title": "Contribuye",
+      "github": {
+        "title": "Proyecto en GitHub"
+      },
+      "license": {
+        "title": "Licencia"
       }
     },
     "menu-selection-dataset": {
@@ -523,13 +1347,17 @@
       "form-label": "Selecciona un conjunto de datos",
       "form-option-_-1": "Selecciona un conjunto de datos",
       "form-upload-description": "Ahora si lo deseas puedes cargar tu propia arquitectura, en caso contrario pulsa en continuar y se cargará una arquitectura por defecto de ejemplo.",
-      "form-submit": "Continuar"
+      "form-submit": "Continuar",
+      "1-linear-regression": {
+        "csv": "Subir conjunto de datos - CSV",
+        "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
+      }
     },
     "menu-selection-model": {
-      "form-description-1": " Selecciona a continuación el modelo entrenado sobre el que se va a trabajar.",
-      "form-description-2": "Si deseas usar uno propio, utiliza la opción del desplegable y carga los archivos en la siguiente vista.",
-      "form-label": "Selecciona un modelo entrenado",
-      "form-option-_-1": "Selecciona un modelo entrenado",
+      "form-description-1": "Selecciona a continuación el modelo entrenado con el que se va a trabajar.",
+      "form-description-2": "-",
+      "form-label": "Selecciona un modelo pre-entrenado",
+      "form-option-_-1": "Selecciona un modelo pre-entrenado",
       "form-submit": "Continuar"
     },
     "playground": {
@@ -541,6 +1369,7 @@
         "parameter-float": "Parámetro flotante de precisión simple",
         "parameter-double": "Parámetro flotante de precisión doble",
         "parameter-categorical": "Parámetro categórico",
+        "data-to-check": "Datos a probar",
         "vector-to-check": "Vector a probar",
         "button-check-result": "Predecir"
       },
@@ -548,7 +1377,9 @@
         "general": {
           "model": "Modelo",
           "description-input": "Descripción de la entrada de datos",
-          "description-features": "Formulario de edición de las características"
+          "description-features": "Formulario de edición de las características",
+          "description-data": "Datos del formulario",
+          "description-vector": "Vector de los datos"
         },
         "0_upload": {
           "upload": "Subir",
@@ -556,116 +1387,34 @@
           "upload-your-model-description": "Ten en cuenta que tienes que subir el archivo <strong>.json</strong> y el fichero <strong>.bin</strong> para luego cargar el modelo",
           "button-upload-your-model": "Cargar modelo"
         },
-        "1_car": {
-        },
-        "2_iris": {
-        },
-        "3_lymphography": {
-        },
-        "4_titanic": {
-        },
         "generator": {
-          "dataset": {
-            "title": "Conjunto de datos",
-            "upload-dataset": "Subir conjunto de datos.",
-            "attributes": {
-              "title": "Atributos",
-              "int32": "Numérico",
-              "float32": "Decimal",
-              "string": "Texto",
-              "label-encoder": "Label encoder",
-              "one-hot-encoder": "OneHot encoder",
-              "classes": "Clases"
-            }
-          },
-          "layers": {
-            "title": "Diseño de capas",
-            "page-info": "Puedes visitar la web <link1>netron.app</link1> para visualizar la topología al completo"
-          },
-          "editor-layers": {
-            "title": "Editor de capas",
-            "add-layer-start": "Añadir capa al principio",
-            "add-layer-end": "Añadir capa al final",
-            "delete-layer": "Eliminar capa {{value}}",
-            "layer-id": "Capa {{value}}",
-            "units": "Unidades de la capa",
-            "units-placeholder": "Introduce el número de unidades de la capa",
-            "activation-function-select": "Selecciona la función de activación",
-            "activation-function-info": "Será el optimizador que se usará para activar la función"
-          },
-          "general-parameters": {
-            "title": "Editor de hiperparámetros",
-            "learning-rate": "Tasa de aprendizaje",
-            "learning-rate-placeholder": "Introduce la tasa de aprendizaje",
-            "learning-rate-info": "Recuerda que debe ser un valor entre 0 y 100 (es un porcentaje)",
-            "number-of-epochs": "Número de iteraciones",
-            "number-of-epochs-placeholder": "Número de iteraciones",
-            "number-of-epochs-info": "Mientras más alto sea, mas tardará en ejecutarse el entrenamiento",
-            "train-rate": "Tamaño del conjunto de pruebas",
-            "train-rate-placeholder": "Introduce el tamaño del banco de pruebas",
-            "train-rate-info": "Recuerda que debe ser un valor entre 0 y 100 (es un porcentaje)",
-            "optimizer-id": "Selecciona el optimizado",
-            "optimizer-id-info": "Será el optimizador que se usará para corregir el error.",
-            "loss-id": "Selecciona la función de pérdida",
-            "loss-id-info": "Será la función que se usará para evaluar el error de las neuronas.",
-            "metrics-id": "Selecciona la métrica",
-            "metrics-id-info": "Será el tipo de métrica que se usará para la evaluación del entrenamiento."
-          },
-          "models": {
-            "title": "Modelos",
-            "history-train": "Historial del entrenamiento",
-            "train": "Entrenamiento",
-            "button-submit": "Crear y entrenar modelo",
-            "open-visor": "Abrir visor",
-            "close-visor": "Cerrar visor",
-            "export-current-model": "Exportar modelo actual"
-          },
-          "table": {
-            "id": "ID",
-            "load": "Cargar",
-            "learning-rate": "Aprendizaje",
-            "number-of-epochs": "Nª de iteraciones",
-            "train-rate": "Pruebas",
-            "layers": "Capas",
-            "optimizer-id": "Optimizador",
-            "loss-id": "Perdida",
-            "metric-id": "Métrica",
-            "download": "Descargar"
-          },
-          "dynamic-form-dataset": {
-            "title": "Predicción",
-            "text-0": "Introduce separado por punto y coma los valores correspondientes para predecir",
-            "select-option": "Selecciona una opción",
-            "input-vector": "Introduce el vector a probar",
-            "test-vector": "Vector a probar"
-          },
           "manual": {
             "title": "Manual del generador de modelos",
             "details-edit-layers": {
               "title": "Editor de las capas",
               "text-0": "Se pueden editar las capas de la red neuronal, puedes agregar tantas como desees pulsando el botón \"Añadir capa\" al inicio o al final.",
               "list": {
-                "0": "<b>Unidades de la capa</b>:<br /> Cada unidad en una capa está conectada a todas las unidades de la capa anterior y de la capa siguiente. <br /> Cada unidad en una capa tiene un conjunto de pesos asociados que determinan la fuerza y dirección de la señal que se transmite entre las unidades. <br /> Podemos editar el número de entradas y salidas de la capa.",
-                "1": "<b>Función de activación</b>:<br />La función de activación en una capa de una red neuronal se refiere a la función matemática que se aplica a la salida de cada unidad en la capa, antes de pasar la señal a la capa siguiente, podemos editar cada una de las funciones de activación de todas las capas."
+                "0": "<b>Neuronas de la capa</b>:<br /> Cada neurona en una capa está conectada a todas las neuronas de la capa anterior y de la capa siguiente. <br /> Cada neurona en una capa tiene un conjunto de pesos asociados que ponderan su valor de salida. <br /> Podemos editar el número de neuronas de la capa.",
+                "1": "<b>Función de activación</b>:<br />La función de activación de una neurona se refiere a la función matemática que calcula su salida. Podemos editar la función de activación de las neuronas de cada capa."
               }
             },
             "details-hyper-parameters-editor": {
               "title": "Editor de hiperparámetros",
               "text-0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:",
               "list": {
-                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica a la red qué cantidad de datos debe usar para el entrenamiento.",
-                "1": "<b>Número de iteraciones</b>:<br />Cantidad de ciclos que va a realizar la red (a mayor número, más tiempo tarda en entrenar).",
-                "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se va a usar para el entrenamiento y la evaluación.",
-                "3": "<b>Optimizador</b>:<br />Es una función que como su propio nombre indica se usa para optimizar los modelos. <br />Esto es frecuentemente usado para evitar estancarse en un máximo local.",
-                "4": "<b>Función de pérdida</b>:<br />Es un método para evaluar qué tan bien un algoritmo específico modela los datos otorgados.",
-                "5": "<b>Función de métrica</b>:<br />Es la evaluación para valorar el rendimiento de un modelo de aprendizaje automático."
+                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
+                "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
+                "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
               }
             },
             "details-hyper-parameters-info": {
               "title": "Información de hiperparámetros",
               "list": {
                 "0": "<b>Tasa de aprendizaje</b>:<br /> La tasa de aprendizaje es un parámetro que determina cuánto se deben actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento.",
-                "1": "<b>Número de iteraciones</b>:<br /> El número de iteraciones se refiere al número de veces que se presentan los datos de entrenamiento a la red neuronal durante el proceso de entrenamiento. Cada iteración implica una actualización de los pesos de la red en función del error calculado.",
+                "1": "<b>Número de épocas</b>:<br /> El número de épocas se refiere al número de veces que se presentan los datos de entrenamiento a la red neuronal durante el proceso de entrenamiento. Cada iteración implica una actualización de los pesos de la red en función del error calculado.",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br /> El tamaño del conjunto de pruebas se refiere a la cantidad de datos utilizados para evaluar el rendimiento de la red neuronal después del entrenamiento. Este conjunto de datos no se utiliza en el entrenamiento de la red neuronal y se utiliza para medir la capacidad de la red de generalizar a datos nuevos.",
                 "3": "<b>Optimizador</b>:<br /> El optimizador es un algoritmo utilizado para actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento. Algunos ejemplos de optimizadores son el Descenso del Gradiente Estocástico (SGD), el Adam y el Adagrad.",
                 "4": "<b>Función de pérdida</b>:<br /> La función de pérdida es una medida del error entre las predicciones de la red neuronal y las salidas reales. Se utiliza para optimizar la red neuronal durante el entrenamiento y existen diferentes funciones de pérdida, como la Entropía Cruzada y el Error Cuadrático Medio."
@@ -674,38 +1423,350 @@
             "details-create-and-train-models": {
               "title": "Crear y entrenar modelo",
               "text-0": "Una vez se han rellenado todos los campos anteriores podemos crear el modelo pulsando el botón \"Crear y entrenar modelo\".",
-              "text-1": "Si hemos entrenado el modelo con la función de métrica <i>Accuracy</i> nos aparecerá dos graficas en el visor. La más relevante para nosotros seá la de abajo, ya que en TensorFlow.js, <i>acc</i> y <i>val_acc</i> son métricas de evaluación comúnmente utilizadas en el entrenamiento de modelos de redes neuronales. <br /><i>acc</i> representa la precisión (accuracy) del modelo en el conjunto de datos de entrenamiento. La precisión se define como el número de predicciones correctas dividido por el número total de predicciones. <br /><i>val_acc</i> representa la precisión del modelo en el conjunto de datos de validación. La validación se utiliza para evaluar la capacidad del modelo para generalizar a nuevos datos que no han sido vistos durante el entrenamiento.",
-              "text-2": "La precisión de validación es importante para detectar el sobre ajuste (<i>overfitting</i>) del modelo, que se produce cuando el modelo se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos.",
-              "text-3": "En resumen, <b>acc</b> se refiere a la precisión en el conjunto de datos de entrenamiento y <b>val_acc</b> se refiere a la precisión en el conjunto de datos de validación. Ambas métricas son importantes para evaluar la capacidad del modelo para generalizar a nuevos datos.",
-              "text-4": "Si todo ha sido correcto se añadirá una nueva entrada a la lista de modelos generados con el conjunto de datos seleccionado, se nos permitirá cargar en memoria modelos entrenados anteriormente. "
+              "text-1": "Si se pulsa el botón \"Abrir Visor\" se muestran dos gráficas. La gráfica superior muestra la evolución de la función de pérdida durante el entrenamiento. La gráfica inferior muestra la evolución de la métrica de evaluación <i>accuracy<i>. En las gráficas el color azul representa la evolución de los valores en el conjunto de entrenamiento y el color naranja representa las medidas para el conjunto de prueba.",
+              "text-2": "La precisión de validación es importante para detectar el sobre ajuste (<i>overfitting</i>) del modelo, que se produce cuando el modelo se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos."
             },
             "details-export-models": {
               "title": "Exportar modelo",
-              "text-0": "Si hemos creado el modelo correctamente se añadirá una entrada en la tabla de modelos generados, se nos permite exportar los modelos generados y guardarlos localmente."
+              "text-0": "Si hemos creado el modelo correctamente se añadirá una entrada en la tabla de modelos generados. La aplicación permite exportar los modelos generados y guardarlos localmente."
             },
             "details-prediction": {
               "title": "Predicción",
               "text-0": "El formulario final nos permite seleccionar las características principales que se usan para determinar la clase.",
-              "text-1": "El valor de salida será un índice de la lista de clases, para realizar la predicción de la clase en función de las características debemos pulsar el botón \"Ver resultado\"."
+              "text-1": "Al pulsar el botón \"Ver resultado\",  a partir de las características de entrada del elemento se obtiene la predicción de su clase de salida."
             }
-          },
-          "prediction": {
-            "class_id_name": "El identificador del target <strong>{{class_target_id}}</strong> corresponde a la clase <strong>{{name}}</strong>"
           }
         }
       },
-      "1-linear-regression": {
+      "generator": {
+        "prediction": {
+          "class_id_name": "El identificador del target <strong>{{class_target_id}}</strong> corresponde a la clase <strong>{{name}}</strong>"
+        },
+        "layer-design": "Diseño de capas",
+        "neural_network_modes": {
+          "title": "Modos de visualización",
+          "compact": "Modo compacto",
+          "extend": "Modo extendido"
+        },
+        "dataset": {
+          "title": "Conjunto de datos",
+          "upload-dataset": "Subir conjunto de datos",
+          "attributes": {
+            "title": "Atributos",
+            "int32": "Numérico",
+            "float32": "Decimal",
+            "string": "Texto",
+            "label-encoder": "Label encoder",
+            "one-hot-encoder": "OneHot encoder",
+            "classes": "Clases"
+          },
+          "details": {
+            "description-original": "Descripción del dataframe original",
+            "description-processed": "Descripción del dataframe procesado",
+            "data": "Información del conjunto de datos",
+            "info": "Información"
+          }
+        },
+        "layers": {
+          "title": "Diseño de capas",
+          "page-info": "Puedes visitar la web <link1>netron.app</link1> para visualizar la topología al completo"
+        },
+        "editor-layers": {
+          "title": "Editor de capas",
+          "add-layer-start": "Añadir capa al principio",
+          "add-layer-end": "Añadir capa al final",
+          "delete-layer": "Eliminar capa {{index}}",
+          "layer-id": "Capa {{index}}",
+          "kernel-size": "Tamaño del Kernel",
+          "kernel-size-placeholder": "Introduce el tamaño del kernel de la capa",
+          "filters-size": "Tamaño del filtro",
+          "filters-size-placeholder": "Introduce el filtro de la capa",
+          "units": "Neuronas de la capa",
+          "units-placeholder": "Introduce el número de neuronas de la capa",
+          "activation-function-select": "Selecciona la función de activación",
+          "activation-function-info": "Será el optimizador que se usará para activar la función",
+          "strides": "Strides",
+          "strides-placeholder": "Introduce el strides de la capa",
+          "pool-size": "Pool size",
+          "pool-size-placeholder": "Introduce el pool size de la capa"
+        },
+        "editor-feature-selector": {
+          "title": "Selector de características",
+          "feature-selector-x": "Selector de características / Conjunto (X)",
+          "feature-selector-y": "Selector de características / Objetivo (Y)",
+          "add-feature": "Añadir característica",
+          "delete-feature": "Eliminar característica {{value}}"
+        },
+        "general-parameters": {
+          "title": "Editor de hiperparámetros",
+          "learning-rate": "Tasa de aprendizaje",
+          "learning-rate-placeholder": "Introduce la tasa de aprendizaje",
+          "learning-rate-info": "Valor entre 0 y 100 (es un porcentaje)",
+          "number-of-epochs": "N. épocas",
+          "number-of-epochs-placeholder": "Número de épocas",
+          "number-of-epochs-info": "Mientras más alto sea, mas tardará en ejecutarse el entrenamiento",
+          "train-rate": "Tamaño del conjunto de pruebas",
+          "train-rate-placeholder": "Introduce el tamaño del banco de pruebas",
+          "train-rate-info": "Valor entre 0 y 100 (es un porcentaje)",
+          "optimizer-id": "Selecciona el optimizador",
+          "optimizer-id-info": "Será el optimizador que se usará para corregir el error.",
+          "loss-id": "Selecciona la función de pérdida",
+          "loss-id-info": "Será la función que se usará para evaluar el error de las neuronas.",
+          "metrics-id": "Selecciona la métrica",
+          "metrics-id-info": "Será el tipo de métrica que se usará para la evaluación durante entrenamiento.",
+          "test-size": "Tamaño del conjunto de pruebas",
+          "test-size-placeholder": "Tamaño del conjunto de pruebas",
+          "test-size-info": "Valor entre 0 y 100 (es un porcentaje) del tamaño del conjunto de pruebas",
+          "delete-metric": "Eliminar funcion de métrica {{index}}",
+          "add-metric": "Añadir función de métrica",
+          "metric-id-__index__": "Métrica {{index}}",
+          "metric-id-select": "Selecciona la función de métrica",
+          "metric-id-info": "Será una de las funciones de métrica"
+        },
+        "loaded": "Cargado",
+        "load": "Cargar",
+        "waiting-for-file": "Esperando archivo",
+        "waiting-for-process": "Esperando el procesamiento del conjunto de datos",
+        "models": {
+          "title": "Modelos",
+          "history-train": "Historial del entrenamiento",
+          "train": "Entrenamiento",
+          "button-submit": "Crear y entrenar modelo",
+          "open-visor": "Abrir visor",
+          "close-visor": "Cerrar visor",
+          "export-current-model": "Exportar modelo actual"
+        },
+        "table": {
+          "id": "ID",
+          "load": "Cargar",
+          "learning-rate": "Tasa de aprendizaje",
+          "number-of-epochs": "N. Épocas",
+          "train-rate": "Tamaño del conjunto de pruebas",
+          "layers": "Capas",
+          "optimizer-id": "Optimizador",
+          "loss-id": "Perdida",
+          "metric-id": "Métrica",
+          "download": "Descargar"
+        },
+        "dynamic-form-dataset": {
+          "title": "Predicción",
+          "text-0-__column_name_target__": "Introduce los valores de cada característica de entrada del ejemplo a predecir <b>{{column_name_target}}</b>",
+          "select-option": "Selecciona una opción",
+          "input-data": "Introduce los datos a probar",
+          "input-vector": "Introduce el vector a probar",
+          "test-vector": "Vector a probar",
+          "test-input-data": "Datos del formulario",
+          "test-input-vector": "Vector de los datos",
+          "selector-entity": "Selecciona la entidad",
+          "selector-model": "Selecciona el modelo"
+        },
+        "list-models-generated": "Lista modelos generados",
+        "visor": {
+          "title": "Configuración del visor",
+          "rmse": "RMSE",
+          "val_rmse": "VAL RMSE",
+          "mae": "MAE",
+          "val_mae": "VAL MAE",
+          "history-train": "Historial del entrenamiento",
+          "train": "Entrenamiento",
+          "summary": "Resumen",
+          "scatterplot": {
+            "__feature____target__": "{{feature}} x {{target}}"
+          },
+          "original-vs-predictions": "Datos originales / predicción",
+          "model": "Modelo",
+          "dataset": "Conjunto de datos",
+          "predictions": "Predicción",
+          "predicted": "Predicho",
+          "confusion-matrix": "Matriz de confusión",
+          "line-chart": "Gráfico de líneas"
+        },
+        "waiting-for-models": "Esperando a la creación de un modelo"
       },
-      "2-object-detection": {
+      "1-linear-regression": {
+        "generator": {
+          "manual": {
+            "title": "Manual del generador de modelos",
+            "simple-linear-regression": "Regresión linear simple",
+            "multiple-linear-regression": "Regresión linear multiple",
+            "details-edit-layers": {
+              "title": "Editor de las capas",
+              "text": {
+                "0": "Se pueden editar las capas de la red neuronal, puedes agregar tantas como desees pulsando el botón \"Añadir capa\" al inicio o al final."
+              },
+              "list": {
+                "0": "<b>Neuronas de la capa</b>:<br /> Cada neurona en una capa está conectada a todas las neuronas de la capa anterior y de la capa siguiente. <br /> Cada neurona en una capa tiene un conjunto de pesos asociados que ponderan su valor de salida. <br /> Podemos editar el número de neuronas de la capa.",
+                "1": "<b>Función de activación</b>:<br />La función de activación de una neurona se refiere a la función matemática que calcula su salida. Podemos editar la función de activación de las neuronas de cada capa."
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "Editor de hiperparámetros",
+              "text": {
+                "0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:"
+              },
+              "list": {
+                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
+                "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
+                "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "Información de hiperparámetros",
+              "list": {
+                "0": "<b>Tasa de aprendizaje</b>:<br /> La tasa de aprendizaje es un parámetro que determina cuánto se deben actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento.",
+                "1": "<b>Número de épocas</b>:<br /> El número de épocas se refiere al número de veces que se presentan los datos de entrenamiento a la red neuronal durante el proceso de entrenamiento. Cada iteración implica una actualización de los pesos de la red en función del error calculado.",
+                "2": "<b>Tamaño del conjunto de pruebas</b>:<br /> El tamaño del conjunto de pruebas se refiere a la cantidad de datos utilizados para evaluar el rendimiento de la red neuronal después del entrenamiento. Este conjunto de datos no se utiliza en el entrenamiento de la red neuronal y se utiliza para medir la capacidad de la red de generalizar a datos nuevos.",
+                "3": "<b>Optimizador</b>:<br /> El optimizador es un algoritmo utilizado para actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento. Algunos ejemplos de optimizadores son el Descenso del Gradiente Estocástico (SGD), el Adam y el Adagrad.",
+                "4": "<b>Función de pérdida</b>:<br /> La función de pérdida es una medida del error entre las predicciones de la red neuronal y las salidas reales. Se utiliza para optimizar la red neuronal durante el entrenamiento y existen diferentes funciones de pérdida, como la Entropía Cruzada y el Error Cuadrático Medio."
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "Crear y entrenar modelo",
+              "text": {
+                "0": "Una vez se han rellenado todos los campos anteriores podemos crear el modelo pulsando el botón \"Crear y entrenar modelo\".",
+                "1": "Si se pulsa el botón \"Abrir Visor\" se muestran dos gráficas. La gráfica superior muestra la evolución de la función de pérdida durante el entrenamiento. La gráfica inferior muestra la evolución de la métrica de evaluación <i>accuracy<i>. En las gráficas el color azul representa la evolución de los valores en el conjunto de entrenamiento y el color naranja representa las medidas para el conjunto de prueba.",
+                "2": "La precisión de validación es importante para detectar el sobre ajuste (<i>overfitting</i>) del modelo, que se produce cuando el modelo se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos."
+              }
+            },
+            "details-export-models": {
+              "title": "Exportar modelo",
+              "text": {
+                "0": "Si hemos creado el modelo correctamente se añadirá una entrada en la tabla de modelos generados. La aplicación permite exportar los modelos generados y guardarlos localmente."
+              }
+            },
+            "details-plot-models": {
+              "title": "Graficado de predicciones",
+              "text": {
+                "0": "Podemos usar un gráfico disperso para dicha tarea, de forma que representemos los datos originales en una nube de puntos y usamos una línea para trazar las predicciones del modelo, en función de la arquitectura que usemos nos dará una línea recta con cierta pendiente o una línea que se ajustará y curvará más a los datos. Para ello se hacen 100 predicciones <i>x</i> distantes, desde primer valor al último valor."
+              }
+            }
+          },
+          "simple-linear-regression": "Regresión linear simple",
+          "multiple-linear-regression": "Regresión linear multiple"
+        },
+        "predict": {
+          "title": "Predicción",
+          "instance": {
+            "__index__": "Instancia {{index}}"
+          },
+          "model": {
+            "__index__": "Modelo {{index}}"
+          },
+          "button-submit": "Predecir",
+          "list-models-generated": "Lista de modelos generados",
+          "list-instances": "Lsta de instancias"
+        },
+        "model-selector": {
+          "title": "Selector de modelos",
+          "option": "Seleciona un modelo"
+        }
       },
       "3-image-classification": {
+        "generator": {
+          "manual": {
+            "title": "Manual del generador de modelos",
+            "details-edit-layers": {
+              "title": "Editor de las capas",
+              "text-0": "Se pueden editar las capas de la red neuronal, puedes agregar tantas como desees pulsando el botón \"Añadir capa\" al inicio o al final.",
+              "list": {
+                "0": "<b>Neuronas de la capa</b>:<br /> Cada neurona en una capa está conectada a todas las neuronas de la capa anterior y de la capa siguiente. <br /> Cada neurona en una capa tiene un conjunto de pesos asociados que ponderan su valor de salida. <br /> Podemos editar el número de neuronas de la capa.",
+                "1": "<b>Función de activación</b>:<br />La función de activación de una neurona se refiere a la función matemática que calcula su salida. Podemos editar la función de activación de las neuronas de cada capa."
+              }
+            },
+            "details-edit-layers-more-info": {
+              "title": "Información adicional capas",
+              "text-0": "Adicionalmente hay dos capas más que son comunes al resto de redes de aprendizaje automático enfocadas en la clasificación de imágenes",
+              "list": {
+                "0": "<b>dense</b> <br /> Crea una capa densa (completamente conectada).",
+                "1": "<b>dropout</b> <br /> El abandono consiste en establecer aleatoriamente una tasa de fracción de unidades de entrada a 0 en cada actualización durante el tiempo de entrenamiento, lo que ayuda a prevenir el sobreajuste.",
+                "2": "<b>embedding</b><br />Asigna números enteros positivos (índices) a vectores densos de tamaño fijo. p.ej. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]",
+                "3": "<b>flatten</b> <br /> Una capa aplanada aplana cada lote en sus entradas a 1D (haciendo la salida 2D).",
+                "4": "<b>permute</b> <br /> Permuta las dimensiones de la entrada de acuerdo con un patrón dado.",
+                "5": "<b>repetVector</b> <br /> repite la entrada n veces en una nueva dimensin.",
+                "6": "<b>reshape</b> <br /> Revita una entrada a una determinada forma.",
+                "7": "<b>spatialDropout1d</b> <br /> Versión 1D espacial de dropout."
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "Editor de hiperparámetros",
+              "text-0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:",
+              "list": {
+                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
+                "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
+                "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "Información de hiperparámetros",
+              "list": {
+                "0": "<b>Tasa de aprendizaje</b>:<br /> La tasa de aprendizaje es un parámetro que determina cuánto se deben actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento.",
+                "1": "<b>Número de épocas</b>:<br /> El número de épocas se refiere al número de veces que se presentan los datos de entrenamiento a la red neuronal durante el proceso de entrenamiento. Cada iteración implica una actualización de los pesos de la red en función del error calculado.",
+                "2": "<b>Tamaño del conjunto de pruebas</b>:<br /> El tamaño del conjunto de pruebas se refiere a la cantidad de datos utilizados para evaluar el rendimiento de la red neuronal después del entrenamiento. Este conjunto de datos no se utiliza en el entrenamiento de la red neuronal y se utiliza para medir la capacidad de la red de generalizar a datos nuevos.",
+                "3": "<b>Optimizador</b>:<br /> El optimizador es un algoritmo utilizado para actualizar los pesos de la red neuronal en función del error calculado durante el entrenamiento. Algunos ejemplos de optimizadores son el Descenso del Gradiente Estocástico (SGD), el Adam y el Adagrad.",
+                "4": "<b>Función de pérdida</b>:<br /> La función de pérdida es una medida del error entre las predicciones de la red neuronal y las salidas reales. Se utiliza para optimizar la red neuronal durante el entrenamiento y existen diferentes funciones de pérdida, como la Entropía Cruzada y el Error Cuadrático Medio."
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "Crear y entrenar modelo",
+              "text-0": "Una vez se han rellenado todos los campos anteriores podemos crear el modelo pulsando el botón \"Crear y entrenar modelo\".",
+              "text-1": "Si se pulsa el botón \"Abrir Visor\" se muestran dos gráficas. La gráfica superior muestra la evolución de la función de pérdida durante el entrenamiento. La gráfica inferior muestra la evolución de la métrica de evaluación <i>accuracy<i>. En las gráficas el color azul representa la evolución de los valores en el conjunto de entrenamiento y el color naranja representa las medidas para el conjunto de prueba.",
+              "text-2": "La precisión de validación es importante para detectar el sobre ajuste (<i>overfitting</i>) del modelo, que se produce cuando el modelo se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos."
+            },
+            "details-export-models": {
+              "title": "Exportar modelo",
+              "text-0": "Si hemos creado el modelo correctamente se añadirá una entrada en la tabla de modelos generados. La aplicación permite exportar los modelos generados y guardarlos localmente."
+            },
+            "details-prediction": {
+              "title": "Clasificación",
+              "text-0": "El formulario final nos permite dibujar o subir una imagen para determinar la clase.",
+              "text-1": "Al pulsar el botón \"Ver resultado\",  a partir de las características de entrada del elemento se obtiene la predicción de su clase de salida."
+            }
+          }
+        }
       }
     },
+    "dataframe": {
+      "title": "Analizar conjunto de datos",
+      "upload-csv": "Subir conjunto de datos"
+    },
+    "documentation": {
+      "title": "Documentación"
+    },
     "manual": {
+      "title": "Manual",
+      "00-tabular-classification": {
+        "upload-and-process": {
+          "title": "Paso 1: Subir y procesar el conjunto de datos"
+        },
+        "dataset": {
+          "title": "Paso 2: Analizar el conjunto de datos"
+        },
+        "layer-design": {
+          "title": "Paso 3: Visualizar el diseño de capas de la red neuronal."
+        },
+        "editor-layers": {
+          "title": "Paso 4: Editar las capas de la red neuronal"
+        },
+        "editor-hyperparameters": {
+          "title": "Paso 5: Editar los hiperparámetros del entrenamiento"
+        },
+        "table-models": {
+          "title": "Paso 6: Entrenamiento y tabla de modelos"
+        },
+        "prediction": {
+          "title": "Paso 7: Predicción"
+        }
+      },
       "app": {
         "title": "Objetivos de la herramienta",
-        "description-1": "Este proyecto muestra distintas tareas que pueden realizar las Redes Neuronales cuando se entrenan mediante aprendizaje automático, es por ello que vamos a abordar desde tres enfoques (Clasificación, Identificar objetos, clasificar imágenes), cada uno de estos enfoques se explican a continuación en las siguientes entradas con una breve descripción de la técnica y como usar la herramienta con esa técnica.",
-        "description-2": "Algunos de los motivos por los que aprender redes neuronales son los siguientes:",
+        "description-1": "Esta aplicación muestra algunas de las tareas más importantes que pueden realizar las redes neuronales artificiales, como son: clasificación tabular, clasificación de imágenes e Identificación de objetos.  Las redes son técnicas de inteligencia artificial pertenecientes al campo del aprendizaje automático, en el cual se desarrollan modelos que se entrenan (o aprenden) a partir de conjuntos de datos.",
+        "description-2": "Algunos de los motivos por los que trabajar con redes neuronales son los siguientes:",
         "list": {
           "0": {
             "title": "Aplicaciones prácticas",
@@ -725,45 +1786,64 @@
       },
       "0-tabular-classification": {
         "title": "Clasificación tabular",
-        "1-title": "Modelos entrenados",
-        "1-description-1": "Debemos acceder a la sección de modelos entrenados y seleccionar uno de los dos disponibles.",
-        "1-list-options": {
-          "0": "Clasificación de la evaluación por características del coche",
-          "1": "Clasificación del tipo de flor por características de las flores"
-        },
+        "1-title": "Modelos pre-entrenados",
+        "1-description-1": "Debemos acceder a la sección de modelos pre-entrenados y seleccionar uno de los disponibles.",
         "1-description-2": "La herramienta cuenta con una lista de ejemplos representativos que permiten alterar el formulario de características.",
-        "1-description-3": "Al acceder a la sección de la herramienta en ambos modelos podremos editar las características de los elemento a predecir. La herramienta cuenta con formulario dinámico que permite cambiar los tipos de datos de entrada de la red neuronal.",
+        "1-description-3": "Al acceder a la sección de la herramienta en los modelos podremos editar las características de los elementos a predecir. La herramienta cuenta con formulario dinámico que permite cambiar los tipos de datos de entrada de la red neuronal.",
         "2-title": "Entrenar modelos",
         "2-description-1": "La herramienta cuenta con un visualizador de datos que permite mostrar las clases y los atributos del conjunto de datos. Así como un gestor para crear, diseñar, entrenar y exportar un modelo de datos.",
-        "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo numero de unidades que clases a predecir.",
-        "2-description-3": "A la derecha contamos con un editor de las distintos tipos de datos de para el entrenamiento, tasa de aprendizaje, numero de iteraciones, tamaño del banco de pruebas, función del optimizador, función de pérdida, función de la métrica.",
-        "2-description-4": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la tabla de abajo una entrada con los distintos modelos entrenados.",
-        "2-description-5": "Una vez entrenado modelo de datos podremos realizar predicciones, para ello se incluye un formulario dinámico con las características del conjunto de datos. En función del entrenamiento y las opciones seleccionadas, nuestro modelo irá prediciendo distintas clases objetivo con una mayor o menor precisión."
+        "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo numero de neuronas que clases a predecir.",
+        "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+        "2-description-4": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la tabla de abajo una entrada con el modelos entrenado.",
+        "2-description-5": "Una vez entrenado un modelo a partir de los datos podremos realizar predicciones, para ello se incluye un formulario dinámico con las características del conjunto de datos. La precisión del modelo en la predicción podrá ser mayor o menor en función del entrenamiento y las opciones seleccionadas."
+      },
+      "1-linear-regression": {
+        "title": "Regresión lineal",
+        "1-title": "Modelos pre-entrenados",
+        "1-description": {
+          "0": "Debemos acceder a la sección de modelos pre-entrenados y seleccionar uno de los disponibles.",
+          "1": null,
+          "2": null
+        },
+        "2-title": "Entrenar modelos",
+        "2-description": {
+          "0": "La sección cuenta con la posibilidad subir tus conjuntos de datos, conjuntos de datos preparados, descripciones, herramientas de visualización gráficas y de estadísticas.",
+          "1": "Cuenta con un generador de modelos de regresión lineal. Gestiona capas de la red neuronal, hiperparámetros, funciones de optimización, funciones de perdida y de métricas. así como el selector de características.",
+          "2": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la la lista una entrada con el modelos entrenado.",
+          "3": "Para la predicción se usa el grafico de dispersión creando una linea"
+        },
+        "2-link": "Consulta más información en el siguiente <link1>enlace</link1>"
       },
       "2-object-identification": {
         "title": "Identificación de objetos",
-        "1-title": "Modelos entrenados",
+        "1-title": "Modelos pre-entrenados",
         "1-description-1": "Dentro de la identificación de objetos contamos con cuatro modelos, para usar esta herramienta es tan sencillo como activar la opción de usar webcam o subir una imagen.",
-        "1-description-2": "La sección de la herramienta cuenta con cuatro modelos de identificación de objetos, dichos modelos han sido optimizados para ser funcionales en dispositivos mobiles.",
+        "1-description-2": "En esta sección la herramienta ofrece cuatro modelos de identificación de objetos, dichos modelos han sido optimizados para ser funcionales en dispositivos móviles. Estos modelos son:",
+        "1-description-3": "En caso de usar la webcam como entrada se generará un filtro de forma que se pueda ver en tiempo real sobre el video los puntos que se están detectando. En caso de usar la opción de subir imágenes podemos adjuntar un fichero en formato png o jpg. Como resultado se mostrará la imagen original, el filtro generado y la imagen con el filtro aplicado.",
         "1-list": {
           "0": "Identificación de la geometría facial.",
           "1": "Identificación de una malla facial completa.",
           "2": "Identificación de las articulaciones.",
-          "3": "Identificación de objetos (también es un clasificador)."
-        },
-        "1-description-3": "La herramienta en caso de activar la identificación por webcam se activara el filtro de forma que se pueda ver en tiempo real sobre la image de entrada los puntos que se están detectando. En caso de usar la opción de subir imágenes podemos adjuntar un fichero en formato png o jpg, dicho fichero se cargarán en la misma sección en tres secciones, imagen original, filtro aplicado, imagen con el filtro detectado."
+          "3": "Identificación de objetos."
+        }
       },
       "3-image-classification": {
-        "title": "Clasificador de imágenes",
-        "1-title": "Modelos entrenados",
-        "1-description-1": "En la sección del clasificador de imágenes podemos seleccionar entre dos ejemplos muy representativos de las redes neuronales. Estos son el conjunto de imágenes mnist y el conjunto de imágenes.",
+        "title": "Clasificación de imágenes",
+        "1-title": "Modelos pre-entrenados",
+        "1-description-1": "En la sección de la clasificación de imágenes podemos seleccionar entre dos ejemplos muy representativos de las redes neuronales. Estos son el modelo entrenado con el conjunto de imágenes MNIST y un modelo de clasificación de imágenes genérico. Concretamente:",
         "1-list": {
-          "0": "MNIST, clasificador de imágenes que detecta números.",
-          "1": "Mobilenet, clasificador de imágenes que puede detectar 1001 categorías."
+          "0": "MNIST, Clasificación de imágenes que detecta números.",
+          "1": "Mobilenet, clasificación de imágenes pertenecientes a 1001 categorías."
         },
         "1-description-2": "En el modelo de MNIST se permite seleccionar entre una lista de imágenes que contienen un número, dibujar en un canvas el número a predecir o subir una imagen de un número.",
-        "1-description-3": "En el modelo de Mobilenet se han incluido una lista de imágenes de ejemplo que pueden ser seleccionadas o podemos subir una imagen que la red neuronal analizará para poder clasificar.",
-        "1-description-4": "Para ambos modelos el sistema hará una predicción que indicará el porcentaje de precisión que ha detectado."
+        "1-description-3": "En el modelo de MobileNet se han incluido una lista de imágenes de ejemplo que pueden ser seleccionadas o podemos subir una imagen que la red neuronal clasificará.",
+        "1-description-4": "Para ambos modelos el sistema mostrará la predicción con el porcentaje de precisión calculado."
+      },
+      "layer-editor": {
+        "title": "Editor de capas"
+      },
+      "hyperparameters-editor": {
+        "title": "Editor de hiperparámetros"
       }
     },
     "glossary": {
@@ -776,32 +1856,45 @@
         "function": "Función"
       },
       "tabular-classification": {
-        "title": "Descripción clasificación tabular",
-        "text-1": "La clasificación tabular es un tipo de aprendizaje supervisado en el que se utiliza un conjunto de datos etiquetados para entrenar un modelo de aprendizaje automático que pueda predecir la clase de un nuevo conjunto de datos. En la clasificación tabular, los datos de entrada y salida se representan en forma de una tabla con filas y columnas, donde cada fila representa una instancia o ejemplo de los datos, y cada columna representa una característica o atributo de los datos.",
-        "text-2": "Por ejemplo, si se quiere predecir si un cliente de un banco es solvente o no, las características o atributos que se pueden utilizar son: ingresos, deudas, historial crediticio, edad, etc. En la clasificación tabular, cada instancia o ejemplo del conjunto de datos tendrá valores para cada una de estas características y una etiqueta que indica si el cliente es solvente o no.",
+        "title": "Clasificación tabular",
+        "text-1": "La clasificación tabular es un tipo de aprendizaje supervisado en el que se utiliza un conjunto de datos etiquetados para entrenar un modelo de aprendizaje automático, de forma que el modelo pueda predecir la clase de nuevos ejemplos de datos no utilizados en el entrenamiento. En la clasificación tabular, los datos de entrada y salida se representan en forma de una tabla con filas y columnas, donde cada fila representa una instancia o ejemplo de los datos, y cada columna representa una característica o atributo de los datos.",
+        "text-2": "Por ejemplo, si se quiere predecir si un cliente de un banco es solvente o no, las características o atributos que se pueden utilizar son: ingresos, deudas, historial crediticio, edad, etc. En la clasificación tabular, cada instancia o ejemplo del conjunto de datos tendrá valores para cada una de estas características y una etiqueta (clase) que indica si el cliente es solvente o no.",
         "text-3": "Una vez que se tiene un conjunto de datos etiquetados, se utiliza un algoritmo de aprendizaje automático para entrenar un modelo que pueda predecir la etiqueta de nuevos conjuntos de datos. Este modelo puede ser utilizado para realizar predicciones precisas y rápidas sobre nuevas instancias de datos.",
         "text-4": "La clasificación tabular es una técnica muy útil para resolver problemas de clasificación en una amplia variedad de campos, como la medicina, el comercio electrónico, la banca, la seguridad y muchos otros."
       },
+      "linear-regression": {
+        "title": "Regresión lineal",
+        "text": {
+          "0": "La regresión lineal es un método de análisis estadístico utilizado en el aprendizaje automático para modelar la relación lineal entre una variable independiente y una variable dependiente, buscando encontrar la mejor línea recta que ajuste los datos y permita hacer predicciones.",
+          "1": "En la regresión lineal, los datos se representan generalmente como puntos dispersos en un plano cartesiano, donde la variable independiente se coloca en el eje X y la variable dependiente en el eje Y. El objetivo es encontrar la ecuación de una línea recta (y = mx + b) que minimice la distancia entre esta línea y los puntos de datos. Una vez que se ha obtenido esta ecuación, se puede utilizar para hacer predicciones sobre valores futuros de la variable dependiente en función de los valores de la variable independiente.",
+          "2": "Por ejemplo, si estamos analizando la relación entre la cantidad de publicidad en un sitio web y las ventas de un producto, la cantidad de publicidad sería la variable independiente, y las ventas del producto serían la variable dependiente. La regresión lineal nos ayudaría a determinar si existe una relación lineal entre la inversión en publicidad y las ventas, y si es así, nos permitiría predecir las ventas futuras en función del gasto en publicidad.",
+          "3": "La regresión lineal es una herramienta poderosa en el análisis de datos y se utiliza en una variedad de campos, incluyendo la economía, la ciencia social, la investigación médica y muchas otras disciplinas para comprender y predecir relaciones entre variables."
+        }
+      },
       "object-identification": {
-        "title": "Descripción identificación de objetos",
-        "text-1": "La identificación de objetos en redes neuronales es una técnica utilizada en el campo del aprendizaje automático y la visión por computadora para detectar y reconocer objetos en imágenes o videos. Es una tarea importante en el análisis de imágenes y es utilizada en aplicaciones como el reconocimiento de rostros, el seguimiento de objetos en tiempo real, la clasificación de objetos en imágenes médicas y la detección de objetos en vehículos autónomos.",
+        "title": "Identificación de objetos",
+        "text-1": "La identificación de objetos en redes neuronales es una técnica utilizada en el campo del aprendizaje automático y la visión por computador para detectar y reconocer objetos en imágenes o videos. Es una tarea importante en el análisis de imágenes y es utilizada en aplicaciones como el reconocimiento de rostros, el seguimiento de objetos en tiempo real, la clasificación de objetos en imágenes médicas y la detección de objetos en vehículos autónomos.",
         "text-2": "Las redes neuronales utilizadas para la identificación de objetos son modelos de aprendizaje profundo que se entrenan en conjuntos de datos etiquetados. El proceso de entrenamiento implica proporcionar a la red neuronas una gran cantidad de imágenes etiquetadas, y ajustar los pesos de las conexiones entre las neuronas para que la red pueda identificar objetos en nuevas imágenes con alta precisión.",
         "text-3": "Una vez que la red neuronal ha sido entrenada, se utiliza para identificar objetos en nuevas imágenes. La red examina la imagen y, mediante el procesamiento de múltiples capas, extrae características importantes que se utilizan para identificar los objetos de interés. Luego, la red utiliza estas características para asignar una etiqueta a cada objeto detectado en la imagen.",
-        "text-4": "En resumen, la identificación de objetos en redes neuronales es una técnica importante en la visión por computadora y el aprendizaje automático que se utiliza para detectar y reconocer objetos en imágenes y videos. Se basa en el uso de redes neuronales profundas entrenadas en conjuntos de datos etiquetados para identificar y clasificar objetos en nuevas imágenes con alta precisión."
+        "text-4": "En resumen, la identificación de objetos en redes neuronales es una técnica importante en la visión por computador y el aprendizaje automático que se utiliza para detectar y reconocer objetos en imágenes y videos. Se basa en el uso de redes neuronales profundas entrenadas en conjuntos de datos etiquetados para identificar y clasificar objetos en nuevas imágenes con alta precisión."
       },
       "image-classification": {
-        "title": "Descripción clasificador de imágenes",
-        "text-1": "El clasificador de imágenes es una técnica utilizada en las redes neuronales para clasificar imágenes en diferentes categorías o etiquetas. El objetivo de un clasificador de imágenes es tomar una imagen de entrada y predecir a qué clase pertenece, basándose en un conjunto de categorías o etiquetas predefinidas.",
+        "title": "Clasificación de imágenes",
+        "text-1": "La clasificación de imágenes es una técnica utilizada en las redes neuronales para clasificar imágenes en diferentes categorías o etiquetas. El objetivo de un clasificador de imágenes es tomar una imagen de entrada y predecir a qué clase pertenece, basándose en un conjunto de categorías o etiquetas predefinidas.",
         "text-2": "En el aprendizaje profundo, los clasificadores de imágenes se basan en las redes neuronales convolucionales (CNN, por sus siglas en inglés), que son una arquitectura especializada para procesar imágenes. Estas redes neuronales tienen múltiples capas y operaciones de convolución que les permiten extraer características importantes de las imágenes, como bordes, formas y texturas.",
         "text-3": "Para entrenar un clasificador de imágenes, se utiliza un conjunto de datos etiquetados que contiene imágenes y sus respectivas etiquetas de clase. Luego, se entrena la red neuronal utilizando este conjunto de datos para que aprenda a identificar patrones en las imágenes y asociarlos con las etiquetas de clase correspondientes.",
         "text-4": "Una vez que la red neuronal ha sido entrenada, se puede utilizar para clasificar nuevas imágenes en diferentes categorías. El clasificador de imágenes examina la imagen de entrada y la procesa a través de la red neuronal para extraer características importantes y predecir a qué clase pertenece la imagen.",
-        "text-5": "En resumen, el clasificador de imágenes en las redes neuronales es una técnica que utiliza las redes neuronales convolucionales para clasificar imágenes en diferentes categorías o etiquetas. Se basa en el uso de un conjunto de datos etiquetados para entrenar la red neuronal y en la extracción de características importantes de las imágenes para predecir a qué clase pertenece una nueva imagen de entrada."
+        "text-5": "En resumen, la clasificación de imágenes en las redes neuronales es una técnica que utiliza las redes neuronales convolucionales para clasificar imágenes en diferentes categorías o etiquetas. Se basa en el uso de un conjunto de datos etiquetados para entrenar la red neuronal y en la extracción de características importantes de las imágenes para predecir a qué clase pertenece una nueva imagen de entrada."
       },
       "activation-functions": {
         "title": "Funciones de activación",
-        "text-1": "Una función de activación es una función matemática utilizada en una red neuronal artificial para determinar la salida de una neurona o de un conjunto de neuronas en función de la entrada recibida. La función de activación introduce no linealidad en la red neuronal, lo que permite a la red aprender patrones más complejos en los datos de entrada. Ejemplos comunes de funciones de activación son la función sigmoidea, la función ReLU y la función tangente hiperbólica.",
+        "sub-title-1": "Capas lineales",
+        "sub-title-2": "Activaciones no lineales (suma ponderada, no linealidad)",
+        "sub-title-3": "Activaciones no lineales (otras)",
+        "text-1": "Una función de activación es una función matemática utilizada en una red neuronal artificial para determinar la salida de una neurona o de un conjunto de neuronas en función de la entrada recibida. La función de activación introduce no linealidad en la red neuronal, lo que permite a la red aprender patrones más complejos en los datos de entrada. Ejemplos comunes de funciones de activación son:",
         "table": {
           "softmax": {
+            "title": "Softmax",
             "description": "Transforma las salidas a una representación en forma de probabilidades, de forma que la suma de todas las probabilidades da 1",
             "characteristics": {
               "0": "Acotada entre 0 y 1",
@@ -810,19 +1903,129 @@
             }
           },
           "sigmoid": {
-            "description": "Transforma, los valores de entrada donde los más altos tienden a 1 y los valores más bajos tienden a 0",
+            "title": "Sigmoid",
+            "description": "La función sigmoide transforma los valores de entrada en un rango entre 0 y 1. Es comúnmente utilizada en redes neuronales para problemas de clasificación binaria.",
             "characteristics": {
-              "0": "Acotada entre 0 y 1",
-              "1": "Lenta convergencia",
-              "2": "Buena en capas finales"
+              "0": "Resultados con el rango [0, 1].",
+              "1": "Útil en la capa de salida de clasificadores binarios.",
+              "2": "Puede sufrir el problema de desvanecimiento del gradiente en redes profundas."
+            }
+          },
+          "hard-sigmoid": {
+            "title": "Hard Sigmoid",
+            "description": "Hardsigmoid es una versión simplificada de la función sigmoide utilizada para la eficiencia computacional.",
+            "characteristics": {
+              "0": "Es más rápida de calcular que la sigmoide.",
+              "1": "Menos suave en la transición entre 0 y 1."
             }
           },
           "relu": {
-            "description": "Transforma los valores de entrada dejando a cero los valores negativos y dejando tal como estaban los datos positivos-",
+            "title": "ReLU (Rectified Linear Unit)",
+            "description": "La función ReLU es simple y efectiva al devolver cero para valores negativos y mantener los valores positivos sin cambios",
             "characteristics": {
-              "0": "No está acotada",
-              "1": "Buen desempeño con redes convolucionales"
+              "0": "Eficiente en términos de cómputo.",
+              "1": "Mitiga el problema de desvanecimiento del gradiente.",
+              "2": "Puede activar neuronas esparsamente."
             }
+          },
+          "relu6": {
+            "title": "ReLU6",
+            "description": "Similar a ReLU, pero con una limitación superior de 6 para los valores positivos, lo que puede ayudar a evitar la explosión de gradientes.",
+            "characteristics": {
+              "0": "Mitiga el problema de desvanecimiento del gradiente.",
+              "1": "Útil en redes con gradientes inestables."
+            }
+          },
+          "leaky-relu": {
+            "title": "LeakyReLU",
+            "description": "Leaky ReLU es una variante de ReLU que permite que una fracción pequeña de los valores negativos pase a través de la función.",
+            "characteristics": {
+              "0": "Mitiga el problema de muerte de neuronas en comparación con ReLU.",
+              "1": "Ayuda a mantener la información en los gradientes negativos."
+            }
+          },
+          "elu": {
+            "title": "ELU (Exponential Linear Unit)",
+            "description": "ELU es una función que se asemeja a ReLU en los valores positivos, pero también tiene un gradiente definido para valores negativos.",
+            "characteristics": {
+              "0": "Reduce el problema de desvanecimiento del gradiente.",
+              "1": "Ayuda a mantener activas más neuronas."
+            }
+          },
+          "tanh": {
+            "title": "Tanh (Tangente hiperbólica)",
+            "description": "La función tangente hiperbólica transforma los valores de entrada en un rango [-1, 1].",
+            "characteristics": {
+              "0": "Resultados en el rango [-1, 1].",
+              "1": "Útil en problemas de clasificación binaria.",
+              "2": "Sufre de desvanecimiento del gradiente en redes profundas."
+            }
+          },
+          "soft-plus": {
+            "title": "SoftPlus",
+            "description": "SoftPlus es una función suave que se utiliza a menudo como una alternativa suave a ReLU.",
+            "characteristics": {
+              "0": "Suave y derivable en todas partes.",
+              "1": "Puede ser útil en redes generativas y de regresión."
+            }
+          },
+          "mish": {
+            "title": "Mish",
+            "description": "Mish es una función de activación relativamente nueva que combina características de otras funciones como la tangente hiperbólica y la función sigmoide.",
+            "characteristics": {
+              "0": "Suavidad y derivabilidad en todo su rango.",
+              "1": "Proporciona un mejor rendimiento en algunas aplicaciones."
+            }
+          },
+          "selu": {
+            "title": "SELU (Scaled Exponential Linear Unit)",
+            "description": "SELU es una función que se beneficia de una normalización específica y puede ayudar a mantener la estabilidad de la red.",
+            "characteristics": {
+              "0": "Autocalibración: propaga estadísticas estables a través de las capas.",
+              "1": "Puede ser útil en redes con arquitectura autoencoder."
+            }
+          }
+        }
+      },
+      "editor-layers": {
+        "title": "Glosario del editor de capas",
+        "table": {
+          "activation-function": {
+            "title": "Neuronas de Capa (Layer Neurons)",
+            "description": "Son las unidades individuales o nodos en una capa específica de la red. Cada neurona recibe entradas, realiza cálculos y produce una salida que se transmite a la siguiente capa. La cantidad de neuronas en una capa puede variar y suele ser un hiperparámetro del modelo. La elección del número de neuronas en una capa afecta la capacidad del modelo para aprender representaciones de los datos."
+          },
+          "units": {
+            "title": "Función de Activación de Capa (Layer Activation Function)",
+            "description": "En cada neurona de una capa de una red neuronal, se aplica una función de activación para introducir no linealidad en el modelo. La función de activación determina la salida de la neurona en función de su entrada y los pesos asociados."
+          }
+        }
+      },
+      "editor-hyperparameters": {
+        "title": "Glosario del editor de hiperparámetros",
+        "table": {
+          "learning-rate": {
+            "title": "Tasa de Aprendizaje (Learning Rate)",
+            "description": "La tasa de aprendizaje es un hiperparámetro crucial en algoritmos de aprendizaje automático y redes neuronales. Determina cuánto deben actualizarse los pesos del modelo en cada iteración durante el proceso de entrenamiento. Una tasa de aprendizaje alta puede llevar a la convergencia rápida, pero puede resultar en inestabilidad, mientras que una tasa baja puede llevar a la convergencia lenta o quedarse atrapada en mínimos locales."
+          },
+          "number-or-epochs": {
+            "title": "Número de Épocas (Number of Epochs)",
+            "description": "Las épocas se refieren al número de veces que todo el conjunto de datos de entrenamiento se ha pasado a través del modelo durante el proceso de entrenamiento. Un mayor número de épocas generalmente permite que el modelo se ajuste mejor a los datos, pero también puede conducir al sobre ajuste si se excede un cierto límite."
+          },
+          "test-size": {
+            "title": "Tamaño del Conjunto de Pruebas (Test Size)",
+            "description": "Es la cantidad de datos que se reserva para evaluar el rendimiento del modelo después de su entrenamiento. El conjunto de pruebas se utiliza para medir la precisión y el rendimiento general del modelo en datos no vistos."
+          },
+          "optimizer": {
+            "title": "Optimizador (Optimizer)",
+            "description": "El optimizador es un algoritmo que ajusta los parámetros de un modelo de aprendizaje automático durante el entrenamiento. Su objetivo es minimizar la función de pérdida al actualizar los pesos del modelo de manera eficiente. Ejemplos de optimizadores comunes incluyen el Descenso del Gradiente Estocástico (SGD), el Adam y el RMSprop."
+          },
+          "loss-function": {
+            "title": "Función de Pérdida (Loss Function)",
+            "description": "La función de pérdida es una medida que cuantifica qué tan bien se está desempeñando el modelo en sus predicciones. Ayuda a calcular la diferencia entre las predicciones del modelo y los valores reales del conjunto de datos. El objetivo del entrenamiento es minimizar esta función, ya que un valor bajo de pérdida indica que el modelo se ajusta mejor a los datos."
+          },
+          "metric-function": {
+            "title": "Función de Métrica (Metric Function)",
+            "description": "A diferencia de la función de pérdida, que se utiliza para optimizar el modelo durante el entrenamiento, las funciones de métrica se utilizan para evaluar el rendimiento del modelo después del entrenamiento. Estas métricas proporcionan información sobre la precisión, la recuperación, la precisión, el F1-score, etc., y ayudan a comprender cómo se desempeña el modelo en tareas específicas."
           }
         }
       },
@@ -836,7 +2039,7 @@
             "description": "El descenso del gradiente es un algoritmo que estima dónde una función genera sus valores más bajos. En el caso de que el modelo de aprendizaje automático sea de gran escala este cálculo puede ser muy costoso.\n                          Debido a esto surge el descenso del gradiente estocástico que usa una constante y por consiguiente el número de gradientes a calcular es fijo."
           },
           "momentum": {
-            "references": "",
+            "references": "-",
             "description": "Es una variación de la función anterior. Define un valor que acelera el descenso del gradiente si el signo del gradiente es el mismo durante diferentes épocas."
           },
           "adagrad": {
@@ -854,19 +2057,23 @@
           "adam": {
             "references": "Estimación adaptativa del mo \n (Adaptive moment estimation) \n (Velasco, 2020)",
             "description": "Es una combinación de <i>AdaGrad</i> y <i>RMSProp</i>. Se mantiene un factor de entrenamiento por parámetro y se calcula <i>RMSProp</i>, además cada factor de entrenamiento se ve afectado por el <i>momentum</i> del gradiente."
+          },
+          "adamax": {
+            "description": "Combina técnicas de <i>momentum</i> y adaptación del aprendizaje para acelerar la convergencia durante el entrenamiento de redes neuronales. Ajusta automáticamente la tasa de aprendizaje y utiliza un escalado de gradiente para evitar problemas de divergencia."
           }
         }
       },
       "loss-functions": {
         "title": "Funciones de pérdida",
-        "text-1": "En aprendizaje automático, una función de pérdida (también llamada función de costo) es una medida que cuantifica la discrepancia entre la salida predicha por un modelo y la salida real o deseada. En otras palabras, la función de pérdida mide qué tan bien el modelo se ajusta a los datos de entrenamiento.",
-        "text-2": "El objetivo de un algoritmo de aprendizaje automático es minimizar la función de pérdida, lo que significa encontrar el conjunto de parámetros del modelo que mejor se ajuste a los datos de entrenamiento. Por lo tanto, la elección de la función de pérdida es muy importante, ya que puede afectar la capacidad del modelo para aprender correctamente los patrones en los datos y hacer predicciones precisas en nuevos datos.",
-        "text-3": "Existen diferentes funciones de pérdida para diferentes tipos de problemas de aprendizaje automático, como la regresión, la clasificación binaria y la clasificación multiclase. Ejemplos comunes de funciones de pérdida incluyen el error cuadrático medio (MSE) para la regresión, la entropía cruzada binaria para la clasificación binaria y la entropía cruzada categórica para la clasificación multiclase.",
-        "text-4": "En tensorflow.js hay diferentes funciones de pérdida y la aplicación de cada una de ellas depende del tipo de problema que queramos afrontar.",
+        "text": {
+          "0": "En aprendizaje automático, una función de pérdida (también llamada función de costo) es una medida que cuantifica la discrepancia entre la salida predicha por un modelo y la salida real o deseada. En otras palabras, la función de pérdida mide qué tan bien el modelo se ajusta a los datos de entrenamiento.",
+          "1": "El objetivo de un algoritmo de aprendizaje automático es minimizar la función de pérdida, lo que significa encontrar el conjunto de parámetros del modelo que mejor se ajuste a los datos de entrenamiento. Por lo tanto, la elección de la función de pérdida es muy importante, ya que puede afectar la capacidad del modelo para aprender correctamente los patrones en los datos y hacer predicciones precisas en nuevos datos.",
+          "2": "En tensorflow.js hay diferentes funciones de pérdida y la aplicación de cada una de ellas depende del tipo de problema que queramos afrontar. Algunos ejemplos se muestran a continuación:"
+        },
         "table": {
           "AbsoluteDifference": {
             "references": "Diferencia absoluta \n (Acervolima, s.f.)",
-            "description": "Calcula en valor absoluto la distancia al objetivo. Esta función es utilizada en problemas de regresión."
+            "description": "Calcula en valor absoluto la distancia al objetivo."
           },
           "ComputeWeightedLoss": {
             "references": "Media ponderada \n (Acervolima, s.f.)",
@@ -882,7 +2089,7 @@
           },
           "HuberLoss": {
             "references": "(Pérdida Huber)",
-            "description": "Es usada en problemas de regresión, esta calcula la pérdida provocada por el procedimiento de estimación."
+            "description": "Calcula la pérdida provocada por el procedimiento de estimación."
           },
           "LogLoss": {
             "references": "Pérdida logarítmica \n (Shen, 2005)",
@@ -890,7 +2097,7 @@
           },
           "MeanSquaredError": {
             "references": "Error cuadrático medio \n (Acervolima, s.f.)",
-            "description": "Calcula de forma geométrica la distancia al cuadrado al objetivo, esta función es utilizada en problemas de regresión."
+            "description": "Calcula de forma geométrica la distancia al cuadrado al objetivo."
           },
           "CategoricalCrossEntropy": {
             "references": "(Acervolima, s.f.)",
@@ -911,6 +2118,7 @@
         "text-1": "Se utilizan para evaluar el rendimiento del modelo de la red neuronal en un conjunto de datos de prueba. La función de métrica toma las predicciones realizadas por el modelo y las compara con los valores reales de los datos de prueba para determinar la precisión del modelo.",
         "text-2": "Existen diferentes tipos de funciones de métrica que se pueden utilizar en una red neuronal, dependiendo del tipo de problema que se esté abordando. Por ejemplo, para un problema de clasificación binaria, se podría utilizar la precisión (accuracy) como métrica, mientras que para un problema de regresión se podría utilizar el error cuadrático medio (mean squared error).",
         "text-3": "En resumen, una función de métrica es una herramienta importante para evaluar la capacidad de una red neuronal para realizar predicciones precisas en un conjunto de datos de prueba y para ayudar a ajustar los parámetros del modelo para mejorar su rendimiento.",
+        "text-4": "Nosotros usamos principalmente la función <i>accuracy</i>. En la clasificación multietiqueta, esta función calcula la precisión del subconjunto: el conjunto de etiquetas previsto para una muestra debe coincidir exactamente con el conjunto de etiquetas correspondiente en y",
         "table": {
           "BinaryAccuracy": {
             "references": "Precisión binaria <br />(Acervolima, s.f.)",
@@ -947,6 +2155,14 @@
         }
       }
     },
+    "menu": {
+      "select-model": {
+        "description": "Descripción"
+      },
+      "select-dataset": {
+        "description": "Descripción"
+      }
+    },
     "terms": {
       "title": "Políticas de privacidad y cookies",
       "privacy-title": "Políticas de privacidad",
@@ -954,6 +2170,46 @@
       "cookies-title": "Cookies",
       "cookies-text": "Nuestra página web utiliza cookies de Google Analytics para contabilizar el número de visitantes que recibimos. Estas cookies nos permiten recopilar información estadística anónima sobre el uso de nuestro sitio web y nos ayudan a mejorar su rendimiento y funcionalidad. Las cookies de Google Analytics no recopilan información personal de los usuarios. Al navegar por nuestra web, aceptas el uso de estas cookies. Si deseas obtener más información acerca de cómo utilizamos las cookies, por favor consulta nuestra política de privacidad."
     }
+  },
+  "generator": {
+    "table-models": {
+      "list-models-generated": "Lista modelos generados",
+      "learning-rate": "Tasa de aprendizaje",
+      "test-size": "Tamaño del conjunto de pruebas",
+      "n-of-epochs": "N. épocas",
+      "n-epochs": "N. épocas",
+      "id-optimizer": "Optimizador",
+      "id-loss": "Pérdida",
+      "id-metrics": "Métrica",
+      "layers": "Capas",
+      "download": "Descargar",
+      "features": "Características",
+      "open-visor": "Abrir visor",
+      "close-visor": "Cerrar visor"
+    }
+  },
+  "hr": {
+    "information": "Información",
+    "editor": "Editor",
+    "dataset": "Conjunto de datos",
+    "model": "Modelo",
+    "generated-models": "Modelos generados",
+    "predict": "Predecir",
+    "classify": "Clasificar",
+    "tasks": "Tareas",
+    "00-tabular-classification": "Clasificación Tabular",
+    "tutorial-00-tabular-classification": "Entrenar un modelo para clasificación tabular",
+    "01-linear-regression": "Regresión Lineal",
+    "02-object-detection": "Detección de objetos",
+    "03-image-classification": "Clasificación de imágenes",
+    "optimization-function": "Funciones de optimización",
+    "activation-functions": "Funciones de activación",
+    "loss-functions": "Funciones de pérdida",
+    "metric-function": "Funciones de métrica",
+    "process-dataset": "Procesamiento del conjunto de datos",
+    "project": "Proyecto",
+    "add-model-dataset": "Añadir modelo al proyecto",
+    "dataframe": "DataFrame"
   },
   "form-dataframe": {
     "int32": "Entero",
@@ -964,5 +2220,75 @@
     "drop": "Descartar",
     "ignored": "Ignorar",
     "submit": "Procesar dataframe"
+  },
+  "joyride": {
+    "back": "Atras",
+    "close": "Cerrar",
+    "last": "Anterior",
+    "next": "Siguiente",
+    "open": "Abrir",
+    "skip": "Saltar"
+  },
+  "upload-dataset-info": "Debes subir un conjunto de datos para realizar la tarea.",
+  "upload-model-info": "Debes subir un modelo para realizar la tarea.",
+  "select-attr": "Selecciona atributo",
+  "upload-dataset": "Subir conjunto de datos",
+  "00-tc": {
+    "car": {
+      "buying": "Precio de compra",
+      "maint": "Precio del mantenimiento",
+      "doors": "Número de puertas",
+      "persons": "Capacidad de personas",
+      "lug_boot": "Tamaño del maletero",
+      "safety": "Seguridad estimada del coche.",
+      "result": "Resultado",
+      "unacc": "Inaceptable",
+      "acc": "Aceptable",
+      "good": "Bueno",
+      "vgood": "Muy bueno"
+    },
+    "iris": {
+      "sepal_length": "Longitud sépalo",
+      "sepal_width": "Anchura sépalo",
+      "petal_length": "Longitud petalo",
+      "petal_width": "Anchura petalo",
+      "class": "Clase",
+      "Iris-setosa": "Iris setosa",
+      "Iris-versicolor": "Iris versicolor",
+      "Iris-virginica": "Iris virginica"
+    },
+    "lymphography": {
+      "lymphatics": "lymphatics",
+      "block of affere": "block of affere",
+      "bl": {
+        " of lymph": {
+          " c": "bl. of lymph. c",
+          " s": "bl. of lymph. s"
+        }
+      },
+      "by pass": "by pass",
+      "extravasates": "extravasates",
+      "regeneration": "regeneration",
+      "early uptake in": "early uptake in",
+      "lym": {
+        "nodes dimin": "lym.nodes dimin",
+        "nodes enlar": "lym.nodes enlar"
+      },
+      "changes in lym": "changes in lym",
+      "defect in node": "defect in node",
+      "changes in node": "changes in node",
+      "changes in stru": "changes in stru",
+      "special forms": "special forms",
+      "dislocation of": "dislocation of",
+      "exclusion of": "exclusion of",
+      "no": {
+        " of nodes in": "no. of nodes in"
+      },
+      "Category": "Category",
+      "normal find": "Normal",
+      "metastases": "Metastasis",
+      "malign lymph": "Linfoma maligno",
+      "fibrosis": "Fibrosis"
+    }
   }
 }

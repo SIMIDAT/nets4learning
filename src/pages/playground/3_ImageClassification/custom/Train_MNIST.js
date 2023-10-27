@@ -1,7 +1,7 @@
-import * as tfvis from "@tensorflow/tfjs-vis";
-import * as tf from "@tensorflow/tfjs";
-import { MnistData } from "../models/MODEL_MNIST_Data";
-import { createLoss, createMetrics, createOptimizer } from "../../../../core/nn-utils/ArchitectureHelper";
+import * as tfvis from '@tensorflow/tfjs-vis'
+import * as tf from '@tensorflow/tfjs'
+import { MnistData } from '../models/MODEL_IMAGE_MNIST_Data'
+import { createOptimizer, createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 
 const classNames = [
   'Zero',
@@ -16,11 +16,11 @@ const classNames = [
   'Nine',
 ]
 
-async function showExamples(data) {
+async function showExamples (data) {
   // Create a container in the visor
   const surface = tfvis
     .visor()
-    .surface({ name: 'Ejemplo datos de entrada', tab: 'Datos de entrada' })
+    .surface({ name: 'Examples', tab: 'Data set' })
 
   // Get the examples
   const examples = data.nextTestBatch(20)
@@ -38,9 +38,7 @@ async function showExamples(data) {
     const canvas = document.createElement('canvas')
     canvas.width = 28
     canvas.height = 28
-    canvas.style = {
-      'margin': '4px'
-    }
+    canvas.style.margin = '4px'
     await tf.browser.toPixels(imageTensor, canvas)
     surface.drawArea.appendChild(canvas)
 
@@ -48,12 +46,11 @@ async function showExamples(data) {
   }
 }
 
-async function train(model, data, numberOfEpoch) {
+async function train (model, data, numberOfEpoch) {
   const metrics = ['loss', 'val_loss', 'acc', 'val_acc']
   const container = {
-    name  : 'Entrenamiento del modelo',
-    tab   : 'Entrenamiento',
-    styles: { height: '1000px' },
+    name: 'Train Modelo',
+    tab : 'Training'
   }
   const fitCallbacks = tfvis.show.fitCallbacks(container, metrics)
 
@@ -80,7 +77,7 @@ async function train(model, data, numberOfEpoch) {
   })
 }
 
-function doPrediction(model, data, testDataSize = 500) {
+function doPrediction (model, data, testDataSize = 500) {
   const IMAGE_WIDTH = 28
   const IMAGE_HEIGHT = 28
   const testData = data.nextTestBatch(testDataSize)
@@ -97,102 +94,78 @@ function doPrediction(model, data, testDataSize = 500) {
   return [prediction, labels]
 }
 
-async function showAccuracy(model, data) {
+async function showAccuracy (model, data) {
   const [preds, labels] = doPrediction(model, data)
   const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds)
-  const container = { name: 'Exactitud', tab: 'Evaluación' }
+  const container = { name: 'Accuracy', tab: 'Evaluation' }
   await tfvis.show.perClassAccuracy(container, classAccuracy, classNames)
 
   labels.dispose()
 }
 
-async function showConfusion(model, data) {
+async function showConfusion (model, data) {
   const [preds, labels] = doPrediction(model, data)
   const confusionMatrix = await tfvis.metrics.confusionMatrix(labels, preds)
-  const container = { name: 'Matriz de confusión', tab: 'Evaluación' }
+  const container = { name: 'Confusion Matrix', tab: 'Evaluation' }
   await tfvis.render.confusionMatrix(container, {
     values    : confusionMatrix,
     tickLabels: classNames,
   })
-
   labels.dispose()
 }
 
-function getModel(idOptimizer, layerList, idLoss, idMetrics, params) {
-  const { LearningRate } = params
+function getModel (layerList, idOptimizer, idLoss, idMetrics_list, learningRate) {
   const model = tf.sequential()
-  const IMAGE_WIDTH = 28
-  const IMAGE_HEIGHT = 28
-  const IMAGE_CHANNELS = 1
-  const optimizer =
-    createOptimizer(idOptimizer, { learningRate: (LearningRate / 100), momentum: 0.99 })
-  const loss
-    = createLoss(idLoss, {})
-  const metrics =
-    createMetrics(idMetrics, {})
+  const optimizer = createOptimizer(idOptimizer, { learningRate: (learningRate / 100), momentum: 0.99 })
+  const loss = createLoss(idLoss, {})
+  const metrics = createMetricsList(idMetrics_list, {})
 
-  layerList.forEach((element, index) => {
-    if (index === 0) {
-      model.add(
-        tf.layers.conv2d({
-          inputShape       : [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
-          kernelSize       : element.kernelSize,
-          filters          : element.filters,
-          strides          : element.strides,
-          activation       : element.activation.toLowerCase(),
-          kernelInitializer: element.kernelInitializer,
-        }),
-      )
-    } else {
-      if (element.class === 'Conv2D') {
-        model.add(
-          tf.layers.conv2d({
-            kernelSize       : element.kernelSize,
-            filters          : element.filters,
-            strides          : element.strides,
-            activation       : element.activation.toLowerCase(),
-            kernelInitializer: element.kernelInitializer,
-          }),
-        )
-      } else {
-        model.add(
-          tf.layers.maxPooling2d({
-            poolSize: element.poolSize,
-            strides : element.strides,
-          }),
-        )
+  for (const layer of layerList) {
+    switch (layer._class) {
+      case 'conv2d': {
+        const inputShape = layer._protected ? { inputShape: layer.inputShape } : {}
+        model.add(tf.layers.conv2d({
+          ...inputShape,
+          kernelSize: layer.kernelSize,
+          filters   : layer.filters,
+          activation: layer.activation
+        }))
+        break
+      }
+      case 'maxPooling2d': {
+        model.add(tf.layers.maxPooling2d({ poolSize: layer.poolSize, strides: layer.strides }))
+        break
+      }
+      case 'flatten': {
+        model.add(tf.layers.flatten({}))
+        break
+      }
+      case 'dense': {
+        model.add(tf.layers.dense({ units: layer.units, activation: layer.activation }))
+        break
+      }
+      default: {
+        console.error('Error, layer not valid')
+        break
       }
     }
-  })
-
-  // In the first layer of our convolutional neural network we have
-  // to specify the input shape. Then we specify some parameters for
-  // the convolution operation that takes place in this layer.
-
-  // The MaxPooling layer acts as a sort of downsampling using max values
-  // in a region instead of averaging.
-
-  // Repeat another conv2d + maxPooling stack.
-  // Note that we have more filters in the convolution.
-
-  // Now we flatten the output from the 2D filters into a 1D vector to prepare
-  // it for input into our last layer. This is common practice when feeding
-  // higher dimensional data to a final classification output layer.
-  model.add(tf.layers.flatten())
-
-  // Our last layer is a dense layer which has 10 output units, one for each
-  // output class (i.e. 0, 1, 2, 3, 4, 5, 6, 7, 8, 9).
-  const NUM_OUTPUT_CLASSES = 10
-  model.add(
-    tf.layers.dense({
-      units            : NUM_OUTPUT_CLASSES,
-      kernelInitializer: 'varianceScaling',
-      activation       : 'softmax',
-    }),
-  )
-
-  // Choose an optimizer, loss function and accuracy metric,
-  // then compile and return the model
+  }
+  // const IMAGE_WIDTH = 28
+  // const IMAGE_HEIGHT = 28
+  // const IMAGE_CHANNELS = 1
+  // model.add(tf.layers.conv2d({
+  //   inputShape: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
+  //   kernelSize: 3,
+  //   filters   : 16,
+  //   activation: 'relu'
+  // }))
+  // model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
+  // model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
+  // model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
+  // model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
+  // model.add(tf.layers.flatten({}))
+  // model.add(tf.layers.dense({ units: 64, activation: 'relu' }))
+  // model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
   model.compile({
     optimizer: optimizer,
     loss     : loss,
@@ -202,31 +175,24 @@ function getModel(idOptimizer, layerList, idLoss, idMetrics, params) {
   return model
 }
 
-export async function MNIST_run(params_data) {
+export async function MNIST_run (params_data) {
 
   const {
+    learningRate,
     numberOfEpoch,
     idOptimizer,
     idLoss,
-    idMetrics,
+    idMetricsList,
     layerList,
-    params
   } = params_data
-
-  document.getElementById('salida').innerHTML += `
-<p>MODELO CREADO A PARTIR DE: 
-<b>numberOfEpoch:</b> ${numberOfEpoch.toString()} 
-<b>idOptimizer:</b> ${idOptimizer} 
-<b>idLoss:</b> ${idLoss} 
-<b>idMetrics:</b> ${idMetrics}</p>
-`
+  console.log({ params_data })
 
   const data = new MnistData()
   await data.load()
   await showExamples(data)
 
-  const model = getModel(idOptimizer, layerList, idLoss, idMetrics, params)
-  await tfvis.show.modelSummary({ name: 'Arquitectura del modelo', tab: 'Modelo' }, model)
+  const model = getModel(layerList, idOptimizer, idLoss, idMetricsList, learningRate)
+  await tfvis.show.modelSummary({ name: 'Model summary', tab: 'Model' }, model)
 
   await train(model, data, numberOfEpoch)
 

@@ -1,0 +1,42 @@
+name: 'Deploy'
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy-snapshot:
+    name: 'Deploy to netlify snapshot'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: 'Create env file'
+        run: |
+          echo "${{ vars.NETLIFY_ENV_FILE_SNAPSHOT }}" > .env.netlify-snapshot
+      - uses: jsmrcaga/action-netlify-deploy@v2.0.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_SNAPSHOT }}
+          NETLIFY_DEPLOY_MESSAGE: "Deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          INSTALL_COMMAND: npm ci
+          BUILD_COMMAND: npm run build:netlify-snapshot
+          BUILD_DIRECTORY: 'build'
+        env:
+          CI: false
+          NODE_OPTIONS: "--max_old_space_size=6144"
+          NODE_ENV: "production"
+          PUBLIC_URL: "https://nets4learning-snapshot.netlify.app"
+          REACT_APP_ENVIRONMENT: "production"
+          REACT_APP_PATH: ""
+          REACT_APP_PUBLIC_URL: "https://nets4learning-snapshot.netlify.app"
+          REACT_APP_GA_MEASUREMENT_ID: "G-3644EFBXMG"
+          REACT_APP_SHOW_NEW_FEATURE: "false"
+          REACT_APP_NEW_FEATURE: "linear-regression"

@@ -1,67 +1,70 @@
-import "./Playground.css";
-import React from "react";
-import { useParams } from "react-router";
-import { Col, Container, Row } from "react-bootstrap";
+import React from 'react'
+// import styles from './Playground.module.css'
+import { useParams } from 'react-router'
 
-import NotFoundPage from "../notFound/NotFoundPage";
+import NotFoundPage from '../notFound/NotFoundPage'
 
-import TabularClassificationModelReview from "./0_TabularClassification/TabularClassificationModelReview";
-import TabularClassification from "./0_TabularClassification/TabularClassification";
+import TabularClassification from './0_TabularClassification/TabularClassification'
+import ModelReviewTabularClassification from './0_TabularClassification/ModelReviewTabularClassification'
 
-import ObjectDetectionModelReview from "./2_ObjectDetection/ObjectDetectionModelReview";
+import LinearRegression from './1_LinearRegression/LinearRegression'
+import ModelReviewLinearRegression from './1_LinearRegression/ModelReviewLinearRegression'
 
-import ImageClassificationModelReview from "./3_ImageClassification/ImageClassificationModelReview";
-import ImageClassification from "./3_ImageClassification/ImageClassification";
+import ModelReviewObjectDetection from './2_ObjectDetection/ModelReviewObjectDetection'
 
-import { useTranslation } from "react-i18next";
+import ImageClassification from './3_ImageClassification/ImageClassification'
+import ModelReviewImageClassification from './3_ImageClassification/ModelReviewImageClassification'
 
-export default function Playground() {
-  const { id, option, example } = useParams();
-  const { t } = useTranslation();
-  const Print_HTML_Model_View = () => {
+import { LinearRegressionProvider } from '@context/LinearRegressionContext'
+import { TASKS } from '@/DATA_MODEL'
+
+export default function Playground () {
+  const { id, option, example } = useParams()
+
+  const PrintHTMLPlaygroundView = () => {
     switch (id.toString()) {
-      case "0": {
-        if (option === "0") {
-          return <TabularClassificationModelReview dataset={example} />;
-        } else {
-          return <TabularClassification dataset={example} />;
+      case TASKS.TABULAR_CLASSIFICATION: {
+        if (option === 'model') {
+          return <ModelReviewTabularClassification dataset={example} />
+        } else if (option === 'dataset') {
+          return <TabularClassification dataset={example} />
         }
+        break
       }
-      case "1": {
-        // TODO
-        // return <LinearRegression dataset={example}/>
-        break;
-      }
-      case "2": {
-        return <ObjectDetectionModelReview dataset={example} />;
-      }
-      case "3": {
-        if (option === "0") {
-          return <ImageClassificationModelReview dataset={example} />;
-        } else {
-          return <ImageClassification dataset={example} />;
+      case TASKS.LINEAR_REGRESSION: {
+        if (option === 'model') {
+          return <ModelReviewLinearRegression dataset={example} />
+        } else if (option === 'dataset') {
+          return <>
+            <LinearRegressionProvider>
+              <LinearRegression dataset={example} />
+            </LinearRegressionProvider>
+          </>
         }
+        break
+      }
+      case TASKS.OBJECT_DETECTION: {
+        return <ModelReviewObjectDetection dataset={example} />
+      }
+      case TASKS.IMAGE_CLASSIFICATION: {
+        if (option === 'model') {
+          return <ModelReviewImageClassification dataset={example} />
+        } else if (option === 'dataset') {
+          return <ImageClassification dataset={example} />
+        }
+        break
       }
       default:
-        return <NotFoundPage />;
+        return <NotFoundPage />
     }
-  };
+  }
 
   return (
     <>
-      <main className={"mb-3"} data-title={"EditArchitecture"}>
-        <Container>
-          <Row className={"mt-2"}>
-            <Col xl={12}>
-              <h1>{t("modality." + id)}</h1>
-            </Col>
-          </Row>
-        </Container>
-
-        {/**/}
-        {Print_HTML_Model_View()}
+      <main className={`mb-3`} data-title={'Playground'} data-testid={'Test-Playground'}>
+        <PrintHTMLPlaygroundView />
       </main>
     </>
-  );
+  )
 }
 

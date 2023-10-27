@@ -1,6 +1,6 @@
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from 'react-bootstrap'
 
-export default function Loading() {
+export default function Loading () {
   return <>
     <Container>
       <Row>
@@ -9,7 +9,7 @@ export default function Loading() {
             <div className="spinner-border" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-            <h4 className={"ms-3 mb-0"}>
+            <h4 className={'ms-3 mb-0'}>
               ...
             </h4>
           </div>
