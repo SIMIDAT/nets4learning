@@ -1,6 +1,8 @@
+import React from 'react'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import { Trans } from 'react-i18next'
-
+import * as tf_mobilenet from '@tensorflow-models/mobilenet'
+import { DEFAULT_BAR_DATA } from "@pages/playground/3_ImageClassification/CONSTANTS";
 
 export const LIST_OF_IMAGES_MOBILENET = [
   'beef-burger.jpg',
@@ -54,5 +56,42 @@ export default class MODEL_IMAGE_MOBILENET extends I_MODEL_IMAGE_CLASSIFICATION 
         </ol>
       </details>
     </>
+  }
+
+  async ENABLE_MODEL () {
+    return await tf_mobilenet.load()
+  }
+
+  async CLASSIFY (model, imageData) {
+    return model.classify(imageData)
+  }
+
+  async CLASSIFY_IMAGE (model, imageData) {
+    const predictions = await model.classify(imageData)
+    return { predictions, index: 0 }
+  }
+
+  async GET_IMAGE_DATA (canvas, canvas_ctx) {
+    canvas_ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
+    return canvas_ctx.getImageData(0, 0, canvas.width, canvas.height)
+  }
+
+  async PREDICTION_FORMAT (predictions) {
+    return {
+      labels  : [''],
+      datasets: predictions.map((v, i) => {
+        return {
+          label          : v.className,
+          data           : [v.probability],
+          backgroundColor: DEFAULT_BAR_DATA.datasets[0].backgroundColor[i % 7],
+          borderColor    : DEFAULT_BAR_DATA.datasets[0].borderColor[i % 7],
+          borderWidth    : DEFAULT_BAR_DATA.datasets[0].borderWidth,
+        }
+      }),
+    }
+  }
+
+  LIST_IMAGES_EXAMPLES () {
+    return LIST_OF_IMAGES_MOBILENET
   }
 }

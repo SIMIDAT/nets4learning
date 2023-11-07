@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Card } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 

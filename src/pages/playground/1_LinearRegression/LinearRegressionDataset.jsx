@@ -20,7 +20,7 @@ export default function LinearRegressionDataset ({ dataset }) {
     iModelInstance,
   } = useContext(LinearRegressionContext)
 
-  const handleChange_FileUpload_CSV = async (files, event) => {
+  const handleChange_FileUpload_CSV = async (files, _event) => {
     if (files.length < 1) {
       console.error(t('error.load-json-csv'))
       return
@@ -47,11 +47,11 @@ export default function LinearRegressionDataset ({ dataset }) {
     }
   }
 
-  const handleChange_FileUpload_CSV_reject = (files, event) => {
+  const handleChange_FileUpload_CSV_reject = (files, _event) => {
     if (VERBOSE) console.debug({ files })
   }
 
-  const handleSubmit_ProcessDataset = (e) => {
+  const handleSubmit_ProcessDataset = (_event) => {
 
   }
 

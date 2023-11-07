@@ -1,3 +1,4 @@
+import React from 'react'
 import * as tfjs from '@tensorflow/tfjs'
 import * as dfd from 'danfojs'
 import { Trans } from 'react-i18next'
@@ -99,7 +100,7 @@ export default class MODEL_2_AUTO_MPG extends I_MODEL_LINEAR_REGRESSION {
     }]
   }
 
-  async MODELS (dataset) {
+  async MODELS (_dataset) {
     const path = process.env.REACT_APP_PATH + '/models/01-linear-regression/auto-mpg'
     return [
       { column_name_X: 'horsepower', column_name_Y: 'mpg', model_path: path + '/0/lr-model-0.json' },

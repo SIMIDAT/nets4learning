@@ -49,7 +49,7 @@ async function showExamples (data) {
 async function train (model, data, numberOfEpoch) {
   const metrics = ['loss', 'val_loss', 'acc', 'val_acc']
   const container = {
-    name: 'Train Modelo',
+    name: 'Train Model',
     tab : 'Training'
   }
   const fitCallbacks = tfvis.show.fitCallbacks(container, metrics)
@@ -150,22 +150,6 @@ function getModel (layerList, idOptimizer, idLoss, idMetrics_list, learningRate)
       }
     }
   }
-  // const IMAGE_WIDTH = 28
-  // const IMAGE_HEIGHT = 28
-  // const IMAGE_CHANNELS = 1
-  // model.add(tf.layers.conv2d({
-  //   inputShape: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
-  //   kernelSize: 3,
-  //   filters   : 16,
-  //   activation: 'relu'
-  // }))
-  // model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
-  // model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
-  // model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
-  // model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
-  // model.add(tf.layers.flatten({}))
-  // model.add(tf.layers.dense({ units: 64, activation: 'relu' }))
-  // model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
   model.compile({
     optimizer: optimizer,
     loss     : loss,
@@ -185,7 +169,6 @@ export async function MNIST_run (params_data) {
     idMetricsList,
     layerList,
   } = params_data
-  console.log({ params_data })
 
   const data = new MnistData()
   await data.load()

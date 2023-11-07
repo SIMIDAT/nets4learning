@@ -26,6 +26,7 @@ There are some classical problems prepared and reviewed to make predictions, the
    - [MODEL_3_BOSTON_HOUSING.js](src/pages/playground/1_LinearRegression/models/MODEL_3_BOSTON_HOUSING.js)
    - [MODEL_4_BREAST_CANCER.js](src/pages/playground/1_LinearRegression/models/MODEL_4_BREAST_CANCER.js)
    - [MODEL_5_STUDENT_PERFORMANCE.js](src/pages/playground/1_LinearRegression/models/MODEL_5_STUDENT_PERFORMANCE.js) 
+   - [MODEL_6_WINE.js](src/pages/playground/1_LinearRegression/models/MODEL_6_WINE.js) 
 3. Image classifier
     - [MODEL_IMAGE_MNIST.js](src/pages/playground/3_ImageClassification/models/MODEL_IMAGE_MNIST.js)
     - [MODEL_IMAGE_MOBILENET.js](src/pages/playground/3_ImageClassification/models/MODEL_IMAGE_MOBILENET.js)

@@ -1,6 +1,7 @@
+import React from 'react'
+import { Trans } from 'react-i18next'
 import { Card } from 'react-bootstrap'
 import DataFrameDataset from '@components/dataframe/DataFrameDataset'
-import { Trans } from 'react-i18next'
 
 export default function DataFrameDatasetCard ({ dataframe }) {
 

@@ -21,10 +21,9 @@ sk.setBackend(dfd.tensorflow)
 /**
  *
  * @param {CustomDatasetParams_t} params
- * @param {i18n.t} t
  * @returns {Promise<tf.Sequential>}
  */
-export async function createTabularClassificationCustomModel (params, t) {
+export async function createTabularClassificationCustomModel (params) {
   const {
     dataset_processed,
 

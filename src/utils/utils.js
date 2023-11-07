@@ -10,6 +10,32 @@ export function isMobile () {
   return /Mobi|Tablet/.test(navigator.userAgent) || isAndroid() || isiOS()
 }
 
+export function isWebView () {
+  const standalone = window.navigator?.standalone
+  const userAgent = window.navigator.userAgent.toLowerCase()
+  const safari = /safari/.test(userAgent)
+  const ios = /iphone|ipod|ipad/.test(userAgent)
+
+  if (ios) {
+    if (!standalone && !safari) {
+      // iOS webview
+      return true
+    } else if (!standalone && safari) {
+      // Safari
+      return false
+    }
+  } else {
+    if (userAgent.includes('wv')) {
+      // Android webview
+      console.log('webview')
+      return true
+    } else {
+      // Chrome
+      return false
+    }
+  }
+}
+
 export function isProduction () {
   return process.env.REACT_APP_ENVIRONMENT === 'production'
 }

@@ -155,7 +155,7 @@ export default function TabularClassification (props) {
         // TODO
         const df = new dfd.DataFrame()
         if (VERBOSE) console.debug(df)
-      } else if (MAP_TC_CLASSES.hasOwnProperty(dataset)) {
+      } else if (dataset in MAP_TC_CLASSES) {
         const _iModelClass = MAP_TC_CLASSES[dataset]
         iModelInstance.current = new _iModelClass(t)
         setLayers(iModelInstance.current.DEFAULT_LAYERS())
@@ -217,7 +217,7 @@ export default function TabularClassification (props) {
         idOptimizer      : _idOptimizer,
         idLoss           : _idLoss,
         idMetrics        : _idMetrics,
-      }, t)
+      })
       setGeneratedModels((oldArray) => [
         ...oldArray,
         {

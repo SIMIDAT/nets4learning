@@ -26,7 +26,7 @@ export function createOptimizer (idOptimizer, params) {
     case 'sgd':
       return tf.train.sgd(learningRate)
     case 'momentum':
-      let { momentum = 0.99 } = params
+      const { momentum = 0.99 } = params
       return tf.train.momentum(learningRate, momentum)
     case 'adagrad':
       return tf.train.adagrad(learningRate)

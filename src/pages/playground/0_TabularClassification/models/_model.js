@@ -1,3 +1,4 @@
+import React from 'react'
 import { ACTIONS, LIFECYCLE } from 'react-joyride'
 import { delay } from '@utils/utils'
 import Errors from '@shared/Errors'
@@ -67,11 +68,11 @@ export default class I_MODEL_TABULAR_CLASSIFICATION {
     return []
   }
 
-  async LOAD_GRAPH_MODEL (callbacks) {
+  async LOAD_GRAPH_MODEL (_callbacks) {
     // throw new Error('Error')
   }
 
-  async LOAD_LAYERS_MODEL (callbacks) {
+  async LOAD_LAYERS_MODEL (_callbacks) {
     // throw new Error('Error')
   }
 

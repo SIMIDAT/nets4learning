@@ -138,7 +138,7 @@ export function DataFrameApplyEncoders (encoders_map, values_map, column_name_li
   const new_values = []
   for (const column_name of column_name_list) {
     const prev_value = values_map[column_name]
-    if (encoders_map.hasOwnProperty(column_name)) {
+    if (column_name in encoders_map) {
       const new_value = encoders_map[column_name].encoder.transform([prev_value])[0]
       new_values.push(new_value)
     } else {
@@ -159,7 +159,7 @@ export function DataFrameApplyEncodersVector (encoders_map, input_data, column_n
   const new_input_vector = []
   for (const [column_index, column_name] of column_name_list.entries()) {
     const prev_value = input_data[column_index]
-    if (encoders_map.hasOwnProperty(column_name)) {
+    if (column_name in encoders_map) {
       const new_value = encoders_map[column_name].encoder.transform([prev_value])[0]
       new_input_vector.push(new_value)
     } else {

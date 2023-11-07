@@ -1,4 +1,5 @@
 import 'katex/dist/katex.min.css'
+import React from 'react'
 import Latex from 'react-latex-next'
 import { Card, Col, Container, Row } from 'react-bootstrap'
 

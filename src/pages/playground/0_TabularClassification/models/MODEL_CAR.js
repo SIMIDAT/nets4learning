@@ -1,3 +1,4 @@
+import React from 'react'
 import * as tf from '@tensorflow/tfjs'
 import { Trans } from 'react-i18next'
 import * as dfd from 'danfojs'

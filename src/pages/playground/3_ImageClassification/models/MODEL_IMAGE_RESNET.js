@@ -1,5 +1,7 @@
+import React from 'react'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 
+// TODO
 export default class MODEL_IMAGE_RESNET extends I_MODEL_IMAGE_CLASSIFICATION {
   static KEY = 'IMAGE-RESNET'
   TITLE = ''

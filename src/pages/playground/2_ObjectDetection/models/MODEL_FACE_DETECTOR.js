@@ -1,3 +1,4 @@
+import React from 'react'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import * as faceDetection from '@tensorflow-models/face-detection'
 import { Trans } from 'react-i18next'
@@ -76,6 +77,7 @@ export class MODEL_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
   }
 
   async PREDICTION (img_or_video) {
+    if (this._modelDetector === null) return []
     return await this._modelDetector.estimateFaces(img_or_video)
   }
 

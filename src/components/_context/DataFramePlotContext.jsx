@@ -1,3 +1,4 @@
+import React from 'react'
 import { createContext, useState } from 'react'
 import * as dfd from 'danfojs'
 import { DEFAULT_DATAFRAME_PLOT_CONFIG } from './CONSTANTS'

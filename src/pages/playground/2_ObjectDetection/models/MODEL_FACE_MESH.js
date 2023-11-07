@@ -1,3 +1,4 @@
+import React from 'react'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 import { Trans } from 'react-i18next'
@@ -74,13 +75,14 @@ export class MODEL_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
     this._modelDetector = await faceLandmarksDetection.createDetector(model, mediaPipeFaceMeshMediaPipeModelConfig)
   }
 
-  async PREDICTION(img_or_video){
+  async PREDICTION (img_or_video) {
+    if (this._modelDetector === null) return []
     return await this._modelDetector.estimateFaces(img_or_video)
   }
 
   RENDER (ctx, faces) {
+    ctx.strokeStyle = '#FF0902'
     for (const face of faces) {
-      ctx.strokeStyle = '#FF0902'
       for (const element of face.keypoints) {
         ctx.strokeRect(element.x, element.y, 1, 1)
       }

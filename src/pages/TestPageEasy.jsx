@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 import * as tfvis from '@tensorflow/tfjs-vis'
 import Plot from 'react-plotly.js'

@@ -23,17 +23,17 @@ const PageDatasets = lazy(() => import( './pages/datasets/Datasets'))
 const PageAnalyzeDataFrame = lazy(() => import( './pages/analyze/AnalyzeDataFrame'))
 const PageContribute = lazy(() => import( './pages/contribute/Contribute'))
 const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditions'))
+const PageDebug = lazy(() => import( './pages/debug/Debug'))
 const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
 // __TESTS__
 const TestPageEasy_lazy = lazy(() => import( '@pages/TestPageEasy'))
 const TestPageAdvanced_lazy = lazy(() => import( '@pages/TestPageAdvanced'))
 
-function App () {
+function App() {
   const REACT_APP_PATH = process.env.REACT_APP_PATH
 
   useEffect(() => {
-    console.log(process.env)
     ReactGA.initialize(process.env.REACT_APP_GA_MEASUREMENT_ID)
   }, [])
 
@@ -57,6 +57,7 @@ function App () {
             <Route exact path={'/contribute/'} component={PageContribute}></Route>
             <Route exact path={'/terms-and-conditions/'} component={PageTermsAndConditions}></Route>
             <Route exact path={'/version/'} component={PageVersion}></Route>
+            <Route exact path={'/debug/'} component={PageDebug}></Route>
 
             <Route exact path={'/test-page-easy'} component={TestPageEasy}></Route>
             <Route exact path={'/test-page-advanced/:id/:option/:example'} component={TestPageAdvanced}></Route>

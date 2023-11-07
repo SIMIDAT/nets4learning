@@ -1,4 +1,4 @@
-
+import React from 'react'
 export default function WaitingCircle () {
   return <>
     <div className="spinner-border"

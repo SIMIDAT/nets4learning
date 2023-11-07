@@ -1,3 +1,4 @@
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Container, Row, Tab, Table, Tabs } from 'react-bootstrap'
 

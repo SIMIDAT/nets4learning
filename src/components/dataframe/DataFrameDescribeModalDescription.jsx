@@ -1,5 +1,6 @@
-import { Modal } from 'react-bootstrap'
+import React from 'react'
 import { Trans } from 'react-i18next'
+import { Modal } from 'react-bootstrap'
 
 export default function DataFrameDescribeModalDescription ({ showDescription, setShowDescription }) {
 

@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default function N4LSummary ({ title, info, children }) {
   return <>
     <details>

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Modal } from 'react-bootstrap'
 
 export default function N4LModal ({ showModal, setShowModal, title = '', ComponentBody = <></>, ComponentFooter = <></> }) {

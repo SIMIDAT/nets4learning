@@ -45,7 +45,7 @@ export default function ModelReviewLinearRegression ({ dataset }) {
     const init = async () => {
       if (dataset === UPLOAD) {
         console.warn('Error, option not valid', { ID: dataset })
-      } else if (MAP_LR_CLASSES.hasOwnProperty(dataset)) {
+      } else if (dataset in MAP_LR_CLASSES) {
         const _iModelClass = MAP_LR_CLASSES[dataset]
         iModelInstance.current = new _iModelClass(t, {})
         const _datasets = await iModelInstance.current.DATASETS()
@@ -67,7 +67,7 @@ export default function ModelReviewLinearRegression ({ dataset }) {
       }
     }
 
-    init().then(_r => undefined)
+    init().then(() => undefined)
   }, [datasets, datasets_Index])
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function ModelReviewLinearRegression ({ dataset }) {
       }
     }
 
-    init().then(_r => undefined)
+    init().then(() => undefined)
   }, [datasets_DataFrame, listModels, listModels_Index, t])
 
   useEffect(() => {

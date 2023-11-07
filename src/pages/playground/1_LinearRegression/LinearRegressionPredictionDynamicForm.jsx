@@ -1,3 +1,4 @@
+import React from 'react'
 import styles from '@pages/playground/1_LinearRegression/LinearRegression.module.css'
 import { Col, Form } from 'react-bootstrap'
 import * as dfd from 'danfojs'

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Trans } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 import * as dfd from 'danfojs'
@@ -73,7 +74,7 @@ export default class MODEL_1_SALARY extends I_MODEL_LINEAR_REGRESSION {
     }]
   }
 
-  async MODELS (dataset) {
+  async MODELS (_dataset) {
     const path = process.env.REACT_APP_PATH + '/models/01-linear-regression/salary'
     return [
       { column_name_X: 'YearsExperience', column_name_Y: 'Salary', model_path: path + '/0/lr-model-0.json' },

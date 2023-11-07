@@ -1,3 +1,29 @@
+export const UTILS_image = {
+  failed                        : (event) => {
+    console.error(event)
+  },
+  drawImageInCanvasWithContainer: (image, canvas_id) => {
+    const canvas = document.getElementById(canvas_id)
+    const canvas_ctx = canvas.getContext('2d')
+    // const container_w = document.getElementById(container_canvas_id).getBoundingClientRect().width
+    const original_ratio = image.width / image.height
+    let designer_width = 200
+    let designer_height = 200
+    let designer_ratio = designer_width / designer_height
+    if (original_ratio > designer_ratio) {
+      designer_height = designer_width / original_ratio
+    } else {
+      designer_width = designer_height * original_ratio
+    }
+    image.width = designer_width
+    image.height = designer_height
+    // Dibujamos a tam original
+    canvas.width = image.width
+    canvas.height = image.height
+    canvas_ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+  },
+}
+
 export function resample_single (canvas, width, height, resize_canvas) {
   let width_source = canvas.width
   let height_source = canvas.height

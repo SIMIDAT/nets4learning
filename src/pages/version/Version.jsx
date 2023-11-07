@@ -1,6 +1,6 @@
+import React from 'react'
 import { Card, Col, Container, Row, Table } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
-import React from 'react'
 import packageInfo from '../../../package.json'
 
 export default function Version () {

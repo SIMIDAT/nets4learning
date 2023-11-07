@@ -128,7 +128,7 @@ export default function Glossary2ActivationFunctions () {
             </thead>
             <tbody>
             {Object.entries(t('pages.glossary.activation-functions.table', { returnObjects: true }))
-              .map(([function_key, function_info], index) => {
+              .map(([_function_key, function_info], index) => {
 
                 const { title, description, characteristics } = /** @type TableStruct_t */ function_info
                 return <tr key={index}>
@@ -137,7 +137,7 @@ export default function Glossary2ActivationFunctions () {
                   <td>
                     <ol>
                       {Object.entries(characteristics)
-                        .map(([sub_key, value], index_2) => {
+                        .map(([_sub_key, value], index_2) => {
                           return <li key={index_2}>{value}</li>
                         })}
                     </ol>

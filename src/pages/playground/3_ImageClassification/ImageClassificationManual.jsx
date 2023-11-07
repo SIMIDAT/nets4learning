@@ -2,7 +2,7 @@ import React from 'react'
 import { Trans } from 'react-i18next'
 import { VERBOSE } from '@/CONSTANTS'
 
-export default function ImageClassificationManual (props) {
+export default function ImageClassificationManual () {
   const prefix = 'pages.playground.3-image-classification.generator.manual.'
 
   if (VERBOSE) console.debug('render ImageClassificationManual')

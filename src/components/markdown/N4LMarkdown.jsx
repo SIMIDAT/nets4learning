@@ -1,4 +1,5 @@
 import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
+import React from 'react'
 import Markdown from 'react-markdown'
 import rehypeFormat from 'rehype-format'
 import rehypeKatex from 'rehype-katex'
@@ -58,28 +59,28 @@ export default function N4LMarkdown (_props_) {
                   return <summary className={className}>{children}</summary>
                 },
                 code (props) {
-                  const { children, className, node, ...rest } = props
+                  const { children, className, node: _, ...rest } = props
                   const match = /language-(\w+)/.exec(className || '')
                   if (match) {
                     return <SyntaxHighlighter style={darcula}
                                               PreTag="div"
                                               language={match[1]}
-                                              children={String(children).replace(/\n$/, '')}
+
                                               {...rest}
-                    />
+                    >{String(children).replace(/\n$/, '')}</SyntaxHighlighter>
                   } else {
                     return <code className={className ? className : ''} {...rest}>{children}</code>
                   }
                 },
                 input (props) {
-                  const { node, ...rest } = props
+                  const { node: _, ...rest } = props
                   if (props.type === 'checkbox')
                     return <input type={'checkbox'} className={'form-check-input me-1'} {...rest} />
                   else return <>Todo</>
                 },
                 img (props) {
                   // https://amirardalan.com/blog/use-next-image-with-react-markdown
-                  const { node, ...rest } = props
+                  const { node: _, ...rest } = props
                   const isServer = !!(rest.alt?.toLowerCase().match('{server}'))
                   if (isServer) {
                     const newSrc = rest.src.replace('../', process.env.REACT_APP_PATH + '/docs/')
@@ -100,7 +101,7 @@ export default function N4LMarkdown (_props_) {
                   }
                 },
                 blockquote (props) {
-                  const { node, ...rest } = props
+                  const { node: _, ...rest } = props
                   return <blockquote className={'blockquote'} {...rest} />
                 },
                 p (props) {
@@ -120,7 +121,7 @@ export default function N4LMarkdown (_props_) {
                   return <li>{props.children}</li>
                 },
                 table (props) {
-                  const { node, ...rest } = props
+                  const { node: _, ...rest } = props
                   return <Table striped={true}
                                 bordered={true}
                                 borderless={true}

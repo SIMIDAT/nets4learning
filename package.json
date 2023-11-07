@@ -1,6 +1,6 @@
 {
   "name": "nets4learning",
-  "version": "1.9.8",
+  "version": "2.0.1",
   "homepage": ".",
   "private": true,
   "scripts": {
@@ -29,21 +29,27 @@
     "@tensorflow/tfjs": "3.21.0",
     "@tensorflow/tfjs-backend-wasm": "3.21.0",
     "@tensorflow/tfjs-backend-webgl": "3.21.0",
+    "@tensorflow/tfjs-core": "^3.21.0",
     "@tensorflow/tfjs-vis": "1.5.1",
+    "adm-zip": "^0.5.10",
     "bootstrap": "^5.3.0",
     "brace": "^0.11.1",
     "chart.js": "^4.3.0",
+    "conventional-changelog-cli": "^4.1.0",
     "craco-alias": "^3.0.1",
     "craco-plugin-env": "^1.0.5",
-    "conventional-changelog-cli": "^4.1.0",
     "danfojs": "^1.1.2",
     "fabric": "^5.3.0",
     "history": "^5.3.0",
     "i18next": "^22.5.1",
     "i18next-browser-languagedetector": "^7.1.0",
     "i18next-http-backend": "^2.2.1",
+    "jszip": "^3.10.1",
+    "jszip-utils": "^0.1.0",
     "mathjs": "^11.9.1",
     "mnist": "^1.1.0",
+    "npyjs": "^0.5.0",
+    "npyz": "^0.4.2",
     "plotly.js": "^2.25.0",
     "react": "^18.2.0",
     "react-ace": "^10.1.0",
@@ -75,6 +81,8 @@
     "scikitjs": "^1.24.0",
     "sweetalert2": "^11.7.12",
     "sweetalert2-react-content": "^5.0.7",
+    "tfjs-npy": "^0.0.3",
+    "tfjs-npy-node": "^0.4.1",
     "vis-network": "^9.1.6",
     "web-vitals": "^3.3.2"
   },
@@ -87,19 +95,12 @@
     "@testing-library/user-event": "^14.4.3",
     "jest": "^27.5.1",
     "jest-watch-typeahead": "^2.2.2",
-    "sass": "^1.69.3",
-    "standard": "^17.1.0"
+    "sass": "^1.69.3"
   },
   "overrides": {
     "danfojs": {
       "fraction.js": "4.2.0"
     }
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

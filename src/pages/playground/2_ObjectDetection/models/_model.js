@@ -1,3 +1,4 @@
+import React from 'react'
 export default class I_MODEL_OBJECT_DETECTION {
   TITLE = ''
   i18n_TITLE = ''
@@ -16,7 +17,7 @@ export default class I_MODEL_OBJECT_DETECTION {
 
   }
 
-  async PREDICTION (img_or_video) {
+  async PREDICTION (_img_or_video) {
     return []
   }
 

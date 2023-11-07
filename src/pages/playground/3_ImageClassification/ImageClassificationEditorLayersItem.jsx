@@ -1,3 +1,4 @@
+import React from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'

@@ -1,3 +1,4 @@
+import React from 'react'
 import Latex from 'react-latex-next'
 import { Trans } from 'react-i18next'
 import { Accordion, Col, Row, Table } from 'react-bootstrap'
@@ -65,7 +66,7 @@ export default function Glossary1Optimizers () {
 
         </Accordion.Body>
       </Accordion.Item>
-      {process.env.REACT_APP_SHOW_NEW_FEATURE === "true" &&
+      {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
         <Accordion.Item eventKey={'equations-optimization'}>
           <Accordion.Header>
             <h2><Trans i18nKey={'equations.title-optimization'} /></h2>

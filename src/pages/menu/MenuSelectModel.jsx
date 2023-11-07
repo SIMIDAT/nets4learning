@@ -12,7 +12,7 @@ import {
 import { VERBOSE } from '@/CONSTANTS'
 
 
-export default function MenuSelectModel (_props) {
+export default function MenuSelectModel () {
 
   const { id } = useParams()
   const { t } = useTranslation()
@@ -33,13 +33,11 @@ export default function MenuSelectModel (_props) {
   }
 
   useEffect(() => {
-    let _options = []
-    if (TASK_MODEL_OPTIONS.hasOwnProperty(id)) {
-      _options = TASK_MODEL_OPTIONS[id]
-    } else {
+    if (!(id in TASK_MODEL_OPTIONS)) {
       console.error('Error, option not valid')
+      return
     }
-
+    let _options = TASK_MODEL_OPTIONS[id]
     setOptions(_options)
   }, [id])
 
@@ -47,8 +45,8 @@ export default function MenuSelectModel (_props) {
     if (!id) return <></>
     if (modelKey === 'select-model') return <></>
     if (modelKey === 'UPLOAD') return t('upload-model')
-    if (!TASK_MODEL_OPTIONS_CLASS.hasOwnProperty(id)) return <></>
-    if (!TASK_MODEL_OPTIONS_CLASS[id].hasOwnProperty(modelKey)) return <></>
+    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
+    if (!(modelKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
 
     const _model = (new TASK_MODEL_OPTIONS_CLASS[id][modelKey]._class_(t))
     return t(_model.i18n_TITLE)
@@ -58,8 +56,8 @@ export default function MenuSelectModel (_props) {
     if (!id) return <></>
     if (modelKey === 'select-model') return <></>
     if (modelKey === 'UPLOAD') return <>{t('upload-model-info')}</>
-    if (!TASK_MODEL_OPTIONS_CLASS.hasOwnProperty(id)) return <></>
-    if (!TASK_MODEL_OPTIONS_CLASS[id].hasOwnProperty(modelKey)) return <></>
+    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
+    if (!(modelKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
 
     const _model = (new TASK_MODEL_OPTIONS_CLASS[id][modelKey]._class_(t))
     return <>

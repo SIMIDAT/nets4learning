@@ -1,10 +1,11 @@
+import React from 'react'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 
 export default function ImageClassificationClassify ({
   handleSubmit_VectorTest,
   handleChange_FileUpload,
-  handleSubmit_VectorTestImageUpload
+  handleSubmit_VectorTestImageUpload,
 }) {
   return <>
     <Card className="mt-3">

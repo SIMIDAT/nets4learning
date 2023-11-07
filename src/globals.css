@@ -74,6 +74,18 @@ code {
   z-index: 1000;
 }
 
+.ratio-9x16 {
+  padding-bottom: 177.77%;
+}
+
+.ratio-2x3 {
+  padding-bottom: 150%;
+}
+
+.ratio-3x4 {
+  padding-bottom: 133.33%;
+}
+
 .nets4-border-1 {
   background: #fff;
   border: solid black;
@@ -176,6 +188,28 @@ pre.highlight {
 .n4l-ol-label-encoder li::before {
   content: counter(item) ' ⟶ ';
   counter-increment: item;
+}
+
+.n4l-fade-hidden {
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-delay: 1s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+  animation-name: fadeHidden;
+}
+
+@keyframes fadeHidden {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+  }
 }
 
 h1 {

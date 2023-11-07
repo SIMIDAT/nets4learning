@@ -103,7 +103,7 @@ export default function TabularClassificationDatasetProcessForm (props) {
     label_encoder_y.fit(dataframe_y.values)
     const classes = Object.keys(label_encoder_y.$labels)
 
-    let attributes = listColumnNameTransformations.map(({ column_name, column_transform }, index) => {
+    let attributes = listColumnNameTransformations.map(({ column_name, column_transform }) => {
       if (column_transform === 'label-encoder') {
         const _options = Object.keys(encoders_map[column_name].encoder.$labels).map((label) => ({ value: label, text: label }))
         return { type: column_transform, name: column_name, options: _options }

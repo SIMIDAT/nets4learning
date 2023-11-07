@@ -1,3 +1,4 @@
+import React from 'react'
 import * as dfd from 'danfojs'
 import I_MODEL_LINEAR_REGRESSION from './_model'
 import { Trans } from 'react-i18next'

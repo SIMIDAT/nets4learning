@@ -32,7 +32,7 @@ export default function MenuSelectDataset () {
 
   useEffect(() => {
     let _options = []
-    if (TASK_DATASET_OPTIONS.hasOwnProperty(id)) {
+    if (id in TASK_DATASET_OPTIONS) {
       _options = TASK_DATASET_OPTIONS[id]
     } else {
       console.error('Error, option not valid')
@@ -44,8 +44,8 @@ export default function MenuSelectDataset () {
     if (!id) return <></>
     if (datasetKey === 'select-model') return <></>
     if (datasetKey === 'UPLOAD') return t('upload-dataset')
-    if (!TASK_MODEL_OPTIONS_CLASS.hasOwnProperty(id)) return <></>
-    if (!TASK_MODEL_OPTIONS_CLASS[id].hasOwnProperty(datasetKey)) return <></>
+    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
+    if (!(datasetKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
 
     const _model = (new TASK_MODEL_OPTIONS_CLASS[id][datasetKey]._class_(t))
     return t(_model.i18n_TITLE)
@@ -55,8 +55,8 @@ export default function MenuSelectDataset () {
     if (!id) return <></>
     if (datasetKey === 'select-model') return <></>
     if (datasetKey === 'UPLOAD') return <>{t('upload-dataset-info')}</>
-    if (!TASK_MODEL_OPTIONS_CLASS.hasOwnProperty(id)) return <></>
-    if (!TASK_MODEL_OPTIONS_CLASS[id].hasOwnProperty(datasetKey)) return <></>
+    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
+    if (!(datasetKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
 
     const _model = (new TASK_MODEL_OPTIONS_CLASS[id][datasetKey]._class_(t))
     return <>

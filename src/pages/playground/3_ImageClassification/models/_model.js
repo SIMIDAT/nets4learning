@@ -1,3 +1,4 @@
+import React from 'react'
 import { ACTIONS, LIFECYCLE } from 'react-joyride'
 import { delay } from '@utils/utils'
 import Errors from '@shared/Errors'
@@ -24,7 +25,30 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
     return {}
   }
 
-  async TRAIN_MODEL (params) {
+  async ENABLE_MODEL () {
+
+  }
+
+  LIST_IMAGES_EXAMPLES () {
+    return []
+  }
+
+  async CLASSIFY (_model, _imageData) {
+    return { predictions: [], index: 0 }
+  }
+
+  async CLASSIFY_IMAGE (_model, _imageData) {
+    return { predictions: [], index: 0 }
+  }
+
+  async PREDICTION_FORMAT (_predictions) {
+    return {
+      labels  : [],
+      datasets: []
+    }
+  }
+
+  async TRAIN_MODEL () {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve('I_MODEL_IMAGE_CLASSIFICATION')
@@ -117,27 +141,27 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
           title    : this.t(prefix + 'layer-editor.title'),
           content  : this.t(prefix + 'layer-editor.content'),
           target   : '.joyride-step-6-editor-layers',
-          placement: 'right'
+          placement: 'right',
         },
         {
           title    : this.t(prefix + 'params-editor.title'),
           content  : this.t(prefix + 'params-editor.content'),
           target   : '.joyride-step-7-editor-trainer',
-          placement: 'left-start'
+          placement: 'left-start',
         },
         {
           title    : this.t(prefix + 'list-of-models.title'),
           content  : this.t(prefix + 'list-of-models.content'),
           target   : '.joyride-step-8-list-of-models',
-          placement: 'bottom'
+          placement: 'bottom',
         },
         {
           title    : this.t(prefix + 'classify.title'),
           content  : this.t(prefix + 'classify.content'),
           target   : '.joyride-step-9-classify',
-          placement: 'top'
+          placement: 'top',
         },
-      ]
+      ],
     }
     // return {
     //   debug     : process.env.REACT_APP_ENVIRONMENT === "development",
@@ -145,5 +169,9 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
     //   continuous: false,
     //   steps     : []
     // }
+  }
+
+  async GET_IMAGE_DATA (_canvas, _canvas_ctx) {
+    console.log('TODO')
   }
 }

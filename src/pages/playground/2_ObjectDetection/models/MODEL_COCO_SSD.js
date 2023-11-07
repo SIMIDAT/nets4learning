@@ -1,3 +1,4 @@
+import React from 'react'
 import { Trans } from 'react-i18next'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import * as coCoSsdDetection from '@tensorflow-models/coco-ssd'
@@ -83,20 +84,21 @@ export class MODEL_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   }
 
   async PREDICTION (img_or_video) {
+    if (this._modelDetector === null) return []
     return await this._modelDetector.detect(img_or_video)
   }
 
   RENDER (ctx, predictions) {
     let score = 0
-    ctx.fillStyle = '#fc0400'
-    ctx.font = '1em Verdana'
+    ctx.font = '1rem Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
     ctx.lineWidth = 5
     ctx.strokeStyle = 'rgba(0,255,21,0.84)'
+    ctx.fillStyle = '#FF0902'
 
     predictions.forEach((prediction) => {
       score = Math.round(parseFloat(prediction.score) * 100)
       ctx.strokeRect(prediction.bbox[0], prediction.bbox[1], prediction.bbox[2], prediction.bbox[3])
-      ctx.fillText(`${prediction.class.toUpperCase()} with ${score}% confidence`, prediction.bbox[0], prediction.bbox[1] + 20)
+      ctx.fillText(`${prediction.class.toUpperCase()} with ${score}% confidence`, prediction.bbox[0], prediction.bbox[1] - 10)
     })
   }
 }

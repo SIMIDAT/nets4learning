@@ -85,7 +85,7 @@ export default function ImageClassification (props) {
     const init = async () => {
       if (dataset === UPLOAD) {
         // TODO
-      } else if (MAP_IC_CLASSES.hasOwnProperty(dataset)) {
+      } else if (dataset in MAP_IC_CLASSES) {
         const _iModelClass = MAP_IC_CLASSES[dataset]
         iModelInstance.current = new _iModelClass(t)
         setLayers(iModelInstance.current.DEFAULT_LAYERS())

@@ -1,5 +1,7 @@
-import { Card, Col, Container, Row } from 'react-bootstrap'
+import React from 'react'
 import { useParams } from 'react-router'
+import { Card, Col, Container, Row } from 'react-bootstrap'
+
 import TestComponentAdvanced from '@components/TestComponentAdvanced'
 
 export default function TestPageAdvanced () {

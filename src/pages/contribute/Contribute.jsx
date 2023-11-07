@@ -83,23 +83,23 @@ SOFTWARE.`}</pre>
               </Accordion.Item>
               <Accordion.Item eventKey={'Example Pre-processing'}>
                 <Accordion.Header>
-                  <h3>Tabular classification - Example Pre-processing a data set</h3>
+                  <h3>Introduction</h3>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <N4LMarkdownDownloader file_name={'00. Tabular Classification - Example PreProcess.md'} />
+                  <N4LMarkdownDownloader file_name={'00. Tabular Classification - Introduction.md'} />
                 </Accordion.Body>
               </Accordion.Item>
-              <Accordion.Item eventKey={'Example Add Model'}>
+              <Accordion.Item eventKey={'Example Add Entry'}>
                 <Accordion.Header>
-                  <h3>Tabular classification - Example Add Model</h3>
+                  <h3>Add Entry</h3>
                 </Accordion.Header>
                 <Accordion.Body>
-                  <N4LMarkdownDownloader file_name={'00. Tabular Classification - Example Add Model.md'} />
+                  <N4LMarkdownDownloader file_name={'00. Tabular Classification - Add Entry.md'} />
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey={'Create Model'}>
                 <Accordion.Header>
-                  <h3>Tabular classification - Create model</h3>
+                  <h3>Create model</h3>
                 </Accordion.Header>
                 <Accordion.Body>
                   <N4LMarkdownDownloader file_name={'00. Tabular Classification - CreateModel.md'} />
