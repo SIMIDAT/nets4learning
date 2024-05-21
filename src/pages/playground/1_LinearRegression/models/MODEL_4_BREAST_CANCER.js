@@ -100,12 +100,12 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_LINEAR_REGRESSION {
     let dataframe_original_1 = await dfd.readCSV(path_dataset_1)
     let dataframe_processed_1 = await dfd.readCSV(path_dataset_1)
     const dataset_transforms_1 = [
-      { column_name: 'Bare Nuclei', column_transform: 'drop_?' },
-      // { column_name: 'Bare Nuclei', column_transform: 'dropNa' },
-      // { column_name: 'Bare Nuclei', column_transform: 'replace_?_NaN' },
+      // { column_name: 'Bare Nuclei', column_transform: 'drop_?' },
+      { column_name: 'Bare Nuclei', column_transform: 'replace_?_NaN' },
+      { column_name: 'Bare Nuclei', column_transform: 'dropNa' },
       // { column_name: 'Bare Nuclei', column_transform: 'fill_NaN_median' }
     ]
-    dataframe_processed_1 = DataFrameTransform(dataframe_original_1, dataset_transforms_1)
+    dataframe_original_1 = DataFrameTransform(dataframe_original_1, dataset_transforms_1)
     dataframe_processed_1 = DataFrameTransform(dataframe_processed_1, dataset_transforms_1)
 
     const dataframe_original_2 = await dfd.readCSV(path_dataset_2)

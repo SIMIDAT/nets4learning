@@ -1,5 +1,5 @@
 {
-  "welcome": "Welcome to Nets4learning",
+  "welcome": "Welcome to Nets4Learning",
   "welcome-2": "To continue select one of these disciplines",
   "list_map": "<1></1>",
   "layer-id": "Layer {{index}}",
@@ -1283,7 +1283,7 @@
           "5": "Define the loss function.",
           "6": "Define the metric function."
         },
-        "2-button": "Train a model"
+        "2-button": "Create and train a model"
       },
       "linear-regression": {
         "1-title": "Linear regression",
@@ -1326,7 +1326,7 @@
           "5": "Define the loss function.",
           "6": "Define the metric function."
         },
-        "2-button": "Train a model"
+        "2-button": "Create and train a model"
       }
     },
     "contribute": {
@@ -1531,7 +1531,7 @@
           "title": "Models",
           "history-train": "Training history",
           "train": "Training",
-          "button-submit": "Create and train model",
+          "button-submit": "Train model",
           "open-visor": "Open visor",
           "close-visor": "Close visor",
           "export-current-model": "Export current model"

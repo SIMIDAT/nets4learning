@@ -171,7 +171,7 @@ export function DataFrameApplyEncodersVector (encoders_map, input_data, column_n
 
 /**
  * @param {dfd.DataFrame} dataframe
- * @param {DataFrameColumnTransform_t[]} dataframe_transforms
+ * @param {Array<DataFrameColumnTransform_t>} dataframe_transforms
  * @return {dfd.DataFrame}
  */
 export function DataFrameTransform (dataframe, dataframe_transforms) {
@@ -200,6 +200,22 @@ export function DataFrameTransform (dataframe, dataframe_transforms) {
         break
       }
       case 'string': {
+        break
+      }
+      case 'drop_?': {
+        console.debug('TODO')
+        break
+      }
+      case 'replace_?_NaN': {
+        console.debug('TODO', column_name, _dataframe[column_name])
+        const new_serie = _dataframe[column_name].apply((val) => {
+          if (val === '?') {
+            console.log("FOUND")
+            return NaN;
+          }
+          return val;
+        })
+        _dataframe.addColumn(column_name, new_serie, { inplace: true })
         break
       }
       case 'drop': {

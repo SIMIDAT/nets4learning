@@ -191,7 +191,7 @@ export default function Glossary2ActivationFunctions () {
 
                             </Col>
                           </Row>
-                          <Row>
+                          <Row style={{fontSize: "0.75em"}}>
                             <Col><p><Latex>{value.latex}</Latex></p></Col>
                           </Row>
                         </Col>

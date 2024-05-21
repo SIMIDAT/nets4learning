@@ -1283,7 +1283,7 @@
           "5": "Definir la función de perdida.",
           "6": "Definir la métrica para la evaluación."
         },
-        "2-button": "Entrenar un modelo"
+        "2-button": "Crear y entrenar un modelo"
       },
       "linear-regression": {
         "1-title": "Regresión linear",
@@ -1326,7 +1326,7 @@
           "5": "Definir la función de perdida.",
           "6": "Definir la métrica para la evaluación."
         },
-        "2-button": "Entrenar un modelo"
+        "2-button": "Crear y entrenar un modelo"
       }
     },
     "contribute": {
@@ -1531,7 +1531,7 @@
           "title": "Modelos",
           "history-train": "Historial del entrenamiento",
           "train": "Entrenamiento",
-          "button-submit": "Crear y entrenar modelo",
+          "button-submit": "Entrenar modelo",
           "open-visor": "Abrir visor",
           "close-visor": "Cerrar visor",
           "export-current-model": "Exportar modelo actual"
