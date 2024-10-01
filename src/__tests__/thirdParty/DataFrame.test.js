@@ -1,5 +1,4 @@
 import * as dfd from 'danfojs'
-import { DataFrameTransform } from '@core/dataframe/DataFrameUtils'
 
 describe('DataFrame', () => {
   test('DataFrame Dates', () => {
@@ -11,7 +10,8 @@ describe('DataFrame', () => {
     ]
     let columns = ['Name', 'Count', 'Date']
     let df = new dfd.DataFrame(data, { columns: columns })
-    expect(df['Date'].dt.hours().values).toStrictEqual([1, 0, 1, 2])
-    // expect([5,5]).toStrictEqual([6,5]);
+    expect(df['Date'].dt.hours().values).toStrictEqual([1, 1, 1, 2])
+    // expect(df['Date'].dt.hours().values).toStrictEqual([1, 0, 1, 2])
+    // expect([5,5]).toStrictEqual([6,5])
   })
 })

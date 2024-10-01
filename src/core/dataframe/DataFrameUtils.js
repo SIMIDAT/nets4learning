@@ -1,5 +1,7 @@
 import * as dfd from 'danfojs'
 import { E_PLOTS, LIST_PLOTS } from '@components/_context/CONSTANTS'
+import { VERBOSE } from '@/CONSTANTS'
+import * as _Types from '@core/types'
 
 // E_PLOTS.LINE_CHARTS
 // E_PLOTS.BAR_CHARTS
@@ -13,6 +15,19 @@ import { E_PLOTS, LIST_PLOTS } from '@components/_context/CONSTANTS'
 export function columnsTimeSeriesValidForIndex (_dataFrameLocal, _columns) {
   return _columns.filter((column) => {
     if (_dataFrameLocal.columns.includes(column)) return _dataFrameLocal[column].unique().shape[0] === _dataFrameLocal.shape[0]
+    return false
+  })
+}
+
+/**
+ * 
+ * @param {dfd.DataFrame} _dataFrameLocal 
+ * @param {Array<string>} _columns 
+ * @returns {string[]}
+ */
+export function columnsScatterValidForIndex (_dataFrameLocal, _columns) {
+  return _columns.filter((column) => {
+    if (_dataFrameLocal.columns.includes(column)) return true
     return false
   })
 }
@@ -36,9 +51,9 @@ export function listPlotsAvailable (_dataframeLocal, _columns) {
 /**
  *
  * @param {dfd.DataFrame} dataframe
- * @param {DataframePlotConfig_t} dataframePlotConfig
+ * @param {_Types.DataframePlotConfig_t} dataframePlotConfig
  *
- * @return {TimeSeriesPlotsValidConfigResponse_t}
+ * @return {_Types.TimeSeriesPlotsValidConfigResponse_t}
  */
 export function timeSeriesPlotsValidConfig (dataframe, dataframePlotConfig) {
   // const notContainIndexInColumnsToShow = !dataframePlotConfig.COLUMNS.includes(dataframePlotConfig.TIME_SERIES_PLOTS.config.index)
@@ -90,19 +105,19 @@ export function TransformArrayToSeriesTensor (series) {
 /**
  *
  * @param {dfd.DataFrame} dataframe
- * @param {Array<{column_name: string, column_transform:'label-encoder'|'one-hot-encoder'}>} dataframe_transforms
- * @return {EncoderMap_t}
+ * @param {Array<_Types.DataFrameColumnTransform_t>} dataframe_transforms
+ * @return {_Types.EncoderMap_t}
  */
 export function DataFrameEncoder (dataframe, dataframe_transforms) {
-  /** @type EncoderMap_t */
-  const encoders_map = {}
-  for (const { column_transform, column_name } of dataframe_transforms) {
+  /** @type {_Types.EncoderMap_t} */
+  const encoder_map = {}
+  const dataframe_local = dataframe.copy()
+  for (const { column_name, column_transform } of dataframe_transforms) {
     switch (column_transform) {
       case 'label-encoder': {
         const encoder = new dfd.LabelEncoder()
-        const _serie = dataframe[column_name]
-        encoder.fit(_serie)
-        encoders_map[column_name] = {
+        encoder.fit(dataframe_local[column_name])
+        encoder_map[column_name] = {
           type   : 'label-encoder',
           encoder: encoder,
         }
@@ -110,9 +125,8 @@ export function DataFrameEncoder (dataframe, dataframe_transforms) {
       }
       case 'one-hot-encoder': {
         const encoder = new dfd.OneHotEncoder()
-        const _serie = dataframe[column_name]
-        encoder.fit(_serie)
-        encoders_map[column_name] = {
+        encoder.fit(dataframe_local[column_name])
+        encoder_map[column_name] = {
           type   : 'label-encoder',
           encoder: encoder,
         }
@@ -124,12 +138,12 @@ export function DataFrameEncoder (dataframe, dataframe_transforms) {
       }
     }
   }
-  return encoders_map
+  return encoder_map
 }
 
 /**
  *
- * @param {EncoderMap_t}         encoders_map
+ * @param {_Types.EncoderMap_t}         encoders_map
  * @param {Object.<string, any>} values_map
  * @param {string[]}             column_name_list
  * @returns {number[]}
@@ -150,7 +164,7 @@ export function DataFrameApplyEncoders (encoders_map, values_map, column_name_li
 
 /**
  *
- * @param {EncoderMap_t} encoders_map
+ * @param {_Types.EncoderMap_t} encoders_map
  * @param {Array<string|number>} input_data
  * @param {string[]} column_name_list
  * @return {number[]}
@@ -171,26 +185,26 @@ export function DataFrameApplyEncodersVector (encoders_map, input_data, column_n
 
 /**
  * @param {dfd.DataFrame} dataframe
- * @param {Array<DataFrameColumnTransform_t>} dataframe_transforms
+ * @param {Array<_Types.DataFrameColumnTransform_t>} dataframe_transforms
  * @return {dfd.DataFrame}
  */
 export function DataFrameTransform (dataframe, dataframe_transforms) {
-  const _dataframe = dataframe.copy()
-  for (const { column_transform, column_name } of dataframe_transforms) {
+  const dataframe_transform = dataframe.copy()
+  for (const { column_name, column_transform, match } of dataframe_transforms) {
     switch (column_transform) {
       case 'one-hot-encoder': {
-        const encoder = new dfd.OneHotEncoder()
-        encoder.fit(_dataframe[column_name])
-        const new_serie = encoder.transform(_dataframe[column_name].values)
-        _dataframe.addColumn(column_name, new_serie, { inplace: true })
+        const oneHotEncoder = new dfd.OneHotEncoder()
+        const encoder = oneHotEncoder.fit(dataframe_transform[column_name])
+        const new_serie = encoder.transform(dataframe_transform[column_name].values)
+        dataframe_transform.addColumn(column_name, new_serie, { inplace: true })
         break
       }
       case 'label-encoder': {
-        const encoder = new dfd.LabelEncoder()
-        encoder.fit(_dataframe[column_name])
-        const new_serie = encoder.transform(_dataframe[column_name].values)
-        _dataframe.addColumn(column_name, new_serie, { inplace: true })
-        _dataframe.asType(column_name, 'int32', { inplace: true })
+        const labelEncoder = new dfd.LabelEncoder()
+        const encoder = labelEncoder.fit(dataframe_transform[column_name])
+        const new_serie = encoder.transform(dataframe_transform[column_name].values)
+        dataframe_transform.addColumn(column_name, new_serie, { inplace: true })
+        dataframe_transform.asType(column_name, 'int32', { inplace: true })
         break
       }
       case 'int32': {
@@ -207,23 +221,34 @@ export function DataFrameTransform (dataframe, dataframe_transforms) {
         break
       }
       case 'replace_?_NaN': {
-        console.debug('TODO', column_name, _dataframe[column_name])
-        const new_serie = _dataframe[column_name].apply((val) => {
+        if (VERBOSE) console.debug(`replace_${column_name}_?_NaN`, { _dataframe: dataframe_transform, column_name, c: dataframe_transform[column_name] })
+        const new_serie = dataframe_transform[column_name].apply((val) => {
           if (val === '?') {
-            console.log("FOUND")
-            return NaN;
+            if (VERBOSE) console.debug('FOUND')
+            return NaN
           }
-          return val;
+          return val
         })
-        _dataframe.addColumn(column_name, new_serie, { inplace: true })
+        dataframe_transform.addColumn(column_name, new_serie, { inplace: true })
+        break
+      }
+      case 'replace_<match>_NaN': {
+        if (VERBOSE) console.debug(`replace_${column_name}_${match}_NaN`, { _dataframe: dataframe_transform, column_name, c: dataframe_transform[column_name] })
+        const new_serie = dataframe_transform[column_name].apply((val) => {
+          if (val === match) {
+            return Number.NaN
+          }
+          return val
+        })
+        dataframe_transform.addColumn(column_name, new_serie, { inplace: true })
         break
       }
       case 'drop': {
-        _dataframe.drop({ columns: [column_name], inplace: true })
+        dataframe_transform.drop({ columns: [column_name], inplace: true })
         break
       }
       case 'dropNa': {
-        _dataframe.dropNa({ axis: 1, inplace: true })
+        dataframe_transform.dropNa({ axis: 1, inplace: true })
         break
       }
       default: {
@@ -231,7 +256,7 @@ export function DataFrameTransform (dataframe, dataframe_transforms) {
       }
     }
   }
-  return _dataframe
+  return dataframe_transform
 }
 
 /**
@@ -246,8 +271,143 @@ export function DataFrameDeepCopy (dataframe) {
 
 /**
  * @param {dfd.DataFrame} dataframe
- * @return {Array<Array<string|float32|int32|boolean>>}
+ * @return {Array<Array<string|number|boolean>>}
  */
 export function DataFrameIterRows (dataframe) {
+  // @ts-ignore
   return dataframe.$data
+}
+
+
+
+/**
+ * @param {dfd.DataFrame} dataframe
+ * @param {_Types.DataFrameColumnTransform_t[]} dataframe_transforms
+ * @return {{dataframe_processed: dfd.DataFrame, encoder_map: _Types.EncoderMap_t}}
+ */
+export function DataFrameTransformAndEncoder (dataframe, dataframe_transforms) {
+  const dataframe_processed = dataframe.copy()
+  /**
+   * @type {_Types.EncoderMap_t}
+   */
+  const encoder_map = {}
+  for (const { column_name, column_transform, match } of dataframe_transforms) {
+    switch (column_transform) {
+      case 'one-hot-encoder': {
+        const oneHotEncoder = new dfd.OneHotEncoder()
+        const encoder = oneHotEncoder.fit(dataframe_processed[column_name])
+        const new_serie = encoder.transform(dataframe_processed[column_name].values)
+        dataframe_processed.addColumn(column_name, new_serie, { inplace: true })
+        encoder_map[column_name] = {
+          type   : 'one-hot-encoder',
+          encoder: encoder,
+        }
+        break
+      }
+      case 'label-encoder': {
+        const labelEncoder = new dfd.LabelEncoder()
+        const encoder = labelEncoder.fit(dataframe_processed[column_name])
+        const new_serie = encoder.transform(dataframe_processed[column_name].values)
+        dataframe_processed.addColumn(column_name, new_serie, { inplace: true })
+        dataframe_processed.asType(column_name, 'int32', { inplace: true })
+        encoder_map[column_name] = {
+          type   : 'label-encoder',
+          encoder: encoder,
+        }
+        break
+      }
+      case 'int32': {
+        break
+      }
+      case 'float32': {
+        break
+      }
+      case 'string': {
+        break
+      }
+      case 'drop_?': {
+        console.debug('TODO')
+        break
+      }
+      case 'replace_?_NaN': {
+        if (VERBOSE) console.debug(`replace_${column_name}_?_NaN`, { _dataframe: dataframe_processed, column_name, c: dataframe_processed[column_name] })
+        const new_serie = dataframe_processed[column_name].apply((val) => {
+          if (val === '?') {
+            if (VERBOSE) console.debug('FOUND')
+            return NaN
+          }
+          return val
+        })
+        dataframe_processed.addColumn(column_name, new_serie, { inplace: true })
+        break
+      }
+      case 'replace_<match>_NaN': {
+        if (VERBOSE) console.debug(`replace_${column_name}_${match}_NaN`, { _dataframe: dataframe_processed, column_name, c: dataframe_processed[column_name] })
+        const new_serie = dataframe_processed[column_name].apply((val) => {
+          if (val === match) {
+            return Number.NaN
+          }
+          return val
+        })
+        dataframe_processed.addColumn(column_name, new_serie, { inplace: true })
+        break
+      }
+      case 'drop': {
+        dataframe_processed.drop({ columns: [column_name], inplace: true })
+        break
+      }
+      case 'dropNa': {
+        dataframe_processed.dropNa({ axis: 1, inplace: true })
+        break
+      }
+      default: {
+        console.warn('Error, option not valid', { column_transform, column_name })
+      }
+    }
+  }
+  return { dataframe_processed: dataframe_processed, encoder_map: encoder_map }
+}
+
+/**
+ * 
+ * @param {dfd.DataFrame} dataframe 
+ * @param {number} row 
+ * @param {string} column_name 
+ * @param {number|string} value 
+ * @returns 
+ */
+export function DataFrameSetCellValue(dataframe, row, column_name, value) {
+  const oldValuesRows = dataframe.loc({rows: [row]}).values[0]
+  const columnIndex = dataframe.columns.indexOf(column_name)
+  // @ts-ignore
+  const newValuesRows = Array.from(oldValuesRows)
+  newValuesRows[columnIndex] = (value)
+  const df_void = new dfd.DataFrame([], { columns: dataframe.columns, dtypes: dataframe.dtypes })
+  let new_df = df_void.append(newValuesRows, [0])
+  return new_df
+}
+
+/**
+ * 
+ * @param {string|_Types.DataFrameColumnType_t} dtype 
+ * @returns {_Types.DatasetColumnType_t}
+ */
+export function DataFrameColumnType_To_DatasetColumnType (dtype) {
+
+  switch(dtype) {
+    case 'int32':
+      return 'Integer' 
+    case 'float32':
+      return 'Continuous' 
+    case 'string':
+      return 'Categorical'
+    case 'boolean':
+      return 'Binary'
+    case 'datetime':
+      return 'Date' 
+
+    default:
+      return 'Other'
+  }
+
 }

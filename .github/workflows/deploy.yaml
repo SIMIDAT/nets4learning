@@ -38,4 +38,4 @@ jobs:
           REACT_APP_PUBLIC_URL: "https://nets4learning.netlify.app"
           REACT_APP_GA_MEASUREMENT_ID: "G-3644EFBXMG"
           REACT_APP_SHOW_NEW_FEATURE: "false"
-          REACT_APP_NEW_FEATURE: "linear-regression"
+          REACT_APP_NEW_FEATURE: "regression"

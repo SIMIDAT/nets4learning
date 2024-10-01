@@ -16,9 +16,16 @@
   "{{X_feature}} x {{target}}": "{{X_feature}} x {{target}}",
   "Predicted": "Predicción",
   "Waiting": "Esperando",
+  "waiting": "Esperando",
   "and": "y",
+  "dataset": {
+    "__index__": "Conjunto de datos {{index}}"
+  },
   "model": {
-    "__index__": "Model {{index}}"
+    "__index__": "Modelo {{index}}"
+  },
+  "instance": {
+    "__index__": "Instancia {{index}}"
   },
   "more-information-in-link": "Más información en el siguiente <link1>enlace</link1>",
   "more-information-in-tutorial": "Puedes seguir este <link1>tutorial</link1>",
@@ -30,12 +37,38 @@
   "Processed": "Procesado",
   "Default": "Por defecto",
   "Need permissions": "Necesitas permisos",
+  "Get Screenshot": "Captura de pantalla",
+  "ASL": "Lengua de signos americana",
+  "SSL": "Lengua de signos española",
+  "Info Hand sign": "Información sobre la lengua de signos",
+  "Info": "Información",
+  "Target": "Objetivo",
+  "Update": "Actualizar",
+  "Reference": "Referencia",
+  "Predict": "Predicción",
+  "selector-dataset": "Selector del conjunto de datos",
+  "selector-model": "Selector de modelo",
+  "selector-instance": "Selector de instancia",
+  "Device info": "Información del dispositivo",
+  "__VOID__": null,
+  "prediction-input": "Datos originales",
+  "prediction-input-description": "Datos originales antes de escalar y codificar",
+  "prediction-input-encoding": "Datos procesados codificados",
+  "prediction-input-encoding-description": "Datos procesados después de codificar con 'label encoder'",
+  "prediction-input-scaling": "Datos procesados escalados",
+  "prediction-input-scaling-description": "Datos procesados después de realizar un escalado con 'MinMaxScaler'",
+  "prediction-input-processed": "Datos procesados",
+  "prediction-input-processed-description": "Datos procesados después de escalar y codificar",
+  "prediction-result": "Resultado",
+  "prediction-result-description": "Resultado de la predicción",
+  "Validate": "Validación",
+  "Classify": "Clasificación",
   "equations": {
-    "title": "Formulas",
-    "title-metrics": "Formulas de las funciones de métricas",
-    "title-losses": "Formulas de las funciones de perdida",
-    "title-activation": "Formulas de las funciones de activación",
-    "title-optimization": "Formulas de las funciones de optimización",
+    "title": "Fórmulas",
+    "title-metrics": "Funciones de métricas",
+    "title-losses": "Funciones de perdida",
+    "title-activation": "Funciones de activación",
+    "title-optimization": "Funciones de optimización",
     "loss-functions": {
       "huber-loss": {
         "title": "Huber Loss",
@@ -49,8 +82,8 @@
       },
       "negative-log": {
         "title": "Negative Loglikelihood",
-        "text-1": "Minimizar loglikelilidad negativa",
-        "text-2": "es equivalente a la estimación de máxima verosimilitud (MLE)."
+        "text-1": "Minimizar la probabilidad logarítmica negativa",
+        "text-2": "es equivalente a la Estimación de Máxima Verosimilitud (MLE)."
       },
       "kj-divergence": {
         "title": "KL/JS divergence"
@@ -103,6 +136,7 @@
     "dataset-name": "Nombre del conjunto de datos",
     "dataset-size": "Número de muestras",
     "dataset-web": "Web original",
+    "dataset-reference": "Referencia",
     "download-dataset-car": "Conjunto de datos de evaluación de coches",
     "download-dataset-hepatitis-c": "Conjunto de datos de hepatitis C",
     "download-dataset-iris": "Conjunto de datos de iris",
@@ -112,13 +146,14 @@
     "download-dataset-ecoli": "Conjunto de datos de ecoli",
     "download": {
       "dataset": {
-        "1-linear-regression": {
+        "1-regression": {
           "salary": "Conjunto de datos de salarios",
           "auto-mpg": "Conjunto de datos consumo de combustible",
-          "boston": "Conjunto de datos casas de Boston",
+          "housing-prices": "Conjunto de datos precios de casas",
+          "breast-cancer-original": "Conjunto de datos Breast Cancer Wisconsin",
           "breast-cancer-wdbc": "Conjunto de datos Breast Cancer Wisconsin (Diagnostic)",
           "breast-cancer-wpbc": "Conjunto de datos Breast Cancer Wisconsin (Prognostic)",
-          "student-performance-mathematics": "Conjunto de datos de de estudiantes de matemáticas",
+          "student-performance-mathematics": "Conjunto de datos de estudiantes de matemáticas",
           "student-performance-portuguese": "Conjunto de datos de estudiantes de Portugués",
           "wine-red": "Conjunto de datos de vino tinto",
           "wine-white": "Conjunto de datos de vino blanco"
@@ -128,8 +163,10 @@
   },
   "dataframe-original": "DataFrame | Original",
   "dataframe-form": "DataFrame | Formulario de procesamiento",
-  "dataframe-processed": "DataFrame | Procesado",
   "dataframe": {
+    "dataframe": {
+      "title": "DataFrame | Conjunto de datos"
+    },
     "dataset": {
       "title": "Conjunto de datos"
     },
@@ -174,6 +211,7 @@
       "link": "Consulta más información en el siguiente <link1>enlace</link1>"
     }
   },
+  "dataframe-processed": "DataFrame | Procesado",
   "dataframe-scatterplot": {
     "title": "Gráfico de dispersión"
   },
@@ -212,10 +250,10 @@
     "tensor-shape-change": "La capa de salida tiene la forma (* ,{{last_layer_units}}). <br> Debe tener la forma (*, {{classes_length}})",
     "need-one-feature": "Necesitas al menos una característica.",
     "new-element-need-to-be-unique": "El elemento del conjunto X debe ser único.",
-    "layers-length": "Debes tener al menos una capa con el número de neuronas y su función de actvación",
+    "layers-length": "Debes tener al menos una capa con el número de neuronas y su función de activación",
     "parsing-csv": "Error en la preparación del conjunto de datos",
     "file-not-valid": "Error, fichero no válido",
-    "metrics-length": "Error, el numero de metricas debe estar entre 1 y 10"
+    "metrics-length": "Error, el número de métricas debe estar entre 1 y 10"
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "Advertencia, la primera capa debe ser de tipo {{value}}",
@@ -227,7 +265,7 @@
     "file-upload": "Archivo cargado correctamente"
   },
   "info": {
-    "the-class-is-__value__": "¿La clase tiene el indice {{value}}?"
+    "the-class-is-__value__": "¿La clase tiene el índice {{value}}?"
   },
   "alert": {
     "menu": {
@@ -255,7 +293,7 @@
     "datasets": "Conjuntos de datos",
     "theme": "Tema",
     "dataframe": "DataFrame",
-    "analyze": "Analizar"
+    "analyze": "AED"
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -286,11 +324,11 @@
   },
   "modality": {
     "0": "Clasificación tabular",
-    "1": "Regresión lineal",
+    "1": "Regresión",
     "2": "Identificación de objetos",
     "3": "Clasificación de imágenes",
     "tabular-classification": "Clasificación tabular",
-    "linear-regression": "Regresión lineal",
+    "regression": "Regresión",
     "object-detection": "Identificación de objetos",
     "image-classification": "Clasificador de imágenes"
   },
@@ -387,7 +425,7 @@
         },
         "html-example": {
           "text": "Introduce los valores correspondientes a la flor que se va a evaluar:",
-          "items": "(longitud sépalo; anchura sépalo; longitud petalo; anchura petalo).",
+          "items": "(longitud sépalo; anchura sépalo; longitud pétalo; anchura pétalo).",
           "examples": "Ejemplos:"
         }
       },
@@ -455,19 +493,19 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "Puedes consultar el manual en busqueda de información"
+            "content": "Puedes consultar el manual en búsqueda de información"
           },
           "dataset-info": {
             "title": "Información del conjunto de datos",
             "content": "Analiza el conjunto de datos"
           },
           "dataset": {
-            "title": "Conjuto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+            "title": "Conjunto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
           },
           "dataset-plot": {
-            "title": "Graficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+            "title": "Gráficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
             "title": "Visualizador de las capas de la red neuronal",
@@ -475,10 +513,10 @@
           },
           "layer-editor": {
             "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
           },
           "params-editor": {
-            "title": "Editor de hiperparametros",
+            "title": "Editor de hiperparámetros",
             "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
           },
           "list-of-models": {
@@ -492,7 +530,7 @@
         }
       }
     },
-    "1-linear-regression": {
+    "1-regression": {
       "salary": {
         "title": "Salario por años de experiencia",
         "description": {
@@ -511,7 +549,7 @@
           "details-2-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Regresión lineal calculada (<b>Salary</b>)"
+              "0": "Regresión calculada (<b>Salary</b>)"
             }
           },
           "details-3-references": {
@@ -561,7 +599,7 @@
           "details-2": {
             "title": "Datos de salida",
             "list": {
-              "0": "Regresión lineal calculada (<b>MPG</b>)"
+              "0": "Regresión calculada (<b>MPG</b>)"
             }
           },
           "details-3": {
@@ -572,44 +610,79 @@
           }
         }
       },
-      "boston-housing": {
-        "title": "Las viviendas en Boston",
+      "housing-prices": {
+        "title": "Precio de las viviendas",
         "description": {
           "text": {
             "0": "El conjunto de datos de viviendas de Boston se deriva de la información recopilada por el Servicio del Censo de EE. UU. sobre viviendas en el área de Boston.",
             "1": "El conjunto de datos está diseñado para abordar problemas de regresión y modelado de precios de viviendas en diferentes vecindarios de Boston, Massachusetts, Estados Unidos. Este conjunto de datos es comúnmente utilizado para ejemplos y prácticas en la educación y la investigación."
           },
           "link": "<link1>Entrada del conjunto de datos UCI</link1>",
-          "details-1-input": {
+          "details-input": {
             "title": "Datos de entrada",
-            "list": {
-              "0": "<strong>CRIM</strong> Tasa de criminalidad del crimen per cápita por ciudad",
-              "1": "<strong>Zn</strong> Proporción de tierras residenciales zonas por lotes de más de 25,000 pies cuadrados.",
-              "2": "<strong>INDUS</strong> Proporción de acres comerciales no reales por ciudad",
-              "3": "<strong>CHAS</strong> Charles River Variable Dummy (= 1 if tract bounds river; 0 en otro caso)",
-              "4": "<strong>NOX</strong> Concentración de óxidos nítricos (partes por 10 millones)",
-              "5": "<strong>RM</strong> Número promedio de habitaciones por vivienda",
-              "6": "<strong>AGE</strong> Proporción de unidades ocupadas por los propietarios construidas antes de 1940",
-              "7": "<strong>DIS</strong> Distancias ponderadas a cinco centros de empleo de Boston",
-              "8": "<strong>RAD</strong> Índice de accesibilidad a carreteras radiales",
-              "9": "<strong>TAX</strong> Impuesto a la propiedad de la propiedad de valor completo por cada $ 10,000",
-              "10": "<strong>PRATIO</strong> Ratio alumnos-profesor por ciudad",
-              "11": "<strong>B</strong> 1000 (BK - 0.63)^2 donde BK es la proporción de negros por ciudad",
-              "12": "<strong>LSTAT</strong> LSTAT % más bajo estado de la población",
-              "13": "<strong>MEDV</strong>Valor mediano de las casas ocupadas por el propietario en $ 1000"
+            "california": {
+              "list": {
+                "0": "<strong>Median House Value</strong>: Valor medio de la vivienda para los hogares de un bloque (medido en dólares estadounidenses) [$].",
+                "1": "<strong>Median Income</strong>: Mediana de ingresos de los hogares de un bloque de casas (medida en decenas de miles de dólares estadounidenses) [10k$].",
+                "2": "<strong>Median Age</strong>: Edad mediana de una casa dentro de un bloque; un número más bajo corresponde a un edificio más nuevo [años].",
+                "3": "<strong>Total Rooms</strong>: Número total de habitaciones de un bloque",
+                "4": "<strong>Total Bedrooms</strong>: Número total de dormitorios en un bloque",
+                "5": "<strong>Population</strong>: Número total de personas que residen en un bloque",
+                "6": "<strong>Households</strong>: Número total de hogares, un grupo de personas que residen dentro de una unidad doméstica, para una manzana",
+                "7": "<strong>Latitude</strong>: Medida de la distancia al norte a la que se encuentra una vivienda; un valor más alto significa más al norte [°].",
+                "8": "<strong>Longitude</strong>: Medida de la distancia al oeste de una vivienda; cuanto mayor sea el valor, más al oeste [°].",
+                "9": "<strong>Distance to coast</strong>: Distancia al punto costero más cercano [m]",
+                "10": "<strong>Distance to Los Angeles</strong>: Distancia al centro de Los Ángeles [m].",
+                "11": "<strong>Distance to San Diego</strong>: Distancia al centro de San Diego [m]",
+                "12": "<strong>Distance to San Jose</strong>: Distancia al centro de San José [m]",
+                "13": "<strong>Distance to San Francisco</strong>: Distancia al centro de San Francisco [m Distancia al centro de San Francisco [m].",
+                "14": null
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<strong>CRIM</strong> Tasa de criminalidad del crimen per cápita por ciudad",
+                "1": "<strong>Zn</strong> Proporción de tierras residenciales zonas por lotes de más de 25,000 pies cuadrados.",
+                "2": "<strong>INDUS</strong> Proporción de acres comerciales no reales por ciudad",
+                "3": "<strong>CHAS</strong> Charles River Variable Dummy (= 1 if tract bounds river; 0 en otro caso)",
+                "4": "<strong>NOX</strong> Concentración de óxidos nítricos (partes por 10 millones)",
+                "5": "<strong>RM</strong> Número promedio de habitaciones por vivienda",
+                "6": "<strong>AGE</strong> Proporción de unidades ocupadas por los propietarios construidas antes de 1940",
+                "7": "<strong>DIS</strong> Distancias ponderadas a cinco centros de empleo de Boston",
+                "8": "<strong>RAD</strong> Índice de accesibilidad a carreteras radiales",
+                "9": "<strong>TAX</strong> Impuesto a la propiedad de la propiedad de valor completo por cada $ 10,000",
+                "10": "<strong>PRATIO</strong> Ratio alumnos-profesor por ciudad",
+                "11": "<strong>B</strong> 1000 (BK - 0.63)^2 donde BK es la proporción de negros por ciudad",
+                "12": "<strong>LSTAT</strong> LSTAT % más bajo estado de la población",
+                "13": "<strong>MEDV</strong>Valor mediano de las casas ocupadas por el propietario en $ 1000"
+              }
             }
           },
-          "details-2-output": {
+          "details-output": {
             "title": "Datos de salida",
-            "list": {
-              "0": "Regresión lineal calculada"
+            "california": {
+              "list": {
+                "0": "Regresión calculada"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "Regresión calculada"
+              }
             }
           },
-          "details-3-references": {
+          "details-references": {
             "title": "Referencias",
-            "list": {
-              "0": "<link1>Entrada del conjunto de datos UCI</link1>",
-              "1": "<link1>Controversia sobre el conjunto de datos de vivienda de Boston</link1>"
+            "california": {
+              "list": {
+                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<link1>Entrada del conjunto de datos UCI</link1>",
+                "1": "<link1>Controversia sobre el conjunto de datos de vivienda de Boston</link1>"
+              }
             }
           }
         }
@@ -646,14 +719,15 @@
           "details-2-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Regresión lineal calculada"
+              "0": "Regresión calculada"
             }
           },
           "details-3-references": {
             "title": "Referencias",
             "list": {
-              "0": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
+              "0": "<link1>Breast Cancer Wisconsin</link1>",
+              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
+              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
             }
           }
         }
@@ -706,7 +780,7 @@
           "details-2-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Regresión lineal calculada"
+              "0": "Regresión calculada"
             }
           },
           "details-3-references": {
@@ -747,7 +821,7 @@
           "details-2-output": {
             "title": "Datos de salida",
             "list": {
-              "0": "Regresión lineal calculada"
+              "0": "Regresión calculada"
             }
           },
           "details-3-references": {
@@ -761,7 +835,7 @@
       "list-datasets": {
         "salary": "Conjunto de datos - Salary",
         "auto-mpg": "Conjunto de datos - Auto MPG",
-        "boston-housing": "Conjunto de datos - Boston Housing",
+        "housing-prices": "Conjunto de datos - Housing Prices",
         "breast-cancer": "Conjunto de datos - Breast cancer",
         "student-performance": "Conjunto de datos - Student performance",
         "wine": "Conjunto de datos - Wine"
@@ -769,7 +843,7 @@
       "list-models": {
         "salary": "Modelo - Salary",
         "auto-mpg": "Modelo - Auto MPG",
-        "boston-housing": "Modelo - Boston Housing",
+        "housing-prices": "Modelo - Housing prices",
         "breast-cancer": "Modelo - Breast cancer",
         "student-performance": "Modelo - Student performance",
         "wine": "Modelo - Wine"
@@ -779,19 +853,23 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "Puedes consultar el manual en busqueda de información"
+            "content": "Puedes consultar el manual en búsqueda de información"
           },
           "dataset-info": {
             "title": "Información del conjunto de datos",
             "content": "Consulta la información del conjunto de datos"
           },
           "dataset": {
-            "title": "Conjuto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+            "title": "Conjunto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
+          },
+          "pre-process-dataset": {
+            "title": "Pre procesamiento",
+            "content": "Limpieza y preparación del conjunto de datos"
           },
           "dataset-plot": {
-            "title": "Graficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+            "title": "Gráficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
             "title": "Visualizador de las capas de la red neuronal",
@@ -799,10 +877,10 @@
           },
           "layer-editor": {
             "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
           },
           "params-editor": {
-            "title": "Editor de hiperparametros",
+            "title": "Editor de hiperparámetros",
             "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
           },
           "list-of-models": {
@@ -811,7 +889,7 @@
           },
           "predict-and-visualizer": {
             "title": "Predicción y visualización",
-            "content": "Una vez cargado nuestro modelo para la regresión lineal puedes realizar predicciones y visualizar los resultados"
+            "content": "Una vez cargado nuestro modelo para la regresión puedes realizar predicciones y visualizar los resultados"
           }
         }
       }
@@ -929,11 +1007,66 @@
           }
         }
       },
+      "face-api": {
+        "title": "FaceAPI - Expresiones en cara",
+        "description": {
+          "text-0": "Múltiples redes neuronales de distinto tipo agrupadas en un proyecto para la gestión de caras, permite detectar múltiples caras, detectar su edad, emociones, marcas en el rostro, extraer puntos claves como descriptores para comparar distintos tipos de caras.",
+          "details-input": {
+            "title": "Datos de entrada",
+            "text-0": "Imagen o vídeo (webcam) a color."
+          },
+          "details-output": {
+            "title": "Datos de salida",
+            "text-0": "Mismo elemento de entrada con una serie de cajas que delimitan las caras con el porcentaje expresividad de cada emoción, así como la edad de la persona.",
+            "list": {
+              "0": "Edad",
+              "1": "Neutral",
+              "2": "Feliz",
+              "3": "Triste",
+              "4": "Enojado",
+              "5": "Temeroso",
+              "6": "Disgustado",
+              "7": "Sorprendido",
+              "bounding": "Cuadro delimitador"
+            }
+          },
+          "details-references": {
+            "title": "Referencias"
+          }
+        }
+      },
+      "hand-sign": {
+        "title": "Lenguaje de signos con la mano",
+        "description": {
+          "text-0": "Red neuronal para la detección de manos y puntos de referencia, utilizada en conjunto con descriptores de posiciones para clasificar posibles signos del Spanish Sign Language (SSL)",
+          "details-input": {
+            "title": "Datos de entrada",
+            "list": {
+              "0": "Imagen o vídeo (webcam) a color."
+            }
+          },
+          "details-output": {
+            "title": "Datos de salida",
+            "list": {
+              "0": "Articulaciones de los dedos",
+              "1": "Letra correspondiente"
+            }
+          },
+          "details-references": {
+            "title": "Referencias",
+            "list": {
+              "0": "TFJS hand pose detection"
+            }
+          }
+        }
+      },
       "list-models": {
         "2-option-1": "Modelo - FaceDetector  - Geometría facial",
         "2-option-2": "Modelo - FaceMesh - Malla facial",
         "2-option-3": "Modelo - MoveNet - Detector de articulaciones",
-        "2-option-4": "Modelo - COCO SSD - Detector de objetos"
+        "2-option-4": "Modelo - COCO SSD - Detector de objetos",
+        "2-option-5": "Modelos - Face API - Gestor de caras",
+        "2-option-6": "Modelo - HandSign - Detector de signos"
       }
     },
     "3-image-classifier": {
@@ -1001,7 +1134,7 @@
           },
           "details-references": {
             "title": "Referencias",
-            "text-0": "Originalmente fue publicado por Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen:",
+            "text-0": "Originalmente, fue publicado por Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen:",
             "list": {
               "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
             }
@@ -1026,19 +1159,19 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "Puedes consultar el manual en busqueda de información"
+            "content": "Puedes consultar el manual en búsqueda de información"
           },
           "dataset-info": {
             "title": "Información del conjunto de datos",
             "content": "Consulta la información del conjunto de datos"
           },
           "dataset": {
-            "title": "Conjuto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadisticas de su descripciones"
+            "title": "Conjunto de datos",
+            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
           },
           "dataset-plot": {
-            "title": "Graficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas graficas, diagrama de barras, diagramas de sectores, etc."
+            "title": "Gráficas de los conjuntos de datos",
+            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
             "title": "Visualizador de las capas de la red neuronal",
@@ -1046,10 +1179,10 @@
           },
           "layer-editor": {
             "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la funcion de activación, añadir nuevas capas o eliminarlas."
+            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
           },
           "params-editor": {
-            "title": "Editor de hiperparametros",
+            "title": "Editor de hiperparámetros",
             "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
           },
           "list-of-models": {
@@ -1058,7 +1191,7 @@
           },
           "classify": {
             "title": "Predicción y visualización",
-            "content": "Una vez cargado nuestro modelo para la regresión lineal puedes realizar predicciones y visualizar los resultados"
+            "content": "Una vez cargado nuestro modelo para la regresión puedes realizar predicciones y visualizar los resultados"
           }
         }
       }
@@ -1085,6 +1218,9 @@
       },
       "columns": {
         "title": "Columnas del DataFrame"
+      },
+      "pie-charts": {
+        "labels": "Etiquetas"
       }
     },
     "buttons": {
@@ -1113,7 +1249,7 @@
       }
     },
     "box-plots": {
-      "title": "Grafico de Bigotes",
+      "title": "Gráfico de Bigotes",
       "description": {
         "intro": {
           "0": "Los gráficos de tipo Box, también conocidos como diagramas de caja y bigotes o boxplots en inglés, son una representación visual utilizada para mostrar la distribución y los resúmenes estadísticos de un conjunto de datos numéricos.\nEste tipo de gráfico se basa en un rectángulo que representa el rango intercuartil (IQR, por sus siglas en inglés), donde la línea central indica la mediana y las líneas extendidas, conocidas como bigotes, representan el rango de\nvalores más allá del IQR.",
@@ -1153,7 +1289,7 @@
       }
     },
     "line-charts": {
-      "title": "Grafico de tipo Linea",
+      "title": "Gráfico de tipo Línea",
       "description": {
         "intro": {
           "0": "Los gráficos de tipo línea, también conocidos como gráficos de series o gráficos de tendencia, son una representación visual que muestra la relación y la evolución de los datos a lo largo del tiempo o de una variable continua.\nEstos gráficos se construyen trazando puntos de datos en un sistema de coordenadas cartesianas, donde cada punto representa una medición o un valor específico de la variable en el eje vertical en función del tiempo o de la variable\nindependiente en el eje horizontal.",
@@ -1210,6 +1346,11 @@
         "end": {
           "0": "Los gráficos de dispersión son una herramienta poderosa para explorar y visualizar la relación entre dos variables.\nPermiten identificar patrones, tendencias y valores atípicos en los datos, y son útiles en diversas aplicaciones, como análisis de correlación, detección de clusters y visualización de datos multidimensionales."
         }
+      },
+      "index-info": "Eje de coordenadas",
+      "form": {
+        "x": "Eje X",
+        "y": "Eje Y"
       }
     },
     "time-series-plots": {
@@ -1262,6 +1403,16 @@
       }
     }
   },
+  "face-api": {
+    "years": "Años",
+    "neutral": "Neutral",
+    "happy": "Feliz",
+    "sad": "Triste",
+    "angry": "Enfadado",
+    "fearful": "Temeroso",
+    "disgusted": "Asqueado",
+    "surprised": "Sorprendido"
+  },
   "pages": {
     "version": {
       "title": "Versión"
@@ -1285,23 +1436,23 @@
         },
         "2-button": "Crear y entrenar un modelo"
       },
-      "linear-regression": {
-        "1-title": "Regresión linear",
-        "2-title": "Diseñar, crear y editar una arquitectura para calcular una regresión lineal",
-        "1-description-1": "La regresión lineal es una tarea para determinar un valor numérico específico (variable dependiente) a partir de sus características (variables independientes).",
+      "regression": {
+        "1-title": "Regresión",
+        "2-title": "Diseñar, crear y editar una arquitectura para calcular una regresión",
+        "1-description-1": "La regresión es una tarea para determinar un valor numérico específico (variable dependiente) a partir de sus características (variables independientes).",
         "1-description-2": "Es una tarea predictiva que tiene como salida una variable continua, donde se busca encontrar una línea recta que mejor se ajuste a los datos y permita predecir el valor numérico de la variable dependiente en función de las variables independientes.",
         "1-button": "Modelos pre-entrenados",
         "2-description-1": "A través de esta herramienta podemos crear una red neuronal para realizar prediciones.",
         "2-description-2": "Definir las variables independientes, que se utilizarán en el modelo, definir la variable dependiente, que será el valor numérico que se busca predecir.",
         "2-description-3": null,
         "2-description-list": {
-          "1": "Establecer una función de activación o una función lineal para las capas de la regresión lineal.",
+          "1": "Establecer una función de activación o una función lineal para las capas de la regresión.",
           "2": "Definir el valor de la tasa de aprendizaje.",
           "3": "Definir el número de épocas.",
-          "4": "Definir el optimizador.",
+          "4": "Regresión",
           "5": "Definir la función de perdida",
           "6": "Defininir la métrica para la evaluación",
-          "title": "Para aplicar la regresión lineal y modelar la relación entre variables, debemos seguir los siguientes pasos:"
+          "title": "Para aplicar la regresión y modelar la relación entre variables, debemos seguir los siguientes pasos:"
         }
       },
       "object-detection": {
@@ -1348,7 +1499,7 @@
       "form-option-_-1": "Selecciona un conjunto de datos",
       "form-upload-description": "Ahora si lo deseas puedes cargar tu propia arquitectura, en caso contrario pulsa en continuar y se cargará una arquitectura por defecto de ejemplo.",
       "form-submit": "Continuar",
-      "1-linear-regression": {
+      "1-regression": {
         "csv": "Subir conjunto de datos - CSV",
         "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
       }
@@ -1406,7 +1557,7 @@
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
-                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de error para medir la eficiencia del modelo durante el entrenamiento.",
                 "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
               }
             },
@@ -1461,6 +1612,7 @@
             "classes": "Clases"
           },
           "details": {
+            "dataframe-processed": "Dataframe procesado",
             "description-original": "Descripción del dataframe original",
             "description-processed": "Descripción del dataframe procesado",
             "data": "Información del conjunto de datos",
@@ -1517,7 +1669,7 @@
           "test-size": "Tamaño del conjunto de pruebas",
           "test-size-placeholder": "Tamaño del conjunto de pruebas",
           "test-size-info": "Valor entre 0 y 100 (es un porcentaje) del tamaño del conjunto de pruebas",
-          "delete-metric": "Eliminar funcion de métrica {{index}}",
+          "delete-metric": "Eliminar función de métrica {{index}}",
           "add-metric": "Añadir función de métrica",
           "metric-id-__index__": "Métrica {{index}}",
           "metric-id-select": "Selecciona la función de métrica",
@@ -1527,6 +1679,7 @@
         "load": "Cargar",
         "waiting-for-file": "Esperando archivo",
         "waiting-for-process": "Esperando el procesamiento del conjunto de datos",
+        "waiting-for-training": "Esperando el entrenamiento del modelo",
         "models": {
           "title": "Modelos",
           "history-train": "Historial del entrenamiento",
@@ -1583,12 +1736,12 @@
         },
         "waiting-for-models": "Esperando a la creación de un modelo"
       },
-      "1-linear-regression": {
+      "1-regression": {
         "generator": {
           "manual": {
             "title": "Manual del generador de modelos",
-            "simple-linear-regression": "Regresión linear simple",
-            "multiple-linear-regression": "Regresión linear multiple",
+            "simple-regression": "Regresión simple",
+            "multiple-regression": "Regresión multiple",
             "details-edit-layers": {
               "title": "Editor de las capas",
               "text": {
@@ -1609,7 +1762,7 @@
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
-                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de error para medir la eficiencia del modelo durante el entrenamiento.",
                 "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
               }
             },
@@ -1644,8 +1797,23 @@
               }
             }
           },
-          "simple-linear-regression": "Regresión linear simple",
-          "multiple-linear-regression": "Regresión linear multiple"
+          "simple-regression": "Regresión simple",
+          "multiple-regression": "Regresión multiple"
+        },
+        "dataframe": {
+          "title": "Dataframe procesado"
+        },
+        "selector-instance": {
+          "option": "Selector de instancia"
+        },
+        "selector-model": {
+          "option": "Selector de modelo"
+        },
+        "details": {
+          "description-processed": {
+            "dataset": "Conjunto de datos procesado",
+            "describe": "Conjunto de datos estadísticas descriptivas"
+          }
         },
         "predict": {
           "title": "Predicción",
@@ -1657,6 +1825,7 @@
           },
           "button-submit": "Predecir",
           "list-models-generated": "Lista de modelos generados",
+          "list-models": "Lista de modelos generados",
           "list-instances": "Lsta de instancias"
         },
         "model-selector": {
@@ -1698,7 +1867,7 @@
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
-                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de eror para medir la eficiencia del modelo durante el entrenamiento.",
+                "4": "<b>Función de pérdida</b>:<br />Es un método de calculo de error para medir la eficiencia del modelo durante el entrenamiento.",
                 "5": "<b>Función de métrica</b>:<br />Es la media de evaluación que se utiliza para valorar el rendimiento de un modelo de aprendizaje automático con los datos de prueba."
               }
             },
@@ -1792,13 +1961,13 @@
         "1-description-3": "Al acceder a la sección de la herramienta en los modelos podremos editar las características de los elementos a predecir. La herramienta cuenta con formulario dinámico que permite cambiar los tipos de datos de entrada de la red neuronal.",
         "2-title": "Entrenar modelos",
         "2-description-1": "La herramienta cuenta con un visualizador de datos que permite mostrar las clases y los atributos del conjunto de datos. Así como un gestor para crear, diseñar, entrenar y exportar un modelo de datos.",
-        "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo numero de neuronas que clases a predecir.",
+        "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo número de neuronas que clases a predecir.",
         "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
         "2-description-4": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la tabla de abajo una entrada con el modelos entrenado.",
         "2-description-5": "Una vez entrenado un modelo a partir de los datos podremos realizar predicciones, para ello se incluye un formulario dinámico con las características del conjunto de datos. La precisión del modelo en la predicción podrá ser mayor o menor en función del entrenamiento y las opciones seleccionadas."
       },
-      "1-linear-regression": {
-        "title": "Regresión lineal",
+      "1-regression": {
+        "title": "Regresión",
         "1-title": "Modelos pre-entrenados",
         "1-description": {
           "0": "Debemos acceder a la sección de modelos pre-entrenados y seleccionar uno de los disponibles.",
@@ -1808,7 +1977,7 @@
         "2-title": "Entrenar modelos",
         "2-description": {
           "0": "La sección cuenta con la posibilidad subir tus conjuntos de datos, conjuntos de datos preparados, descripciones, herramientas de visualización gráficas y de estadísticas.",
-          "1": "Cuenta con un generador de modelos de regresión lineal. Gestiona capas de la red neuronal, hiperparámetros, funciones de optimización, funciones de perdida y de métricas. así como el selector de características.",
+          "1": "Cuenta con un generador de modelos de regresión. Gestiona capas de la red neuronal, hiperparámetros, funciones de optimización, funciones de perdida y de métricas. así como el selector de características.",
           "2": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la la lista una entrada con el modelos entrenado.",
           "3": "Para la predicción se usa el grafico de dispersión creando una linea"
         },
@@ -1862,13 +2031,13 @@
         "text-3": "Una vez que se tiene un conjunto de datos etiquetados, se utiliza un algoritmo de aprendizaje automático para entrenar un modelo que pueda predecir la etiqueta de nuevos conjuntos de datos. Este modelo puede ser utilizado para realizar predicciones precisas y rápidas sobre nuevas instancias de datos.",
         "text-4": "La clasificación tabular es una técnica muy útil para resolver problemas de clasificación en una amplia variedad de campos, como la medicina, el comercio electrónico, la banca, la seguridad y muchos otros."
       },
-      "linear-regression": {
-        "title": "Regresión lineal",
+      "regression": {
+        "title": "Regresión",
         "text": {
-          "0": "La regresión lineal es un método de análisis estadístico utilizado en el aprendizaje automático para modelar la relación lineal entre una variable independiente y una variable dependiente, buscando encontrar la mejor línea recta que ajuste los datos y permita hacer predicciones.",
-          "1": "En la regresión lineal, los datos se representan generalmente como puntos dispersos en un plano cartesiano, donde la variable independiente se coloca en el eje X y la variable dependiente en el eje Y. El objetivo es encontrar la ecuación de una línea recta (y = mx + b) que minimice la distancia entre esta línea y los puntos de datos. Una vez que se ha obtenido esta ecuación, se puede utilizar para hacer predicciones sobre valores futuros de la variable dependiente en función de los valores de la variable independiente.",
-          "2": "Por ejemplo, si estamos analizando la relación entre la cantidad de publicidad en un sitio web y las ventas de un producto, la cantidad de publicidad sería la variable independiente, y las ventas del producto serían la variable dependiente. La regresión lineal nos ayudaría a determinar si existe una relación lineal entre la inversión en publicidad y las ventas, y si es así, nos permitiría predecir las ventas futuras en función del gasto en publicidad.",
-          "3": "La regresión lineal es una herramienta poderosa en el análisis de datos y se utiliza en una variedad de campos, incluyendo la economía, la ciencia social, la investigación médica y muchas otras disciplinas para comprender y predecir relaciones entre variables."
+          "0": "La regresión es un método de análisis estadístico utilizado en el aprendizaje automático para modelar la relación lineal entre una variable independiente y una variable dependiente, buscando encontrar la mejor línea recta que ajuste los datos y permita hacer predicciones.",
+          "1": "En la regresión, los datos se representan generalmente como puntos dispersos en un plano cartesiano, donde la variable independiente se coloca en el eje X y la variable dependiente en el eje Y. El objetivo es encontrar la ecuación de una línea recta (y = mx + b) que minimice la distancia entre esta línea y los puntos de datos. Una vez que se ha obtenido esta ecuación, se puede utilizar para hacer predicciones sobre valores futuros de la variable dependiente en función de los valores de la variable independiente.",
+          "2": "Por ejemplo, si estamos analizando la relación entre la cantidad de publicidad en un sitio web y las ventas de un producto, la cantidad de publicidad sería la variable independiente, y las ventas del producto serían la variable dependiente. La regresión nos ayudaría a determinar si existe una relación lineal entre la inversión en publicidad y las ventas, y si es así, nos permitiría predecir las ventas futuras en función del gasto en publicidad.",
+          "3": "La regresión es una herramienta poderosa en el análisis de datos y se utiliza en una variedad de campos, incluyendo la economía, la ciencia social, la investigación médica y muchas otras disciplinas para comprender y predecir relaciones entre variables."
         }
       },
       "object-identification": {
@@ -1921,7 +2090,7 @@
           },
           "relu": {
             "title": "ReLU (Rectified Linear Unit)",
-            "description": "La función ReLU es simple y efectiva al devolver cero para valores negativos y mantener los valores positivos sin cambios",
+            "description": "La función ReLU es simple y efectiva al devolver cero para valores negativos y mantener los valores positivos sin cambios.",
             "characteristics": {
               "0": "Eficiente en términos de cómputo.",
               "1": "Mitiga el problema de desvanecimiento del gradiente.",
@@ -2185,7 +2354,8 @@
       "download": "Descargar",
       "features": "Características",
       "open-visor": "Abrir visor",
-      "close-visor": "Cerrar visor"
+      "close-visor": "Cerrar visor",
+      "history": "Resultados"
     }
   },
   "hr": {
@@ -2199,7 +2369,7 @@
     "tasks": "Tareas",
     "00-tabular-classification": "Clasificación Tabular",
     "tutorial-00-tabular-classification": "Entrenar un modelo para clasificación tabular",
-    "01-linear-regression": "Regresión Lineal",
+    "01-regression": "Regresión",
     "02-object-detection": "Detección de objetos",
     "03-image-classification": "Clasificación de imágenes",
     "optimization-function": "Funciones de optimización",
@@ -2250,8 +2420,8 @@
     "iris": {
       "sepal_length": "Longitud sépalo",
       "sepal_width": "Anchura sépalo",
-      "petal_length": "Longitud petalo",
-      "petal_width": "Anchura petalo",
+      "petal_length": "Longitud pétalo",
+      "petal_width": "Anchura pétalo",
       "class": "Clase",
       "Iris-setosa": "Iris setosa",
       "Iris-versicolor": "Iris versicolor",

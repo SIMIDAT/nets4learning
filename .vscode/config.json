@@ -1,0 +1,8 @@
+{
+    "tabAutocompleteModel": {
+        "title": "Tab Autocomplete Model",
+        "provider": "ollama",
+        "model": "starcoder2:3b",
+        "apiBase": "https://150.214.178.27:11434"
+    }
+}

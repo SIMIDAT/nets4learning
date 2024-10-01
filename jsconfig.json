@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "module": "CommonJS",
+    "downlevelIteration": true,
+    "checkJs": true, 
+    "allowJs": true, 
+    "maxNodeModuleJsDepth": 2,
+    "jsx": "preserve",
+    "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
       "@*": [
@@ -38,9 +45,11 @@
     }
   },
   "include": [
-    "src"
+    "src",
+    "src/**/*.js"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules", 
+    "**/node_modules/*"
   ]
 }

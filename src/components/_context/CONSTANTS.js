@@ -1,3 +1,5 @@
+import * as _Types from '@core/types'
+
 // @formatter:off
 export const E_PLOTS = {
   BAR_CHARTS       : 'bar-charts',        // TODO
@@ -11,28 +13,10 @@ export const E_PLOTS = {
 }
 
 export const LIST_PLOTS = Object.entries(E_PLOTS).map(([_key, value]) => value)
-/**
- *
- * @typedef DataframePlotConfig_t
- * @property {string} PLOT_ENABLE
- * @property {string[]} LIST_OF_AVAILABLE_PLOTS
- * @property {{y_axis: string, x_axis: string, title: string}} LAYOUT,
- * @property {string[]} COLUMNS
- *
- * @property {any} BAR_CHARTS
- * @property {any} BOX_PLOTS
- * @property {any} HISTOGRAMS
- * @property {any} LINE_CHARTS
- * @property {{config: {labels: string}}} PIE_CHARTS
- * @property {any} SCATTER_PLOTS
- * @property {{config: {index: string}}} TIME_SERIES_PLOTS
- * @property {any} VIOLIN_PLOTS
- * @property {{config: {x: string, y: string}}} _DEFAULT_
- */
 
 /**
  *
- * @type {DataframePlotConfig_t}
+ * @type {_Types.DataframePlotConfig_t}
  */
 export const DEFAULT_DATAFRAME_PLOT_CONFIG = {
   PLOT_ENABLE            : E_PLOTS.BOX_PLOTS,
@@ -44,7 +28,7 @@ export const DEFAULT_DATAFRAME_PLOT_CONFIG = {
   HISTOGRAMS             : {},
   LINE_CHARTS            : {},
   PIE_CHARTS             : { config: { labels: '' } },
-  SCATTER_PLOTS          : {},
+  SCATTER_PLOTS          : { config: { x: '', y: '' }},
   TIME_SERIES_PLOTS      : { config: { index: '' } },
   VIOLIN_PLOTS           : {},
   _DEFAULT_              : { config: { x: '', y: '' } }

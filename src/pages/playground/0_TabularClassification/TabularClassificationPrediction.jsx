@@ -2,21 +2,51 @@ import React from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { Bar } from 'react-chartjs-2'
+import * as _tfjs from '@tensorflow/tfjs'
+
+import * as _Types from '@core/types'
 import { UPLOAD } from '@/DATA_MODEL'
-import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import { VERBOSE } from '@/CONSTANTS'
+import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import TabularClassificationPredictionForm from '@pages/playground/0_TabularClassification/TabularClassificationPredictionForm'
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
+import WaitingPlaceholder from '@/components/loading/WaitingPlaceholder'
 
+/**
+ * @typedef TabularClassificationPredictionProps_t
+ * @property {string} dataset - KEY
+ * @property {_Types.DatasetProcessed_t[]} datasets
+ * @property {number} datasetIndex
+ * @property {_Types.TabularClassificationGeneratedModel_t[]} generatedModels
+ * @property {React.Dispatch<React.SetStateAction<_Types.TabularClassificationGeneratedModel_t[]>>} setGeneratedModels
+ * @property {number} generatedModelsIndex
+ * @property {React.Dispatch<React.SetStateAction<number>>} setGeneratedModelsIndex
+ * @property {_tfjs.Sequential} Model
+ * @property {React.Dispatch<React.SetStateAction<_tfjs.Sequential>>} setModel
+ * @property {Array<any>} inputDataToPredict
+ * @property {React.Dispatch<React.SetStateAction<Array<any>>>} setInputDataToPredict
+ * @property {Array<any>} inputVectorToPredict
+ * @property {React.Dispatch<React.SetStateAction<Array<any>>>} setInputVectorToPredict
+ * @property {_Types.TabularClassificationPredictionBar_t} predictionBar
+ * @property {(e: any) => Promise<void>} handleSubmit_PredictVector
+ * 
+ */
+
+/**
+ * 
+ * @param {TabularClassificationPredictionProps_t} props 
+ * @returns 
+ */
 export default function TabularClassificationPrediction (props) {
   const {
     dataset,
-    /** @type DatasetProcessed_t[] */
+
     datasets,
     datasetIndex,
 
     generatedModels,
+
     generatedModelsIndex,
     setGeneratedModelsIndex,
 
@@ -25,6 +55,7 @@ export default function TabularClassificationPrediction (props) {
 
     inputDataToPredict,
     setInputDataToPredict,
+
     inputVectorToPredict,
     setInputVectorToPredict,
 
@@ -42,7 +73,7 @@ export default function TabularClassificationPrediction (props) {
         position: 'top',
         display : false,
       },
-      title : {
+      title: {
         display: true,
         text   : t('prediction'),
       },
@@ -107,7 +138,7 @@ export default function TabularClassificationPrediction (props) {
           </>}
           {generatedModels.length !== 0 && <>
             <Form.Group controlId={'MODEL'} className={'ms-3 joyride-step-select-model'}>
-              <Form.Select aria-label={t(prefix + 'selector-model')}
+              <Form.Select aria-label={t('selector-model')}
                            size={'sm'}
                            onChange={(e) => handleChange_Model(e)}>
                 {generatedModels.map((row, index) => {
@@ -123,10 +154,7 @@ export default function TabularClassificationPrediction (props) {
       <Card.Body>
 
         {generatedModels.length === 0 && <>
-          <p className="placeholder-glow">
-            <small className={'text-muted'}>{t('pages.playground.generator.waiting-for-models')}</small>
-            <span className="placeholder col-12"></span>
-          </p>
+          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-models'} />
         </>}
 
 
@@ -148,14 +176,16 @@ export default function TabularClassificationPrediction (props) {
             />
 
             {/* SUBMIT BUTTON */}
-            <div className="d-grid gap-2">
-              <Button type={'submit'}
+            <hr />
+            <div className={'d-grid gap-2'}>
+              <Button variant={'primary'}
                       size={'lg'}
-                      variant="primary">
-                <Trans i18nKey={'predict'} />
+                      type={'submit'}>
+                <Trans i18nKey={'Predict'} />
               </Button>
             </div>
             <hr />
+
             <TabularClassificationDatasetShowInfo datasets={datasets}
                                                   datasetIndex={datasetIndex} />
             <hr />

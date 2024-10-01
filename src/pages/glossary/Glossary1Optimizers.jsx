@@ -83,7 +83,13 @@ export default function Glossary1Optimizers () {
               </Col>
               <Col className={'mt-3'}>
                 <h4 className={'text-lg-center'}>Adam</h4>
-                <Latex>{'$$ \\begin{split}v_{dW} = \\beta_1 v_{dW} + (1 - \\beta_1) \\frac{\\partial \\mathcal{J} }{ \\partial W } \\\\ s_{dW} = \\beta_2 s_{dW} + (1 - \\beta_2) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 \\\\ v^{corrected}_{dW} = \\frac{v_{dW}}{1 - (\\beta_1)^t} \\\\ s^{corrected}_{dW} = \\frac{s_{dW}}{1 - (\\beta_1)^t} \\\\ W = W - \\alpha \\frac{v^{corrected}_{dW}}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$'}</Latex>
+                <Latex>{`
+                $$ \\begin{split}v_{dW} = \\beta_1 v_{dW} + (1 - \\beta_1) \\frac{\\partial \\mathcal{J} }{ \\partial W } 
+                \\\\ s_{dW} = \\beta_2 s_{dW} + (1 - \\beta_2) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 
+                \\\\ v^{corrected}_{dW} = \\frac{v_{dW}}{1 - (\\beta_1)^t} 
+                \\\\ s^{corrected}_{dW} = \\frac{s_{dW}}{1 - (\\beta_1)^t} 
+                \\\\ W = W - \\alpha \\frac{v^{corrected}_{dW}}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$
+                `}</Latex>
               </Col>
               <Col className={'mt-3'}>
                 <h4 className={'text-lg-center'}>Momentum</h4>

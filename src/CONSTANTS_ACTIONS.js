@@ -7,7 +7,7 @@ export const GLOSSARY_ACTIONS = {
     STEP_4_HYPERPARAMETERS   : 'task-00-editor-hyperparameters-open',
     STEP_5_TABLE_OF_MODELS   : 'task-00-table-of-models-open'
   },
-  IMAGE_CLASSIFICATION  : {
+  IMAGE_CLASSIFICATION: {
     STEP_1_UPLOAD_AND_PROCESS: 'task-03-upload-and-process-open',
     STEP_2_DATASET           : 'task-03-dataset-open',
     STEP_3_0_LAYER_DESIGN    : 'task-03-layer-design-open',
@@ -27,7 +27,7 @@ export const MANUAL_ACTIONS = {
     STEP_5_TABLE_OF_MODELS   : 'tabular-classification-table-of-models-open',
     STEP_6_PREDICT           : 'tabular-classification-predict-open'
   },
-  IMAGE_CLASSIFICATION  : {
+  IMAGE_CLASSIFICATION: {
     STEP_1_UPLOAD_AND_PROCESS: 'image-classification-upload-and-process-open',
     STEP_2_DATASET           : 'image-classification-dataset-open',
     STEP_3_0_LAYER_DESIGN    : 'image-classification-layer-design-open',

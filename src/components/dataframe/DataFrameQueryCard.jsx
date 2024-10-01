@@ -5,8 +5,10 @@ import { Trans } from 'react-i18next'
 import { VERBOSE } from '@/CONSTANTS'
 import DataFrameQueryModalDescription from '@components/dataframe/DataFrameQueryModalDescription'
 import DataFrameQuery from '@components/dataframe/DataFrameQuery'
+import WaitingPlaceholder from '../loading/WaitingPlaceholder'
 
-export default function DataFrameQueryCard ({ dataframe }) {
+
+export default function DataFrameQueryCard ({ dataframe, isDataFrameProcessed }) {
 
   const [showDescription, setShowDescription] = useState(false)
 
@@ -28,7 +30,12 @@ export default function DataFrameQueryCard ({ dataframe }) {
         </div>
       </Card.Header>
       <Card.Body>
-        <DataFrameQuery dataframe={dataframe} />
+        {!isDataFrameProcessed && <>
+          <WaitingPlaceholder i18nKey_title={'Waiting'} />
+        </>}
+        {isDataFrameProcessed && <>
+          <DataFrameQuery dataframe={dataframe} />
+        </>}
       </Card.Body>
     </Card>
 

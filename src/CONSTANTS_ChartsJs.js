@@ -12,7 +12,7 @@ export const PLOTLY_CONFIG_DEFAULT = {
   }
 }
 export const CHARTJS_CONFIG_DEFAULT = {
-  BACKGROUND_COLOR            : [
+  BACKGROUND_COLOR: [
     'rgba(255, 99, 132, 0.4)',
     'rgba(255, 159, 64, 0.4)',
     'rgba(255, 205, 86, 0.4)',
@@ -21,7 +21,7 @@ export const CHARTJS_CONFIG_DEFAULT = {
     'rgba(153, 102, 255, 0.4)',
     'rgba(175, 175, 175, 0.4)',
   ],
-  BORDER_COLOR                : [
+  BORDER_COLOR: [
     'rgb(255, 99, 132)',
     'rgb(255, 159, 64)',
     'rgb(255, 205, 86)',
@@ -30,7 +30,7 @@ export const CHARTJS_CONFIG_DEFAULT = {
     'rgb(153, 102, 255)',
     'rgb(175, 175, 175)',
   ],
-  LINEAR_REGRESSION_PREDICTION: {
+  REGRESSION_PREDICTION: {
     elements: {
       point: {
         pointStyle : 'circle',

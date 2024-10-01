@@ -89,7 +89,7 @@ export default function ModelReviewTabularClassification (props) {
           setIsButtonToPredictDisabled(false)
           await alertHelper.alertSuccess(t('model-loaded-successfully'))
         } catch (e) {
-          console.error(`Error, can't load model`, { e })
+          console.error('Error, can\'t load model', { e })
         }
       } else {
         console.error('Error, model not valid')
@@ -112,8 +112,7 @@ export default function ModelReviewTabularClassification (props) {
     }
 
     try {
-      const input = [vectorToPredict, [1, vectorToPredict.length]]
-      const tensor = tfjs.tensor2d(input[0], input[1])
+      const tensor = tfjs.tensor2d(vectorToPredict, [1, vectorToPredict.length])
       const model_prediction = model_ref.current.predict(tensor)
       const model_prediction_data = model_prediction.dataSync()
       const _prediction = {
@@ -157,7 +156,7 @@ export default function ModelReviewTabularClassification (props) {
       <Row className={'mt-2'}>
         <Col xl={12}>
           <div className="d-flex justify-content-between">
-            <h1><Trans i18nKey={`modality.0`} /></h1>
+            <h1><Trans i18nKey={'modality.0'} /></h1>
           </div>
         </Col>
       </Row>
@@ -232,7 +231,7 @@ export default function ModelReviewTabularClassification (props) {
                 />
                 <Row className={'mt-3'}>
                   <Col>
-                    <Form.Group controlId={`formInputData`}>
+                    <Form.Group controlId={'formInputData'}>
                       <Form.Label>
                         <Trans i18nKey={'pages.playground.0-tabular-classification.general.description-data'} />
                       </Form.Label>
@@ -245,7 +244,7 @@ export default function ModelReviewTabularClassification (props) {
                     </Form.Group>
                   </Col>
                   <Col>
-                    <Form.Group controlId={`formInputVector`}>
+                    <Form.Group controlId={'formInputVector'}>
                       <Form.Label>
                         <Trans i18nKey={'pages.playground.0-tabular-classification.general.description-vector'} />
                       </Form.Label>

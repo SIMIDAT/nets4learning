@@ -1,5 +1,5 @@
 import { isProduction } from '@utils/utils'
-import * as tf from '@tensorflow/tfjs'
+import * as tfjs from '@tensorflow/tfjs'
 
 /**
  * tf.train.
@@ -14,35 +14,36 @@ import * as tf from '@tensorflow/tfjs'
  * @typedef {Object} Optimizer_t
  *
  *
- * @param idOptimizer
- * @param params
+ * @param {string} idOptimizer
+ * @param {{ learningRate: number, momentum: number }} params
  * @returns {Optimizer_t} optimizador
  */
 export function createOptimizer (idOptimizer, params) {
   if (!isProduction()) console.debug('>> createOptimizer', { idOptimizer, params })
 
-  let { learningRate = 0.01 } = params
-  switch (idOptimizer) {
-    case 'sgd':
-      return tf.train.sgd(learningRate)
-    case 'momentum':
-      const { momentum = 0.99 } = params
-      return tf.train.momentum(learningRate, momentum)
-    case 'adagrad':
-      return tf.train.adagrad(learningRate)
-    case 'adadelta':
-      return tf.train.adadelta(learningRate)
-    case 'adam':
-      return tf.train.adam(learningRate)
-    case 'adamax':
-      return tf.train.adamax(learningRate)
-    case 'rmsprop':
-      return tf.train.rmsprop(learningRate)
-
-    default:
-      console.warn('createOptimizer()', { idOptimizer, params })
-      return tf.train.adam(learningRate)
+  let { learningRate = 0.01, momentum = 0.99 } = params
+  const trainMap = {
+    'sgd'           : tfjs.train.sgd(learningRate),
+    'momentum'      : tfjs.train.momentum(learningRate, momentum),
+    'adagrad'       : tfjs.train.adagrad(learningRate),
+    'adadelta'      : tfjs.train.adadelta(learningRate),
+    'adamax'        : tfjs.train.adamax(learningRate),
+    'adam'          : tfjs.train.adam(learningRate),
+    'rmsprop'       : tfjs.train.rmsprop(learningRate),
+    'train-sgd'     : tfjs.train.sgd(learningRate),
+    'train-momentum': tfjs.train.momentum(learningRate, momentum),
+    'train-adagrad' : tfjs.train.adagrad(learningRate),
+    'train-adadelta': tfjs.train.adadelta(learningRate),
+    'train-adamax'  : tfjs.train.adamax(learningRate),
+    'train-adam'    : tfjs.train.adam(learningRate),
+    'train-rmsprop' : tfjs.train.rmsprop(learningRate),
   }
+  const trainer = trainMap[idOptimizer]
+  if (!trainer) {
+    console.warn('createOptimizer()', { idOptimizer, params })
+    return tfjs.train.adam(learningRate)
+  }
+  return trainer
 }
 
 /**
@@ -61,62 +62,45 @@ export function createOptimizer (idOptimizer, params) {
  * @typedef {Object} Loss_t
  *
  *
- * @param idLoss
- * @param params
+ * @param {string} idLoss
+ * @param {any} params
  * @returns {Loss_t} loss
  */
 export function createLoss (idLoss, params) {
   if (!isProduction()) console.debug('>> createLoss', { idLoss, params })
   //
   // https://github.com/tensorflow/tfjs/issues/1315
-  switch (idLoss) {
-    // Losses
-    case 'losses-absoluteDifference':
-      return tf.losses.absoluteDifference
-    case 'losses-computeWeightedLoss':
-      return tf.losses.computeWeightedLoss
-    case 'losses-cosineDistance':
-      return tf.losses.cosineDistance
-    case 'losses-hingeLoss':
-      return tf.losses.hingeLoss
-    case 'losses-huberLoss':
-      return tf.losses.huberLoss
-    case 'losses-logLoss':
-      return tf.losses.logLoss
-    case 'losses-meanSquaredError':
-      return tf.losses.meanSquaredError
-    case 'losses-sigmoidCrossEntropy':
-      return tf.losses.sigmoidCrossEntropy
-    case 'losses-softmaxCrossEntropy':
-      return tf.losses.softmaxCrossEntropy
-    // Metric
-    case 'metrics-binaryAccuracy':
-      return tf.metrics.binaryAccuracy
-    case 'metrics-binaryCrossentropy':
-      return tf.metrics.binaryCrossentropy
-    case 'metrics-categoricalAccuracy':
-      return tf.metrics.categoricalAccuracy
-    case 'metrics-categoricalCrossentropy':
-      return tf.metrics.categoricalCrossentropy
-    case 'metrics-cosineProximity':
-      return tf.metrics.cosineProximity
-    case 'metrics-meanAbsoluteError':
-      return tf.metrics.meanAbsoluteError
-    case 'metrics-meanAbsolutePercentageError':
-      return tf.metrics.meanAbsolutePercentageError
-    case 'metrics-meanSquaredError':
-      return tf.metrics.meanSquaredError
-    case 'metrics-precision':
-      return tf.metrics.precision
-    case 'metrics-recall':
-      return tf.metrics.recall
-    case 'metrics-sparseCategoricalAccuracy':
-      return tf.metrics.sparseCategoricalAccuracy
-
-    default:
-      console.warn('createLoss()', { idLoss })
-      return 'categoricalCrossentropy'
+  const lossAndMetricMap = {
+    // losses
+    'losses-absoluteDifference'          : tfjs.losses.absoluteDifference,
+    'losses-computeWeightedLoss'         : tfjs.losses.computeWeightedLoss,
+    'losses-cosineDistance'              : tfjs.losses.cosineDistance,
+    'losses-hingeLoss'                   : tfjs.losses.hingeLoss,
+    'losses-huberLoss'                   : tfjs.losses.huberLoss,
+    'losses-logLoss'                     : tfjs.losses.logLoss,
+    'losses-meanSquaredError'            : tfjs.losses.meanSquaredError,
+    'losses-sigmoidCrossEntropy'         : tfjs.losses.sigmoidCrossEntropy,
+    'losses-softmaxCrossEntropy'         : tfjs.losses.softmaxCrossEntropy,
+    // metrics
+    'metrics-binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
+    'metrics-binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
+    'metrics-categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
+    'metrics-categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
+    'metrics-cosineProximity'            : tfjs.metrics.cosineProximity,
+    'metrics-meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
+    'metrics-meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
+    'metrics-meanSquaredError'           : tfjs.metrics.meanSquaredError,
+    'metrics-precision'                  : tfjs.metrics.precision,
+    'metrics-recall'                     : tfjs.metrics.recall,
+    'metrics-sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
   }
+  
+  const result = lossAndMetricMap[idLoss]
+  if (!result) {
+    console.warn('createLossOrMetric()', { idLoss })
+    return 'categoricalCrossentropy' // Default fallback
+  }
+  return result
 }
 
 /**
@@ -136,43 +120,44 @@ export function createLoss (idLoss, params) {
  * @typedef {Object} Metric_t
  *
  *
- * @param idMetrics
+ * @param {string|string[]} idMetrics
  * @param params
  * @returns {Metric_t} metric
- */
-export function createMetrics (idMetrics, params) {
-  if (!isProduction()) console.debug('>> createMetrics', { idMetrics, params })
+ */export function createMetrics(idMetrics, params) {
+  if (!isProduction()) {
+    console.debug('>> createMetrics', { idMetrics, params })
+  }
+  const metricMap = {
+    'binaryAccuracy'                     : tfjs.metrics.binaryAccuracy,
+    'binaryCrossentropy'                 : tfjs.metrics.binaryCrossentropy,
+    'categoricalAccuracy'                : tfjs.metrics.categoricalAccuracy,
+    'categoricalCrossentropy'            : tfjs.metrics.categoricalCrossentropy,
+    'cosineProximity'                    : tfjs.metrics.cosineProximity,
+    'meanAbsoluteError'                  : tfjs.metrics.meanAbsoluteError,
+    'meanAbsolutePercentageError'        : tfjs.metrics.meanAbsolutePercentageError,
+    'meanSquaredError'                   : tfjs.metrics.meanSquaredError,
+    'precision'                          : tfjs.metrics.precision,
+    'recall'                             : tfjs.metrics.recall,
+    'sparseCategoricalAccuracy'          : tfjs.metrics.sparseCategoricalAccuracy,
+    'metrics-binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
+    'metrics-binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
+    'metrics-categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
+    'metrics-categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
+    'metrics-cosineProximity'            : tfjs.metrics.cosineProximity,
+    'metrics-meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
+    'metrics-meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
+    'metrics-meanSquaredError'           : tfjs.metrics.meanSquaredError,
+    'metrics-precision'                  : tfjs.metrics.precision,
+    'metrics-recall'                     : tfjs.metrics.recall,
+    'metrics-sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
+    'accuracy'                           : 'accuracy' // Default TensorFlow.js metric
+  }
+  const addMetric = (metric) => metricMap[metric] || (console.warn('createMetrics()', { metric }), 'accuracy')
 
-  switch (idMetrics) {
-    case 'binaryAccuracy':
-      return [tf.metrics.binaryAccuracy]
-    case 'binaryCrossentropy':
-      return [tf.metrics.binaryCrossentropy]
-    case 'categoricalAccuracy':
-      return [tf.metrics.categoricalAccuracy]
-    case 'categoricalCrossentropy':
-      return [tf.metrics.categoricalCrossentropy]
-    case 'cosineProximity':
-      return [tf.metrics.cosineProximity]
-    case 'meanAbsoluteError':
-      return [tf.metrics.meanAbsoluteError]
-    case 'meanAbsolutePercentageError':
-      return [tf.metrics.meanAbsolutePercentageError]
-    case 'meanSquaredError':
-      return [tf.metrics.meanSquaredError]
-    case 'precision':
-      return [tf.metrics.precision]
-    case 'recall':
-      return [tf.metrics.recall]
-    case 'sparseCategoricalAccuracy':
-      return [tf.metrics.sparseCategoricalAccuracy]
-    // DEFAULT Tensorflow js
-    case 'accuracy':
-      return ['accuracy']
-
-    default:
-      console.warn('createMetrics()', { idMetrics })
-      return ['accuracy']
+  if (typeof idMetrics === 'string') {
+    return addMetric(idMetrics)
+  } else if (Array.isArray(idMetrics)) {
+    return idMetrics.forEach(addMetric)
   }
 }
 
@@ -180,18 +165,18 @@ export function createMetricsList (idMetricsList, params) {
   if (!isProduction()) console.debug('>> createMetricsList', { idMetricsList, params })
 
   const metricMap = {
-    'binaryAccuracy'             : tf.metrics.binaryAccuracy,
-    'binaryCrossentropy'         : tf.metrics.binaryCrossentropy,
-    'categoricalAccuracy'        : tf.metrics.categoricalAccuracy,
-    'categoricalCrossentropy'    : tf.metrics.categoricalCrossentropy,
-    'cosineProximity'            : tf.metrics.cosineProximity,
-    'meanAbsoluteError'          : tf.metrics.meanAbsoluteError,
-    'meanAbsolutePercentageError': tf.metrics.meanAbsolutePercentageError,
-    'meanSquaredError'           : tf.metrics.meanSquaredError,
-    'precision'                  : tf.metrics.precision,
-    'recall'                     : tf.metrics.recall,
-    'sparseCategoricalAccuracy'  : tf.metrics.sparseCategoricalAccuracy,
-    'accuracy'                   : 'accuracy', // DEFAULT Tensorflow js
+    'binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
+    'binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
+    'categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
+    'categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
+    'cosineProximity'            : tfjs.metrics.cosineProximity,
+    'meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
+    'meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
+    'meanSquaredError'           : tfjs.metrics.meanSquaredError,
+    'precision'                  : tfjs.metrics.precision,
+    'recall'                     : tfjs.metrics.recall,
+    'sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
+    'accuracy'                   : 'accuracy', // Default Tensorflow.js
   }
 
   const metrics = idMetricsList.map((idMetric) => metricMap[idMetric] || 'accuracy')

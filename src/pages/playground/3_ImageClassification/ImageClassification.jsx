@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -55,7 +56,7 @@ export default function ImageClassification (props) {
    * @property {number} poolSize
    * @property {number} strides
    */
-  const [Layers, setLayers] = useState(/**@type Array<Layer_t>*/DEFAULT_LAYERS)
+  const [Layers, setLayers] = useState(DEFAULT_LAYERS)
 
   const [idOptimizer, setIdOptimizer] = useState(DEFAULT_ID_OPTIMIZATION)
   const [idLoss, setIdLoss] = useState(DEFAULT_ID_LOSS)
@@ -65,19 +66,22 @@ export default function ImageClassification (props) {
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
 
-  const refJoyrideButton = useRef({})
+  const joyrideButton_ref = useRef({})
   /**
-   * @typedef {tf.Sequential} Model_t
+   * @type {ReturnType<typeof useState<tf.Sequential>>}
    */
-  const [Model, setModel] = useState(/**@type {Model_t}*/null)
+  const [Model, setModel] = useState(null)
 
   /**
-   * @typedef {Object} GeneratedModels_t
+   * @typedef GeneratedModels_t
    * @property {string} optimizer
    * @property {string} loss
    * @property {string} metric
    */
-  const [GeneratedModels, setGeneratedModels] = useState(/**@type Array<GeneratedModels_t> */[])
+  /**
+   * @type {ReturnType<typeof useState<Array<GeneratedModels_t>>>}
+   */
+  const [GeneratedModels, setGeneratedModels] = useState([])
 
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: '/ImageClassification/' + dataset, title: dataset })
@@ -118,10 +122,12 @@ export default function ImageClassification (props) {
         idMetricsList: idMetricsList,
         layers       : Layers,
       }
-      const model = await iModelInstance.current.TRAIN_MODEL(params)
+      const { model, history } = await iModelInstance.current.TRAIN_MODEL(params)
       setModel(model)
       setGeneratedModels(oldModels => [...oldModels, {
-        params: {
+        model  : model,
+        history: history,
+        params : {
           learning_rate  : LearningRate,
           n_epochs       : NumberEpochs,
           test_size      : TestSize,
@@ -129,8 +135,7 @@ export default function ImageClassification (props) {
           id_optimizer   : idOptimizer,
           id_loss        : idLoss,
           id_metrics_list: idMetricsList,
-        },
-        model : model
+        }
       }])
       await alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
@@ -235,7 +240,7 @@ export default function ImageClassification (props) {
   if (VERBOSE) console.debug('render ImageClassification')
   return (
     <>
-      <N4LJoyride refJoyrideButton={refJoyrideButton}
+      <N4LJoyride joyrideButton_ref={joyrideButton_ref}
                   JOYRIDE_state={iModelInstance.current.JOYRIDE()}
                   TASK={'image-classification'}
                   KEY={'ImageClassification'}
@@ -249,7 +254,7 @@ export default function ImageClassification (props) {
               <h1><Trans i18nKey={'modality.3'} /></h1>
               <Button size={'sm'}
                       variant={'outline-primary'}
-                      onClick={refJoyrideButton.current.handleClick_StartJoyride}>
+                      onClick={joyrideButton_ref.current.handleClick_StartJoyride}>
                 <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
               </Button>
             </div>

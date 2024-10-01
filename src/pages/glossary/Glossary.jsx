@@ -41,13 +41,13 @@ export default function Glossary () {
                 </Accordion.Body>
               </Accordion.Item>
               {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
-                <Accordion.Item eventKey={'linear-regression'}>
-                  <Accordion.Header><h2><Trans i18nKey={'pages.glossary.linear-regression.title'} /></h2></Accordion.Header>
+                <Accordion.Item eventKey={'regression'}>
+                  <Accordion.Header><h2><Trans i18nKey={'pages.glossary.regression.title'} /></h2></Accordion.Header>
                   <Accordion.Body>
-                    <p><Trans i18nKey={'pages.glossary.linear-regression.text.0'} /></p>
-                    <p><Trans i18nKey={'pages.glossary.linear-regression.text.1'} /></p>
-                    <p><Trans i18nKey={'pages.glossary.linear-regression.text.2'} /></p>
-                    <p><Trans i18nKey={'pages.glossary.linear-regression.text.3'} /></p>
+                    <p><Trans i18nKey={'pages.glossary.regression.text.0'} /></p>
+                    <p><Trans i18nKey={'pages.glossary.regression.text.1'} /></p>
+                    <p><Trans i18nKey={'pages.glossary.regression.text.2'} /></p>
+                    <p><Trans i18nKey={'pages.glossary.regression.text.3'} /></p>
                   </Accordion.Body>
                 </Accordion.Item>
               }

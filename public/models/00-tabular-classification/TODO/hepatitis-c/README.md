@@ -1,7 +1,7 @@
 HCV data Data Set
 =================
 
-Download: [Data Folder](https://archive.ics.uci.edu/ml/machine-learning-databases/00571/), [Data Set LinearRegression](https://archive.ics.uci.edu/ml/datasets/HCV+data#)
+Download: [Data Folder](https://archive.ics.uci.edu/ml/machine-learning-databases/00571/), [Data Set Regression](https://archive.ics.uci.edu/ml/datasets/HCV+data#)
 
 **Abstract**: The data set contains laboratory values of blood donors and Hepatitis C patients and demographic values like age.
 

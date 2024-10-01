@@ -67,6 +67,6 @@ export function generateColor () {
     borderColor         : `rgba(${r}, ${g}, ${b})`,
     backgroundColor     : `rgba(${Math.ceil(r * 0.95)}, ${Math.ceil(g * 0.95)}, ${Math.ceil(b * 0.95)})`,
     pointBorderColor    : `rgba(${r}, ${g}, ${b})`,
-    pointBackgroundColor: `rgba(0, 0, 0, 0)`,
+    pointBackgroundColor: 'rgba(0, 0, 0, 0)',
   }
 }

@@ -1,16 +1,17 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Joyride from 'react-joyride'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { DEFAULT_JOYRIDE_STYLE } from "@/CONSTANTS_JOYRIDE";
+import { DEFAULT_JOYRIDE_STYLE } from '@/CONSTANTS_JOYRIDE'
 
-export default function N4LJoyride ({ refJoyrideButton, JOYRIDE_state = {}, TASK = 'DEFAULT', KEY = 'DEFAULT' }) {
+export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state = {}, TASK = 'DEFAULT', KEY = 'DEFAULT' }) {
 
   const { t } = useTranslation()
 
   const [joyride, setJoyride] = useState({  })
-  const joyrideRef = useRef()
+  const joyride_ref = useRef()
 
   const joyride_locale = {
     back : t('joyride.back'),
@@ -44,18 +45,20 @@ export default function N4LJoyride ({ refJoyrideButton, JOYRIDE_state = {}, TASK
   }, [JOYRIDE_state, TASK, KEY])
 
   const handleClick_StartJoyride = () => {
-    joyrideRef.current?.store.reset()
-    joyrideRef.current?.store.start()
+    if (joyride_ref && joyride_ref.current) {
+      joyride_ref.current?.store.reset()
+      joyride_ref.current?.store.start()
+    }
   }
 
-  useImperativeHandle(refJoyrideButton, () => ({
+  useImperativeHandle(joyrideButton_ref, () => ({
     handleClick_StartJoyride
   }), [])
 
   if(VERBOSE) console.debug('render N4LJoyride')
   return <>
-    <Joyride ref={joyrideRef}
-             style={DEFAULT_JOYRIDE_STYLE}
+    <Joyride ref={joyride_ref}
+             styles={DEFAULT_JOYRIDE_STYLE}
              locale={joyride_locale}
              callback={joyride.handleJoyrideCallback}
              continuous={joyride.continuous}

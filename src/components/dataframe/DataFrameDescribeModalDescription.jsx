@@ -11,7 +11,7 @@ export default function DataFrameDescribeModalDescription ({ showDescription, se
            size={'xl'}
            fullscreen={'md-down'}>
       <Modal.Header closeButton>
-        <Modal.Title><Trans i18nKey={`dataframe.describe.title`} /></Modal.Title>
+        <Modal.Title><Trans i18nKey={'dataframe.describe.title'} /></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p><Trans i18nKey={'dataframe.describe.description.0'} /></p>

@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "ms-vscode.js-debug",
+    "ms-vscode.vscode-js-profile-table",
+    "ms-azuretools.vscode-docker",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "vivaxy.vscode-conventional-commits",
+    "wix.vscode-import-cost"
+  ]
+}

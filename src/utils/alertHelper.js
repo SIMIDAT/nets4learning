@@ -10,7 +10,7 @@ export default class AlertHelper {
    * @param {string} title
    * @param {{text: string, footer: string, html: JSX.Element}} params
    * @param {object} props
-   * @return {Promise<SweetAlertResult<T>>}
+   * @return {Promise<ReturnType<typeof MySwal.fire>>}
    */
   static async alertError (title, params = { text: 'Error', footer: '', html: <></> }, { ...props } = {}) {
     return await MySwal.fire({
@@ -29,7 +29,7 @@ export default class AlertHelper {
    * @param {string} title
    * @param {{text: string, footer: string, html: JSX.Element}} params
    * @param {object} props
-   * @return {Promise<SweetAlertResult<T>>}
+   * @return {Promise<ReturnType<typeof MySwal.fire>>}
    */
   static async alertWarning (title, params = { text: 'Warning', footer: '', html: <></> }, { ...props } = {}) {
     return await MySwal.fire({
@@ -48,7 +48,7 @@ export default class AlertHelper {
    * @param {string} title
    * @param {{text: string, footer: string, html: JSX.Element}} params
    * @param {object} props
-   * @return {Promise<SweetAlertResult<T>>}
+   * @return {Promise<ReturnType<typeof MySwal.fire>>}
    */
   static async alertInfo (title, params = { text: 'Info', footer: '', html: <></> }, { ...props } = {}) {
     return await MySwal.fire({
@@ -65,9 +65,9 @@ export default class AlertHelper {
   /**
    *
    * @param {string} title
-   * @param {{text: string, footer: string, html: JSX.Element}} params
+   * @param {{text: string, footer?: string, html?: JSX.Element}} params
    * @param {object} props
-   * @return {Promise<SweetAlertResult<T>>}
+   * @return {Promise<ReturnType<typeof MySwal.fire>>}
    */
   static async alertSuccess (title, params = { text: 'Success', footer: '', html: <></> }, { ...props } = {}) {
     const { text = 'Error', footer = '', html = <></> } = params || {}

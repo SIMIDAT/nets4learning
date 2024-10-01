@@ -13,7 +13,7 @@ export default function DataFrameCorrelationMatrixModalDescription ({ showDescri
            size={'xl'}
            fullscreen={'md-down'}>
       <Modal.Header closeButton>
-        <Modal.Title><Trans i18nKey={`dataframe.correlation-matrix.title`} /></Modal.Title>
+        <Modal.Title><Trans i18nKey={'dataframe.correlation-matrix.title'} /></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p><Trans i18nKey={'dataframe.correlation-matrix.description.0'} /></p>

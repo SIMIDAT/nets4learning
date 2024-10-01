@@ -75,7 +75,7 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="formTrainRate">
           <Form.Label><Trans i18nKey={prefix + 'learning-rate'} /></Form.Label>
           <Form.Control type="number"
-                        inputMode={"numeric"}
+                        inputMode={'numeric'}
                         min={1}
                         max={100}
                         placeholder={t(prefix + 'learning-rate-placeholder')}
@@ -105,7 +105,7 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="FormTestSize">
           <Form.Label><Trans i18nKey={prefix + 'test-size'} /></Form.Label>
           <Form.Control type="number"
-                        inputMode={"numeric"}
+                        inputMode={'numeric'}
                         min={1}
                         max={100}
                         placeholder={t(prefix + 'test-size-placeholder')}

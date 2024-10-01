@@ -33,6 +33,25 @@ const rejectStyle = {
   borderColor: '#ff1744',
 }
 
+/**
+ * Properties for the drop zone component.
+ * 
+ * @typedef {Object} DragAndDropProps
+ * @property {string} name - The name of the drop zone.
+ * @property {string} id - The ID of the drop zone.
+ * @property {import('react-dropzone').Accept} accept - The accepted file types.
+ * @property {string} text - The text to display in the drop zone.
+ * @property {string} [labelFiles='Files'] - The label for files (default is 'Files').
+ * @property {boolean} [multiple=false] - Whether multiple files can be dropped (default is false).
+ * @property {function(File[], import('react-dropzone').DropEvent): void} [function_DropAccepted] - Function called when files are accepted.
+ * @property {function(import('react-dropzone').FileRejection[], import('react-dropzone').DropEvent): void} [function_DropRejected] - Function called when files are rejected.
+ */
+
+/**
+ * Drop zone component.
+ * 
+ * @param {DragAndDropProps} props - The properties for the drop zone component.
+ */
 export default function DragAndDrop (props) {
   const {
     name,
@@ -42,7 +61,7 @@ export default function DragAndDrop (props) {
     labelFiles = 'Files',
     multiple = false,
     function_DropAccepted = (files, event) => console.log('function_DropAccepted', { files, event }),
-    function_DropRejected = (files, event) => console.log('function_Rejected', { files, event }),
+    function_DropRejected = (files, event) => console.log('function_DropRejected', { files, event }),
   } = props
   const { t } = useTranslation()
 
@@ -56,16 +75,12 @@ export default function DragAndDrop (props) {
     fileRejections,
   } = useDropzone({
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-    onDropAccepted: (files) => {
-      function_DropAccepted(files)
-    },
-    onDropRejected: (files, event) => {
-      function_DropRejected(files, event)
-    },
+    onDropAccepted: (files, event) => function_DropAccepted(files, event),
+    onDropRejected: (files, event) => function_DropRejected(files, event) ,
     accept        : accept,
     multiple      : multiple,
   })
-  const style = useMemo(() => ({
+  const styles = useMemo(() => ({
     ...baseStyle,
     ...(isFocused ? focusedStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
@@ -94,7 +109,7 @@ export default function DragAndDrop (props) {
 
   return (
     <section className="container p-0">
-      <div {...getRootProps({ style, name })}>
+      <div {...getRootProps({ style: styles, name })}>
         <input id={id}{...getInputProps()} />
         <p className={'mb-0'}>{text}</p>
       </div>

@@ -11,7 +11,7 @@ export default function DataFrameQueryModalDescription ({ showDescription, setSh
            size={'xl'}
            fullscreen={'md-down'}>
       <Modal.Header closeButton>
-        <Modal.Title><Trans i18nKey={`dataframe.query.title`} /></Modal.Title>
+        <Modal.Title><Trans i18nKey={'dataframe.query.title'} /></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p><Trans i18nKey={'dataframe.query.description.0'} /></p>
@@ -30,6 +30,12 @@ export default function DataFrameQueryModalDescription ({ showDescription, setSh
           <code>
             const <var>query</var> = new Function(`return (dataframe['$&#123;columnToQuery&#125;']$&#123;stringToQuery&#125;)`)() <br />
             const <var>query_df</var> = dataframe.query(query)
+          </code>
+        </pre>
+        <hr />
+        <pre>
+          <code>
+            dataframe["cylinders"] .gt(5).and(df["horsepower"].eq(130))
           </code>
         </pre>
       </Modal.Body>

@@ -7,7 +7,7 @@ export default function N4LDivider (props = { i18nKey: '' }) {
 
   if (VERBOSE) console.debug('render N4LDivider')
   return <>
-    <div className={`mt-3 mb-4 n4l-hr-row`}>
+    <div className={'mt-3 mb-4 n4l-hr-row'}>
       <p><span className={'n4l-hr-title'}><Trans i18nKey={i18nKey} /></span></p>
     </div>
   </>

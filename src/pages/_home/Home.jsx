@@ -95,19 +95,19 @@ export default function Home () {
             </Card>
           </>
         )
-      case TASKS.LINEAR_REGRESSION:
+      case TASKS.REGRESSION:
         return (
           <>
             <Card className={'border-danger'}>
               <Card.Header>
-                <h2><Trans i18nKey={'pages.index.linear-regression.1-title'} /></h2>
+                <h2><Trans i18nKey={'pages.index.regression.1-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text><Trans i18nKey={'pages.index.linear-regression.1-description-1'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.regression.1-description-1'} /></Card.Text>
                 <div className="d-flex gap-2 justify-content-center">
                   <Button data-testid={'Test-GoTo-SelectModel-LinearRegression'}
                           onClick={() => handleClick_TrainEdit(SELECTOR.MODEL)}>
-                    <Trans i18nKey={'pages.index.linear-regression.1-button'} />
+                    <Trans i18nKey={'pages.index.regression.1-button'} />
                   </Button>
                 </div>
               </Card.Body>
@@ -115,25 +115,25 @@ export default function Home () {
 
             <Card className={'border-danger mt-3'}>
               <Card.Header>
-                <h2><Trans i18nKey={'pages.index.linear-regression.2-title'} /></h2>
+                <h2><Trans i18nKey={'pages.index.regression.2-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text><Trans i18nKey={'pages.index.linear-regression.2-description-1'} /></Card.Text>
-                <Card.Text><Trans i18nKey={'pages.index.linear-regression.2-description-2'} /></Card.Text>
-                <Card.Text><Trans i18nKey={'pages.index.linear-regression.2-description-list.title'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.regression.2-description-1'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.regression.2-description-2'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.regression.2-description-list.title'} /></Card.Text>
                 <Row>
                   <Col>
                     <ul>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.1'} /></li>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.2'} /></li>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.3'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.1'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.2'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.3'} /></li>
                     </ul>
                   </Col>
                   <Col>
                     <ul>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.4'} /></li>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.5'} /></li>
-                      <li><Trans i18nKey={'pages.index.linear-regression.2-description-list.6'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.4'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.5'} /></li>
+                      <li><Trans i18nKey={'pages.index.regression.2-description-list.6'} /></li>
                     </ul>
                   </Col>
                 </Row>
@@ -187,24 +187,24 @@ export default function Home () {
                 </div>
               </Card.Body>
             </Card>
-
-            {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
-              <Card className={'mt-3 border-info'}>
-                <Card.Header>
-                  <h2><Trans i18nKey={'pages.index.image-classification.2-title'} /></h2>
-                </Card.Header>
-                <Card.Body>
-                  <Card.Text>
-                    <Trans i18nKey={'pages.index.image-classification.2-description-1'} />
-                  </Card.Text>
-                  <div className="d-flex gap-2 justify-content-center">
-                    <Button onClick={() => handleClick_TrainEdit(SELECTOR.DATASET)}>
-                      <Trans i18nKey={'pages.index.image-classification.2-button'} />
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            }
+            
+          {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&<>
+            <Card className={'mt-3 border-info'}>
+              <Card.Header>
+                <h2><Trans i18nKey={'pages.index.image-classification.2-title'} /></h2>
+              </Card.Header>
+              <Card.Body>
+                <Card.Text>
+                  <Trans i18nKey={'pages.index.image-classification.2-description-1'} />
+                </Card.Text>
+                <div className="d-flex gap-2 justify-content-center">
+                  <Button onClick={() => handleClick_TrainEdit(SELECTOR.DATASET)}>
+                    <Trans i18nKey={'pages.index.image-classification.2-button'} />
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </>}
           </>
         )
       default:
@@ -214,7 +214,7 @@ export default function Home () {
 
   return (
     <>
-      <main className={'mb-3'} data-title={'Home'}>
+      <main className={'mb-3'} data-title={'Home'} data-testid={'Test-InitialMenu'}>
         <Container>
           <Row>
             <Col>
@@ -232,27 +232,27 @@ export default function Home () {
               <div className="d-grid gap-2">
                 <Button variant={'primary'}
                         size={'lg'}
+                        data-testid={'Test-InitialMenu-TabularClassification'}
                         onClick={() => handleClick_OpenCardModel(TASKS.TABULAR_CLASSIFICATION)}>
                   <Trans i18nKey={'pages.index.tabular-classification.1-title'} />
                 </Button>
               </div>
             </Col>
-            {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
-              <Col className={'mt-3'}>
-                <div className="d-grid gap-2">
-                  <Button variant={'danger'}
-                          size={'lg'}
-                          data-testid={'Test-InitialMenu-LinearRegression'}
-                          onClick={() => handleClick_OpenCardModel(TASKS.LINEAR_REGRESSION)}>
-                    <Trans i18nKey={'pages.index.linear-regression.1-title'} />
-                  </Button>
-                </div>
-              </Col>
-            }
+            <Col className={'mt-3'}>
+              <div className="d-grid gap-2">
+                <Button variant={'danger'}
+                        size={'lg'}
+                        data-testid={'Test-InitialMenu-LinearRegression'}
+                        onClick={() => handleClick_OpenCardModel(TASKS.REGRESSION)}>
+                  <Trans i18nKey={'pages.index.regression.1-title'} />
+                </Button>
+              </div>
+            </Col>
             <Col className={'mt-3'}>
               <div className="d-grid gap-2">
                 <Button variant={'info'}
                         size={'lg'}
+                        data-testid={'Test-InitialMenu-ImageClassification'}
                         onClick={() => handleClick_OpenCardModel(TASKS.IMAGE_CLASSIFICATION)}>
                   <Trans i18nKey={'pages.index.image-classification.1-title'} />
                 </Button>
@@ -262,6 +262,7 @@ export default function Home () {
               <div className="d-grid gap-2">
                 <Button variant={'warning'}
                         size={'lg'}
+                        data-testid={'Test-InitialMenu-ObjectDetection'}
                         onClick={() => handleClick_OpenCardModel(TASKS.OBJECT_DETECTION)}>
                   <Trans i18nKey={'pages.index.object-detection.1-title'} />
                 </Button>
@@ -274,7 +275,7 @@ export default function Home () {
               <MenuSelection />
             </Col>
           </Row>
-        </Container>
+        </Container> 
       </main>
     </>
   )

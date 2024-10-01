@@ -56,11 +56,21 @@ export default function N4LNavbar () {
                 </Nav.Link>
               </Nav.Item>
               <NavDropdown title={t('header.language')} id="change-language-nav-dropdown">
-                <NavDropdown.Item onClick={() => i18n.changeLanguage('en')}>
+                <NavDropdown.Item 
+                  onClick={() => {
+                    i18n.changeLanguage('en')
+                    localStorage.setItem('language', 'en')
+                    window.dispatchEvent( new Event('storage') )
+                  }}>
                   <IconLangGB width={'1rem'} className={'me-2'} style={{ verticalAlign: 'unset' }} />
                   Ingles
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => i18n.changeLanguage('es')}>
+                <NavDropdown.Item 
+                  onClick={() => {
+                    i18n.changeLanguage('es')
+                    localStorage.setItem('language', 'es')
+                    window.dispatchEvent( new Event('storage') )
+                  }}>
                   <IconLangES width={'1rem'} className={'me-2'} style={{ verticalAlign: 'unset' }} />
                   Español
                 </NavDropdown.Item>

@@ -1,26 +1,35 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
 import VisGraph from 'react-vis-graph-wrapper'
+import { VERBOSE } from '@/CONSTANTS'
 
 export const NEURAL_NETWORK_MODES = {
   EXTEND : 'EXTEND',
   COMPACT: 'COMPACT'
 }
 
-export function NeuralNetwork ({ layers, id_parent, mode = NEURAL_NETWORK_MODES.COMPACT }) {
+export function NeuralNetwork ({ layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT }) {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [graphState, setGraphState] = useState({ nodes: [], edges: [] })
   const [options, setOptions] = useState({ height: 250, width: 300 })
-  const networkRef = useRef()
 
   const events = {
-    select: () => {
-
+    afterDrawing: (_e) => {
+      if (VERBOSE) console.debug('afterDrawing', { _e })
     },
-    zoom  : (_e) => {
+    configChange: (_e) => {
+      if (VERBOSE) console.debug('configChange', { _e })
+    },
+    select: (_e) => { 
+      if (VERBOSE) console.debug('select', { _e })
+    },
+    resize: (_e) =>{
+      if (VERBOSE) console.debug('resize', { _e })
+    },
+    zoom: (_e) => {
       // e.preventDefault()
       // e.stopPropagation()
       // e.stopImmediatePropagation()
@@ -64,25 +73,31 @@ export function NeuralNetwork ({ layers, id_parent, mode = NEURAL_NETWORK_MODES.
     const elementWidth = element.offsetWidth - paddingX - borderX
     const elementHeight = element.offsetHeight - paddingY - borderY
 
-    setOptions(() => {
+    setOptions((prevState) => {
+      // const maxHeight = mode === NEURAL_NETWORK_MODES.EXTEND ? 500 : 250
       return {
+        ...prevState,
         height: Math.max(250, (elementHeight)),
         width : Math.max(350, (elementWidth))
       }
     })
-    const dom = document.querySelectorAll('#vis-network canvas')[0]
-    if (dom) {
-      const wheel = dom.getEventListeners('wheel')
-      if (wheel) {
-        const listener = wheel[0].listener
-        dom.removeEventListener('wheel', listener)
-      }
-    }
+
+
+    // Quita el evento de zoom para que no moleste al usar el scroll
+    // Deprecated by zoomView
+    // const dom = document.querySelectorAll('#vis-network canvas')[0]
+    // if (dom) {
+    //   const wheel = dom.getEventListeners('wheel')
+    //   if (wheel) {
+    //     const listener = wheel[0].listener
+    //     dom.removeEventListener('wheel', listener)
+    //   }
+    // }
 
     return () => {
       window.removeEventListener('resize', handleResize)
     }
-  }, [windowWidth, id_parent, networkRef])
+  }, [windowWidth, id_parent, mode])
 
   const modeCompact = useCallback(() => {
     const nodes = [], edges = []
@@ -126,13 +141,13 @@ export function NeuralNetwork ({ layers, id_parent, mode = NEURAL_NETWORK_MODES.
 
   useEffect(() => {
     switch (mode) {
-      case 'COMPACT': {
+      case NEURAL_NETWORK_MODES.COMPACT: {
         let { nodes, edges } = modeCompact()
         const graph = { nodes, edges }
         setGraphState(graph)
         break
       }
-      case 'EXTEND': {
+      case NEURAL_NETWORK_MODES.EXTEND: {
         let { nodes, edges } = modeExtend()
         const graph = { nodes, edges }
         setGraphState(graph)
@@ -163,22 +178,40 @@ export function NeuralNetwork ({ layers, id_parent, mode = NEURAL_NETWORK_MODES.
         </div>
       </Col>
       <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
-        <VisGraph graph={graphState}
+        <div style={{'position': 'relative', height: '100%', width: '100%'}}>
+          <VisGraph graph={graphState}
                   options={{
+                    autoResize: true,
+                    physics   : { 
+                      adaptiveTimestep: false 
+                    },
+                    interaction: {
+                      zoomView: false
+                    },
                     layout: {
                       hierarchical: {
-                        enabled  : true,
-                        direction: 'LR',
-                      },
+                        levelSeparation: 250,
+                        // nodeSpacing    : 250,
+                        // treeSpacing    : 200,
+                        enabled        : true,
+                        direction      : 'LR',
+                      }
                     },
-                    edges : {
+                    nodes: {
+                      scaling: {
+                        min: 10,   // Minimum size for a node
+                        max: 10,   // Maximum size for a node
+                      }
+                    },
+                    edges: {
                       color: '#000000',
                     },
-                    height: options.height + 'px',
-                    // width     : options.width + "px"
+                    height: `${options.height}px`,
+                    // width : `${options.width}px`
                   }}
                   events={events}
                   ref={networkRef} />
+        </div>
       </Col>
       <Col xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}
            style={{

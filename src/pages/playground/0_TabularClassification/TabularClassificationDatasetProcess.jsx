@@ -4,20 +4,28 @@ import { Trans } from 'react-i18next'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { Link } from 'react-router-dom'
-import TabularClassificationDatasetProcessForm
-  from '@pages/playground/0_TabularClassification/TabularClassificationDatasetProcessForm'
+import TabularClassificationDatasetProcessForm from '@pages/playground/0_TabularClassification/TabularClassificationDatasetProcessForm'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
+import * as _Types from  '@core/types'
+/**
+ * @typedef PropsTabularClassificationDatasetProcess
+ * @property {_Types.DatasetProcessed_t[]} datasets
+ * @property {React.Dispatch<React.SetStateAction<Array<_Types.DatasetProcessed_t>>>} setDatasets
+ * @property {number} datasetIndex
+ * @property {React.Dispatch<React.SetStateAction<number>>} setDatasetIndex
+ */
 
+/**
+ * 
+ * @param {PropsTabularClassificationDatasetProcess} props 
+ * @returns 
+ */
 export default function TabularClassificationDatasetProcess (props) {
   const {
-    /** @type DatasetProcessed_t[] */
     datasets,
-    /** @type React.Dispatch<Array<DatasetProcessed_t>> */
     setDatasets,
-    /** @type number */
     datasetIndex,
-    /** @type React.Dispatch<number> */
     setDatasetIndex
   } = props
 
@@ -33,7 +41,7 @@ export default function TabularClassificationDatasetProcess (props) {
       <Card.Header><h3><Trans i18nKey={'Data set processing'} /></h3></Card.Header>
       <Card.Body>
         {(!isFileUploaded()) && <>
-          <WaitingPlaceholder title={'pages.playground.generator.waiting-for-file'} />
+          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />
         </>}
         {(isFileUploaded()) && <>
           <TabularClassificationDatasetProcessForm datasets={datasets}

@@ -2,7 +2,7 @@ import React from 'react'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import { Trans } from 'react-i18next'
 import * as tf_mobilenet from '@tensorflow-models/mobilenet'
-import { DEFAULT_BAR_DATA } from "@pages/playground/3_ImageClassification/CONSTANTS";
+import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 
 export const LIST_OF_IMAGES_MOBILENET = [
   'beef-burger.jpg',

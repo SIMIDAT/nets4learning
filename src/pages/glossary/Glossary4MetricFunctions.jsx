@@ -30,7 +30,7 @@ export default function Glossary4MetricFunctions () {
           </Row>
         </Accordion.Body>
       </Accordion.Item>
-      {process.env.REACT_APP_SHOW_NEW_FEATURE === "true" &&
+      {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
         <Accordion.Item eventKey={'equation-metric'}>
           <Accordion.Header><h2>{t('equations.title-metrics')}</h2></Accordion.Header>
           <Accordion.Body>

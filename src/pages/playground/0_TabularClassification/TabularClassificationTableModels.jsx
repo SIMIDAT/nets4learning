@@ -4,6 +4,8 @@ import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
+import WaitingPlaceholder from '@/components/loading/WaitingPlaceholder'
+import { parseIDOptimizer, parseLogs, parseLossAndMetric } from '@/core/history/utils'
 
 export default function TabularClassificationTableModels (props) {
   const {
@@ -40,6 +42,7 @@ export default function TabularClassificationTableModels (props) {
     model.save('downloads://cl-model-' + index)
   }
 
+
   if (VERBOSE) console.debug('render TabularClassificationTableModels')
   return <>
     <Card>
@@ -62,10 +65,8 @@ export default function TabularClassificationTableModels (props) {
       </Card.Header>
       <Card.Body>
         {listModels.length === 0 && <>
-          <p className="placeholder-glow">
-            <small className={'text-muted'}><Trans i18nKey={'pages.playground.generator.waiting-for-models'}/></small>
-            <span className="placeholder col-12"></span>
-          </p>
+          <WaitingPlaceholder />
+
         </>}
         {listModels.length > 0 && <>
           <Container fluid={true}>
@@ -82,6 +83,7 @@ export default function TabularClassificationTableModels (props) {
                     <th><Trans i18nKey={prefix + 'id-optimizer'} /></th>
                     <th><Trans i18nKey={prefix + 'id-loss'} /></th>
                     <th><Trans i18nKey={prefix + 'id-metrics'} /></th>
+                    <th><Trans i18nKey={prefix + 'history'} /></th>
                     <th><Trans i18nKey={prefix + 'download'} /></th>
                   </tr>
                   </thead>
@@ -93,26 +95,35 @@ export default function TabularClassificationTableModels (props) {
                     .map((value, index) => {
                       return <tr key={index}>
                         <th>{(activePage * rowsPerPage) + index + 1}</th>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.learningRate * 100}%</span></td>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.numberOfEpoch}</span></td>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.testSize * 100}%</span></td>
+                        <td><span className={'n4l-table-cell'}>{value.learningRate * 100}%</span></td>
+                        <td><span className={'n4l-table-cell'}>{value.numberOfEpoch}</span></td>
+                        <td><span className={'n4l-table-cell'}>{value.testSize * 100}%</span></td>
                         <td>
                           {value.layerList
                             .map((value, index2) => {
                               return (
-                                <span key={index2} style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>
+                                <span key={index2} className={'n4l-table-cell'}>
                                 <small>{value.units.toString().padStart(2, '0')} - {value.activation}</small><br />
                               </span>
                               )
                             })}
                         </td>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.idOptimizer}</span></td>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.idLoss}</span></td>
-                        <td><span style={{ fontFamily: 'monospace' }} className={'text-nowrap'}>{value.idMetrics}</span></td>
+                        <td><span className={'n4l-table-cell'}>{parseIDOptimizer(value.idOptimizer)}</span></td>
+                        <td><span className={'n4l-table-cell'}>{parseLossAndMetric(value.idLoss)}</span></td>
+                        <td><span className={'n4l-table-cell'}>{parseLossAndMetric(value.idMetrics)}</span></td>
+                        <td>
+                            {Object.entries(value.history.history)
+                              .map(([key, logs], index2) => {
+                                return <span key={index2} className={'n4l-table-cell'}>
+                                  <small>{key} {parseLogs(logs)}</small><br />
+                                </span>
+                              })}
+                          </td>
                         <td>
                           <Button variant={'outline-primary'}
                                   size={'sm'}
-                                  onClick={() => handleClick_DownloadGeneratedModel(value, index)}>
+                                  onClick={() => handleClick_DownloadGeneratedModel(value, index)}
+                          >
                             <Trans i18nKey={prefix + 'download'} />
                           </Button>
                         </td>
@@ -120,7 +131,9 @@ export default function TabularClassificationTableModels (props) {
                     })}
                   </tbody>
                 </Table>
-                {isTraining && <p className="placeholder-glow"><span className="placeholder col-12"></span></p>}
+                {isTraining && <>
+                  <WaitingPlaceholder />
+                </>}
               </Col>
             </Row>
             <Row>

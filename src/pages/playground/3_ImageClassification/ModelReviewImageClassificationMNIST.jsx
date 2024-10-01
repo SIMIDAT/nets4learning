@@ -32,13 +32,13 @@ export default function ModelReviewImageClassificationMNIST (props) {
   const updatePredictionMNIST = (predictions) => {
     setBarDataImage(() => {
       return {
-        labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        labels  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         datasets: [{
-          label: 'MNIST',
-          data: predictions,
+          label          : 'MNIST',
+          data           : predictions,
           backgroundColor: DEFAULT_BAR_DATA.datasets[0].backgroundColor,
-          borderColor: DEFAULT_BAR_DATA.datasets[0].borderColor,
-          borderWidth: DEFAULT_BAR_DATA.datasets[0].borderWidth,
+          borderColor    : DEFAULT_BAR_DATA.datasets[0].borderColor,
+          borderWidth    : DEFAULT_BAR_DATA.datasets[0].borderWidth,
         }],
       }
     })

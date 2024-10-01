@@ -7,11 +7,23 @@ import alertHelper from '@utils/alertHelper'
 import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
+/**
+ * @typedef PropsTabularClassificationEditorLayers
+ * @property {Array<{units: number, activation: string}>} layers
+ * @property {React.Dispatch<Array<{units: number, activation: string}>>} setLayers
+ * @property {DatasetProcessed_t[]} datasets
+ * @property {number} datasetIndex
+ */
+
+/**
+ * 
+ * @param {PropsTabularClassificationEditorLayers} props 
+ * @returns 
+ */
 export default function TabularClassificationEditorLayers (props) {
   const {
     layers,
     setLayers,
-    /**@type DatasetProcessed_t[] */
     datasets,
     datasetIndex,
   } = props

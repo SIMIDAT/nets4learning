@@ -1,7 +1,5 @@
 export const UTILS_image = {
-  failed                        : (event) => {
-    console.error(event)
-  },
+  failed                        : (event) =>     console.error(event),
   drawImageInCanvasWithContainer: (image, canvas_id) => {
     const canvas = document.getElementById(canvas_id)
     const canvas_ctx = canvas.getContext('2d')

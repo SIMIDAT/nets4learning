@@ -79,7 +79,7 @@ export default function MenuSelectDataset () {
                 <Row>
                   <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={10}>
 
-                    <Form.Group controlId="FormDataSet">
+                    <Form.Group controlId="FormDataset">
                       <Form.Label><Trans i18nKey={'pages.menu-selection-dataset.form-label'} /></Form.Label>
                       <Form.Select aria-label={t('pages.menu-selection-dataset.form-label')}
                                    defaultValue={'select-dataset'}

@@ -8,7 +8,7 @@
 export function pearsonCorrelation (dataframe, column_name_x, column_name_y) {
   let si = []
   for (let key in dataframe[column_name_x].values) {
-    si.push(key);
+    si.push(key)
   }
 
   let n = si.length

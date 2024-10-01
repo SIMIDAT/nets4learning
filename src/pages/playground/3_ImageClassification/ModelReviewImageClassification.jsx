@@ -10,14 +10,14 @@ import alertHelper from '@utils/alertHelper'
 
 import { UPLOAD, MODEL_IMAGE_MNIST } from '@/DATA_MODEL'
 import I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
-import FakeProgressBar from '@components/loading/FakeProgressBar';
+import FakeProgressBar from '@components/loading/FakeProgressBar'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 
 import ModelReviewImageClassificationMNIST from '@pages/playground/3_ImageClassification/ModelReviewImageClassificationMNIST'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import { UTILS_image } from '@pages/playground/3_ImageClassification/utils/utils'
-import { VERBOSE } from '@/CONSTANTS';
+import { VERBOSE } from '@/CONSTANTS'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -32,10 +32,23 @@ export default function ModelReviewImageClassification ({ dataset }) {
   const iChartRef_modal = useRef()
   const iChartRef_image = useRef()
 
-  const originalImage_ref = useRef(/**@type HTMLCanvasElement*/null)
-  const resultCanvas_ref = useRef(/**@type HTMLCanvasElement*/null)
-  const imageCanvas_ref = useRef(/**@type HTMLCanvasElement*/null)
-  const modalCanvasImage_ref = useRef(/**@type HTMLCanvasElement*/null)
+  /**
+   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
+   */
+  const originalImage_ref = useRef(null)
+  /**
+   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
+   */
+  const resultCanvas_ref = useRef(null)
+  /**
+   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
+   */
+  const imageCanvas_ref = useRef(null)
+  /**
+   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
+   */
+  const modalCanvasImage_ref = useRef(null)
+
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -52,10 +65,10 @@ export default function ModelReviewImageClassification ({ dataset }) {
       legend: {
         position: 'top',
       },
-      title : {
+      title: {
         display: true,
         text   : t('prediction'),
-      },
+      }
     },
   }
 
@@ -183,7 +196,7 @@ export default function ModelReviewImageClassification ({ dataset }) {
       <Row className={'mt-2'}>
         <Col>
           <div className="d-flex justify-content-between">
-            <h1><Trans i18nKey={`modality.3`} /></h1>
+            <h1><Trans i18nKey={'modality.3'} /></h1>
           </div>
         </Col>
       </Row>

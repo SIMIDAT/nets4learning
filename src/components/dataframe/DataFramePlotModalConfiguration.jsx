@@ -2,12 +2,17 @@ import { Col, Container, Form, Modal, Row, Button } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { columnsTimeSeriesValidForIndex, isTimeSeriesDataFrameValidForIndex, listPlotsAvailable } from '@core/dataframe/DataFrameUtils'
+import { VERBOSE } from '@/CONSTANTS'
+import { 
+  columnsScatterValidForIndex, 
+  columnsTimeSeriesValidForIndex,
+  isTimeSeriesDataFrameValidForIndex,
+  listPlotsAvailable 
+} from '@core/dataframe/DataFrameUtils'
 import DataFramePlotContext from '../_context/DataFramePlotContext'
 import { DEFAULT_DATAFRAME_PLOT_CONFIG, E_PLOTS } from '../_context/CONSTANTS'
-import { VERBOSE } from '@/CONSTANTS'
 
-export default function DataFramePlotModalConfiguration () {
+export default function DataFramePlotModalConfiguration ({ updateUI }) {
 
   const {
     dataFrameLocal,
@@ -24,7 +29,7 @@ export default function DataFramePlotModalConfiguration () {
   const { t } = useTranslation()
 
   useEffect(() => {
-    console.debug('useEffect [dataFrameLocal.columns]')
+    if (VERBOSE) console.debug('useEffect [dataFrameLocal.columns]')
     setListColumns(dataFrameLocal.columns)
   }, [dataFrameLocal.columns])
 
@@ -91,6 +96,14 @@ export default function DataFramePlotModalConfiguration () {
     setDataframePlotConfig((prevState) => {
       const _prevState = Object.assign({}, prevState)
       _prevState.TIME_SERIES_PLOTS.config[key] = e.target.value
+      return _prevState
+    })
+  }
+
+  const handleChange_PlotConfig_Scatter = (e, key) => {
+    setDataframePlotConfig((prevState) => {
+      const _prevState = Object.assign({}, prevState)
+      _prevState.SCATTER_PLOTS.config[key] = e.target.value
       return _prevState
     })
   }
@@ -228,7 +241,7 @@ export default function DataFramePlotModalConfiguration () {
                   <Form.Select onChange={(e) => handleChange_PlotConfig_PieCharts(e, 'labels')}
                                value={dataframePlotConfig.PIE_CHARTS.config.labels}
                                aria-label="dataframe-plot.pie-charts.labels">
-                    <option value="_disabled_" disabled="disabled"><Trans i18nKey={'Labels'} /></option>
+                    <option value="_disabled_" disabled><Trans i18nKey={'Labels'} /></option>
                     {dataframePlotConfig.COLUMNS.map((column_name, index) => {
                       return <option key={index} value={column_name}> nUnique {getFromColumnOfDataFrame_nUnique_PieCharts_Labels(column_name)} | {column_name}</option>
                     })}
@@ -237,6 +250,44 @@ export default function DataFramePlotModalConfiguration () {
               </>}
               {dataframePlotConfig.PLOT_ENABLE === E_PLOTS.SCATTER_PLOTS && <>
                 {/*TODO*/}
+                <Row>
+                  <Col md={6} lg={6} xl={6}>
+                    <Form.Group controlId={'dataframe-plot.scatter-plots.form.x'}>
+                      <Form.Label><Trans i18nKey={'dataframe-plot.scatter-plots.form.x'} /></Form.Label>
+                      <Form.Select onChange={(e) => handleChange_PlotConfig_Scatter(e, 'x')}
+                                   value={dataframePlotConfig.SCATTER_PLOTS.config.x}
+                                   aria-label="dataframe-plot.scatter-plots.form.x">
+                        <option value="_disabled_" disabled>
+                          <Trans i18nKey={'dataframe-plot.scatter-plots.form.x'} />
+                        </option>
+                        {columnsScatterValidForIndex(dataFrameLocal, dataframePlotConfig.COLUMNS).map((value, index) => { return <option key={index} value={value}>{value}</option> })}
+                      </Form.Select>
+                      <Form.Text className="text-muted">
+                        <Trans i18nKey={'dataframe-plot.scatter-plots.index-info'} />
+                      </Form.Text>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6} lg={6} xl={6}>
+                    <Form.Group controlId={'dataframe-plot.scatter-plots.form.y'}>
+                      <Form.Label><Trans i18nKey={'dataframe-plot.scatter-plots.form.y'} /></Form.Label>
+                      <Form.Select onChange={(e) => handleChange_PlotConfig_Scatter(e, 'y')}
+                                   value={dataframePlotConfig.SCATTER_PLOTS.config.y}
+                                   aria-label="dataframe-plot.scatter-plots.form.y">
+                        <option value="_disabled_" disabled>
+                          <Trans i18nKey={'dataframe-plot.scatter-plots.form.y'} />
+                        </option>
+                        {columnsScatterValidForIndex(dataFrameLocal, dataframePlotConfig.COLUMNS)
+                          .map((value, index) => { 
+                            return <option key={index} value={value}>{value}</option>
+                          })
+                        }
+                      </Form.Select>
+                      <Form.Text className="text-muted">
+                        <Trans i18nKey={'dataframe-plot.scatter-plots.index-info'} />
+                      </Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
               </>}
               {dataframePlotConfig.PLOT_ENABLE === E_PLOTS.TIME_SERIES_PLOTS && <>
                 <Col lg={12} xl={12}>
@@ -245,7 +296,7 @@ export default function DataFramePlotModalConfiguration () {
                     <Form.Select onChange={(e) => handleChange_PlotConfig_TimeSeries(e, 'index')}
                                  value={dataframePlotConfig.TIME_SERIES_PLOTS.config.index}
                                  aria-label="dataframe-plot.time-series-plots.form.index">
-                      <option value="_disabled_" disabled="disabled">Index</option>
+                      <option value="_disabled_" disabled>Index</option>
                       {columnsTimeSeriesValidForIndex(dataFrameLocal, dataframePlotConfig.COLUMNS).map((value, index) => {
                         return <option key={index} value={value}>{value}</option>
                       })}
@@ -260,6 +311,16 @@ export default function DataFramePlotModalConfiguration () {
                 {/*TODO*/}
               </>}
 
+            </Row>
+            <Row className={'mt-3'}>
+              <Col>
+                <div className="d-grid">
+                  <Button variant={'outline-primary'}
+                          onClick={() => updateUI()} >
+                    <Trans i18nKey={'Update'}/>
+                  </Button>
+                </div>
+              </Col>
             </Row>
           </Container>
         </Form>

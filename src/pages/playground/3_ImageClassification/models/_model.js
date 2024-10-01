@@ -1,5 +1,7 @@
 import React from 'react'
 import { ACTIONS, LIFECYCLE } from 'react-joyride'
+import * as _tfjs from '@tensorflow/tfjs'
+
 import { delay } from '@utils/utils'
 import Errors from '@shared/Errors'
 
@@ -48,6 +50,10 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
     }
   }
 
+  /**
+   * 
+   * @returns {Promise<{model: _tfjs.Sequential, history: _tfjs.History} | string>}
+   */
   async TRAIN_MODEL () {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -103,7 +109,7 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
 
     const prefix = 'datasets-models.3-image-classification.joyride.steps.'
     return {
-      run                  : true,
+      run                  : false,
       continuous           : true,
       handleJoyrideCallback: handleJoyrideCallback,
       steps                : [

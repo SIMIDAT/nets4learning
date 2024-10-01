@@ -1,15 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next';
-import { ProgressBar } from 'react-bootstrap';
-import { VERBOSE } from '@/CONSTANTS';
+import { useTranslation } from 'react-i18next'
+import { ProgressBar } from 'react-bootstrap'
+import { VERBOSE } from '@/CONSTANTS'
 
 export default function FakeProgressBar ({ isLoading }) {
 
   const { t } = useTranslation()
   const intervalRef = useRef()
   const [progress, setProgress] = useState(0)
-
 
   // CSS: animation: fadeHidden 1s ease-in-out forwards;
   useEffect(() => {

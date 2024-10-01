@@ -9,7 +9,7 @@ well as the layer models and the graph have been abstracted.
 │ │ ├── _model.js
 │ │ ├── index.js
 │ │ ├── MODEL_NEW_DATASET.js
-│ ├── pages/playground/1_LinearRegression/models/
+│ ├── pages/playground/1_Regression/models/
 │ │ ├── _model.js
 │ │ ├── index.js
 │ │ ├── MODEL_NEW_DATASET.js

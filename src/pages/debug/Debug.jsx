@@ -21,7 +21,7 @@ export default function Debug () {
           return
         }
 
-        const npy_array_buffer = await npzFiles.files[npy_filename].async("arraybuffer")
+        const npy_array_buffer = await npzFiles.files[npy_filename].async('arraybuffer')
         console.log({ npy_filename, npy_data, npy_array_buffer: npy_array_buffer })
 
         const _npyjs_ = new npyjs()

@@ -6,7 +6,8 @@ const DEFAULT_ID_LOSS = 'metrics-categoricalCrossentropy'
 const DEFAULT_ID_METRICS = ['categoricalCrossentropy']
 
 const DEFAULT_BAR_DATA = {
-  labels: [], datasets: [{
+  labels  : [], 
+  datasets: [{
     label          : '',
     data           : [],
     backgroundColor: [
@@ -18,7 +19,7 @@ const DEFAULT_BAR_DATA = {
       'rgba(153, 102, 255, 0.4)',
       'rgba(175, 175, 175, 0.4)'
     ],
-    borderColor    : [
+    borderColor: [
       'rgb(255, 99, 132)',
       'rgb(255, 159, 64)',
       'rgb(255, 205, 86)',
@@ -27,7 +28,7 @@ const DEFAULT_BAR_DATA = {
       'rgb(153, 102, 255)',
       'rgb(175, 175, 175)'
     ],
-    borderWidth    : 1,
+    borderWidth: 1,
   }],
 }
 

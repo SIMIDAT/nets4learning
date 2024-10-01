@@ -56,69 +56,76 @@ export default function Datasets () {
       size        : 887,
       i18n        : 'datasets.download-dataset-titanic',
     }]
-  const linear_regression_datasets_list = [
+  const regression_datasets_list = [
     {
       title       : 'salary/salary.csv',
       url_download: 'salary/salary.csv',
       url_original: 'https://www.kaggle.com/code/snehapatil01/linear-regression-on-salary-dataset/notebook',
       size        : 31,
-      i18n        : 'datasets.download.dataset.1-linear-regression.salary',
+      i18n        : 'datasets.download.dataset.1-regression.salary',
     },
     {
       title       : 'auto-mpg/auto-mpg.csv',
       url_download: 'auto-mpg/auto-mpg.csv',
       url_original: 'https://archive.ics.uci.edu/ml/datasets/auto+mpg',
       size        : 396,
-      i18n        : 'datasets.download.dataset.1-linear-regression.auto-mpg',
+      i18n        : 'datasets.download.dataset.1-regression.auto-mpg',
     },
     {
-      title       : 'boston-housing/housing.csv',
-      url_download: 'boston-housing/housing.csv',
+      title       : 'housing-prices/housing.csv',
+      url_download: 'housing-prices/housing.csv',
       url_original: 'https://archive.ics.uci.edu/ml/datasets/Housing',
       size        : 506,
-      i18n        : 'datasets.download.dataset.1-linear-regression.boston',
+      i18n        : 'datasets.download.dataset.1-regression.housing-prices',
+    },
+    {
+      title       : 'breast-cancer/breast-cancer-wisconsin.csv',
+      url_download: 'breast-cancer/breast-cancer-wisconsin.csv',
+      url_original: 'https://archive.ics.uci.edu/dataset/15/breast+cancer+wisconsin+original',
+      size        : 699,
+      i18n        : 'datasets.download.dataset.1-regression.breast-cancer-original',
+    },
+    {
+      title       : 'breast-cancer/wpbc.csv',
+      url_download: 'breast-cancer/wpbc.csv',
+      url_original: 'https://archive.ics.uci.edu/dataset/16/breast+cancer+wisconsin+prognostic',
+      size        : 198,
+      i18n        : 'datasets.download.dataset.1-regression.breast-cancer-wpbc',
     },
     {
       title       : 'breast-cancer/wdbc.csv',
       url_download: 'breast-cancer/wdbc.csv',
       url_original: 'https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic',
-      size        : 570,
-      i18n        : 'datasets.download.dataset.1-linear-regression.breast-cancer-wdbc',
-    },
-    {
-      title       : 'breast-cancer/wpbc.csv',
-      url_download: 'breast-cancer/wpbc.csv',
-      url_original: 'https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic',
-      size        : 199,
-      i18n        : 'datasets.download.dataset.1-linear-regression.breast-cancer-wpbc',
+      size        : 569,
+      i18n        : 'datasets.download.dataset.1-regression.breast-cancer-wdbc',
     },
     {
       title       : 'student-performance/student-mat.csv',
       url_download: 'student-performance/student-mat.csv',
       url_original: 'https://archive.ics.uci.edu/dataset/320/student+performance',
       size        : 396,
-      i18n        : 'datasets.download.dataset.1-linear-regression.student-performance-mathematics',
+      i18n        : 'datasets.download.dataset.1-regression.student-performance-mathematics',
     },
     {
       title       : 'student-performance/student-por.csv',
       url_download: 'student-performance/student-por.csv',
       url_original: 'https://archive.ics.uci.edu/dataset/320/student+performance',
       size        : 650,
-      i18n        : 'datasets.download.dataset.1-linear-regression.student-performance-portuguese',
+      i18n        : 'datasets.download.dataset.1-regression.student-performance-portuguese',
     },
     {
       title       : 'wine-quality/wine-quality-red.csv',
       url_download: 'wine-quality/wine-quality-red.csv',
       url_original: 'https://archive.ics.uci.edu/dataset/186/wine+quality',
       size        : 1600,
-      i18n        : 'datasets.download.dataset.1-linear-regression.wine-red',
+      i18n        : 'datasets.download.dataset.1-regression.wine-red',
     },
     {
       title       : 'wine-quality/wine-quality-white.csv',
       url_download: 'wine-quality/wine-quality-white.csv',
       url_original: 'https://archive.ics.uci.edu/dataset/186/wine+quality',
       size        : 4899,
-      i18n        : 'datasets.download.dataset.1-linear-regression.wine-white',
+      i18n        : 'datasets.download.dataset.1-regression.wine-white',
     }]
   // @formatter:on
 
@@ -140,7 +147,7 @@ export default function Datasets () {
                       <tr>
                         <th>{t('datasets.dataset-name')}</th>
                         <th>{t('datasets.dataset-size')}</th>
-                        <th>{t('datasets.dataset-web')}</th>
+                        <th>{t('datasets.dataset-reference')}</th>
                         <th>{t('download')}</th>
                       </tr>
                       </thead>
@@ -150,7 +157,7 @@ export default function Datasets () {
                         return <tr key={index}>
                           <td>{t(value.i18n)}</td>
                           <td>{value.size}</td>
-                          <td><a className="link-secondary" href={value.url_original} rel="noreferrer" target="_blank">web</a></td>
+                          <td><a className="link-secondary" href={value.url_original} rel="noreferrer" target="_blank">{t('Reference')}</a></td>
                           <td>
                             <a href={process.env.REACT_APP_PATH + '/datasets/' + value.url_download}
                                className={'btn btn-outline-primary btn-sm mt-2'}
@@ -164,24 +171,24 @@ export default function Datasets () {
                     </Table>
                   </Tab>
                   {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&
-                    <Tab eventKey="linear-regression" title={t('pages.index.linear-regression.1-title')}>
+                    <Tab eventKey="regression" title={t('pages.index.regression.1-title')}>
                       <Table className={'mt-3'} responsive={true}>
                         <thead>
                         <tr>
                           <th>{t('datasets.dataset-name')}</th>
                           <th>{t('datasets.dataset-size')}</th>
-                          <th>{t('datasets.dataset-web')}</th>
+                          <th>{t('datasets.dataset-reference')}</th>
                           <th>{t('download')}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {linear_regression_datasets_list.map((_value, index) => {
+                        {regression_datasets_list.map((_value, index) => {
                           return <tr key={index}>
                             <td>{t(_value.i18n)}</td>
                             <td>{_value.size}</td>
-                            <td><a className="link-secondary" href={_value.url_original} rel="noreferrer" target="_blank">web</a></td>
+                            <td><a className="link-secondary" href={_value.url_original} rel="noreferrer" target="_blank">{t('Reference')}</a></td>
                             <td>
-                              <a download href={process.env.REACT_APP_PATH + '/datasets/01-linear-regression/' + _value.url_download}
+                              <a download href={process.env.REACT_APP_PATH + '/datasets/01-regression/' + _value.url_download}
                                  className={'btn btn-outline-primary btn-sm mt-2'}>
                                 {t('download')}
                               </a>

@@ -16,7 +16,7 @@ const DEFAULT_LAYER_END = {
 }
 
 const MAP_CLASS_LAYERS = {
-  'conv2d'      : {
+  'conv2d': {
     _class    : 'conv2d',
     kernelSize: 3,
     filters   : 16,
@@ -27,10 +27,10 @@ const MAP_CLASS_LAYERS = {
     poolSize: 2,
     strides : 2,
   },
-  'flatten'     : {
+  'flatten': {
     _class: 'flatten',
   },
-  'dense'       : {
+  'dense': {
     _class    : 'dense',
     units     : 32,
     activation: 'relu'

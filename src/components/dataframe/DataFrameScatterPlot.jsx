@@ -1,10 +1,10 @@
 import '@styles/ScrollBar.css'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import Plot from 'react-plotly.js'
 
 import { VERBOSE } from '@/CONSTANTS'
 
-import Plot from 'react-plotly.js'
 import { PLOTLY_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 
 export default function DataFrameScatterPlot ({ dataframe, selector_x, selector_y }) {

@@ -10,6 +10,7 @@ describe('App', () => {
     await waitFor(() => {})
     await waitForElementToBeRemoved(() => screen.getByText(/Loading\.\.\./i))
     // expect(getByText(/Loading\.\.\./i)).toBeInTheDocument()
+    expect(getByText(/pages\.index\.regression\.1-title/i)).toBeInTheDocument()
   })
 
   test('renders TestPage', () => {

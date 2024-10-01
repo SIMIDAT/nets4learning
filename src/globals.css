@@ -235,3 +235,16 @@ h5 {
 h6 {
   font-size: 1.3rem;
 }
+
+.small {
+  font-size: small;
+}
+
+.border_green {
+  border: 1px solid lime;
+}
+
+.n4l-table-cell {
+  font-family: monospace;
+  white-space: nowrap;
+}

@@ -1,7 +1,0 @@
-services:
-  nets4learning:
-    build:
-      context: .
-    container_name: nets4learning
-    ports:
-      - "80:80"

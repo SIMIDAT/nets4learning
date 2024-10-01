@@ -1,11 +1,37 @@
 services:
-  nets4learning:
+
+  n4l:
+    container_name: "${PROJECT_NAME}_n4l"
     build:
-      context: .
-      target: dev-envs
-    container_name: nets4learning
-    ports:
-      - "80:3000"
-      - "3000:3000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      context: ./Path/To/n4l-repository/
+      dockerfile: Dockerfile
+      args:
+        ARG_BUILD: simidat
+    networks:
+      - backend
+    labels:
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l.entrypoints=https"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l.rule=Host(`${PROJECT_BASE_URL}`) && PathPrefix(`/n4l`)"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l.tls=true"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l.middlewares=secure-public@file,n4l-stripprefix"
+      - "traefik.http.middlewares.n4l-stripprefix.stripprefix.prefixes=/n4l"
+      - "traefik.http.services.n4l.loadbalancer.server.port=3000"
+
+  n4l-beta:
+    container_name: "${PROJECT_NAME}_n4l-beta"
+    build:
+      context: ./Path/To/n4l-repository/
+      dockerfile: Dockerfile
+      args:
+        ARG_BUILD: simidat-beta
+    networks:
+      - backend
+    labels:
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l-beta.entrypoints=https"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l-beta.rule=Host(`${PROJECT_BASE_URL}`) && PathPrefix(`/n4l-beta`)"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l-beta.tls=true"
+      - "traefik.http.routers.${PROJECT_NAME}_n4l-beta.middlewares=secure-public@file,n4l-beta-stripprefix"
+      - "traefik.http.middlewares.n4l-beta-stripprefix.stripprefix.prefixes=/n4l-beta"
+      - "traefik.http.services.n4l-beta.loadbalancer.server.port=3000"

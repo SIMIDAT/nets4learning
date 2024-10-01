@@ -31,7 +31,7 @@ export default function DataFrameScatterPlotCard ({ dataframe }) {
     <Card className={'mt-3'}>
       <Card.Header className={'d-flex justify-content-between'}>
         <h3><Trans i18nKey={'dataframe-scatterplot.title'} /></h3>
-        <div className="d-flex">
+        <div className={'d-flex gap-2'}>
           <Form.Group controlId={'selector-x'}>
             <Form.Select onChange={handleChange_SelectorX}
                          aria-label={'selector-x'}
@@ -45,7 +45,7 @@ export default function DataFrameScatterPlotCard ({ dataframe }) {
               </>
             </Form.Select>
           </Form.Group>
-          <Form.Group controlId={'selector-y'} className={'ms-3'}>
+          <Form.Group controlId={'selector-y'}>
             <Form.Select onChange={handleChange_SelectorY}
                          aria-label={'selector-y'}
                          size={'sm'}

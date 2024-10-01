@@ -13,7 +13,8 @@ export default function GlossaryEditor () {
         <Accordion.Body>
           {Object.entries(t('pages.glossary.editor-layers.table', { returnObjects: true }))
             .map(([_info_key, info_value], index) => {
-              const { title, description } = /** @type {title: string, description: string} */ info_value
+               /** @type {{title: string, description: string}} */
+              const { title, description } = info_value
               return <div key={index}>
                 <h4>{title}</h4>
                 <p>{description}</p>
@@ -27,7 +28,8 @@ export default function GlossaryEditor () {
 
           {Object.entries(t('pages.glossary.editor-hyperparameters.table', { returnObjects: true }))
             .map(([_info_key, info_value], index) => {
-              const { title, description } = /** @type {title: string, description: string} */ info_value
+              /** @type {{title: string, description: string}} */
+              const { title, description } = info_value
               return <div key={index}>
                 <h4>{title}</h4>
                 <p>{description}</p>

@@ -107,10 +107,12 @@ export default function Glossary2ActivationFunctions () {
     }
   ]
 
-  /** @typedef {Object} TableStruct_t */
-  /** @property {string} title */
-  /** @property {string} description */
-  /** @property {Object} characteristics */
+  /**
+   * @typedef {Object} TableStruct_t 
+   * @property {string} title
+   * @property {string} description 
+   * @property {object} characteristics 
+   */
 
   return <>
     <Accordion defaultValue={''} defaultActiveKey={''}>
@@ -130,16 +132,18 @@ export default function Glossary2ActivationFunctions () {
             {Object.entries(t('pages.glossary.activation-functions.table', { returnObjects: true }))
               .map(([_function_key, function_info], index) => {
 
-                const { title, description, characteristics } = /** @type TableStruct_t */ function_info
+                const { title, description, characteristics } = function_info
                 return <tr key={index}>
                   <th>{title}</th>
                   <td>{description}</td>
                   <td>
                     <ol>
-                      {Object.entries(characteristics)
+                      {characteristics && <>
+                       {Object.entries(characteristics)
                         .map(([_sub_key, value], index_2) => {
                           return <li key={index_2}>{value}</li>
                         })}
+                      </>}
                     </ol>
                   </td>
                 </tr>
@@ -191,7 +195,7 @@ export default function Glossary2ActivationFunctions () {
 
                             </Col>
                           </Row>
-                          <Row style={{fontSize: "0.75em"}}>
+                          <Row style={{fontSize: '0.75em'}}>
                             <Col><p><Latex>{value.latex}</Latex></p></Col>
                           </Row>
                         </Col>

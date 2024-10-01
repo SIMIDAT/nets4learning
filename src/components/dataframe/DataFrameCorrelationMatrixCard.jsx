@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
 import { Card, Button } from 'react-bootstrap'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import DataFrameCorrelationMatrixModalDescription from '@components/dataframe/DataFrameCorrelationMatrixModalDescription'
 import DataFrameCorrelationMatrix from '@components/dataframe/DataFrameCorrelationMatrix'
 
-export default function DataFrameCorrelationMatrixCard ({ dataframe }) {
+export default function DataFrameCorrelationMatrixCard ({ dataframe, isDataFrameProcessed }) {
 
   const [showDescription, setShowDescription] = useState(false)
-
-  const { t } = useTranslation()
 
   const handleClick_OpenModal_CorrelationMatrix = () => {
     setShowDescription(true)
@@ -29,12 +27,12 @@ export default function DataFrameCorrelationMatrixCard ({ dataframe }) {
         </div>
       </Card.Header>
       <Card.Body>
-        {dataframe.columns.length === 0 &&
-          <WaitingPlaceholder title={t('Waiting')} />
+        {!isDataFrameProcessed &&
+          <WaitingPlaceholder i18nKey_title={'Waiting'} />
         }
-
-        <DataFrameCorrelationMatrix dataframe={dataframe} />
-
+        {isDataFrameProcessed &&
+          <DataFrameCorrelationMatrix dataframe={dataframe} />
+        }
       </Card.Body>
     </Card>
 

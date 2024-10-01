@@ -1,0 +1,35 @@
+{
+  //  "editor.accessibilitySupport": "off",
+   "editor.formatOnSave": false,
+    "eslint.format.enable": true,
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "never"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[javascriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "conventionalCommits.scopes": [
+      "Regression"
+    ],
+    "CodeGPT.apiKey": "Ollama",
+    "CodeGPT.Autocomplete.maxTokens": 496,
+    "favorites.resources": [
+      {
+        "filePath": "public/datasets/01-regression",
+        "group": "Default"
+      },
+      {
+        "filePath": "src/core/controller/01-regression",
+        "group": "Default"
+      },
+      {
+        "filePath": "src/pages/playground/1_Regression",
+        "group": "Default"
+      }
+    ],
+}

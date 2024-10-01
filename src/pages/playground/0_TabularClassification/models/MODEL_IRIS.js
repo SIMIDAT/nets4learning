@@ -1,9 +1,12 @@
 import React from 'react'
 import { Trans } from 'react-i18next'
-import * as tf from '@tensorflow/tfjs'
+import * as tfjs from '@tensorflow/tfjs'
 import * as dfd from 'danfojs'
+
+import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@/core/nn-utils/utils'
 
 export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
 
@@ -102,51 +105,62 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
   }
 
   async DATASETS () {
-    const dataset_path = process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/'
-    const dataframe_original = await dfd.readCSV(dataset_path + 'iris.csv')
-    let dataframe_processed = await dfd.readCSV(dataset_path + 'iris.csv')
-
-    const dataset_transforms = [
-      { column_transform: 'label-encoder', column_name: 'class' },
+    const path_dataset = process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/'
+    const iris_info = 'iris.names'
+    const iris_csv = 'iris.csv'
+    const dataset_promise_info = await fetch(path_dataset + iris_info)
+    const iris_container_info = await dataset_promise_info.text()
+    let dataframe_original = await dfd.readCSV(path_dataset + iris_csv)
+    let dataframe_processed = await dfd.readCSV(path_dataset + iris_csv)
+    /** @type {_Types.Dataset_t} */
+    const dataset = [
+      { column_name: 'sepal length',  column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },
+      { column_name: 'sepal width',   column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },
+      { column_name: 'petal length',  column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },
+      { column_name: 'petal width',   column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },
+      { column_name: 'class',         column_role: 'Target',  column_type: 'Categorical', column_missing_values: false },
     ]
-    const encoders_map = DataFrameUtils.DataFrameEncoder(dataframe_original, dataset_transforms)
+    /** @type {_Types.DataFrameColumnTransform_t[]} */
+    const dataset_transforms = [
+      ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder)
+      // { column_transform: 'label-encoder', column_name: 'class' },
+    ]
+    const iris_encoders_map = DataFrameUtils.DataFrameEncoder(dataframe_original, dataset_transforms)
     dataframe_processed = DataFrameUtils.DataFrameTransform(dataframe_processed, dataset_transforms)
-
-    const column_name_target = 'class'
-    const dataframe_X = dataframe_processed.drop({ columns: [column_name_target] })
-    const dataframe_y = dataframe_original[column_name_target]
-
-    const scaler = new dfd.MinMaxScaler()
-    scaler.fit(dataframe_X)
-    const X = scaler.transform(dataframe_X)
-
+    const iris_target = 'class'
+    const iris_dataframe_X = dataframe_processed.drop({ columns: [iris_target] })
+    const iris_dataframe_y = dataframe_original[iris_target]
+    const minMaxScaler = new dfd.MinMaxScaler()
+    const iris_minMaxScaler = minMaxScaler.fit(iris_dataframe_X)
+    const iris_X = iris_minMaxScaler.transform(iris_dataframe_X)
     const oneHotEncoder = new dfd.OneHotEncoder()
-    oneHotEncoder.fit(dataframe_y)
-    const y = oneHotEncoder.transform(dataframe_y)
-
-    const label_encoder_y = new dfd.LabelEncoder()
-    label_encoder_y.fit(dataframe_y.values)
-    const classes = Object.keys(label_encoder_y.$labels)
+    const iris_oneHotEncoder = oneHotEncoder.fit(iris_dataframe_y)
+    const iris_y = iris_oneHotEncoder.transform(iris_dataframe_y)
+    const labelEncoder = new dfd.LabelEncoder()
+    const iris_labelEncoder = labelEncoder.fit(iris_dataframe_y.values)
+    // @ts-ignore
+    const iris_classes = Object.keys(iris_labelEncoder.$labels)
 
     return [
       {
         is_dataset_upload   : false,
         is_dataset_processed: true,
-        path                : dataset_path,
-        info                : 'iris.names',
-        csv                 : 'iris.csv',
+        path                : path_dataset,
+        info                : iris_info,
+        container_info      : iris_container_info,
+        csv                 : iris_csv,
         dataframe_original  : dataframe_original,
         dataframe_processed : dataframe_processed,
         dataset_transforms  : dataset_transforms,
         data_processed      : {
-          X                 : X,
-          y                 : y,
-          missing_values    : false,
-          missing_value_key : '',
-          encoders          : encoders_map,
-          scaler            : scaler,
-          column_name_target: column_name_target,
-          classes           : classes,
+          dataframe_X       : iris_dataframe_X,
+          dataframe_y       : iris_dataframe_y,
+          X                 : iris_X,
+          y                 : iris_y,
+          encoders          : iris_encoders_map,
+          scaler            : iris_minMaxScaler,
+          column_name_target: iris_target,
+          classes           : iris_classes,
           attributes        : [
             // @formatter:off
             { type: 'float32', name: 'sepal_length' },
@@ -161,13 +175,13 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
   }
 
   async LOAD_GRAPH_MODEL (callbacks) {
-    return await tf.loadGraphModel(process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
+    return await tfjs.loadGraphModel(process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
       onProgress: callbacks.onProgress
     })
   }
 
   async LOAD_LAYERS_MODEL (callbacks) {
-    return tf.loadLayersModel(process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
+    return await tfjs.loadLayersModel(process.env.REACT_APP_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
       onProgress: callbacks.onProgress
     })
   }

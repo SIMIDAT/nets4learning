@@ -8,7 +8,7 @@
   "upload": "Upload Image",
   "example-i": "Example {{i}}",
   "Files": "Files",
-  "wait-document": "Waiting for a document",
+  "wait-document": "Waiting for document",
   "references": "References",
   "download": "Download",
   "DataFrame": "DataFrame",
@@ -16,9 +16,16 @@
   "{{X_feature}} x {{target}}": "{{X_feature}} x {{target}}",
   "Predicted": "Predicted",
   "Waiting": "Waiting",
+  "waiting": "Waiting",
   "and": "and",
+  "dataset": {
+    "__index__": "Dataset {{index}}"
+  },
   "model": {
     "__index__": "Model {{index}}"
+  },
+  "instance": {
+    "__index__": "Instance {{index}}"
   },
   "more-information-in-link": "More information in the following <link1>link</link1>",
   "more-information-in-tutorial": "You can follow this <link1>tutorial</link1>",
@@ -30,12 +37,38 @@
   "Processed": "Processed",
   "Default": "Default",
   "Need permissions": "Need permissions",
+  "Get Screenshot": "Screenshot",
+  "ASL": "American Sign Language",
+  "SSL": "Spanish Sign Language",
+  "Info Hand sign": "Information about sign language",
+  "Info": "Info",
+  "Target": "Target",
+  "Update": "Update",
+  "Reference": "Reference",
+  "Predict": "Predict",
+  "selector-dataset": "Dataset Selector",
+  "selector-model": "Model Selector",
+  "selector-instance": "Instance Selector",
+  "Device info": "Device info",
+  "__VOID__": null,
+  "prediction-input": "Data original",
+  "prediction-input-description": "Data original after scaling and encoding",
+  "prediction-input-encoding": "Encoded processed data",
+  "prediction-input-encoding-description": "Data processed after encoding with 'label encoder'",
+  "prediction-input-scaling": "Scaled processed data",
+  "prediction-input-scaling-description": "Data processed after scaling with 'MinMaxScaler'",
+  "prediction-input-processed": "Data processed",
+  "prediction-input-processed-description": "Data processed after scaling and encoding",
+  "prediction-result": "Result",
+  "prediction-result-description": "Result of prediction",
+  "Validate": "Validate",
+  "Classify": "Classify",
   "equations": {
     "title": "Equations",
-    "title-metrics": "Metric functions formulas",
-    "title-losses": "Loss functions formulas",
-    "title-activation": "Formulas of activation functions",
-    "title-optimization": "Optimization functions formulas",
+    "title-metrics": "Metric functions",
+    "title-losses": "Loss functions",
+    "title-activation": "Activation functions",
+    "title-optimization": "Optimization functions",
     "loss-functions": {
       "huber-loss": {
         "title": "Huber Loss",
@@ -103,6 +136,7 @@
     "dataset-name": "Data set name",
     "dataset-size": "Number of samples",
     "dataset-web": "Original website",
+    "dataset-reference": "Reference",
     "download-dataset-car": "Car evaluation data set",
     "download-dataset-hepatitis-c": "Hepatitis C data set",
     "download-dataset-iris": "Iris data set",
@@ -112,15 +146,16 @@
     "download-dataset-ecoli": "Ecoli data set",
     "download": {
       "dataset": {
-        "1-linear-regression": {
+        "1-regression": {
           "salary": "Salary data set",
-          "auto-mpg": "Data set Fuel consumption",
-          "boston": "Boston Houses Data set",
-          "breast-cancer-wdbc": "Data set Breast Cancer Wisconsin (Diagnostic)",
-          "breast-cancer-wpbc": "Data set Breast Cancer Wisconsin (Prognostic)",
+          "auto-mpg": "Fuel consumption data set",
+          "housing-prices": "House Prices Dataset",
+          "breast-cancer-original": "Breast Cancer Wisconsin Dataset",
+          "breast-cancer-wdbc": "Breast Cancer Wisconsin Dataset (Diagnostic)",
+          "breast-cancer-wpbc": "Breast Cancer Wisconsin Dataset (Prognostic)",
           "student-performance-mathematics": "Mathematics student Data set",
           "student-performance-portuguese": "Portuguese student Data set",
-          "wine-red": "Tinto wine data set",
+          "wine-red": "Red wine data set",
           "wine-white": "White wine data set"
         }
       }
@@ -128,24 +163,26 @@
   },
   "dataframe-original": "DataFrame | Original",
   "dataframe-form": "DataFrame | Pre-processing data set form",
-  "dataframe-processed": "DataFrame | Processed",
   "dataframe": {
+    "dataframe": {
+      "title": "DataFrame | Data set"
+    },
     "dataset": {
       "title": "Data set"
     },
     "correlation-matrix": {
-      "title": "Dataframe | Correlation matrix",
+      "title": "DataFrame | Correlation matrix",
       "description": {
-        "0": "Pearson's correlation coefficient, also known as a linear correlation or product-moment correlation coefficient, is a statistical measure used to quantify the linear relationship between two quantitative variables. It is one of the most commonly used correlation statistics and provides information about the strength and direction of the relationship between the variables.",
-        "1": "Pearson's correlation coefficient varies between -1 and 1:",
-        "2": "A value of -1 indicates a perfectly negative linear correlation, which means that as one variable increases, the other decreases in an inverse linear relationship.",
-        "3": "A value of 1 indicates a perfectly positive linear correlation, which means that as one variable increases, the other also increases in a direct linear ratio.",
+        "0": "The Pearson correlation coefficient, also known as linear correlation or product-moment correlation coefficient, is a statistical measure used to quantify the linear relationship between two quantitative variables. It is one of the most commonly used correlation statistics and provides information about the strength and direction of the relationship between variables.",
+        "1": "The Pearson correlation coefficient varies between -1 and 1:",
+        "2": "A value of -1 indicates a perfectly negative linear correlation, meaning that as one variable increases, the other decreases in an inverse linear relationship.",
+        "3": "A value of 1 indicates a perfectly positive linear correlation, meaning that as one variable increases, the other also increases in a direct linear relationship.",
         "4": "A value of 0 indicates that there is no linear correlation between the variables, which implies that there is no linear relationship between them.",
-        "5": "Pearson's correlation coefficient calculation is based on covariances and standard deviations of the two variables. Mathematically, it is calculated as follows:",
+        "5": "The calculation of the Pearson correlation coefficient is based on the covariances and standard deviations of the two variables. Mathematically, it is calculated as follows:",
         "6": "Where:",
         "7": "are the values of the two variables in each observation.",
         "8": "are the stockings of the two variables, respectively.",
-        "9": "Pearson's correlation coefficient is a useful tool to analyze the linear relationship between two variables and determine if there is an association between them. It is widely used in various areas, such as scientific research, economics, psychology, sociology and many others, to understand how two variables behave together. However, it is important to highlight that Pearson's correlation coefficient only measures the linear relationship and does not capture other types of nonlinear relationships between the variables.",
+        "9": "The Pearson correlation coefficient is a useful tool to analyze the linear relationship between two variables and determine if an association exists between them. It is widely used in various areas, such as scientific research, economics, psychology, sociology and many others, to understand how two variables behave together. However, it is important to note that the Pearson correlation coefficient only measures the linear relationship and does not capture other types of non-linear relationships between the variables.",
         "title": "Description"
       },
       "link": "Consult more information in the following <link1> link </link1>",
@@ -154,8 +191,8 @@
     "describe": {
       "title": "DataFrame | Describe",
       "description": {
-        "0": "This function is used to generate a statistical summary of the numerical columns of a dataframe. It provides key descriptive statistics, such as average, standard deviation, minimum, maximum and several quantiles of numerical columns. This is useful to obtain a rapid understanding of the distribution and data trends.",
-        "1": "This function is useful to obtain a quick idea of data distribution and can help you identify atypical values or anomalies in your data.",
+        "0": "This function is used to generate a statistical summary of the numeric columns of a DataFrame. Provides key descriptive statistics such as the mean, standard deviation, minimum, maximum, and various quantiles of the numerical columns. This is useful for getting a quick understanding of data distribution and trends.",
+        "1": "This feature is useful for getting a quick idea of the distribution of your data and can help you identify outliers or anomalies in your data.",
         "title": "Description"
       },
       "link": "Consult more information in the following <link1> link </link1>"
@@ -174,8 +211,9 @@
       "link": "Consult more information in the following <link1> link </link1>"
     }
   },
+  "dataframe-processed": "DataFrame | Processed",
   "dataframe-scatterplot": {
-    "title": "Scatter plot"
+    "title": "scatter plot"
   },
   "model-selector": {
     "title": "Model selector"
@@ -212,7 +250,7 @@
     "tensor-shape-change": "The output layer has the shape (*, {{last_layer_units}}). <br> must have the form (*, {{class_length}})",
     "need-one-feature": "You need at least one feature.",
     "new-element-need-to-be-unique": "The element of set X must be unique.",
-    "layers-length": "You must have at least one layer with the number of neurons and their actvation function",
+    "layers-length": "You must have at least one layer with the number of neurons and their activation function",
     "parsing-csv": "Error, parsing data set",
     "file-not-valid": "Error, file not valid",
     "metrics-length": "Error, the number of metrics must be between 1 and 10"
@@ -220,7 +258,7 @@
   "warning": {
     "the-first-layer-need-to-be-__value__": "Warning, the first layer must be of type {{value}}",
     "not-more-layers": "Warning, no more layers can be added",
-    "error-layers": "Warning, you must have between 1 and 10 layers",
+    "error-layers": "Warning, you should have between 1 and 10 layers",
     "need-a-model": "Warning, you must first create and train the model."
   },
   "success": {
@@ -255,7 +293,7 @@
     "datasets": "Data sets",
     "theme": "Theme",
     "dataframe": "DataFrame",
-    "analyze": "Analyze"
+    "analyze": "EDA"
   },
   "footer": {
     "description-app": "Web platform for the design and execution of deep learning models.",
@@ -286,11 +324,11 @@
   },
   "modality": {
     "0": "Tabular classification",
-    "1": "Linear regression",
+    "1": "Regression",
     "2": "Object identification",
     "3": "Image classification",
     "tabular-classification": "Tabular classification",
-    "linear-regression": "Linear regression",
+    "regression": "Regression",
     "object-detection": "Object identification",
     "image-classification": "Image classifier"
   },
@@ -455,63 +493,63 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "You can check the information search manual"
+            "content": "You can consult the manual for information"
           },
           "dataset-info": {
-            "title": "Data set information",
+            "title": "Dataset information",
             "content": "Analyze the data set"
           },
           "dataset": {
             "title": "Data set",
-            "content": "You can see the data set and extract statistics from your descriptions"
+            "content": "You can view the data set and extract statistics from its descriptions"
           },
           "dataset-plot": {
             "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizer of the layers of the neuronal network",
-            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+            "title": "Neural network layer viewer",
+            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
           },
           "layer-editor": {
             "title": "Layer editor",
-            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
           },
           "params-editor": {
             "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
           },
           "list-of-models": {
-            "title": "Model list",
-            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the classification."
+            "title": "Model List",
+            "content": "Once the model is generated, you can upload or download the model, to test each model and perform classification."
           },
           "classify-and-visualizer": {
-            "title": "Classify and visualize",
-            "content": "Once our model for tabular classification can be loaded, you can classify and visualize the results"
+            "title": "Classify and view",
+            "content": "Once our model for tabular classification is loaded, you can perform the classification and view the results"
           }
         }
       }
     },
-    "1-linear-regression": {
+    "1-regression": {
       "salary": {
         "title": "Salary for years of experience",
         "description": {
           "text": {
-            "0": "The \"Salary\" data set is a collection of information that relates the number of years of work experience of an individual with their corresponding salary.",
-            "1": "Each entry in the data set consists of two main variables: \"Years of Experience\" (years of experience) and \"Salary\" (salary). The variable \"Years of Experience\" represents the amount of years that an employee has worked in his specific field, while the variable \"Salary\" represents the amount of money that said employee earns annually."
+            "0": "The \"Salary\" data set is a collection of information that relates the number of years of work experience of an individual to their corresponding salary.",
+            "1": "Each entry in the data set consists of two main variables: \"Years of Experience\" and \"Salary.\" The \"Years of Experience\" variable represents the number of years an employee has worked in their specific field, while the \"Salary\" variable represents the amount of money that employee earns annually."
           },
           "link": "For more information about this data set, visit the repository <link1>www.kaggy.com</link1>",
           "details-1-input": {
             "title": "Input",
             "list": {
-              "0": "Years of Experience - Years of Experience",
+              "0": "Years of experience - Years of experience",
               "1": "Salary - Salary"
             }
           },
           "details-2-output": {
             "title": "Output",
             "list": {
-              "0": "Calculated linear regression (<b>Salary</b>)"
+              "0": "Calculated regression (<b>Salary</b>)"
             }
           },
           "details-3-references": {
@@ -561,7 +599,7 @@
           "details-2": {
             "title": "Output data",
             "list": {
-              "0": "Calculated linear regression (<b>MPG/b>)"
+              "0": "Calculated regression (<b>MPG/b>)"
             }
           },
           "details-3": {
@@ -572,44 +610,79 @@
           }
         }
       },
-      "boston-housing": {
-        "title": "The Boston Housing",
+      "housing-prices": {
+        "title": "The Housing prices",
         "description": {
           "text": {
             "0": null,
-            "1": "The data set is designed to address regression and modeling problems of housing prices in different neighborhoods of Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research."
+            "1": "The data set is designed to address house price modeling and regression problems in different neighborhoods in Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research."
           },
           "link": "<link1>UCI data set info</link1>",
-          "details-1-input": {
+          "details-input": {
             "title": "Input",
-            "list": {
-              "0": "<strong>CRIM</strong> per capita crime rate by town",
-              "1": "<strong>ZN</strong> proportion of residential land zoned for lots over 25,000 sq.ft.",
-              "2": "<strong>INDUS</strong> proportion of non-retail business acres per town",
-              "3": "<strong>CHAS</strong> Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)",
-              "4": "<strong>NOX</strong> nitric oxides concentration (parts per 10 million)",
-              "5": "<strong>RM</strong> average number of rooms per dwelling",
-              "6": "<strong>AGE</strong> proportion of owner-occupied units built prior to 1940",
-              "7": "<strong>DIS</strong> weighted distances to five Boston employment centres",
-              "8": "<strong>RAD</strong> index of accessibility to radial highways",
-              "9": "<strong>TAX</strong> full-value property-tax rate per $10,000",
-              "10": "<strong>PTRATIO</strong> pupil-teacher ratio by town",
-              "11": "<strong>B</strong> 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town",
-              "12": "<strong>LSTAT</strong> % lower status of the population",
-              "13": "<strong>MEDV</strong> Median value of owner-occupied homes in $1000's"
+            "california": {
+              "list": {
+                "0": "<strong>Median House Value</strong>: Median house value for households within a block (measured in US Dollars) [$]",
+                "1": "<strong>Median Income</strong>: Median income for households within a block of houses (measured in tens of thousands of US Dollars) [10k$]",
+                "2": "<strong>Median Age</strong>: Median age of a house within a block; a lower number is a newer building [years]",
+                "3": "<strong>Total Rooms</strong>: Total number of rooms within a block",
+                "4": "<strong>Total Bedrooms</strong>: Total number of bedrooms within a block",
+                "5": "<strong>Population</strong>: Total number of people residing within a block",
+                "6": "<strong>Households</strong>: Total number of households, a group of people residing within a home unit, for a block",
+                "7": "<strong>Latitude</strong>: A measure of how far north a house is; a higher value is farther north [°]",
+                "8": "<strong>Longitude</strong>: A measure of how far west a house is; a higher value is farther west [°]",
+                "9": "<strong>Distance to coast</strong>: Distance to the nearest coast point [m]",
+                "10": "<strong>Distance to Los Angeles</strong>: Distance to the centre of Los Angeles [m]",
+                "11": "<strong>Distance to San Diego</strong>: Distance to the centre of San Diego [m]",
+                "12": "<strong>Distance to San Jose</strong>: Distance to the centre of San Jose [m]",
+                "13": "<strong>Distance to San Francisco</strong>: Distance to the centre of San Francisco [m]",
+                "14": null
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<strong>CRIM</strong> per capita crime rate by town",
+                "1": "<strong>ZN</strong> proportion of residential land zoned for lots over 25,000 sq.ft.",
+                "2": "<strong>INDUS</strong> proportion of non-retail business acres per town",
+                "3": "<strong>CHAS</strong> Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)",
+                "4": "<strong>NOX</strong> nitric oxides concentration (parts per 10 million)",
+                "5": "<strong>RM</strong> average number of rooms per dwelling",
+                "6": "<strong>AGE</strong> proportion of owner-occupied units built prior to 1940",
+                "7": "<strong>DIS</strong> weighted distances to five Boston employment centres",
+                "8": "<strong>RAD</strong> index of accessibility to radial highways",
+                "9": "<strong>TAX</strong> full-value property-tax rate per $10,000",
+                "10": "<strong>PTRATIO</strong> pupil-teacher ratio by town",
+                "11": "<strong>B</strong> 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town",
+                "12": "<strong>LSTAT</strong> % lower status of the population",
+                "13": "<strong>MEDV</strong> Median value of owner-occupied homes in $1000's"
+              }
             }
           },
-          "details-2-output": {
+          "details-output": {
             "title": "Output",
-            "list": {
-              "0": "Calculated linear regression"
+            "california": {
+              "list": {
+                "0": "Calculated regression"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "Calculated regression"
+              }
             }
           },
-          "details-3-references": {
+          "details-references": {
             "title": "References",
-            "list": {
-              "0": "<link1>UCI data set info</link1>",
-              "1": "<link1>Boston housing dataset controversy</link1>"
+            "california": {
+              "list": {
+                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<link1>UCI data set info</link1>",
+                "1": "<link1>Boston housing dataset controversy</link1>"
+              }
             }
           }
         }
@@ -618,8 +691,8 @@
         "title": "Breast Cancer Wisconsin (Diagnostic and prognostic)",
         "description": {
           "text": {
-            "0": "It is a data set of the Hospital of the University of Wisconsin related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
-            "1": "Each record represents the monitoring data of a breast cancer case. These are cases attended since 1984 by Dr. Wolberg, only includes those cases that have invasive breast cancer and without evidence of metastases.",
+            "0": "It is a data set from the University of Wisconsin Hospital related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
+            "1": "Each record represents follow-up data for a breast cancer case. These are cases treated since 1984 by Dr. Wolberg, he only includes those cases that present invasive breast cancer and without evidence of metastasis.",
             "2": "The first 30 characteristics are calculated from a digitized image of a fine needle aspiration (FNAB) of the breast mass, these data describe the characteristics of the cell nuclei present in the image, some images can be found in <link1>cs wisc</link1>",
             "3": "The file <kbd>wdbc.csv</kbd> corresponds to the diagnostic data set and <kbd>wpbc.csv</kbd> corresponds to the prognostic data set."
           },
@@ -646,14 +719,15 @@
           "details-2-output": {
             "title": "Output",
             "list": {
-              "0": "Calculated linear regression"
+              "0": "Calculated regression (<b>Salary</b>)"
             }
           },
           "details-3-references": {
             "title": "References",
             "list": {
-              "0": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
+              "0": "<link1>Breast Cancer Wisconsin</link1>",
+              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
+              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
             }
           }
         }
@@ -662,12 +736,12 @@
         "title": "Student Performance",
         "description": {
           "text": {
-            "0": null,
-            "1": null,
-            "2": null,
-            "3": null
+            "0": "The data set includes data on the academic performance of students from two Portuguese schools. The data includes demographic, social characteristics, student grades, etc. Two sets of data are included, one with the performance of two different subjects: Mathematics (mat) and Portuguese language (por).",
+            "1": "The data set contains multivariate type data, real type attributes, 649 instances, and 12 distinct attributes.",
+            "2": "Important note: The target attribute G3 has a strong correlation with the attributes G2 and G1. This occurs because G3 is the grade for the last year (issued in the 3rd period), while G1 and G2 correspond to the grades for the 1st and 2nd period. It is more difficult to predict G3 without G2 and G1, but such a prediction is much more useful.",
+            "3": "The file <kbd>student-por.csv</kbd> corresponds to the data set of Portuguese student grades and <kbd>student-mat.csv</kbd> corresponds to the data set of mathematics student grades."
           },
-          "link": "<link1>UCI data set input </link1>",
+          "link": "<link1>UCI data set input</link1>",
           "details-1-input": {
             "title": "Input",
             "list": {
@@ -706,7 +780,7 @@
           "details-2-output": {
             "title": "Output",
             "list": {
-              "0": "Calculated linear regression"
+              "0": "Calculated regression"
             }
           },
           "details-3-references": {
@@ -721,12 +795,12 @@
         "title": "Wine Quality",
         "description": {
           "text": {
-            "0": "The two data sets are related, as they include the variants of red wine and Portuguese white wine. This data set only includes physicochemical variables (inputs) and sensory (outputs), the data set does not include grape types data, wine brand or wine sale price.",
-            "1": "The data set contains multivariate data, real -type attributes, 4898 instances and 12 different attributes.",
-            "2": "Said data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
+            "0": "The two data sets are related, as they include the red wine and Portuguese white wine variants. Said data set only includes physicochemical (inputs) and sensory (outputs) variables, the data set does not include data on grape types, wine brand or wine sales price.",
+            "1": "The dataset contains multivariate type data, real type attributes, 4898 instances, and 12 distinct attributes.",
+            "2": "This data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
             "3": "The <kbd> wine-qualy-red.csv </kbd> file corresponds to the red wine data set and <kbd> wine-qualy-white.csv </kbd> corresponds to the white wine data set."
           },
-          "link": "For more information about this data set, visit the <link1> archive.ics.uci.edu </link1> repository.",
+          "link": "For more information about this data set visit the repository <link1>archive.ics.uci.edu</link1>.",
           "details-1-input": {
             "title": "Input",
             "list": {
@@ -747,7 +821,7 @@
           "details-2-output": {
             "title": "Output",
             "list": {
-              "0": "Calculated linear regression"
+              "0": "Calculated regression"
             }
           },
           "details-3-references": {
@@ -761,7 +835,7 @@
       "list-datasets": {
         "salary": "Data set - Salary",
         "auto-mpg": "Data set - Auto MPG",
-        "boston-housing": "Data set - Boston Housing",
+        "housing-prices": "Data set - Housing Prices",
         "breast-cancer": "Data set - Breast cancer",
         "student-performance": "Data set - Student performance",
         "wine": "Data set - Wine"
@@ -769,7 +843,7 @@
       "list-models": {
         "salary": "Model - Salary",
         "auto-mpg": "Model - Auto MPG",
-        "boston-housing": "Model - Boston Housing",
+        "housing-prices": "Model - Housing prices",
         "breast-cancer": "Model - Breast cancer",
         "student-performance": "Model - Student performance",
         "wine": "Model - Wine"
@@ -779,39 +853,43 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "You can check the information search manual"
+            "content": "You can consult the manual for information"
           },
           "dataset-info": {
-            "title": "Data set information",
-            "content": "Check the information set information"
+            "title": "Dataset information",
+            "content": "Query data set information"
           },
           "dataset": {
             "title": "Data set",
-            "content": "You can see the data set and extract statistics from your descriptions"
+            "content": "You can view the data set and extract statistics from its descriptions"
+          },
+          "pre-process-dataset": {
+            "title": "Pre process",
+            "content": "Cleaning and preparing the data set"
           },
           "dataset-plot": {
             "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizer of the layers of the neuronal network",
-            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+            "title": "Neural network layer viewer",
+            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
           },
           "layer-editor": {
             "title": "Layer editor",
-            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
           },
           "params-editor": {
             "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
           },
           "list-of-models": {
-            "title": "Model list",
-            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the predictions."
+            "title": "Model List",
+            "content": "Once the model is generated, you can upload or download the model, to test each model and make predictions."
           },
           "predict-and-visualizer": {
             "title": "Prediction and visualization",
-            "content": "Once our model for linear regression can be loaded you can make predictions and visualize the results"
+            "content": "Once our model for regression is loaded you can make predictions and visualize the results"
           }
         }
       }
@@ -879,7 +957,7 @@
       "move-net--pose-net": {
         "title": "MoveNet - Joint detector",
         "description": {
-          "text-0": "MoveNet is an automatic learning model capable of recognizing the body's position in real time. It can be used to estimate only one pose or several at the same time.",
+          "text-0": "MoveNet is an machine learning model capable of recognizing the body's position in real time. It can be used to estimate only one pose or several at the same time.",
           "text-1": "In the following example, so that its impact on performance is less only detects one pose at the same time.",
           "details-input": {
             "title": "Input data",
@@ -890,7 +968,7 @@
           "details-output": {
             "title": "Output data",
             "list": {
-              "0": "Same input element with a series of points and lines that delimit different parts of the face in addition to shoulders, elbows, hands, feet, knees and hip."
+              "0": "Same input element with a series of points and lines that delimit different parts of the face in addition to shoulders, elbows, hands, feet, knees and hips."
             }
           },
           "details-references": {
@@ -929,11 +1007,66 @@
           }
         }
       },
+      "face-api": {
+        "title": "FaceAPI - Face Expressions",
+        "description": {
+          "text-0": "Multiple neural networks of different types grouped in a project for managing faces, allow detecting multiple faces, detecting their age, emotions, marks on the face, extracting key points as descriptors to compare different types of faces.",
+          "details-input": {
+            "title": "Input data",
+            "text-0": "Color image or video (webcam)."
+          },
+          "details-output": {
+            "title": "Output data",
+            "text-0": "Same input element with a series of boxes that delimit the faces with the expressiveness percentage of each emotion, as well as the age of the person.",
+            "list": {
+              "0": "Age",
+              "1": "Neutral",
+              "2": "Happy",
+              "3": "Sad",
+              "4": "Angry",
+              "5": "Fearful",
+              "6": "Disgusted",
+              "7": "Surprised",
+              "bounding": "Bounding Box"
+            }
+          },
+          "details-references": {
+            "title": "References"
+          }
+        }
+      },
+      "hand-sign": {
+        "title": "Sign language with Hand sign",
+        "description": {
+          "text-0": "Neural network for hand and landmark detection, used in conjunction with position descriptors to classify possible Spanish Sign Language (SSL) signs.",
+          "details-input": {
+            "title": "Input data",
+            "list": {
+              "0": "Color image or video (webcam)."
+            }
+          },
+          "details-output": {
+            "title": "Output data",
+            "list": {
+              "0": "Finger joints",
+              "1": "Corresponding letter"
+            }
+          },
+          "details-references": {
+            "title": "References",
+            "list": {
+              "0": "TFJS hand pose detection"
+            }
+          }
+        }
+      },
       "list-models": {
         "2-option-1": "Model - FaceDetector  - Facial Geometry",
         "2-option-2": "Model - FaceMesh  - Facial Mesh",
         "2-option-3": "Model - MoveNet - Joint detector",
-        "2-option-4": "Model - COCO SSD - Object detector"
+        "2-option-4": "Model - COCO SSD - Object detector",
+        "2-option-5": "Models - Face API - Face Manager",
+        "2-option-6": "Model - HandSign - Sign Detector"
       }
     },
     "3-image-classifier": {
@@ -962,7 +1095,7 @@
       "mnist": {
         "title": "MNIST - Number classification",
         "description": {
-          "text-0": "The <strong> mnist database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of automatic learning.",
+          "text-0": "The <strong> mnist database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of machine learning.",
           "text-1": "The samples of the original NIST data sets were created \"re-mixing\".",
           "text-2": "The NIST training dataset was taken from the United States Census Office. In addition, NIST's black and white images were normalized to fit into a <strong> 28 x 28 </strong> pixels and softened, which introduced gray scale levels.",
           "details-input": {
@@ -1026,39 +1159,39 @@
         "steps": {
           "manual": {
             "title": "Manual",
-            "content": "You can check the information search manual"
+            "content": "You can consult the manual for information"
           },
           "dataset-info": {
-            "title": "Data set information",
-            "content": "Check the information set information"
+            "title": "Dataset information",
+            "content": "Query data set information"
           },
           "dataset": {
             "title": "Data set",
-            "content": "You can see the data set and extract statistics from your descriptions"
+            "content": "You can view the data set and extract statistics from its descriptions"
           },
           "dataset-plot": {
             "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bars diagram, sectors diagrams, etc."
+            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizer of the layers of the neuronal network",
-            "content": "You can visualize the layers, activation functions in two formats, compact mode and extended mode"
+            "title": "Neural network layer viewer",
+            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
           },
           "layer-editor": {
             "title": "Layer editor",
-            "content": "You can edit the layers of the neuronal network, modify the units of each layer, the activation function, add new layers or eliminate them."
+            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
           },
           "params-editor": {
             "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neuronal network so that the training is customized for the data set."
+            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
           },
           "list-of-models": {
-            "title": "Model list",
-            "content": "Once the model can be generated, you can load or download the model, to test each model and perform the predictions."
+            "title": "Model List",
+            "content": "Once the model is generated, you can upload or download the model, to test each model and make predictions."
           },
           "classify": {
             "title": "Prediction and visualization",
-            "content": "Once our model for linear regression can be loaded you can make predictions and visualize the results"
+            "content": "Once our model for regression is loaded you can make predictions and visualize the results"
           }
         }
       }
@@ -1068,16 +1201,16 @@
     "title": "DataFrame | Plot",
     "info": "Information",
     "description": {
-      "title": "Description of the type of graphics"
+      "title": "Chart type description"
     },
     "configuration": {
-      "title": "Setting",
-      "reset": "Restart",
+      "title": "Configuration",
+      "reset": "Reboot",
       "select-all-columns": "Select all columns",
-      "delete-all-columns": "Discard all columns",
+      "delete-all-columns": "Drop all columns",
       "layout": {
         "plot": {
-          "title": "Graphic title",
+          "title": "Chart title",
           "x-axis": "Title Axis X",
           "y-axis": "Title Axis Y"
         },
@@ -1085,30 +1218,33 @@
       },
       "columns": {
         "title": "DataFrame columns"
+      },
+      "pie-charts": {
+        "labels": "Labels"
       }
     },
     "buttons": {
-      "configuration": "Setting",
+      "configuration": "Configuration",
       "description": "Description"
     },
     "bar-charts": {
       "title": "Bar Charts",
       "description": {
         "intro": {
-          "0": "The bar or bar charts are a visual representation that shows the comparison of different categories or groups by rectangular bars.\nThis type of graph uses the length or height of the bars to represent the magnitude or amount of a specific variable.",
-          "1": "In a bar chart, the horizontal axis represents the categories or groups, while the vertical axis shows the magnitude or frequency of the variable that is being analyzed.\nEach category has an individual bar, and the length or height of the bar is proportional to the corresponding value or amount.\nThe bars can be horizontal or vertical, depending on the orientation of the graph.",
-          "2": "The bar charts have several features and outstanding applications:"
+          "0": "Bar graphs are a visual representation that shows the comparison of different categories or groups using rectangular bars.\nThis type of graph uses the length or height of bars to represent the magnitude or quantity of a specific variable.",
+          "1": "In a bar graph, the horizontal axis represents the categories or groups, while the vertical axis shows the magnitude or frequency of the variable being analyzed.\nEach category has an individual bar, and the length or height of the bar is proportional to the corresponding value or quantity.\nThe bars can be horizontal or vertical, depending on the orientation of the chart.",
+          "2": "Bar charts have several notable features and applications:"
         },
         "list": {
-          "0": "Comparison of categories: bar graphics are ideal to visually compare different categories or groups.\nWhen observing the bars, it is possible to quickly identify the differences in the magnitude or the amount between the categories.",
-          "1": "Representation of categorical or discreet data: bar graphics are suitable for representing categorical or discrete variables.\nEach bar represents a specific category and the height or length of the bar shows the magnitude or amount associated with that category.",
-          "2": "Categories ordering: The categories in a bar chart can be ordered based on different criteria, such as alphabetical order, order of magnitude or any other logical order.\nThis allows to highlight specific patterns or trends between the categories.",
-          "3": "View of frequencies or percentages: bar graphics are also used to represent frequencies or percentages.\nIn this case, the height or length of the bars represents the proportion or percentage corresponding to each category.",
-          "4": "Effective presentation: bar graphics are an effective tool to present information clearly and concisely.\nIts simple structure and their ability to highlight the differences between the categories make them widely used in reports, presentations and documents.",
-          "5": "Barra -type graphics are an effective way to visualize and compare categories or groups depending on their magnitude or quantity.\nThey are ideal to represent categorical or discreet data and allow an effective presentation of information.\nTheir simplicity and ability to highlight the differences make them a tool commonly used in data analysis and communication."
+          "0": "Category Comparison: Bar charts are ideal for visually comparing different categories or groups.\nBy looking at the bars, it is possible to quickly identify differences in magnitude or quantity between categories.",
+          "1": "Representation of categorical or discrete data: Bar graphs are suitable for representing categorical or discrete variables.\nEach bar represents a specific category and the height or length of the bar shows the magnitude or quantity associated with that category.",
+          "2": "Category Sorting: Categories in a bar chart can be sorted based on different criteria, such as alphabetical order, order of magnitude, or any other logical order.\nThis allows specific patterns or trends to be highlighted between categories.",
+          "3": "Displaying frequencies or percentages: Bar graphs are also used to represent frequencies or percentages.\nIn this case, the height or length of the bars represents the proportion or percentage corresponding to each category.",
+          "4": "Effective presentation: Bar charts are an effective tool for presenting information in a clear and concise manner.\nTheir simple structure and ability to highlight differences between categories make them widely used in reports, presentations, and documents.",
+          "5": "Bar charts are an effective way to visualize and compare categories or groups based on their magnitude or quantity.\nThey are ideal for representing categorical or discrete data and allow for effective presentation of information.\nTheir simplicity and ability to highlight differences make them a commonly used tool in data analysis and communication."
         },
         "end": {
-          "0": "Barra -type graphics are an effective way to visualize and compare categories or groups depending on their magnitude or quantity.\nThey are ideal to represent categorical or discreet data and allow an effective presentation of information.\nTheir simplicity and ability to highlight the differences make them a tool commonly used in data analysis and communication."
+          "0": "Bar charts are an effective way to visualize and compare categories or groups based on their magnitude or quantity.\nThey are ideal for representing categorical or discrete data and allow for effective presentation of information.\nTheir simplicity and ability to highlight differences make them a commonly used tool in data analysis and communication."
         }
       }
     },
@@ -1116,19 +1252,19 @@
       "title": "Box Plot",
       "description": {
         "intro": {
-          "0": "Box type graphics, also known as cash diagrams and mustaches or boxplots in English, are a visual representation used to show the distribution and statistical summaries of a numerical data set.\nThis type of graph is based on a rectangle that represents the interquotile range (IQR), where the central line indicates the median and extended lines, known as mustaches, represent the range of\nvalues beyond the IQR.",
-          "1": "In a boxing chart, the rectangle is traced vertically or horizontally, and is delimited by two lines, one at the bottom and one in the upper part.\nThe line in the middle of the rectangle represents the median, which is the value that divides the data ordered into two equal parts.\nThe mustaches extend from the edges of the rectangle to the extreme values, with a length determined by the variability of the data.",
-          "2": "Box type graphics have several features and outstanding applications:"
+          "0": "Box plots, also known as box-and-whisker plots or boxplots, are a visual representation used to show the distribution and statistical summaries of a set of numerical data.\nThis type of chart is based on a rectangle that represents the interquartile range (IQR), where the center line indicates the median and the extended lines, known as whiskers, represent the range of\nvalues beyond the IQR.",
+          "1": "In a box chart, the rectangle is drawn vertically or horizontally, and is delimited by two lines, one at the bottom and one at the top.\nThe line in the middle of the rectangle represents the median, which is the value that divides the ordered data into two equal parts.\nThe whiskers extend from the edges of the rectangle toward the extreme values, with a length determined by the variability of the data.",
+          "2": "Box type charts have several notable features and applications:"
         },
         "list": {
-          "0": "Statistical summary: Box type graphics provide a visual summary of the key statistics of a data set.\nIn addition to the median, you can also show quartiles (Q1 and Q3), which divide data into four equal parts, and atypical values, which are shown as points or asterisks outside the mustaches.",
-          "1": "Identification of asymmetries and atypical values: when observing a box of the box type, it is possible to identify asymmetries in the distribution of the data.\nIf the mustaches do not have the same length, it can indicate an asymmetry towards one of the ends.\nIn addition, the atypical values that are outside the mustaches can be easily highlighted.",
-          "2": "Comparison between groups or categories: Box type graphs are also used to compare the distribution of data between different groups or categories.\nBy superimposing several cash diagrams on the same graph, it is possible to visualize the differences in medium -sized, interquile ranges and the presence of atypical values between the groups.",
-          "3": "Detect biases and distributions: Box type graphs allow visually identifying if the distribution of the data is symmetrical or biased towards one end.\nIf the central line of the rectangle is not in the middle, you can indicate a bias towards the opposite direction.",
-          "4": "Dispersions visualization: In addition to providing information on the central position and data variability, box type graphs also allow visualizing the dispersion and variability of the data in a single graph.\nThis can be useful to have a quick idea of the distribution and general variability of the data."
+          "0": "Statistical summary: Box charts provide a visual summary of the key statistics of a data set.\nIn addition to the median, you can also display quartiles (Q1 and Q3), which divide the data into four equal parts, and outliers, which are displayed as dots or asterisks outside the whiskers.",
+          "1": "Identification of asymmetries and outliers: By observing a Box graph, it is possible to identify asymmetries in the distribution of the data.\nIf the whiskers are not the same length, it may indicate an asymmetry towards one of the ends.\nAdditionally, outliers outside the whiskers can be easily highlighted.",
+          "2": "Comparison between groups or categories: Box charts are also used to compare the distribution of data between different groups or categories.\nBy overlaying multiple boxplots on the same graph, it is possible to visualize differences in medians, interquartile ranges, and the presence of outliers between groups.",
+          "3": "Detect biases and distributions: Box graphs allow you to visually identify whether the data distribution is symmetrical or skewed towards one extreme.\nIf the center line of the rectangle is not in the middle, it may indicate a bias towards the opposite direction.",
+          "4": "Visualization of dispersions: In addition to providing information about the central position and variability of the data, box charts also allow you to visualize the dispersion and variability of the data in a single graph.\nThis can be useful to get a quick idea of the overall distribution and variability of the data."
         },
         "end": {
-          "0": "Box type graphs are a useful tool to visualize the distribution, statistical summaries and the variability of a numerical data set.\nThey allow to identify asymmetries, atypical values and compare distributions between groups.\nTheir concise and effective visual representation makes them a tool commonly used in data analysis and communication."
+          "0": "Box plots are a useful tool for visualizing the distribution, statistical summaries, and variability of a numerical data set.\nThey allow you to identify asymmetries, outliers and compare distributions between groups.\nTheir concise and effective visual representation makes them a commonly used tool in data analysis and communication."
         }
       }
     },
@@ -1136,19 +1272,19 @@
       "title": "Histograms",
       "description": {
         "intro": {
-          "0": "Histogram type graphs are a visual representation used to show the distribution of numerical or continuous data.\nThis type of graph is based on a set of adjacent rectangular bars, where the width of each bar represents an interval of values and the height of the bar indicates the frequency or amount of observations within that\ninterval.",
-          "1": "In a histogram type graph, the horizontal axis is used to represent the range of values of the variable under study, divided into intervals or bins.\nThe vertical axis represents the frequency or amount of observations in each interval.\nThe height of each bar shows how many observations fall within that specific interval.",
-          "2": "Histogram type graphics have several features and outstanding applications:"
+          "0": "Histogram charts are a visual representation used to show the distribution of numerical or continuous data.\nThis type of graph is based on a set of adjacent rectangular bars, where the width of each bar represents a range of values and the height of the bar indicates the frequency or number of observations within that range.\ninterval.",
+          "1": "In a histogram-type graph, the horizontal axis is used to represent the range of values of the variable under study, divided into intervals or bins.\nThe vertical axis represents the frequency or number of observations in each interval.\nThe height of each bar shows how many observations fall within that specific interval.",
+          "2": "Histogram-type charts have several notable features and applications:"
         },
         "list": {
-          "0": "Distribution visualization: Histograms allow visualizing the form and distribution of numerical data.\nThey can show if the data follow a symmetric, biased, multimodal or uniform distribution.",
-          "1": "Identification of atypical values: when observing a histogram, it is possible to identify atypical or extreme values that are outside the range of most data.\nThese values will be represented as isolated bars or as bars that extend beyond the main range of values.",
-          "2": "Trend and patterns analysis: histograms can reveal patterns and trends in the data.\nFor example, a biased distribution to the left or to the right indicates an asymmetry in the data, while a normal distribution shows approximate symmetry.",
-          "3": "Comparison of groups or categories: histograms can also be used to compare the distribution of data between different groups or categories.\nBy superimposing several histograms in the same chart, it is possible to visualize the differences and similarities between the groups.",
-          "4": "Density estimate: in addition to showing the absolute frequency, histograms can also provide a visual estimate of the data probability.\nWhen normalizing the heights of the bars, it is possible to obtain a relative representation of the probability of occurrence of the values in each interval."
+          "0": "Viewing distributions: Histograms allow you to view the shape and distribution of numerical data.\nThey can show whether the data follows a symmetric, skewed, multimodal, or uniform distribution.",
+          "1": "Identifying Outliers: By looking at a histogram, it is possible to identify outliers or extreme values that are outside the range of the majority of the data.\nThese values will be represented as isolated bars or as bars that extend beyond the main range of values.",
+          "2": "Trend and pattern analysis: Histograms can reveal patterns and trends in data.\nFor example, a distribution skewed left or right indicates asymmetry in the data, while a normal distribution shows approximate symmetry.",
+          "3": "Comparison of groups or categories: Histograms can also be used to compare the distribution of data between different groups or categories.\nBy overlaying multiple histograms on the same graph, it is possible to visualize the differences and similarities between groups.",
+          "4": "Density Estimation: In addition to showing absolute frequency, histograms can also provide a visual estimate of the probability density of the data.\nBy normalizing the heights of the bars, it is possible to obtain a relative representation of the probability of occurrence of the values in each interval."
         },
         "end": {
-          "0": "Histogram type graphs are a useful tool to visualize the distribution and patterns of numerical data.\nThey allow to identify atypical values, analyze trends and compare distributions between groups.\nTheir clear and concise visual representation makes them an effective tool to communicate information on the distribution of the data in an understandable way."
+          "0": "Histogram-type graphs are a useful tool for visualizing the distribution and patterns of numerical data.\nThey allow you to identify outliers, analyze trends and compare distributions between groups.\nTheir clear and concise visual representation makes them an effective tool for communicating information about data distribution in an understandable way."
         }
       }
     },
@@ -1156,19 +1292,19 @@
       "title": "Line Charts",
       "description": {
         "intro": {
-          "0": "Line type graphics, also known as series or trend graphs graphics, are a visual representation that shows the relationship and evolution of data over time or a continuous variable.\nThese graphics are constructed by drawing data points in a Cartesian coordinate system, where each point represents a specific measurement or value of the variable in the vertical axis depending on the time or variable\nindependent on the horizontal axis.",
-          "1": "In a line -type graph, the data points are connected by straight lines, which creates a series of connected points.\nThese lines allow to visualize the trajectory and pattern of data change over time or the independent variable.\nThe slope of the line may indicate an increasing or decreasing trend, while variations in the direction and shape of the line can reveal additional patterns in the data.",
-          "2": "Line type graphics have several features and outstanding applications:"
+          "0": "Line graphs, also known as series graphs or trend graphs, are a visual representation that shows the relationship and evolution of data over time or a continuous variable.\nThese graphs are constructed by plotting data points in a Cartesian coordinate system, where each point represents a measurement or a specific value of the variable on the vertical axis as a function of time or the variable.\nindependent on the horizontal axis.",
+          "1": "In a line graph, data points are connected by straight lines, creating a series of connected points.\nThese lines allow you to visualize the trajectory and pattern of change of the data over time or of the independent variable.\nThe slope of the line can indicate an increasing or decreasing trend, while variations in the direction and shape of the line can reveal additional patterns in the data.",
+          "2": "Line type charts have several notable features and applications:"
         },
         "list": {
-          "0": "Trend representation: Line type graphics are especially useful for showing trends and changes over time.\nThey can reveal growth patterns, decline or fluctuation in the data as they occur over time.",
-          "1": "Identification of changes and variations: when observing a line type chart, it is possible to identify abrupt changes or variations in the data.\nThese changes may indicate significant events or factors that influence the measured variable.",
-          "2": "Comparison of multiple series: Line type graphics also allow comparing multiple data series in a single graph.\nThis is useful for analyzing and visualizing the relationship between different variables as they evolve over time.",
-          "3": "Seasonality analysis and cycles: If the data exhibits seasonal or cyclical patterns, line -type graphics can help identify and analyze these patterns.\nThis can be useful in fields such as economics, meteorology and sales analysis, where there are recurring fluctuations in the data.",
-          "4": "Forecast and projection: Line type graphics are also used to perform forecasts and projections based on historical data.\nWhen observing past trends, it is possible to infer and predict how the data will behave in the future."
+          "0": "Representation of trends: Line-type graphs are especially useful for showing trends and changes over time.\nThey can reveal patterns of growth, decline, or fluctuation in data as they occur over time.",
+          "1": "Identification of changes and variations: By observing a line graph, it is possible to identify abrupt changes or variations in the data.\nThese changes may indicate significant events or factors that influence the measured variable.",
+          "2": "Comparing Multiple Series: Line charts also allow you to compare multiple data series on a single chart.\nThis is useful for analyzing and visualizing the relationship between different variables as they evolve over time.",
+          "3": "Seasonality and cycle analysis: If the data exhibits seasonal or cyclical patterns, line graphs can help identify and analyze these patterns.\nThis can be useful in fields such as economics, meteorology, and sales analysis, where there are recurring fluctuations in data.",
+          "4": "Forecasting and projection: Line type charts are also used to make forecasts and projections based on historical data.\nBy looking at past trends, it is possible to infer and predict how data will behave in the future."
         },
         "end": {
-          "0": "Line type graphics are a valuable tool to visualize and analyze the relationship and evolution of the data over time or a continuous variable.\nThey allow to identify trends, changes and patterns in the data, as well as make comparisons and forecasts.\nTheir clear and concise visual representation makes them an effective tool to communicate complex information understandably."
+          "0": "Line graphs are a valuable tool for visualizing and analyzing the relationship and evolution of data over time or a continuous variable.\nThey allow you to identify trends, changes and patterns in the data, as well as make comparisons and forecasts.\nTheir clear and concise visual representation makes them an effective tool for communicating complex information in an understandable way."
         }
       }
     },
@@ -1176,19 +1312,19 @@
       "title": "Pie Charts",
       "description": {
         "intro": {
-          "0": "Circular or sectors graphics are a visual representation that shows the proportion of different categories or parts in relation to the whole.\nThese graphics are based on a circle divided into sectors, where each sector represents a specific category and its relative size reflects the proportion that this category represents in the data set.",
-          "1": "In a sectors type graph, the complete circle represents 100% or total data.\nEach sector is shown as a portion of the circle and is labeled with the name or label corresponding to the category it represents.\nThe measure of the sector angle is proportional to the proportion that this category has in the data set.",
-          "2": "Foot -type graphics have several features and outstanding applications:"
+          "0": "Pie or pie charts are a visual representation that shows the proportion of different categories or parts in relation to the whole.\nThese graphs are based on a circle divided into sectors, where each sector represents a specific category and its relative size reflects the proportion that category represents in the data set.",
+          "1": "In a pie chart, the full circle represents 100% or the total data.\nEach sector is shown as a portion of the circle and is labeled with the name or label corresponding to the category it represents.\nThe sector angle measure is proportional to the proportion that category has in the data set.",
+          "2": "Pie charts have several notable features and applications:"
         },
         "list": {
-          "0": "Representation of proportions: foot graphics are ideal for representing proportions and percentages.\nThey allow to quickly visualize the relative contribution of each category in the total data set.",
-          "1": "Identification of dominant categories: the relative sizes of the sectors in the foot chart help to easily identify the dominant or more significant categories.\nThe largest sectors indicate the categories that have a greater proportion or contribution in relation to others.",
-          "2": "Comparison between categories: While foot graphics are useful to show the proportions of the categories, they can be limited to make precise comparisons between them.\nThis is because human perception can have difficulties in precisely evaluating differences in sizes of angles or sectors.\nHowever, the relative comparison between sectors sizes can still provide general information about the proportions between categories.",
-          "3": "Representation of categorical data: foot -type graphics are especially useful for representing categorical data, where categories are mutually exclusive and do not have an inherent order.\nFor example, they can be used to show the percentage distribution of income in different categories of expenses.",
-          "4": "Improvement of the visual presentation: Pie type graphics are commonly used in presentations and documents to communicate information visually attractive and easily understandable.\nThe circular shape and the colors used can quickly capture attention and highlight the proportional relationships between the categories."
+          "0": "Representation of proportions: Pie charts are ideal for representing proportions and percentages.\nThey allow you to quickly visualize the relative contribution of each category in the total data set.",
+          "1": "Identifying Dominant Categories: The relative sizes of the slices in the pie chart help to easily identify the dominant or most significant categories.\nThe largest sectors indicate the categories that have a greater proportion or contribution in relation to the others.",
+          "2": "Comparison between categories: While pie charts are useful for showing the proportions of categories, they can be limited in making accurate comparisons between them.\nThis is because human perception can have difficulty accurately assessing differences in angle or sector sizes.\nHowever, the relative comparison between sector sizes can still provide general information about the proportions between categories.",
+          "3": "Representing Categorical Data: Pie charts are especially useful for representing categorical data, where the categories are mutually exclusive and have no inherent order.\nFor example, they can be used to show the percentage distribution of income across different expense categories.",
+          "4": "Improving Visual Presentation: Pie charts are commonly used in presentations and documents to communicate information in a visually appealing and easily understandable way.\nThe circular shape and colors used can quickly capture attention and highlight the proportional relationships between categories."
         },
         "end": {
-          "0": "Type of sectors graphics are an effective tool to represent proportions and percentages of categories in a data set.\nThey allow to identify the dominant categories and provide an attractive visual presentation.\nHowever, it is important to take into account its limitations in terms of precise comparison between categories and its focus on categorical data."
+          "0": "Pie charts are an effective tool for representing proportions and percentages of categories in a data set.\nThey allow the dominant categories to be identified and provide an attractive visual presentation.\nHowever, it is important to note its limitations in terms of accurate comparison between categories and its focus on categorical data."
         }
       }
     },
@@ -1196,71 +1332,86 @@
       "title": "Scatter Plots",
       "description": {
         "intro": {
-          "0": "A dispersion chart, also known as points graph or Scatter Plot in English, is a visual representation that uses Cartesian coordinates to show the relationship between two variables.\nIn this type of graph, the data is represented as individual points in the two -dimensional space, where each point represents a couple of values corresponding to the two variables.",
-          "1": "In a dispersion graph, the horizontal axis is generally assigned to the independent variable, while the vertical axis is assigned to the dependent variable.\nEach point in the graph represents an individual observation and its position in the graph is determined by the values it has for both variables.\nThe relative location of the points in the graph reveals patterns and relationships between the two variables.",
-          "2": "Dispersion graphics have several applications and prominent characteristics:"
+          "0": "A scatter plot, also known as a dot plot or scatter plot in English, is a visual representation that uses Cartesian coordinates to show the relationship between two variables.\nIn this type of graph, data is represented as individual points in two-dimensional space, where each point represents a pair of values corresponding to the two variables.",
+          "1": "In a scatter plot, the horizontal axis is usually assigned to the independent variable, while the vertical axis is assigned to the dependent variable.\nEach point on the graph represents an individual observation and its position on the graph is determined by the values it has for both variables.\nThe relative location of the points on the graph reveals patterns and relationships between the two variables.",
+          "2": "Scatter charts have several notable applications and features:"
         },
         "list": {
-          "0": "Relationship between variables: Dispersion graphics allow analyzing the relationship between two variables.\nThey can show if there is a positive correlation (the points tend to group in an ascending direction), a negative correlation (the points tend to group in a descending direction) or a lack of correlation (the points do not show a definite pattern).",
-          "1": "Trends identification: A dispersion chart can reveal trends or patterns in the data.\nWhen observing the general direction of the points, it is possible to identify whether there is a linear, non -linear relationship or even a curvilinear relationship between the variables.",
-          "2": "Detection of atypical values: Dispersion graphics can help identify atypical or extreme values in the data.\nThese points stand out and are far from the main group, suggesting unusual or exceptional observations that may require additional analysis.",
-          "3": "Analysis of clusters or groups: If the points in the dispersion graph are grouped or form different patterns, this may indicate the presence of clusters or groups.\nThis may be useful in data classification or classification analysis.",
-          "4": "Multidimensional data display: If additional colors or sizes are used, dispersion graphics can also represent additional information in a two -dimensional space.\nThis allows to visualize multidimensional data more intuitively."
+          "0": "Relationship between variables: Scatter graphs allow you to analyze the relationship between two variables.\nThey can show whether there is a positive correlation (the points tend to cluster in an upward direction), a negative correlation (the points tend to cluster in a downward direction), or a lack of correlation (the points do not show a definite pattern).",
+          "1": "Identifying trends: A scatter plot can reveal trends or patterns in the data.\nBy looking at the general direction of the points, it is possible to identify whether there is a linear, nonlinear, or even a curvilinear relationship between the variables.",
+          "2": "Outlier Detection: Scatter plots can help identify outliers or extremes in data.\nThese points stand out and are far from the main grouping, suggesting unusual or exceptional observations that may require additional analysis.",
+          "3": "Analysis of clusters or groups: If the points in the scatter plot group together or form distinct patterns, this may indicate the presence of clusters or groups.\nThis can be useful in data segmentation or classification analysis.",
+          "4": "Visualizing multidimensional data: By using additional colors or point sizes, scatter plots can also represent additional information in two-dimensional space.\nThis allows multidimensional data to be viewed more intuitively."
         },
         "end": {
-          "0": "Dispersion graphics are a powerful tool to explore and visualize the relationship between two variables.\nThey allow identifying patterns, trends and atypical values in the data, and are useful in various applications, such as correlation analysis, clusters detection and visualization of multidimensional data."
+          "0": "Scatter plots are a powerful tool for exploring and visualizing the relationship between two variables.\nThey allow you to identify patterns, trends, and outliers in data, and are useful in various applications, such as correlation analysis, cluster detection, and multidimensional data visualization."
         }
+      },
+      "index-info": "Coordinate axis",
+      "form": {
+        "x": "Axis X (0)",
+        "y": "Axis Y (1)"
       }
     },
     "time-series-plots": {
       "title": "Time Series Plots",
       "description": {
         "intro": {
-          "0": "A time series graph is a visual representation of data that are collected and recorded in regular intervals over time.\nThese graphics are widely used in various disciplines, such as economy, finance, meteorology, engineering and many others, to analyze and understand how the data changed as time elapses.",
-          "1": "The horizontal axis of the graph represents the time, while the vertical axis shows the values of the data that is being observed or recorded.\nThe data points are connected with lines, which allows identifying patterns and trends over time.",
-          "2": "Time series graphics offer various advantages and practical applications:"
+          "0": "A time series chart is a visual representation of data that is collected and recorded at regular intervals over time.\nThese charts are widely used in various disciplines, such as economics, finance, meteorology, engineering, and many others, to analyze and understand how data changes over time.",
+          "1": "The horizontal axis of the graph represents time, while the vertical axis shows the data values being observed or recorded.\nData points are connected with lines, allowing patterns and trends to be identified over time.",
+          "2": "Time series charts offer several advantages and practical applications:"
         },
         "list": {
-          "0": "Trend analysis: Time series graphs allow to identify and analyze long -term trends in the data.\nThis can be useful to predict how data will behave in the future and make informed decisions.",
-          "1": "Identification of seasonal patterns: in many data sets, there are seasonal patterns that are repeated regularly over time, such as Christmas sales or seasonal fluctuations in agricultural production.\nTime series graphics help identify these seasonal patterns and understand their impact on data.",
-          "2": "DETECTION OF CHANGES AND ANOMALIES: When observing a time series graph, it is possible to identify sudden changes or abnormalities in the data.\nThese changes may indicate important or unusual events that require greater research and analysis.",
-          "3": "Modeling and prognosis: Time series graphics are a fundamental tool for developing models and forecasts.\nWhen observing past patterns, it is possible to build mathematical or statistical models that capture relationships and allow predictions about the future.",
-          "4": "Comparative analysis: Time series graphs are also used to compare different data sets that are collected during the same period of time.\nThis can help identify differences, similarities and relationships between the observed variables."
+          "0": "Trend Analysis: Time series graphs allow you to identify and analyze long-term trends in data.\nThis can be useful for predicting how data will behave in the future and making informed decisions.",
+          "1": "Identifying seasonal patterns: In many data sets, there are seasonal patterns that repeat regularly over time, such as holiday sales or seasonal fluctuations in agricultural production.\nTime series charts help identify these seasonal patterns and understand their impact on the data.",
+          "2": "Detection of changes and anomalies: By observing a time series graph, it is possible to identify sudden changes or anomalies in the data.\nThese changes may indicate important or unusual events that require further investigation and analysis.",
+          "3": "Modeling and forecasting: Time series graphs are a fundamental tool for developing models and forecasts.\nBy looking at past patterns, it is possible to build mathematical or statistical models that capture relationships and allow predictions about the future.",
+          "4": "Comparative Analysis: Time series charts are also used to compare different sets of data that are collected during the same time period.\nThis can help identify differences, similarities and relationships between the observed variables."
         },
         "end": {
-          "0": "Time series graphics are an essential tool to analyze and understand how data changes over time.\nThey provide valuable information about trends, seasonal patterns, changes and forecasts, allowing informed decisions and comparative analysis."
+          "0": "Time series charts are an essential tool for analyzing and understanding how data changes over time.\nThey provide valuable information on trends, seasonal patterns, changes and forecasts, enabling informed decisions and comparative analysis."
         }
       },
-      "index-info": "The selected index must contain a unique series and should not select the index next to the columns to show",
+      "index-info": "The selected index must contain a unique series and must not select the index next to the columns to display",
       "form": {
         "index": "Index"
       }
     },
     "time-series": {
       "warning": {
-        "index": "This dataframe does not allow adequate visualization by not fulfilling the condition of a characteristic with unique values"
+        "index": "This dataframe does not allow proper visualization as it does not meet the condition of a characteristic with unique values"
       }
     },
     "violin-plots": {
       "title": "Violin Plots",
       "description": {
         "intro": {
-          "0": "A violin type graph is a visual representation that combines characteristics of a cash and mustaches chart with a probability density function.\nThis type of graph provides a detailed vision of data distribution and allows you to compare multiple groups or categories in a single graphic.",
-          "1": "The appearance of a violin chart resembles the shape of a violin, hence its name.\nIt has a central line that represents the median data and two shaded areas on both sides that represent the distribution of probability density.\nThese shaded symmetry areas along the central line to reflect the symmetry or asymmetry of the data.",
-          "2": "The shape of the violin chart provides information on the distribution of the data.\nFor example, a wider violin chart in a particular section indicates a higher data density in that area, while a narrower section indicates a lower density.\nIn addition, violin graphs can have multiple violins grouped or overlapping to allow visual comparison of different groups or categories.",
-          "3": "Violin graphics have several practical applications:"
+          "0": "A violin plot is a visual representation that combines features of a box-and-whisker plot with a probability density function.\nThis type of chart provides a detailed view of the distribution of the data and allows you to compare multiple groups or categories in a single chart.",
+          "1": "The appearance of a violin chart resembles the shape of a violin, hence its name.\nIt has a center line that represents the median of the data and two shaded areas on either side that represent the probability density distribution.\nThese shaded areas of symmetry along the center line to reflect the symmetry or asymmetry of the data.",
+          "2": "The violin plot shape provides information about the distribution of the data.\nFor example, a wider violin plot in a particular section indicates a higher density of data in that area, while a narrower section indicates a lower density.\nAdditionally, violin charts can have multiple violins grouped or overlapping to allow visual comparison of different groups or categories.",
+          "3": "Violin charts have several practical applications:"
         },
         "list": {
-          "0": "Comparison of distributions: violin graphics allow comparing data distributions between different groups or categories.\nThis is useful for identifying differences or similarities in the form, dispersion and data trends.",
-          "1": "Identification of atypical values: violin graphs provide visual information about the presence of atypical or extreme values in the data.\nThese values are represented as points outside the shaded areas and may indicate unusual observations that may require additional analysis.",
-          "2": "Probability density display: violin graphics also offer a graphic representation of data probability density.\nThis allows to easily identify high or low density areas, as well as possible biases or asymmetries in the distribution.",
-          "3": "Effective data communication: violin graphics are an effective way to communicate complex information on data distribution in a visually attractive way.\nThey can summarize the information in a concise manner and help transmit important patterns and characteristics to a non -technical audience."
+          "0": "Comparing Distributions: Violin plots allow you to compare data distributions between different groups or categories.\nThis is useful for identifying differences or similarities in the shape, dispersion, and trends of the data.",
+          "1": "Identifying Outliers: Violin plots provide visual information about the presence of outliers or extremes in the data.\nThese values are represented as points outside the shaded areas and may indicate unusual observations that may require additional analysis.",
+          "2": "Probability Density Visualization: Violin plots also provide a graphical representation of the probability density of the data.\nThis allows areas of high or low density, as well as possible biases or asymmetries in the distribution, to be easily identified.",
+          "3": "Effective data communication: Violin charts are an effective way to communicate complex information about the distribution of data in a visually appealing way.\nThey can summarize information concisely and help convey important patterns and features to a non-technical audience."
         },
         "end": {
-          "0": "Violin graphics are a useful tool to visualize and compare data distributions.\nThey allow analyzing the form, dispersion, symmetry and presence of atypical values in the data, and are especially useful when comparison is required between multiple groups or categories.\nTheir attractive and concise graphic representation makes them an effective tool to communicate complex information understandably."
+          "0": "Violin plots are a useful tool for visualizing and comparing data distributions.\nThey allow you to analyze the shape, dispersion, symmetry and presence of outliers in the data, and are especially useful when comparison between multiple groups or categories is required.\nTheir attractive and concise graphical representation makes them an effective tool for communicating complex information in an understandable way."
         }
       }
     }
+  },
+  "face-api": {
+    "years": "Years",
+    "neutral": "Neutral",
+    "happy": "Happy",
+    "sad": "Sad",
+    "angry": "Angry",
+    "fearful": "Fearful",
+    "disgusted": "Disgusted",
+    "surprised": "Surprised"
   },
   "pages": {
     "version": {
@@ -1274,7 +1425,7 @@
         "1-button": "Pre-trained models",
         "2-title": "Design, create and edit an architecture network",
         "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
-        "2-description-2": "To design, create, train and evaluate a personalized architecture, we must:",
+        "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
           "2": "Define the training rate.",
@@ -1285,23 +1436,23 @@
         },
         "2-button": "Create and train a model"
       },
-      "linear-regression": {
-        "1-title": "Linear regression",
-        "2-title": "Design, create and edit an architecture to calculate a linear regression",
-        "1-description-1": "Linear regression is a task to determine a specific numerical value (dependent variable) based on its characteristics (independent variables).",
-        "1-description-2": "It is a predictive task that has a continuous variable, where it is sought to find a straight line that best suits the data and allows predicting the numerical value of the dependent variable depending on the independent variables.",
+      "regression": {
+        "1-title": "Regression",
+        "2-title": "Design, create, and edit an architecture to calculate a regression",
+        "1-description-1": "Regression is a task to determine a specific numerical value (dependent variable) from its characteristics (independent variables).",
+        "1-description-2": "It is a predictive task that has a continuous variable as its output, where the aim is to find a straight line that best fits the data and allows predicting the numerical value of the dependent variable based on the independent variables.",
         "1-button": "Pre-trained models",
-        "2-description-1": "Through this tool we can create a neuronal network to make preditions.",
-        "2-description-2": "Define the independent variables, which will be used in the model, define the dependent variable, which will be the numerical value that is sought to predict.",
+        "2-description-1": "Through this tool we can create a neural network to make predictions.",
+        "2-description-2": "Define the independent variables, which will be used in the model, define the dependent variable, which will be the numerical value that you seek to predict.",
         "2-description-3": null,
         "2-description-list": {
-          "1": "Establish an activation function or a linear function for the layers of linear regression.",
+          "1": "Establish an activation function or a linear function for the regression layers.",
           "2": "Define the value of the learning rate.",
-          "3": "Define the number of times.",
-          "4": "Define the optimizer.",
+          "3": "Define the number of epochs.",
+          "4": "Regression",
           "5": "Define the loss function",
-          "6": "Define the metric for evaluation",
-          "title": "To apply linear regression and model the relationship between variables, we must follow the following steps:"
+          "6": "Define the metrics for the evaluation",
+          "title": "To apply regression and model the relationship between variables, we must follow the following steps:"
         }
       },
       "object-detection": {
@@ -1317,7 +1468,7 @@
         "1-button": "Pre-trained models",
         "2-title": "Design, create and edit an architecture network for classifying images.",
         "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
-        "2-description-2": "To design, create, train and evaluate a personalized architecture, we must:",
+        "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
           "2": "Define the training rate.",
@@ -1348,7 +1499,7 @@
       "form-option-_-1": "Select a dataset",
       "form-upload-description": "Now if you wish you can load your own architecture, otherwise click on continuing and an architecture will be loaded by example default.",
       "form-submit": "Continue",
-      "1-linear-regression": {
+      "1-regression": {
         "csv": "Upload dataset - CSV",
         "csv-text": "Upload a file with a dataset treated in <Oce> .CSV format </code>"
       }
@@ -1407,7 +1558,7 @@
                 "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
                 "4": "<b>loss function</b>: <br /> It is a error calculation method to measure model efficiency during training.",
-                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
+                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an machine learning model with test data."
               }
             },
             "details-hyper-parameters-info": {
@@ -1433,7 +1584,7 @@
             "details-prediction": {
               "title": "Prediction",
               "text-0": "The final form allows us to select the main characteristics used to determine the class.",
-              "text-1": "By pressing the \"See Result\" button, from the input features of the element you get the prediction of its output class."
+              "text-1": "By pressing the \"See result\" button, the prediction of its output class is obtained from the input characteristics of the element."
             }
           }
         }
@@ -1461,6 +1612,7 @@
             "classes": "Classes"
           },
           "details": {
+            "dataframe-processed": "Processed DataFrame",
             "description-original": "Description of the original DataFrame",
             "description-processed": "Description of the processed DataFrame",
             "data": "Data set information",
@@ -1481,8 +1633,8 @@
           "kernel-size-placeholder": "Enter the kernel size of the layer.",
           "filters-size": "Filter size",
           "filters-size-placeholder": "Enter the filter of the layer.",
-          "units": "Layer neurons",
-          "units-placeholder": "Enter the number of cape neurons",
+          "units": "layer neurons",
+          "units-placeholder": "Enter the number of neurons in the layer",
           "activation-function-select": "Select the activation function",
           "activation-function-info": "It will be the optimizer that will be used to activate the function",
           "strides": "Strides",
@@ -1492,7 +1644,7 @@
         },
         "editor-feature-selector": {
           "title": "Feature selector",
-          "feature-selector-x": "Feature selector / Set (x)",
+          "feature-selector-x": "Feature selector / Set (X)",
           "feature-selector-y": "Feature selector / Target (Y)",
           "add-feature": "Add feature",
           "delete-feature": "Delete feature {{value}}"
@@ -1514,9 +1666,9 @@
           "loss-id-info": "It will be the function that will be used to evaluate the error of the neurons.",
           "metrics-id": "Select the metric",
           "metrics-id-info": "It will be the type of metric that will be used for training evaluation.",
-          "test-size": "Test set size",
-          "test-size-placeholder": "Test set size",
-          "test-size-info": "Value between 0 and 100 (is a percentage) of the size of the test set",
+          "test-size": "Test suite size",
+          "test-size-placeholder": "Test suite size",
+          "test-size-info": "Value between 0 and 100 (it is a percentage) of the test set size",
           "delete-metric": "Delete metric function {{index}}",
           "add-metric": "Add metric function",
           "metric-id-__index__": "Metric {{index}}",
@@ -1527,6 +1679,7 @@
         "load": "Load",
         "waiting-for-file": "Waiting for file",
         "waiting-for-process": "Waiting for data set processing",
+        "waiting-for-training": "Waiting for model training",
         "models": {
           "title": "Models",
           "history-train": "Training history",
@@ -1573,7 +1726,7 @@
           "scatterplot": {
             "__feature____target__": "{{feature}} x {{target}}"
           },
-          "original-vs-predictions": "Original data / prediction",
+          "original-vs-predictions": "Original data/prediction",
           "model": "Model",
           "dataset": "Data set",
           "predictions": "Predicted",
@@ -1583,12 +1736,12 @@
         },
         "waiting-for-models": "Waiting for the creation of a model"
       },
-      "1-linear-regression": {
+      "1-regression": {
         "generator": {
           "manual": {
             "title": "Model generator manual",
-            "simple-linear-regression": "Simple linear regression",
-            "multiple-linear-regression": "Multiple linear regression",
+            "simple-regression": "Simple linear regression",
+            "multiple-regression": "Multiple linear regression",
             "details-edit-layers": {
               "title": "Editor of the Layers",
               "text": {
@@ -1610,7 +1763,7 @@
                 "2": "<b>Test set size</b>:<br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>:<br /> It is a function that is used to adjust the weights of the network.",
                 "4": "<b>loss function</b>:<br /> It is a error calculation method to measure model efficiency during training.",
-                "5": "<b>Metric function</b>:<br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
+                "5": "<b>Metric function</b>:<br /> It is the average evaluation used to assess the performance of an machine learning model with test data."
               }
             },
             "details-hyper-parameters-info": {
@@ -1644,8 +1797,23 @@
               }
             }
           },
-          "simple-linear-regression": "Simple linear regression",
-          "multiple-linear-regression": "Multiple linear regression"
+          "simple-regression": "Simple linear regression",
+          "multiple-regression": "Multiple linear regression"
+        },
+        "dataframe": {
+          "title": "Processed dataframe"
+        },
+        "selector-instance": {
+          "option": "Instance selector"
+        },
+        "selector-model": {
+          "option": "Model selector"
+        },
+        "details": {
+          "description-processed": {
+            "dataset": "Dataframe info",
+            "describe": "Dataframe describe"
+          }
         },
         "predict": {
           "title": "Predict",
@@ -1656,8 +1824,9 @@
             "__index__": "Model {{index}}"
           },
           "button-submit": "Predict",
-          "list-models-generated": "List of models generated",
-          "list-instances": "Lista of instancies"
+          "list-models-generated": "List of generated models",
+          "list-models": "List of generated models",
+          "list-instances": "List of instancies"
         },
         "model-selector": {
           "title": "Model selector",
@@ -1677,8 +1846,8 @@
               }
             },
             "details-edit-layers-more-info": {
-              "title": "Additional information Layers",
-              "text-0": "Additionally there are two more layers that are common to other automatic learning networks focused on image classification",
+              "title": "Additional information layers",
+              "text-0": "Additionally, there are two more layers that are common to the rest of the machine learning networks focused on image classification.",
               "list": {
                 "0": "<b>dense</b><br />Creates a dense (fully connected) layer.",
                 "1": "<b>dropout</b><br />Dropout consists in randomly setting a fraction rate of input units to 0 at each update during training time, which helps prevent overfitting.",
@@ -1699,7 +1868,7 @@
                 "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
                 "4": "<b>loss function</b>: <br /> It is a error calculation method to measure model efficiency during training.",
-                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an automatic learning model with test data."
+                "5": "<b>Metric function</b>: <br /> It is the average evaluation used to assess the performance of an machine learning model with test data."
               }
             },
             "details-hyper-parameters-info": {
@@ -1725,7 +1894,7 @@
             "details-prediction": {
               "title": "Clasification",
               "text-0": "The final form allows us to select the main characteristics used to determine the class.",
-              "text-1": "By pressing the \"See Result\" button, from the input features of the element you get the prediction of its output class."
+              "text-1": "By pressing the \"See result\" button, the prediction of its output class is obtained from the input characteristics of the element."
             }
           }
         }
@@ -1765,8 +1934,8 @@
       },
       "app": {
         "title": "Tool objectives",
-        "description-1": "This application shows some of the most important tasks that artificial neural networks can perform, such as: tabular classification, image classification and object identification. Networks are artificial intelligence techniques belonging to the field of automatic learning, in which models that train (or learn) are developed from data sets.",
-        "description-2": "Some of the reasons why work with neural networks are the following:",
+        "description-1": "This application shows some of the most important tasks that artificial neural networks can perform, such as: tabular classification, image classification and object identification.  Networks are artificial intelligence techniques belonging to the field of machine learning, in which models are developed that are trained (or learned) from data sets.",
+        "description-2": "Some of the reasons to work with neural networks are the following:",
         "list": {
           "0": {
             "title": "Practical applications",
@@ -1778,38 +1947,38 @@
           },
           "2": {
             "title": "Technological innovation",
-            "description": "Neuronal networks are an innovative technology that continues to evolve and improve. Learning about neural networks can help professionals stay updated in the latest trends and developments in the field of automatic learning and artificial intelligence."
+            "description": "Neuronal networks are an innovative technology that continues to evolve and improve. Learning about neural networks can help professionals stay updated in the latest trends and developments in the field of machine learning and artificial intelligence."
           }
         },
-        "description-3": "Neuronal networks are a form of automatic learning that mimics the way the human brain works. These networks are designed to continue and improve from past data and experiences, allowing machines to perform complex tasks that were previously impossible or very difficult for traditional programmed systems.",
+        "description-3": "Neuronal networks are a form of machine learning that mimics the way the human brain works. These networks are designed to continue and improve from past data and experiences, allowing machines to perform complex tasks that were previously impossible or very difficult for traditional programmed systems.",
         "description-4": "In summary, learning neuronal networks is important because it can help professionals develop skills that are valuable in a wide variety of fields, solve complex problems more effectively and stay updated in technology and innovation."
       },
       "0-tabular-classification": {
         "title": "Tabular classification",
         "1-title": "Pre-trained models",
-        "1-description-1": "We must access the pre-questioned models section and select one of the available ones.",
+        "1-description-1": "We must access the pre-trained models section and select one of the available ones.",
         "1-description-2": "The tool has a list of representative examples that allow to alter the characteristics form.",
-        "1-description-3": "By accessing the section section on the models we can edit the characteristics of the elements to be predicted. The tool has a dynamic form that allows changing the types of neuronal network input data.",
+        "1-description-3": "By accessing the tool section in the models we can edit the characteristics of the elements to predict. The tool has a dynamic form that allows you to change the input data types of the neural network.",
         "2-title": "Train models",
         "2-description-1": "The tool has a data display that allows you to show the classes and attributes of the dataset. As well as a manager to create, design, train and export a data model.",
-        "2-description-2": "On the left we have an editor of the different layers that the neuronal network has. It should be allowed the last network layer to have the same number of neurons as classes to predict.",
-        "2-description-3": "<b> Number of Epochs </b>: <br /> The Number of iterations to the Number of Times the Training Data is present to the neuronal Network During the Training Process. Each iteration impies an update of the weights of the network as a function of the calculated error.",
-        "2-description-4": "We must press the \"Create and train model\" button to start the training process of the neuronal network. If all the configuration and selection of the functions is correct then an entry with the trained models will be added in the table below.",
-        "2-description-5": "Once a model from the data is trained we can make predictions, for this a dynamic form is included with the characteristics of the data set. The precision of the model in the prediction may be greater or less depending on the training and the selected options."
+        "2-description-2": "On the left we have an editor of the different layers that the neural network has. The last layer of the network must be allowed to have the same number of neurons as classes to predict.",
+        "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+        "2-description-4": "We must press the \"Create and train model\" button to start the neural network training process. If all the configuration and selection of the functions is correct then an entry with the trained model will be added to the table below.",
+        "2-description-5": "Once a model has been trained from the data, we can make predictions. To do this, a dynamic form is included with the characteristics of the data set. The precision of the model in the prediction may be higher or lower depending on the training and the selected options."
       },
-      "1-linear-regression": {
-        "title": "Linear regression",
+      "1-regression": {
+        "title": "Regression",
         "1-title": "Pre-trained models",
         "1-description": {
-          "0": "We must access the pre-questioned models section and select one of the available ones.",
+          "0": "We must access the pre-trained models section and select one of the available ones.",
           "1": null,
           "2": null
         },
         "2-title": "Train models",
         "2-description": {
-          "0": "The section has the possibility to raise your data sets, prepared data sets, descriptions, graphic and statistical visualization tools.",
-          "1": "It has a generator of linear regression models. It manages layers of the neuronal network, hyperparameters, optimization functions, loss and metric functions. as well as the characteristics selector.",
-          "2": "We must press the \"Create and train model\" button to start the training process of the neuronal network. If all the configuration and selection of the functions are correct then an entry with the trained models will be added in the list.",
+          "0": "The section has the possibility of uploading your data sets, prepared data sets, descriptions, graphical and statistical visualization tools.",
+          "1": "It has a regression model generator. Manages neural network layers, hyperparameters, optimization functions, loss functions and metrics. as well as the feature selector.",
+          "2": "We must press the \"Create and train model\" button to start the neural network training process. If all the configuration and selection of the functions is correct then an entry with the trained model will be added to the list.",
           "3": null
         },
         "2-link": "Consult more information in the following <link1> link </link1>"
@@ -1818,8 +1987,8 @@
         "title": "Object identification",
         "1-title": "Pre-trained models",
         "1-description-1": "Within the identification of objects we have four models, to use this tool it is as simple as activating the option to use webcam or upload an image.",
-        "1-description-2": "In this section the tool offers four objects of identification of objects, these models have been optimized to be functional on mobile devices. These models are:",
-        "1-description-3": "In case of using the webcam as an input, a filter will be generated so that the points that are being detected can be seen in real time. In case of using the option to upload images we can attach a file in PNG or JPG format. As a result, the original image, the generated filter and the image with the applied filter will be displayed.",
+        "1-description-2": "In this section the tool offers four object identification models, these models have been optimized to be functional on mobile devices. These models are:",
+        "1-description-3": "If the webcam is used as input, a filter will be generated so that the points that are being detected can be seen in real time on the video. If you use the option to upload images, we can attach a file in png or jpg format. As a result, the original image, the generated filter and the image with the filter applied will be displayed.",
         "1-list": {
           "0": "Identification of facial geometry.",
           "1": "Identification of a complete facial mesh.",
@@ -1836,8 +2005,8 @@
           "1": "Mobilenet, classification of images belonging to 1001 categories."
         },
         "1-description-2": "In the MNIST model it is allowed to select from a list of images that contain a number, draw in a dog the number to predict or upload an image of a number.",
-        "1-description-3": "In the Mobilenet model a list of example images that can be selected or we can upload an image that the neuronal network will classify have been included.",
-        "1-description-4": "For both models the system will show the prediction with the percentage of calculated precision."
+        "1-description-3": "The MobileNet model has included a list of example images that can be selected or we can upload an image that the neural network will classify.",
+        "1-description-4": "For both models the system will show the prediction with the calculated percentage of accuracy."
       },
       "layer-editor": {
         "title": "Layer editor"
@@ -1857,34 +2026,34 @@
       },
       "tabular-classification": {
         "title": "Tabular classification",
-        "text-1": "The tabular classification is a supervised type of learning in which a set of data labeled to train an automatic learning model is used, so that the model can predict the class of new examples of data not used in training. In the tabular classification, the input and output data is represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
+        "text-1": "Tabular classification is a type of supervised learning in which a set of labeled data is used to train a machine learning model, so that the model can predict the class of new data examples not used in training. In tabular classification, input and output data are represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
         "text-2": "For example, if you want to predict whether a bank of a bank is solvent or not, the characteristics or attributes that can be used are: income, debts, credit history, age, etc. In the tabular classification, each instance or example of the data set will have values for each of these characteristics and a label (class) that indicates whether the client is solvent or not.",
-        "text-3": "Once you have a set of data labeled, an automatic learning algorithm is used to train a model that can predict the label of new data sets. This model can be used to perform precise and fast predictions on new data instances.",
+        "text-3": "Once you have a set of data labeled, an machine learning algorithm is used to train a model that can predict the label of new data sets. This model can be used to perform precise and fast predictions on new data instances.",
         "text-4": "Tabular classification is a very useful technique to solve classification problems in a wide variety of fields, such as medicine, electronic commerce, banking, safety and many others."
       },
-      "linear-regression": {
-        "title": "Linear regression",
+      "regression": {
+        "title": "Regression",
         "text": {
-          "0": "Linear regression is a statistical analysis method used in automatic learning to model the linear relationship between an independent variable and a dependent variable, seeking to find the best straight line that adjusts the data and allows predictions to be made.",
-          "1": "In the linear regression, the data is generally represented as dispersed points in a Cartesian plane, where the independent variable is placed on the X axis and the dependent variable on the Y axis. The objective is to find the equation of a straight line (y = = mx + b) that minimizes the distance between this line and the data points. Once this equation has been obtained, it can be used to make predictions on future values of the dependent variable depending on the values of the independent variable.",
-          "2": "For example, if we are analyzing the relationship between the amount of advertising on a website and the sales of a product, the amount of advertising would be the independent variable, and the sales of the product would be the dependent variable. Linear regression would help us determine if there is a linear relationship between investment in advertising and sales, and if so, it would allow us to predict future sales based on advertising spending.",
-          "3": "Linear regression is a powerful tool in data analysis and is used in a variety of fields, including economy, social science, medical research and many other disciplines to understand and predict relationships between variables."
+          "0": "Regression is a statistical analysis method used in machine learning to model the linear relationship between an independent variable and a dependent variable, seeking to find the best straight line that fits the data and allows predictions to be made.",
+          "1": "In regression, data is usually represented as scattered points on a Cartesian plane, where the independent variable is placed on the + b) that minimizes the distance between this line and the data points. Once this equation has been obtained, it can be used to make predictions about future values of the dependent variable based on the values of the independent variable.",
+          "2": "For example, if we are analyzing the relationship between the amount of advertising on a website and the sales of a product, the amount of advertising would be the independent variable, and the sales of the product would be the dependent variable. Regression would help us determine if there is a linear relationship between advertising spend and sales, and if so, it would allow us to predict future sales based on advertising spend.",
+          "3": "Regression is a powerful tool in data analysis and is used in a variety of fields, including economics, social science, medical research, and many other disciplines to understand and predict relationships between variables."
         }
       },
       "object-identification": {
         "title": "Object identification",
-        "text-1": "The identification of objects in neuronal networks is a technique used in the field of automatic learning and computer vision to detect and recognize objects in images or videos. It is an important task in image analysis and is used in applications such as faces recognition, real -time objects, the classification of objects in medical images and the detection of objects in autonomous vehicles.",
+        "text-1": "Object identification in neural networks is a technique used in the field of machine learning and computer vision to detect and recognize objects in images or videos. It is an important task in image analysis and is used in applications such as face recognition, real-time object tracking, object classification in medical images, and object detection in autonomous vehicles.",
         "text-2": "The neural networks used for the identification of objects are deep learning models that are trained in data sets labeled. The training process implies providing the neurons network for a large number of images tagged, and adjusting the weights of connections between neurons so that the network can identify objects in new images with high precision.",
         "text-3": "Once the neuronal network has been trained, it is used to identify objects in new images. The network examines the image and, by processing multiple layers, extracts important characteristics that are used to identify objects of interest. Then, the network uses these characteristics to assign a label to each object detected in the image.",
-        "text-4": "In summary, the identification of objects in neural networks is an important technique in computer vision and automatic learning used to detect and recognize objects in images and videos. It is based on the use of deep neural networks trained in data sets labeled to identify and classify objects in new images with high precision."
+        "text-4": "In summary, object identification in neural networks is an important technique in computer vision and machine learning that is used to detect and recognize objects in images and videos. It is based on the use of deep neural networks trained on labeled data sets to identify and classify objects in new images with high accuracy."
       },
       "image-classification": {
         "title": "Image classification",
-        "text-1": "Image classification is a technique used in neural networks to classify images in different categories or labels. The objective of an image classifier is to take an input image and predict what class it belongs, based on a set of predefined categories or labels.",
+        "text-1": "Image classification is a technique used in neural networks to classify images into different categories or labels. The goal of an image classifier is to take an input image and predict which class it belongs to, based on a set of predefined categories or labels.",
         "text-2": "In deep learning, image classifiers are based on convolutional neural networks (CNN), which are a specialized architecture to process images. These neuronal networks have multiple layers and convolution operations that allow them to extract important characteristics from the images, such as edges, shapes and textures.",
         "text-3": "To train an image classifier, a set of labeled data is used that contains images and their respective class labels. Then, the neuronal network is trained using this dataset to learn to identify patterns in the images and associate them with the corresponding class labels.",
         "text-4": "Once the neuronal network has been trained, it can be used to classify new images in different categories. The image classifier examines the input image and processes it through the neuronal network to extract important characteristics and predict what class the image belongs.",
-        "text-5": "In summary, the classification of images in neuronal networks is a technique that uses convolutional neural networks to classify images into different categories or labels. It is based on the use of a data set labeled to train the neuronal network and the extraction of important characteristics of the images to predict which class a new entrance image belongs."
+        "text-5": "In short, image classification in neural networks is a technique that uses convolutional neural networks to classify images into different categories or labels. It is based on using a set of labeled data to train the neural network and extracting important features from the images to predict which class a new input image belongs to."
       },
       "activation-functions": {
         "title": "Activation functions",
@@ -2031,12 +2200,12 @@
       },
       "optimization-functions": {
         "title": "Optimization functions",
-        "text-1": "An optimization function is a mathematical technique used to minimize or maximize an objective function. In the context of automatic learning, the target functions are usually error functions that measure the discrepancy between the neuronal network output and the desired output values for a given training dataset.",
+        "text-1": "An optimization function is a mathematical technique used to minimize or maximize an objective function. In the context of machine learning, the target functions are usually error functions that measure the discrepancy between the neuronal network output and the desired output values for a given training dataset.",
         "text-2": "The optimization function adjusts the parameters of the neuronal network to minimize the objective function and, therefore, improve its ability to make precise predictions in new entry data. Common examples of optimization functions are the descent of the stochastic gradient and the Adam algorithm.",
         "table": {
           "sgd": {
             "references": "Stochastic gradient descent\n (Autonomous Technological Institute of Mexico, 2017)",
-            "description": "The descent of the gradient is an algorithm that estimates where a function generates its lower values. In the event that the automatic learning model is large -scale this calculation can be very expensive.\n                          Because of this, the descent of the stochastic gradient that uses a constant and therefore the number of gradients to be calculated arises."
+            "description": "The descent of the gradient is an algorithm that estimates where a function generates its lower values. In the event that the machine learning model is large -scale this calculation can be very expensive.\n                          Because of this, the descent of the stochastic gradient that uses a constant and therefore the number of gradients to be calculated arises."
           },
           "momentum": {
             "references": "-",
@@ -2059,21 +2228,21 @@
             "description": "It is a combination of <i> AdaGrad </i> and <i> RMSProp </i>. A parameter training factor is maintained and <i> RMSProp </i> is calculated, in addition each training factor is affected by the <i> momentum </i> of the gradient."
           },
           "adamax": {
-            "description": "It combines techniques of <i> Momentum </i> and adaptation of learning to accelerate convergence during neural networks. Automatically adjust the learning rate and use a gradient scaling to avoid divergence problems."
+            "description": "It combines momentum and adaptive learning techniques to accelerate convergence during neural network training. It automatically adjusts the learning rate and uses gradient scaling to avoid divergence issues."
           }
         }
       },
       "loss-functions": {
         "title": "Loss functions",
         "text": {
-          "0": "In automatic learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
-          "1": "The objective of an automatic learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
+          "0": "In machine learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
+          "1": "The objective of an machine learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
           "2": "In tensorflow.js there are different loss functions and the application of each of them depends on the type of problem we want to face. Some examples are shown below:"
         },
         "table": {
           "AbsoluteDifference": {
             "references": "Absolute difference\n (Privolima, s.f.)",
-            "description": "Calculate the distance to the target."
+            "description": "Calculates the distance to the target in absolute value."
           },
           "ComputeWeightedLoss": {
             "references": "Weighted average\n (Privolima, s.f.)",
@@ -2089,7 +2258,7 @@
           },
           "HuberLoss": {
             "references": "(Huber loss)",
-            "description": "Calculate the loss caused by the estimate procedure."
+            "description": "Calculate the loss caused by the estimation procedure."
           },
           "LogLoss": {
             "references": "Logarithmic loss\n (Shen, 2005)",
@@ -2142,7 +2311,7 @@
           },
           "MeanAbsoluteError": {
             "references": "Absolute half error",
-            "description": "In statistics, it is a measure of the difference between two continuous variables, applied to automatic learning models These variables are labels and predictions."
+            "description": "In statistics, it is a measure of the difference between two continuous variables, applied to machine learning models These variables are labels and predictions."
           },
           "MeanAbsolutePercentageError": {
             "references": "Average absolute error percentage",
@@ -2185,7 +2354,8 @@
       "download": "Download",
       "features": "Features",
       "open-visor": "Open visor",
-      "close-visor": "Close visor"
+      "close-visor": "Close visor",
+      "history": "Results"
     }
   },
   "hr": {
@@ -2199,7 +2369,7 @@
     "tasks": "Tasks",
     "00-tabular-classification": "Tabular Classification",
     "tutorial-00-tabular-classification": "Train a model for Tabular classification",
-    "01-linear-regression": "Linear Regression",
+    "01-regression": "Regression",
     "02-object-detection": "Object Detection",
     "03-image-classification": "Image Classification",
     "optimization-function": "Optimization functions",

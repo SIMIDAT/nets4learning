@@ -5,7 +5,7 @@ import Plot from 'react-plotly.js'
 import math from '@utils/math'
 import { pearsonCorrelation } from '@utils/stadistics'
 
-export default function DataFrameCorrelationMatrix ({ dataframe }) {
+export default function DataFrameCorrelationMatrix({ dataframe }) {
 
   const [correlationMatrix, setCorrelationMatrix] = useState({
     xValues    : [],
@@ -37,12 +37,12 @@ export default function DataFrameCorrelationMatrix ({ dataframe }) {
         let currentValue = _matrix[i][j]
         const textColor = (currentValue <= 0.0) ? 'white' : 'black'
         let result = {
-          xref     : 'x1',
-          yref     : 'y1',
-          x        : column_name_x,
-          y        : column_name_y,
-          text     : (_matrix[i][j].toFixed(4)).toString(),
-          font     : {
+          xref: 'x1',
+          yref: 'y1',
+          x   : column_name_x,
+          y   : column_name_y,
+          text: (_matrix[i][j].toFixed(4)).toString(),
+          font: {
             family: 'Arial',
             size  : 12,
             color : textColor
@@ -63,38 +63,35 @@ export default function DataFrameCorrelationMatrix ({ dataframe }) {
   }, [dataframe, dataframeID])
 
   return <>
-    {dataframe.columns.length > 1 &&
-      <>
-        <Plot ref={refPlotly}
-              data={[{
-                x        : correlationMatrix.xValues,
-                y        : correlationMatrix.yValues,
-                z        : correlationMatrix.zValues,
-                type     : 'heatmap',
-                showscale: true
-              }]}
-              useResizeHandler={true}
-              style={{ width: '100%', height: '100%' }}
-              layout={{
-                title      : t('dataframe.correlation-matrix.plot'),
-                autoSize   : true,
-                height     : undefined,
-                width      : undefined,
-                xaxis      : {
-                  ticks     : '',
-                  ticksuffix: ' ',
-                  side      : 'top',
-                  autosize  : true
-                },
-                yaxis      : {
-                  ticks     : '',
-                  ticksuffix: ' ',
-                  autosize  : true
-                },
-                annotations: correlationMatrix.annotations
-              }}
-        />
-      </>
-    }
+    <Plot ref={refPlotly}
+      data={[{
+        x        : correlationMatrix.xValues,
+        y        : correlationMatrix.yValues,
+        z        : correlationMatrix.zValues,
+        type     : 'heatmap',
+        showscale: true
+      }]}
+      useResizeHandler={true}
+      style={{ width: '100%', height: '100%' }}
+      layout={{
+        title   : t('dataframe.correlation-matrix.plot'),
+        autoSize: true,
+        height  : undefined,
+        width   : undefined,
+        xaxis   : {
+          ticks     : '',
+          ticksuffix: ' ',
+          side      : 'top',
+          autosize  : true
+        },
+        yaxis: {
+          ticks     : '',
+          ticksuffix: ' ',
+          autosize  : true
+        },
+        annotations: correlationMatrix.annotations
+      }}
+    />
   </>
+
 }

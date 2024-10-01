@@ -7,7 +7,7 @@ import { DataFramePlotProvider } from '@components/_context/DataFramePlotContext
 describe('DataFramePlot', () => {
   test('renders DataFramePlot', () => {
     const dataframe = new dfd.DataFrame()
-    const { getByText, debug } = render(
+    const { getByText } = render(
       <DataFramePlotProvider>
         <DataFramePlot dataframe={dataframe} />
       </DataFramePlotProvider>

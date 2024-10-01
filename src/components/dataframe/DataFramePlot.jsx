@@ -2,11 +2,13 @@ import '@styles/ScrollBar.css'
 import React, { useCallback, useContext, useEffect, useId, useState } from 'react'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
+import * as _dfd from 'danfojs'
 
 import {
   lineChartsValidConfig,
   pieChartsValidConfig,
-  timeSeriesPlotsValidConfig, violinPlotsValidConfig,
+  timeSeriesPlotsValidConfig, 
+  violinPlotsValidConfig,
 } from '@core/dataframe/DataFrameUtils'
 
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
@@ -16,7 +18,18 @@ import DataFramePlotContext from '../_context/DataFramePlotContext'
 import { E_PLOTS, LIST_PLOTS } from '../_context/CONSTANTS'
 import { VERBOSE } from '@/CONSTANTS'
 
-export default function DataFramePlot ({ dataframe }) {
+/**
+ * @typedef DataFramePlotProps_t
+ * @property {_dfd.DataFrame} dataframe
+ * @property {boolean} isDataFrameProcessed
+ */
+
+/**
+ * 
+ * @param {DataFramePlotProps_t} props 
+ * @returns 
+ */
+export default function DataFramePlot ({ dataframe, isDataFrameProcessed = false }) {
 
   const {
     dataFrameLocal,
@@ -31,8 +44,9 @@ export default function DataFramePlot ({ dataframe }) {
 
   const { t } = useTranslation()
   const [listWarning, setListWarning] = useState([])
+  const [showDataframe, setShowDataframe] = useState(false)
 
-  const dataframe_plot_id = useId()
+  const dataframe_plot_ID = useId()
 
   const init = useCallback(() => {
     // Funciones para inicializar TIME_SERIES_PLOTS
@@ -93,7 +107,15 @@ export default function DataFramePlot ({ dataframe }) {
     })
   }, [dataFrameLocal, setDataframePlotConfig])
 
+  useEffect(() => {
+    setShowDataframe(isDataFrameProcessed)
+  }, [setShowDataframe, isDataFrameProcessed])
+
   const updateUI = useCallback(() => {
+    if (!showDataframe){
+      if (VERBOSE) console.debug('!showDataFrame')
+      return 
+    }
     try {
       const layout = {
         title: dataframePlotConfig.LAYOUT.title,
@@ -101,45 +123,48 @@ export default function DataFramePlot ({ dataframe }) {
         yaxis: { title: dataframePlotConfig.LAYOUT.y_axis },
       }
       const list_warnings = []
-      if (dataframePlotConfig.COLUMNS !== [] && dataFrameLocal.columns.length > 0) {
+      if (dataframePlotConfig.COLUMNS.length !== 0 && dataFrameLocal.columns.length > 0) {
         const columnsToShow = dataframePlotConfig.COLUMNS.filter(value => dataFrameLocal.columns.includes(value))
         let sub_df = dataFrameLocal.loc({ columns: columnsToShow })
         switch (dataframePlotConfig.PLOT_ENABLE) {
           case E_PLOTS.BAR_CHARTS:
             // TODO
-            sub_df.plot(dataframe_plot_id).bar({ layout })
+            sub_df.plot(dataframe_plot_ID).bar({ layout })
             break
           case E_PLOTS.BOX_PLOTS:
-            sub_df.plot(dataframe_plot_id).box({ layout })
+            sub_df.plot(dataframe_plot_ID).box({ layout })
             break
           case E_PLOTS.HISTOGRAMS:
-            sub_df.plot(dataframe_plot_id).hist({ layout })
+            sub_df.plot(dataframe_plot_ID).hist({ layout })
             break
           case E_PLOTS.LINE_CHARTS:
             const { isValidConfig_LineCharts, config_LineCharts } = lineChartsValidConfig(dataFrameLocal, dataframePlotConfig, columnsToShow)
             if (isValidConfig_LineCharts) {
-              sub_df.plot(dataframe_plot_id).line({ layout })
+              sub_df.plot(dataframe_plot_ID).line({ layout })
             } else {
               console.error('Error, option not valid E_PLOTS.LINE_CHARTS', { config_LineCharts })
             }
             break
           case E_PLOTS.PIE_CHARTS:
-            const { isValidConfig_PieCharts, config_PieCharts } = pieChartsValidConfig(dataFrameLocal, dataframePlotConfig, columnsToShow)
+            const { isValidConfig_PieCharts, config_PieCharts } = pieChartsValidConfig(dataFrameLocal, dataframePlotConfig)
             if (isValidConfig_PieCharts) {
-              sub_df.plot(dataframe_plot_id).pie({ layout, config: config_PieCharts })
+              sub_df.plot(dataframe_plot_ID).pie({ layout, config: config_PieCharts })
             } else {
               console.error('Error, option not valid E_PLOTS.PIE_CHARTS', { config_PieCharts })
             }
             break
           case E_PLOTS.SCATTER_PLOTS:
-            sub_df.plot(dataframe_plot_id).scatter({ layout })
+            sub_df.plot(dataframe_plot_ID).scatter({ 
+              layout,
+              config: { x: dataframePlotConfig.SCATTER_PLOTS.config.x, y: dataframePlotConfig.SCATTER_PLOTS.config.y }
+            })
             break
           case E_PLOTS.TIME_SERIES_PLOTS:
             // TODO
             const { isValidConfig_TimeSeries, config_TimeSeries, index } = timeSeriesPlotsValidConfig(dataFrameLocal, dataframePlotConfig)
             if (isValidConfig_TimeSeries) {
               const sub_sub_df = sub_df.setIndex(index)
-              sub_sub_df.plot(dataframe_plot_id).line({ layout })
+              sub_sub_df.plot(dataframe_plot_ID).line({ layout })
             } else {
               list_warnings.push('dataframe-plot.time-series.warning.index')
               console.error('Error, option not valid E_PLOTS.TIME_SERIES_PLOTS', { config_TimeSeries, index })
@@ -149,7 +174,7 @@ export default function DataFramePlot ({ dataframe }) {
             const { isValidConfig_ViolinPlots, config_ViolinPlots } = violinPlotsValidConfig(dataFrameLocal, dataframePlotConfig)
             if (isValidConfig_ViolinPlots) {
               sub_df = dataFrameLocal.loc({ columns: config_ViolinPlots.columns })
-              sub_df.plot(dataframe_plot_id).violin({ layout })
+              sub_df.plot(dataframe_plot_ID).violin({ layout })
             } else {
               list_warnings.push('dataframe-plot.violin-plots.warning.index')
               console.log('Error, option not valid E_PLOTS.VIOLIN_PLOTS', { isValidConfig_ViolinPlots, config_ViolinPlots })
@@ -172,8 +197,12 @@ export default function DataFramePlot ({ dataframe }) {
     dataframePlotConfig.TIME_SERIES_PLOTS.config.index,
     dataframePlotConfig.PIE_CHARTS.config.labels,
     dataFrameLocal,
-    dataframe_plot_id,
+    dataframe_plot_ID,
+    showDataframe
   ])
+
+  useEffect(()=>{
+  }, [])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect [ dataframe, setDataFrameLocal ]')
@@ -183,12 +212,12 @@ export default function DataFramePlot ({ dataframe }) {
   }, [dataframe, setDataFrameLocal])
 
   useEffect(() => {
-    console.debug('useEffect [ init() ]')
+    if (VERBOSE) console.debug('useEffect [ init() ]')
     init()
   }, [init])
 
   useEffect(() => {
-    console.debug('useEffect [ updateUI() ]')
+    if (VERBOSE) console.debug('useEffect [ updateUI() ]')
     updateUI()
   }, [updateUI])
 
@@ -199,30 +228,21 @@ export default function DataFramePlot ({ dataframe }) {
     }))
   }
 
-  const DFPListWarnings = () => {
-    if (listWarning === []) return <></>
-    return <>
-      <ul className={'list-group'}>
-        {listWarning.map((value, index) => {
-          return <li className={'list-group-item list-group-item-warning'} key={index}>{t(value)}</li>
-        })}
-      </ul>
-    </>
-  }
-
   if (VERBOSE) console.debug('render DataFramePlot')
   return <>
-    <Card>
+    <Card className={'mt-3'}>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h2><Trans i18nKey={'dataframe-plot.title'} /></h2>
         <div className={'d-flex'}>
           <Form.Group controlId={'plot'}>
-            <Form.Select onChange={(e) => handleChange_Plot(e)}
+            <Form.Select size={'sm'}
                          aria-label={'plot'}
-                         size={'sm'}
-                         value={dataframePlotConfig.PLOT_ENABLE}>
+                         disabled={!showDataframe}
+                         value={dataframePlotConfig.PLOT_ENABLE}
+                         onChange={(e) => handleChange_Plot(e)} >
               <>
-                {dataframePlotConfig.LIST_OF_AVAILABLE_PLOTS
+                {dataframePlotConfig
+                  .LIST_OF_AVAILABLE_PLOTS
                   .map((value, index) =>
                     (<option key={'option_' + index} value={value}><Trans i18nKey={`dataframe-plot.${value}.title`} /></option>),
                   )}
@@ -233,12 +253,16 @@ export default function DataFramePlot ({ dataframe }) {
           <Button variant={'outline-primary'}
                   size={'sm'}
                   className={'ms-3'}
+                  aria-label={'description'}
+                  disabled={!showDataframe}
                   onClick={() => setShowOptions(true)}>
             <Trans i18nKey={'dataframe-plot.buttons.configuration'} />
           </Button>
           <Button variant={'outline-primary'}
                   size={'sm'}
                   className={'ms-3'}
+                  aria-label={'description'}
+                  disabled={!showDataframe}
                   onClick={() => setShowDescription(true)}>
             <Trans i18nKey={'dataframe-plot.buttons.description'} />
           </Button>
@@ -247,26 +271,30 @@ export default function DataFramePlot ({ dataframe }) {
       <Card.Body>
         <Row>
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
-            {dataFrameLocal.columns.length === 0 &&
-              <WaitingPlaceholder title={t('Waiting')} />
+            {!showDataframe &&
+              <WaitingPlaceholder i18nKey_title={'Waiting'} />
             }
-            {dataFrameLocal.columns.length > 0 &&
-              <div id={dataframe_plot_id}></div>
+            {showDataframe &&
+              <div id={dataframe_plot_ID}></div>
             }
           </Col>
         </Row>
       </Card.Body>
 
-      {listWarning.length !== 0 &&
+      {listWarning.length !== 0 && <>
         <Card.Footer>
-          {/*<p className={'mb-2'}><Trans i18nKey={'dataframe-plot.info'} /></p>*/}
-          <DFPListWarnings />
-        </Card.Footer>}
+          <ul className={'list-group'}>
+            {listWarning.map((value, index) => {
+              return <li className={'list-group-item list-group-item-warning'} key={index}>{t(value)}</li>
+            })}
+          </ul>
+        </Card.Footer>
+      </>}
     </Card>
 
 
     {/*<DebugJSON obj={dataframePlotConfig} />*/}
     <DataFramePlotModalDescription />
-    <DataFramePlotModalConfiguration />
+    <DataFramePlotModalConfiguration updateUI={updateUI} />
   </>
 }

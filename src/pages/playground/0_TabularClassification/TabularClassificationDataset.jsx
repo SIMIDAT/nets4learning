@@ -1,27 +1,38 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import * as dfd from 'danfojs'
 
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 
+import * as _Types from '@/core/types'
 import { UPLOAD } from '@/DATA_MODEL'
 import alertHelper from '@utils/alertHelper'
 import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
-import { Link } from 'react-router-dom'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
+/**
+ * @typedef {object} PropsTabularClassificationDatasetProps_t
+ * @property {string} dataset
+ * @property {_Types.I_MODEL_TABULAR_CLASSIFICATION_t} iModelInstance
+ * @property {_Types.DatasetProcessed_t[]} datasets
+ * @property {React.Dispatch<React.SetStateAction<_Types.DatasetProcessed_t[]>>} setDatasets
+ * @property {number} datasetIndex
+ * @property {React.Dispatch<React.SetStateAction<number>>} setDatasetIndex
+ */
+
+/**
+ * 
+ * @param {PropsTabularClassificationDatasetProps_t} props 
+ * @returns 
+ */
 export default function TabularClassificationDataset (props) {
   const {
     dataset,
-    /** @type  I_MODEL_TABULAR_CLASSIFICATION*/
     iModelInstance,
-    /*** @type DatasetProcessed_t[] */
     datasets,
-    /** @type React.Dispatch<Array<DatasetProcessed_t>>*/
     setDatasets,
-
-    /** @type React.Dispatch<number> */
     setDatasetIndex,
   } = props
 
@@ -38,18 +49,23 @@ export default function TabularClassificationDataset (props) {
       // la función dataframe.copy() no funciona correctamente
       const D_original = await dfd.readCSV(file_csv)
       const D_processed = await dfd.readCSV(file_csv)
+      /**@type {_Types.DatasetProcessed_t} */
+      const newDataset = {
+        is_dataset_upload   : true,
+        is_dataset_processed: false,
+        path                : '',
+        info                : '',
+        csv                 : '',
+        dataset_transforms  : [],
+        dataframe_original  : D_original,
+        dataframe_processed : D_processed,
+        data_processed      : {}
+      }
       setDatasets((prevState) => {
-        return [...prevState, {
-          is_dataset_upload   : true,
-          is_dataset_processed: false,
-          path                : '',
-          info                : '',
-          csv                 : '',
-          dataset_transforms  : [],
-          dataframe_original  : D_original,
-          dataframe_processed : D_processed,
-          data_processed      : {}
-        }]
+        return [
+          ...prevState, 
+          newDataset
+        ]
       })
       setDatasetIndex((prevState) => prevState + 1)
       await alertHelper.alertSuccess(t('success.file-upload'))
@@ -67,14 +83,15 @@ export default function TabularClassificationDataset (props) {
   if (VERBOSE) console.debug('render TabularClassificationDataset')
   return <>
     {dataset === UPLOAD && <>
-      <DragAndDrop name={'csv'}
+      <DragAndDrop id='drag-zone-tabular-classification'
+                   name={'csv'}
                    accept={{ 'text/csv': ['.csv'] }}
                    text={t('drag-and-drop.csv')}
                    labelFiles={t('drag-and-drop.label-files-one')}
                    function_DropAccepted={handleChange_FileUpload_CSV}
                    function_DropRejected={handleChange_FileUpload_CSV_reject} />
       {datasets.length === 0 && <>
-        <WaitingPlaceholder title={'pages.playground.generator.waiting-for-file'} />
+        <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />
 
         <p className={'text-end text-muted mb-0 pb-0'}>
           <Trans i18nKey={'more-information-in-link'}

@@ -1,0 +1,31 @@
+
+skim_variable              n_missing     complete_rate  mean          sd            p0           p25           p50           p75           p100          hist
+Median_House_Value         0             1              206855.82     115395.62     14999.00     119600.00     179700.00     264725.00     500001.00     ▅▇▅▂▂
+Median_Income              0             1              3.87          1.90          0.50         2.56          3.53          4.74          15.00         ▇▇▁▁▁
+Median_Age                 0             1              28.64         12.59         1.00         18.00         29.00         37.00         52.00         ▃▇▇▇▅
+Tot_Rooms                  0             1              2635.76       2181.62       2.00         1447.75       2127.00       3148.00       39320.00      ▇▁▁▁▁
+Tot_Bedrooms               0             1              537.90        421.25        1.00         295.00        435.00        647.00        6445.00       ▇▁▁▁▁
+Population                 0             1              1425.48       1132.46       3.00         787.00        1166.00       1725.00       35682.00      ▇▁▁▁▁
+Households                 0             1              499.54        382.33        1.00         280.00        409.00        605.00        6082.00       ▇▁▁▁▁
+Latitude                   0             1              35.63         2.14          32.54        33.93         34.26         37.71         41.95         ▇▁▅▂▁
+Longitude                  0             1              -119.57       2.00          124.35       121.80        118.49        118.01        114.31        ▂▆▃▇▁
+Distance_to_coast          0             1              40509.26      49140.04      120.68       9079.76       20522.02      49830.41      333804.69     ▇▁▁▁▁
+Distance_to_LA             0             1              269421.98     247732.45     420.59       32111.25      173667.46     527156.24     1018260.12    ▇▁▅▁▁
+Distance_to_SanDiego       0             1              398164.93     289400.56     484.92       159426.39     214739.83     705795.40     1196919.27    ▇▁▃▃▁
+Distance_to_SanJose        0             1              349187.55     217149.88     569.45       113119.93     459758.88     516946.49     836762.68     ▇▃▆▇▁
+Distance_to_SanFrancisco   0             1              386688.42     250122.19     456.14       117395.48     526546.66     584552.01     903627.66     ▆▂▂▇▁
+
+Median house value: (Median house value) median house value for households within a block (measured in US dollars) [$].
+Median income: (Median Income) median household income for households within a block of houses (measured in tens of thousands of US dollars) [$10k $].
+Median Age: (Median Age) Average age of a house within a block; a lower number is a newer building [years].
+Total Rooms: (Total Rooms) Total number of rooms within a neighborhood.
+Total Bedrooms: (Total Bedrooms) total number of bedrooms within a neighborhood
+Population: Total number of people residing within a block.
+Households: (Households) total number of households, a group of people residing within a household unit, for a neighborhood.
+Latitude:
+Longitude:
+Distance to coast: Distance to nearest coastal point [m].
+Distance to Los Angeles: Distance to downtown Los Angeles [m].
+Distance to San Diego: Distance to the center of San Diego [m].
+Distance to San Jose: Distance to downtown San Jose [m] Distance to San Francisco: Distance to downtown San Francisco [m] Distance to San Francisco: Distance to downtown San Francisco [m
+Distance to San Francisco: Distance to center of San Francisco [m]
