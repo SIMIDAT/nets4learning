@@ -103,7 +103,6 @@ export default function TabularClassificationPredictionForm (props) {
         const column_type = attribute.type
         const column_name = attribute.name
         const column_options = attribute.options
-        console.log({column_type, v: inputDataToPredict[index]})
 
         if(!inputDataToPredict[index]) return 
 

@@ -557,7 +557,8 @@
           "details-3-references": {
             "title": "Referencias",
             "list": {
-              "0": "Conjunto de datos"
+              "0": "Conjunto de datos 1",
+              "1": "Conjunto de datos 2"
             }
           }
         }

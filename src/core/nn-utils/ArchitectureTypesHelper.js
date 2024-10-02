@@ -53,8 +53,8 @@ const TYPE_LOSSES = [
 // tf.metrics.recall
 // tf.metrics.sparseCategoricalAccuracy
 const TYPE_METRICS = [
-  { key: 'binaryAccuracy', label: 'BinaryAccuracy' },
-  { key: 'binaryCrossentropy', label: 'BinaryCrossentropy' },
+  // { key: 'binaryAccuracy', label: 'BinaryAccuracy' },
+  // { key: 'binaryCrossentropy', label: 'BinaryCrossentropy' },
   { key: 'categoricalAccuracy', label: 'CategoricalAccuracy' },
   { key: 'categoricalCrossentropy', label: 'CategoricalCrossentropy' },
   { key: 'cosineProximity', label: 'CosineProximity' },
@@ -62,8 +62,8 @@ const TYPE_METRICS = [
   { key: 'meanAbsolutePercentageError', label: 'MeanAbsolutePercentageError' },
   { key: 'meanSquaredError', label: 'MeanSquaredError' },
   { key: 'precision', label: 'Precision' },
-  { key: 'recall', label: 'Recall' },
-  { key: 'sparseCategoricalAccuracy', label: 'SparseCategoricalAccuracy' },
+  // { key: 'recall', label: 'Recall' },
+  // { key: 'sparseCategoricalAccuracy', label: 'SparseCategoricalAccuracy' },
   { key: 'accuracy', label: 'Accuracy' }
 ]
 

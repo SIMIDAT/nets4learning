@@ -69,8 +69,9 @@ export default function RegressionEditorHyperparameters() {
   }
 
   const handleChange_Metric = (_index, _value) => {
-    params.params_training.list_id_metrics[_index] = _value
-    change_params_training('list_id_metrics', [...params.params_training.list_id_metrics])
+    const new_list_id_metrics = [...params.params_training.list_id_metrics]
+    new_list_id_metrics[_index] = _value
+    change_params_training('list_id_metrics', new_list_id_metrics)
   }
 
   const handlerClick_AddMetric_Start = () => {

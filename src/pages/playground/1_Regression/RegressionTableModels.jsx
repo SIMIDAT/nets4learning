@@ -3,10 +3,10 @@ import { Table, Card, Button, Container, Row, Col, Pagination } from 'react-boot
 import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
-import RegressionContext from '@/context/RegressionContext'
 import { VERBOSE } from '@/CONSTANTS'
 import { parseIDOptimizer, parseLogs, parseLossAndMetric } from '@/core/history/utils'
+import RegressionContext from '@/context/RegressionContext'
+import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 export default function RegressionTableModels({ rowsPerPage = 3 }) {
   const prefix = 'generator.table-models.'

@@ -1,5 +1,6 @@
 const cracoAlias = require('craco-alias')
 const CracoEnvPlugin = require('craco-plugin-env')
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   presets: 'es2017',
@@ -13,6 +14,14 @@ module.exports = {
         test: /face-api\.esm\.js/, 
         type: 'javascript/esm'
       })
+      webpackConfig.optimization = {
+        minimize : true,
+        minimizer: [new TerserPlugin({
+          terserOptions: {
+            keep_fnames: /binaryAccuracy|binaryCrossentropy|categoricalAccuracy|categoricalCrossentropy|cosineProximity|meanAbsoluteError|meanAbsolutePercentageError|meanSquaredError|precision|recall|sparseCategoricalAccuracy/ // Las funciones que quieres proteger
+          }
+        })]
+      }
       return webpackConfig
     },
   },
@@ -38,6 +47,7 @@ module.exports = {
       return jestConfig
     },
   },
+
   plugins: [
     {
       plugin : CracoEnvPlugin,

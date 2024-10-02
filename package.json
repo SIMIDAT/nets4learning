@@ -113,7 +113,8 @@
     "husky": "^8.0.0",
     "jest": "^27.5.1",
     "jest-watch-typeahead": "^2.2.2",
-    "sass": "^1.69.3"
+    "sass": "^1.69.3",
+    "terser-webpack-plugin": "^5.3.10"
   },
   "overrides": {
     "danfojs": {

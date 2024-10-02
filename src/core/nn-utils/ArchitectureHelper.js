@@ -1,6 +1,7 @@
 import * as tfjs from '@tensorflow/tfjs'
 import { isProduction } from '@utils/utils'
 
+tfjs.metrics
 /**
  * tf.train.
  * sgd
@@ -82,17 +83,17 @@ export function createLoss (idLoss, params) {
     'losses-sigmoidCrossEntropy'         : tfjs.losses.sigmoidCrossEntropy,
     'losses-softmaxCrossEntropy'         : tfjs.losses.softmaxCrossEntropy,
     // metrics
-    'metrics-binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
-    'metrics-binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
-    'metrics-categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
-    'metrics-categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
-    'metrics-cosineProximity'            : tfjs.metrics.cosineProximity,
-    'metrics-meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
-    'metrics-meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
-    'metrics-meanSquaredError'           : tfjs.metrics.meanSquaredError,
-    'metrics-precision'                  : tfjs.metrics.precision,
-    'metrics-recall'                     : tfjs.metrics.recall,
-    'metrics-sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
+    'metrics-binaryAccuracy'             : 'binaryAccuracy',
+    'metrics-binaryCrossentropy'         : 'binaryCrossentropy',
+    'metrics-categoricalAccuracy'        : 'categoricalAccuracy',
+    'metrics-categoricalCrossentropy'    : 'categoricalCrossentropy',
+    'metrics-cosineProximity'            : 'cosine',
+    'metrics-meanAbsoluteError'          : 'mae',
+    'metrics-meanAbsolutePercentageError': 'mape',
+    'metrics-meanSquaredError'           : 'mse',
+    'metrics-precision'                  : 'precision',
+    'metrics-recall'                     : 'recall',
+    'metrics-sparseCategoricalAccuracy'  : 'sparseCategoricalAccuracy',
   }
   
   const result = lossAndMetricMap[idLoss]
@@ -108,10 +109,10 @@ export function createLoss (idLoss, params) {
  * 1  => binaryCrossentropy
  * 2  => categoricalAccuracy
  * 3  => categoricalCrossentropy
- * 4  => cosineProximity
- * 5  => meanAbsoluteError
- * 6  => meanAbsolutePercentageError
- * 7  => meanSquaredError
+ * 4  => cosineProximity             ==> cosine
+ * 5  => meanAbsoluteError           ==> mae
+ * 6  => meanAbsolutePercentageError ==> mape
+ * 7  => meanSquaredError            ==> mse
  * 8  => precision
  * 9  => recall
  * 10 => sparseCategoricalAccuracy
@@ -130,25 +131,25 @@ export function createLoss (idLoss, params) {
   const metricMap = {
     'binaryAccuracy'                     : tfjs.metrics.binaryAccuracy,
     'binaryCrossentropy'                 : tfjs.metrics.binaryCrossentropy,
-    'categoricalAccuracy'                : tfjs.metrics.categoricalAccuracy,
-    'categoricalCrossentropy'            : tfjs.metrics.categoricalCrossentropy,
-    'cosineProximity'                    : tfjs.metrics.cosineProximity,
-    'meanAbsoluteError'                  : tfjs.metrics.meanAbsoluteError,
-    'meanAbsolutePercentageError'        : tfjs.metrics.meanAbsolutePercentageError,
-    'meanSquaredError'                   : tfjs.metrics.meanSquaredError,
-    'precision'                          : tfjs.metrics.precision,
+    'categoricalAccuracy'                : 'categoricalAccuracy',
+    'categoricalCrossentropy'            : 'categoricalCrossentropy',
+    'cosineProximity'                    : 'cosine',
+    'meanAbsoluteError'                  : 'mae',
+    'meanAbsolutePercentageError'        : 'mape',
+    'meanSquaredError'                   : 'mse',
+    'precision'                          : 'precision',
     'recall'                             : tfjs.metrics.recall,
     'sparseCategoricalAccuracy'          : tfjs.metrics.sparseCategoricalAccuracy,
     'accuracy'                           : 'accuracy', // Default TensorFlow.js metric
     'metrics-binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
     'metrics-binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
-    'metrics-categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
-    'metrics-categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
-    'metrics-cosineProximity'            : tfjs.metrics.cosineProximity,
-    'metrics-meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
-    'metrics-meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
-    'metrics-meanSquaredError'           : tfjs.metrics.meanSquaredError,
-    'metrics-precision'                  : tfjs.metrics.precision,
+    'metrics-categoricalAccuracy'        : 'categoricalAccuracy',
+    'metrics-categoricalCrossentropy'    : 'categoricalCrossentropy',
+    'metrics-cosineProximity'            : 'cosine',
+    'metrics-meanAbsoluteError'          : 'mae',
+    'metrics-meanAbsolutePercentageError': 'mape',
+    'metrics-meanSquaredError'           : 'mse',
+    'metrics-precision'                  : 'precision',
     'metrics-recall'                     : tfjs.metrics.recall,
     'metrics-sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
     'metrics-accuracy'                   : 'accuracy',
@@ -168,13 +169,13 @@ export function createMetricsList (idMetricsList, params) {
   const metricMap = {
     'binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
     'binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
-    'categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
-    'categoricalCrossentropy'    : tfjs.metrics.categoricalCrossentropy,
-    'cosineProximity'            : tfjs.metrics.cosineProximity,
-    'meanAbsoluteError'          : tfjs.metrics.meanAbsoluteError,
-    'meanAbsolutePercentageError': tfjs.metrics.meanAbsolutePercentageError,
-    'meanSquaredError'           : tfjs.metrics.meanSquaredError,
-    'precision'                  : tfjs.metrics.precision,
+    'categoricalAccuracy'        : 'categoricalAccuracy',
+    'categoricalCrossentropy'    : 'categoricalCrossentropy',
+    'cosineProximity'            : 'cosine',
+    'meanAbsoluteError'          : 'mae',
+    'meanAbsolutePercentageError': 'mape',
+    'meanSquaredError'           : 'mse',
+    'precision'                  : 'precision',
     'recall'                     : tfjs.metrics.recall,
     'sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
     'accuracy'                   : 'accuracy', // Default Tensorflow.js
@@ -187,29 +188,66 @@ export function createMetricsList (idMetricsList, params) {
 
 
 export const FIT_CALLBACKS_METRICS_LABELS = [
+// Always
 'loss',
-'acc',
-'binaryAccuracy',
-'binaryAccuracy',
-'binaryCrossentropy',
-'categoricalAccuracy',
-'categoricalCrossentropy',
-'cosineProximity',
-'meanAbsoluteError',
-'meanAbsolutePercentageError',
-'meanSquaredError',
-'precision',
-'recall',
 'val_loss',
+
+// Function
+'accuracy',
+'val_accuracy',
+// Macro 
+'acc',
 'val_acc',
+
+// TODO
+'binaryAccuracy',
 'val_binaryAccuracy',
+
+// TODO
+'binaryCrossentropy',
 'val_binaryCrossentropy',
+
+// Macro And Function
+'categoricalAccuracy',
 'val_categoricalAccuracy',
+// Macro And Function
+'categoricalCrossentropy',
 'val_categoricalCrossentropy',
+
+// Function
+'cosineProximity',
 'val_cosineProximity',
-'val_meanAbsoluteError',
+// Macro
+'cosine',
+'val_cosine',
+
+// Function
+'meanAbsoluteError', 
+'val_meanAbsoluteError', 
+// Macro
+'mae',
+'val_mae', 
+
+// Function
+'meanAbsolutePercentageError',
 'val_meanAbsolutePercentageError',
+// Macro
+'mape',
+'val_mape',
+
+// Function
+'meanSquaredError',
 'val_meanSquaredError',
+// Macro
+'mse',
+'val_mse',
+
+// Macro And Function
+'precision',
 'val_precision',
+
+// Function
+'recall',
 'val_recall',
+
 ]
