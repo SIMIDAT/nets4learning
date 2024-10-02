@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Card } from 'react-bootstrap'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import DataFrameDescribe from '@components/dataframe/DataFrameDescribe'
@@ -8,7 +8,6 @@ import DataFrameDescribeModalDescription from '@components/dataframe/DataFrameDe
 
 export default function DataFrameDescribeCard({ dataframe, isDataFrameProcessed }) {
 
-  const { t } = useTranslation()
   const [showDataFrameDescriptionModal, setShowDataFrameDescriptionModal] = useState(false)
 
   const handleClick_OpenModal_Describe = () => {

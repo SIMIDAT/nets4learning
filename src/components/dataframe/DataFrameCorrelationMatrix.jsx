@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Plot from 'react-plotly.js'
 
 import math from '@utils/math'
-import { pearsonCorrelation } from '@utils/stadistics'
+import { pearsonCorrelation } from '@utils/statistics'
 
 export default function DataFrameCorrelationMatrix({ dataframe }) {
 

@@ -6,6 +6,7 @@ import * as _tfjs from '@tensorflow/tfjs'
  */
 export const parseIDOptimizer = (id_optimizer) => {
   const trainMap = {
+    // without prefix
     'sgd'           : <>SGD</>,
     'momentum'      : <>Momentum</>,
     'adagrad'       : <>Adagrad</>,
@@ -13,6 +14,7 @@ export const parseIDOptimizer = (id_optimizer) => {
     'adamax'        : <>Adamax</>,
     'adam'          : <>Adam</>,
     'rmsprop'       : <>RMSProp</>,
+    // with prefix
     'train-sgd'     : <>SGD</>,
     'train-momentum': <>Momentum</>,
     'train-adagrad' : <>Adagrad</>,
@@ -24,7 +26,7 @@ export const parseIDOptimizer = (id_optimizer) => {
 
   const result = trainMap[id_optimizer] 
   if (!result) {
-    console.warn('parseIDOptimizer(id_optimizer)')
+    console.warn('parseIDOptimizer(id_optimizer)', { id_optimizer })
     return id_optimizer
   }
   return result
@@ -37,6 +39,7 @@ export const parseIDOptimizer = (id_optimizer) => {
  */
 export const parseLossAndMetric = (id_loss) => {
   const lossAndMetricMap = {
+    'accuracy'                           : <>Accuracy</>,
     // losses
     'losses-absoluteDifference'          : <>AbsoluteDifference</>,
     'losses-computeWeightedLoss'         : <>ComputeWeightedLoss</>,
@@ -48,6 +51,7 @@ export const parseLossAndMetric = (id_loss) => {
     'losses-sigmoidCrossEntropy'         : <>SigmoidCrossEntropy</>,
     'losses-softmaxCrossEntropy'         : <>SoftmaxCrossEntropy</>,
     // metrics
+    'metrics-accuracy'                   : <>Accuracy</>,
     'metrics-binaryAccuracy'             : <>BinaryAccuracy</>,
     'metrics-binaryCrossentropy'         : <>BinaryCrossentropy</>,
     'metrics-categoricalAccuracy'        : <>CategoricalAccuracy</>,
@@ -63,7 +67,7 @@ export const parseLossAndMetric = (id_loss) => {
 
   const result = lossAndMetricMap[id_loss] 
   if (!result) {
-    console.warn('parseLossAndMetric(id_loss)')
+    console.warn('parseLossAndMetric(id_loss)', { id_loss })
     return id_loss
   }
   return result

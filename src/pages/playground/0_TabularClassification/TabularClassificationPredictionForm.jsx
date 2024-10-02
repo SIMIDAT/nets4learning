@@ -103,6 +103,9 @@ export default function TabularClassificationPredictionForm (props) {
         const column_type = attribute.type
         const column_name = attribute.name
         const column_options = attribute.options
+        console.log({column_type, v: inputDataToPredict[index]})
+
+        if(!inputDataToPredict[index]) return 
 
         switch (column_type) {
           case 'int32': {
@@ -165,7 +168,7 @@ export default function TabularClassificationPredictionForm (props) {
             </Col>
           }
           default:
-            console.warn('Error, option not valid', { attribute })
+            // console.warn('Error, option not valid', { attribute })
             return <Col key={'form' + index} className={'mb-3'}>
               <p className={'text-center'}><b>{column_name}</b></p>
               <p className={'text-center'}>{column_type}</p>

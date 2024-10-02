@@ -5,7 +5,7 @@ import N4LMarkdown from '@components/markdown/N4LMarkdown'
 
 export default function N4LMarkdownDownloader ({ file_name, download = true, base = `${process.env.REACT_APP_PATH}/docs/wiki/` }) {
   const { t } = useTranslation()
-  const [data, setData] = useState({})
+  const [data, setData] = useState({file_name: '', file_content: ''})
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
 

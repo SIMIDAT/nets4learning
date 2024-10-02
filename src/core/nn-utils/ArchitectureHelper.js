@@ -1,5 +1,5 @@
-import { isProduction } from '@utils/utils'
 import * as tfjs from '@tensorflow/tfjs'
+import { isProduction } from '@utils/utils'
 
 /**
  * tf.train.
@@ -16,7 +16,7 @@ import * as tfjs from '@tensorflow/tfjs'
  *
  * @param {string} idOptimizer
  * @param {{ learningRate: number, momentum: number }} params
- * @returns {Optimizer_t} optimizador
+ * @returns {Optimizer_t}
  */
 export function createOptimizer (idOptimizer, params) {
   if (!isProduction()) console.debug('>> createOptimizer', { idOptimizer, params })
@@ -139,6 +139,7 @@ export function createLoss (idLoss, params) {
     'precision'                          : tfjs.metrics.precision,
     'recall'                             : tfjs.metrics.recall,
     'sparseCategoricalAccuracy'          : tfjs.metrics.sparseCategoricalAccuracy,
+    'accuracy'                           : 'accuracy', // Default TensorFlow.js metric
     'metrics-binaryAccuracy'             : tfjs.metrics.binaryAccuracy,
     'metrics-binaryCrossentropy'         : tfjs.metrics.binaryCrossentropy,
     'metrics-categoricalAccuracy'        : tfjs.metrics.categoricalAccuracy,
@@ -150,7 +151,7 @@ export function createLoss (idLoss, params) {
     'metrics-precision'                  : tfjs.metrics.precision,
     'metrics-recall'                     : tfjs.metrics.recall,
     'metrics-sparseCategoricalAccuracy'  : tfjs.metrics.sparseCategoricalAccuracy,
-    'accuracy'                           : 'accuracy' // Default TensorFlow.js metric
+    'metrics-accuracy'                   : 'accuracy',
   }
   const addMetric = (metric) => metricMap[metric] || (console.warn('createMetrics()', { metric }), 'accuracy')
 
@@ -186,6 +187,9 @@ export function createMetricsList (idMetricsList, params) {
 
 
 export const FIT_CALLBACKS_METRICS_LABELS = [
+'loss',
+'acc',
+'binaryAccuracy',
 'binaryAccuracy',
 'binaryCrossentropy',
 'categoricalAccuracy',
@@ -196,6 +200,8 @@ export const FIT_CALLBACKS_METRICS_LABELS = [
 'meanSquaredError',
 'precision',
 'recall',
+'val_loss',
+'val_acc',
 'val_binaryAccuracy',
 'val_binaryCrossentropy',
 'val_categoricalAccuracy',

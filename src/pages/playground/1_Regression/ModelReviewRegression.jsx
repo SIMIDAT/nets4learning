@@ -260,8 +260,9 @@ export default function ModelReviewRegression ({ dataset }) {
                                    onChange={handleChange_Instance_Index} >
                         <option value={DEFAULT_SELECTOR_INSTANCE} disabled={true}><Trans i18nKey={'selector-instance'} /></option>
                         {instances.data.map((_value, index) => {
+                          const index_format = index.toString().padStart(3, '0')
                           return <option key={index} value={index}>
-                            <Trans i18nKey={'instance.__index__'} values={{ index: index }} />
+                            <Trans i18nKey={'instance.__index__'} values={{ index: index_format }} />
                           </option>
                         })}
                       </Form.Select>
@@ -274,8 +275,9 @@ export default function ModelReviewRegression ({ dataset }) {
                       >
                         <option value={DEFAULT_SELECTOR_MODEL} disabled={true}><Trans i18nKey={'selector-model'} /></option>
                         {listCustomModels.data.map((_value, index) => {
+                          const index_format = index.toString()
                           return <option key={index} value={index}>
-                            <Trans i18nKey={'model.__index__'} values={{ index: index }} />
+                            <Trans i18nKey={'model.__index__'} values={{ index: index_format }} />
                           </option>
                         })}
                       </Form.Select>

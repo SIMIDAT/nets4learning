@@ -95,9 +95,9 @@ export default function RegressionPrediction() {
                     {Array(listModels.data[listModels.index].dataset_processed.data_processed.dataframe_X.values.length)
                       .fill(0)
                       .map((value, index) => {
+                        const index_format = index.toString().padStart(3, '0')
                         return <option key={index} value={index}>
-                          <Trans i18nKey={prefix + 'instance.__index__'}
-                            values={{ index: index + 1 }} />
+                          <Trans i18nKey={prefix + 'instance.__index__'} values={{ index: index_format }} />
                         </option>
                       })}
                   </>}
@@ -119,9 +119,9 @@ export default function RegressionPrediction() {
                   {listModels
                     .data
                     .map((_, index) => {
+                      const index_format = index.toString()
                       return <option key={index} value={index}>
-                        <Trans i18nKey={'model.__index__'}
-                          values={{ index: index + 1 }} />
+                        <Trans i18nKey={'model.__index__'} values={{ index: index_format }} />
                       </option>
                     })}
                 </>

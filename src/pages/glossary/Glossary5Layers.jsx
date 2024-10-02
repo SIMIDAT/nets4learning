@@ -1,65 +1,97 @@
-import { Accordion, Table } from 'react-bootstrap'
-import { useTranslation } from 'react-i18next'
 import React from 'react'
+import Markdown from 'react-markdown'
+import { Accordion } from 'react-bootstrap'
+import { Trans } from 'react-i18next'
+import N4LDivider from '@/components/divider/N4LDivider'
 
 export default function Glossary5Layers () {
 
-  const { t } = useTranslation()
-
   return <>
     {process.env.REACT_APP_ENVIRONMENT === 'development' && <>
+      <N4LDivider i18nKey={'hr.layers'} />
       <Accordion defaultValue={''} defaultActiveKey={''}>
         <Accordion.Item eventKey={'layers'}>
-          <Accordion.Header><h2>Tipos de capas</h2></Accordion.Header>
+          <Accordion.Header><h2><Trans>Types of layers</Trans></h2></Accordion.Header>
           <Accordion.Body>
-            <Table striped bordered hover responsive={true}>
-              <thead>
-              <tr>
-                <th>{t('pages.glossary.table-head.name')}</th>
-                <th>{t('pages.glossary.table-head.description')}</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <th>Dense</th>
-                <td>Esta función se utiliza para crear capas completamente conectadas, en las que cada salida depende de cada entrada.</td>
-              </tr>
-              <tr>
-                <th>Convolutional</th>
-                <td>Existen tres tipos de capas Convolutional, 1d, 2d y 3d. Estas capas nos permiten crear un núcleo de convolución que se transforma con los datos de entrada sobre el número de dimensiones elegido según la capa.
-                </td>
-              </tr>
-              <tr>
-                <th>Merge</th>
-                <td>Se trata de un conjunto de funciones que definen diferentes operaciones como añadir o concatenar tensores a una capa.</td>
-              </tr>
-              <tr>
-                <th>Normalization</th>
-                <td>Nos permite normalizar la activación de la capa anterior es decir mantiene la activación media cerca de 0 y la desviación estándar de activación cerca de 1.</td>
-              </tr>
-              </tbody>
-            </Table>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey={'normalization'} style={{ display: 'none' }}>
-          <Accordion.Header><h2>Normalización</h2></Accordion.Header>
-          <Accordion.Body>
-            <p>La normalización de datos es un paso importante en el procesamiento de datos para redes neuronales. La normalización se refiere a la transformación de los datos de entrada para que tengan una escala común.</p>
-            <p>La normalización de datos se utiliza en redes neuronales por varias razones:</p>
-            <ol>
-              <li><b>Mejora la estabilidad numérica</b>: Al normalizar los datos, los valores de entrada se escalan a un rango más pequeño y manejable, lo que ayuda a evitar problemas numéricos como la explosión del gradiente.</li>
-              <li><b>Mejora la velocidad de entrenamiento</b>: La normalización de datos puede ayudar a que los algoritmos de aprendizaje automático converjan más rápido, ya que los valores de entrada se encuentran en un rango más
-                pequeño y uniforme, lo que permite que el optimizador pueda ajustar los pesos más fácilmente.
-              </li>
-              <li><b>Mejora la precisión del modelo</b>: La normalización de datos puede ayudar a mejorar la precisión del modelo. En algunos casos, la normalización de datos puede ayudar a reducir la cantidad de ruido en los datos
-                y puede hacer que los patrones en los datos sean más visibles.
-              </li>
-              <li><b>Mejora la generalización del model</b>: La normalización de datos puede ayudar a reducir la varianza y mejorar la generalización del modelo. Al normalizar los datos, se puede hacer que el modelo sea más
-                resistente a la presencia de valores atípicos y variaciones en los datos.
-              </li>
-            </ol>
-            <p>En resumen, normalizar los datos es una buena práctica en el procesamiento de datos para redes neuronales, ya que puede mejorar la estabilidad numérica, la velocidad de entrenamiento, la precisión del modelo y
-              la generalización del modelo.</p>
+            <Markdown>{`
+### Advanced Activation
+
+  tf.layers.elu
+  tf.layers.leakyReLU
+  tf.layers.prelu
+  tf.layers.reLU
+  tf.layers.softmax
+  tf.layers.thresholdedReLU
+
+### Basic
+
+  tf.layers.activation
+  tf.layers.dense
+  tf.layers.dropout
+  tf.layers.embedding
+  tf.layers.flatten
+  tf.layers.permute
+  tf.layers.repeatVector
+  tf.layers.reshape
+  tf.layers.spatialDropout1d
+
+### Convolutional
+
+  tf.layers.conv1d
+  tf.layers.conv2d
+  tf.layers.conv2dTranspose
+  tf.layers.conv3d
+  tf.layers.cropping2D
+  tf.layers.depthwiseConv2d
+  tf.layers.separableConv2d
+  tf.layers.upSampling2d
+
+### Merge
+
+  tf.layers.add
+  tf.layers.average
+  tf.layers.concatenate
+  tf.layers.dot
+  tf.layers.maximum
+  tf.layers.minimum
+  tf.layers.multiply
+
+### Normalization
+  
+  tf.layers.batchNormalization
+  tf.layers.layerNormalization
+
+### Pooling
+
+  tf.layers.averagePooling1d
+  tf.layers.averagePooling2d
+  tf.layers.averagePooling3d
+  tf.layers.globalAveragePooling1d
+  tf.layers.globalAveragePooling2d
+  tf.layers.globalMaxPooling1d
+  tf.layers.globalMaxPooling2d
+  tf.layers.maxPooling1d
+  tf.layers.maxPooling2d
+  tf.layers.maxPooling3d
+
+### Recurrent
+
+  tf.layers.convLstm2d
+  tf.layers.convLstm2dCell
+  tf.layers.gru
+  tf.layers.gruCell
+  tf.layers.lstm
+  tf.layers.lstmCell
+  tf.layers.rnn
+  tf.layers.simpleRNN
+  tf.layers.simpleRNNCell
+  tf.layers.stackedRNNCells
+
+### Wrapper
+
+  tf.layers.bidirectional
+  tf.layers.timeDistributed
+            `}</Markdown>
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

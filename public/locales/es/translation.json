@@ -62,13 +62,15 @@
   "prediction-result": "Resultado",
   "prediction-result-description": "Resultado de la predicción",
   "Validate": "Validación",
+  "Layers": "Capas",
   "Classify": "Clasificación",
+  "Types of layers": "Tipos de capas",
   "equations": {
     "title": "Fórmulas",
-    "title-metrics": "Funciones de métricas",
-    "title-losses": "Funciones de perdida",
-    "title-activation": "Funciones de activación",
-    "title-optimization": "Funciones de optimización",
+    "title-metrics": "Funciones de métricas | Ecuaciones",
+    "title-losses": "Funciones de perdida | Ecuaciones",
+    "title-activation": "Funciones de activación | Ecuaciones",
+    "title-optimization": "Funciones de optimización | Ecuaciones",
     "loss-functions": {
       "huber-loss": {
         "title": "Huber Loss",
@@ -1428,11 +1430,11 @@
         "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
           "1": "Definir el número de capas, sus funciones de activación.",
-          "2": "Definir la tasa de entrenamiento.",
+          "2": "Definir la tasa de aprendizaje.",
           "3": "Definir el número de épocas.",
           "4": "Definir el optimizador.",
           "5": "Definir la función de perdida.",
-          "6": "Definir la métrica para la evaluación."
+          "6": "Definir las funciones de métricas."
         },
         "2-button": "Crear y entrenar un modelo"
       },
@@ -1446,12 +1448,12 @@
         "2-description-2": "Definir las variables independientes, que se utilizarán en el modelo, definir la variable dependiente, que será el valor numérico que se busca predecir.",
         "2-description-3": null,
         "2-description-list": {
-          "1": "Establecer una función de activación o una función lineal para las capas de la regresión.",
-          "2": "Definir el valor de la tasa de aprendizaje.",
+          "1": "Definir el número de capas, sus funciones de activación.",
+          "2": "Definir la tasa de aprendizaje.",
           "3": "Definir el número de épocas.",
-          "4": "Regresión",
-          "5": "Definir la función de perdida",
-          "6": "Defininir la métrica para la evaluación",
+          "4": "Definir el optimizador.",
+          "5": "Definir la función de perdida.",
+          "6": "Definir las funciones de métrica.",
           "title": "Para aplicar la regresión y modelar la relación entre variables, debemos seguir los siguientes pasos:"
         }
       },
@@ -1471,11 +1473,11 @@
         "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
           "1": "Definir el número de capas, sus funciones de activación.",
-          "2": "Definir la tasa de entrenamiento.",
+          "2": "Definir la tasa de aprendizaje",
           "3": "Definir el número de épocas.",
           "4": "Definir el optimizador.",
           "5": "Definir la función de perdida.",
-          "6": "Definir la métrica para la evaluación."
+          "6": "Definir las funciones de métricas"
         },
         "2-button": "Crear y entrenar un modelo"
       }
@@ -2376,6 +2378,7 @@
     "activation-functions": "Funciones de activación",
     "loss-functions": "Funciones de pérdida",
     "metric-function": "Funciones de métrica",
+    "layers": "Capas",
     "process-dataset": "Procesamiento del conjunto de datos",
     "project": "Proyecto",
     "add-model-dataset": "Añadir modelo al proyecto",

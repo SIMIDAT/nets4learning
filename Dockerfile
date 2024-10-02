@@ -13,8 +13,8 @@ COPY . /usr/src/app
 ARG ARG_BUILD
 ENV ARG_BUILD=${ARG_BUILD}
 
-RUN npm install
-RUN npm run build:${ARG_BUILD}
+# RUN npm install
+# RUN npm run build:${ARG_BUILD}
 
 EXPOSE 3000
 

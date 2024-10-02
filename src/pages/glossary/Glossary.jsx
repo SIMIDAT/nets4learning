@@ -3,11 +3,12 @@ import React from 'react'
 import { Accordion, Col, Container, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
+import { VERBOSE } from '@/CONSTANTS'
 import Glossary1Optimizers from './Glossary1Optimizers'
 import Glossary2ActivationFunctions from './Glossary2ActivationFunctions'
 import Glossary3LossFunctions from './Glossary3LossFunctions'
 import Glossary4MetricFunctions from './Glossary4MetricFunctions'
-import { VERBOSE } from '@/CONSTANTS'
+import Glossary5Layers from './Glossary5Layers'
 import N4LDivider from '@components/divider/N4LDivider'
 import GlossaryEditor from '@pages/glossary/GlossaryEditor'
 
@@ -26,7 +27,7 @@ export default function Glossary () {
         </Row>
 
         {/* INFORMACIÓN */}
-        <Row className={'mt-3'}>
+        <Row>
           <Col>
             <N4LDivider i18nKey={'hr.tasks'} />
 
@@ -92,7 +93,7 @@ export default function Glossary () {
             <Glossary4MetricFunctions />
 
             {/* Layers */}
-            {/*<Glossary5Layers />*/}
+            <Glossary5Layers />
           </Col>
         </Row>
       </Container>

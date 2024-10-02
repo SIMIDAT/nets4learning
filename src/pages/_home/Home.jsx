@@ -40,12 +40,8 @@ export default function Home () {
                 <h2><Trans i18nKey={'pages.index.tabular-classification.1-title'} t={t} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.tabular-classification.1-description-1'} />
-                </Card.Text>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.tabular-classification.1-description-2'} />
-                </Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.tabular-classification.1-description-1'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.tabular-classification.1-description-2'} /></Card.Text>
                 <div className="d-flex gap-2 justify-content-center">
                   <Button onClick={() => handleClick_TrainEdit(SELECTOR.MODEL)}>
                     <Trans i18nKey={'pages.index.tabular-classification.1-button'} />
@@ -59,12 +55,8 @@ export default function Home () {
                 <h2><Trans i18nKey={'pages.index.tabular-classification.2-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.tabular-classification.2-description-1'} />
-                </Card.Text>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.tabular-classification.2-description-2'} />
-                </Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.tabular-classification.2-description-1'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.tabular-classification.2-description-2'} /></Card.Text>
                 <Row>
                   <Col>
                     <ul>
@@ -154,12 +146,8 @@ export default function Home () {
                 <h2><Trans i18nKey={'pages.index.object-detection.1-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.object-detection.1-description-1'} />
-                </Card.Text>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.object-detection.1-description-2'} />
-                </Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.object-detection.1-description-1'} /></Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.object-detection.1-description-2'} /></Card.Text>
                 <div className="d-flex gap-2 justify-content-center">
                   <Button onClick={() => handleClick_TrainEdit(SELECTOR.MODEL)}>
                     <Trans i18nKey={'pages.index.object-detection.1-button'} />
@@ -177,9 +165,7 @@ export default function Home () {
                 <h2><Trans i18nKey={'pages.index.image-classification.1-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.image-classification.1-description-1'} />
-                </Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.image-classification.1-description-1'} /></Card.Text>
                 <div className="d-flex gap-2 justify-content-center">
                   <Button onClick={() => handleClick_TrainEdit(SELECTOR.MODEL)}>
                     <Trans i18nKey={'pages.index.image-classification.1-button'} />
@@ -187,16 +173,28 @@ export default function Home () {
                 </div>
               </Card.Body>
             </Card>
-            
-          {process.env.REACT_APP_SHOW_NEW_FEATURE === 'true' &&<>
             <Card className={'mt-3 border-info'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.image-classification.2-title'} /></h2>
               </Card.Header>
               <Card.Body>
-                <Card.Text>
-                  <Trans i18nKey={'pages.index.image-classification.2-description-1'} />
-                </Card.Text>
+                <Card.Text><Trans i18nKey={'pages.index.image-classification.2-description-1'} /></Card.Text>
+                <Row>
+                  <Col>
+                    <ul>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.1'} /></li>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.2'} /></li>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.3'} /></li>
+                    </ul>
+                  </Col>
+                  <Col>
+                    <ul>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.4'} /></li>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.5'} /></li>
+                      <li><Trans i18nKey={'pages.index.image-classification.2-description-list.6'} /></li>
+                    </ul>
+                  </Col>
+                </Row>
                 <div className="d-flex gap-2 justify-content-center">
                   <Button onClick={() => handleClick_TrainEdit(SELECTOR.DATASET)}>
                     <Trans i18nKey={'pages.index.image-classification.2-button'} />
@@ -204,7 +202,6 @@ export default function Home () {
                 </div>
               </Card.Body>
             </Card>
-          </>}
           </>
         )
       default:
