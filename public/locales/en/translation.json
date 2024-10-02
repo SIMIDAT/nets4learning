@@ -902,7 +902,7 @@
           "button": "Webcam"
         },
         "process-image": {
-          "title": "Images processing",
+          "title": "Image processing",
           "sub-title": "Upload Image"
         }
       },
@@ -1423,8 +1423,8 @@
         "1-description-1": "Classification is a task to determine the class to which an element (dependent variable) belongs from its characteristics (independent variables).",
         "1-description-2": "It is a predictive task that has a discrete variable whose values are the different classes to which the element to be classified can belong.",
         "1-button": "Pre-trained models",
-        "2-title": "Design, create and edit an architecture network",
-        "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
+        "2-title": "Design, create and edit an network architecture",
+        "2-description-1": "Through this tool we can create a neuronal network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
@@ -1438,7 +1438,7 @@
       },
       "regression": {
         "1-title": "Regression",
-        "2-title": "Design, create, and edit an architecture to calculate a regression",
+        "2-title": "Design, create and edit an architecture",
         "1-description-1": "Regression is a task to determine a specific numerical value (dependent variable) from its characteristics (independent variables).",
         "1-description-2": "It is a predictive task that has a continuous variable as its output, where the aim is to find a straight line that best fits the data and allows predicting the numerical value of the dependent variable based on the independent variables.",
         "1-button": "Pre-trained models",
@@ -1466,8 +1466,8 @@
         "1-title": "Image classification",
         "1-description-1": "The classification of images in the same way that the classical classification helps us to determine the class to which the dependent belongs according to one or more independent variables.",
         "1-button": "Pre-trained models",
-        "2-title": "Design, create and edit an architecture network for classifying images.",
-        "2-description-1": "Through this tool we can create a neuronal network to classify multi-label data.",
+        "2-title": "Design, create and edit an network architecture",
+        "2-description-1": "Through this tool we can create a neuronal network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
@@ -1543,7 +1543,7 @@
             "title": "Model Generator Manual",
             "details-edit-layers": {
               "title": "Editor of the Layers",
-              "text-0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
+              "text-0": "You can edit the layers of the neural network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
               "list": {
                 "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
                 "1": "<b>Activation function</b>: <br /> The activation function of a neuron refers to the mathematical function that calculates its output. We can edit the activation function of the neurons of each layer."
@@ -1564,11 +1564,11 @@
             "details-hyper-parameters-info": {
               "title": "Hyperparameters information",
               "list": {
-                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
-                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
-                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
-                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
-                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neural network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neural network after training. This dataset is not used in the training of the neural network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neural network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neural network predictions and the real outputs. It is used to optimize the neural network during training and there are different loss functions, such as cross entropy and middle quadratic error."
               }
             },
             "details-create-and-train-models": {
@@ -1745,7 +1745,7 @@
             "details-edit-layers": {
               "title": "Editor of the Layers",
               "text": {
-                "0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end."
+                "0": "You can edit the layers of the neural network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end."
               },
               "list": {
                 "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
@@ -1769,11 +1769,11 @@
             "details-hyper-parameters-info": {
               "title": "Hyperparameters information",
               "list": {
-                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
-                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
-                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
-                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
-                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neural network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neural network after training. This dataset is not used in the training of the neural network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neural network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neural network predictions and the real outputs. It is used to optimize the neural network during training and there are different loss functions, such as cross entropy and middle quadratic error."
               }
             },
             "details-create-and-train-models": {
@@ -1839,7 +1839,7 @@
             "title": "Model Generator Manual",
             "details-edit-layers": {
               "title": "Editor of the Layers",
-              "text-0": "You can edit the layers of the neuronal network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
+              "text-0": "You can edit the layers of the neural network, you can add as many as you want by pressing the \"Add layer\" button at the start or at the end.",
               "list": {
                 "0": "<b>Layer neurons</b>: <br /> Each neuron in a layer has a set of associated weights that weigh its output value. <br /> We can edit the number of neurons in the layer.",
                 "1": "<b>Activation function</b>: <br /> The activation function of a neuron refers to the mathematical function that calculates its output. We can edit the activation function of the neurons of each layer."
@@ -1874,11 +1874,11 @@
             "details-hyper-parameters-info": {
               "title": "Hyperparameters information",
               "list": {
-                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neuronal network should be updated depending on the error calculated during training.",
-                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
-                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neuronal network after training. This dataset is not used in the training of the neuronal network and is used to measure the network capacity to generalize new data.",
-                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neuronal network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
-                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neuronal network predictions and the real outputs. It is used to optimize the neuronal network during training and there are different loss functions, such as cross entropy and middle quadratic error."
+                "0": "<b>Learning rate</b>: <br /> The learning rate is a parameter that determines how much the weights of the neural network should be updated depending on the error calculated during training.",
+                "1": "<b>Number of epochs</b>: <br /> The number of epochs refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+                "2": "<b>Test set size</b>: <br /> The size of the test set refers to the amount of data used to evaluate the performance of the neural network after training. This dataset is not used in the training of the neural network and is used to measure the network capacity to generalize new data.",
+                "3": "<b>Optimizer</b>: <br /> The optimizer is an algorithm used to update the weights of the neural network depending on the error calculated during training. Some examples of optimizers are the descent of the stochastic gradient (SGD), the ADAM and the ADAM.",
+                "4": "<b>Loss function</b>: <br /> The loss function is a measure of the error between the neural network predictions and the real outputs. It is used to optimize the neural network during training and there are different loss functions, such as cross entropy and middle quadratic error."
               }
             },
             "details-create-and-train-models": {
@@ -1939,19 +1939,19 @@
         "list": {
           "0": {
             "title": "Practical applications",
-            "description": "Neuronal networks are used in a wide variety of applications, from voice recognition and computer vision to data analysis and results prediction. Learning about neural networks can help professionals develop skills that can be applied in fields such as medicine, engineering, data science, marketing and many others."
+            "description": "Neural networks are used in a wide variety of applications, from voice recognition and computer vision to data analysis and results prediction. Learning about neural networks can help professionals develop skills that can be applied in fields such as medicine, engineering, data science, marketing and many others."
           },
           "1": {
             "title": "Complex problem solution",
-            "description": "Neuronal networks are useful to solve complex problems that have multiple variables and non -linear relationships. By learning neural networks, professionals can develop more effective solutions for these types of problems and improve the precision and efficiency of their analysis."
+            "description": "Neural networks are useful to solve complex problems that have multiple variables and non -linear relationships. By learning neural networks, professionals can develop more effective solutions for these types of problems and improve the precision and efficiency of their analysis."
           },
           "2": {
             "title": "Technological innovation",
-            "description": "Neuronal networks are an innovative technology that continues to evolve and improve. Learning about neural networks can help professionals stay updated in the latest trends and developments in the field of machine learning and artificial intelligence."
+            "description": "Neural networks are an innovative technology that continues to evolve and improve. Learning about neural networks can help professionals stay updated in the latest trends and developments in the field of machine learning and artificial intelligence."
           }
         },
-        "description-3": "Neuronal networks are a form of machine learning that mimics the way the human brain works. These networks are designed to continue and improve from past data and experiences, allowing machines to perform complex tasks that were previously impossible or very difficult for traditional programmed systems.",
-        "description-4": "In summary, learning neuronal networks is important because it can help professionals develop skills that are valuable in a wide variety of fields, solve complex problems more effectively and stay updated in technology and innovation."
+        "description-3": "Neural networks are a form of machine learning that mimics the way the human brain works. These networks are designed to continue and improve from past data and experiences, allowing machines to perform complex tasks that were previously impossible or very difficult for traditional programmed systems.",
+        "description-4": "In summary, learning neural networks is important because it can help professionals develop skills that are valuable in a wide variety of fields, solve complex problems more effectively and stay updated in technology and innovation."
       },
       "0-tabular-classification": {
         "title": "Tabular classification",
@@ -2044,15 +2044,15 @@
         "title": "Object identification",
         "text-1": "Object identification in neural networks is a technique used in the field of machine learning and computer vision to detect and recognize objects in images or videos. It is an important task in image analysis and is used in applications such as face recognition, real-time object tracking, object classification in medical images, and object detection in autonomous vehicles.",
         "text-2": "The neural networks used for the identification of objects are deep learning models that are trained in data sets labeled. The training process implies providing the neurons network for a large number of images tagged, and adjusting the weights of connections between neurons so that the network can identify objects in new images with high precision.",
-        "text-3": "Once the neuronal network has been trained, it is used to identify objects in new images. The network examines the image and, by processing multiple layers, extracts important characteristics that are used to identify objects of interest. Then, the network uses these characteristics to assign a label to each object detected in the image.",
+        "text-3": "Once the neural network has been trained, it is used to identify objects in new images. The network examines the image and, by processing multiple layers, extracts important characteristics that are used to identify objects of interest. Then, the network uses these characteristics to assign a label to each object detected in the image.",
         "text-4": "In summary, object identification in neural networks is an important technique in computer vision and machine learning that is used to detect and recognize objects in images and videos. It is based on the use of deep neural networks trained on labeled data sets to identify and classify objects in new images with high accuracy."
       },
       "image-classification": {
         "title": "Image classification",
         "text-1": "Image classification is a technique used in neural networks to classify images into different categories or labels. The goal of an image classifier is to take an input image and predict which class it belongs to, based on a set of predefined categories or labels.",
-        "text-2": "In deep learning, image classifiers are based on convolutional neural networks (CNN), which are a specialized architecture to process images. These neuronal networks have multiple layers and convolution operations that allow them to extract important characteristics from the images, such as edges, shapes and textures.",
-        "text-3": "To train an image classifier, a set of labeled data is used that contains images and their respective class labels. Then, the neuronal network is trained using this dataset to learn to identify patterns in the images and associate them with the corresponding class labels.",
-        "text-4": "Once the neuronal network has been trained, it can be used to classify new images in different categories. The image classifier examines the input image and processes it through the neuronal network to extract important characteristics and predict what class the image belongs.",
+        "text-2": "In deep learning, image classifiers are based on convolutional neural networks (CNN), which are a specialized architecture to process images. These neural networks have multiple layers and convolution operations that allow them to extract important characteristics from the images, such as edges, shapes and textures.",
+        "text-3": "To train an image classifier, a set of labeled data is used that contains images and their respective class labels. Then, the neural network is trained using this dataset to learn to identify patterns in the images and associate them with the corresponding class labels.",
+        "text-4": "Once the neural network has been trained, it can be used to classify new images in different categories. The image classifier examines the input image and processes it through the neural network to extract important characteristics and predict what class the image belongs.",
         "text-5": "In short, image classification in neural networks is a technique that uses convolutional neural networks to classify images into different categories or labels. It is based on using a set of labeled data to train the neural network and extracting important features from the images to predict which class a new input image belongs to."
       },
       "activation-functions": {
@@ -2060,7 +2060,7 @@
         "sub-title-1": "Linear Layers",
         "sub-title-2": "Non-linear Activations (weighted sum, nonlinearity)",
         "sub-title-3": "Non-linear Activations (other)",
-        "text-1": "An activation function is a mathematical function used in an artificial neuronal network to determine the output of a neuron or a set of neurons based on the entry received. The activation function introduces non -linearity in the neuronal network, allowing the network to learn more complex patterns in the input data. Common examples of activation functions are:",
+        "text-1": "An activation function is a mathematical function used in an artificial neural network to determine the output of a neuron or a set of neurons based on the entry received. The activation function introduces non -linearity in the neural network, allowing the network to learn more complex patterns in the input data. Common examples of activation functions are:",
         "table": {
           "softmax": {
             "title": "Softmax",
@@ -2200,8 +2200,8 @@
       },
       "optimization-functions": {
         "title": "Optimization functions",
-        "text-1": "An optimization function is a mathematical technique used to minimize or maximize an objective function. In the context of machine learning, the target functions are usually error functions that measure the discrepancy between the neuronal network output and the desired output values for a given training dataset.",
-        "text-2": "The optimization function adjusts the parameters of the neuronal network to minimize the objective function and, therefore, improve its ability to make precise predictions in new entry data. Common examples of optimization functions are the descent of the stochastic gradient and the Adam algorithm.",
+        "text-1": "An optimization function is a mathematical technique used to minimize or maximize an objective function. In the context of machine learning, the target functions are usually error functions that measure the discrepancy between the neural network output and the desired output values for a given training dataset.",
+        "text-2": "The optimization function adjusts the parameters of the neural network to minimize the objective function and, therefore, improve its ability to make precise predictions in new entry data. Common examples of optimization functions are the descent of the stochastic gradient and the Adam algorithm.",
         "table": {
           "sgd": {
             "references": "Stochastic gradient descent\n (Autonomous Technological Institute of Mexico, 2017)",
@@ -2284,9 +2284,9 @@
       },
       "metric-functions": {
         "title": "Metric functions",
-        "text-1": "They are used to evaluate the performance of the neuronal network model in a test data set. The metric function takes the predictions made by the model and compare them with the real values of the test data to determine the precision of the model.",
-        "text-2": "There are different types of metric functions that can be used in a neuronal network, depending on the type of problem that is being addressed. For example, for a problem of binary classification, precision (Accuracy) could be used as metric, while for a regression problem the average quadratic error could be used (Mean Squared Error).",
-        "text-3": "In summary, a metric function is an important tool to assess the ability of a neuronal network to perform precise predictions in a test dataset and to help adjust the model parameters to improve its performance.",
+        "text-1": "They are used to evaluate the performance of the neural network model in a test data set. The metric function takes the predictions made by the model and compare them with the real values of the test data to determine the precision of the model.",
+        "text-2": "There are different types of metric functions that can be used in a neural network, depending on the type of problem that is being addressed. For example, for a problem of binary classification, precision (Accuracy) could be used as metric, while for a regression problem the average quadratic error could be used (Mean Squared Error).",
+        "text-3": "In summary, a metric function is an important tool to assess the ability of a neural network to perform precise predictions in a test dataset and to help adjust the model parameters to improve its performance.",
         "text-4": "We mainly use the <i>accuracy</i> function. In multi-label classification, this function calculates subset precision: the predicted set of labels for a sample must exactly match the corresponding set of labels in y",
         "table": {
           "BinaryAccuracy": {

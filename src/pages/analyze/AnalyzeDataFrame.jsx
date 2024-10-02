@@ -61,13 +61,13 @@ export default function AnalyzeDataFrame() {
             <Card>
               <Card.Header><h3><Trans i18nKey={prefix + 'upload-csv'} /></h3></Card.Header>
               <Card.Body>
-                <DragAndDrop name={'csv'}
-                  id={'dataset-upload'}
-                  accept={{ 'text/csv': ['.csv'] }}
-                  text={t('drag-and-drop.csv')}
-                  labelFiles={t('drag-and-drop.label-files-one')}
-                  function_DropAccepted={handleFileUpload_CSV_Accepted}
-                  function_DropRejected={handleFileUpload_CSV_Rejected}
+                <DragAndDrop id={'dataset-upload'}
+                            name={'csv'}
+                            accept={{ 'text/csv': ['.csv'] }}
+                            text={t('drag-and-drop.csv')}
+                            labelFiles={t('drag-and-drop.label-files-one')}
+                            function_DropAccepted={handleFileUpload_CSV_Accepted}
+                            function_DropRejected={handleFileUpload_CSV_Rejected}
                 />
                 {!isDataFrameUpload && <>
                   <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />

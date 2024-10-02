@@ -14,10 +14,10 @@ const DEFAULT_SELECTOR_INSTANCE = 'select-instance'
  */
 const DEFAULT_SCALER = 'min-max-scaler'
 
-const TAB_00_TABULAR_CLASIFICATION = 'Tabular classification'
+const TAB_00_TABULAR_CLASSIFICATION = 'Tabular classification'
 const TAB_01_LINEAR_REGRESSION = 'Tabular classification'
 const TAB_02_OJECT_DETECTION = 'Object Detection'
-const TAB_03_IMAGE_CLASIFICATION = 'Image classification'
+const TAB_03_IMAGE_CLASSIFICATION = 'Image classification'
 
 
 /**
@@ -40,10 +40,10 @@ export {
 
   DEFAULT_SCALER,
 
-  TAB_00_TABULAR_CLASIFICATION,
+  TAB_00_TABULAR_CLASSIFICATION,
   TAB_01_LINEAR_REGRESSION,
   TAB_02_OJECT_DETECTION,
-  TAB_03_IMAGE_CLASIFICATION,
+  TAB_03_IMAGE_CLASSIFICATION,
 
   E_TRANSFORMS
 }

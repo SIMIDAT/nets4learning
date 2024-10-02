@@ -157,7 +157,7 @@ export function createLoss (idLoss, params) {
   if (typeof idMetrics === 'string') {
     return addMetric(idMetrics)
   } else if (Array.isArray(idMetrics)) {
-    return idMetrics.forEach(addMetric)
+    return idMetrics.map(addMetric)
   }
 }
 
@@ -184,3 +184,26 @@ export function createMetricsList (idMetricsList, params) {
   return metrics
 }
 
+
+export const FIT_CALLBACKS_METRICS_LABELS = [
+'binaryAccuracy',
+'binaryCrossentropy',
+'categoricalAccuracy',
+'categoricalCrossentropy',
+'cosineProximity',
+'meanAbsoluteError',
+'meanAbsolutePercentageError',
+'meanSquaredError',
+'precision',
+'recall',
+'val_binaryAccuracy',
+'val_binaryCrossentropy',
+'val_categoricalAccuracy',
+'val_categoricalCrossentropy',
+'val_cosineProximity',
+'val_meanAbsoluteError',
+'val_meanAbsolutePercentageError',
+'val_meanSquaredError',
+'val_precision',
+'val_recall',
+]

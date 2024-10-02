@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Card, Col, Container, Modal, Row } from 'react-bootstrap'
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import * as _chartjs from 'chart.js'
 import { useHistory } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga4'
@@ -18,6 +19,10 @@ import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import { UTILS_image } from '@pages/playground/3_ImageClassification/utils/utils'
 import { VERBOSE } from '@/CONSTANTS'
+
+/**
+ * @typedef {import('react-chartjs-2/dist/types').TypedChartComponent<"bar">} BarOptions_t
+ */
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -59,6 +64,9 @@ export default function ModelReviewImageClassification ({ dataset }) {
   const [barDataImage, setBarDataImage] = useState(DEFAULT_BAR_DATA)
   const [barDataModal, setBarDataModal] = useState(DEFAULT_BAR_DATA)
 
+  /**
+   * @type {*|BarOptions_t}
+   */
   const bar_option = {
     responsive: true,
     plugins   : {
@@ -248,18 +256,14 @@ export default function ModelReviewImageClassification ({ dataset }) {
             </Col>
           </Row>
           <Row>
-            <Col className={'d-grid'}
-                 xs={isMNIST() ? 12 : 12}
-                 sm={isMNIST() ? 12 : 12}
-                 md={isMNIST() ? 6 : 12}
-                 xl={isMNIST() ? 6 : 12}
-                 xxl={isMNIST() ? 6 : 12}>
+            <Col className={'d-grid'} xs={12} sm={12} md={isMNIST() ? 6 : 12} xl={isMNIST() ? 6 : 12} xxl={isMNIST() ? 6 : 12}>
               <Card className={'mt-3'}>
                 <Card.Header>
                   <h3><Trans i18nKey={'datasets-models.3-image-classifier.interface.process-image.title'} /></h3>
                 </Card.Header>
                 <Card.Body className={'d-grid'} style={{ alignContent: 'space-between' }}>
-                  <DragAndDrop name={'doc'}
+                  <DragAndDrop id={'drop-zone-image-instance'}
+                               name={'doc'}
                                text={t('drag-and-drop.image')}
                                labelFiles={t('drag-and-drop.label-files-one')}
                                accept={{
@@ -295,8 +299,7 @@ export default function ModelReviewImageClassification ({ dataset }) {
             <Card.Body>
               <Container fluid={true}>
                 <Row>
-                  <Col className={'d-flex align-items-center justify-content-center'}
-                       id={'container_canvas'}>
+                  <Col className={'d-flex align-items-center justify-content-center'} id={'container_canvas'}>
                     <Row>
                       <Col className={'col-12 d-flex justify-content-center'}>
                         <canvas id="originalImage"

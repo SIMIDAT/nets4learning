@@ -1438,7 +1438,7 @@
       },
       "regression": {
         "1-title": "Regresión",
-        "2-title": "Diseñar, crear y editar una arquitectura para calcular una regresión",
+        "2-title": "Diseñar, crear y editar una arquitectura",
         "1-description-1": "La regresión es una tarea para determinar un valor numérico específico (variable dependiente) a partir de sus características (variables independientes).",
         "1-description-2": "Es una tarea predictiva que tiene como salida una variable continua, donde se busca encontrar una línea recta que mejor se ajuste a los datos y permita predecir el valor numérico de la variable dependiente en función de las variables independientes.",
         "1-button": "Modelos pre-entrenados",
@@ -1466,7 +1466,7 @@
         "1-title": "Clasificación de imágenes",
         "1-description-1": "La clasificación de imágenes de igual forma que la clasificación tabular sirve para determinar la clase a la que pertenece la imagen dependiendo de los elementos que la forman.",
         "1-button": "Modelos pre-entrenados",
-        "2-title": "Diseñar, crear y editar una arquitectura para clasificar imágenes",
+        "2-title": "Diseñar, crear y editar una arquitectura",
         "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multiclase.",
         "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
@@ -1962,7 +1962,7 @@
         "2-title": "Entrenar modelos",
         "2-description-1": "La herramienta cuenta con un visualizador de datos que permite mostrar las clases y los atributos del conjunto de datos. Así como un gestor para crear, diseñar, entrenar y exportar un modelo de datos.",
         "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo número de neuronas que clases a predecir.",
-        "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neuronal network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
+        "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
         "2-description-4": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la tabla de abajo una entrada con el modelos entrenado.",
         "2-description-5": "Una vez entrenado un modelo a partir de los datos podremos realizar predicciones, para ello se incluye un formulario dinámico con las características del conjunto de datos. La precisión del modelo en la predicción podrá ser mayor o menor en función del entrenamiento y las opciones seleccionadas."
       },

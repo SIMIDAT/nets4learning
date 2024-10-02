@@ -2,7 +2,7 @@ import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 // import * as dfd from 'danfojs'
 import * as sk from 'scikitjs'
-import { createLoss, createMetrics, createOptimizer } from '@core/nn-utils/ArchitectureHelper'
+import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
 import * as _Types from '@core/types'
 // sk.setBackend(dfd.tensorflow)
 
@@ -10,7 +10,7 @@ import * as _Types from '@core/types'
  * @typedef {Object} CustomTabularClassification_DatasetParams_t
  * @property {_Types.DatasetProcessed_t} dataset_processed
  * @property {string} [name_model]
- * @property {Array} layerList
+ * @property {Array<_Types.Layer_t>} layerList
  * @property {number} learningRate
  * @property {number} [momentum=0]
  * @property {number} testSize
@@ -54,7 +54,7 @@ export async function createTabularClassificationCustomModel (params) {
     const index = layerList.indexOf(layer)
     const _layer = tfjs.layers.dense({
       units     : layer.units,
-      activation: layer.activation.toLowerCase(),
+      activation: layer.activation,
       ...(index === 0) && {
         inputShape: [X.shape[1]],
       },
@@ -70,16 +70,21 @@ export async function createTabularClassificationCustomModel (params) {
 
   // @ts-ignore
   await tfvis.show.modelSummary({ name: 'Model Summary', tab: name_model }, model)
+  tfvis.visor().setActiveTab(name_model)
 
-  const fit_callbacks_metrics_labels = ['loss', 'val_loss', 'acc', 'val_acc']
+  const fit_callbacks_metrics_labels = FIT_CALLBACKS_METRICS_LABELS
   const fit_callbacks_container = {
     name: 'Training',
     tab : name_model,
   }
-  const fitCallbacks = tfvis.show.fitCallbacks(fit_callbacks_container, fit_callbacks_metrics_labels, { 
+  const fitCallbackHandlers = tfvis.show.fitCallbacks(fit_callbacks_container, fit_callbacks_metrics_labels, { 
     callbacks: [
-      'onBatchEnd', 
-      'onEpochEnd'
+      // 'onEpochBegin',
+      'onEpochEnd',
+      // 'onBatchBegin',
+      'onBatchEnd',
+      // 'onTrainBegin',
+      // 'onTrainEnd',
     ]
   })
   const history = await model.fit(XTrain_tensor, yTrain_tensor, {
@@ -87,27 +92,8 @@ export async function createTabularClassificationCustomModel (params) {
     shuffle       : true,
     validationData: [XTest_tensor, yTest_tensor],
     epochs        : numberOfEpoch,
-    callbacks     : fitCallbacks,
+    callbacks     : fitCallbackHandlers,
   })
-
-  // TODO
-  // const example = X.values[X.values.length - 1]
-  // console.log({ X, example })
-  //
-  // const predict = model.predict(tf.tensor([example]))
-  // console.log({ predict: predict.dataSync() })
-  // Lo que espera
-  // const labels = tf.tensor1d([0, 0, 1, 1, 2, 2, 3, 3])
-  // Lo que se predice
-  // const predictions = tf.tensor1d([0, 0, 1, 1, 2, 2, 3, 3])
-
-  // const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, predictions)
-  // const container = {
-  //   name: 'Evaluation',
-  //   tab : 'Evaluation',
-  // }
-  // const classNames = Object.keys(encoders[column_name_target].encoder.$labels)
-  // await tfvis.show.perClassAccuracy(container, classAccuracy, classNames)
 
   return {
     model,

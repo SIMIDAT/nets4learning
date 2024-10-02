@@ -13,13 +13,13 @@ export default function ModelReviewImageClassificationMNIST (props) {
   } = props
 
   const handleCanvasDraw_Clear = async () => {
-    const originalImage_canvas = document.getElementById('originalImage')
+    const originalImage_canvas =  (/** @type {HTMLCanvasElement} */ (document.getElementById('originalImage')))
     const originalImage_canvas_ctx = originalImage_canvas.getContext('2d', { willReadFrequently: true })
     originalImage_canvas_ctx.clearRect(0, 0, originalImage_canvas.width, originalImage_canvas.height)
   }
 
-  const handleCanvasDraw_Submit = async (draw_canvas) => {
-    const canvas = document.getElementById('originalImage')
+  const handleCanvasDraw_Submit = async (draw_canvas, _draw_canvas_ctx) => {
+    const canvas =  (/** @type {HTMLCanvasElement} */ (document.getElementById('originalImage')))
     const canvas_ctx = canvas.getContext('2d', { willReadFrequently: true })
     canvas_ctx.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
     canvas_ctx.drawImage(draw_canvas, 10, 10, 28, 28)

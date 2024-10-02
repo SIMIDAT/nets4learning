@@ -32,8 +32,20 @@ import _I_MODEL_IMAGE_CLASSIFICATION from '@/pages/playground/3_ImageClassificat
 /**
  * @typedef CustomParamsLayerModel_t
  * @property {number} units
- * @property {string} activation
+ * @property {LayerActivation_t} activation
  * @property {boolean} [is_disabled]
+ */
+
+/**
+ * @typedef {'elu'|'hardSigmoid'|'linear'|'relu'|'relu6'|'selu'|'sigmoid'|'softmax'|'softplus'|'softsign'|'tanh'|'swish'|'mish'|'gelu'|'gelu_new'} LayerActivation_t
+ */
+
+/**
+ * @typedef Layer_t
+ * @property {number} units
+ * @property {LayerActivation_t} activation
+ * @property {boolean} [is_disabled]
+ * @property {'dense'} [type_layer]
  */
 
 /**
