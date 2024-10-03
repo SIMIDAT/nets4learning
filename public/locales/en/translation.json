@@ -80,7 +80,7 @@
       "cross-entropy": {
         "title": "Cross entropy",
         "text-1": "In binary classification, where the number of classes $ M = 2 $, Binary Cross-Entropy(BCE) can be calculated as:",
-        "text-2": "$ M > 2 $ (i.e. multiclass classification), we calculate a separate loss for each class label per observation and sum the result.",
+        "text-2": "$ M > 2 $ (i.e. multi class classification), we calculate a separate loss for each class label per observation and sum the result.",
         "text-3": "$M$: number of classes <br />$log$: the natural log <br />$y$: binary indicator (0 or 1) if class label $c$ is the correct classification for observation $o$<br />$p$: predicted probability observation $o$ is of class $c$"
       },
       "negative-log": {
@@ -248,7 +248,7 @@
     "need-to-upload-image": "You must first upload an image",
     "need-dataset": "You must load the data first",
     "model-selected": "Model selection error",
-    "tensor-shape": "Incorrect tensioner shape",
+    "tensor-shape": "Incorrect tensor shape",
     "tensor-shape-description": "Wrong tensor shape, you expected the shape [{{target_tensor_shape_0}},{{target_tensor_shape_1}}}], but you received a tensor with shape [{{tensor_shape_0}},{{tensor_shape_1}}}], possibly you should modify the last layer.",
     "tensor-shape-change": "The output layer has the shape (*, {{last_layer_units}}). <br> must have the form (*, {{class_length}})",
     "need-one-feature": "You need at least one feature.",
@@ -761,8 +761,8 @@
               "9": "<strong>Fjob</strong> - father's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
               "10": "<strong>reason</strong> - reason to choose this school (nominal: close to 'home', school 'reputation', 'course' preference or 'other')",
               "11": "<strong>guardian</strong> - student's guardian (nominal: 'mother', 'father' or 'other')",
-              "12": "<strong>traveltime</strong> - home to school travel time (numeric: 1 - <15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - >1 hour)",
-              "13": "<strong>studytime</strong> - weekly study time (numeric: 1 - <2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - >10 hours)",
+              "12": "<strong>traveltime</strong> - home to school travel time (numeric: 1 - &lt; 15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt; 1 hour)",
+              "13": "<strong>studytime</strong> - weekly study time (numeric: 1 - &lt; 2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt; 10 hours)",
               "14": "<strong>failures</strong> - number of past class failures (numeric: n if 1 &lg;=n &lg;3, else 4)",
               "15": "<strong>schoolsup</strong> - extra educational support (binary: yes or no)",
               "16": "<strong>famsup</strong> - family educational support (binary: yes or no)",
@@ -1122,7 +1122,7 @@
       "mobilenet": {
         "title": "MobileNet - Image classification",
         "description": {
-          "text-0": "Mobilenet V2 is a family of neural networks for the classification of similar images and tasks.",
+          "text-0": "MobileNet V2 is a family of neural networks for the classification of similar images and tasks.",
           "text-1": "This model is able to differentiate between 1001 categories, identifying the main context of the image.",
           "details-input": {
             "title": "Input data",
@@ -1282,7 +1282,7 @@
         },
         "list": {
           "0": "Viewing distributions: Histograms allow you to view the shape and distribution of numerical data.\nThey can show whether the data follows a symmetric, skewed, multimodal, or uniform distribution.",
-          "1": "Identifying Outliers: By looking at a histogram, it is possible to identify outliers or extreme values that are outside the range of the majority of the data.\nThese values will be represented as isolated bars or as bars that extend beyond the main range of values.",
+          "1": "Viewing distributions: Histograms allow you to view the shape and distribution of numerical data.\nThey can show whether the data follows a symmetric, skewed, multimodal, or uniform distribution.",
           "2": "Trend and pattern analysis: Histograms can reveal patterns and trends in data.\nFor example, a distribution skewed left or right indicates asymmetry in the data, while a normal distribution shows approximate symmetry.",
           "3": "Comparison of groups or categories: Histograms can also be used to compare the distribution of data between different groups or categories.\nBy overlaying multiple histograms on the same graph, it is possible to visualize the differences and similarities between groups.",
           "4": "Density Estimation: In addition to showing absolute frequency, histograms can also provide a visual estimate of the probability density of the data.\nBy normalizing the heights of the bars, it is possible to obtain a relative representation of the probability of occurrence of the values in each interval."
@@ -1345,10 +1345,10 @@
           "1": "Identifying trends: A scatter plot can reveal trends or patterns in the data.\nBy looking at the general direction of the points, it is possible to identify whether there is a linear, nonlinear, or even a curvilinear relationship between the variables.",
           "2": "Outlier Detection: Scatter plots can help identify outliers or extremes in data.\nThese points stand out and are far from the main grouping, suggesting unusual or exceptional observations that may require additional analysis.",
           "3": "Analysis of clusters or groups: If the points in the scatter plot group together or form distinct patterns, this may indicate the presence of clusters or groups.\nThis can be useful in data segmentation or classification analysis.",
-          "4": "Multidimensional data visualization: By using additional colors or point sizes, scatter plots can also represent additional information in two-dimensional space.\nThis allows multidimensional data to be viewed more intuitively."
+          "4": "Visualization of multi-dimensional data: If additional colors or point sizes are used, scatter plots can also represent additional information in a two-dimensional space.\nThis allows you to view multi-dimensional data in a more intuitive way."
         },
         "end": {
-          "0": "Scatter plots are a powerful tool for exploring and visualizing the relationship between two variables.\nThey allow you to identify patterns, trends, and outliers in data, and are useful in various applications, such as correlation analysis, cluster detection, and multidimensional data visualization."
+          "0": "Scatter plots are a powerful tool for exploring and visualizing the relationship between two variables.\nThey allow you to identify patterns, trends and outliers in the data, and are useful in various applications, such as correlation analysis, cluster detection and visualization of multi-dimensional data."
         }
       },
       "index-info": "Coordinate axis",
@@ -1505,7 +1505,7 @@
       "form-submit": "Continue",
       "1-regression": {
         "csv": "Upload dataset - CSV",
-        "csv-text": "Upload a file with a dataset treated in <Oce> .CSV format </code>"
+        "csv-text": "Upload a file with a dataset treated in <code> .CSV format </code>"
       }
     },
     "menu-selection-model": {
@@ -1625,7 +1625,7 @@
         },
         "layers": {
           "title": "Layer design",
-          "page-info": "You can visit the <link1> Netron.app"
+          "page-info": "You can visit the <link1>netron.app</link1>"
         },
         "editor-layers": {
           "title": "Layer editor",
@@ -1707,7 +1707,7 @@
         },
         "dynamic-form-dataset": {
           "title": "Prediction",
-          "text-0-__column_name_target__": "Enter the values of each entry feature of the example to predictc <b>{{column_name_target}}</b>",
+          "text-0-__column_name_target__": "Enter the values of each entry feature of the example to predict <b>{{column_name_target}}</b>",
           "select-option": "Select an option",
           "input-data": "Enter the data to test",
           "input-vector": "Enter the vector to test",
@@ -1896,7 +1896,7 @@
               "text-0": "If we have created the model correctly an entry will be added to the table of models generated, we are allowed to export the models generated and save them locally."
             },
             "details-prediction": {
-              "title": "Clasification",
+              "title": "Classification",
               "text-0": "The final form allows us to select the main characteristics used to determine the class.",
               "text-1": "By pressing the \"See result\" button, the prediction of its output class is obtained from the input characteristics of the element."
             }
@@ -2006,7 +2006,7 @@
         "1-description-1": "In the image classifier section we can select between two very representative examples of the neural networks. These are the set of mnist images and the set of images.",
         "1-list": {
           "0": "MNIST, image classification that detects numbers.",
-          "1": "Mobilenet, classification of images belonging to 1001 categories."
+          "1": "MobileNet, classification of images belonging to 1001 categories."
         },
         "1-description-2": "In the MNIST model it is allowed to select from a list of images that contain a number, draw in a dog the number to predict or upload an image of a number.",
         "1-description-3": "The MobileNet model has included a list of example images that can be selected or we can upload an image that the neural network will classify.",
@@ -2072,7 +2072,7 @@
             "characteristics": {
               "0": "Bounded between 0 and 1",
               "1": "Good in final layers",
-              "2": "Used to normalize multiclass type"
+              "2": "Used to normalize multi class type"
             }
           },
           "sigmoid": {
@@ -2086,7 +2086,7 @@
           },
           "hard-sigmoid": {
             "title": "Hard Sigmoid",
-            "description": "Hardsigmoid is a simplified version of the sigmoid function used for computational efficiency.",
+            "description": "Hard Sigmoid is a simplified version of the sigmoid function used for computational efficiency.",
             "characteristics": {
               "0": "It is faster to calculate than sigmoid.",
               "1": "Less soft in the transition between 0 and 1."
@@ -2189,12 +2189,12 @@
             "description": "The amount of data that is set aside to evaluate the performance of the model after training. The test set is used to measure the accuracy and overall performance of the model on unseen data."
           },
           "optimizer": {
-            "title": "Optimiser",
-            "description": "The optimiser is an algorithm that adjusts the parameters of a machine learning model during training. Its goal is to minimise the loss function by updating the model weights efficiently. Examples of common optimisers include Stochastic Gradient Descent (SGD), Adam and RMSprop."
+            "title": "Optimizer",
+            "description": "The optimizer is an algorithm that adjusts the parameters of a machine learning model during training. Its goal is to minimize the loss function by updating the model weights efficiently. Examples of common optimizers include Stochastic Gradient Descent (SGD), Adam and RMSprop."
           },
           "loss-function": {
             "title": "Loss Function",
-            "description": "The loss function is a measure that quantifies how well the model is performing in its predictions. It helps to calculate the difference between the model's predictions and the actual values of the data set. The goal of training is to minimise this function, as a low loss value indicates that the model is a better fit to the data."
+            "description": "The loss function is a measure that quantifies how well the model is performing in its predictions. It helps to calculate the difference between the model's predictions and the actual values of the data set. The goal of training is to minimize this function, as a low loss value indicates that the model is a better fit to the data."
           },
           "metric-function": {
             "title": "Metric Function",
@@ -2250,15 +2250,15 @@
           },
           "ComputeWeightedLoss": {
             "references": "Weighted average\n (Privolima, s.f.)",
-            "description": "Calculate the weighted loss between two given tensioners."
+            "description": "Calculate the weighted loss between two given tensors."
           },
           "CosineDistance": {
             "references": "Distance from Coseno\n (Privolima, s.f.)",
-            "description": "Calculate the loss by applying the cosine of the distance between two tensioners."
+            "description": "Calculate the loss by applying the cosine of the distance between two tensors."
           },
           "HingeLoss": {
             "references": "Loss of hinge\n (Rennie & Srebro, 2005)",
-            "description": "Calculate the loss of hinge between two tensioners. It applies in classification problems."
+            "description": "Calculate the loss of hinge between two tensors. It applies in classification problems."
           },
           "HuberLoss": {
             "references": "(Huber loss)",
@@ -2266,7 +2266,7 @@
           },
           "LogLoss": {
             "references": "Logarithmic loss\n (Shen, 2005)",
-            "description": "<i> logloss </i> or <i> Logistic loss </i> is a convex function that grows linearly for negative numbers and makes it recently sensitive to atypical values. Calculate the logarithmic loss between two tensioners."
+            "description": "<i> logloss </i> or <i> Logistic loss </i> is a convex function that grows linearly for negative numbers and makes it recently sensitive to atypical values. Calculate the logarithmic loss between two tensors."
           },
           "MeanSquaredError": {
             "references": "Middle quadratic error\n (Privolima, s.f.)",

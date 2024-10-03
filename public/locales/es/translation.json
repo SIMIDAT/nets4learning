@@ -80,7 +80,7 @@
       "cross-entropy": {
         "title": "Cross entropy",
         "text-1": "En la clasificación binaria, donde el número de clases $ M = 2 $, la entropía cruzada binaria (BCE) se puede calcular como:",
-        "text-2": "$ M > 2 $ (es decir, clasificación multiclase), calculamos una pérdida separada para cada etiqueta de clase por observación y sumamos el resultado.",
+        "text-2": "$ M > 2 $ (es decir, clasificación multi clase), calculamos una pérdida separada para cada etiqueta de clase por observación y sumamos el resultado.",
         "text-3": "$M$: número de clases <br />$log$: logaritmo natural  <br />$y$: indicador binario (0 ó 1) si la etiqueta de clase $c$ es la clasificación correcta para la observación $o$ <br />$p$: probabilidad prevista de que la observación $o$ pertenezca a la clase $c$"
       },
       "negative-log": {
@@ -511,7 +511,7 @@
             "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizador de las capas de la red neuronal",
+            "title": "Visor de las capas de la red neuronal",
             "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
           },
           "layer-editor": {
@@ -762,7 +762,7 @@
               "10": "<strong>razón</strong>: motivo para elegir esta escuela (nominal: cerca de \"casa\", \"reputación\" de la escuela, preferencia de \"curso\" u \"otro\")",
               "11": "<strong>tutor</strong> - tutor del estudiante (nominal: 'madre', 'padre' u 'otro')",
               "12": "<strong>tiempo de viaje</strong>: tiempo de viaje de casa a la escuela (numérico: 1 - <15 min., 2 - 15 a 30 min., 3 - 30 min. a 1 hora, o 4 - >1 hora)",
-              "13": "<strong>tiempo de estudio</strong>: tiempo de estudio semanal (numérico: 1 - <2 horas, 2 - 2 a 5 horas, 3 - 5 a 10 horas o 4 - >10 horas)",
+              "13": "<strong>tiempo de estudio</strong>: tiempo de estudio semanal (numérico: 1 - &lt; 2 horas, 2 - 2 a 5 horas, 3 - 5 a 10 horas o 4 - &gt; 10 horas)",
               "14": "<strong>reprobados</strong>: número de reprobados en clases anteriores (numérico: n si 1 &lg;=n &lg;3, en caso contrario 4)",
               "15": "<strong>schoolsup</strong> - apoyo educativo adicional (binario: sí o no)",
               "16": "<strong>famsup</strong> - apoyo educativo familiar (binario: sí o no)",
@@ -876,7 +876,7 @@
             "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizador de las capas de la red neuronal",
+            "title": "Visor de las capas de la red neuronal",
             "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
           },
           "layer-editor": {
@@ -1178,7 +1178,7 @@
             "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
           },
           "layer-visualizer": {
-            "title": "Visualizador de las capas de la red neuronal",
+            "title": "Visor de las capas de la red neuronal",
             "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
           },
           "layer-editor": {
@@ -1202,7 +1202,7 @@
     }
   },
   "dataframe-plot": {
-    "title": "DataFrame | Graficos",
+    "title": "DataFrame | Gráficos",
     "info": "Información",
     "description": {
       "title": "Descripción del tipo de gráfica"
@@ -1232,7 +1232,7 @@
       "description": "Descripción"
     },
     "bar-charts": {
-      "title": "Grafico de Barras",
+      "title": "Gráfico de Barras",
       "description": {
         "intro": {
           "0": "Los gráficos de tipo barra o barras, son una representación visual que muestra la comparación de diferentes categorías o grupos mediante barras rectangulares.\nEste tipo de gráfico utiliza la longitud o altura de las barras para representar la magnitud o la cantidad de una variable específica.",
@@ -1273,7 +1273,7 @@
       }
     },
     "histograms": {
-      "title": "Grafico de tipo Histograma",
+      "title": "Gráfico de tipo Histograma",
       "description": {
         "intro": {
           "0": "Los gráficos de tipo histograma son una representación visual utilizada para mostrar la distribución de los datos numéricos o continuos.\nEste tipo de gráfico se basa en un conjunto de barras rectangulares adyacentes, donde el ancho de cada barra representa un intervalo de valores y la altura de la barra indica la frecuencia o la cantidad de observaciones dentro de ese\nintervalo.",
@@ -1281,7 +1281,7 @@
           "2": "Los gráficos de tipo histograma tienen varias características y aplicaciones destacadas:"
         },
         "list": {
-          "0": "Visualización de distribuciones: Los histogramas permiten visualizar la forma y la distribución de los datos numéricos.\nPueden mostrar si los datos siguen una distribución simétrica, sesgada, multimodal o uniforme.",
+          "0": "Visualización de distribuciones: Los histogramas permiten visualizar la forma y la distribución de los datos numéricos.\nPueden mostrar si los datos siguen una distribución simétrica, sesgada, multi modal o uniforme.",
           "1": "Identificación de valores atípicos: Al observar un histograma, es posible identificar valores atípicos o extremos que se encuentren fuera del rango de la mayoría de los datos.\nEstos valores se representarán como barras aisladas o como barras que se extienden más allá del rango principal de valores.",
           "2": "Análisis de tendencias y patrones: Los histogramas pueden revelar patrones y tendencias en los datos.\nPor ejemplo, una distribución sesgada hacia la izquierda o hacia la derecha indica una asimetría en los datos, mientras que una distribución normal muestra una simetría aproximada.",
           "3": "Comparación de grupos o categorías: Los histogramas también pueden ser utilizados para comparar la distribución de datos entre diferentes grupos o categorías.\nAl superponer varios histogramas en el mismo gráfico, es posible visualizar las diferencias y similitudes entre los grupos.",
@@ -1313,7 +1313,7 @@
       }
     },
     "pie-charts": {
-      "title": "Grafico de Sectores",
+      "title": "Gráfico de Sectores",
       "description": {
         "intro": {
           "0": "Los gráficos circulares o de sectores, son una representación visual que muestra la proporción de diferentes categorías o partes en relación con el todo.\nEstos gráficos se basan en un círculo dividido en sectores, donde cada sector representa una categoría específica y su tamaño relativo refleja la proporción que esa categoría representa en el conjunto de datos.",
@@ -1333,7 +1333,7 @@
       }
     },
     "scatter-plots": {
-      "title": "Grafico de tipo Dispersión",
+      "title": "Gráfico de tipo Dispersión",
       "description": {
         "intro": {
           "0": "Un gráfico de dispersión, también conocido como gráfico de puntos o scatter plot en inglés, es una representación visual que utiliza coordenadas cartesianas para mostrar la relación entre dos variables.\nEn este tipo de gráfico, los datos se representan como puntos individuales en el espacio bidimensional, donde cada punto representa un par de valores correspondientes a las dos variables.",
@@ -1345,10 +1345,10 @@
           "1": "Identificación de tendencias: Un gráfico de dispersión puede revelar tendencias o patrones en los datos.\nAl observar la dirección general de los puntos, es posible identificar si existe una relación lineal, no lineal o incluso una relación curvilínea entre las variables.",
           "2": "Detección de valores atípicos: Los gráficos de dispersión pueden ayudar a identificar valores atípicos o extremos en los datos.\nEstos puntos se destacan y se encuentran lejos de la agrupación principal, lo que sugiere observaciones inusuales o excepcionales que pueden requerir un análisis adicional.",
           "3": "Análisis de clusters o grupos: Si los puntos en el gráfico de dispersión se agrupan o forman patrones distintos, esto puede indicar la presencia de clusters o grupos.\nEsto puede ser útil en análisis de segmentación o clasificación de datos.",
-          "4": "Visualización de datos multidimensionales: Si se utilizan colores o tamaños de puntos adicionales, los gráficos de dispersión también pueden representar información adicional en un espacio bidimensional.\nEsto permite visualizar datos multidimensionales de manera más intuitiva."
+          "4": "Visualización de datos multi dimensionales: Si se utilizan colores o tamaños de puntos adicionales, los gráficos de dispersión también pueden representar información adicional en un espacio bidimensional.\nEsto permite visualizar datos multi dimensionales de manera más intuitiva."
         },
         "end": {
-          "0": "Los gráficos de dispersión son una herramienta poderosa para explorar y visualizar la relación entre dos variables.\nPermiten identificar patrones, tendencias y valores atípicos en los datos, y son útiles en diversas aplicaciones, como análisis de correlación, detección de clusters y visualización de datos multidimensionales."
+          "0": "Los gráficos de dispersión son una herramienta poderosa para explorar y visualizar la relación entre dos variables.\nPermiten identificar patrones, tendencias y valores atípicos en los datos, y son útiles en diversas aplicaciones, como análisis de correlación, detección de clusters y visualización de datos multi dimensionales."
         }
       },
       "index-info": "Eje de coordenadas",
@@ -1358,7 +1358,7 @@
       }
     },
     "time-series-plots": {
-      "title": "Grafico de tipo Series Temporales",
+      "title": "Gráfico de tipo Series Temporales",
       "description": {
         "intro": {
           "0": "Un gráfico de tipo series de tiempo es una representación visual de datos que se recopilan y registran en intervalos regulares a lo largo del tiempo.\nEstos gráficos son ampliamente utilizados en diversas disciplinas, como la economía, las finanzas, la meteorología, la ingeniería y muchas otras, para analizar y comprender cómo cambian los datos a medida que transcurre el tiempo.",
@@ -1387,7 +1387,7 @@
       }
     },
     "violin-plots": {
-      "title": "Grafico de tipo Violin",
+      "title": "Gráfico de tipo Violin",
       "description": {
         "intro": {
           "0": "Un gráfico de tipo violín es una representación visual que combina características de un gráfico de caja y bigotes con una función de densidad de probabilidad.\nEste tipo de gráfico proporciona una visión detallada de la distribución de los datos y permite comparar múltiples grupos o categorías en un solo gráfico.",
@@ -1428,7 +1428,7 @@
         "1-description-2": "Es una tarea predictiva que tiene como salida una variable discreta cuyos valores son las diferentes clases a las que puede pertenecer el elemento a clasificar.",
         "1-button": "Modelos pre-entrenados",
         "2-title": "Diseñar, crear y editar una arquitectura para clasificar",
-        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multiclase.",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multi clase.",
         "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
           "1": "Definir el número de capas, sus funciones de activación.",
@@ -1446,7 +1446,7 @@
         "1-description-1": "La regresión es una tarea para determinar un valor numérico específico (variable dependiente) a partir de sus características (variables independientes).",
         "1-description-2": "Es una tarea predictiva que tiene como salida una variable continua, donde se busca encontrar una línea recta que mejor se ajuste a los datos y permita predecir el valor numérico de la variable dependiente en función de las variables independientes.",
         "1-button": "Modelos pre-entrenados",
-        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para realizar prediciones.",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para realizar predicciones.",
         "2-description-2": "Definir las variables independientes, que se utilizarán en el modelo, definir la variable dependiente, que será el valor numérico que se busca predecir.",
         "2-description-3": null,
         "2-description-list": {
@@ -1471,7 +1471,7 @@
         "1-description-1": "La clasificación de imágenes de igual forma que la clasificación tabular sirve para determinar la clase a la que pertenece la imagen dependiendo de los elementos que la forman.",
         "1-button": "Modelos pre-entrenados",
         "2-title": "Diseñar, crear y editar una arquitectura",
-        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multiclase.",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal para clasificar datos multi clase.",
         "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
         "2-description-list": {
           "1": "Definir el número de capas, sus funciones de activación.",
@@ -1795,7 +1795,7 @@
               }
             },
             "details-plot-models": {
-              "title": "Graficado de predicciones",
+              "title": "Gráfico de predicciones",
               "text": {
                 "0": "Podemos usar un gráfico disperso para dicha tarea, de forma que representemos los datos originales en una nube de puntos y usamos una línea para trazar las predicciones del modelo, en función de la arquitectura que usemos nos dará una línea recta con cierta pendiente o una línea que se ajustará y curvará más a los datos. Para ello se hacen 100 predicciones <i>x</i> distantes, desde primer valor al último valor."
               }
@@ -1830,11 +1830,11 @@
           "button-submit": "Predecir",
           "list-models-generated": "Lista de modelos generados",
           "list-models": "Lista de modelos generados",
-          "list-instances": "Lsta de instancias"
+          "list-instances": "Lista de instancias"
         },
         "model-selector": {
           "title": "Selector de modelos",
-          "option": "Seleciona un modelo"
+          "option": "Selecciona un modelo"
         }
       },
       "3-image-classification": {
@@ -1858,8 +1858,8 @@
                 "2": "<b>embedding</b><br />Asigna números enteros positivos (índices) a vectores densos de tamaño fijo. p.ej. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]",
                 "3": "<b>flatten</b> <br /> Una capa aplanada aplana cada lote en sus entradas a 1D (haciendo la salida 2D).",
                 "4": "<b>permute</b> <br /> Permuta las dimensiones de la entrada de acuerdo con un patrón dado.",
-                "5": "<b>repetVector</b> <br /> repite la entrada n veces en una nueva dimensin.",
-                "6": "<b>reshape</b> <br /> Revita una entrada a una determinada forma.",
+                "5": "<b>repeatVector</b> <br /> repite la entrada n veces en una nueva dimensión.",
+                "6": "<b>reshape</b> <br /> Modifica la forma a una determinada entrada.",
                 "7": "<b>spatialDropout1d</b> <br /> Versión 1D espacial de dropout."
               }
             },
@@ -1964,7 +1964,7 @@
         "1-description-2": "La herramienta cuenta con una lista de ejemplos representativos que permiten alterar el formulario de características.",
         "1-description-3": "Al acceder a la sección de la herramienta en los modelos podremos editar las características de los elementos a predecir. La herramienta cuenta con formulario dinámico que permite cambiar los tipos de datos de entrada de la red neuronal.",
         "2-title": "Entrenar modelos",
-        "2-description-1": "La herramienta cuenta con un visualizador de datos que permite mostrar las clases y los atributos del conjunto de datos. Así como un gestor para crear, diseñar, entrenar y exportar un modelo de datos.",
+        "2-description-1": "La herramienta cuenta con un visor de datos que permite mostrar las clases y los atributos del conjunto de datos. Así como un gestor para crear, diseñar, entrenar y exportar un modelo de datos.",
         "2-description-2": "A la izquierda contamos con un editor de las distintas capas que tiene la red neuronal. Se debe dejar que la ultima capa de la red tenga el mismo número de neuronas que clases a predecir.",
         "2-description-3": "<b>Number of epochs</b>: <br /> The number of iterations refers to the number of times the training data is presented to the neural network during the training process. Each iteration implies an update of the weights of the network as a function of the calculated error.",
         "2-description-4": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la tabla de abajo una entrada con el modelos entrenado.",
@@ -1983,7 +1983,7 @@
           "0": "La sección cuenta con la posibilidad subir tus conjuntos de datos, conjuntos de datos preparados, descripciones, herramientas de visualización gráficas y de estadísticas.",
           "1": "Cuenta con un generador de modelos de regresión. Gestiona capas de la red neuronal, hiperparámetros, funciones de optimización, funciones de perdida y de métricas. así como el selector de características.",
           "2": "Debemos pulsar el botón de \"Crear y entrenar modelo\" para que se inicie el proceso de entrenamiento de la red neuronal. Si toda la configuración y selección de las funciones es correcta entonces se añadirá en la la lista una entrada con el modelos entrenado.",
-          "3": "Para la predicción se usa el grafico de dispersión creando una linea"
+          "3": "Para la predicción se usa el gráfico de dispersión creando una linea"
         },
         "2-link": "Consulta más información en el siguiente <link1>enlace</link1>"
       },
@@ -2006,7 +2006,7 @@
         "1-description-1": "En la sección de la clasificación de imágenes podemos seleccionar entre dos ejemplos muy representativos de las redes neuronales. Estos son el modelo entrenado con el conjunto de imágenes MNIST y un modelo de clasificación de imágenes genérico. Concretamente:",
         "1-list": {
           "0": "MNIST, Clasificación de imágenes que detecta números.",
-          "1": "Mobilenet, clasificación de imágenes pertenecientes a 1001 categorías."
+          "1": "MobileNet, clasificación de imágenes pertenecientes a 1001 categorías."
         },
         "1-description-2": "En el modelo de MNIST se permite seleccionar entre una lista de imágenes que contienen un número, dibujar en un canvas el número a predecir o subir una imagen de un número.",
         "1-description-3": "En el modelo de MobileNet se han incluido una lista de imágenes de ejemplo que pueden ser seleccionadas o podemos subir una imagen que la red neuronal clasificará.",
@@ -2086,7 +2086,7 @@
           },
           "hard-sigmoid": {
             "title": "Hard Sigmoid",
-            "description": "Hardsigmoid es una versión simplificada de la función sigmoide utilizada para la eficiencia computacional.",
+            "description": "Hard Sigmoid es una versión simplificada de la función sigmoide utilizada para la eficiencia computacional.",
             "characteristics": {
               "0": "Es más rápida de calcular que la sigmoide.",
               "1": "Menos suave en la transición entre 0 y 1."
