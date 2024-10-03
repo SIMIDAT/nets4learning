@@ -72,7 +72,7 @@ export default function RegressionDatasetShow() {
 
   const updateDataFrameLocal = useCallback(async (_datasetSelected) => {
       if (!showDataset) {
-        console.debug('!showDataset')
+        if (VERBOSE) console.debug('!showDataset')
         return
       }
       const dataframe_processed = _datasetSelected.dataframe_processed

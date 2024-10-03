@@ -5,6 +5,7 @@
   "layer-id": "Layer {{index}}",
   "map_item": "<0></0>",
   "loading": "Cargando",
+  "Loading": "Cargando",
   "upload": "Subir",
   "example-i": "Ejemplo {{i}}",
   "Files": "Ficheros",

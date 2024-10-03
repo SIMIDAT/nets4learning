@@ -102,8 +102,6 @@ export async function createRegressionCustomModel (params) {
     callbacks     : fitCallbackHandlers,
   })
 
-  console.debug({history})
-
   return {
     model,
     history

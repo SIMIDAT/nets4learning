@@ -15,9 +15,10 @@ import FakeProgressBar from '@components/loading/FakeProgressBar'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import alertHelper from '@utils/alertHelper'
 import I_MODEL_OBJECT_DETECTION from './models/_model'
+import { delay } from '@/utils/utils'
 
 tfjs.setBackend('webgl').then(() => {
-  console.debug('setBackend: WebGL')
+  // console.debug('setBackend: WebGL')
 })
 
 /**
@@ -36,7 +37,10 @@ export default function ModelReviewObjectDetection({ dataset }) {
    * @type {ReturnType<typeof useState<'denied' | 'granted' | 'prompt'>>}
    */
   const [cameraPermission, setCameraPermission] = useState('prompt')
-  const [isProcessedImage, setIsProcessedImage] = useState(false)
+  const [processImage, setProcessImage] = useState({
+    isProcessing: false,
+    isProcessed : false,
+  })
 
   const [deviceId, setDeviceId] = useState('default')
   const [devices, setDevices] = useState([])
@@ -270,7 +274,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
   /**
    * 
    * @param {CanvasRenderingContext2D} ctx 
-   * @param {HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} input_img_or_video 
+   * @param {ImageData|HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} input_img_or_video 
    * @param {{ flipHorizontal: boolean }} config 
    */
   const processData = async (ctx, input_img_or_video, config) => {
@@ -340,10 +344,10 @@ export default function ModelReviewObjectDetection({ dataset }) {
     /**
      * @type {HTMLCanvasElement}
      */
-    const originalImageCanvas = document.getElementById('0_originalImageCanvas')
+    const originalImageCanvas = (/** @type {HTMLCanvasElement} */(document.getElementById('0_originalImageCanvas')))
     const originalImageCanvas_ctx = originalImageCanvas.getContext('2d')
 
-    const processImageCanvas = document.getElementById('1_processImageCanvas')
+    const processImageCanvas = (/** @type {HTMLCanvasElement} */(document.getElementById('1_processImageCanvas')))
     //const processImageCanvas_ctx = processImageCanvas.getContext('2d')
 
     const resultCanvas = canvasImage_ref.current
@@ -357,33 +361,39 @@ export default function ModelReviewObjectDetection({ dataset }) {
     await iModelRef.current.ENABLE_MODEL()
 
     async function draw() {
-      //const original_ratio = this.width / this.height
-      //let designer_ratio = designer_width / designer_height
-      //if (original_ratio > designer_ratio) {
-      //  designer_height = designer_width / original_ratio
-      //} else {
-      //  designer_width = designer_height * original_ratio
-      //}
-      //this.width = designer_width
-      //this.height = designer_height
-      const width = this.width
-      const height = this.height
 
-      originalImageCanvas.width = this.width
-      originalImageCanvas.height = this.height
+      try {
+        setProcessImage({
+          isProcessing: true,
+          isProcessed : false,
+        })
+        const width = this.width
+        const height = this.height
+        originalImageCanvas.width = this.width
+        originalImageCanvas.height = this.height
+        processImageCanvas.width = this.width
+        processImageCanvas.height = this.height
+        resultCanvas.width = this.width
+        resultCanvas.height = this.height
+        originalImageCanvas_ctx.drawImage(this, 0, 0, width, height)
+        const imgData = originalImageCanvas_ctx.getImageData(0, 0, width, width)
+        //await processData(processImageCanvas_ctx, imgData, { flipHorizontal: false })
+        resultCanvas_ctx.drawImage(this, 0, 0, width, height)
+        await processData(resultCanvas_ctx, imgData, { flipHorizontal: false })
+        await delay(2000)
+        
+      } catch (error) {
+        setProcessImage({
+          isProcessing: true,
+          isProcessed : false,
+        })
+      } finally {
+        setProcessImage({
+          isProcessing: false,
+          isProcessed : true,
+        })
+      }
 
-      processImageCanvas.width = this.width
-      processImageCanvas.height = this.height
-
-      resultCanvas.width = this.width
-      resultCanvas.height = this.height
-
-      originalImageCanvas_ctx.drawImage(this, 0, 0, width, height)
-      const imgData = originalImageCanvas_ctx.getImageData(0, 0, width, width)
-      //await processData(processImageCanvas_ctx, imgData, { flipHorizontal: false })
-      resultCanvas_ctx.drawImage(this, 0, 0, width, height)
-      await processData(resultCanvas_ctx, imgData, { flipHorizontal: false })
-      setIsProcessedImage(true)
     }
 
     function failed() {
@@ -468,7 +478,6 @@ export default function ModelReviewObjectDetection({ dataset }) {
                           type="switch"
                           id={'default-switch'}
                           reverse={true}
-                          size={'sm'}
                           name={'switch-webcam'}
                           label={t(
                             'datasets-models.2-object-detection.interface.process-webcam.button'
@@ -653,10 +662,13 @@ export default function ModelReviewObjectDetection({ dataset }) {
                       </Col>
                     </Row>
                     <hr />
+                    {processImage.isProcessing && <>
+                      <Trans>Loading</Trans>
+                    </>}
                     <Row
                       className={'mt-3'}
                       style={{
-                        display : isProcessedImage ? '' : 'none',
+                        display : processImage.isProcessed ? '' : 'none',
                         position: 'relative',
                         overflow: 'hidden',
                         // paddingBottom: '56.25%'

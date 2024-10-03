@@ -1,10 +1,11 @@
 {
   "welcome": "Welcome to Nets4Learning",
-  "welcome-2": "To continue select one of these disciplines",
+  "welcome-2": "To continue select one of these tasks",
   "list_map": "<1></1>",
   "layer-id": "Layer {{index}}",
   "map_item": "<0></0>",
   "loading": "Loading",
+  "Loading": "Loading",
   "upload": "Upload Image",
   "example-i": "Example {{i}}",
   "Files": "Files",
@@ -70,7 +71,7 @@
     "title-metrics": "Metric Features | Equations",
     "title-losses": "Loss functions | Equations",
     "title-activation": "Activation Features | Equations",
-    "title-optimization": "Optimization functions",
+    "title-optimization": "Optimization functions | Equations",
     "loss-functions": {
       "huber-loss": {
         "title": "Huber Loss",
@@ -298,7 +299,7 @@
     "analyze": "EDA"
   },
   "footer": {
-    "description-app": "Web platform for the design and execution of deep learning models.",
+    "description-app": "Web platform for the design and testing of deep learning models.",
     "about-us": "About us",
     "developers": "Developers",
     "directors": "Directors",
@@ -1427,7 +1428,7 @@
         "1-description-2": "It is a predictive task that has a discrete variable whose values are the different classes to which the element to be classified can belong.",
         "1-button": "Pre-trained models",
         "2-title": "Design, create and edit an network architecture",
-        "2-description-1": "Through this tool we can create a neuronal network to classify multi-class data.",
+        "2-description-1": "Through this tool we can create a neural network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
@@ -1470,7 +1471,7 @@
         "1-description-1": "The classification of images in the same way that the classical classification helps us to determine the class to which the dependent belongs according to one or more independent variables.",
         "1-button": "Pre-trained models",
         "2-title": "Design, create and edit an network architecture",
-        "2-description-1": "Through this tool we can create a neuronal network to classify multi-class data.",
+        "2-description-1": "Through this tool we can create a neural network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
           "1": "Define the number of layers, their activation functions.",
