@@ -72,7 +72,7 @@ keywords={Shape;Regression tree analysis;Face;Training;Boosting;Training data;Ve
 doi={10.1109/CVPR.2014.241}
 }
 `.trim()
-export const faceRecognitionModel_bitex = `
+export const faceRecognitionModel_bibtex = `
 @inproceedings{parkhi2015deep,
   title={Deep face recognition},
   author={Parkhi, Omkar M and Vedaldi, Andrea and Zisserman, Andrew},

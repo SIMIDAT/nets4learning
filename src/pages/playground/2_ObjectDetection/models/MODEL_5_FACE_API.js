@@ -2,7 +2,7 @@
 import * as faceapi from '@vladmandic/face-api/dist/face-api.esm-nobundle.js'
 import { Trans } from 'react-i18next'
 import I_MODEL_OBJECT_DETECTION from './_model'
-import { MTCNN_bibtex, SSD_bibtex, MobileNets_bibtex, tiny_bibtex, faceRecognitionModel_bitex } from './MODEL_5_FACE_API_INFO'
+import { MTCNN_bibtex, SSD_bibtex, MobileNets_bibtex, tiny_bibtex, faceRecognitionModel_bibtex } from './MODEL_5_FACE_API_INFO'
 
 
 export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
@@ -95,7 +95,7 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
           <li>
             <details>
               <summary>face_recognition_model (6.2MB)</summary>
-              <pre>{faceRecognitionModel_bitex}</pre>
+              <pre>{faceRecognitionModel_bibtex}</pre>
             </details>
           </li>
         </ol>
@@ -119,7 +119,6 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     ])
     // await faceapi.nets.faceLandmark68Net.load(modelPath);
     // await faceapi.nets.faceRecognitionNet.load(modelPath);
-    console.log('t', this.t)
 
     this.i18n_face_api = {
       years    : this.t('face-api.years'),
@@ -138,9 +137,9 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     if (input_image_or_video.constructor === ImageData) {
       _input = this._ImageData_To_Image(input_image_or_video)
     }
-    const minScore = 0.8
+    const minConfidence = 0.8
     const maxResults = 10
-    const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({ minConfidence: minScore, maxResults })
+    const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResults })
     const predictions = await faceapi
       .detectAllFaces(_input, optionsSSDMobileNet)
       .withAgeAndGender()
@@ -150,6 +149,11 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     return predictions
   }
 
+  /**
+   * 
+   * @param {CanvasRenderingContext2D} ctx 
+   * @param {faceapi.WithFaceExpressions<faceapi.WithAge<faceapi.WithGender<{detection: faceapi.FaceDetection;}>>>[]} predictions 
+   */
   RENDER(ctx, predictions = []) {
     const font = '32px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
     const font2 = '24px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
@@ -159,14 +163,14 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
       this._drawRect(ctx, x, y, width, height)
 
       let i = 0
-      for (const [expresion, score] of Object.entries(expressions)) {
+      for (const [expression, score] of Object.entries(expressions)) {
         const scoreParsed = Math.round(parseFloat(score) * 100)
-        const txt_expression = `${this.i18n_face_api[expresion]} ${scoreParsed}%`
+        const txt_expression = `${this.i18n_face_api[expression]} ${scoreParsed}%`
         this._drawTextBG_Opacity(ctx, txt_expression, font2, x + width, y + (38 * i), 12, scoreParsed < 20)
         i++
       }
 
-      const ageParsed = Math.round(parseFloat(age))
+      const ageParsed = Math.round(age)
       const txt = `${ageParsed} ${this.i18n_face_api['years']}`
       this._drawTextBG(ctx, txt, font, x, y - 48, 16)
     }

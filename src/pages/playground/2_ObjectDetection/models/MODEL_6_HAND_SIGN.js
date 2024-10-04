@@ -4,10 +4,11 @@ import * as handPoseDetection from '@tensorflow-models/hand-pose-detection'
 import * as handsignMultiligual from 'handsign-multilingual'
 import { Trans } from 'react-i18next'
 import { Container, Row, Col } from 'react-bootstrap'
+
+import * as _Types from '@/core/types'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { HandSignInfo } from './MODEL_6_HAND_SIGN_HandSignInfo'
 import { TFJS_handpose_bibtex } from './MODEL_6_HAND_SIGN_INFO'
-import * as _Types from '@/core/types'
 
 export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
   static KEY = 'HAND-SIGN'
@@ -16,7 +17,7 @@ export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
   URL = 'https://github.com/nonodev96/handsign-multilingual'
   mirror = true
   /**
-   * @type {_Types.AsyncReturnType<handPoseDetection.createDetector>} i
+   * @type {handPoseDetection.HandDetector}
    */
   _modelDetector = null
   /**
@@ -83,22 +84,24 @@ export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
     } else {
       HandSign = HandSignsASL
     }
-    const signos = Object.values(HandSign.signs)
+    const signs = Object.values(HandSign.signs)
     this.gestureEstimator = new fp.GestureEstimator([
       // fp.Gestures.ThumbsUpGesture,
       // fp.Gestures.VictoryGesture,
-      ...signos
+      ...signs
     ])
 
     const model = handPoseDetection.SupportedModels.MediaPipeHands
-    const detectorConfig = {
-      runtime     : 'mediapipe', // or 'tfjs',
+    /**
+     * @type {handPoseDetection.MediaPipeHandsMediaPipeModelConfig}
+     */
+    const modelConfig = {
+      runtime     : 'mediapipe',
       solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
       modelType   : 'full',
       maxHands    : 4
     }
-    this._modelDetector = await handPoseDetection.createDetector(model, detectorConfig)
-    // this._modelDetector = await handpose.load()
+    this._modelDetector = await handPoseDetection.createDetector(model, modelConfig)
   }
 
   /**
@@ -108,6 +111,7 @@ export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
    * @returns {Promise<handPoseDetection.Hand[]>}
    */
   async PREDICTION (input_image_or_video, config = { flipHorizontal: false }) {
+    if (this._modelDetector === null) return []
     return await this._modelDetector.estimateHands(input_image_or_video, { flipHorizontal: config.flipHorizontal })
   }
 
@@ -120,7 +124,7 @@ export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
     const font = '32px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
     for (const hand of predictions) {
       this._drawFinger(ctx, hand.keypoints)
-      const keypoints3D = hand.keypoints3D.map(({ x, y, z }) => [x, y, z])
+      const keypoints3D = (/** @type {keypoints3D[]} */(hand.keypoints3D.map(({ x, y, z }) => [x, y, z])))
       const estimatedGestures = this.gestureEstimator.estimate(keypoints3D, 7)
       const { x, y } = hand.keypoints[0]
       this._drawTextBG(ctx, `${estimatedGestures.gestures.map(({ name }) => name)}`, font, x, y, 16)

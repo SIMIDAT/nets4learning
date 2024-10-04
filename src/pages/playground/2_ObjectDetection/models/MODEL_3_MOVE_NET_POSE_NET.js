@@ -109,9 +109,8 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
     }
     /**
      * @type {poseDetection.PoseNetEstimationConfig}
-    */
-    // eslint-disable-next-line no-unused-vars
-    const estimationConfig__PoseNet = {
+     */
+    const _estimationConfig__PoseNet = {
       maxPoses      : 5,
       flipHorizontal: config.flipHorizontal,
       scoreThreshold: 0.3,
@@ -120,6 +119,11 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimatePoses(input_image_or_video, estimationConfig__MoveNet)
   }
 
+  /**
+   * 
+   * @param {CanvasRenderingContext2D} ctx 
+   * @param {poseDetection.Pose[]} poses 
+   */
   RENDER (ctx, poses) {
     const font = '24px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
     ctx.fillStyle = '#FF0902'

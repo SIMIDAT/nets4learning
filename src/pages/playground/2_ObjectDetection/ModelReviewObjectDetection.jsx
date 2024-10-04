@@ -50,6 +50,9 @@ export default function ModelReviewObjectDetection({ dataset }) {
    * @type {ReturnType<typeof useState<Ratio_t>>}
    */
   const [ratioCamera, setRatioCamera] = useState('ratio-16x9' )
+  /**
+   * @type {ReturnType<typeof useRef<number>>}
+   */
   const requestAnimation_ref = useRef()
   /**
    * @type {ReturnType<typeof useRef<HTMLDivElement>>}
@@ -225,7 +228,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
             then = now - (elapsed % fpsInterval)
             const _processWebcam = processWebcam()
             if (_processWebcam !== null)
-              await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: true })
+              await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: iModelRef.current.mirror })
           }
         }
       }
@@ -341,9 +344,6 @@ export default function ModelReviewObjectDetection({ dataset }) {
     }
     let files = _files
 
-    /**
-     * @type {HTMLCanvasElement}
-     */
     const originalImageCanvas = (/** @type {HTMLCanvasElement} */(document.getElementById('0_originalImageCanvas')))
     const originalImageCanvas_ctx = originalImageCanvas.getContext('2d')
 
@@ -352,10 +352,6 @@ export default function ModelReviewObjectDetection({ dataset }) {
 
     const resultCanvas = canvasImage_ref.current
     const resultCanvas_ctx = resultCanvas.getContext('2d')
-    //const { width, height } = document.getElementById('container-canvas').getBoundingClientRect()
-
-    //let designer_width = width
-    //let designer_height = height
 
     // For bug fix, you need to reload the model :/
     await iModelRef.current.ENABLE_MODEL()
@@ -379,7 +375,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
         const imgData = originalImageCanvas_ctx.getImageData(0, 0, width, width)
         //await processData(processImageCanvas_ctx, imgData, { flipHorizontal: false })
         resultCanvas_ctx.drawImage(this, 0, 0, width, height)
-        await processData(resultCanvas_ctx, imgData, { flipHorizontal: false })
+        await processData(resultCanvas_ctx, imgData, { flipHorizontal: !iModelRef.current.mirror })
         await delay(2000)
         
       } catch (error) {

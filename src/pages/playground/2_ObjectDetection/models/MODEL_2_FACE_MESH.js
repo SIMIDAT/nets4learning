@@ -10,6 +10,11 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection'
   mirror = true
 
+  /**
+   * @type {faceLandmarksDetection.FaceLandmarksDetector}
+   */
+  _modelDetector = null
+
   DESCRIPTION () {
     const prefix = 'datasets-models.2-object-detection.face-mesh.description.'
     return <>
@@ -64,15 +69,12 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
     </>
   }
 
-  /**
-   * @type {faceLandmarksDetection.FaceLandmarksDetector}
-   */
-  _modelDetector
-
   async ENABLE_MODEL () {
     const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
+    /**
+     * @type {faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig}
+     */
     const mediaPipeFaceMeshMediaPipeModelConfig = {
-      // runtime     : 'tfjs',
       runtime        : 'mediapipe',
       solutionPath   : 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
       refineLandmarks: true,
@@ -83,7 +85,7 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
 
   async PREDICTION (input_image_or_video, config = { flipHorizontal: false }) {
     if (this._modelDetector === null) return []
-    return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal })
+    return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal, staticImageMode: false })
   }
 
   /**

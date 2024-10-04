@@ -239,7 +239,7 @@
   "predict": "Predict",
   "cookies-policies": {
     "title": "Cookie Policy",
-    "text-0": "This website uses cookies to improve the user experience and analyze the use of the application. Cookies are small text files that are stored on your device when you visit our website. These cookies help us understand how users interact with our website, which pages are most visited and how we can improve the user experience.",
+    "text-0": "This website uses cookies to improve the user experience and analyse the use of the application. Cookies are small text files that are stored on your device when you visit our website. These cookies help us understand how users interact with our website, which pages are most visited and how we can improve the user experience.",
     "text-1": "It is important to note that we do not process user data for advertising purposes. We use cookies only for analytical purposes and to improve the functionality of the website. If you continue to use our website, we understand that you agree to the use of cookies as described in our privacy policy.",
     "accept": "Accept"
   },
@@ -575,7 +575,7 @@
           "details-0": {
             "title": "Information",
             "list": {
-              "0": "<b>MPG</b>: MPG is Miles Per Gallon. This is the amount of fuel consumed by the particular vehicle of an instance. This varable can also be used as the variable to be predicted for any car",
+              "0": "<b>MPG</b>: MPG is Miles Per Gallon. This is the amount of fuel consumed by the particular vehicle of an instance. This variable can also be used as the variable to be predicted for any car",
               "1": "<b>cylinders</b>: This attribute describes the number of cylinders of each car. This is a discrete valued attribute",
               "2": "<b>displacement</b>: This is another attribute of the vehicle which has a quantitative continuous value describing the engine displacement",
               "3": "<b>horsepower</b>: This attribute tells about the horsepower of a car and is a continuous valued variable",
@@ -987,7 +987,7 @@
       "coco-ssd": {
         "title": "COCO SSD - Object detector",
         "description": {
-          "text-0": "The SSD model (Single Shot Multibox Detection) of object detection aims to locate and identify multiple objects in a single image.",
+          "text-0": "The SSD model (Single Shot MultiBox Detection) of object detection aims to locate and identify multiple objects in a single image.",
           "text-1": "For more information about the tensorflow object detection API, consult this read in <link1> Tensorflow/Object_detection </link1>",
           "text-2": "This model detects objects defined in the COCO dataset, which is a set of detection, segmentation and subtitling of large -scale objects. The model is capable of detect",
           "text-3": "This example is an adaptation to tensorflow.js of the coconut model.",
@@ -1042,7 +1042,7 @@
       "hand-sign": {
         "title": "Sign language with Hand sign",
         "description": {
-          "text-0": "Neural network for hand and landmark detection, used in conjunction with position descriptors to classify possible Spanish Sign Language (SSL) signs.",
+          "text-0": "Neural network for hand and landmark detection, used in conjunction with position descriptors to classify possible American Sign Language (ASL) or Spanish Sign Language (SSL) signs.",
           "details-input": {
             "title": "Input data",
             "list": {
@@ -1099,7 +1099,7 @@
       "mnist": {
         "title": "MNIST - Number classification",
         "description": {
-          "text-0": "The <strong> mnist database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of machine learning.",
+          "text-0": "The <strong> MNIST database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of machine learning.",
           "text-1": "The samples of the original NIST data sets were created \"re-mixing\".",
           "text-2": "The NIST training dataset was taken from the United States Census Office. In addition, NIST's black and white images were normalized to fit into a <strong> 28 x 28 </strong> pixels and softened, which introduced gray scale levels.",
           "details-input": {
@@ -1308,7 +1308,7 @@
           "4": "Forecasting and projection: Line type charts are also used to make forecasts and projections based on historical data.\nBy looking at past trends, it is possible to infer and predict how data will behave in the future."
         },
         "end": {
-          "0": "Line graphs are a valuable tool for visualizing and analyzing the relationship and evolution of data over time or a continuous variable.\nThey allow you to identify trends, changes and patterns in the data, as well as make comparisons and forecasts.\nTheir clear and concise visual representation makes them an effective tool for communicating complex information in an understandable way."
+          "0": "\"Line graphs are a valuable tool for visualizing and analysing the relationship and evolution of data over time or a continuous variable.\nThey allow you to identify trends, changes and patterns in the data, as well as make comparisons and forecasts.\nTheir clear and concise visual representation makes them an effective tool for communicating complex information in an understandable way.\""
         }
       }
     },
@@ -1325,7 +1325,7 @@
           "1": "Identifying Dominant Categories: The relative sizes of the slices in the pie chart help to easily identify the dominant or most significant categories.\nThe largest sectors indicate the categories that have a greater proportion or contribution in relation to the others.",
           "2": "Comparison between categories: While pie charts are useful for showing the proportions of categories, they can be limited in making accurate comparisons between them.\nThis is because human perception can have difficulty accurately evaluating differences in angle or sector sizes.\nHowever, the relative comparison between sector sizes can still provide general information about the proportions between categories.",
           "3": "Representing Categorical Data: Pie charts are especially useful for representing categorical data, where the categories are mutually exclusive and have no inherent order.\nFor example, they can be used to show the percentage distribution of income across different expense categories.",
-          "4": "Improving Visual Presentation: Pie charts are commonly used in presentations and documents to communicate information in a visually appealing and easily understandable way.\nThe circular shape and colors used can quickly capture attention and highlight the proportional relationships between categories."
+          "4": "\"Improving Visual Presentation: Pie charts are commonly used in presentations and documents to communicate information in a visually appealing and easily understandable way.\nThe circular shape and colors used can quickly capture attention and highlight the proportional relationships between categories.\""
         },
         "end": {
           "0": "Pie charts are an effective tool for representing proportions and percentages of categories in a data set.\nThey allow the dominant categories to be identified and provide an attractive visual presentation.\nHowever, it is important to note its limitations in terms of accurate comparison between categories and its focus on categorical data."
@@ -1427,7 +1427,7 @@
         "1-description-1": "Classification is a task to determine the class to which an element (dependent variable) belongs from its characteristics (independent variables).",
         "1-description-2": "It is a predictive task that has a discrete variable whose values are the different classes to which the element to be classified can belong.",
         "1-button": "Pre-trained models",
-        "2-title": "Design, create and edit an network architecture",
+        "2-title": "Design, create and edit a network architecture",
         "2-description-1": "Through this tool we can create a neural network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
@@ -1442,7 +1442,7 @@
       },
       "regression": {
         "1-title": "Regression",
-        "2-title": "Design, create and edit an architecture",
+        "2-title": "Design, create and edit a network architecture",
         "1-description-1": "Regression is a task to determine a specific numerical value (dependent variable) from its characteristics (independent variables).",
         "1-description-2": "It is a predictive task that has a continuous variable as its output, where the aim is to find a straight line that best fits the data and allows predicting the numerical value of the dependent variable based on the independent variables.",
         "1-button": "Pre-trained models",
@@ -1470,7 +1470,7 @@
         "1-title": "Image classification",
         "1-description-1": "The classification of images in the same way that the classical classification helps us to determine the class to which the dependent belongs according to one or more independent variables.",
         "1-button": "Pre-trained models",
-        "2-title": "Design, create and edit an network architecture",
+        "2-title": "Design, create and edit a network architecture",
         "2-description-1": "Through this tool we can create a neural network to classify multi-class data.",
         "2-description-2": "To design, create, train, and evaluate a custom architecture, we must:",
         "2-description-list": {
@@ -1579,7 +1579,7 @@
               "title": "Create and train model",
               "text-0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
               "text-1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
-              "text-2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
+              "text-2": "The validation precision is important to detect the <i> overfitting </i> of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
             },
             "details-export-models": {
               "title": "Export model",
@@ -1785,7 +1785,7 @@
               "text": {
                 "0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
                 "1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
-                "2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
+                "2": "The validation precision is important to detect the <i> overfitting </i> of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
               }
             },
             "details-export-models": {
@@ -1889,7 +1889,7 @@
               "title": "Create and train model",
               "text-0": "Once all previous fields have been filled we can create the model by pressing the \"Create and train model\" button.",
               "text-1": "If we have trained the model with the metric function <i> Accuracy </i> two graphs will appear in the visor. The most relevant to us is that below, since at tensorflow.js, <i> ac </i> and <i> Val_acc </i> are evaluation metrics commonly used in training models of neural networks. <br /> <i> Acc </i> represents the precision (Accuracy) of the model in the training dataset. The precision is defined as the number of correct predictions divided by the total number of predictions. <br /> <i> Val_acc </i> represents the precision of the model in the validation dataset. Validation is used to evaluate the model capacity to generalize new data that has not been seen during training.",
-              "text-2": "The validation precision is important to detect the over juste (<i> over fitting </i>) of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
+              "text-2": "The validation precision is important to detect the <i> overfitting </i> of the model, which occurs when the model fits too much to training data and does not generalize well to new data."
             },
             "details-export-models": {
               "title": "Export model",
@@ -2030,9 +2030,9 @@
       },
       "tabular-classification": {
         "title": "Tabular classification",
-        "text-1": "Tabular classification is a type of supervised learning in which a set of labeled data is used to train a machine learning model, so that the model can predict the class of new data examples not used in training. In tabular classification, input and output data are represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
+        "text-1": "Tabular classification is a type of supervised learning in which a set of labelled data is used to train a machine learning model, so that the model can predict the class of new data examples not used in training. In tabular classification, input and output data are represented in the form of a table with rows and columns, where each row represents an instance or example of the data, and each column represents a characteristic or attribute of the data.",
         "text-2": "For example, if you want to predict whether a bank of a bank is solvent or not, the characteristics or attributes that can be used are: income, debts, credit history, age, etc. In the tabular classification, each instance or example of the data set will have values for each of these characteristics and a label (class) that indicates whether the client is solvent or not.",
-        "text-3": "Once you have a set of data labeled, an machine learning algorithm is used to train a model that can predict the label of new data sets. This model can be used to perform precise and fast predictions on new data instances.",
+        "text-3": "Once you have a set of data labeled, a machine learning algorithm is used to train a model that can predict the label of new data sets. This model can be used to perform precise and fast predictions on new data instances.",
         "text-4": "Tabular classification is a very useful technique to solve classification problems in a wide variety of fields, such as medicine, electronic commerce, banking, safety and many others."
       },
       "regression": {
@@ -2240,7 +2240,7 @@
         "title": "Loss functions",
         "text": {
           "0": "In machine learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
-          "1": "The objective of an machine learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
+          "1": "The objective of a machine learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
           "2": "In tensorflow.js there are different loss functions and the application of each of them depends on the type of problem we want to face. Some examples are shown below:"
         },
         "table": {
@@ -2416,9 +2416,9 @@
       "persons": "Capacity in terms of persons to carry",
       "lug_boot": "The size of luggage boot",
       "safety": "Estimated safety of the car",
-      "result": "Resultado",
+      "result": "Result",
       "unacc": "Unacceptable",
-      "acc": "Aceptable",
+      "acc": "Acceptable",
       "good": "Good",
       "vgood": "Very good"
     },

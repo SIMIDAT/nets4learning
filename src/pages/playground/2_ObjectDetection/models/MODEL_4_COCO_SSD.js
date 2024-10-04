@@ -11,6 +11,11 @@ export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = 'datasets-models.2-object-detection.coco-ssd.title'
   mirror = false
 
+  /**
+   * @type {coCoSsdDetection.ObjectDetection}
+   */
+  _modelDetector = null
+
   DESCRIPTION() {
     const prefix = 'datasets-models.2-object-detection.coco-ssd.description.'
     return <>
@@ -86,15 +91,22 @@ export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
 
   async PREDICTION (input_image_or_video, _config = { }) {
     if (this._modelDetector === null) return []
-    return await this._modelDetector.detect(input_image_or_video)
+    const maxNumBoxes = 20
+    const minScore = 0.5
+    return await this._modelDetector.detect(input_image_or_video, maxNumBoxes, minScore)
   }
 
+  /**
+   * 
+   * @param {CanvasRenderingContext2D} ctx 
+   * @param {coCoSsdDetection.DetectedObject[]} predictions 
+   */
   RENDER(ctx, predictions) {
     let scoreParsed = 0
     const font = '16px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
 
     predictions.forEach(({ score, class: _class, bbox }) => {
-      scoreParsed = Math.round(parseFloat(score) * 100)
+      scoreParsed = Math.round(parseFloat(score.toFixed(2)) * 100)
       this._drawRect(ctx, bbox[0], bbox[1], bbox[2], bbox[3])
       this._drawTextBG(ctx, `${_class.toUpperCase()} with ${scoreParsed}% confidence`, font, bbox[0], bbox[1], 20)
     })

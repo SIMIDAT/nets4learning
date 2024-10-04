@@ -1,7 +1,9 @@
 import React from 'react'
-import I_MODEL_OBJECT_DETECTION from './_model'
 import * as faceDetection from '@tensorflow-models/face-detection'
 import { Trans } from 'react-i18next'
+
+import * as _Types from '@/core/types'
+import I_MODEL_OBJECT_DETECTION from './_model'
 
 export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
   static KEY = 'FACE-DETECTOR'
@@ -9,6 +11,11 @@ export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = 'datasets-models.2-object-detection.face-detection.title'
   URL = ''
   mirror = true
+
+  /**
+   * @type {faceDetection.FaceDetector}
+   */
+  _modelDetector = null
 
   DESCRIPTION () {
     const prefix = 'datasets-models.2-object-detection.face-detection.description.'
@@ -67,11 +74,13 @@ export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
 
   async ENABLE_MODEL () {
     const model = faceDetection.SupportedModels.MediaPipeFaceDetector
+    /**
+     * @type {faceDetection.MediaPipeFaceDetectorMediaPipeModelConfig}
+     */
     const mediaPipeFaceDetectorMediaPipeModelConfig = {
-      // runtime  : 'tfjs', // this is a bug  tfjs is too fast that can't render correct
       runtime     : 'mediapipe',
       solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
-      modelType   : 'short',
+      modelType   : 'full',
       maxFaces    : 4,
     }
     this._modelDetector = await faceDetection.createDetector(model, mediaPipeFaceDetectorMediaPipeModelConfig)
@@ -82,7 +91,11 @@ export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal })
   }
 
-  // https://stackoverflow.com/questions/22943186/html5-canvas-font-size-based-on-canvas-size
+  /**
+   * 
+   * @param {CanvasRenderingContext2D} ctx 
+   * @param {faceDetection.Face[]} faces 
+   */
   RENDER (ctx, faces) {
     const font = '20px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
 
