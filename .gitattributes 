@@ -1,4 +1,14 @@
 * text=auto
-*.jsx eol=lf
-*.js eol=lf
-*.css eol=lf
+*.txt   eol=lf
+*.jsx   eol=lf
+*.js    eol=lf
+*.css   eol=lf
+*.scss  eol=lf
+*.md    eol=lf
+*.names eol=lf
+*.data  eol=lf
+*.yml   eol=lf
+*.json  eol=lf
+*.svg   eol=lf
+*.csv   eol=lf
+*.html  eol=lf

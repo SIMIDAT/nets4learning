@@ -18,7 +18,7 @@ import I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@/utils/utils'
 
 tfjs.setBackend('webgl').then(() => {
-  // console.debug('setBackend: WebGL')
+  console.debug('setBackend: WebGL')
 })
 
 /**
@@ -72,11 +72,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
   const canvasImage_ref = useRef(null)
 
   useEffect(() => {
-    ReactGA.send({
-      hitType: 'pageview',
-      page   : '/ModelReviewObjectDetection/' + dataset,
-      title  : dataset,
-    })
+    ReactGA.send({hitType: 'pageview', page: `/ModelReviewObjectDetection/${dataset}`, title: dataset })
   }, [dataset])
 
   const handleDevices = useCallback(async () => {
@@ -141,19 +137,16 @@ export default function ModelReviewObjectDetection({ dataset }) {
   }, [isWebView, handleDevices])
 
   useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[dataset, t]')
-
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     async function init() {
       await tfjs.ready()
       if (tfjs.getBackend() !== 'webgl') {
-        console.error(
-          'Error tensorflow backend webgl not installed in your browser'
-        )
+        console.error('Error tensorflow backend webgl not installed in your browser')
         return
       }
       try {
         if (dataset === UPLOAD) {
-          console.error('Error, data set not valid')
+          console.error('Error, option not valid')
         } else if (dataset in MAP_OD_CLASSES) {
           const _iModelClass = MAP_OD_CLASSES[dataset]
           iModelRef.current = new _iModelClass(t)

@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import * as tf from '@tensorflow/tfjs'
+import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import ReactGA from 'react-ga4'
@@ -68,7 +68,7 @@ export default function ImageClassification (props) {
 
   const joyrideButton_ref = useRef({})
   /**
-   * @type {ReturnType<typeof useState<tf.Sequential>>}
+   * @type {ReturnType<typeof useState<tfjs.Sequential>>}
    */
   const [Model, setModel] = useState(null)
 
@@ -84,11 +84,15 @@ export default function ImageClassification (props) {
   const [GeneratedModels, setGeneratedModels] = useState([])
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: '/ImageClassification/' + dataset, title: dataset })
+    ReactGA.send({ hitType: 'pageview', page: `/ImageClassification/${dataset}`, title: dataset })
+  }, [dataset])
 
+  useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t ]')
     const init = async () => {
+      await tfjs.ready()
       if (dataset === UPLOAD) {
-        // TODO
+        console.error('Error, upload not valid')
       } else if (dataset in MAP_IC_CLASSES) {
         const _iModelClass = MAP_IC_CLASSES[dataset]
         iModelInstance.current = new _iModelClass(t)
@@ -101,7 +105,6 @@ export default function ImageClassification (props) {
       .then(() => {
         if (VERBOSE) console.debug('End init Image classification')
       })
-
     return () => { tfvis.visor().close() }
   }, [dataset, t])
 
@@ -169,7 +172,7 @@ export default function ImageClassification (props) {
       arr = [arr]
       // Meter el arreglo en otro arreglo porque si no tio tensorflow se enoja >:(
       // Nah básicamente Debe estar en un arreglo nuevo en el índice 0, por ser un tensor4d en forma 1, 28, 28, 1
-      const tensor4 = tf.tensor4d(arr)
+      const tensor4 = tfjs.tensor4d(arr)
       const resultados = Model.predict(tensor4).dataSync()
       const mayorIndice = resultados.indexOf(Math.max.apply(null, resultados))
       await alertHelper.alertInfo(t('info.the-class-is-__value__', { value: mayorIndice }))
@@ -201,7 +204,7 @@ export default function ImageClassification (props) {
       arr = [arr]
       // Meter el arreglo en otro arreglo porque si no tio tensorflow se enoja >:(
       //Nah básicamente Debe estar en un arreglo nuevo en el índice 0, por ser un tensor4d en forma 1, 28, 28, 1
-      const tensor4 = tf.tensor4d(arr)
+      const tensor4 = tfjs.tensor4d(arr)
       const resultados = Model.predict(tensor4).dataSync()
       const mayorIndice = resultados.indexOf(Math.max.apply(null, resultados))
 
@@ -348,7 +351,8 @@ export default function ImageClassification (props) {
           <Col className={'joyride-step-9-classify'}>
             <ImageClassificationClassify handleSubmit_VectorTest={handleSubmit_VectorTest}
                                          handleChange_FileUpload={handleChange_FileUpload}
-                                         handleSubmit_VectorTestImageUpload={handleSubmit_VectorTestImageUpload} />
+                                         handleSubmit_VectorTestImageUpload={handleSubmit_VectorTestImageUpload}
+                                         GeneratedModels={GeneratedModels} />
           </Col>
         </Row>
 

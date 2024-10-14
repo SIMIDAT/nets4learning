@@ -60,8 +60,12 @@ export default function ModelReviewTabularClassification (props) {
 
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: `/ModelReviewTabularClassification/${dataset}`, title: dataset })
+  }, [dataset])
 
-    async function init () {
+  useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[init]')
+    const init = async () => {
+      await tfjs.ready()
       if (!(dataset in MAP_TC_CLASSES)) {
         await alertHelper.alertError('Error, option not valid')
         // Redirect to 404

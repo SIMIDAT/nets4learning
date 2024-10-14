@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
 import * as dfd from 'danfojs'
+import * as tfjs from '@tensorflow/tfjs'
 
 import * as _Types from '@/core/types'
 import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_INSTANCE } from '@/CONSTANTS'
@@ -66,12 +67,13 @@ export default function ModelReviewRegression ({ dataset }) {
 
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: '/ModelReviewRegression/' + dataset, title: dataset, })
+    ReactGA.send({ hitType: 'pageview', page: `/ModelReviewRegression/${dataset}`, title: dataset, })
   }, [dataset])
 
   useEffect(() => {
-    if(VERBOSE) console.debug('useEffect[dataset, t]')
+    if(VERBOSE) console.debug('useEffect[init][ dataset, t ]')
     const init = async () => {
+      await tfjs.ready()
       if (dataset === UPLOAD) {
         console.warn('Error, option not valid', { ID: dataset })
       } else if (dataset in MAP_LR_CLASSES) {
@@ -82,7 +84,6 @@ export default function ModelReviewRegression ({ dataset }) {
           data : _datasets,
           index: 0
         })
-        
       } else {
         console.error('Error, option not valid', { ID: dataset })
         history.push('/404')
@@ -92,7 +93,9 @@ export default function ModelReviewRegression ({ dataset }) {
   }, [dataset, t, history])
 
   useEffect(() => {
-    async function init () {
+    if (VERBOSE) console.debug('useEffect[init][ listDatasets ]')
+    const init = async () => {
+      await tfjs.ready()
       if (listDatasets.index !== DEFAULT_SELECTOR_DATASET && listDatasets.data.length > 0 && iModelInstance_ref.current) {
         const _models = (await iModelInstance_ref.current.MODELS(listDatasets.data[listDatasets.index].csv))
         setListCustomModels({
@@ -106,8 +109,9 @@ export default function ModelReviewRegression ({ dataset }) {
   }, [listDatasets])
 
   useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[ datasets, datasets.data, datasets.index, models, models.data, models.index ]')
-    async function init () {
+    if (VERBOSE) console.debug('useEffect[init][ datasets, datasets.data, datasets.index, models, models.data, models.index ]')
+    const init = async () => {
+      await tfjs.ready()
       if (listCustomModels.index !== DEFAULT_SELECTOR_MODEL && listCustomModels.data.length > 0) {
         const dataset_processed = (/**@type {_Types.DatasetProcessed_t}*/ (listDatasets.data[listDatasets.index]))
         const { dataframe_original, /* data_processed */ } = dataset_processed

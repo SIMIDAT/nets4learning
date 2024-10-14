@@ -5,6 +5,7 @@ import { Bar } from 'react-chartjs-2'
 import * as _chartjs from 'chart.js'
 import { useHistory } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
+import * as tfjs from '@tensorflow/tfjs'
 import ReactGA from 'react-ga4'
 
 import alertHelper from '@utils/alertHelper'
@@ -81,11 +82,13 @@ export default function ModelReviewImageClassification ({ dataset }) {
   }
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: '/ModelReviewImageClassification/' + dataset, title: dataset })
+    ReactGA.send({ hitType: 'pageview', page: `/ModelReviewImageClassification/${dataset}`, title: dataset })
   }, [dataset])
 
   useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
+      await tfjs.ready()
       if (dataset === UPLOAD) {
         console.error('Error, data set not valid')
       } else if (dataset in MAP_IC_CLASSES) {

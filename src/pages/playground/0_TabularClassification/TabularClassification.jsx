@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
-import * as dfd from 'danfojs'
+import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
@@ -45,12 +45,12 @@ import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 /**
  * @typedef {Object | null} DataProcessedState_t
- * @property {dfd.DataFrame} dataframeProcessed
+ * @property {_dfd.DataFrame} dataframeProcessed
  * @property {string} column_name_target
- * @property {dfd.DataFrame} X
- * @property {dfd.DataFrame} y
- * @property {dfd.MinMaxScaler|dfd.StandardScaler} scaler
- * @property {Object.<string, dfd.LabelEncoder>} map_encoder
+ * @property {_dfd.DataFrame} X
+ * @property {_dfd.DataFrame} y
+ * @property {_dfd.MinMaxScaler|_dfd.StandardScaler} scaler
+ * @property {Object.<string, _dfd.LabelEncoder>} map_encoder
  * @property {Array} attributes
  * @property {Array<string>} classes
  */
@@ -143,13 +143,15 @@ export default function TabularClassification (props) {
   const joyrideButton_ref = useRef({})
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: '/TabularClassification/' + dataset, title: dataset })
+    ReactGA.send({ hitType: 'pageview', page: `/TabularClassification/${dataset}`, title: dataset })
+  }, [dataset])
 
+  useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
+      await tfjs.ready()
       if (dataset === UPLOAD) {
-        // TODO
-        const df = new dfd.DataFrame()
-        if (VERBOSE) console.debug(df)
+        console.info('ENABLE Upload csv | TabularClassification')
       } else if (dataset in MAP_TC_CLASSES) {
         const _iModelClass = MAP_TC_CLASSES[dataset]
         iModelInstance.current = new _iModelClass(t)
@@ -166,7 +168,6 @@ export default function TabularClassification (props) {
       .then(() => {
         if (VERBOSE) console.debug('end init Tabular classification')
       })
-
     return () => { tfvis.visor().close() }
   }, [dataset, t, history])
 

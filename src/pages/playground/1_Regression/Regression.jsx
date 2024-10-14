@@ -4,6 +4,7 @@ import { useHistory, Link } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
+import * as tfjs from '@tensorflow/tfjs'
 
 import { DEFAULT_SELECTOR_DATASET, VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
@@ -87,6 +88,61 @@ export default function Regression(props) {
    */
   const joyrideButton_ref = useRef({})
 
+  
+  useEffect(() => {
+    ReactGA.send({ hitType: 'pageview', page: `/Regression/${dataset}`, title: dataset })
+  }, [dataset])
+
+  useEffect(() => {
+    setReady(datasets && datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET && datasets.index >= 0)
+  }, [setReady, datasets])
+
+  useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history ]')
+    const init = async () => {
+      await tfjs.ready()
+      if (dataset === UPLOAD) {
+        console.debug('ENABLE Upload csv | Regression')
+      } else if (dataset in MAP_LR_CLASSES) {
+        /** @type {_Types.I_MODEL_REGRESSION_t} */
+        const _iModelInstance = new MAP_LR_CLASSES[dataset](t, setAccordionActive)
+        const _datasets = await _iModelInstance.DATASETS()
+        setIModelInstance(_iModelInstance)
+        setDatasets(() => {
+          return {
+            data : _datasets,
+            index: 0
+          }
+        })
+      } else {
+        await alertHelper.alertError('Error in selection of model')
+        console.error('Error, option not valid', { ID: dataset })
+        history.push('/404')
+      }
+    }
+    init().then(() => undefined)
+  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history])
+
+
+  useEffect(() => {
+    if (dataset === UPLOAD) {
+      console.debug('Regression upload csv')
+    } else if (dataset in MAP_LR_CLASSES) {
+      if (iModelInstance
+        && datasets 
+        && datasets.data 
+        && datasets.index != DEFAULT_SELECTOR_DATASET 
+        && datasets.data[datasets.index] 
+        && datasets.data[datasets.index].csv
+      ) {
+        setParams((prevState) => ({
+          ...prevState,
+          params_layers: iModelInstance.DEFAULT_LAYERS(datasets.data[datasets.index].csv)
+        }))
+      }
+    }
+  }, [dataset, iModelInstance, datasets, setParams])
+  
   const TrainModel = async () => {
     const dataset_processed = datasets.data[datasets.index]
     const { model, history } = await createRegressionCustomModel({
@@ -141,58 +197,6 @@ export default function Regression(props) {
       setIsTraining(false) 
     }
   }
-
-  useEffect(() => {
-    setReady(datasets && datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET && datasets.index >= 0)
-  }, [setReady, datasets])
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[init]')
-    ReactGA.send({ hitType: 'pageview', page: '/Regression/' + dataset, title: dataset })
-    const init = async () => {
-      if (dataset === UPLOAD) {
-        // TODO
-        console.debug('regression upload csv')
-      } else if (dataset in MAP_LR_CLASSES) {
-        /** @type {_Types.I_MODEL_REGRESSION_t} */
-        const _iModelInstance = new MAP_LR_CLASSES[dataset](t, setAccordionActive)
-        const _datasets = await _iModelInstance.DATASETS()
-        setIModelInstance(_iModelInstance)
-        setDatasets(() => {
-          return {
-            data : _datasets,
-            index: 0
-          }
-        })
-      } else {
-        await alertHelper.alertError('Error in selection of model')
-        console.error('Error, option not valid', { ID: dataset })
-        history.push('/404')
-      }
-    }
-    init().then(() => undefined)
-  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history])
-
-
-  useEffect(() => {
-    if (dataset === UPLOAD) {
-      console.debug('Regression upload csv')
-    } else if (dataset in MAP_LR_CLASSES) {
-      if (iModelInstance
-        && datasets 
-        && datasets.data 
-        && datasets.index != DEFAULT_SELECTOR_DATASET 
-        && datasets.data[datasets.index] 
-        && datasets.data[datasets.index].csv
-      ) {
-        setParams((prevState) => ({
-          ...prevState,
-          params_layers: iModelInstance.DEFAULT_LAYERS(datasets.data[datasets.index].csv)
-        }))
-      }
-    }
-  }, [dataset, iModelInstance, datasets, setParams])
-
 
   const accordionToggle = (value) => {
     const copy = JSON.parse(JSON.stringify(accordionActive))
