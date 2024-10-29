@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useId } from 'react'
 import { useParams } from 'react-router'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
@@ -25,7 +25,7 @@ export default function ModelReviewRegression ({ dataset }) {
    * @type {ReturnType<typeof useParams<{id: string}>>}
    */
   const { id } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const prefix = 'pages.playground.1-regression.'
   const { t } = useTranslation()
@@ -86,11 +86,11 @@ export default function ModelReviewRegression ({ dataset }) {
         })
       } else {
         console.error('Error, option not valid', { ID: dataset })
-        history.push('/404')
+        navigate('/404')
       }
     }
     init().then(() => undefined)
-  }, [dataset, t, history])
+  }, [dataset, t, navigate])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ listDatasets ]')

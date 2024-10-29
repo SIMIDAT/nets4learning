@@ -7,7 +7,7 @@ import { DEFAULT_ID_LOSS, DEFAULT_ID_METRICS, DEFAULT_ID_OPTIMIZATION, DEFAULT_L
 import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
-export default function TabularClassificationEditorHyperparameters (props) {
+export default function TabularClassificationEditorHyperparameters(props) {
 
   const {
     setLearningRate,
@@ -52,13 +52,14 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'learning-rate'} />
           </Form.Label>
-          <Form.Control type="number"
-                        min={1}
-                        max={100}
-                        required={true}
-                        placeholder={t(prefix + 'learning-rate-placeholder')}
-                        defaultValue={DEFAULT_LEARNING_RATE}
-                        onChange={handleChange_LearningRate} />
+          <Form.Control
+            type="number"
+            min={1}
+            max={100}
+            required={true}
+            placeholder={t(prefix + 'learning-rate-placeholder')}
+            defaultValue={DEFAULT_LEARNING_RATE}
+            onChange={handleChange_LearningRate} />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'learning-rate-info'} />
           </Form.Text>
@@ -69,13 +70,14 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'number-of-epochs'} />
           </Form.Label>
-          <Form.Control type="number"
-                        min={1}
-                        max={100}
-                        required={true}
-                        placeholder={t(prefix + 'number-of-epochs')}
-                        defaultValue={DEFAULT_NUMBER_EPOCHS}
-                        onChange={handleChange_NumberEpochs} />
+          <Form.Control
+            type="number"
+            min={1}
+            max={100}
+            required={true}
+            placeholder={t(prefix + 'number-of-epochs')}
+            defaultValue={DEFAULT_NUMBER_EPOCHS}
+            onChange={handleChange_NumberEpochs} />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'number-of-epochs-info'} />
           </Form.Text>
@@ -86,13 +88,14 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'train-rate'} />
           </Form.Label>
-          <Form.Control type="number"
-                        min={1}
-                        max={100}
-                        required={true}
-                        placeholder={t(prefix + 'train-rate-placeholder')}
-                        defaultValue={DEFAULT_TEST_SIZE}
-                        onChange={handleChange_TestSize} />
+          <Form.Control
+            type="number"
+            min={1}
+            max={100}
+            required={true}
+            placeholder={t(prefix + 'train-rate-placeholder')}
+            defaultValue={DEFAULT_TEST_SIZE}
+            onChange={handleChange_TestSize} />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'train-rate-info'} />
           </Form.Text>
@@ -103,9 +106,10 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'optimizer-id'} />
           </Form.Label>
-          <Form.Select aria-label="Default select example"
-                       defaultValue={DEFAULT_ID_OPTIMIZATION}
-                       onChange={handleChange_IdOptimizer}>
+          <Form.Select
+            aria-label="Default select example"
+            defaultValue={DEFAULT_ID_OPTIMIZATION}
+            onChange={handleChange_IdOptimizer}>
             {TYPE_OPTIMIZER.map(({ key, label }, index) => {
               return (<option key={index} value={key}>{label}</option>)
             })}
@@ -120,9 +124,11 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'loss-id'} />
           </Form.Label>
-          <Form.Select aria-label="Selecciona la función de pérdida"
-                       defaultValue={DEFAULT_ID_LOSS}
-                       onChange={handleChange_IdLoss}>
+          <Form.Select
+            aria-label="Selecciona la función de pérdida"
+            defaultValue={DEFAULT_ID_LOSS}
+            onChange={handleChange_IdLoss}
+          >
             <optgroup label={'Losses'}>
               {TYPE_LOSSES.map(({ key, label }, index) => {
                 return (<option key={index} value={'losses-' + key}>{label}</option>)
@@ -144,10 +150,12 @@ export default function TabularClassificationEditorHyperparameters (props) {
           <Form.Label>
             <Trans i18nKey={prefix + 'metrics-id'} />
           </Form.Label>
-          <Form.Select aria-label="Selecciona la métrica"
-                       defaultValue={DEFAULT_ID_METRICS}
-                       disabled={true}
-                       onChange={handleChange_IdMetrics}>
+          <Form.Select
+            aria-label="Selecciona la métrica"
+            defaultValue={DEFAULT_ID_METRICS}
+            disabled={true}
+            onChange={handleChange_IdMetrics}
+          >
             {TYPE_METRICS.map(({ key, label }, index) => {
               return (<option key={index} value={key}>{label}</option>)
             })}
@@ -159,30 +167,31 @@ export default function TabularClassificationEditorHyperparameters (props) {
       </Card.Body>
       <Card.Footer className={'text-end'}>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-link'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/glossary/',
-                                  state   : {
-                                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_4_HYPERPARAMETERS,
-                                  },
-                                }}
-                   />,
-                 }} />
+          <Trans
+            i18nKey={'more-information-in-link'}
+            components={{
+              link1: <Link className={'text-info'}
+                state={{
+                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_4_HYPERPARAMETERS,
+                }}
+                to={{
+                  pathname: '/glossary/',
+                }} />,
+            }} />
         </p>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-tutorial'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/manual/',
-                                  state   : {
-                                    action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_4_HYPERPARAMETERS,
-                                  },
-                                }}
-                   />,
-                 }} />
+          <Trans
+            i18nKey={'more-information-in-tutorial'}
+            components={{
+              link1: <Link
+                className={'text-info'}
+                state={{
+                  action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_4_HYPERPARAMETERS,
+                }}
+                to={{
+                  pathname: '/manual/',
+                }} />,
+            }} />
         </p>
       </Card.Footer>
     </Card>

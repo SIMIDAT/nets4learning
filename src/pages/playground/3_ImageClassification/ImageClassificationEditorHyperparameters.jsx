@@ -15,7 +15,7 @@ import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 import alertHelper from '@utils/alertHelper'
 
-export default function ImageClassificationEditorHyperparameters (props) {
+export default function ImageClassificationEditorHyperparameters(props) {
   const {
     setLearningRate,
     setNumberEpochs,
@@ -75,12 +75,12 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="formTrainRate">
           <Form.Label><Trans i18nKey={prefix + 'learning-rate'} /></Form.Label>
           <Form.Control type="number"
-                        inputMode={'numeric'}
-                        min={1}
-                        max={100}
-                        placeholder={t(prefix + 'learning-rate-placeholder')}
-                        defaultValue={DEFAULT_LEARNING_RATE}
-                        onChange={(e) => handleChange_LearningRate(e)} />
+            inputMode={'numeric'}
+            min={1}
+            max={100}
+            placeholder={t(prefix + 'learning-rate-placeholder')}
+            defaultValue={DEFAULT_LEARNING_RATE}
+            onChange={(e) => handleChange_LearningRate(e)} />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'learning-rate-info'} />
           </Form.Text>
@@ -90,11 +90,11 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="FormNumberOfEpochs">
           <Form.Label><Trans i18nKey={prefix + 'number-of-epochs'} /></Form.Label>
           <Form.Control type="number"
-                        min={1}
-                        max={100}
-                        placeholder={t(prefix + 'number-of-epochs-placeholder')}
-                        defaultValue={DEFAULT_NUMBER_EPOCHS}
-                        onChange={(e) => handleChange_NumberEpochs(e)}
+            min={1}
+            max={100}
+            placeholder={t(prefix + 'number-of-epochs-placeholder')}
+            defaultValue={DEFAULT_NUMBER_EPOCHS}
+            onChange={(e) => handleChange_NumberEpochs(e)}
           />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'number-of-epochs-info'} />
@@ -105,12 +105,12 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="FormTestSize">
           <Form.Label><Trans i18nKey={prefix + 'test-size'} /></Form.Label>
           <Form.Control type="number"
-                        inputMode={'numeric'}
-                        min={1}
-                        max={100}
-                        placeholder={t(prefix + 'test-size-placeholder')}
-                        defaultValue={DEFAULT_TEST_SIZE}
-                        onChange={(e) => handleChange_TestSize(e)}
+            inputMode={'numeric'}
+            min={1}
+            max={100}
+            placeholder={t(prefix + 'test-size-placeholder')}
+            defaultValue={DEFAULT_TEST_SIZE}
+            onChange={(e) => handleChange_TestSize(e)}
           />
           <Form.Text className="text-muted">
             <Trans i18nKey={prefix + 'test-size-info'} />
@@ -122,8 +122,8 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="FormOptimizer">
           <Form.Label><Trans i18nKey={prefix + 'optimizer-id'} /></Form.Label>
           <Form.Select aria-label={t(prefix + 'optimizer-id-info')}
-                       defaultValue={DEFAULT_ID_OPTIMIZATION}
-                       onChange={handleChange_Optimization}>
+            defaultValue={DEFAULT_ID_OPTIMIZATION}
+            onChange={handleChange_Optimization}>
             {TYPE_OPTIMIZER.map(({ key, label }, _index) => {
               return (<option key={_index} value={key}>{label}</option>)
             })}
@@ -138,8 +138,8 @@ export default function ImageClassificationEditorHyperparameters (props) {
         <Form.Group className="mb-3" controlId="FormLoss">
           <Form.Label><Trans i18nKey={prefix + 'loss-id'} /></Form.Label>
           <Form.Select aria-label={t(prefix + 'loss-id-info')}
-                       defaultValue={DEFAULT_ID_LOSS}
-                       onChange={handleChange_Loss}>
+            defaultValue={DEFAULT_ID_LOSS}
+            onChange={handleChange_Loss}>
             <optgroup label={'Losses'}>
               {TYPE_LOSSES.map(({ key, label }, index) => {
                 return (<option key={index} value={'losses-' + key}>{label}</option>)
@@ -163,22 +163,22 @@ export default function ImageClassificationEditorHyperparameters (props) {
             return <Accordion.Item key={index} eventKey={index.toString()}>
               <Accordion.Header>
                 <Trans i18nKey={prefix + 'metric-id-__index__'}
-                       values={{ index: index + 1 }} />
+                  values={{ index: index + 1 }} />
               </Accordion.Header>
               <Accordion.Body>
                 <div className="d-grid gap-2">
                   <Button variant={'outline-danger'}
-                          onClick={() => handlerClick_RemoveMetric(index)}>
+                    onClick={() => handlerClick_RemoveMetric(index)}>
                     <Trans i18nKey={prefix + 'delete-metric'}
-                           values={{ index: index + 1 }} />
+                      values={{ index: index + 1 }} />
                   </Button>
                 </div>
 
                 <Form.Group className="mb-3" controlId={`FormMetrics_${index}`}>
                   <Form.Label><Trans i18nKey={prefix + 'metric-id-select'} /></Form.Label>
                   <Form.Select aria-label={t(prefix + 'metrics-id-info')}
-                               value={value}
-                               onChange={(e) => handleChange_Metrics(e, index)}>
+                    value={value}
+                    onChange={(e) => handleChange_Metrics(e, index)}>
                     {TYPE_METRICS.map(({ key, label }, _index) => {
                       return (<option key={_index} value={key}>{label}</option>)
                     })}
@@ -195,30 +195,33 @@ export default function ImageClassificationEditorHyperparameters (props) {
       </Card.Body>
       <Card.Footer className={'text-end'}>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-link'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/glossary/',
-                                  state   : {
-                                    action: GLOSSARY_ACTIONS.IMAGE_CLASSIFICATION.STEP_4_HYPERPARAMETERS
-                                  }
-                                }}
-                   />
-                 }} />
+          <Trans
+            i18nKey={'more-information-in-link'}
+            components={{
+              link1: <Link
+                className={'text-info'}
+                state={{
+                  action: GLOSSARY_ACTIONS.IMAGE_CLASSIFICATION.STEP_4_HYPERPARAMETERS
+                }} 
+                to={{
+                  pathname: '/glossary/',
+                }}
+              />
+            }} />
         </p>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-tutorial'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/manual/',
-                                  state   : {
-                                    action: MANUAL_ACTIONS.IMAGE_CLASSIFICATION.STEP_4_HYPERPARAMETERS
-                                  }
-                                }}
-                   />
-                 }} />
+          <Trans
+            i18nKey={'more-information-in-tutorial'}
+            components={{
+              link1: <Link
+                className={'text-info'}
+                state={{
+                  action: MANUAL_ACTIONS.IMAGE_CLASSIFICATION.STEP_4_HYPERPARAMETERS
+                }}
+                to={{
+                  pathname: '/manual/',
+                }} />
+            }} />
         </p>
       </Card.Footer>
     </Card>

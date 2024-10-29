@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col, Container, Card } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LModal from '@components/modal/N4LModal'
@@ -17,7 +17,7 @@ export default function MenuSelectModel () {
   const { id } = useParams()
   const { t } = useTranslation()
   const prefix = 'pages.menu.select-model.'
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [modelKey, setModelKey] = useState('select-model')
   const [options, setOptions] = useState([])
@@ -28,7 +28,7 @@ export default function MenuSelectModel () {
     if (modelKey === 'select-model') {
       await alertHelper.alertWarning(t('alert.menu.need-select-model'))
     } else {
-      history.push('/playground/' + id + '/model/' + modelKey)
+      navigate('/playground/' + id + '/model/' + modelKey)
     }
   }
 

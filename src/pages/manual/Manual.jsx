@@ -1,6 +1,6 @@
 import 'katex/dist/katex.min.css'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Col, Container, Row } from 'react-bootstrap'
 
@@ -76,7 +76,7 @@ const DEFAULT_LAYOUT = [
 ]
 export default function Manual () {
 
-  const history = useHistory()
+  const location = useLocation()
   const { t, i18n } = useTranslation()
   const [accordionActiveManual, setAccordionActiveManual] = useState([])
 
@@ -102,10 +102,11 @@ export default function Manual () {
         }
       }
     }
-    if (history.location.state?.action) {
-      openManualInSection(history.location.state.action)
+    console.log({s: location})
+    if (location.state?.action) {
+      openManualInSection(location.state.action)
     }
-  }, [history, toggleAccordionActiveManual])
+  }, [location, toggleAccordionActiveManual])
 
   if (VERBOSE) console.debug('render Manual')
   return (<>

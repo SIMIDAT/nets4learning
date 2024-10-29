@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Form, Button, Row, Col, Container, Card } from 'react-bootstrap'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LModal from '@components/modal/N4LModal'
 import alertHelper from '@utils/alertHelper'
@@ -14,7 +14,7 @@ export default function MenuSelectDataset () {
 
   const { id } = useParams()
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const prefix = 'pages.menu.select-dataset.'
   const [datasetKey, setDatasetKey] = useState('select-dataset')
@@ -26,7 +26,7 @@ export default function MenuSelectDataset () {
     if (datasetKey === 'select-dataset') {
       await alertHelper.alertWarning(t('alert.menu.need-select-dataset'))
     } else {
-      history.push('/playground/' + id + '/dataset/' + datasetKey)
+      navigate('/playground/' + id + '/dataset/' + datasetKey)
     }
   }
 

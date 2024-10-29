@@ -82,11 +82,11 @@ export default function N4LLayerDesign(props) {
               <Trans i18nKey={'more-information-in-link'}
                 components={{
                   link1: <Link className={'text-info'}
+                    state={{
+                      action: glossary_action,
+                    }}
                     to={{
                       pathname: '/glossary/',
-                      state   : {
-                        action: glossary_action,
-                      },
                     }} />,
                 }} />
             </p>}
@@ -95,11 +95,11 @@ export default function N4LLayerDesign(props) {
               <Trans i18nKey={'more-information-in-tutorial'}
                 components={{
                   link1: <Link className={'text-info'}
+                    state={{
+                      action: manual_action,
+                    }}
                     to={{
                       pathname: '/manual/',
-                      state   : {
-                        action: manual_action,
-                      },
                     }} />,
                 }} />
             </p>

@@ -41,12 +41,13 @@ export default function RegressionDatasetProcess() {
           <Trans i18nKey="more-information-in-link"
             components={{
               link1: <Link className="text-info"
-                to={{
-                  pathname: '/glossary/',
-                  state   : {
+                  state={{
                     action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
-                  }
-                }} />
+                  }}
+                  to={{
+                    pathname: '/glossary/',
+                  }}
+                />
             }}
           />
         </p>

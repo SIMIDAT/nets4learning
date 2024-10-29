@@ -1,6 +1,6 @@
 import './TabularClassification.css'
 import React, { useEffect, useState, useRef } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
@@ -90,7 +90,7 @@ import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
  */
 export default function TabularClassification (props) {
   const { dataset } = props
-  const history  = useHistory()
+  const navigate  = useNavigate()
 
   const prefix = 'pages.playground.generator.'
   const prefixManual = 'pages.playground.0-tabular-classification.generator.'
@@ -161,7 +161,7 @@ export default function TabularClassification (props) {
         setDatasetIndex(0)
       } else {
         console.error('Error, option not valid', { ID: dataset })
-        history.push('/404')
+        navigate('/404')
       }
     }
     init()
@@ -169,7 +169,7 @@ export default function TabularClassification (props) {
         if (VERBOSE) console.debug('end init Tabular classification')
       })
     return () => { tfvis.visor().close() }
-  }, [dataset, t, history])
+  }, [dataset, t, navigate])
 
   // region MODEL
   const handleSubmit_CreateModel = async (event) => {

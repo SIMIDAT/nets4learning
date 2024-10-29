@@ -1,3 +1,5 @@
+import * as _Types from '@core/types'
+
 const DEFAULT_LEARNING_RATE = 1
 const DEFAULT_NUMBER_EPOCHS = 10
 const DEFAULT_TEST_SIZE = 10
@@ -8,6 +10,9 @@ const DEFAULT_START_LAYER_UNITS = 10
 const DEFAULT_START_LAYER_ACTIVATION = 'sigmoid'
 const DEFAULT_END_LAYER_UNITS = 10
 const DEFAULT_END_LAYER_ACTIVATION = 'softmax'
+/**
+ * @type {Array<_Types.Layer_t>} layerList
+ */
 const DEFAULT_LAYERS = [
   { units: DEFAULT_START_LAYER_UNITS, activation: DEFAULT_START_LAYER_ACTIVATION },
   { units: DEFAULT_END_LAYER_UNITS, activation: DEFAULT_END_LAYER_ACTIVATION },

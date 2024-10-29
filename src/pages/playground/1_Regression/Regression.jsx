@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { useHistory, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
@@ -52,7 +52,7 @@ export default function Regression(props) {
   const { dataset } = props
   /** @type {ReturnType<typeof useParams<{id: string}>>} */
   const { id: param_id } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   // i18n
   const prefix = 'pages.playground.generator.'
@@ -117,11 +117,11 @@ export default function Regression(props) {
       } else {
         await alertHelper.alertError('Error in selection of model')
         console.error('Error, option not valid', { ID: dataset })
-        history.push('/404')
+        navigate('/404')
       }
     }
     init().then(() => undefined)
-  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history])
+  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, navigate])
 
 
   useEffect(() => {
@@ -280,23 +280,25 @@ export default function Regression(props) {
         <N4LDivider i18nKey={'hr.model'} />
         <Row>
           <Col className={'joyride-step-5-layer'}>
-            <N4LLayerDesign layers={params.params_layers}
-                            show={ready}
-                            actions={[
-                              <>
-                                <Trans i18nKey={'more-information-in-link'}
-                                  components={{
-                                    link1: <Link
-                                      className={'text-info'}
-                                      to={{
-                                        pathname: '/glossary/',
-                                        state   : {
-                                          action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_0_LAYER_DESIGN,
-                                        },
-                                      }} />,
-                                  }} />
-                              </>
-                            ]}
+            <N4LLayerDesign 
+              layers={params.params_layers}
+              show={ready}
+              actions={[
+                <>
+                  <Trans 
+                    i18nKey={'more-information-in-link'}
+                    components={{
+                      link1: <Link className={'text-info'}
+                        state={{
+                          action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_0_LAYER_DESIGN,
+                        }}
+                        to={{
+                          pathname: '/glossary/',
+                        }}
+                      />,
+                    }} />
+                </>
+              ]}
                           />
           </Col>
         </Row>

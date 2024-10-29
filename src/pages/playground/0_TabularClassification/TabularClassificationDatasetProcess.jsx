@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import TabularClassificationDatasetProcessForm from '@pages/playground/0_TabularClassification/TabularClassificationDatasetProcessForm'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
-import * as _Types from  '@core/types'
+import * as _Types from '@core/types'
 /**
  * @typedef PropsTabularClassificationDatasetProcess
  * @property {_Types.DatasetProcessed_t[]} datasets
@@ -21,7 +21,7 @@ import * as _Types from  '@core/types'
  * @param {PropsTabularClassificationDatasetProcess} props 
  * @returns 
  */
-export default function TabularClassificationDatasetProcess (props) {
+export default function TabularClassificationDatasetProcess(props) {
   const {
     datasets,
     setDatasets,
@@ -44,39 +44,42 @@ export default function TabularClassificationDatasetProcess (props) {
           <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />
         </>}
         {(isFileUploaded()) && <>
-          <TabularClassificationDatasetProcessForm datasets={datasets}
-                                                   setDatasets={setDatasets}
-                                                   datasetIndex={datasetIndex}
-                                                   setDatasetIndex={setDatasetIndex}
+          <TabularClassificationDatasetProcessForm
+            datasets={datasets}
+            setDatasets={setDatasets}
+            datasetIndex={datasetIndex}
+            setDatasetIndex={setDatasetIndex}
           />
         </>}
       </Card.Body>
       <Card.Footer className="text-end">
         <p className="text-muted mb-0 pb-0">
-          <Trans i18nKey="more-information-in-link"
-                 components={{
-                   link1: <Link className="text-info"
-                                to={{
-                                  pathname: '/glossary/',
-                                  state   : {
-                                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
-                                  }
-                                }} />
-                 }}
-          />
+          <Trans
+            i18nKey="more-information-in-link"
+            components={{
+              link1: <Link
+                className="text-info"
+                state={{
+                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
+                }}
+                to={{
+                  pathname: '/glossary/',
+                }} />
+            }} />
         </p>
         <p className="text-muted mb-0 pb-0">
-          <Trans i18nKey="more-information-in-tutorial"
-                 components={{
-                   link1: <Link className="text-info"
-                                to={{
-                                  pathname: '/manual/',
-                                  state   : {
-                                    action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
-                                  }
-                                }} />
-                 }}
-          />
+          <Trans
+            i18nKey="more-information-in-tutorial"
+            components={{
+              link1: <Link
+                className="text-info"
+                state={{
+                  action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
+                }}
+                to={{
+                  pathname: '/manual/',
+                }} />
+            }} />
         </p>
       </Card.Footer>
     </Card>

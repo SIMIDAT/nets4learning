@@ -166,30 +166,32 @@ export default function TabularClassificationEditorLayers (props) {
       </Card.Body>
       <Card.Footer className={'text-end'}>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-link'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/glossary/',
-                                  state   : {
-                                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
-                                  },
-                                }}
-                   />,
-                 }} />
+          <Trans 
+            i18nKey={'more-information-in-link'}
+            components={{
+              link1: <Link 
+                className={'text-info'}
+                state={{
+                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
+                }}
+                to={{
+                  pathname: '/glossary/',
+                }} />,
+            }} />
         </p>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-tutorial'}
-                 components={{
-                   link1: <Link className={'text-info'}
-                                to={{
-                                  pathname: '/manual/',
-                                  state   : {
-                                    action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
-                                  },
-                                }}
-                   />,
-                 }} />
+          <Trans 
+            i18nKey={'more-information-in-tutorial'}
+            components={{
+              link1: <Link 
+                        className={'text-info'}
+                        state={{
+                          action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
+                        }}
+                        to={{
+                          pathname: '/manual/',
+                        }} />,
+            }} />
         </p>
       </Card.Footer>
     </Card>

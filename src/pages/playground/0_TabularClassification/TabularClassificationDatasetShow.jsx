@@ -108,12 +108,12 @@ export default function TabularClassificationDatasetShow(props) {
             <Col className={'overflow-x-auto'}>
               <N4LTablePagination
                 data_head={dataframe.columns}
-                data_body={DataFrameUtils.DataFrameIterRows(dataframe)}
-              />
+                data_body={DataFrameUtils.DataFrameIterRows(dataframe)} />
             </Col>
           </Row>
           <hr />
-          <TabularClassificationDatasetShowInfo datasets={datasets}
+          <TabularClassificationDatasetShowInfo 
+            datasets={datasets} 
             datasetIndex={datasetIndex} />
           <hr />
           <Row>
@@ -130,27 +130,31 @@ export default function TabularClassificationDatasetShow(props) {
       </Card.Body>
       <Card.Footer className={'text-end'}>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-link'}
+          <Trans 
+            i18nKey={'more-information-in-link'}
             components={{
-              link1: <Link className={'text-info'}
-                to={{
-                  pathname: '/glossary/',
-                  state   : {
-                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
-                  },
-                }} />,
+              link1: <Link 
+                        className={'text-info'}
+                        state={{
+                          action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
+                        }}
+                        to={{
+                          pathname: '/glossary/',
+                        }} />,
             }} />
         </p>
         <p className={'text-muted mb-0 pb-0'}>
-          <Trans i18nKey={'more-information-in-tutorial'}
+          <Trans 
+            i18nKey={'more-information-in-tutorial'}
             components={{
-              link1: <Link className={'text-info'}
-                to={{
-                  pathname: '/manual/',
-                  state   : {
-                    action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
-                  },
-                }} />,
+              link1: <Link 
+                        className={'text-info'}
+                        state={{
+                          action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
+                        }}
+                        to={{
+                          pathname: '/manual/',
+                        }} />,
             }} />
         </p>
       </Card.Footer>

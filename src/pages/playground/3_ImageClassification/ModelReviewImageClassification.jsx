@@ -3,7 +3,7 @@ import { Button, Card, Col, Container, Modal, Row } from 'react-bootstrap'
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import * as _chartjs from 'chart.js'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 import ReactGA from 'react-ga4'
@@ -30,7 +30,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export default function ModelReviewImageClassification ({ dataset }) {
 
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const iModelRef = useRef(new I_MODEL_IMAGE_CLASSIFICATION(t))
   const iModelRef_model = useRef()
@@ -99,13 +99,13 @@ export default function ModelReviewImageClassification ({ dataset }) {
         await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } else {
         console.error('Error, option not valid', { ID: dataset })
-        history.push('/404')
+        navigate('/404')
       }
     }
 
     init().then()
 
-  }, [dataset, t, history])
+  }, [dataset, t, navigate])
 
 
   useEffect(() => {

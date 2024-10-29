@@ -4,7 +4,7 @@ import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap'
 import { Camera as IconCamera } from 'react-bootstrap-icons'
 import ReactGA from 'react-ga4'
 import { Trans, useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Webcam from 'react-webcam'
 import * as tfjs from '@tensorflow/tfjs'
 
@@ -29,7 +29,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
   const isWebView = navigator.userAgent.toLowerCase().indexOf('wv') !== -1
 
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [isLoading, setLoading] = useState(true)
   const [isCameraEnable, setCameraEnable] = useState(false)
@@ -155,7 +155,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
           await alertHelper.alertSuccess(t('model-loaded-successfully'))
         } else {
           console.error('Error, option not valid', { ID: dataset })
-          history.push('/404')
+          navigate('/404')
         }
       } catch (error) {
         console.error('Error', error)
@@ -165,7 +165,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
     init().then(() => undefined)
 
     return () => {}
-  }, [dataset, t, history])
+  }, [dataset, t, navigate])
 
   // useEffect(() => {
   //   const eventListener = (event) => {
@@ -320,6 +320,7 @@ export default function ModelReviewObjectDetection({ dataset }) {
     const imageSrc = WebCam_ref.current.getCanvas().toDataURL('image/png"')
     const img = new Image()
     img.src = imageSrc
+    // @ts-ignore
     img.download = imageSrc
     const a = document.createElement('a')
     a.innerHTML = ' '

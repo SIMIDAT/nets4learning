@@ -97,11 +97,11 @@ export default function TabularClassificationDataset (props) {
           <Trans i18nKey={'more-information-in-link'}
                  components={{
                    link1: <Link className={'text-info'}
-                                to={{
+                                state  = {{
+                                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
+                                }}
+                                to = {{
                                   pathname: '/glossary/',
-                                  state   : {
-                                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                                  },
                                 }}
                    />
                  }}
@@ -112,11 +112,11 @@ export default function TabularClassificationDataset (props) {
           <Trans i18nKey={'more-information-in-tutorial'}
                  components={{
                    link1: <Link className={'text-info'}
-                                to={{
+                                state  = {{
+                                  action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
+                                }}
+                                to = {{
                                   pathname: '/manual/',
-                                  state   : {
-                                    action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                                  },
                                 }}
                    />
                  }}

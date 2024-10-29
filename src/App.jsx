@@ -1,7 +1,7 @@
 // import './stylesheet.scss'
 import React, { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Switch } from 'react-router-dom'
-import { Redirect, Route } from 'react-router'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import ReactGA from 'react-ga4'
 
 import Loading from './pages/Loading'
@@ -45,30 +45,30 @@ function App() {
           <N4LNavbar />
         </Suspense>
         <Suspense fallback={<Loading />}>
-          <Switch>
-            <Route exact path={'/'} component={PageHome}></Route>
-            <Route exact path={'/home'} component={PageHome}></Route>
-            <Route exact path={'/select-dataset/:id'} component={PageMenuSelectDataset}></Route>
-            <Route exact path={'/select-model/:id'} component={PageMenuSelectModel}></Route>
-            <Route exact path={'/playground/:id/:option/:example'} component={PagePlayground}></Route>
-            <Route exact path={'/playground/description-regression'} component={PageDescriptionRegression}></Route>
-            <Route exact path={'/manual/'} component={PageManual}></Route>
-            <Route exact path={'/glossary'} component={PageGlossary}></Route>
-            <Route exact path={'/datasets'} component={PageDatasets}></Route>
-            <Route exact path={'/analyze'} component={PageAnalyzeDataFrame}></Route>
-            <Route exact path={'/contribute/'} component={PageContribute}></Route>
-            <Route exact path={'/terms-and-conditions'} component={PageTermsAndConditions}></Route>
-            <Route exact path={'/version'} component={PageVersion}></Route>
-            <Route exact path={'/debug'} component={PageDebug}></Route>
+          <Routes>
+            <Route index path={'/'} element={<PageHome />}></Route>
+            <Route path={'/home'} element={<PageHome />}></Route>
+            <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
+            <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
+            <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>
+            <Route path={'/playground/description-regression'} element={<PageDescriptionRegression />}></Route>
+            <Route path={'/manual/'} element={<PageManual />}></Route>
+            <Route path={'/glossary'} element={<PageGlossary />}></Route>
+            <Route path={'/datasets'} element={<PageDatasets />}></Route>
+            <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
+            <Route path={'/contribute/'} element={<PageContribute />}></Route>
+            <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
+            <Route path={'/version'} element={<PageVersion />}></Route>
+            <Route path={'/debug'} element={<PageDebug />}></Route>
 
-            <Route exact path={'/test-page-easy'} component={TestPageEasy}></Route>
-            <Route exact path={'/test-page-advanced/:id/:option/:example'} component={TestPageAdvanced}></Route>
-            <Route exact path={'/test-page-easy-lazy'} component={TestPageEasy_lazy}></Route>
-            <Route exact path={'/test-page-advanced-lazy/:id/:option/:example'} component={TestPageAdvanced_lazy}></Route>
+            <Route path={'/test-page-easy'} element={<TestPageEasy />}></Route>
+            <Route path={'/test-page-advanced/:id/:option/:example'} element={<TestPageAdvanced />}></Route>
+            <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
+            <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
 
-            <Route path="/404" component={PageNotFoundPage} />
-            <Redirect to="/404"></Redirect>
-          </Switch>
+            <Route path="/404" element={<PageNotFoundPage />} />
+            <Route path="*" element={<Navigate to="/404" replace />} />
+          </Routes>
         </Suspense>
         <Suspense fallback={''}>
           <N4LFooter />

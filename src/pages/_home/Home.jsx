@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next'
 
 import CookiesModal from '@components/cookiesModal/CookiesModal'
 
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { TASKS } from '@/DATA_MODEL'
 import N4LDivider from '@components/divider/N4LDivider'
 
@@ -14,24 +14,24 @@ const SELECTOR = {
 }
 
 export default function Home () {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const [buttonActive, setButtonActive] = useState(TASKS.TABULAR_CLASSIFICATION)
+  const [taskActive, setTaskActive] = useState(TASKS.TABULAR_CLASSIFICATION)
 
   const handleClick_TrainEdit = (selector) => {
     if (selector === SELECTOR.MODEL)
-      history.push('/select-model/' + buttonActive)
+      navigate('/select-model/' + taskActive)
     if (selector === SELECTOR.DATASET)
-      history.push('/select-dataset/' + buttonActive)
+      navigate('/select-dataset/' + taskActive)
   }
 
   const handleClick_OpenCardModel = (modelType) => {
-    setButtonActive(modelType)
+    setTaskActive(modelType)
   }
 
   const MenuSelection = () => {
-    switch (buttonActive) {
+    switch (taskActive) {
       case TASKS.TABULAR_CLASSIFICATION:
         return (
           <>
