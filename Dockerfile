@@ -1,11 +1,11 @@
 ARG ARG_BUILD
-FROM node:18-alpine
+FROM node:22-alpine
 
 RUN apk add bash
 RUN apk add xsel
 
 ENV NODE_OPTIONS="--max-old-space-size=8192"
-RUN npm install -g serve@14.2.1
+RUN npm install -g serve
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
