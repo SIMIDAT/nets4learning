@@ -17,6 +17,7 @@ import DataFrameScatterPlotCard from '@components/dataframe/DataFrameScatterPlot
 import { I_MODEL_REGRESSION, MAP_LR_CLASSES } from '@pages/playground/1_Regression/models'
 import ModelReviewRegressionPredict from './ModelReviewRegressionPredict'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
+import alertHelper from '@/utils/alertHelper'
 
 
 
@@ -74,20 +75,27 @@ export default function ModelReviewRegression ({ dataset }) {
     if(VERBOSE) console.debug('useEffect[init][ dataset, t ]')
     const init = async () => {
       await tfjs.ready()
+      // =========================
       if (dataset === UPLOAD) {
         console.warn('Error, option not valid', { ID: dataset })
       } else if (dataset in MAP_LR_CLASSES) {
-        const _iModelClass = MAP_LR_CLASSES[dataset]
-        iModelInstance_ref.current = new _iModelClass(t, {})
-        const _datasets = await iModelInstance_ref.current.DATASETS()
-        setDatasets({
-          data : _datasets,
-          index: 0
-        })
+        try {
+          const _iModelClass = MAP_LR_CLASSES[dataset]
+          iModelInstance_ref.current = new _iModelClass(t, {})
+          const _datasets = await iModelInstance_ref.current.DATASETS()
+          setDatasets({
+            data : _datasets,
+            index: 0
+          })
+        } catch (error) {
+          console.error('Error', error)
+        }
       } else {
         console.error('Error, option not valid', { ID: dataset })
+        await alertHelper.alertError('Error, option not valid')  
         navigate('/404')
       }
+      // =========================
     }
     init().then(() => undefined)
   }, [dataset, t, navigate])

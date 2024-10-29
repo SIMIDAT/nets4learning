@@ -10,29 +10,29 @@ import { Link } from 'react-router-dom'
 import { MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 const DEFAULT_LAYER_END = {
-  _class: 'maxPooling2d',
+  _class  : 'maxPooling2d',
   poolSize: 2,
-  strides: 2
+  strides : 2
 }
 
 const MAP_CLASS_LAYERS = {
   'conv2d': {
-    _class: 'conv2d',
+    _class    : 'conv2d',
     kernelSize: 3,
-    filters: 16,
+    filters   : 16,
     activation: 'relu',
   },
   'maxPooling2d': {
-    _class: 'maxPooling2d',
+    _class  : 'maxPooling2d',
     poolSize: 2,
-    strides: 2,
+    strides : 2,
   },
   'flatten': {
     _class: 'flatten',
   },
   'dense': {
-    _class: 'dense',
-    units: 32,
+    _class    : 'dense',
+    units     : 32,
     activation: 'relu'
   }
 }
@@ -121,12 +121,12 @@ export default function ImageClassificationEditorLayers(props) {
             <Trans i18nKey={prefix + 'add-layer-start'} />
           </Button>
           */}
-          <Button 
+          <Button
             variant={'outline-primary'}
             size={'sm'}
             className={'ms-3'}
             onClick={() => handleClick_AddLayer_End()}
-            >
+          >
             <Trans i18nKey={prefix + 'add-layer-end'} />
           </Button>
         </div>

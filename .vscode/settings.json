@@ -12,7 +12,7 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "conventionalCommits.scopes": [
     "Regression"
@@ -33,4 +33,7 @@
       "group": "Default"
     }
   ],
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
 }

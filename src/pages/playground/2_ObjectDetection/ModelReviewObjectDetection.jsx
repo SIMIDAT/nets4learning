@@ -144,22 +144,25 @@ export default function ModelReviewObjectDetection({ dataset }) {
         console.error('Error tensorflow backend webgl not installed in your browser')
         return
       }
-      try {
-        if (dataset === UPLOAD) {
-          console.error('Error, option not valid')
-        } else if (dataset in MAP_OD_CLASSES) {
+      // =========================
+      if (dataset === UPLOAD) {
+        console.error('Error, option not valid')
+      } else if (dataset in MAP_OD_CLASSES) {
+        try {
           const _iModelClass = MAP_OD_CLASSES[dataset]
           iModelRef.current = new _iModelClass(t)
           await iModelRef.current.ENABLE_MODEL()
           setLoading(false)
           await alertHelper.alertSuccess(t('model-loaded-successfully'))
-        } else {
-          console.error('Error, option not valid', { ID: dataset })
-          navigate('/404')
+        } catch (error) {
+          console.error('Error', error)
         }
-      } catch (error) {
-        console.error('Error', error)
+      } else {
+        console.error('Error, option not valid', { ID: dataset })
+        await alertHelper.alertError('Error, option not valid')  
+        navigate('/404')
       }
+      // =========================
     }
 
     init().then(() => undefined)

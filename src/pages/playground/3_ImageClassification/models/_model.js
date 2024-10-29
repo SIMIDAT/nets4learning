@@ -27,8 +27,12 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
     return {}
   }
 
+  /**
+   * 
+   * @returns {Promise<_tfjs.LayersModel>}
+   */
   async ENABLE_MODEL () {
-
+    return undefined
   }
 
   LIST_IMAGES_EXAMPLES () {

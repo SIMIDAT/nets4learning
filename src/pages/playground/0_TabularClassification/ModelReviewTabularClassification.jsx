@@ -14,12 +14,15 @@ import ModelReviewTabularClassificationDatasetInfo from '@pages/playground/0_Tab
 import ModelReviewTabularClassificationPredict from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredict'
 import ModelReviewTabularClassificationPredictForm from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
+import { useNavigate } from 'react-router'
+import { UPLOAD } from '@/DATA_MODEL'
 
 export default function ModelReviewTabularClassification (props) {
   const { dataset } = props
 
   //const prefix = 'pages.playground.0-tabular-classification'
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const iModelInstance_ref = useRef(new I_MODEL_TABULAR_CLASSIFICATION(t))
   const model_ref = useRef(null)
@@ -66,19 +69,14 @@ export default function ModelReviewTabularClassification (props) {
     if (VERBOSE) console.debug('useEffect[init]')
     const init = async () => {
       await tfjs.ready()
-      if (!(dataset in MAP_TC_CLASSES)) {
-        await alertHelper.alertError('Error, option not valid')
-        // Redirect to 404
-        return
-      }
-
-      if (dataset in MAP_TC_CLASSES) {
-        const _iModelClass = MAP_TC_CLASSES[dataset]
-
+      // =========================
+      if (dataset === UPLOAD) {
+        console.error('Error, option not valid')
+      } else if (dataset in MAP_TC_CLASSES) {
         try {
+          const _iModelClass = MAP_TC_CLASSES[dataset]
           iModelInstance_ref.current = new _iModelClass(t)
           model_ref.current = await iModelInstance_ref.current.LOAD_LAYERS_MODEL({ onProgress: handleChange_onProgress })
-
           setDataToPredict(iModelInstance_ref.current.DATA_DEFAULT)
           const _datasets = await iModelInstance_ref.current.DATASETS()
           const _applyEncoders = DataFrameUtils.DataFrameApplyEncoders(
@@ -87,8 +85,6 @@ export default function ModelReviewTabularClassification (props) {
             iModelInstance_ref.current.DATA_DEFAULT_KEYS,
           )
           setVectorToPredict(_applyEncoders)
-
-
           setIsLoading(false)
           setIsButtonToPredictDisabled(false)
           await alertHelper.alertSuccess(t('model-loaded-successfully'))
@@ -96,15 +92,18 @@ export default function ModelReviewTabularClassification (props) {
           console.error('Error, can\'t load model', { e })
         }
       } else {
-        console.error('Error, model not valid')
+        console.error('Error, model not valid', { ID: dataset })
+        await alertHelper.alertError('Error, option not valid')  
+        navigate('/404')
       }
+      // =========================
     }
 
     init()
       .then((_r) => {
         console.debug('init end')
       })
-  }, [dataset, t])
+  }, [dataset, navigate, t])
 
   const handleSubmit_PredictVector = async (e) => {
     e.preventDefault()

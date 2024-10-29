@@ -33,10 +33,12 @@ import {
   DEFAULT_TEST_SIZE,
 } from './CONSTANTS'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
+import { useNavigate } from 'react-router'
 
 export default function ImageClassification (props) {
   const { dataset } = props
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const iModelInstance = useRef(new I_MODEL_IMAGE_CLASSIFICATION(t))
 
   const prefix = 'pages.playground.generator.'
@@ -99,6 +101,7 @@ export default function ImageClassification (props) {
         setLayers(iModelInstance.current.DEFAULT_LAYERS())
       } else {
         console.error('Error, opción not valid')
+        navigate('/404')
       }
     }
     init()
@@ -106,7 +109,7 @@ export default function ImageClassification (props) {
         if (VERBOSE) console.debug('End init Image classification')
       })
     return () => { tfvis.visor().close() }
-  }, [dataset, t])
+  }, [dataset, navigate, t])
 
   // region CREACIÓN DEL MODELO
   const handleSubmit_Play = async (event) => {

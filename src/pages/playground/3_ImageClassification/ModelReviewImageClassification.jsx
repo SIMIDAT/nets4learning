@@ -33,6 +33,9 @@ export default function ModelReviewImageClassification ({ dataset }) {
   const navigate = useNavigate()
 
   const iModelRef = useRef(new I_MODEL_IMAGE_CLASSIFICATION(t))
+  /**
+   * @type {ReturnType<typeof useRef<tfjs.LayersModel>>}
+   */
   const iModelRef_model = useRef()
 
   const iChartRef_modal = useRef()
@@ -89,18 +92,25 @@ export default function ModelReviewImageClassification ({ dataset }) {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
       await tfjs.ready()
+      // =========================
       if (dataset === UPLOAD) {
         console.error('Error, data set not valid')
       } else if (dataset in MAP_IC_CLASSES) {
-        const _iModelClass = MAP_IC_CLASSES[dataset]
-        iModelRef.current = new _iModelClass(t)
-        iModelRef_model.current = await iModelRef.current.ENABLE_MODEL()
-        setIsLoading(false)
-        await alertHelper.alertSuccess(t('model-loaded-successfully'))
+        try {
+          const _iModelClass = MAP_IC_CLASSES[dataset]
+          iModelRef.current = new _iModelClass(t)
+          iModelRef_model.current = await iModelRef.current.ENABLE_MODEL()
+          setIsLoading(false)
+          await alertHelper.alertSuccess(t('model-loaded-successfully'))
+        } catch (error) {
+          console.error('Error', error)
+        }
       } else {
         console.error('Error, option not valid', { ID: dataset })
+        await alertHelper.alertError('Error, option not valid')  
         navigate('/404')
       }
+      // =========================
     }
 
     init().then()

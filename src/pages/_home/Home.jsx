@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 import { useTranslation, Trans } from 'react-i18next'
 
@@ -17,25 +17,36 @@ export default function Home () {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
-  const [taskActive, setTaskActive] = useState(TASKS.TABULAR_CLASSIFICATION)
+  const [activeTask, setActiveTask] = useState(TASKS.TABULAR_CLASSIFICATION)
 
   const handleClick_TrainEdit = (selector) => {
-    if (selector === SELECTOR.MODEL)
-      navigate('/select-model/' + taskActive)
-    if (selector === SELECTOR.DATASET)
-      navigate('/select-dataset/' + taskActive)
+    switch (selector) {
+      case SELECTOR.MODEL:
+        navigate(`/select-model/${activeTask}`)
+        break
+      case SELECTOR.DATASET:
+        navigate(`/select-dataset/${activeTask}`)
+        break
+      default:
+        console.warn('Selector no válido:', {selector, activeTask})
+    }
   }
 
-  const handleClick_OpenCardModel = (modelType) => {
-    setTaskActive(modelType)
+  const handleClick_OpenCardModel = (task) => {
+    setActiveTask(task)
+    localStorage.setItem('selected-task', task)
   }
+
+  useEffect(() => {
+    setActiveTask(localStorage.getItem('selected-task') || TASKS.TABULAR_CLASSIFICATION)
+  }, [])
 
   const MenuSelection = () => {
-    switch (taskActive) {
+    switch (activeTask) {
       case TASKS.TABULAR_CLASSIFICATION:
         return (
           <>
-            <Card className={'border-primary'}>
+            <Card className={'border border-2 border-primary'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.tabular-classification.1-title'} t={t} /></h2>
               </Card.Header>
@@ -50,7 +61,7 @@ export default function Home () {
               </Card.Body>
             </Card>
 
-            <Card className={'border-primary mt-3'}>
+            <Card className={'border border-2 border-primary mt-3'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.tabular-classification.2-title'} /></h2>
               </Card.Header>
@@ -90,7 +101,7 @@ export default function Home () {
       case TASKS.REGRESSION:
         return (
           <>
-            <Card className={'border-danger'}>
+            <Card className={'border border-2 border-danger'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.regression.1-title'} /></h2>
               </Card.Header>
@@ -105,7 +116,7 @@ export default function Home () {
               </Card.Body>
             </Card>
 
-            <Card className={'border-danger mt-3'}>
+            <Card className={'border border-2 border-danger mt-3'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.regression.2-title'} /></h2>
               </Card.Header>
@@ -141,7 +152,7 @@ export default function Home () {
       case TASKS.OBJECT_DETECTION:
         return (
           <>
-            <Card className={'border-warning'}>
+            <Card className={'border border-2 border-warning'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.object-detection.1-title'} /></h2>
               </Card.Header>
@@ -160,7 +171,7 @@ export default function Home () {
       case TASKS.IMAGE_CLASSIFICATION:
         return (
           <>
-            <Card className={'border-info'}>
+            <Card className={'border border-2 border-info'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.image-classification.1-title'} /></h2>
               </Card.Header>
@@ -173,7 +184,7 @@ export default function Home () {
                 </div>
               </Card.Body>
             </Card>
-            <Card className={'mt-3 border-info'}>
+            <Card className={'mt-3 border border-2 border-info'}>
               <Card.Header>
                 <h2><Trans i18nKey={'pages.index.image-classification.2-title'} /></h2>
               </Card.Header>
