@@ -248,3 +248,7 @@ h6 {
   font-family: monospace;
   white-space: nowrap;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

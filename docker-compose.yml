@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: n4l-app
+    ports:
+      - "3000:80"
+    restart: unless-stopped

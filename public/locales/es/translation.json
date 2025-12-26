@@ -128,7 +128,7 @@
       },
       "sen-spe-auc": {
         "title": "Sensitivity, Specificity y AUC",
-        "text-1": "El AUC se calcula como el área bajo la curva $Sensitivity$ (TPR)-$(1-Specificity)$ (FPR)."
+        "text-1": "El AUC se calcula como el área bajo la curva $$Sensitivity (TPR) - (1 - Specificity)$$ (FPR)."
       }
     }
   },
