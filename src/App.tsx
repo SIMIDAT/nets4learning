@@ -7,8 +7,8 @@ import Loading from './pages/Loading'
 import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
 // __TESTS__
-import TestPageEasy from '@pages/TestPageEasy'
-import TestPageAdvanced from '@pages/TestPageAdvanced'
+// import TestPageEasy from '@pages/TestPageEasy'
+// import TestPageAdvanced from '@pages/TestPageAdvanced'
 
 import './ConfigChartJS'
 
@@ -63,8 +63,8 @@ function App() {
             <Route path={'/version'} element={<PageVersion />}></Route>
             <Route path={'/debug'} element={<PageDebug />}></Route>
 
-            <Route path={'/test-page-easy'} element={<TestPageEasy />}></Route>
-            <Route path={'/test-page-advanced/:id/:option/:example'} element={<TestPageAdvanced />}></Route>
+            {/* <Route path={'/test-page-easy'} element={<TestPageEasy />}></Route> */}
+            {/* <Route path={'/test-page-advanced/:id/:option/:example'} element={<TestPageAdvanced />}></Route> */}
             <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
             <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
 

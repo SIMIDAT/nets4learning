@@ -51,10 +51,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // evita que el worker sea procesado como ESM
-        manualChunks: {},
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Separa las librerías en un chunk aparte llamado 'vendor'
+            return 'vendor';
+          }
+        },
       },
     },
+    chunkSizeWarningLimit: 1000, // Opcional: sube el límite a 1000kb para que no moleste
   },
   base  : "/n4l/",
   define: {
