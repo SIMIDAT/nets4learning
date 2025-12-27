@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:simidat": "tsc -b && vite build --mode simidat",
+    "build:netlify": "tsc -b && vite build --mode netlify",
+    "build:netlify-snapshot": "tsc -b && vite build --mode netlify-snapshot",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
@@ -74,6 +77,8 @@
     "sweetalert2-react-content": "^5.1.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
     "@eslint/js": "^9.39.2",
     "@stylistic/eslint-plugin": "^5.6.1",
     "@tensorflow/tfjs-node": "^4.22.0",

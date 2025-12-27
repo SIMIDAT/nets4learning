@@ -63,6 +63,8 @@ GENERATE_SOURCEMAP=true
 
 </details>
 
+---
+
 <details>
 <summary> .env.development </summary>
 
@@ -82,6 +84,8 @@ GENERATE_SOURCEMAP=true
 
 </details>
 
+---
+
 <details>
 <summary> .env.production </summary>
 
@@ -89,9 +93,9 @@ GENERATE_SOURCEMAP=true
 WATCHPACK_POLLING=true
 FAST_REFRESH=true
 NODE_ENV="production"
-PUBLIC_URL="https://simidat.ujaen.es/n4l-beta"
-VITE_PUBLIC_URL="https://simidat.ujaen.es/n4l-beta"
-VITE_PATH="/n4l-beta"
+PUBLIC_URL="https://simidat.ujaen.es/n4l"
+VITE_PUBLIC_URL="https://simidat.ujaen.es/n4l"
+VITE_PATH="/n4l"
 VITE_ENVIRONMENT="production"
 VITE_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 VITE_SHOW_NEW_FEATURE="true"
@@ -116,15 +120,17 @@ docker compose up n4l
 
 ### Command matrix
 
-|             | development    | build                    |
-| ----------- | -------------- | ------------------------ |
-| Development | `pnpm run dev` |                          |
-| simidat     |                | `pnpm run build:simidat` |
+|                  | development    | build                             |
+| ---------------- | -------------- | --------------------------------- |
+| Development      | `pnpm run dev` |                                   |
+| simidat          |                | `pnpm run build:simidat`          |
+| netlify          |                | `pnpm run build:netlify`          |
+| netlify-snapshot |                | `pnpm run build:netlify-snapshot` |
 
 
 ```bash
 node -v 
-# v18.16.1
-npm -v 
-# 9.5.1
+# v22.13.0
+pnpm -v 
+# 10.24.0
 ```
