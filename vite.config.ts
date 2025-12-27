@@ -59,7 +59,7 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 1000, // Opcional: sube el límite a 1000kb para que no moleste
+    chunkSizeWarningLimit: 20000, // Opcional: sube el límite a 1000kb para que no moleste
   },
   base  : "/n4l/",
   define: {
