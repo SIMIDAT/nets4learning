@@ -9,12 +9,13 @@ allowBuilds:
   es5-ext: false
   esbuild: true
   preact: false
-  scikitjs: false
 # Permite dependencias resueltas por URL en subdependencias.
 # Necesario porque danfojs depende de xlsx servido desde el CDN de SheetJS
 # (https://cdn.sheetjs.com/...), que pnpm ≥ 11 bloquea por defecto (blockExoticSubdeps).
 blockExoticSubdeps: false
-# danfojs 1.2 declara @tensorflow/tfjs ^3; lo forzamos a la misma versión que usa el proyecto
-# para que solo haya una copia de TensorFlow.js (ver el alias de "danfojs" en vite.config.ts).
+# danfojs 1.2 declara @tensorflow/tfjs ^3 y mathjs 9.4.4; los forzamos a las versiones del proyecto
+# para que solo haya una copia de cada una (ver el alias de "danfojs" en vite.config.ts).
+# De mathjs, danfojs solo usa mean, median, mode, std y variance, que no cambian entre la 9 y la 11.
 overrides:
   'danfojs>@tensorflow/tfjs': ^4.22.0
+  'danfojs>mathjs': ^11.12.0

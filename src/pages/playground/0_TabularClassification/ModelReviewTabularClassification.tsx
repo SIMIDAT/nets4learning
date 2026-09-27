@@ -50,6 +50,8 @@ export default function ModelReviewTabularClassification(props: Props) {
   // última entrada predicha, que es la que se explica.
   const backgroundPool_ref = useRef<number[][]>([])
   const predictedVector_ref = useRef<number[] | null>(null)
+  // Valores del formulario (categorías y unidades originales) de la entrada predicha.
+  const predictedDisplay_ref = useRef<Array<string | number> | null>(null)
   const [explainMeta, setExplainMeta] = useState<{ features: string[], classes: string[] }>({ features: [], classes: [] })
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
 
@@ -176,6 +178,7 @@ export default function ModelReviewTabularClassification(props: Props) {
         data  : Array.from(model_prediction_data).map((item) => item.toFixed(4)),
       }
       predictedVector_ref.current = parse_vectorToPredict
+      predictedDisplay_ref.current = iModelInstance_ref.current.DATA_DEFAULT_KEYS.map((key) => (dataToPredict as Record<string, string | number>)[key])
       const probabilities = Array.from(model_prediction_data)
       setPredictedClassIndex(probabilities.indexOf(Math.max(...probabilities)))
       setPrediction(_prediction)
@@ -356,6 +359,7 @@ export default function ModelReviewTabularClassification(props: Props) {
               getModel={() => model_ref.current}
               getInstance={() => predictedVector_ref.current}
               getPool={() => backgroundPool_ref.current}
+              getInstanceDisplay={() => predictedDisplay_ref.current}
             />
           </Col>
         </Row>

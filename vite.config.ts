@@ -26,7 +26,6 @@ export default defineConfig(({ mode }) => {
         '@tensorflow/tfjs',
         '@tensorflow/tfjs-core',
         '@tensorflow/tfjs-converter',
-        '@tensorflow/tfjs-layers',
       ],
     },
     resolve: {

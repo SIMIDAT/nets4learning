@@ -2,7 +2,9 @@ import { describe, test, expect } from 'vitest'
 import {
   dataframeRowsToNumbers,
   sampleRowsWithoutReplacement,
+  dataframeRowsWithDisplay,
   buildShapBackground,
+  minShapSamples,
 } from '../../src/core/explainability/shapSampling'
 
 describe('shapSampling — utilidades de muestreo para explicabilidad SHAP', () => {
@@ -22,6 +24,22 @@ describe('shapSampling — utilidades de muestreo para explicabilidad SHAP', () 
       expect(dataframeRowsToNumbers(null)).toStrictEqual([])
       expect(dataframeRowsToNumbers(undefined)).toStrictEqual([])
       expect(dataframeRowsToNumbers('x')).toStrictEqual([])
+    })
+  })
+
+  describe('dataframeRowsWithDisplay', () => {
+    test('filtra las filas no numéricas en las dos tablas a la vez (siguen alineadas)', () => {
+      const scaled = [[0.1, 0.2], ['x', 0.5], [0.9, 1]]
+      const original = [[10, 'a'], [20, 'b'], [90, 'c']]
+      expect(dataframeRowsWithDisplay(scaled, original)).toStrictEqual({
+        rows   : [[0.1, 0.2], [0.9, 1]],
+        display: [[10, 'a'], [90, 'c']],
+      })
+    })
+
+    test('sin valores legibles o con otro nº de filas, display es null', () => {
+      expect(dataframeRowsWithDisplay([[1]], null).display).toBeNull()
+      expect(dataframeRowsWithDisplay([[1], [2]], [[1]]).display).toBeNull()
     })
   })
 
@@ -67,6 +85,13 @@ describe('shapSampling — utilidades de muestreo para explicabilidad SHAP', () 
     test('nunca muestrea más de nRows filas', () => {
       const pool = Array.from({ length: 100 }, (_, i) => [i, i])
       expect(buildShapBackground(pool, 2, 10)).toHaveLength(10)
+    })
+  })
+
+  describe('minShapSamples', () => {
+    test('garantiza al menos 2·segmentos + 2 muestras', () => {
+      expect(minShapSamples(36, 50)).toBe(74)
+      expect(minShapSamples(14, 150)).toBe(150)
     })
   })
 })

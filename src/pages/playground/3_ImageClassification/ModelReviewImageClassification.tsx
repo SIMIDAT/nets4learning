@@ -30,6 +30,7 @@ import {
   type ImageExplainResult_t,
 } from "@core/explainability/ImageExplainPanel"
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from "@core/explainability/shapImageOptions"
+import { explainErrorKey } from "@core/explainability/explainError"
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
@@ -294,6 +295,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         : await runImageClassificationExplain({ iModel: iModelRef.current, modelInstance, imageData, ...shapOptions })
 
       setExplainResult({
+        method            : useLrp ? "lrp" : "shap",
         values            : result.shapValues,
         labels            : result.selectedLabels,
         galleryImages     : result.debugImages,
@@ -301,11 +303,13 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         segmentationMap   : result.segmentationMapArray,
         segmentationWidth : imageData.width,
         segmentationHeight: imageData.height,
+        baseValues        : result.baseValues,
+        predictedValues   : result.predictedValues,
       })
       setShowExplain(true)
     } catch (error) {
       console.error("Error calculating explainability", { error })
-      await alertHelper.alertError(t("ui.explain.error"))
+      await alertHelper.alertError(t(explainErrorKey(error)))
     } finally {
       setIsCalculo(false)
     }

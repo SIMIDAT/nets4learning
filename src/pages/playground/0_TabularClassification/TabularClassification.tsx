@@ -152,6 +152,7 @@ export default function TabularClassification(props: Props) {
   // Explicabilidad: el modelo predice en espacio ESCALADO, así que la instancia explicada y el
   // background (data_processed.X) también van escalados.
   const predictedVector_ref = useRef<number[] | null>(null)
+  const predictedDisplay_ref = useRef<Array<string | number> | null>(null)
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
   /**
    * @type {ReturnType<typeof useRef<_Types.Joyride_t|_Types.Joyride_void_t>>}
@@ -303,6 +304,7 @@ export default function TabularClassification(props: Props) {
         console.debug({ prediction, predictionDataSync, predictionWithArgMaxDataSync })
       }
       predictedVector_ref.current = input_vector_to_predict_scaled as number[]
+      predictedDisplay_ref.current = inputDataToPredict.map((value) => (Array.isArray(value) ? value.join(', ') : String(value)))
       setPredictedClassIndex(predictionWithArgMaxDataSync[0])
       setPredictionBar((_prevState) => {
         return {
@@ -524,6 +526,8 @@ export default function TabularClassification(props: Props) {
               getModel={() => Model}
               getInstance={() => predictedVector_ref.current}
               getPool={() => dataframeRowsToNumbers(dataProcessed?.X.values)}
+              getInstanceDisplay={() => predictedDisplay_ref.current}
+              valuesAreScaled
             />
           </Col>
         </Row>

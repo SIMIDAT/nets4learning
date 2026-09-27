@@ -145,27 +145,19 @@ export const objectDetectionWrapper = (
         // Llamada al predictor (modelRef debe exponer PREDICTION)
         const detections = await modelRef.PREDICTION(predictionInput, options);
 
-        // IMPORTANTE: La salida debe tener dimensión fija.
-        // En COCO-SSD esto viene dado por `labels.length` (labels del caso base).
-        // Si labels no existe/está vacío (p.ej. modelos faciales), forzamos salida escalar.
-        // Si no hay detecciones (p.ej. no detecta cara), devolvemos [0].
+        // Un número por etiqueta (misma longitud y orden que `labels`); sin detecciones, todo 0.
+        // Si el modelo devuelve otra longitud es un error de programación: antes se sustituía en
+        // silencio por ceros y la explicación salía vacía sin que nadie lo notara.
         const safeDetections = Array.isArray(detections) ? detections : [];
-        const expectedLength = Array.isArray(labels) ? labels.length : 0;
-        const outputLength = expectedLength > 0 ? expectedLength : 1;
-
-        if (safeDetections.length === 0) {
-          batchVectors.push(new Array(outputLength).fill(0));
-        } else {
-          const normalized = modelRef.NORMALIZE_PREDICTIONS(
-            safeDetections,
-            labels,
+        const vector = safeDetections.length === 0
+          ? new Array(labels.length).fill(0)
+          : modelRef.NORMALIZE_PREDICTIONS(safeDetections, labels);
+        if (!Array.isArray(vector) || vector.length !== labels.length) {
+          throw new Error(
+            `NORMALIZE_PREDICTIONS debe devolver ${labels.length} valores (uno por etiqueta) y ha devuelto ${vector?.length}`,
           );
-          const vector =
-            Array.isArray(normalized) && normalized.length === outputLength
-              ? normalized
-              : new Array(outputLength).fill(0);
-          batchVectors.push(vector);
         }
+        batchVectors.push(vector);
 
         inputTensor.dispose();
       }

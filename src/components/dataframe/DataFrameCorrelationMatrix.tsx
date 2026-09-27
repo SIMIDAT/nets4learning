@@ -1,6 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import Plot from 'react-plotly.js'
+import Plot from './Plot'
 import * as dfd from 'danfojs'
 
 import math from '@utils/math'

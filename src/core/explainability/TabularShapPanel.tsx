@@ -2,13 +2,14 @@ import { useMemo, useRef, useState } from 'react'
 import { Button, Card, Col, Form, ProgressBar, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import * as tf from '@tensorflow/tfjs'
-import { KernelSHAP } from 'webshap'
+import { KernelSHAP } from '@core/explainability/webshap'
 
 import alertHelper from '@utils/alertHelper'
 import { myModelWrapper } from '@core/explainability/ModelExplanation'
 import ShapExplanationChart from '@core/explainability/ModelExplanationChart'
 import ShapBeeswarmChart from '@core/explainability/ShapBeeswarmChart'
-import { buildShapBackground, sampleRowsWithoutReplacement } from '@core/explainability/shapSampling'
+import ExplanationSummary from '@core/explainability/ExplanationSummary'
+import { buildShapBackground, sampleIndicesWithoutReplacement } from '@core/explainability/shapSampling'
 
 type PredictModel = { predict: (x: tf.Tensor) => tf.Tensor | tf.Tensor[] }
 
@@ -31,11 +32,19 @@ type TabularShapPanelProps = {
   getPool             : () => number[][]
   /** Cambia con cada nueva predicción: la explicación local anterior deja de ser válida. */
   inputKey?           : unknown
+  /** Regresión: nombre de la variable que se predice (p. ej. "mpg"). */
+  targetName?         : string
+  /** Valores legibles de la instancia (unidades y categorías originales), uno por feature. */
+  getInstanceDisplay? : () => Array<string | number> | null
+  /** Valores legibles (antes del escalado) de cada fila de `getPool()`, en el mismo orden. */
+  getPoolDisplay?     : () => Array<Array<string | number>> | null
+  /** Las features llegan al modelo escaladas: si no hay `getPoolDisplay`, se avisa en el beeswarm. */
+  valuesAreScaled?    : boolean
 }
 
 /** Explicabilidad SHAP de modelos tabulares: explicación local e importancia global. */
 export default function TabularShapPanel(props: TabularShapPanelProps) {
-  const { features, classes, predictedClassIndex = 0, getModel, getInstance, getPool, inputKey } = props
+  const { features, classes, predictedClassIndex = 0, getModel, getInstance, getPool, inputKey, targetName, getInstanceDisplay, getPoolDisplay, valuesAreScaled } = props
   const { t } = useTranslation()
   const isClassification = (classes?.length ?? 0) > 0
 
@@ -47,13 +56,26 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
   const [nSamples, setNSamples] = useState(500)
 
   // SHAP local: solo es válido para la entrada con la que se calculó.
-  const [localShap, setLocalShap] = useState<{ inputKey: unknown, shap: number[][] } | null>(null)
+  const [localShap, setLocalShap] = useState<{
+    inputKey: unknown
+    shap    : number[][]
+    /** Predicción media del modelo sobre el background (punto de partida de SHAP), por target. */
+    base    : number[]
+    /** Valores legibles de la instancia explicada. */
+    display : Array<string | number>
+  } | null>(null)
   const [showLocal, setShowLocal] = useState(false)
   const [isCalculatingLocal, setIsCalculatingLocal] = useState(false)
   const localVisible = showLocal && localShap !== null && localShap.inputKey === inputKey
 
   // SHAP global: matriz shap[instancia][feature] + valores de las features, para un target.
-  const [globalShap, setGlobalShap] = useState<{ target: number, shap: number[][], featureValues: number[][] } | null>(null)
+  const [globalShap, setGlobalShap] = useState<{
+    target        : number
+    shap          : number[][]
+    featureValues : number[][]
+    /** Valores legibles de cada instancia explicada (null si no los hay). */
+    featureDisplay: Array<Array<string | number>> | null
+  } | null>(null)
   const [showGlobal, setShowGlobal] = useState(false)
   const [isCalculatingGlobal, setIsCalculatingGlobal] = useState(false)
   const [globalProgress, setGlobalProgress] = useState(0)
@@ -95,7 +117,11 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       await tf.nextFrame()
       const background = buildShapBackground(getPool(), instance.length, BACKGROUND_ROWS)
       const explainer = new KernelSHAP(myModelWrapper(model), background, SHAP_SEED)
-      setLocalShap({ inputKey, shap: await explainer.explainOneInstance(instance, nSamples) })
+      const shap = await explainer.explainOneInstance(instance, nSamples)
+      // Valores legibles solo si están alineados con las features; si no, los del modelo.
+      const readable = getInstanceDisplay?.()
+      const display = readable && readable.length === features.length ? readable : instance.map((v) => +v.toFixed(3))
+      setLocalShap({ inputKey, shap, base: [...explainer.expectedValue], display })
       setShowLocal(true)
     } catch (error) {
       console.error('Error calculating explainability', { error })
@@ -119,7 +145,11 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       await alertHelper.alertError(t('ui.explain.model-not-available'))
       return
     }
-    const pool = getPool().filter((row) => row.length === features.length)
+    const rawPool = getPool()
+    const rawDisplay = getPoolDisplay?.() ?? null
+    const poolDisplay = rawDisplay && rawDisplay.length === rawPool.length ? rawDisplay : null
+    const validIndices = rawPool.map((_, i) => i).filter((i) => rawPool[i].length === features.length)
+    const pool = validIndices.map((i) => rawPool[i])
     if (pool.length === 0) {
       await alertHelper.alertError(t(PREFIX + 'no-data'))
       return
@@ -132,7 +162,8 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       await tf.nextFrame()
       const background = buildShapBackground(pool, features.length, BACKGROUND_ROWS)
       const predictor = myModelWrapper(model)
-      const instances = sampleRowsWithoutReplacement(pool, nInstancesGlobal)
+      const sampled = sampleIndicesWithoutReplacement(validIndices.length, nInstancesGlobal).map((k) => validIndices[k])
+      const instances = sampled.map((i) => rawPool[i])
 
       const shapMatrix: number[][] = []
       const explained: number[][] = []
@@ -150,7 +181,8 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       }
 
       if (shapMatrix.length > 0) {
-        setGlobalShap({ target, shap: shapMatrix, featureValues: explained })
+        const featureDisplay = poolDisplay ? sampled.slice(0, explained.length).map((i) => poolDisplay[i]) : null
+        setGlobalShap({ target, shap: shapMatrix, featureValues: explained, featureDisplay })
         setShowGlobal(true)
       }
     } catch (error) {
@@ -174,7 +206,7 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
                 <Form.Label>{t(PREFIX + 'select-class')}</Form.Label>
                 <Form.Select size={'sm'} value={selectedClassIndex}
                              onChange={(e) => setClassChoice({ inputKey, index: Number(e.target.value) })}>
-                  {classes!.map((c, idx) => <option key={idx} value={idx}>{c}</option>)}
+                  {classes!.map((c, idx) => <option key={idx} value={idx}>{t(c)}</option>)}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -203,6 +235,14 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
             <h4 className="h6">{t(PREFIX + 'explain-panel-local-title')}</h4>
             <p className="small text-body-secondary">{t(PREFIX + 'explain-panel-local-body')}</p>
             <ShapExplanationChart shapValues={localShap.shap} predictedClass={target} features={features} />
+            <ExplanationSummary
+              target={isClassification ? t(classes![target]) : (targetName ?? '')}
+              baseValue={localShap.base[target] ?? 0}
+              baseLabel={t('ui.explain.summary.base-tabular')}
+              predictedValue={(localShap.base[target] ?? 0) + (localShap.shap[target] ?? []).reduce((a, b) => a + b, 0)}
+              contributions={features.map((name, i) => ({ name: `${name} = ${localShap.display[i]}`, value: localShap.shap[target]?.[i] ?? 0 }))}
+              format={isClassification ? (v) => `${(v * 100).toFixed(1)} %` : (v) => v.toFixed(2)}
+            />
           </>
         )}
 
@@ -260,8 +300,14 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
             {globalChartType === 'bar'
               ? <ShapExplanationChart shapValues={[globalImportance]} predictedClass={0}
                                       sortOrder={globalSortOrder} features={features} />
-              : <ShapBeeswarmChart shap={globalShap.shap} featureValues={globalShap.featureValues}
-                                   features={features} />}
+              : <>
+                <ShapBeeswarmChart shap={globalShap.shap} featureValues={globalShap.featureValues}
+                                   featureDisplay={globalShap.featureDisplay ?? undefined}
+                                   features={features} />
+                {valuesAreScaled && !globalShap.featureDisplay && (
+                  <p className="small text-body-secondary mt-1">{t('ui.explain.summary.scaled-values')}</p>
+                )}
+              </>}
           </>
         )}
       </Card.Body>

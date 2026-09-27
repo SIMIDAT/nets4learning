@@ -2,19 +2,31 @@ import { Col, Form, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 import ShapHeatmap from '@core/explainability/ImageHeatMapChart'
+import ExplanationSummary from '@core/explainability/ExplanationSummary'
 import type { ShapImageOptions_t } from '@core/explainability/shapImageOptions'
 
 /** Resultado de una explicación de imagen (SHAP por segmentos o LRP por píxel). */
 export type ImageExplainResult_t = {
+  method             : 'shap' | 'lrp'
   /** Un vector de relevancias por etiqueta/clase explicada. */
   values             : number[][]
   labels             : Array<string | number>
+  /** Texto de cada etiqueta para mostrarla (si no, se usa `formatLabel` o "Clase #N"). */
+  labelTexts?        : string[]
   galleryImages      : string[]
   /** Imagen base del mapa de calor (dataURL). */
   imageSrc?          : string
   segmentationMap    : Int32Array | Uint8Array | number[] | null
   segmentationWidth? : number
   segmentationHeight?: number
+  /** SHAP: valor de cada etiqueta con la imagen tapada (punto de partida). */
+  baseValues?        : number[] | null
+  /** Valor (probabilidad o confianza, 0-1) de cada etiqueta con la imagen completa. */
+  predictedValues?   : number[]
+  /** Clave de i18n del nombre de cada segmento, si tienen significado (zonas de la cara). */
+  segmentLabelKeys?  : string[] | null
+  /** Clave de i18n de una nota del modelo sobre cómo leer su explicación. */
+  noteKey?           : string | null
 }
 
 type ImageExplainResultsProps = {
@@ -22,7 +34,9 @@ type ImageExplainResultsProps = {
   formatLabel?: (label: string | number) => string
 }
 
-/** Galería de perturbaciones + un mapa de calor por etiqueta explicada. */
+const percent = (value: number) => `${(value * 100).toFixed(0)} %`
+
+/** Galería de perturbaciones + un mapa de calor (con su resumen) por etiqueta explicada. */
 export function ImageExplainResults({ result, formatLabel }: ImageExplainResultsProps) {
   const { t } = useTranslation()
 
@@ -30,11 +44,21 @@ export function ImageExplainResults({ result, formatLabel }: ImageExplainResults
     return <p className="text-center text-body-secondary">{t('ui.explain.noData')}</p>
   }
 
+  const labelText = (idx: number) => {
+    const label = result.labels[idx] ?? idx
+    if (result.labelTexts?.[idx]) return result.labelTexts[idx]
+    if (formatLabel) return formatLabel(label)
+    // Una etiqueta con nombre (p. ej. una clase de ImageNet) se muestra tal cual; un índice, como «Clase N».
+    const isIndex = typeof label === 'number' || !Number.isNaN(Number(label))
+    return isIndex ? t('ui.explain.class', { index: String(label) }) : String(label)
+  }
+
   return (
     <>
       {result.galleryImages.length > 0 && (
         <div className="mb-4">
           <h5>{t('ui.explain.perturbationSamples')}</h5>
+          <p className="small text-body-secondary mb-2">{t('ui.explain.perturbation-help')}</p>
           <div className="d-flex gap-2 overflow-x-auto p-2 bg-body-tertiary rounded">
             {result.galleryImages.map((imgSrc, idx) => (
               <div key={idx} className="flex-shrink-0 text-center">
@@ -48,12 +72,18 @@ export function ImageExplainResults({ result, formatLabel }: ImageExplainResults
 
       <Row>
         {result.values.map((values, idx) => {
-          const label = result.labels[idx] ?? idx
+          const target = labelText(idx)
+          const predicted = result.predictedValues?.[idx]
+          const base = result.baseValues?.[idx]
+          const contributions = result.segmentLabelKeys
+            ? values.map((value, segment) => ({ name: t(result.segmentLabelKeys![segment] ?? String(segment)), value }))
+            : []
           return (
             <Col key={idx} md={6} lg={4} className="mb-3">
               <div className="border rounded p-2 text-center">
                 <h6 className="fw-bold mb-2">
-                  {formatLabel ? formatLabel(label) : t('ui.explain.class', { index: String(label) })}
+                  {target}
+                  {predicted !== undefined && <span className="fw-normal text-body-secondary"> · {percent(predicted)}</span>}
                 </h6>
                 <ShapHeatmap
                   imageSrc={result.imageSrc}
@@ -62,11 +92,26 @@ export function ImageExplainResults({ result, formatLabel }: ImageExplainResults
                   segmentationWidth={result.segmentationWidth}
                   segmentationHeight={result.segmentationHeight}
                 />
+                {result.method === 'shap' && base !== undefined && base !== null && predicted !== undefined && (
+                  <ExplanationSummary
+                    target={target}
+                    baseValue={base}
+                    baseLabel={t('ui.explain.summary.base-image')}
+                    predictedValue={predicted}
+                    contributions={contributions}
+                    format={percent}
+                  />
+                )}
+                {result.method === 'lrp' && (
+                  <p className="small text-start bg-body-tertiary rounded p-2 mt-2 mb-0">{t('ui.explain.summary.lrp', { target })}</p>
+                )}
               </div>
             </Col>
           )
         })}
       </Row>
+      {result.noteKey && <p className="small text-start bg-body-tertiary rounded p-2">{t(result.noteKey)}</p>}
+      <p className="small text-body-secondary">{t('ui.explain.notes.wrong-prediction')}</p>
     </>
   )
 }
@@ -92,7 +137,7 @@ export function ShapImageControls({ idPrefix, options, onChange }: ShapImageCont
       </Form.Group>
       <Form.Group className="mb-2" controlId={`${idPrefix}-n-samples`}>
         <Form.Label>{t('ui.explain.nSamples')}</Form.Label>
-        <Form.Control type="number" min={1} max={500} value={options.nSamples}
+        <Form.Control type="number" min={10} max={2000} step={10} value={options.nSamples}
                       onChange={(e) => set('nSamples', Number(e.target.value))} />
       </Form.Group>
       <Form.Group className="mb-2" controlId={`${idPrefix}-mask`}>

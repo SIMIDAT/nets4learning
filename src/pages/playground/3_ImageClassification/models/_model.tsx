@@ -1,5 +1,5 @@
 import { ACTIONS, LIFECYCLE } from 'react-joyride'
-import * as _tfjs from '@tensorflow/tfjs'
+import type * as _tfjs from '@tensorflow/tfjs'
 import type {MobileNet} from '@tensorflow-models/mobilenet'
 
 import { delay } from '@utils/utils'

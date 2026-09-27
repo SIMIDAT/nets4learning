@@ -89,26 +89,20 @@ export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
     this._modelDetector = await coCoSsdDetection.load()
   }
 
-  async PREDICTION (input_image_or_video: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement, _config = { }) {
+  async PREDICTION (input_image_or_video: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement, config: { minScore?: number } = {}) {
     if (this._modelDetector === null) return []
     const maxNumBoxes = 20
-    const minScore = 0.5
+    // 0.5 para mostrar detecciones; la explicabilidad pasa un umbral más bajo.
+    const minScore = config.minScore ?? 0.5
     return await this._modelDetector.detect(input_image_or_video, maxNumBoxes, minScore)
   }
 
-  NORMALIZE_PREDICTIONS(predictions: any[], labels: Array<string | number>): number[] {
-    if (!Array.isArray(labels) || labels.length === 0) return []
-    const scores: number[] = new Array(labels.length).fill(0)
-    if (!Array.isArray(predictions)) return scores
+  // Al explicar, umbral bajo: la puntuación de la clase varía de forma gradual en vez de caer a 0.
+  EXPLAIN_PREDICTION_CONFIG = { minScore: 0.05 }
 
-    for (const det of predictions) {
-      if (!det || typeof det.class !== "string") continue
-      const idx = labels.indexOf(det.class)
-      if (idx === -1) continue
-      const score = typeof det.score === "number" ? det.score : 0
-      if (score > scores[idx]) scores[idx] = score
-    }
-    return scores
+  /** Nombre traducido de una clase de COCO ('dog' → «Perro»); si no hay traducción, el original. */
+  EXPLAIN_LABEL_TEXT(label: string | number): string {
+    return this.t(`datasets-models.2-object-detection.coco-ssd.classes.${label}`, { defaultValue: String(label) })
   }
 
   /**
@@ -123,7 +117,8 @@ export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
     predictions.forEach(({ score, class: _class, bbox }) => {
       scoreParsed = Math.round(parseFloat(score.toFixed(2)) * 100)
       this._drawRect(ctx, bbox[0], bbox[1], bbox[2], bbox[3])
-      this._drawTextBG(ctx, `${_class.toUpperCase()} with ${scoreParsed}% confidence`, font, bbox[0], bbox[1], 20)
+      const label = this.t('datasets-models.2-object-detection.coco-ssd.render-label', { label: this.EXPLAIN_LABEL_TEXT(_class), score: scoreParsed })
+      this._drawTextBG(ctx, label, font, bbox[0], bbox[1], 20)
     })
   }
 }

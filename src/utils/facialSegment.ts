@@ -9,6 +9,18 @@ interface FaceLayer {
   indices: number[];
 }
 
+/** Nombre de cada zona del mapa facial, indexado por su id (0 = fondo, fuera de la cara). */
+export const FACE_SEGMENT_NAMES = [
+  'background',
+  'skin',
+  'lips',
+  'rightEye',
+  'leftEye',
+  'rightEyebrow',
+  'leftEyebrow',
+  'nose',
+] as const
+
 export interface FaceSegmentResult {
   mapArray   : Uint8Array;
   numSegments: number;

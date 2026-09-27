@@ -23,6 +23,7 @@ import {
   type ImageExplainResult_t,
 } from '@core/explainability/ImageExplainPanel'
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
+import { explainErrorKey } from '@core/explainability/explainError'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
@@ -454,9 +455,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         resultCtx.drawImage(img, 0, 0, width, height);
 
         // Process detection
-        await processData(resultCtx, imgData, {
-          flipHorizontal: !iModel_ref.current.mirror
-        });
+        // Una imagen subida no se muestra en espejo (la webcam sí): nunca se refleja.
+        await processData(resultCtx, imgData, { flipHorizontal: false });
 
         await delay(2000); // Artificial delay if needed for UI/UX
 
@@ -494,13 +494,6 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     return isLoading || isCameraEnable || isWebView
   }
 
-  // FACE_API expone sus etiquetas como claves de i18n ("age" se muestra como "años").
-  const formatExplainLabel = (label: string | number) => {
-    const i18nLabels = (iModel_ref.current as { i18n_face_api?: Record<string, string> }).i18n_face_api
-    const key = i18nLabels?.[label === 'age' ? 'years' : String(label)]
-    return key ? t(key) : String(label)
-  }
-
   const handleRequest_ExplainPrediction = async () => {
     if (showExplain) {
       setShowExplain(false)
@@ -518,23 +511,28 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       const result = await runObjectDetectionExplain({
         model         : iModel_ref.current,
         imageData,
-        flipHorizontal: !iModel_ref.current.mirror,
         ...shapOptions,
       })
 
       setExplainResult({
+        method            : 'shap',
         values            : result.shapValues,
         labels            : result.selectedLabels,
+        labelTexts        : result.labelTexts,
         galleryImages     : result.debugImages,
         imageSrc          : canvasImage_ref.current?.toDataURL(),
         segmentationMap   : result.segmentationMapArray,
         segmentationWidth : imageData.width,
         segmentationHeight: imageData.height,
+        baseValues        : result.baseValues,
+        predictedValues   : result.predictedValues,
+        segmentLabelKeys  : result.segmentLabelKeys,
+        noteKey           : iModel_ref.current.EXPLAIN_NOTE_KEY,
       })
       setShowExplain(true)
     } catch (error) {
       console.error('Error calculating explainability', { error })
-      await alertHelper.alertError(t('ui.explain.error'))
+      await alertHelper.alertError(t(explainErrorKey(error)))
     } finally {
       setIsCalculo(false)
     }
@@ -840,7 +838,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                 </Card.Header>
                 <Card.Body>
                   {showExplain && explainResult && (
-                    <ImageExplainResults result={explainResult} formatLabel={formatExplainLabel} />
+                    <ImageExplainResults result={explainResult} />
                   )}
 
                   <div className="mt-3">

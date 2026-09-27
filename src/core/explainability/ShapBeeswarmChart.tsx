@@ -13,11 +13,13 @@ import {
 
 interface ShapBeeswarmChartProps {
   /** Matriz de valores SHAP: shap[instancia][feature] */
-  shap         : number[][]
+  shap           : number[][]
   /** Matriz de valores de las features: featureValues[instancia][feature] */
-  featureValues: number[][]
+  featureValues  : number[][]
+  /** Valores legibles para el tooltip (p. ej. antes del escalado), con la misma forma que `featureValues`. */
+  featureDisplay?: Array<Array<string | number>>
   /** Nombres de las features */
-  features     : string[]
+  features       : string[]
 }
 
 /** Color SHAP: t=0 (valor bajo) azul → t=1 (valor alto) rojo. */
@@ -35,10 +37,10 @@ interface Point {
   y      : number // fila de la feature + desplazamiento dodge (eje vertical)
   color  : string // color según el valor de la feature
   feature: string
-  value  : number
+  value  : number | string
 }
 
-export default function ShapBeeswarmChart({ shap, featureValues, features }: ShapBeeswarmChartProps) {
+export default function ShapBeeswarmChart({ shap, featureValues, featureDisplay, features }: ShapBeeswarmChartProps) {
   const { t } = useTranslation()
 
   const nFeatures = features.length
@@ -117,7 +119,9 @@ export default function ShapBeeswarmChart({ shap, featureValues, features }: Sha
         y      : row + offset,
         color  : shapColor(norm),
         feature: features[f],
-        value  : featVal,
+        // El color usa el valor numérico normalizado por feature (igual con o sin escalado);
+        // el tooltip, el valor legible si lo hay.
+        value  : featureDisplay?.[i]?.[f] ?? featVal,
       })
     }
   }
@@ -148,11 +152,18 @@ export default function ShapBeeswarmChart({ shap, featureValues, features }: Sha
         />
         <ZAxis range={[40, 40]} />
         <ReferenceLine x={0} stroke="var(--bs-secondary-color)" />
+        {/* Tooltip propio: con `formatter`, recharts repite la línea por cada eje (x, y). */}
         <Tooltip
           cursor={{ strokeDasharray: '3 3' }}
-          formatter={(_value, _name, item) => {
-            const p = item?.payload as Point
-            return [`SHAP ${p.x.toFixed(4)} · ${p.feature} = ${p.value}`, '']
+          content={({ active, payload }) => {
+            const p = payload?.[0]?.payload as Point | undefined
+            if (!active || !p) return null
+            return (
+              <div className="bg-body border rounded shadow-sm px-2 py-1 small">
+                <div><strong>{p.feature}</strong> = {p.value}</div>
+                <div>SHAP {p.x >= 0 ? '+' : ''}{p.x.toFixed(4)}</div>
+              </div>
+            )
           }}
         />
         <Scatter data={points} fillOpacity={0.7}>

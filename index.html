@@ -2,11 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Vite añade el `base` (p. ej. /n4l/) a las rutas absolutas de `public/`. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>n4l</title>
+    <meta name="theme-color" content="#1f1a7a" />
+    <meta name="description" content="Nets4Learning: aprende inteligencia artificial entrenando y explicando redes neuronales en el navegador." />
+    <title>Nets4Learning</title>
   </head>
   <body>
+    <noscript>Nets4Learning necesita JavaScript para funcionar.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

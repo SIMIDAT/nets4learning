@@ -1,11 +1,9 @@
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
-// import * as dfd from 'danfojs'
-import * as sk from 'scikitjs'
+import { trainTestSplit } from '@utils/trainTestSplit'
 import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
 import * as _Types from '@core/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-// sk.setBackend(dfd.tensorflow)
 import AlertHelper from '@utils/alertHelper'
 /**
  * @typedef {Object} CustomTabularClassification_DatasetParams_t
@@ -59,8 +57,8 @@ export async function createTabularClassificationCustomModel(params: CustomTabul
     throw new Error('Data processed is undefined')
   }
   const { X, y } = data_processed
-  // @ts-ignore
-  const [XTrain, XTest, yTrain, yTest] = sk.trainTestSplit(X.values, y.values, testSize)
+  // Tras el preprocesado X es numérico e y está en one-hot (una columna por clase).
+  const [XTrain, XTest, yTrain, yTest] = trainTestSplit(X.values as number[][], y.values as number[][], testSize)
   const XTrain_tensor = tfjs.tensor(XTrain)
   const XTest_tensor = tfjs.tensor(XTest)
   const yTrain_tensor = tfjs.tensor(yTrain)

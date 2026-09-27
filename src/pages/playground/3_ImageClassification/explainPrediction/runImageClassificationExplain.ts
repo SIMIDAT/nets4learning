@@ -1,10 +1,11 @@
 import * as tfjs from '@tensorflow/tfjs';
-import { KernelSHAP } from 'webshap';
+import { KernelSHAP } from '@core/explainability/webshap';
 
 import { objectDetectionWrapper } from '@core/explainability/ObjectDetectionWrapper';
 import { createImageClassificationAdapter } from '@core/explainability/adapters/createImageClassificationAdapter';
-import { buildMaskedBackground } from '@core/explainability/shapSampling';
+import { buildMaskedBackground, minShapSamples } from '@core/explainability/shapSampling';
 import { computeSLICzeroMap } from '@utils/slic0';
+import { ExplainError } from '@core/explainability/explainError';
 
 export interface ExplainParams {
   iModel         : any;
@@ -32,6 +33,10 @@ export interface ExplainResult {
   numSegments         : number;
   backgroundData      : number[][];
   relevanceShape?     : number[];
+  /** Valor de cada etiqueta con toda la imagen tapada (SHAP) — null en LRP. */
+  baseValues          : number[] | null;
+  /** Valor (probabilidad) de cada etiqueta con la imagen completa. */
+  predictedValues     : number[];
 }
 
 const unique = <T>(arr: T[]): T[] => Array.from(new Set(arr));
@@ -100,7 +105,8 @@ export async function runImageClassificationExplain(
 
   try {
     // Inicializamos mapa de segmentos con SLIC0
-    const slicResult = computeSLICzeroMap(imageData, gridSide);
+    // gridSide = superpíxeles por lado → unos gridSide² segmentos en total.
+    const slicResult = computeSLICzeroMap(imageData, gridSide * gridSide);
     const mapArray = slicResult.mapArray;
     const numSegments = slicResult.numSegments;
 
@@ -113,7 +119,7 @@ export async function runImageClassificationExplain(
     const basePredictions = baseResult?.predictions;
     const selectedLabels = getSelectedLabelsFromClassification(basePredictions);
     if (selectedLabels.length === 0) {
-      throw new Error('The model returned no predictions for this image');
+      throw new ExplainError('ui.explain.no-predictions');
     }
 
     segmentationTensor = tfjs.tensor2d(
@@ -144,8 +150,9 @@ export async function runImageClassificationExplain(
     );
 
     const explainer = new KernelSHAP(predict, backgroundData, 0.2022);
-    const shapValues = await explainer.explainOneInstance(inputVector, nSamples);
+    const shapValues = await explainer.explainOneInstance(inputVector, minShapSamples(numSegments, nSamples));
 
+    const baseValues = [...explainer.expectedValue];
     return {
       shapValues,
       debugImages,
@@ -153,6 +160,8 @@ export async function runImageClassificationExplain(
       segmentationMapArray: mapArray,
       numSegments,
       backgroundData,
+      baseValues,
+      predictedValues     : shapValues.map((phi: number[], k: number) => baseValues[k] + phi.reduce((a, b) => a + b, 0)),
     };
   } finally {
     if (segmentationTensor?.dispose) segmentationTensor.dispose();
@@ -212,7 +221,7 @@ export async function runImageClassificationExplainLrp(
 
   try {
     const relevanceValues: number[] = Array.from(relevanceTensor.dataSync());
-    const { index: predictedIndex } = await iModel.CLASSIFY_IMAGE(
+    const { index: predictedIndex, predictions } = await iModel.CLASSIFY_IMAGE(
       modelInstance,
       imageData,
     );
@@ -221,6 +230,8 @@ export async function runImageClassificationExplainLrp(
       shapValues          : [relevanceValues],
       debugImages         : [],
       selectedLabels      : [predictedIndex],
+      baseValues          : null,
+      predictedValues     : [Number(predictions?.[predictedIndex] ?? 0)],
       segmentationMapArray: null,
       numSegments         : relevanceValues.length,
       backgroundData      : [],

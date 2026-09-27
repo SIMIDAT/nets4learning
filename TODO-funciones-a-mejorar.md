@@ -54,10 +54,10 @@ Prioridad: 🔴 provoca errores · 🟠 riesgo alto · 🟡 claridad/mantenibili
 - [x] 🟠 **`UTILS_image.drawImageInCanvasWithContainer`** — [utils.ts:3](src/pages/playground/3_ImageClassification/utils/utils.ts#L3)
   Modifica `image.width` / `image.height` del `<img>` recibido y busca el canvas por id en el
   DOM global. → Recibir el canvas (o su ref) y calcular el tamaño sin tocar la imagen.
-- [ ] 🟡 **`resample_single`** — [utils.ts:25](src/pages/playground/3_ImageClassification/utils/utils.ts#L25)
-  Escribe en `resize_canvas` (parámetro de salida) y además **binariza** los píxeles (0/255), algo
-  que no dice ni el nombre ni la firma. → Devolver una `ImageData` y separar la binarización.
-  Se usa en [ImageClassification.tsx:183](src/pages/playground/3_ImageClassification/ImageClassification.tsx#L183) y [:225](src/pages/playground/3_ImageClassification/ImageClassification.tsx#L225).
+- [x] 🟡 **`resample_single`** → funciones puras en [utils.ts](src/pages/playground/3_ImageClassification/utils/utils.ts):
+  `resampleImageData`, `thresholdImageData` e `imageDataToMnistTensor4d` (preprocesado MNIST único). La vista
+  previa la pinta quien llama. Corregidos de paso un `NaN` en zonas transparentes y la predicción de
+  imágenes subidas en entrenamiento (usaba solo el alfa, que en una imagen opaca siempre vale 255).
 
 ## Explicabilidad
 
@@ -68,6 +68,14 @@ Prioridad: 🔴 provoca errores · 🟠 riesgo alto · 🟡 claridad/mantenibili
 - [x] 🟡 **Singleton de FaceMesh** — [runObjectDetectionExplain.ts:32](src/pages/playground/2_ObjectDetection/explainPrediction/runObjectDetectionExplain.ts#L32)
   Estado de módulo (`let faceMeshInstance`) que nunca se libera, y un segundo FaceMesh aunque el
   modelo seleccionado ya sea FaceMesh. → Reutilizar el modelo activo si es FaceMesh y exponer `dispose`.
+- [x] 🟡 **`getSelectedLabelsFromDetections`** (runObjectDetectionExplain.ts) decidía fuera del modelo, con
+  comprobaciones por tipo de detección, qué etiquetas explicar; con FACE-DETECTOR no encontraba ninguna y la
+  explicación salía vacía. → Cada modelo declara `EXPLAIN_LABELS`, `NORMALIZE_PREDICTIONS`,
+  `EXPLAIN_PREDICTION_CONFIG` y `EXPLAIN_LABEL_TEXT` en [_model.tsx](src/pages/playground/2_ObjectDetection/models/_model.tsx).
+- [x] 🟡 **`NORMALIZE_PREDICTIONS` con longitud incorrecta** — [ObjectDetectionWrapper.ts](src/core/explainability/ObjectDetectionWrapper.ts)
+  se sustituía en silencio por ceros (SHAP todo 0 sin avisar). → Error explícito.
+- [x] 🟡 **`_ImageData_To_Image`** (clase base de detección) creaba un `<img>` desde un dataURL en cada
+  perturbación de SHAP. → Eliminado; FACE-API pinta la `ImageData` en un canvas de forma síncrona.
 
 ## Rendimiento relacionado (efectos en la carga)
 
@@ -76,10 +84,16 @@ Prioridad: 🔴 provoca errores · 🟠 riesgo alto · 🟡 claridad/mantenibili
   de las demás tareas.
 - [x] 🟠 **`src/core/types.ts`** importaba `danfojs`, `@tensorflow/tfjs` y las clases base como
   valores (no `import type`): cualquier módulo que usara los tipos arrastraba TF.js y danfojs.
-- [ ] 🟡 **`DATA_MODEL.ts`** sigue importando todas las clases para montar las listas de los menús
-  (`MenuSelectModel`, `MenuSelectDataset`). → Separar las claves/etiquetas de las clases.
-- [ ] 🟠 **danfojs trae su propia copia de TensorFlow.js** (en consola: "kernel … already
-  registered", "Platform browser has already been set"). danfojs 1.2 publica un bundle
-  precompilado (`lib/bundle.esm.js`, ~5,7 MB) con **TensorFlow.js 3** dentro (el proyecto usa la
-  4.22), además de plotly, mathjs y xlsx. No se puede compartir TF.js con un alias sin riesgo de
-  incompatibilidades 3↔4. → Valorar sustituir danfojs en las partes que solo leen/transforman CSV.
+- [x] 🟡 **`DATA_MODEL.ts`** ya no importa ninguna clase: las claves están en [MODEL_KEYS.ts](src/MODEL_KEYS.ts), cada
+  tarea tiene un registro de `import()` ([modelRegistry.ts](src/core/models/modelRegistry.ts)) y los menús cargan
+  solo el modelo seleccionado ([useMenuModel.ts](src/hooks/useMenuModel.ts)). Cada modelo es un chunk propio.
+- [x] 🟠 **danfojs trae su propia copia de TensorFlow.js** → alias a su código sin empaquetar
+  (`dist/danfojs-browser/src`) + `overrides` de pnpm a TF.js 4.22. `danfojs-base` no es una opción: se
+  publicó en npm en 2023 y se retiró (no tiene versiones instalables).
+- [x] 🟡 **plotly duplicado**: danfojs usa `plotly.js-dist-min` 2.8 (~3,7 MB) y los gráficos propios
+  `react-plotly.js` con `plotly.js` 3.6 (~4,7 MB). → [Plot.ts](src/components/dataframe/Plot.ts) crea `<Plot>` con
+  `react-plotly.js/factory` y el mismo `plotly.js-dist-min` 2.8 (comprobado: tablas de danfojs y dispersión en AUTO_MPG).
+- [x] 🟡 **scikitjs** solo se usaba para `trainTestSplit` y arrastraba `mathjs@10` completo (`create(all)`).
+  → [trainTestSplit.ts](src/utils/trainTestSplit.ts), función pura con semilla opcional.
+- [x] 🟡 **mathjs triplicado** (9 de danfojs, 10 de scikitjs, 11 nuestro) → una sola copia (`overrides` en `pnpm-workspace.yaml`).
+- [x] 🟡 `src/core/nn-review-models/data/*.json` no se usaba en ningún sitio → eliminado (9,5 MB).

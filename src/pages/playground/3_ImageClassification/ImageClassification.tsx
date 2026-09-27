@@ -15,6 +15,7 @@ import N4LDivider from '@components/divider/N4LDivider'
 
 import ImageClassificationClassify from '@pages/playground/3_ImageClassification/ImageClassificationClassify'
 import { ImageExplainResults, type ImageExplainResult_t } from '@core/explainability/ImageExplainPanel'
+import { explainErrorKey } from '@core/explainability/explainError'
 import { runImageClassificationExplainLrp, supportsLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
 import ImageClassificationManual from '@pages/playground/3_ImageClassification/ImageClassificationManual'
 import ImageClassificationEditorLayers from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayers'
@@ -258,16 +259,18 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         imageData    : input.imageData,
       })
       setExplainResult({
+        method         : 'lrp',
         values         : result.shapValues,
         labels         : result.selectedLabels,
         galleryImages  : result.debugImages,
         imageSrc       : input.imageSrc,
         segmentationMap: result.segmentationMapArray,
+        predictedValues: result.predictedValues,
       })
       setShowExplain(true)
     } catch (error) {
       console.error('Error calculating explainability', { error })
-      await alertHelper.alertError(t('ui.explain.error'))
+      await alertHelper.alertError(t(explainErrorKey(error)))
     } finally {
       setIsCalculo(false)
     }

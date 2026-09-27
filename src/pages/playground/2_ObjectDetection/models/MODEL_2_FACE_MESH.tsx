@@ -1,5 +1,6 @@
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 import { Trans } from 'react-i18next'
+import { syncMediaPipeMirror } from './mediapipeMirror'
 
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
@@ -10,6 +11,8 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = 'datasets-models.2-object-detection.face-mesh.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection'
   mirror = true
+  // Salida sí/no: la explicación muestra lo mínimo que necesita ver para detectar la cara.
+  EXPLAIN_NOTE_KEY = 'ui.explain.notes.presence-only'
   faces = true
   usesTensorForPrediction = true
 
@@ -92,17 +95,20 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
 
   async PREDICTION (input_image_or_video: any, config = { flipHorizontal: false }): Promise<faceLandmarksDetection.Face[]> {
     if (this._modelDetector === null) return []
+    syncMediaPipeMirror(this._modelDetector, config.flipHorizontal)
     return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal, staticImageMode: false })
   }
 
-  GET_LABELS(): string[] {
-    return ['face']
+  // Se explica una sola salida: "¿hay una cara?" (FaceMesh no da una confianza por cara).
+  EXPLAIN_LABELS(detections: faceLandmarksDetection.Face[]): string[] {
+    return detections?.length ? ['face'] : []
   }
 
-  /**
-   * Salida escalar para la explicabilidad: 1 si se detecta alguna cara, 0 si no.
-   * La longitud debe coincidir con GET_LABELS.
-   */
+  EXPLAIN_LABEL_TEXT(_label: string | number): string {
+    return this.t('ui.explain.labels.face')
+  }
+
+  /** 1 si se detecta alguna cara, 0 si no. */
   NORMALIZE_PREDICTIONS(predictions: faceLandmarksDetection.Face[], _labels?: Array<string | number>): number[] {
     return [Array.isArray(predictions) && predictions.length > 0 ? 1 : 0]
   }

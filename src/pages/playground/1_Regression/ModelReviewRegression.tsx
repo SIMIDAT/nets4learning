@@ -21,7 +21,7 @@ import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from "./utils"
 import alertHelper from "@utils/alertHelper"
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
-import { dataframeRowsToNumbers } from "@core/explainability/shapSampling"
+import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from "@core/explainability/shapSampling"
 
 type ModelReviewRegressionProps_t = {
   dataset: string
@@ -391,6 +391,10 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                 getModel={() => explainModel}
                 getInstance={() => (prediction.input_3_dataframe_scaling.values[0] as number[] | undefined) ?? null}
                 getPool={() => dataframeRowsToNumbers(explainDataProcessed?.X.values)}
+                getPoolDisplay={() => dataframeRowsWithDisplay(explainDataProcessed?.X.values, explainDataProcessed?.dataframe_X?.values).display}
+                targetName={explainDataProcessed?.column_name_target}
+                getInstanceDisplay={() => (prediction.input_2_dataframe_encoding.values[0] as Array<string | number> | undefined) ?? null}
+                valuesAreScaled
               />
             </Col>
           </Row>
