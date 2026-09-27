@@ -17,6 +17,7 @@ type ImageClassificationClassifyProps_t = {
   GeneratedModels?                  : any[],
   handleSubmit_VectorTest           : (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
   handleSubmit_VectorTestImageUpload: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
+  onResetExplain?                   : () => void,
 }
 
 /**
@@ -29,6 +30,7 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
     handleSubmit_VectorTest,
     handleSubmit_VectorTestImageUpload,
     GeneratedModels = [],
+    onResetExplain,
   } = props
 
   const canvas_image_ref = React.useRef<HTMLCanvasElement | null>(null)
@@ -57,8 +59,8 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
             <Col>
               <CustomCanvasDrawer
                 submitFunction={handleSubmit_VectorTest}
-                clearFunction={() => {
-                }}
+                clearFunction={() => onResetExplain?.()}
+                onDrawStart={() => onResetExplain?.()}
               />
             </Col>
           </Row>

@@ -82,6 +82,17 @@ export default function N4LNavbar() {
                   </span>
                   Español
                 </NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => {
+                    i18n.changeLanguage('jp')
+                    localStorage.setItem('language', 'jp')
+                    window.dispatchEvent(new Event('storage'))
+                  }}>
+                  <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}>
+                    🇯🇵
+                  </span>
+                  日本語
+                </NavDropdown.Item>
               </NavDropdown>
               <NavDropdown title={t('header.theme')} id="change-theme-nav-dropdown">
                 <NavDropdown.Item onClick={() => setDataTheme('light')}>

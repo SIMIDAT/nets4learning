@@ -8,13 +8,17 @@ type Props = {
   iModelRef_model: React.RefObject<any>,
   iChartRef_image: React.RefObject<any>,
   setBarDataImage: React.Dispatch<React.SetStateAction<any>>,
+  onImageDataReady?: (imageData: ImageData) => void,
+  onResetExplain?: () => void,
 }
 export default function ModelReviewImageClassificationMNIST (props: Props) {
   const {
     iModelRef,
     iModelRef_model,
     iChartRef_image,
-    setBarDataImage
+    setBarDataImage,
+    onImageDataReady,
+    onResetExplain
   } = props
 
   // TODO Cambiar a ref
@@ -33,6 +37,11 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     const { predictions } = await iModelRef.current.CLASSIFY(iModelRef_model.current, imageData)
 
     updatePredictionMNIST(predictions)
+
+    // Notificamos la imagen dibujada al padre para la explicabilidad
+    if (typeof onImageDataReady === 'function') {
+      onImageDataReady(imageData)
+    }
   }
 
   const updatePredictionMNIST = (predictions: number[]) => {
@@ -70,7 +79,9 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
             }}
             clearFunction={async () => {
               await handleCanvasDraw_Clear()
-            }}/>
+              onResetExplain?.()
+            }}
+            onDrawStart={() => onResetExplain?.()}/>
         </Card.Body>
       </Card>
     </Col>

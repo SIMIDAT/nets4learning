@@ -1,8 +1,8 @@
 import './TabularClassification.css'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { Accordion, Button, Card, Col, Container, Form, ProgressBar, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
@@ -27,6 +27,12 @@ import TabularClassificationEditorHyperparameters from '@pages/playground/0_Tabu
 import TabularClassificationEditorLayers from '@pages/playground/0_TabularClassification/TabularClassificationEditorLayers'
 import TabularClassificationTableModels from '@pages/playground/0_TabularClassification/TabularClassificationTableModels'
 import TabularClassificationPrediction from '@pages/playground/0_TabularClassification/TabularClassificationPrediction'
+
+import { myModelWrapper } from '@core/explainability/ModelExplanation'
+import ShapExplanationChart from '@core/explainability/ModelExplanationChart'
+import ShapBeeswarmChart from '@core/explainability/ShapBeeswarmChart'
+import { dataframeRowsToNumbers, sampleRowsWithoutReplacement, buildShapBackground } from '@core/explainability/shapSampling'
+import { KernelSHAP } from 'webshap'
 
 import I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
 import { VERBOSE } from '@/CONSTANTS'
@@ -144,6 +150,31 @@ export default function TabularClassification(props: Props) {
   const [inputDataToPredict, setInputDataToPredict] = useState<Array<_Types.N4LDataFrameType>>([])
   const [inputVectorToPredict, setInputVectorToPredict] = useState<Array<_Types.N4LDataFrameType>>([])
   const [predictionBar, setPredictionBar] = useState(DEFAULT_PREDICTION_BAR)
+
+  // === Explicabilidad (SHAP) sobre el modelo recién entrenado ===
+  // El train tabular predice en espacio ESCALADO (scaler.transform antes de predict),
+  // así que instancia y background van escalados (data_processed.X).
+  const explainer = useRef<KernelSHAP | null>(null)
+  const [showExplain, setShowExplain] = useState(false)
+  const [explanationData, setExplanationData] = useState<number[][] | null>(null)
+  const [isCalculo, setIsCalculo] = useState(false)
+  const [nSamplesExplain, setNSamplesExplain] = useState(1000)
+  const [selectedClassIndex, setSelectedClassIndex] = useState(0)
+  // SHAP global: matriz única (shap + valores de features) de la que se deriva todo.
+  const [globalShap, setGlobalShap] = useState<{ shap: number[][]; featureValues: number[][] } | null>(null)
+  const [showGlobalExplain, setShowGlobalExplain] = useState(false)
+  const [isCalculoGlobal, setIsCalculoGlobal] = useState(false)
+  const [globalProgress, setGlobalProgress] = useState(0)
+  const [nInstancesGlobal, setNInstancesGlobal] = useState(50)
+  const [globalSortOrder, setGlobalSortOrder] = useState<'desc' | 'asc' | 'none'>('desc')
+  const [globalChartType, setGlobalChartType] = useState<'bar' | 'beeswarm'>('bar')
+  const globalImportance = useMemo<number[] | null>(() => {
+    if (!globalShap || globalShap.shap.length === 0) return null
+    const nF = globalShap.shap[0].length
+    const sums = new Array(nF).fill(0)
+    for (const row of globalShap.shap) for (let f = 0; f < nF; f++) sums[f] += Math.abs(row[f])
+    return sums.map((s) => s / globalShap.shap.length)
+  }, [globalShap])
   /**
    * @type {ReturnType<typeof useRef<_Types.Joyride_t|_Types.Joyride_void_t>>}
    */
@@ -309,6 +340,112 @@ export default function TabularClassification(props: Props) {
     }
   }
   // endregion
+
+  // region EXPLAINABILITY (SHAP)
+  // data_processed del dataset seleccionado (contiene scaler, classes y la X escalada).
+  const getDataProcessed = () => {
+    const ds = datasets_processed.datasets[datasets_processed.index]
+    return ds?.data_processed ?? null
+  }
+
+  // SHAP local: explica la predicción actual. La instancia va ESCALADA (igual que el predict).
+  const handleRequest_ExplainPrediction = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+    if (showExplain) { setShowExplain(false); return }
+    if (Model === null) { await alertHelper.alertError('First you must load a model'); return }
+
+    const data_processed = getDataProcessed()
+    if (!data_processed || !data_processed.scaler) {
+      await alertHelper.alertError('Error, dataset not processed')
+      return
+    }
+    if (!inputVectorToPredict || inputVectorToPredict.length === 0) {
+      await alertHelper.alertInfo(t('info.insert-input'))
+      return
+    }
+
+    setIsCalculo(true)
+    try {
+      // Instancia en espacio ESCALADO (exactamente como en handleSubmit_PredictVector).
+      const instance = data_processed.scaler.transform(inputVectorToPredict) as number[]
+      const nFeatures = instance.length
+      const pool = dataframeRowsToNumbers(data_processed.X.values)
+      const background = buildShapBackground(pool, nFeatures)
+
+      const predictor = myModelWrapper(Model)
+      explainer.current = new KernelSHAP(predictor, background, 0.2022)
+      const nSamples = Number(nSamplesExplain) || 1000
+      const shapValues = await explainer.current.explainOneInstance(instance, nSamples)
+      setExplanationData(shapValues)
+      setShowExplain(true)
+    } catch (error) {
+      console.error('Error calculating explainability', { error })
+      await alertHelper.alertError(t('Error calculating explainability'))
+    } finally {
+      setIsCalculo(false)
+    }
+  }
+
+  // SHAP global: agrega mean(|SHAP|) sobre una muestra del dataset (X escalada).
+  const handleRequest_ExplainGlobal = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+    if (showGlobalExplain) { setShowGlobalExplain(false); return }
+    if (Model === null) { await alertHelper.alertError('First you must load a model'); return }
+
+    const data_processed = getDataProcessed()
+    if (!data_processed) {
+      await alertHelper.alertError('Error, dataset not processed')
+      return
+    }
+
+    const pool = dataframeRowsToNumbers(data_processed.X.values)
+    const nFeatures = pool[0]?.length ?? 0
+    const validPool = pool.filter((row) => row.length === nFeatures)
+    if (validPool.length === 0) {
+      await alertHelper.alertError(
+        t('pages.playground.0-tabular-classification.general.no-data', {
+          defaultValue: 'No dataset available to compute global importance',
+        }),
+      )
+      return
+    }
+
+    setIsCalculoGlobal(true)
+    setGlobalProgress(0)
+    try {
+      const background = buildShapBackground(validPool, nFeatures)
+      const predictor = myModelWrapper(Model)
+      const instances = sampleRowsWithoutReplacement(validPool, Math.min(nInstancesGlobal, validPool.length))
+      const nSamples = Number(nSamplesExplain) || 1000
+
+      const shapMatrix: number[][] = []
+      for (let k = 0; k < instances.length; k++) {
+        // KernelSHAP no resetea su estado interno entre llamadas → uno nuevo por instancia.
+        const explainerGlobal = new KernelSHAP(predictor, background, 0.2022)
+        const shap = await explainerGlobal.explainOneInstance(instances[k], nSamples)
+        const classShap = shap[selectedClassIndex] ?? []
+        shapMatrix.push(Array.from({ length: nFeatures }, (_, f) => classShap[f] ?? 0))
+        setGlobalProgress(Math.round(((k + 1) / instances.length) * 100))
+      }
+
+      setGlobalShap({ shap: shapMatrix, featureValues: instances })
+      setShowGlobalExplain(true)
+    } catch (error) {
+      console.error('Error calculating global explainability', { error })
+      await alertHelper.alertError(t('Error calculating explainability'))
+    } finally {
+      setIsCalculoGlobal(false)
+    }
+  }
+
+  // Al cambiar de clase, la matriz global queda obsoleta → reset para forzar recálculo.
+  const handleChange_SelectedClass = (index: number) => {
+    setSelectedClassIndex(index)
+    setGlobalShap(null)
+    setShowGlobalExplain(false)
+  }
+  // endregion
+
   if (iModelInstance.current === null) {
     console.info('Error, iModelInstance is null on render')
     return <>Error</>
@@ -502,6 +639,258 @@ export default function TabularClassification(props: Props) {
 
               handleSubmit_PredictVector={handleSubmit_PredictVector}
             />
+          </Col>
+        </Row>
+
+        {/* EXPLAINABILITY */}
+        <Row className={'mt-3'}>
+          <Col xl={12}>
+            <Card data-testid={'explainability-card'}>
+              <Card.Header>
+                <h3>
+                  <Trans
+                    i18nKey={'pages.playground.0-tabular-classification.general.explainability'}
+                    defaults={'Explicabilidad del modelo'}
+                  />
+                </h3>
+              </Card.Header>
+              <Card.Body>
+                {/* Panel narrativo contextual */}
+                {(showExplain || showGlobalExplain) && (
+                  <div className={'alert alert-success'}>
+                    {showExplain && (
+                      <div className={showGlobalExplain ? 'mb-2' : ''}>
+                        <strong>
+                          <Trans
+                            i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-local-title'}
+                            defaults={'Local explanation (one instance)'}
+                          />
+                        </strong>
+                        <div className={'small'}>
+                          <Trans
+                            i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-local-body'}
+                            defaults={'SHAP explains a single prediction by distributing the difference between this prediction and the model\'s average prediction (base value) across the features.'}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    {showGlobalExplain && (
+                      <div>
+                        <strong>
+                          <Trans
+                            i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-global-title'}
+                            defaults={'Global importance (all instances)'}
+                          />
+                        </strong>
+                        <div className={'small'}>
+                          <Trans
+                            i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-global-body'}
+                            defaults={'Global importance aggregates many local explanations (mean |SHAP|).'}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* === SHAP local === */}
+                <Row className={'mb-2'}>
+                  <Col md={6} className={'mb-2'}>
+                    <Form.Group controlId={'trainSelectPredictedClass'}>
+                      <Form.Label>
+                        <Trans
+                          i18nKey={'pages.playground.0-tabular-classification.general.select-class'}
+                          defaults={'Select class'}
+                        />
+                      </Form.Label>
+                      <Form.Select
+                        size={'sm'}
+                        value={selectedClassIndex}
+                        onChange={(e) => handleChange_SelectedClass(Number(e.target.value))}
+                      >
+                        {(getDataProcessed()?.classes ?? []).map((c, idx) => (
+                          <option key={`train_class_${idx}`} value={idx}>
+                            {c}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6} className={'mb-2'}>
+                    <Form.Group controlId={'trainInputNSamples'}>
+                      <Form.Label>
+                        <Trans
+                          i18nKey={'pages.playground.0-tabular-classification.general.n-samples'}
+                          defaults={'Number of samples'}
+                        />
+                      </Form.Label>
+                      <Form.Control
+                        type={'number'}
+                        size={'sm'}
+                        value={nSamplesExplain}
+                        min={1}
+                        step={1}
+                        onChange={(e) => setNSamplesExplain(Number(e.target.value))}
+                      />
+                      <Form.Text className={'text-muted'}>
+                        <Trans
+                          i18nKey={'pages.playground.0-tabular-classification.general.n-samples-help'}
+                          defaults={'Samples used by KernelSHAP'}
+                        />
+                      </Form.Text>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row className={'mb-3'}>
+                  <Col>
+                    <div className={'d-grid gap-2'}>
+                      <Button
+                        size={'lg'}
+                        variant={showExplain ? 'outline-secondary' : 'primary'}
+                        onClick={(e) => handleRequest_ExplainPrediction(e)}
+                        disabled={isCalculo || Model === null}
+                      >
+                        {isCalculo
+                          ? t('pages.playground.0-tabular-classification.general.calculating', { defaultValue: 'Calculating...' })
+                          : showExplain
+                            ? t('pages.playground.0-tabular-classification.general.hide-explain', { defaultValue: 'Hide explanation' })
+                            : t('pages.playground.0-tabular-classification.general.show-explain', { defaultValue: 'Show explanation' })}
+                      </Button>
+                    </div>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col>
+                    {showExplain && explanationData && (
+                      <ShapExplanationChart
+                        shapValues={explanationData}
+                        predictedClass={selectedClassIndex}
+                        predictionProbs={predictionBar}
+                        features={getDataProcessed()?.X?.columns ?? []}
+                      />
+                    )}
+                  </Col>
+                </Row>
+
+                {/* === SHAP global === */}
+                <hr />
+                <Row className={'mb-2'}>
+                  <Col md={4} className={'mb-2'}>
+                    <Form.Group controlId={'trainInputNInstancesGlobal'}>
+                      <Form.Label>
+                        <Trans
+                          i18nKey={'pages.playground.0-tabular-classification.general.n-instances'}
+                          defaults={'Instances to aggregate'}
+                        />
+                      </Form.Label>
+                      <Form.Control
+                        type={'number'}
+                        size={'sm'}
+                        value={nInstancesGlobal}
+                        min={1}
+                        step={1}
+                        onChange={(e) => setNInstancesGlobal(Number(e.target.value))}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={4} className={'mb-2'}>
+                    <Form.Group controlId={'trainSelectGlobalChartType'}>
+                      <Form.Label>
+                        <Trans
+                          i18nKey={'pages.playground.0-tabular-classification.general.chart-type'}
+                          defaults={'Chart type'}
+                        />
+                      </Form.Label>
+                      <Form.Select
+                        size={'sm'}
+                        value={globalChartType}
+                        onChange={(e) => setGlobalChartType(e.target.value as 'bar' | 'beeswarm')}
+                      >
+                        <option value={'bar'}>
+                          {t('pages.playground.0-tabular-classification.general.chart-bar', { defaultValue: 'Bar (mean |SHAP|)' })}
+                        </option>
+                        <option value={'beeswarm'}>
+                          {t('pages.playground.0-tabular-classification.general.chart-beeswarm', { defaultValue: 'Beeswarm' })}
+                        </option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  {globalChartType === 'bar' && (
+                    <Col md={4} className={'mb-2'}>
+                      <Form.Group controlId={'trainSelectGlobalSortOrder'}>
+                        <Form.Label>
+                          <Trans
+                            i18nKey={'pages.playground.0-tabular-classification.general.sort-order'}
+                            defaults={'Sort'}
+                          />
+                        </Form.Label>
+                        <Form.Select
+                          size={'sm'}
+                          value={globalSortOrder}
+                          onChange={(e) => setGlobalSortOrder(e.target.value as 'desc' | 'asc' | 'none')}
+                        >
+                          <option value={'desc'}>
+                            {t('pages.playground.0-tabular-classification.general.sort-desc', { defaultValue: 'Most to least important' })}
+                          </option>
+                          <option value={'asc'}>
+                            {t('pages.playground.0-tabular-classification.general.sort-asc', { defaultValue: 'Least to most important' })}
+                          </option>
+                          <option value={'none'}>
+                            {t('pages.playground.0-tabular-classification.general.sort-none', { defaultValue: 'Original order' })}
+                          </option>
+                        </Form.Select>
+                      </Form.Group>
+                    </Col>
+                  )}
+                </Row>
+
+                <Row className={'mb-3'}>
+                  <Col>
+                    <div className={'d-grid gap-2'}>
+                      <Button
+                        size={'lg'}
+                        variant={showGlobalExplain ? 'outline-secondary' : 'primary'}
+                        onClick={(e) => handleRequest_ExplainGlobal(e)}
+                        disabled={isCalculoGlobal || Model === null}
+                      >
+                        {isCalculoGlobal
+                          ? t('pages.playground.0-tabular-classification.general.calculating', { defaultValue: 'Calculating...' })
+                          : showGlobalExplain
+                            ? t('pages.playground.0-tabular-classification.general.hide-global', { defaultValue: 'Hide global importance' })
+                            : t('pages.playground.0-tabular-classification.general.show-global', { defaultValue: 'Show global importance' })}
+                      </Button>
+                    </div>
+                    {isCalculoGlobal && (
+                      <ProgressBar className={'mt-2'} now={globalProgress} label={`${globalProgress}%`} striped={true} animated={true} />
+                    )}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col>
+                    {showGlobalExplain &&
+                      globalShap &&
+                      globalImportance &&
+                      (globalChartType === 'bar' ? (
+                        <ShapExplanationChart
+                          shapValues={[globalImportance]}
+                          predictedClass={0}
+                          sortOrder={globalSortOrder}
+                          features={getDataProcessed()?.X?.columns ?? []}
+                        />
+                      ) : (
+                        <ShapBeeswarmChart
+                          shap={globalShap.shap}
+                          featureValues={globalShap.featureValues}
+                          features={getDataProcessed()?.X?.columns ?? []}
+                        />
+                      ))}
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
       </Container>

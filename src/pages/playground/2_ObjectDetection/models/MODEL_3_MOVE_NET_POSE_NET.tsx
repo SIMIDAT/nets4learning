@@ -8,6 +8,7 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/pose-detection'
   mirror = false
+  usesTensorForPrediction = false
 
   COCO_CONNECTED_KEYPOINTS_PAIRS = [
     // CARA
@@ -117,6 +118,32 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
     //   nmsRadius     : 20
     // }
     return await this._modelDetector.estimatePoses(input_image_or_video, estimationConfig__MoveNet)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  NORMALIZE_PREDICTIONS(predictions: any[], _labels?: Array<string | number>): number[] {
+    // Vector con la detección (1/0) de cada keypoint de cada pose.
+    const vectorPredictions: number[] = []
+    if (!predictions || predictions.length === 0) {
+      for (let i = 0; i <= 16; i++) {
+        vectorPredictions.push(0)
+      }
+      return vectorPredictions
+    }
+
+    for (let j = 0; j < predictions.length; j++) {
+      for (let i = 0; i < predictions[j].keypoints.length; i++) {
+        if (
+          predictions[j].keypoints[i].score != null &&
+          predictions[j].keypoints[i].score >= 0.2
+        ) {
+          vectorPredictions.push(1)
+        } else {
+          vectorPredictions.push(0)
+        }
+      }
+    }
+    return vectorPredictions
   }
 
   /**

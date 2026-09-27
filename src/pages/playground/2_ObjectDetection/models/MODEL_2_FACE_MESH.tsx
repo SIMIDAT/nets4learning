@@ -9,6 +9,8 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = 'datasets-models.2-object-detection.face-mesh.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection'
   mirror = true
+  faces = true
+  usesTensorForPrediction = true
 
   /**
    * @type {faceLandmarksDetection.FaceLandmarksDetector}
@@ -90,6 +92,20 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
   async PREDICTION (input_image_or_video: any, config = { flipHorizontal: false }): Promise<faceLandmarksDetection.Face[]> {
     if (this._modelDetector === null) return []
     return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal, staticImageMode: false })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  NORMALIZE_PREDICTIONS(predictions: any[], _labels?: Array<string | number>): number[] {
+    const vectorPredictions: number[] = []
+    // El modelo solo indica si hay cara o no (0 o 1 objeto)
+    for (let i = 0; i < predictions.length; i++) {
+      if (!predictions[i] || predictions[i].length === 0) {
+        vectorPredictions.push(0)
+      } else {
+        vectorPredictions.push(1)
+      }
+    }
+    return vectorPredictions
   }
 
   /**

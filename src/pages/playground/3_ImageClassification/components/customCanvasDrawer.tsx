@@ -10,7 +10,8 @@ import { Trans } from "react-i18next"
  */
 type CustomCanvasDrawerProps = {
   submitFunction: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
-  clearFunction : () => void
+  clearFunction : () => void,
+  onDrawStart  ?: () => void,
 }
 
 /**
@@ -22,6 +23,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
   const {
     submitFunction,
     clearFunction,
+    onDrawStart,
   } = props
   const [isDrawing, setIsDrawing] = useState(false)
   /**
@@ -87,6 +89,8 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     context_ref.current.beginPath()
     context_ref.current.moveTo(offsetX, offsetY)
     setIsDrawing(true)
+    // Al empezar a escribir un número nuevo, limpiamos el heatmap anterior.
+    onDrawStart?.()
   }
 
   const finishDrawing = (_event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {

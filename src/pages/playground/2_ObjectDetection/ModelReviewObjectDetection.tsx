@@ -16,6 +16,8 @@ import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import alertHelper from '@utils/alertHelper'
 import I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@utils/utils'
+import ShapHeatmap from '@core/explainability/ImageHeatMapChart'
+import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
@@ -89,6 +91,21 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
    * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
    */
   const processCanvas_ref = useRef<HTMLCanvasElement>(null);
+
+  // === Explicabilidad (SHAP) ===
+  const imgData_ref = useRef<ImageData | null>(null)
+  const segmentationMap_ref = useRef<Int32Array | Uint8Array | number[] | null>(null)
+  const [showExplain, setShowExplain] = useState(false)
+  const [isCalculo, setIsCalculo] = useState(false)
+  const [gridSide, setGridSide] = useState(6)
+  const [nSamples, setNSamples] = useState(75)
+  const [mask, setMask] = useState(0)
+  const [blurEnabled, setBlurEnabled] = useState(false)
+  const [blurKernelSize, setBlurKernelSize] = useState(15)
+  const [blurPasses, setBlurPasses] = useState(2)
+  const [explainLabels, setExplainLabels] = useState<Array<string | number>>([])
+  const [galleryImages, setGalleryImages] = useState<string[]>([])
+  const [explanationData, setExplanationData] = useState<number[][] | null>(null)
 
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: `/ModelReviewObjectDetection/${dataset}`, title: dataset })
@@ -430,6 +447,14 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         // FIX: Changed second 'width' to 'height'
         const imgData = originalCtx.getImageData(0, 0, width, height);
 
+        // Guardamos la imagen para la explicabilidad y reseteamos resultados previos
+        imgData_ref.current = imgData
+        segmentationMap_ref.current = null
+        setExplainLabels([])
+        setGalleryImages([])
+        setExplanationData(null)
+        setShowExplain(false)
+
         // Draw result image
         resultCtx.drawImage(img, 0, 0, width, height);
 
@@ -474,6 +499,51 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     return isLoading || isCameraEnable || isWebView
   }
 
+  const handleRequest_ExplainPrediction = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+
+    if (showExplain) {
+      setShowExplain(false)
+      return
+    }
+
+    setIsCalculo(true)
+
+    try {
+      const currentImageData = imgData_ref.current
+      if (!currentImageData) {
+        await alertHelper.alertInfo(t('info.insert-input'))
+        setIsCalculo(false)
+        return
+      }
+
+      const flipHorizontal = !iModel_ref.current.mirror
+
+      const result = await runObjectDetectionExplain({
+        model: iModel_ref.current,
+        imageData: currentImageData,
+        gridSide,
+        nSamples,
+        flipHorizontal,
+        maskValue: mask,
+        blur: blurEnabled,
+        blurKernelSize,
+        blurPasses,
+      })
+
+      segmentationMap_ref.current = result.segmentationMapArray
+      setExplainLabels(result.selectedLabels)
+      setGalleryImages(result.debugImages)
+      setExplanationData(result.shapValues)
+      setShowExplain(true)
+      setIsCalculo(false)
+    } catch (error) {
+      console.error('Error calculating explainability', { error })
+      await alertHelper.alertError(t('Error calculating explainability'))
+      setIsCalculo(false)
+    }
+  }
+
   if (VERBOSE) console.debug('render ModelReviewObjectDetection')
   return (
     <>
@@ -494,25 +564,32 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <Card className={'sticky-top mt-3 mb-3 border-info'}>
-              <Card.Header
-                className={'d-flex align-items-center justify-content-between'}
-              >
-                <h2>
-                  <Trans i18nKey={iModel_ref.current.TITLE} />
-                </h2>
-                {/*{import.meta.env.VITE_SHOW_NEW_FEATURE === 'true' &&*/}
-                {/*  <div className="d-flex">*/}
-                {/*    <Button size={'sm'}*/}
-                {/*            variant={'outline-info'}*/}
-                {/*            onClick={handleClick_openSummary}>Summary</Button>*/}
-                {/*  </div>*/}
-                {/*}*/}
-              </Card.Header>
-              <Card.Body>
-                {dataset !== UPLOAD && <>{iModel_ref.current.DESCRIPTION()}</>}
-              </Card.Body>
-            </Card>
+            <div className={'sticky-top'} style={{ zIndex: 0 }}>
+              <Card className={'mt-3 mb-3 border-info'}>
+                <Card.Header
+                  className={'d-flex align-items-center justify-content-between'}
+                >
+                  <h2>
+                    <Trans i18nKey={iModel_ref.current.TITLE} />
+                  </h2>
+                </Card.Header>
+                <Card.Body>
+                  {dataset !== UPLOAD && <>{iModel_ref.current.DESCRIPTION()}</>}
+                </Card.Body>
+              </Card>
+
+              {/* Panel narrativo del método (idéntico patrón al review tabular). OD usa SHAP. */}
+              <Card className={'mb-3 border-success'}>
+                <Card.Header>
+                  <h2 className={'h5 mb-0'}>
+                    <Trans i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-title'} />
+                  </h2>
+                </Card.Header>
+                <Card.Body>
+                  <p className={'small mb-0'}>{t('ui.explain.about-shap')}</p>
+                </Card.Body>
+              </Card>
+            </div>
           </Col>
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
@@ -758,6 +835,178 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                       </Col>
                     </Row>
                   </Container>
+                </Card.Body>
+              </Card>
+
+              <Card className={'mt-3'} data-testid={'explainability-card'}>
+                <Card.Header className="d-flex justify-content-between align-items-center">
+                  <h3>{t('ui.explain.title')}</h3>
+                </Card.Header>
+                <Card.Body>
+                  {showExplain && galleryImages.length > 0 && (
+                    <div className="mb-4">
+                      <h5>{t('ui.explain.perturbationSamples')}</h5>
+                      <div
+                        style={{
+                          display: 'flex',
+                          gap: '10px',
+                          overflowX: 'auto',
+                          padding: '10px',
+                          background: '#f9f9f9',
+                          borderRadius: '8px',
+                          minHeight: '100px',
+                        }}
+                      >
+                        {galleryImages.map((imgSrc, idx) => (
+                          <div key={idx} style={{ flex: '0 0 auto', textAlign: 'center' }}>
+                            <img
+                              src={imgSrc}
+                              style={{
+                                height: 80,
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                objectFit: 'contain',
+                              }}
+                              alt={`sample-${idx}`}
+                            />
+                            <div style={{ fontSize: '10px', color: '#666' }}>
+                              #{idx + 1}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {showExplain && explanationData && (
+                    <Row>
+                      {explanationData.map((shapVals, idx) => {
+                        const labelName =
+                          explainLabels && explainLabels.length > idx
+                            ? explainLabels[idx]
+                            : `Class ${idx + 1}`
+                        // Para FACE_API, traducir los nombres de las labels
+                        let displayLabel: string | number = labelName
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const model = iModel_ref.current as any
+                        if (model && model.i18n_face_api && model.i18n_face_api[labelName]) {
+                          displayLabel = model.i18n_face_api[labelName]
+                        }
+                        return (
+                          <Col key={idx} md={6} lg={4} className="mb-3">
+                            <div
+                              style={{
+                                border: '1px solid #eee',
+                                padding: '10px',
+                                borderRadius: '8px',
+                                textAlign: 'center',
+                              }}
+                            >
+                              <h6 style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                                {displayLabel}
+                              </h6>
+                              <ShapHeatmap
+                                imageSrc={
+                                  canvasImage_ref.current
+                                    ? canvasImage_ref.current.toDataURL()
+                                    : undefined
+                                }
+                                shapValues={shapVals}
+                                segmentationMap={segmentationMap_ref.current}
+                              />
+                            </div>
+                          </Col>
+                        )
+                      })}
+                    </Row>
+                  )}
+
+                  <div className="mt-3">
+                    <Form>
+                      <Form.Group className="mb-2" controlId="formGridSideBottomOD">
+                        <Form.Label>{t('ui.explain.gridSide')}</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min={2}
+                          max={32}
+                          value={gridSide}
+                          onChange={(e) => setGridSide(Number(e.target.value))}
+                        />
+                      </Form.Group>
+                      <Form.Group className="mb-2" controlId="formNSamplesBottomOD">
+                        <Form.Label>{t('ui.explain.nSamples')}</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min={1}
+                          max={500}
+                          value={nSamples}
+                          onChange={(e) => setNSamples(Number(e.target.value))}
+                        />
+                      </Form.Group>
+                      <Form.Group className="mb-2" controlId="formMaskBottomOD">
+                        <Form.Label>{t('ui.explain.mask')}</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min={0}
+                          max={1}
+                          step={0.05}
+                          value={mask}
+                          onChange={(e) => setMask(Number(e.target.value))}
+                        />
+                      </Form.Group>
+                      <Form.Group className="mb-2" controlId="formBlurEnableOD">
+                        <Form.Check
+                          type="checkbox"
+                          label={t('ui.blur.enable')}
+                          checked={blurEnabled}
+                          onChange={(e) => setBlurEnabled(e.target.checked)}
+                        />
+                      </Form.Group>
+                      {blurEnabled && (
+                        <>
+                          <Form.Group className="mb-2" controlId="formBlurKernelOD">
+                            <Form.Label>{t('ui.blur.kernelSize')}</Form.Label>
+                            <Form.Control
+                              type="number"
+                              min={3}
+                              max={101}
+                              step={2}
+                              value={blurKernelSize}
+                              onChange={(e) => setBlurKernelSize(Number(e.target.value))}
+                            />
+                          </Form.Group>
+                          <Form.Group className="mb-2" controlId="formBlurPassesOD">
+                            <Form.Label>{t('ui.blur.passes')}</Form.Label>
+                            <Form.Control
+                              type="number"
+                              min={1}
+                              max={6}
+                              value={blurPasses}
+                              onChange={(e) => setBlurPasses(Number(e.target.value))}
+                            />
+                          </Form.Group>
+                        </>
+                      )}
+                      <Button
+                        type="button"
+                        variant={'outline-info'}
+                        onClick={handleRequest_ExplainPrediction}
+                        disabled={isCalculo || !processImage.isProcessed}
+                      >
+                        {isCalculo
+                          ? t('ui.explain.calculating')
+                          : t('ui.explain.explainPrediction')}
+                      </Button>
+                    </Form>
+                  </div>
+
+                  {showExplain &&
+                    (!explanationData || explanationData.length === 0) &&
+                    !isCalculo && (
+                      <p className="text-center text-muted">
+                        {t('ui.explain.noData')}
+                      </p>
+                    )}
                 </Card.Body>
               </Card>
             </Col>

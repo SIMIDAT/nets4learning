@@ -23,7 +23,8 @@ export default function N4LFooter () {
                 <li>
                   <Trans i18nKey={'footer.developers'} />:{' '}
                   <a href="https://github.com/nonodev96/" target="_blank" rel="noreferrer" className="link-secondary">Antonio Mudarra Machuca</a>,{' '}
-                  <a href="https://github.com/Davavico22" target="_blank" rel="noreferrer" className="link-secondary">David Valdivia Vico</a>
+                  <a href="https://github.com/Davavico22" target="_blank" rel="noreferrer" className="link-secondary">David Valdivia Vico</a>,{' '}
+                  <a href="https://github.com/El-Requedaddy" target="_blank" rel="noreferrer" className="link-secondary">Carlos Requena</a>
                 </li>
                 <li>
                   <Link to={'/terms-and-conditions'} className="link-secondary">

@@ -14,6 +14,8 @@ import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
 
 import ImageClassificationClassify from '@pages/playground/3_ImageClassification/ImageClassificationClassify'
+import ShapHeatmap from '@core/explainability/ImageHeatMapChart'
+import { runImageClassificationExplainLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runObjectDetectionExplain'
 import ImageClassificationManual from '@pages/playground/3_ImageClassification/ImageClassificationManual'
 import ImageClassificationEditorLayers from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayers'
 import ImageClassificationEditorHyperparameters from '@pages/playground/3_ImageClassification/ImageClassificationEditorHyperparameters'
@@ -71,6 +73,26 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
    * @type {ReturnType<typeof useState<tfjs.Sequential>>}
    */
   const [Model, setModel] = useState<tfjs.Sequential | null>(null)
+
+  // === Explicabilidad (LRP) — en el train solo se ofrece LRP ===
+  const imgData_ref = useRef<ImageData | null>(null)
+  const imageSrc_ref = useRef<string | undefined>(undefined)
+  const segmentationMap_ref = useRef<Int32Array | number[] | null>(null)
+  const [showExplain, setShowExplain] = useState(false)
+  const [isCalculo, setIsCalculo] = useState(false)
+  const [explainLabels, setExplainLabels] = useState<Array<string | number>>([])
+  const [galleryImages, setGalleryImages] = useState<string[]>([])
+  const [explanationData, setExplanationData] = useState<number[][] | null>(null)
+
+  // Limpia el heatmap previo (al volver a dibujar/escribir un número, o al borrar el lienzo).
+  const clearExplainResult = () => {
+    if (!showExplain && explanationData === null) return
+    setShowExplain(false)
+    setExplanationData(null)
+    setGalleryImages([])
+    setExplainLabels([])
+    segmentationMap_ref.current = null
+  }
 
   /**
    * @type {ReturnType<typeof useState<Array<_Types.ImageClassificationGeneratedModel_t>>>}
@@ -186,6 +208,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     const predictions = (Model.predict(tensor4) as tfjs.Tensor).dataSync()
     const prediction_index = predictions.indexOf(Math.max(...predictions))
     console.log({ predictions, prediction_index })
+    await captureForExplain(canvas, context)
     await alertHelper.alertInfo(t('info.the-class-is-__value__', { value: prediction_index }),
       {
         text  : '',
@@ -226,11 +249,86 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     const index = predictions.indexOf(Math.max(...predictions))
     console.log((predictions))
 
+    await captureForExplain(canvas, context)
     await alertHelper.alertInfo('Resultado de la clasificación', {
       text  : '',
       footer: '',
       html  : <>¿El número es un {index}?</>
     })
+  }
+  // endregion
+
+  // region EXPLAINABILITY (SHAP / LRP)
+  // Captura la imagen clasificada (a resolución completa) y su dataURL base, y resetea
+  // resultados de explicabilidad previos. Se llama tras cada clasificación.
+  const captureForExplain = async (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => {
+    try {
+      imgData_ref.current = await iModelInstance.current.GET_IMAGE_DATA(canvas, context)
+      imageSrc_ref.current = canvas.toDataURL()
+    } catch (err) {
+      console.warn('No se pudo capturar la imagen para explicabilidad', err)
+      imgData_ref.current = null
+      imageSrc_ref.current = undefined
+    }
+    segmentationMap_ref.current = null
+    setExplainLabels([])
+    setGalleryImages([])
+    setExplanationData(null)
+    setShowExplain(false)
+  }
+
+  const canUseLrp = () => {
+    const modelApi = iModelInstance.current as unknown as {
+      GET_ACTIVATIONS_IMAGE?: unknown
+      CALCULATE_LRP_PROPAGATION?: unknown
+    }
+    return (
+      typeof modelApi?.GET_ACTIVATIONS_IMAGE === 'function' &&
+      typeof modelApi?.CALCULATE_LRP_PROPAGATION === 'function'
+    )
+  }
+
+  const handleRequest_ExplainPrediction = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+
+    if (showExplain) {
+      setShowExplain(false)
+      return
+    }
+
+    setIsCalculo(true)
+    try {
+      const currentImageData = imgData_ref.current
+      const currentModel = Model
+      if (!currentImageData || !currentModel) {
+        await alertHelper.alertInfo(t('info.insert-input'))
+        setIsCalculo(false)
+        return
+      }
+
+      if (!canUseLrp()) {
+        await alertHelper.alertError('LRP no está disponible para este modelo')
+        setIsCalculo(false)
+        return
+      }
+
+      const result = await runImageClassificationExplainLrp({
+        iModel: iModelInstance.current,
+        modelInstance: currentModel,
+        imageData: currentImageData,
+      })
+
+      segmentationMap_ref.current = result.segmentationMapArray
+      setExplainLabels(result.selectedLabels)
+      setGalleryImages(result.debugImages)
+      setExplanationData(result.shapValues)
+      setShowExplain(true)
+      setIsCalculo(false)
+    } catch (error) {
+      console.error('Error calculating explainability', { error })
+      await alertHelper.alertError(t('Error calculating explainability'))
+      setIsCalculo(false)
+    }
   }
   // endregion
 
@@ -354,7 +452,89 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
               handleSubmit_VectorTest={handleSubmit_VectorTest}
               handleSubmit_VectorTestImageUpload={handleSubmit_VectorTestImageUpload}
               GeneratedModels={GeneratedModels}
+              onResetExplain={clearExplainResult}
             />
+          </Col>
+        </Row>
+
+        {/* EXPLAINABILITY (LRP) */}
+        <Row className={'mt-3'}>
+          <Col xl={12}>
+            <Card data-testid={'explainability-card'}>
+              <Card.Header>
+                <h3>{t('pages.playground.0-tabular-classification.general.explain-panel-title')} (LRP)</h3>
+              </Card.Header>
+              <Card.Body>
+                {showExplain && galleryImages.length > 0 && (
+                  <div className="mb-4">
+                    <h5>{t('ui.explain.perturbationSamples')}</h5>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '10px',
+                        overflowX: 'auto',
+                        padding: '10px',
+                        background: '#f9f9f9',
+                        borderRadius: '8px',
+                        minHeight: '100px',
+                      }}
+                    >
+                      {galleryImages.map((imgSrc, idx) => (
+                        <div key={idx} style={{ flex: '0 0 auto', textAlign: 'center' }}>
+                          <img
+                            src={imgSrc}
+                            style={{ height: 80, border: '1px solid #ccc', borderRadius: '4px', objectFit: 'contain' }}
+                            alt={`sample-${idx}`}
+                          />
+                          <div style={{ fontSize: '10px', color: '#666' }}>#{idx + 1}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {showExplain && explanationData && (
+                  <Row>
+                    {explanationData.map((shapVals, idx) => {
+                      const label = explainLabels && explainLabels.length > idx ? explainLabels[idx] : idx + 1
+                      return (
+                        <Col key={idx} md={6} lg={4} className="mb-3">
+                          <div style={{ border: '1px solid #eee', padding: '10px', borderRadius: '8px', textAlign: 'center' }}>
+                            <h6 style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                              {t('ui.explain.class', { index: String(label) })}
+                            </h6>
+                            <ShapHeatmap
+                              imageSrc={imageSrc_ref.current}
+                              shapValues={shapVals}
+                              segmentationMap={segmentationMap_ref.current}
+                            />
+                          </div>
+                        </Col>
+                      )
+                    })}
+                  </Row>
+                )}
+
+                <div className="mt-3">
+                  <Button
+                    type="button"
+                    variant={'outline-info'}
+                    onClick={handleRequest_ExplainPrediction}
+                    disabled={isCalculo || !imgData_ref.current || !canUseLrp()}
+                  >
+                    {isCalculo
+                      ? t('ui.explain.calculating')
+                      : showExplain
+                        ? t('ui.explain.hideExplanation')
+                        : t('ui.explain.explainPrediction')}
+                  </Button>
+                </div>
+
+                {showExplain && (!explanationData || explanationData.length === 0) && !isCalculo && (
+                  <p className="text-center text-muted">{t('ui.explain.noData')}</p>
+                )}
+              </Card.Body>
+            </Card>
           </Col>
         </Row>
 

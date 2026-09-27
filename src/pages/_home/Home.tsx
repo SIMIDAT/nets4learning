@@ -209,6 +209,9 @@ const MenuSelection = ({ activeTask }: { activeTask: TASKS_TYPE_V }) => {
 
 export default function Home() {
 
+  // Suscribimos Home a los cambios de idioma: así se re-renderiza al cambiar idioma y los
+  // botones de disciplina (que usan <Trans>) se actualizan al momento, no solo las tarjetas.
+  const { i18n } = useTranslation()
 
   const [activeTask, setActiveTask] = useState<TASKS_TYPE_V>(TASKS.TABULAR_CLASSIFICATION)
 
@@ -223,7 +226,7 @@ export default function Home() {
 
   return (
     <>
-      <main className={'mb-3'} data-title={'Home'} data-testid={'Test-InitialMenu'}>
+      <main className={'mb-3'} data-title={'Home'} data-lang={i18n.language} data-testid={'Test-InitialMenu'}>
         <Container>
           <Row>
             <Col>

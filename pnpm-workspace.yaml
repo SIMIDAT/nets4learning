@@ -1,0 +1,15 @@
+# Scripts de build de dependencias permitidos (pnpm 11 los bloquea por defecto).
+# - esbuild: NECESARIO, descarga el binario nativo que usa Vite.
+# - El resto son postinstall cosméticos (mensajes de financiación) o builds
+#   nativos no necesarios para la app en navegador, por lo que se omiten.
+allowBuilds:
+  '@tensorflow/tfjs-node': false
+  core-js: false
+  es5-ext: false
+  esbuild: true
+  preact: false
+  scikitjs: false
+# Permite dependencias resueltas por URL en subdependencias.
+# Necesario porque danfojs depende de xlsx servido desde el CDN de SheetJS
+# (https://cdn.sheetjs.com/...), que pnpm 11 bloquea por defecto (blockExoticSubdeps).
+blockExoticSubdeps: false

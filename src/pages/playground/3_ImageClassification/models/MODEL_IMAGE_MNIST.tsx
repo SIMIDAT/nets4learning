@@ -4,6 +4,10 @@ import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import * as Train_MNIST from '@pages/playground/3_ImageClassification/custom/Train_MNIST'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t, Layer_t } from '@/types/nn-types'
+import {
+  createEmbeddingActivationsHelpers,
+  applyLRP,
+} from '@pages/playground/3_ImageClassification/explainPrediction/modelEmbeddingActivations'
 
 export type ParamsTrain_MNIST_t = {
   learningRate : number,
@@ -26,6 +30,30 @@ export const LIST_OF_IMAGES_MNIST: string[] = [
   '8_new.png',
   '9_new.png'
 ]
+
+function _imageDataToMnistTensor4d(imageData: ImageData): tfjs.Tensor4D {
+  const arr: number[][][] = []
+  let row: number[][] = []
+
+  // Mantiene el preprocesado consistente: invierte colores y mapea a [0,1],
+  // pero NO muta imageData.
+  for (let p = 0; p < imageData.data.length; p += 4) {
+    const inverted = 255 - imageData.data[p]
+    const value01 = inverted / 255
+    row.push([value01])
+    if (row.length === 28) {
+      arr.push(row)
+      row = []
+    }
+  }
+
+  return tfjs.tensor4d([arr])
+}
+
+const _embedActHelpers = createEmbeddingActivationsHelpers({
+  imageDataToTensor4d: _imageDataToMnistTensor4d,
+})
+
 export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
   static KEY = 'IMAGE-MNIST'
   TITLE = 'datasets-models.3-image-classifier.mnist.title'
@@ -150,6 +178,105 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
   async GET_IMAGE_DATA(canvas: HTMLCanvasElement, canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
     canvas_ctx.drawImage(canvas, 10, 10, 28, 28)
     return canvas_ctx.getImageData(10, 10, 28, 28)
+  }
+
+  async GET_EMBEDDING_IMAGE(
+    model: tfjs.LayersModel,
+    imageData: ImageData,
+    options: { layerName?: string } = {},
+  ) {
+    return _embedActHelpers.GET_EMBEDDING_IMAGE(model, imageData, options)
+  }
+
+  /**
+   * Devuelve las activaciones (salidas de capa) de varias capas en una sola
+   * inferencia. Útil para métodos de explicabilidad (LRP/Grad-CAM).
+   */
+  async GET_ACTIVATIONS_IMAGE(
+    model: tfjs.LayersModel,
+    imageData: ImageData,
+    options: { layerNames?: string[]; includeInput?: boolean } = {},
+  ) {
+    return _embedActHelpers.GET_ACTIVATIONS_IMAGE(model, imageData, options)
+  }
+
+  /**
+   * Calcula la propagación de relevancia LRP retropropagando desde la salida
+   * hasta la entrada, capa a capa.
+   */
+  async CALCULATE_LRP_PROPAGATION(
+    model: tfjs.LayersModel,
+    _imageData: ImageData,
+    activations: {
+      layers: Record<string, { data: Float32Array; shape: number[] }>
+      order: string[]
+    },
+    options: {
+      rule?: 'simple' | 'epsilon' | 'alpha_beta'
+      epsilon?: number
+      alpha?: number
+      beta?: number
+      winnerTakesAll?: boolean
+    } = {},
+  ): Promise<tfjs.Tensor> {
+    return tfjs.tidy(() => {
+      const order = activations.order
+      const orderReversed = [...order].reverse()
+
+      const lastLayerName = orderReversed[0]
+      const lastLayerData = activations.layers[lastLayerName]
+
+      // LRP se inicializa con el LOGIT pre-softmax de la clase objetivo,
+      // no con las probabilidades (Montavon et al. 2019, §10.2.1).
+      // Como la softmax va fusionada en la última Dense, recalculamos z = x·W + b.
+      const lastLayer = model.getLayer(lastLayerName)
+      const prevData = activations.layers[orderReversed[1]]
+      const xLast = tfjs.tensor(prevData.data, prevData.shape)
+      const [wLast, bLast] = lastLayer.getWeights()
+      let logits: tfjs.Tensor = xLast.matMul(wLast)
+      if (bLast) logits = logits.add(bLast) // Podría no tener sesgo
+
+        // Máscara one-hot sobre la clase predicha: solo R_c ≠ 0
+      const probs = tfjs.tensor(lastLayerData.data, lastLayerData.shape)
+      const targetClass = probs.argMax(-1)  
+      const numClasses = logits.shape[logits.shape.length - 1] as number
+      const mask = tfjs.oneHot(targetClass, numClasses).cast('float32')
+
+      // Inicializar relevancia con la salida de la última capa
+      let R: tfjs.Tensor = logits.mul(mask)
+
+      console.log(
+        `\n=== Iniciando LRP Propagation con regla: ${options.rule || 'epsilon'} ===`,
+      )
+      console.log(`Forma inicial de relevancia: [${R.shape}]`)
+
+      // Ir hacia atrás por todas las capas
+      for (let i = 0; i < orderReversed.length - 1; i++) {
+        const currentLayerName = orderReversed[i]
+        const inputLayerName = orderReversed[i + 1]
+
+        const currentLayer = model.getLayer(currentLayerName)
+        const layerType = currentLayer.getClassName()
+
+        // Entrada de esta capa (salida de la capa anterior)
+        const inputData = activations.layers[inputLayerName]
+        const x = tfjs.tensor(inputData.data, inputData.shape)
+
+        // Aplicar LRP según el tipo de capa
+        R = applyLRP({
+          layerType,
+          inputTensor: x,
+          relevanceOut: R,
+          layer: currentLayer,
+          options,
+        })
+      }
+
+      console.log(`\n=== LRP Propagation completada ===`)
+      console.log(`Forma final de relevancia: [${R.shape}]`)
+
+      return R
+    })
   }
 
   async TRAIN_MODEL(params: ParamsTrain_MNIST_t): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {

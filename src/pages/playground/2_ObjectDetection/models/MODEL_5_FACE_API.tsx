@@ -17,6 +17,8 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   i18n_TITLE = "datasets-models.2-object-detection.face-api.title"
   URL = "https://justadudewhohacks.github.io/face-api.js/docs/index.html"
   mirror = false
+  usesTensorForPrediction = false
+  faces = true
 
   i18n_face_api: Record<string, string> = {
     years    : "face-api.years",
@@ -27,6 +29,40 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     fearful  : "face-api.fearful",
     disgusted: "face-api.disgusted",
     surprised: "face-api.surprised",
+  }
+
+  GET_LABELS(): string[] {
+    return [
+      "age",
+      "neutral",
+      "happy",
+      "sad",
+      "angry",
+      "fearful",
+      "disgusted",
+      "surprised",
+    ]
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  NORMALIZE_PREDICTIONS(predictions: any[] = [], labels: Array<string | number>): number[] {
+    if (!Array.isArray(labels) || labels.length === 0) return []
+    const scores: number[] = new Array(labels.length).fill(0)
+    if (!Array.isArray(predictions) || predictions.length === 0) return scores
+
+    // Tomamos la primera cara detectada
+    const pred = predictions[0]
+    if (!pred) return scores
+
+    for (let i = 0; i < labels.length; i++) {
+      const label = labels[i]
+      if (label === "age") {
+        scores[i] = pred.age || 0
+      } else if (pred.expressions && typeof pred.expressions[label] === "number") {
+        scores[i] = pred.expressions[label]
+      }
+    }
+    return scores
   }
 
   DESCRIPTION() {
