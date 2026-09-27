@@ -1,40 +1,45 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as tfjs from '@tensorflow/tfjs';
 import { KernelSHAP } from 'webshap';
 
 import { objectDetectionWrapper } from '@core/explainability/ObjectDetectionWrapper';
 import { createImageClassificationAdapter } from '@core/explainability/adapters/createImageClassificationAdapter';
+import { buildMaskedBackground } from '@core/explainability/shapSampling';
 import { computeSLICzeroMap } from '@utils/slic0';
 
 export interface ExplainParams {
-  iModel: any;
-  modelInstance: any;
-  imageData: ImageData;
-  gridSide: number;
-  nSamples: number;
-  maskValue?: number;
-  blur?: boolean;
+  iModel         : any;
+  modelInstance  : any;
+  imageData      : ImageData;
+  gridSide       : number;
+  nSamples       : number;
+  maskValue?     : number;
+  blur?          : boolean;
   blurKernelSize?: number;
-  blurPasses?: number;
+  blurPasses?    : number;
 }
 
 export interface ExplainLrpParams {
-  iModel: any;
+  iModel       : any;
   modelInstance: any;
-  imageData: ImageData;
+  imageData    : ImageData;
 }
 
 export interface ExplainResult {
-  shapValues: any;
-  debugImages: string[];
-  selectedLabels: Array<string | number>;
+  shapValues          : any;
+  debugImages         : string[];
+  selectedLabels      : Array<string | number>;
   segmentationMapArray: Int32Array | number[] | null;
-  numSegments: number;
-  backgroundData: number[][];
-  relevanceShape?: number[];
+  numSegments         : number;
+  backgroundData      : number[][];
+  relevanceShape?     : number[];
 }
 
 const unique = <T>(arr: T[]): T[] => Array.from(new Set(arr));
+
+/** Indica si el modelo implementa lo necesario para explicar con LRP. */
+export const supportsLrp = (iModel: any): boolean =>
+  typeof iModel?.GET_ACTIVATIONS_IMAGE === 'function' &&
+  typeof iModel?.CALCULATE_LRP_PROPAGATION === 'function';
 
 const getSelectedLabelsFromClassification = (
   predictions: any,
@@ -61,11 +66,6 @@ const getSelectedLabelsFromClassification = (
   }
 };
 
-const buildZeroBackground = (numSegments: number): number[][] =>
-  Array(20)
-    .fill(null)
-    .map(() => Array(numSegments).fill(0));
-
 /**
  * Ejecuta el flujo completo de explicabilidad (SLIC0 + KernelSHAP) para
  * clasificación de imágenes. No toca el estado de React: devuelve los
@@ -74,8 +74,17 @@ const buildZeroBackground = (numSegments: number): number[][] =>
 export async function runImageClassificationExplain(
   params: ExplainParams,
 ): Promise<ExplainResult> {
-  const { iModel, modelInstance, imageData, gridSide, nSamples, maskValue, blur } =
-    params;
+  const {
+    iModel,
+    modelInstance,
+    imageData,
+    gridSide,
+    nSamples,
+    maskValue,
+    blur,
+    blurKernelSize,
+    blurPasses,
+  } = params;
   if (!iModel)
     throw new Error('runImageClassificationExplain: iModel is required');
   if (!modelInstance)
@@ -87,7 +96,6 @@ export async function runImageClassificationExplain(
   if (!Number.isFinite(nSamples) || nSamples <= 0)
     throw new Error('nSamples must be > 0');
 
-  const debugImages: string[] = [];
   let segmentationTensor: tfjs.Tensor | null = null;
 
   try {
@@ -104,8 +112,9 @@ export async function runImageClassificationExplain(
     const baseResult = await iModel.CLASSIFY_IMAGE(modelInstance, imageData);
     const basePredictions = baseResult?.predictions;
     const selectedLabels = getSelectedLabelsFromClassification(basePredictions);
-
-    console.log('Segmentation map computed:', { numSegments });
+    if (selectedLabels.length === 0) {
+      throw new Error('The model returned no predictions for this image');
+    }
 
     segmentationTensor = tfjs.tensor2d(
       mapArray,
@@ -114,27 +123,27 @@ export async function runImageClassificationExplain(
     );
 
     const inputVector = Array(numSegments).fill(1);
-    console.log('Input vector for explainability:', inputVector);
-    const backgroundData = buildZeroBackground(numSegments);
+    const backgroundData = buildMaskedBackground(numSegments);
 
     const adapter = createImageClassificationAdapter(iModel, modelInstance);
 
     // Reutilizamos el wrapper de detección para aplicar la máscara por segmentos.
     // `usesTensorForPrediction=false` para que pase un canvas al adapter.
-    const predictor = objectDetectionWrapper(
+    const { predict, debugImages } = objectDetectionWrapper(
       adapter,
       imageData,
       segmentationTensor,
-      debugImages,
       false,
       selectedLabels,
       {
         ...(maskValue === undefined ? null : { maskValue }),
+        ...(blurKernelSize === undefined ? null : { blurKernelSize }),
+        ...(blurPasses === undefined ? null : { blurPasses }),
         blur: Boolean(blur),
       },
     );
 
-    const explainer = new KernelSHAP(predictor, backgroundData, 0.2022);
+    const explainer = new KernelSHAP(predict, backgroundData, 0.2022);
     const shapValues = await explainer.explainOneInstance(inputVector, nSamples);
 
     return {
@@ -148,14 +157,6 @@ export async function runImageClassificationExplain(
   } finally {
     if (segmentationTensor?.dispose) segmentationTensor.dispose();
   }
-}
-
-// Compatibilidad histórica: el archivo se llama runObjectDetectionExplain,
-// pero aquí se usa para ImageClassification.
-export async function runObjectDetectionExplain(
-  params: ExplainParams,
-): Promise<ExplainResult> {
-  return runImageClassificationExplain(params);
 }
 
 /**
@@ -203,8 +204,8 @@ export async function runImageClassificationExplainLrp(
     imageData,
     activations,
     {
-      rule: 'epsilon',
-      epsilon: 0.01,
+      rule          : 'epsilon',
+      epsilon       : 0.01,
       winnerTakesAll: true,
     },
   );
@@ -217,13 +218,13 @@ export async function runImageClassificationExplainLrp(
     );
 
     return {
-      shapValues: [relevanceValues],
-      debugImages: [],
-      selectedLabels: [predictedIndex],
+      shapValues          : [relevanceValues],
+      debugImages         : [],
+      selectedLabels      : [predictedIndex],
       segmentationMapArray: null,
-      numSegments: relevanceValues.length,
-      backgroundData: [],
-      relevanceShape: Array.from(relevanceTensor.shape),
+      numSegments         : relevanceValues.length,
+      backgroundData      : [],
+      relevanceShape      : Array.from(relevanceTensor.shape),
     };
   } finally {
     if (relevanceTensor?.dispose) relevanceTensor.dispose();

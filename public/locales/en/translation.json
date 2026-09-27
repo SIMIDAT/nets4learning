@@ -19,7 +19,14 @@
       "explainPrediction": "Explain prediction",
       "hideExplanation": "Hide explanation",
       "noData": "No explanation data available.",
-      "class": "Class #{{index}}"
+      "class": "Class #{{index}}",
+      "positive": "Supports the prediction",
+      "negative": "Against the prediction",
+      "shap-value": "SHAP value",
+      "error": "Error calculating the explanation",
+      "model-not-available": "The model is not available for explainability",
+      "lrp-not-available": "LRP is not available for this model",
+      "cancel": "Cancel"
     }
   },
   "welcome": "Welcome to Nets4Learning",
@@ -221,7 +228,8 @@
         "1": "This feature is useful for getting a quick idea of the distribution of your data and can help you identify outliers or anomalies in your data.",
         "title": "Description"
       },
-      "link": "Consult more information in the following <link1> link </link1>"
+      "link": "Consult more information in the following <link1> link </link1>",
+      "no-numeric": "There are no numeric columns to describe: all the columns are categorical."
     },
     "query": {
       "title": "DataFrame | Query",
@@ -291,7 +299,8 @@
     "file-upload": "File upload successful"
   },
   "info": {
-    "the-class-is-__value__": "Does the class have the index {{value}}?"
+    "the-class-is-__value__": "Does the class have the index {{value}}?",
+    "insert-input": "Enter the input values and make a prediction first"
   },
   "alert": {
     "menu": {

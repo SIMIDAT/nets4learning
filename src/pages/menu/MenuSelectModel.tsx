@@ -7,11 +7,11 @@ import alertHelper from '@utils/alertHelper'
 
 import {
   TASK_MODEL_OPTIONS,
-  TASK_MODEL_OPTIONS_CLASS,
   type MODEL_OPTIONS_TYPE,
   type TASKS_TYPE_V
 } from '@/DATA_MODEL'
 import { VERBOSE } from '@/CONSTANTS'
+import { useMenuModel } from '@hooks/useMenuModel'
 
 
 export default function MenuSelectModel() {
@@ -24,6 +24,8 @@ export default function MenuSelectModel() {
   const [modelKey, setModelKey] = useState('select-model')
   const [options, setOptions] = useState<MODEL_OPTIONS_TYPE>([])
   const [showDescription, setShowDescription] = useState(false)
+  // Solo se descarga el modelo seleccionado, para mostrar su título y descripción.
+  const selectedModel = useMenuModel(id, modelKey)
 
   const handleSubmit = async ($event: React.FormEvent<HTMLFormElement>) => {
     $event.preventDefault()
@@ -54,24 +56,16 @@ export default function MenuSelectModel() {
     if (!id) return <></>
     if (modelKey === 'select-model') return <></>
     if (modelKey === 'UPLOAD') return t('upload-model')
-    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
-    if (!(modelKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
-
-    const _model = (new TASK_MODEL_OPTIONS_CLASS[id][modelKey]._class_(t, () => { }))
-    return t(_model.i18n_TITLE)
+    if (!selectedModel) return <></>
+    return t(selectedModel.i18n_TITLE)
   }
 
   const Model_Body = () => {
     if (!id) return <></>
     if (modelKey === 'select-model') return <></>
     if (modelKey === 'UPLOAD') return <>{t('upload-model-info')}</>
-    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
-    if (!(modelKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
-
-    const _model = (new TASK_MODEL_OPTIONS_CLASS[id][modelKey]._class_(t, () => { }))
-    return <>
-      {_model.DESCRIPTION()}
-    </>
+    if (!selectedModel) return <></>
+    return <>{selectedModel.DESCRIPTION()}</>
   }
 
   if (VERBOSE) console.debug('render MenuSelectModel')

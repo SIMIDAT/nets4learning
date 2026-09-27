@@ -6,10 +6,11 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_REGRESSION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_3_HOUSING_PRICES extends I_MODEL_REGRESSION {
 
-  static KEY = 'HOUSING_PRICES'
+  static KEY = LR_MODEL_KEYS.HOUSING_PRICES
   static URL = 'https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html'
 
   // CALIFORNIA_URL = 'https://www.kaggle.com/datasets/fedesoriano/california-housing-prices-data-extra-features'
@@ -114,8 +115,8 @@ export default class MODEL_3_HOUSING_PRICES extends I_MODEL_REGRESSION {
     const boston_csv = 'boston-housing-2020.csv'
     const boston_dataset_promise_info = await fetch(path_datasets + boston_info)
     const boston_container_info = await boston_dataset_promise_info.text()
-    const boston_dataframe_original = await dfd.readCSV(path_datasets + boston_csv)
-    let boston_dataframe_processed = await dfd.readCSV(path_datasets + boston_csv)
+    const boston_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + boston_csv)
+    let boston_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + boston_csv)
     /** @type {_Types.Dataset_t} */
     const boston_dataset: _Types.Dataset_t = [
       { column_name: 'CRIM',    column_type: 'Continuous',   column_role: 'Feature', column_missing_values: false },
@@ -156,8 +157,8 @@ export default class MODEL_3_HOUSING_PRICES extends I_MODEL_REGRESSION {
     // const california_csv = 'california-housing-2024.csv'
     // const promise_info = await fetch(path_datasets + california_info)
     // const california_container_info = await promise_info.text()
-    // let california_dataframe_original = await dfd.readCSV(path_datasets + california_csv)
-    // let california_dataframe_processed = await dfd.readCSV(path_datasets + california_csv)
+    // let california_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + california_csv)
+    // let california_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + california_csv)
     // /** @type {_Types.Dataset_t} */
     // const california_dataset = [
     //   { column_name: 'Median_Income',             column_type: 'Continuous',   column_role: 'Feature', column_missing_values: false },

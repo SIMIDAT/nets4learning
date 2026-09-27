@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as tf from '@tensorflow/tfjs';
 
 interface ObjectDetectionOptions {
-  maskValue?: number;
-  blur?: boolean;
+  maskValue?     : number;
+  blur?          : boolean;
   blurKernelSize?: number;
-  blurPasses?: number;
-  [key: string]: any;
+  blurPasses?    : number;
+  [key: string]  : any;
 }
 
 const normalizeBlurKernelSize = (kernelSize: number, maxSize: number): number => {
@@ -29,27 +28,27 @@ const normalizeBlurPasses = (passes: number | undefined): number => {
   return Math.max(1, Math.min(6, p));
 };
 
+/**
+ * Crea el predictor para KernelSHAP por segmentos: cada fila de `x` indica qué segmentos se
+ * mantienen (1) o se enmascaran (0), y el predictor devuelve la salida del modelo para esa
+ * imagen perturbada. `debugImages` recoge una muestra de las imágenes perturbadas (1 de cada 50).
+ */
 export const objectDetectionWrapper = (
   modelRef: any,
   imagenOriginal: ImageData,
   segmentationTensor: tf.Tensor,
-  debugImages: string[],
   usesTensorForPrediction: boolean,
   labels: Array<string | number>,
   options: ObjectDetectionOptions = {},
-) => {
-  return async (x: number[][]): Promise<number[][]> => {
+): { predict: (x: number[][]) => Promise<number[][]>, debugImages: string[] } => {
+  const debugImages: string[] = [];
+  const predict = async (x: number[][]): Promise<number[][]> => {
     if (!x || x.length === 0) return [];
 
     // Sin logs: este wrapper se llama una vez por perturbación de KernelSHAP (hot path).
 
     // imgoriginal ---> tensor
-    const imgToTensor = tf.tidy(() => {
-      return tf.browser
-        .fromPixels(imagenOriginal)
-        .resizeBilinear([imagenOriginal.height, imagenOriginal.width])
-        .toFloat();
-    });
+    const imgToTensor = tf.tidy(() => tf.browser.fromPixels(imagenOriginal).toFloat());
 
     const batchVectors: number[][] = [];
     const maskValue = options.maskValue || Number(0);
@@ -180,4 +179,5 @@ export const objectDetectionWrapper = (
 
     return batchVectors;
   };
+  return { predict, debugImages };
 };

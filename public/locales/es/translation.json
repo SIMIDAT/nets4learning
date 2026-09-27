@@ -19,7 +19,14 @@
       "explainPrediction": "Explicar Predicción",
       "hideExplanation": "Ocultar explicación",
       "noData": "No hay datos de explicación disponibles.",
-      "class": "Clase #{{index}}"
+      "class": "Clase #{{index}}",
+      "positive": "A favor de la predicción",
+      "negative": "En contra de la predicción",
+      "shap-value": "Valor SHAP",
+      "error": "Error al calcular la explicación",
+      "model-not-available": "El modelo no está disponible para la explicabilidad",
+      "lrp-not-available": "LRP no está disponible para este modelo",
+      "cancel": "Cancelar"
     }
   },
   "welcome": "Bienvenido a Nets4Learning",
@@ -221,7 +228,8 @@
         "1": "Esta función es útil para obtener una idea rápida de la distribución de los datos y puede ayudarte a identificar valores atípicos o anomalías en tus datos.",
         "title": "Descripción"
       },
-      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>",
+      "no-numeric": "No hay columnas numéricas que describir: todas las columnas son categóricas."
     },
     "query": {
       "title": "DataFrame | Consulta",
@@ -291,7 +299,8 @@
     "file-upload": "Archivo cargado correctamente"
   },
   "info": {
-    "the-class-is-__value__": "¿La clase tiene el índice {{value}}?"
+    "the-class-is-__value__": "¿La clase tiene el índice {{value}}?",
+    "insert-input": "Introduce los valores de entrada y realiza primero una predicción"
   },
   "alert": {
     "menu": {

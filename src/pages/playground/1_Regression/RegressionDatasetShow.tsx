@@ -89,12 +89,12 @@ export default function RegressionDatasetShow() {
     dataframe_processed
       .plot(dataframe_processed_plotID)
       .table({ config: TABLE_PLOT_STYLE_CONFIG })
-    dataframe_processed
-      .describe()
-      .T
-      .plot(dataframe_processed_describe_plotID)
-      .table({ config: TABLE_PLOT_STYLE_CONFIG })
-  }, [showDataset, dataframe_processed_plotID, dataframe_processed_describe_plotID])
+    DataFrameUtils.DataFrameDescribePlot(dataframe_processed, dataframe_processed_describe_plotID, {
+      config   : TABLE_PLOT_STYLE_CONFIG,
+      emptyText: t('dataframe.describe.no-numeric'),
+      transpose: true,
+    })
+  }, [showDataset, dataframe_processed_plotID, dataframe_processed_describe_plotID, t])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect [datasets, updateDataFrameLocal]')

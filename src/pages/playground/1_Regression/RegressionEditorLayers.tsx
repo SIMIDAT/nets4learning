@@ -75,11 +75,9 @@ export default function RegressionEditorLayers() {
 
   const handlerClick_RemoveLayer = async (index: number) => {
     if (params.params_layers.length > 1) {
-      params.params_layers.splice(index, 1)
-      const nuevoArray = params.params_layers
       setParams((prevState) => ({
         ...prevState,
-        params_layers: nuevoArray
+        params_layers: prevState.params_layers.filter((_layer, i) => i !== index),
       }))
     } else {
       await alertHelper.alertWarning(t('error.layers-length'))
@@ -87,13 +85,10 @@ export default function RegressionEditorLayers() {
   }
 
   const handleChange_Layer = (index: number, value: CustomParamsLayerModel_t) => {
-    setParams((prevState) => {
-      prevState.params_layers[index] = value
-      return {
-        ...prevState,
-        params_layers: prevState.params_layers
-      }
-    })
+    setParams((prevState) => ({
+      ...prevState,
+      params_layers: prevState.params_layers.map((layer, i) => (i === index ? value : layer)),
+    }))
   }
 
   if (VERBOSE) console.debug('render RegressionEditorLayers')

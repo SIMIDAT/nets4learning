@@ -20,16 +20,16 @@
  */
 
 export interface SLICOOptions {
-  method?: string;
-  perturb?: boolean;
-  maxIterations?: number;
-  K?: number;
-  step?: number;
+  method?             : string;
+  perturb?            : boolean;
+  maxIterations?      : number;
+  K?                  : number;
+  step?               : number;
   enforceConnectivity?: boolean;
 }
 
 export interface SLICMapResult {
-  mapArray: Int32Array;
+  mapArray   : Int32Array;
   numSegments: number;
 }
 
@@ -58,24 +58,24 @@ class BaseSegmentation {
 }
 
 export class SLICO extends BaseSegmentation {
-  width: number;
-  height: number;
-  method: string;
-  perturb: boolean;
-  maxIterations: number;
-  K: number;
-  step: number;
-  estep: number;
+  width              : number;
+  height             : number;
+  method             : string;
+  perturb            : boolean;
+  maxIterations      : number;
+  K                  : number;
+  step               : number;
+  estep              : number;
   enforceConnectivity: boolean;
-  rawLabels: Int32Array | null;
+  rawLabels          : Int32Array | null;
 
-  _result!: ImageData;
+  _result!     : ImageData;
   _numSegments!: number;
 
-  lvec!: Float64Array;
-  avec!: Float64Array;
-  bvec!: Float64Array;
-  edges!: Float64Array;
+  lvec!   : Float64Array;
+  avec!   : Float64Array;
+  bvec!   : Float64Array;
+  edges!  : Float64Array;
   kSeedsL!: NumberSeq;
   kSeedsA!: NumberSeq;
   kSeedsB!: NumberSeq;
@@ -520,9 +520,9 @@ export const computeSLICzeroMap = (
   numSegmentsApprox = 15,
 ): SLICMapResult => {
   const options: SLICOOptions = {
-    method: 'FixedK',
-    K: numSegmentsApprox,
-    perturb: true,
+    method             : 'FixedK',
+    K                  : numSegmentsApprox,
+    perturb            : true,
     enforceConnectivity: true,
   };
 

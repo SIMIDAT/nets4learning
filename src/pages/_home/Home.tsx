@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'react-i18next'
 import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 
 
-import { TASKS, type TASKS_TYPE_V } from '@/DATA_MODEL'
+import { TASKS, type TASKS_TYPE_V } from '@/TASKS'
 import N4LDivider from '@components/divider/N4LDivider'
 import CookiesModal from '@components/cookiesModal/CookiesModal'
 

@@ -72,24 +72,9 @@ export default function TabularClassificationDatasetShow(props: TabularClassific
      * @param {_Types.DatasetProcessed_t} _datasetSelected 
      */
     const _updateDataFrameDescribe = (_datasetSelected: _Types.DatasetProcessed_t) => {
-      const dataframe_original = _datasetSelected.dataframe_original
-      const dataframe_processed = _datasetSelected.dataframe_processed
-      try {
-        dataframe_original
-          .describe()
-          .plot(dataframe_original_plotID)
-          .table({ config: TABLE_PLOT_STYLE_CONFIG })
-      } catch (error) {
-        console.error('Error plotting dataframe describe:', error)
-      }
-      try {
-        dataframe_processed
-          .describe()
-          .plot(dataframe_processed_plotID)
-          .table({ config: TABLE_PLOT_STYLE_CONFIG })
-      } catch (error) {
-        console.error('Error plotting dataframe describe:', error)
-      }
+      const options = { config: TABLE_PLOT_STYLE_CONFIG, emptyText: t('dataframe.describe.no-numeric') }
+      DataFrameUtils.DataFrameDescribePlot(_datasetSelected.dataframe_original, dataframe_original_plotID, options)
+      DataFrameUtils.DataFrameDescribePlot(_datasetSelected.dataframe_processed, dataframe_processed_plotID, options)
     }
     const currentDataset = datasets?.datasets?.[datasets.index];
 
@@ -100,7 +85,7 @@ export default function TabularClassificationDatasetShow(props: TabularClassific
     if (showDataset && currentDataset && originalEl && processedEl) {
       _updateDataFrameDescribe(currentDataset);
     }
-  }, [showDataset, datasets, dataframe_original_plotID, dataframe_processed_plotID])
+  }, [showDataset, datasets, dataframe_original_plotID, dataframe_processed_plotID, t])
 
   if (VERBOSE) console.debug('render TabularClassificationDatasetShow')
   return <>

@@ -13,6 +13,11 @@ describe('shapSampling — utilidades de muestreo para explicabilidad SHAP', () 
       expect(dataframeRowsToNumbers(input)).toStrictEqual([[5.1, 3, 2], [1, 0, 4]])
     })
 
+    test('descarta las filas con celdas no numéricas', () => {
+      const input = [['5.1', 3], ['setosa', 1], [2, 4]]
+      expect(dataframeRowsToNumbers(input)).toStrictEqual([[5.1, 3], [2, 4]])
+    })
+
     test('devuelve [] si la entrada no es un array', () => {
       expect(dataframeRowsToNumbers(null)).toStrictEqual([])
       expect(dataframeRowsToNumbers(undefined)).toStrictEqual([])

@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 interface PredictionItem {
-  className?: string;
+  className?  : string;
   probability?: number;
 }
 

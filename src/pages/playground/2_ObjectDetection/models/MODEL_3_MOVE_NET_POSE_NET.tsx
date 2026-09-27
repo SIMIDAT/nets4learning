@@ -1,9 +1,10 @@
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { Trans } from 'react-i18next'
 import * as poseDetection from '@tensorflow-models/pose-detection'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'MOVE-NET--POSE-NET'
+  static KEY = OD_MODEL_KEYS.MOVE_NET_POSE_NET
   TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   i18n_TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/pose-detection'
@@ -120,30 +121,22 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimatePoses(input_image_or_video, estimationConfig__MoveNet)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  NORMALIZE_PREDICTIONS(predictions: any[], _labels?: Array<string | number>): number[] {
-    // Vector con la detección (1/0) de cada keypoint de cada pose.
-    const vectorPredictions: number[] = []
-    if (!predictions || predictions.length === 0) {
-      for (let i = 0; i <= 16; i++) {
-        vectorPredictions.push(0)
-      }
-      return vectorPredictions
-    }
+  GET_LABELS(): string[] {
+    return ['pose']
+  }
 
-    for (let j = 0; j < predictions.length; j++) {
-      for (let i = 0; i < predictions[j].keypoints.length; i++) {
-        if (
-          predictions[j].keypoints[i].score != null &&
-          predictions[j].keypoints[i].score >= 0.2
-        ) {
-          vectorPredictions.push(1)
-        } else {
-          vectorPredictions.push(0)
-        }
-      }
+  /**
+   * Salida escalar para la explicabilidad: confianza media de los keypoints de la
+   * pose más segura (0 si no hay poses). La longitud debe coincidir con GET_LABELS.
+   */
+  NORMALIZE_PREDICTIONS(predictions: poseDetection.Pose[], _labels?: Array<string | number>): number[] {
+    let best = 0
+    for (const pose of predictions ?? []) {
+      const scores = pose.keypoints.map((k) => k.score ?? 0)
+      const mean = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0
+      if (mean > best) best = mean
     }
-    return vectorPredictions
+    return [best]
   }
 
   /**

@@ -10,9 +10,10 @@ import {
   TINY_BIBTEX,
   FACE_RECOGNITION_MODEL_BIBTEX,
 } from "./MODEL_5_FACE_API_INFO"
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
-  static KEY = "FACE-API"
+  static KEY = OD_MODEL_KEYS.FACE_API
   TITLE = "datasets-models.2-object-detection.face-api.title"
   i18n_TITLE = "datasets-models.2-object-detection.face-api.title"
   URL = "https://justadudewhohacks.github.io/face-api.js/docs/index.html"
@@ -44,7 +45,6 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     ]
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   NORMALIZE_PREDICTIONS(predictions: any[] = [], labels: Array<string | number>): number[] {
     if (!Array.isArray(labels) || labels.length === 0) return []
     const scores: number[] = new Array(labels.length).fill(0)

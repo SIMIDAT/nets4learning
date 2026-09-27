@@ -9,6 +9,7 @@ import type { TFunction } from 'i18next'
 export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   KEY                  : string = 'I_MODEL_TABULAR_CLASSIFICATION'
   TITLE                : string = ''
+  i18n_TITLE           : string = ''
   LIST_EXAMPLES_RESULTS: string[] = []
   LIST_EXAMPLES        : any[] = []
   DATA_OBJECT          : Record<string, any> = {}

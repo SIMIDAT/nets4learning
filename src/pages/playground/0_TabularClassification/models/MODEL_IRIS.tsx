@@ -6,10 +6,11 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
 import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
 
-  static KEY = 'IRIS'
+  static KEY = TC_MODEL_KEYS.IRIS
   static URL = 'https://archive.ics.uci.edu/ml/datasets/iris'
   static URL_MODEL = '/public/models/classification/iris/my-model-iris.json'
   TITLE = 'datasets-models.0-tabular-classification.iris.title'
@@ -109,8 +110,8 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
     const iris_csv = 'iris.csv'
     const dataset_promise_info = await fetch(path_dataset + iris_info)
     const iris_container_info = await dataset_promise_info.text()
-    const dataframe_original = await dfd.readCSV(path_dataset + iris_csv)
-    let dataframe_processed = await dfd.readCSV(path_dataset + iris_csv)
+    const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + iris_csv)
+    let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + iris_csv)
     /** @type {_Types.Dataset_t} */
     const dataset: _Types.Dataset_t = [
       { column_name: 'sepal length', column_role: 'Feature', column_type: 'Continuous', column_missing_values: false },

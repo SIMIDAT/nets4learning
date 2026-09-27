@@ -3,9 +3,10 @@ import I_MODEL_TABULAR_CLASSIFICATION from "./_model";
 import * as _Types from '@core/types'
 import { DEFAULT_LAYERS_UPLOAD } from "../CONSTANTS";
 import type { TFunction } from "i18next";
+import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL__UPLOAD extends I_MODEL_TABULAR_CLASSIFICATION {
-    static KEY = 'UPLOAD'
+    static KEY = TC_MODEL_KEYS.UPLOAD
 
     constructor(t: TFunction<"translation", undefined>, callback: () => void) {
         super(t, callback)

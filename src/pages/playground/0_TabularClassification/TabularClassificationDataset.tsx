@@ -1,11 +1,11 @@
 import type { DropEvent, FileRejection } from "react-dropzone"
 import { Trans, useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import * as dfd from "danfojs"
+import { DataFrameReadCSV } from "@core/dataframe/DataFrameUtils"
 
 import alertHelper from "@utils/alertHelper"
 import * as _Types from "@core/types"
-import { UPLOAD } from "@/DATA_MODEL"
+import { UPLOAD } from "@/TASKS"
 import { VERBOSE } from "@/CONSTANTS"
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from "@/CONSTANTS_ACTIONS"
 import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
@@ -47,8 +47,8 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
       const file_csv = new File([files[0]], files[0].name, { type: files[0].type })
       // Por un bug de referencias, el dataframe original y el procesado se comunican y no debe
       // la función dataframe.copy() no funciona correctamente
-      const D_original = await dfd.readCSV(file_csv)
-      const D_processed = await dfd.readCSV(file_csv)
+      const D_original = await DataFrameReadCSV(file_csv)
+      const D_processed = await DataFrameReadCSV(file_csv)
       /**@type {_Types.DatasetProcessed_t} */
       const newDataset: _Types.DatasetProcessed_t = {
         is_dataset_upload   : true,

@@ -3,6 +3,11 @@
   "version": "3.0.0",
   "homepage": ".",
   "private": true,
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=12"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

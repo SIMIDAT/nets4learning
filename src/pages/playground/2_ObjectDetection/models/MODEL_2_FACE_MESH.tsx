@@ -2,9 +2,10 @@ import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detec
 import { Trans } from 'react-i18next'
 
 import I_MODEL_OBJECT_DETECTION from './_model'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'FACE-MESH'
+  static KEY = OD_MODEL_KEYS.FACE_MESH
   TITLE = 'datasets-models.2-object-detection.face-mesh.title'
   i18n_TITLE = 'datasets-models.2-object-detection.face-mesh.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection'
@@ -94,18 +95,16 @@ export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal, staticImageMode: false })
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  NORMALIZE_PREDICTIONS(predictions: any[], _labels?: Array<string | number>): number[] {
-    const vectorPredictions: number[] = []
-    // El modelo solo indica si hay cara o no (0 o 1 objeto)
-    for (let i = 0; i < predictions.length; i++) {
-      if (!predictions[i] || predictions[i].length === 0) {
-        vectorPredictions.push(0)
-      } else {
-        vectorPredictions.push(1)
-      }
-    }
-    return vectorPredictions
+  GET_LABELS(): string[] {
+    return ['face']
+  }
+
+  /**
+   * Salida escalar para la explicabilidad: 1 si se detecta alguna cara, 0 si no.
+   * La longitud debe coincidir con GET_LABELS.
+   */
+  NORMALIZE_PREDICTIONS(predictions: faceLandmarksDetection.Face[], _labels?: Array<string | number>): number[] {
+    return [Array.isArray(predictions) && predictions.length > 0 ? 1 : 0]
   }
 
   /**

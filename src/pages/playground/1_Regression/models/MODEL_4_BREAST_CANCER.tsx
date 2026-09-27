@@ -5,10 +5,11 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_REGRESSION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
 
-  static KEY = 'BREAST_CANCER'
+  static KEY = LR_MODEL_KEYS.BREAST_CANCER
   static URL = 'https://archive.ics.uci.edu/dataset/15/breast+cancer+wisconsin+original'
   static URL_2 = 'https://archive.ics.uci.edu/dataset/16/breast+cancer+wisconsin+prognostic'
   static URL_3 = 'https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic'
@@ -172,8 +173,8 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
     
     // --------------------
     // #region Dataset Breast cancer wisconsin (Original)
-    const bcw_dataframe_original = await dfd.readCSV(path_datasets + bcw_csv)
-    let bcw_dataframe_processed = await dfd.readCSV(path_datasets + bcw_csv)
+    const bcw_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + bcw_csv)
+    let bcw_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + bcw_csv)
     
     /** @type {_Types.Dataset_t} */
     const bcw_dataset: _Types.Dataset_t = [
@@ -213,8 +214,8 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
     
     // --------------------
     // #region Breast Cancer Wisconsin (Diagnostic)
-    const wdbc_dataframe_original = await dfd.readCSV(path_datasets + wdbc_csv)
-    let wdbc_dataframe_processed = await dfd.readCSV(path_datasets + wdbc_csv)
+    const wdbc_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + wdbc_csv)
+    let wdbc_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + wdbc_csv)
     /**@type {_Types.Dataset_t} */
     const wdbc_dataset: _Types.Dataset_t = [
       { column_name: 'ID',                  column_type: 'Categorical', column_role: 'ID',      column_missing_values: false },
@@ -271,8 +272,8 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
 
     // --------------------
     // #region Breast Cancer Wisconsin (Prognostic)
-    const wpbc_dataframe_original = await dfd.readCSV(path_datasets + wpbc_csv)
-    let wpbc_dataframe_processed = await dfd.readCSV(path_datasets + wpbc_csv)
+    const wpbc_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + wpbc_csv)
+    let wpbc_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + wpbc_csv)
     /** @type {_Types.Dataset_t} */
     const wpbc_dataset: _Types.Dataset_t = [
       { column_name: 'ID',                   column_role: 'ID',             column_type: 'Integer',        column_missing_values: false },

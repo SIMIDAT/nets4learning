@@ -1,6 +1,6 @@
 import { Trans } from 'react-i18next'
 import { Card } from 'react-bootstrap'
-import { UPLOAD } from '@/DATA_MODEL'
+import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 type ModelReviewTabularClassificationDatasetInfoProps = {
   dataset       : string

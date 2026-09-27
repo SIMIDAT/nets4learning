@@ -6,10 +6,11 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_REGRESSION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
 
-  static KEY = 'STUDENT_PERFORMANCE'
+  static KEY = LR_MODEL_KEYS.STUDENT_PERFORMANCE
   static URL = 'https://archive.ics.uci.edu/dataset/320/student+performance'
 
   URL = 'https://archive.ics.uci.edu/dataset/320/student+performance'
@@ -159,8 +160,8 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     ]
     
     // #region Student Mat
-    const mat_dataframe_original = await dfd.readCSV(path_datasets + mat_csv)
-    let mat_dataframe_processed = await dfd.readCSV(path_datasets + mat_csv)
+    const mat_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + mat_csv)
+    let mat_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + mat_csv)
     /** @type {_Types.DataFrameColumnTransform_t[]} */
     const mat_dataset_transforms = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
@@ -183,8 +184,8 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     
     
     // #region Student Por
-    const por_dataframe_original = await dfd.readCSV(path_datasets + por_csv)
-    let por_dataframe_processed = await dfd.readCSV(path_datasets + por_csv)
+    const por_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + por_csv)
+    let por_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + por_csv)
     /** @type {_Types.DataFrameColumnTransform_t[]} */
     const por_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),

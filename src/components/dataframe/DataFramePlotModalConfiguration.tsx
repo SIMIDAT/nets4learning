@@ -44,101 +44,72 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
     setListColumns(dataFrameLocal.columns) // eslint-disable-line
   }, [dataFrameLocal.columns])
 
+  // Todas las actualizaciones crean objetos nuevos en cada nivel que cambia: el estado anterior
+  // (y la constante DEFAULT_DATAFRAME_PLOT_CONFIG) no se modifican nunca.
   const handleChangeCheckbox_Column = (e: React.ChangeEvent<HTMLInputElement>) => {
     const columnName = e.target.value
     const checked = e.target.checked
-
-    const copyColumns = JSON.parse(JSON.stringify(dataframePlotConfig.COLUMNS))
-    if (checked) {
-      if (!copyColumns.includes(columnName)) {
-        copyColumns.push(columnName)
-      }
-    } else {
-      const columnIndex = copyColumns.indexOf(columnName)
-      if (columnIndex !== -1) {
-        copyColumns.splice(columnIndex, 1)
-      }
-    }
-
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.COLUMNS = copyColumns
-      return _prevState
-    })
+    setDataframePlotConfig((prevState) => ({
+      ...prevState,
+      COLUMNS: checked
+        ? (prevState.COLUMNS.includes(columnName) ? prevState.COLUMNS : [...prevState.COLUMNS, columnName])
+        : prevState.COLUMNS.filter((column) => column !== columnName),
+    }))
   }
 
   const handleClick_reset = () => {
-    setDataframePlotConfig(() => {
-      const resetState = { ...DEFAULT_DATAFRAME_PLOT_CONFIG }
-      resetState.COLUMNS = dataFrameLocal.columns
-      if (isTimeSeriesDataFrameValidForIndex(dataFrameLocal, resetState.COLUMNS)) {
-        resetState.TIME_SERIES_PLOTS.config.index = columnsTimeSeriesValidForIndex(dataFrameLocal, resetState.COLUMNS)[0]
-      }
-      resetState.LIST_OF_AVAILABLE_PLOTS = listPlotsAvailable(dataFrameLocal, resetState.COLUMNS)
-      return resetState
-    })
+    const resetState = structuredClone(DEFAULT_DATAFRAME_PLOT_CONFIG)
+    resetState.COLUMNS = [...dataFrameLocal.columns]
+    if (isTimeSeriesDataFrameValidForIndex(dataFrameLocal, resetState.COLUMNS)) {
+      resetState.TIME_SERIES_PLOTS.config.index = columnsTimeSeriesValidForIndex(dataFrameLocal, resetState.COLUMNS)[0]
+    }
+    resetState.LIST_OF_AVAILABLE_PLOTS = listPlotsAvailable(dataFrameLocal, resetState.COLUMNS)
+    setDataframePlotConfig(resetState)
   }
 
   const handleChange_PlotConfig_LAYOUT = (e: React.ChangeEvent<HTMLInputElement>, key: Key_Layout) => {
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.LAYOUT[key] = e.target.value
-      return _prevState
-    })
+    const value = e.target.value
+    setDataframePlotConfig((prevState) => ({
+      ...prevState,
+      LAYOUT: { ...prevState.LAYOUT, [key]: value },
+    }))
   }
 
   const handleChange_PlotConfig_PieCharts = (e: React.ChangeEvent<HTMLSelectElement>, key: PIE_CHARTS_Config_Keys) => {
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.PIE_CHARTS.config[key] = e.target.value
-      return _prevState
-    })
+    const value = e.target.value
+    setDataframePlotConfig((prevState) => ({
+      ...prevState,
+      PIE_CHARTS: { ...prevState.PIE_CHARTS, config: { ...prevState.PIE_CHARTS.config, [key]: value } },
+    }))
   }
 
   const handleChange_PlotConfig_TimeSeries = (e: React.ChangeEvent<HTMLSelectElement>, key: TIME_SERIES_PLOTS_Config_Keys) => {
-    if (key === 'index') {
-      const newColumns = JSON.parse(JSON.stringify(dataframePlotConfig.COLUMNS))
-      const columnIndex = newColumns.indexOf(e.target.valueOf())
-      if (columnIndex !== -1) {
-        newColumns.splice(columnIndex, 1)
-      }
-      // TODO FIX
-      // dataframePlotConfig.COLUMNS = newColumns
-    }
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.TIME_SERIES_PLOTS.config[key] = e.target.value
-      return _prevState
-    })
+    // La columna índice no hace falta quitarla de COLUMNS: al pintar se usa como índice (setIndex).
+    const value = e.target.value
+    setDataframePlotConfig((prevState) => ({
+      ...prevState,
+      TIME_SERIES_PLOTS: { ...prevState.TIME_SERIES_PLOTS, config: { ...prevState.TIME_SERIES_PLOTS.config, [key]: value } },
+    }))
   }
 
   const handleChange_PlotConfig_Scatter = (e: React.ChangeEvent<HTMLSelectElement>, key: Key_X_Y) => {
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.SCATTER_PLOTS.config[key] = e.target.value
-      return _prevState
-    })
+    const value = e.target.value
+    setDataframePlotConfig((prevState) => ({
+      ...prevState,
+      SCATTER_PLOTS: { ...prevState.SCATTER_PLOTS, config: { ...prevState.SCATTER_PLOTS.config, [key]: value } },
+    }))
   }
 
   const handleSubmit_Config = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.error({ e })
   }
 
   const handleClick_SelectAllColumns = () => {
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.COLUMNS = dataFrameLocal.columns
-      return _prevState
-    })
+    setDataframePlotConfig((prevState) => ({ ...prevState, COLUMNS: [...dataFrameLocal.columns] }))
   }
 
   const handleClick_DeleteAllColumns = () => {
-    setDataframePlotConfig((prevState) => {
-      const _prevState = Object.assign({}, prevState)
-      _prevState.COLUMNS = []
-      return _prevState
-    })
+    setDataframePlotConfig((prevState) => ({ ...prevState, COLUMNS: [] }))
   }
 
   const getFromColumnOfDataFrame_nUnique_PieCharts_Labels = (column_name: string) => {

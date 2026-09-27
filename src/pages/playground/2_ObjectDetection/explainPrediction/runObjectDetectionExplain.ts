@@ -1,31 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as tfjs from '@tensorflow/tfjs';
 import { KernelSHAP } from 'webshap';
-import { MODEL_2_FACE_MESH } from '../models';
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS';
 
 import { objectDetectionWrapper } from '@core/explainability/ObjectDetectionWrapper';
+import { buildMaskedBackground } from '@core/explainability/shapSampling';
 import { computeSLICzeroMap } from '@utils/slic0';
 import { getFaceSegmentMap } from '@utils/facialSegment';
 
 export interface ObjDetExplainParams {
-  model: any;
-  imageData: ImageData;
-  gridSide: number;
-  nSamples: number;
-  flipHorizontal: boolean;
-  maskValue?: number;
-  blur?: boolean;
+  model          : any;
+  imageData      : ImageData;
+  gridSide       : number;
+  nSamples       : number;
+  flipHorizontal : boolean;
+  maskValue?     : number;
+  blur?          : boolean;
   blurKernelSize?: number;
-  blurPasses?: number;
+  blurPasses?    : number;
 }
 
 export interface ObjDetExplainResult {
-  shapValues: any;
-  debugImages: string[];
-  selectedLabels: Array<string | number>;
+  shapValues          : any;
+  debugImages         : string[];
+  selectedLabels      : Array<string | number>;
   segmentationMapArray: Int32Array | Uint8Array | null;
-  numSegments: number;
-  backgroundData: number[][];
+  numSegments         : number;
+  backgroundData      : number[][];
 }
 
 // FaceMesh singleton (instancia + init lazy) para obtener keypoints siempre desde FaceMesh
@@ -34,6 +34,8 @@ let faceMeshInitPromise: Promise<any> | null = null;
 
 async function getFaceMeshInstance(): Promise<any> {
   if (!faceMeshInstance) {
+    // Import dinámico: FaceMesh (mediapipe) solo se descarga si hace falta segmentar una cara.
+    const { MODEL_2_FACE_MESH } = await import('../models/MODEL_2_FACE_MESH');
     // Esta instancia solo se usa para obtener keypoints (PREDICTION); la
     // función de traducción `t` solo afecta a textos de UI, así que pasamos
     // una identidad.
@@ -66,11 +68,6 @@ const getSelectedLabelsFromDetections = (
   );
 };
 
-const buildZeroBackground = (numSegments: number): number[][] =>
-  Array(20)
-    .fill(null)
-    .map(() => Array(numSegments).fill(0));
-
 /**
  * Ejecuta el flujo completo de explicabilidad (SLIC0 + KernelSHAP) para
  * detección de objetos. No toca el estado de React: devuelve los resultados.
@@ -97,7 +94,6 @@ export async function runObjectDetectionExplain(
   if (!Number.isFinite(nSamples) || nSamples <= 0)
     throw new Error('nSamples must be > 0');
 
-  const debugImages: string[] = [];
   let segmentationTensor: tfjs.Tensor | null = null;
 
   try {
@@ -114,40 +110,35 @@ export async function runObjectDetectionExplain(
       baseDetections,
       model,
     );
+    if (!Array.isArray(baseDetections) || baseDetections.length === 0) {
+      throw new Error('The model detected nothing in this image');
+    }
 
     // Comprobamos si el modelo es facial o no
     if (model.faces) {
-      const faceMesh = await getFaceMeshInstance();
+      // Si el modelo seleccionado ya es FaceMesh lo reutilizamos en vez de cargar otro.
+      const isFaceMesh = (model.constructor as { KEY?: string }).KEY === OD_MODEL_KEYS.FACE_MESH;
+      const faceMesh = isFaceMesh ? model : await getFaceMeshInstance();
       const meshDetections = await faceMesh.PREDICTION(imageData, {
         flipHorizontal,
         staticImageMode: true,
       });
 
-      const face = meshDetections?.[0];
-      const faceSeg = getFaceSegmentMap(
-        face.keypoints,
+      const keypoints = meshDetections?.[0]?.keypoints ?? [];
+      ({ mapArray, numSegments } = getFaceSegmentMap(
+        keypoints,
         imageData.width,
         imageData.height,
         flipHorizontal,
-      );
-      ({ mapArray, numSegments } = faceSeg);
+      ));
 
-      // FALLBACK
+      // Sin cara (o sin keypoints suficientes): segmentación genérica.
       if (!numSegments || numSegments <= 1) {
         ({ mapArray, numSegments } = computeSLICzeroMap(imageData, gridSide));
-        console.log('Facial segmentation not available; falling back to SLIC0', {
-          numSegments,
-        });
-      } else {
-        console.log('Using facial segmentation map for explainability', {
-          numSegments,
-        });
       }
     } else {
       ({ mapArray, numSegments } = computeSLICzeroMap(imageData, gridSide));
     }
-
-    console.log('Segmentation map computed:', { mapArray, numSegments });
 
     if (!numSegments || numSegments <= 0) {
       throw new Error('Segmentation produced 0 segments');
@@ -160,14 +151,12 @@ export async function runObjectDetectionExplain(
     );
 
     const inputVector = Array(numSegments).fill(1);
-    console.log('Input vector for explainability:', inputVector);
-    const backgroundData = buildZeroBackground(numSegments);
+    const backgroundData = buildMaskedBackground(numSegments);
 
-    const predictor = objectDetectionWrapper(
+    const { predict, debugImages } = objectDetectionWrapper(
       model,
       imageData,
       segmentationTensor,
-      debugImages,
       model.usesTensorForPrediction,
       selectedLabels,
       {
@@ -180,7 +169,7 @@ export async function runObjectDetectionExplain(
       },
     );
 
-    const explainer = new KernelSHAP(predictor, backgroundData, 0.2022);
+    const explainer = new KernelSHAP(predict, backgroundData, 0.2022);
     const shapValues = await explainer.explainOneInstance(inputVector, nSamples);
 
     return {

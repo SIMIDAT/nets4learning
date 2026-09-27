@@ -1,9 +1,10 @@
 import { Trans } from 'react-i18next'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import * as coCoSsdDetection from '@tensorflow-models/coco-ssd'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'COCO-SSD'
+  static KEY = OD_MODEL_KEYS.COCO_SSD
   static URL = 'https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd'
   static URL_MODEL = ''
   TITLE = 'datasets-models.2-object-detection.coco-ssd.title'
@@ -95,7 +96,6 @@ export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.detect(input_image_or_video, maxNumBoxes, minScore)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   NORMALIZE_PREDICTIONS(predictions: any[], labels: Array<string | number>): number[] {
     if (!Array.isArray(labels) || labels.length === 0) return []
     const scores: number[] = new Array(labels.length).fill(0)

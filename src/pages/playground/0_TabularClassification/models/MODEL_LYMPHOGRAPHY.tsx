@@ -6,9 +6,10 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
 import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
-  static KEY = 'LYMPHOGRAPHY'
+  static KEY = TC_MODEL_KEYS.LYMPHOGRAPHY
   static URL = 'https://archive.ics.uci.edu/ml/datasets/Lymphography'
   TITLE = 'datasets-models.0-tabular-classification.lymphography.title'
   i18n_TITLE = 'datasets-models.0-tabular-classification.lymphography.title'
@@ -281,8 +282,8 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     const lymphography_csv = 'lymphography.csv'
     const lymphography_promise_info = await fetch(path_dataset + lymphography_info)
     const lymphography_container_info = await lymphography_promise_info.text()
-    const dataframe_original = await dfd.readCSV(path_dataset + lymphography_csv)
-    let dataframe_processed = await dfd.readCSV(path_dataset + lymphography_csv)
+    const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
+    let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
     /** @type {_Types.Dataset_t} */
     const dataset: _Types.Dataset_t = [
       { column_name: 'lymphatics',        column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },

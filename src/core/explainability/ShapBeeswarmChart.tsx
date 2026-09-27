@@ -9,16 +9,15 @@ import {
   Tooltip,
   Cell,
   ReferenceLine,
-  ResponsiveContainer,
 } from 'recharts'
 
 interface ShapBeeswarmChartProps {
   /** Matriz de valores SHAP: shap[instancia][feature] */
-  shap: number[][]
+  shap         : number[][]
   /** Matriz de valores de las features: featureValues[instancia][feature] */
   featureValues: number[][]
   /** Nombres de las features */
-  features: string[]
+  features     : string[]
 }
 
 /** Color SHAP: t=0 (valor bajo) azul → t=1 (valor alto) rojo. */
@@ -32,11 +31,11 @@ function shapColor(t: number): string {
 }
 
 interface Point {
-  x: number // valor SHAP (eje horizontal)
-  y: number // fila de la feature + desplazamiento dodge (eje vertical)
-  color: string // color según el valor de la feature
+  x      : number // valor SHAP (eje horizontal)
+  y      : number // fila de la feature + desplazamiento dodge (eje vertical)
+  color  : string // color según el valor de la feature
   feature: string
-  value: number
+  value  : number
 }
 
 export default function ShapBeeswarmChart({ shap, featureValues, features }: ShapBeeswarmChartProps) {
@@ -114,54 +113,54 @@ export default function ShapBeeswarmChart({ shap, featureValues, features }: Sha
       const offset = (k % 2 === 0 ? 1 : -1) * Math.ceil(k / 2) * step
 
       points.push({
-        x: shapVal,
-        y: row + offset,
-        color: shapColor(norm),
+        x      : shapVal,
+        y      : row + offset,
+        color  : shapColor(norm),
         feature: features[f],
-        value: featVal,
+        value  : featVal,
       })
     }
   }
 
   return (
     <div style={{ width: '100%' }}>
-      <div style={{ width: '100%', maxWidth: '700px', height: `${Math.max(260, nFeatures * 64)}px` }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              type="number"
-              dataKey="x"
-              name={t('pages.playground.0-tabular-classification.general.beeswarm-shap-value', {
-                defaultValue: 'SHAP value',
-              })}
-            />
-            <YAxis
-              type="number"
-              dataKey="y"
-              domain={[-0.5, nFeatures - 0.5]}
-              ticks={Array.from({ length: nFeatures }, (_, r) => r)}
-              interval={0}
-              tickFormatter={(r: number) => features[order[r]] ?? ''}
-              width={110}
-            />
-            <ZAxis range={[40, 40]} />
-            <ReferenceLine x={0} stroke="#888" />
-            <Tooltip
-              cursor={{ strokeDasharray: '3 3' }}
-              formatter={(_value, _name, item) => {
-                const p = item?.payload as Point
-                return [`SHAP ${p.x.toFixed(4)} · ${p.feature} = ${p.value}`, '']
-              }}
-            />
-            <Scatter data={points} fillOpacity={0.7}>
-              {points.map((p, i) => (
-                <Cell key={`pt_${i}`} fill={p.color} />
-              ))}
-            </Scatter>
-          </ScatterChart>
-        </ResponsiveContainer>
-      </div>
+      <ScatterChart
+        responsive
+        style={{ width: '100%', maxWidth: '700px', height: `${Math.max(260, nFeatures * 64)}px` }}
+        margin={{ top: 10, right: 20, bottom: 20, left: 20 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          type="number"
+          dataKey="x"
+          name={t('pages.playground.0-tabular-classification.general.beeswarm-shap-value', {
+            defaultValue: 'SHAP value',
+          })}
+        />
+        <YAxis
+          type="number"
+          dataKey="y"
+          domain={[-0.5, nFeatures - 0.5]}
+          ticks={Array.from({ length: nFeatures }, (_, r) => r)}
+          interval={0}
+          tickFormatter={(r: number) => features[order[r]] ?? ''}
+          width={110}
+        />
+        <ZAxis range={[40, 40]} />
+        <ReferenceLine x={0} stroke="var(--bs-secondary-color)" />
+        <Tooltip
+          cursor={{ strokeDasharray: '3 3' }}
+          formatter={(_value, _name, item) => {
+            const p = item?.payload as Point
+            return [`SHAP ${p.x.toFixed(4)} · ${p.feature} = ${p.value}`, '']
+          }}
+        />
+        <Scatter data={points} fillOpacity={0.7}>
+          {points.map((p, i) => (
+            <Cell key={`pt_${i}`} fill={p.color} />
+          ))}
+        </Scatter>
+      </ScatterChart>
 
       {/* Leyenda de color continua: valor de la feature de bajo (azul) a alto (rojo) */}
       <div className="d-flex align-items-center gap-2 mt-2" style={{ maxWidth: '700px' }}>
@@ -170,10 +169,10 @@ export default function ShapBeeswarmChart({ shap, featureValues, features }: Sha
         </small>
         <div
           style={{
-            flex: 1,
-            height: '10px',
+            flex        : 1,
+            height      : '10px',
             borderRadius: '5px',
-            background: `linear-gradient(to right, ${shapColor(0)}, ${shapColor(0.5)}, ${shapColor(1)})`,
+            background  : `linear-gradient(to right, ${shapColor(0)}, ${shapColor(0.5)}, ${shapColor(1)})`,
           }}
         />
         <small className="text-muted">

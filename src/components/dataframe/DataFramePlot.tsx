@@ -101,18 +101,19 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
         console.error('dataFrameLocal is undefined')
         return prevState
       }
-      const _prevState = Object.assign({}, prevState)
-      _prevState.COLUMNS = dataFrameLocal.columns
+      // Copia profunda: no se modifican los objetos anidados del estado anterior.
+      const nextState = structuredClone(prevState)
+      nextState.COLUMNS = [...dataFrameLocal.columns]
       if (dataFrameLocal.columns.length > 0) {
         if (_isDataFrameValidFor_TimeSeriesPlots_Index(dataFrameLocal)) {
-          _prevState.TIME_SERIES_PLOTS.config.index = _columnsValidFor_TimeSeriesPlots_Index(dataFrameLocal)[0]
+          nextState.TIME_SERIES_PLOTS.config.index = _columnsValidFor_TimeSeriesPlots_Index(dataFrameLocal)[0]
         }
         if (_isDataFrameValidFor_PieCharts_Labels(dataFrameLocal)) {
-          _prevState.PIE_CHARTS.config.labels = _getDataFrame_Min_nUnique_PieCharts_Labels(dataFrameLocal).col_name
+          nextState.PIE_CHARTS.config.labels = _getDataFrame_Min_nUnique_PieCharts_Labels(dataFrameLocal).col_name
         }
       }
-      _prevState.LIST_OF_AVAILABLE_PLOTS = _listPlotsAvailable(dataFrameLocal)
-      return _prevState
+      nextState.LIST_OF_AVAILABLE_PLOTS = _listPlotsAvailable(dataFrameLocal)
+      return nextState
     })
   }, [dataFrameLocal, setDataframePlotConfig])
 

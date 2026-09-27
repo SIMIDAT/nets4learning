@@ -6,9 +6,10 @@ import * as _Types from "@core/types"
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import I_MODEL_REGRESSION from "./_model"
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from "@core/nn-utils/utils"
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_WINE extends I_MODEL_REGRESSION {
-  static KEY = "WINE"
+  static KEY = LR_MODEL_KEYS.WINE
   static URL = "https://archive.ics.uci.edu/dataset/186/wine+quality"
 
   URL = "https://archive.ics.uci.edu/dataset/186/wine+quality"
@@ -226,8 +227,8 @@ export default class MODEL_WINE extends I_MODEL_REGRESSION {
     ]
 
     // #region Wine Red
-    const red_dataframe_original = await dfd.readCSV(path_datasets + red_dataset_csv)
-    let red_dataframe_processed = await dfd.readCSV(path_datasets + red_dataset_csv)
+    const red_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + red_dataset_csv)
+    let red_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + red_dataset_csv)
     /** @type {_Types.DataFrameColumnTransform_t[]} */
     const red_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
@@ -250,8 +251,8 @@ export default class MODEL_WINE extends I_MODEL_REGRESSION {
     // #endregion
 
     // #region Wine White
-    const white_dataframe_original = await dfd.readCSV(path_datasets + white_dataset_csv)
-    let white_dataframe_processed = await dfd.readCSV(path_datasets + white_dataset_csv)
+    const white_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + white_dataset_csv)
+    let white_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + white_dataset_csv)
     /** @type {_Types.DataFrameColumnTransform_t[]} */
     const white_dataset_transforms = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),

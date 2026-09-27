@@ -10,12 +10,13 @@ import * as _Types from '@core/types'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { HandSignInfo } from './MODEL_6_HAND_SIGN_HandSignInfo'
 import { TFJS_handpose_bibtex } from './MODEL_6_HAND_SIGN_INFO'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 type Finger_t = 'thumb' | 'index' | 'mid' | 'ring' | 'pinky'
 
 
 export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'HAND-SIGN'
+  static KEY = OD_MODEL_KEYS.HAND_SIGN
   TITLE = 'datasets-models.2-object-detection.hand-sign.title'
   i18n_TITLE = 'datasets-models.2-object-detection.hand-sign.title'
   URL = 'https://github.com/nonodev96/handsign-multilingual'

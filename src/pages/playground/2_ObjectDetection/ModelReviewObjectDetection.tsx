@@ -9,14 +9,20 @@ import { useNavigate } from 'react-router-dom'
 import * as tfjs from '@tensorflow/tfjs'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { UPLOAD } from '@/DATA_MODEL'
+import { UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import FakeProgressBar from '@components/loading/FakeProgressBar'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
+import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 import alertHelper from '@utils/alertHelper'
 import I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@utils/utils'
-import ShapHeatmap from '@core/explainability/ImageHeatMapChart'
+import {
+  ImageExplainResults,
+  ShapImageControls,
+  type ImageExplainResult_t,
+} from '@core/explainability/ImageExplainPanel'
+import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
@@ -94,18 +100,10 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
   // === Explicabilidad (SHAP) ===
   const imgData_ref = useRef<ImageData | null>(null)
-  const segmentationMap_ref = useRef<Int32Array | Uint8Array | number[] | null>(null)
+  const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
   const [isCalculo, setIsCalculo] = useState(false)
-  const [gridSide, setGridSide] = useState(6)
-  const [nSamples, setNSamples] = useState(75)
-  const [mask, setMask] = useState(0)
-  const [blurEnabled, setBlurEnabled] = useState(false)
-  const [blurKernelSize, setBlurKernelSize] = useState(15)
-  const [blurPasses, setBlurPasses] = useState(2)
-  const [explainLabels, setExplainLabels] = useState<Array<string | number>>([])
-  const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const [explanationData, setExplanationData] = useState<number[][] | null>(null)
+  const [shapOptions, setShapOptions] = useState({ ...DEFAULT_SHAP_IMAGE_OPTIONS, maskValue: 0 })
 
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: `/ModelReviewObjectDetection/${dataset}`, title: dataset })
@@ -183,9 +181,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       // =========================
       if (dataset === UPLOAD) {
         console.error('Error, option not valid')
-      } else if (dataset in MAP_OD_CLASSES) {
+      } else if (hasModel(MAP_OD_CLASSES, dataset)) {
         try {
-          const _iModelClass = MAP_OD_CLASSES[dataset]
+          const _iModelClass = await loadModelClass(MAP_OD_CLASSES, dataset)
           iModel_ref.current = new _iModelClass(t)
           await iModel_ref.current.ENABLE_MODEL()
           setLoading(false)
@@ -447,12 +445,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         // FIX: Changed second 'width' to 'height'
         const imgData = originalCtx.getImageData(0, 0, width, height);
 
-        // Guardamos la imagen para la explicabilidad y reseteamos resultados previos
+        // Guardamos la imagen para la explicabilidad y descartamos la explicación anterior
         imgData_ref.current = imgData
-        segmentationMap_ref.current = null
-        setExplainLabels([])
-        setGalleryImages([])
-        setExplanationData(null)
+        setExplainResult(null)
         setShowExplain(false)
 
         // Draw result image
@@ -499,47 +494,48 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     return isLoading || isCameraEnable || isWebView
   }
 
-  const handleRequest_ExplainPrediction = async (e: { preventDefault: () => void }) => {
-    e.preventDefault()
+  // FACE_API expone sus etiquetas como claves de i18n ("age" se muestra como "años").
+  const formatExplainLabel = (label: string | number) => {
+    const i18nLabels = (iModel_ref.current as { i18n_face_api?: Record<string, string> }).i18n_face_api
+    const key = i18nLabels?.[label === 'age' ? 'years' : String(label)]
+    return key ? t(key) : String(label)
+  }
 
+  const handleRequest_ExplainPrediction = async () => {
     if (showExplain) {
       setShowExplain(false)
       return
     }
 
+    const imageData = imgData_ref.current
+    if (!imageData) {
+      await alertHelper.alertInfo(t('info.insert-input'))
+      return
+    }
+
     setIsCalculo(true)
-
     try {
-      const currentImageData = imgData_ref.current
-      if (!currentImageData) {
-        await alertHelper.alertInfo(t('info.insert-input'))
-        setIsCalculo(false)
-        return
-      }
-
-      const flipHorizontal = !iModel_ref.current.mirror
-
       const result = await runObjectDetectionExplain({
-        model: iModel_ref.current,
-        imageData: currentImageData,
-        gridSide,
-        nSamples,
-        flipHorizontal,
-        maskValue: mask,
-        blur: blurEnabled,
-        blurKernelSize,
-        blurPasses,
+        model         : iModel_ref.current,
+        imageData,
+        flipHorizontal: !iModel_ref.current.mirror,
+        ...shapOptions,
       })
 
-      segmentationMap_ref.current = result.segmentationMapArray
-      setExplainLabels(result.selectedLabels)
-      setGalleryImages(result.debugImages)
-      setExplanationData(result.shapValues)
+      setExplainResult({
+        values            : result.shapValues,
+        labels            : result.selectedLabels,
+        galleryImages     : result.debugImages,
+        imageSrc          : canvasImage_ref.current?.toDataURL(),
+        segmentationMap   : result.segmentationMapArray,
+        segmentationWidth : imageData.width,
+        segmentationHeight: imageData.height,
+      })
       setShowExplain(true)
-      setIsCalculo(false)
     } catch (error) {
       console.error('Error calculating explainability', { error })
-      await alertHelper.alertError(t('Error calculating explainability'))
+      await alertHelper.alertError(t('ui.explain.error'))
+    } finally {
       setIsCalculo(false)
     }
   }
@@ -843,170 +839,25 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                   <h3>{t('ui.explain.title')}</h3>
                 </Card.Header>
                 <Card.Body>
-                  {showExplain && galleryImages.length > 0 && (
-                    <div className="mb-4">
-                      <h5>{t('ui.explain.perturbationSamples')}</h5>
-                      <div
-                        style={{
-                          display: 'flex',
-                          gap: '10px',
-                          overflowX: 'auto',
-                          padding: '10px',
-                          background: '#f9f9f9',
-                          borderRadius: '8px',
-                          minHeight: '100px',
-                        }}
-                      >
-                        {galleryImages.map((imgSrc, idx) => (
-                          <div key={idx} style={{ flex: '0 0 auto', textAlign: 'center' }}>
-                            <img
-                              src={imgSrc}
-                              style={{
-                                height: 80,
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                objectFit: 'contain',
-                              }}
-                              alt={`sample-${idx}`}
-                            />
-                            <div style={{ fontSize: '10px', color: '#666' }}>
-                              #{idx + 1}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {showExplain && explanationData && (
-                    <Row>
-                      {explanationData.map((shapVals, idx) => {
-                        const labelName =
-                          explainLabels && explainLabels.length > idx
-                            ? explainLabels[idx]
-                            : `Class ${idx + 1}`
-                        // Para FACE_API, traducir los nombres de las labels
-                        let displayLabel: string | number = labelName
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const model = iModel_ref.current as any
-                        if (model && model.i18n_face_api && model.i18n_face_api[labelName]) {
-                          displayLabel = model.i18n_face_api[labelName]
-                        }
-                        return (
-                          <Col key={idx} md={6} lg={4} className="mb-3">
-                            <div
-                              style={{
-                                border: '1px solid #eee',
-                                padding: '10px',
-                                borderRadius: '8px',
-                                textAlign: 'center',
-                              }}
-                            >
-                              <h6 style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                                {displayLabel}
-                              </h6>
-                              <ShapHeatmap
-                                imageSrc={
-                                  canvasImage_ref.current
-                                    ? canvasImage_ref.current.toDataURL()
-                                    : undefined
-                                }
-                                shapValues={shapVals}
-                                segmentationMap={segmentationMap_ref.current}
-                              />
-                            </div>
-                          </Col>
-                        )
-                      })}
-                    </Row>
+                  {showExplain && explainResult && (
+                    <ImageExplainResults result={explainResult} formatLabel={formatExplainLabel} />
                   )}
 
                   <div className="mt-3">
-                    <Form>
-                      <Form.Group className="mb-2" controlId="formGridSideBottomOD">
-                        <Form.Label>{t('ui.explain.gridSide')}</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min={2}
-                          max={32}
-                          value={gridSide}
-                          onChange={(e) => setGridSide(Number(e.target.value))}
-                        />
-                      </Form.Group>
-                      <Form.Group className="mb-2" controlId="formNSamplesBottomOD">
-                        <Form.Label>{t('ui.explain.nSamples')}</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min={1}
-                          max={500}
-                          value={nSamples}
-                          onChange={(e) => setNSamples(Number(e.target.value))}
-                        />
-                      </Form.Group>
-                      <Form.Group className="mb-2" controlId="formMaskBottomOD">
-                        <Form.Label>{t('ui.explain.mask')}</Form.Label>
-                        <Form.Control
-                          type="number"
-                          min={0}
-                          max={1}
-                          step={0.05}
-                          value={mask}
-                          onChange={(e) => setMask(Number(e.target.value))}
-                        />
-                      </Form.Group>
-                      <Form.Group className="mb-2" controlId="formBlurEnableOD">
-                        <Form.Check
-                          type="checkbox"
-                          label={t('ui.blur.enable')}
-                          checked={blurEnabled}
-                          onChange={(e) => setBlurEnabled(e.target.checked)}
-                        />
-                      </Form.Group>
-                      {blurEnabled && (
-                        <>
-                          <Form.Group className="mb-2" controlId="formBlurKernelOD">
-                            <Form.Label>{t('ui.blur.kernelSize')}</Form.Label>
-                            <Form.Control
-                              type="number"
-                              min={3}
-                              max={101}
-                              step={2}
-                              value={blurKernelSize}
-                              onChange={(e) => setBlurKernelSize(Number(e.target.value))}
-                            />
-                          </Form.Group>
-                          <Form.Group className="mb-2" controlId="formBlurPassesOD">
-                            <Form.Label>{t('ui.blur.passes')}</Form.Label>
-                            <Form.Control
-                              type="number"
-                              min={1}
-                              max={6}
-                              value={blurPasses}
-                              onChange={(e) => setBlurPasses(Number(e.target.value))}
-                            />
-                          </Form.Group>
-                        </>
-                      )}
-                      <Button
-                        type="button"
-                        variant={'outline-info'}
-                        onClick={handleRequest_ExplainPrediction}
-                        disabled={isCalculo || !processImage.isProcessed}
-                      >
-                        {isCalculo
-                          ? t('ui.explain.calculating')
+                    <ShapImageControls idPrefix={'od-explain'} options={shapOptions} onChange={setShapOptions} />
+                    <Button
+                      type="button"
+                      variant={'outline-info'}
+                      onClick={handleRequest_ExplainPrediction}
+                      disabled={isCalculo || !processImage.isProcessed}
+                    >
+                      {isCalculo
+                        ? t('ui.explain.calculating')
+                        : showExplain
+                          ? t('ui.explain.hideExplanation')
                           : t('ui.explain.explainPrediction')}
-                      </Button>
-                    </Form>
+                    </Button>
                   </div>
-
-                  {showExplain &&
-                    (!explanationData || explanationData.length === 0) &&
-                    !isCalculo && (
-                      <p className="text-center text-muted">
-                        {t('ui.explain.noData')}
-                      </p>
-                    )}
                 </Card.Body>
               </Card>
             </Col>

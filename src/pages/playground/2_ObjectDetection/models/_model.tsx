@@ -1,13 +1,13 @@
 import type { TFunction } from "i18next"
 
 export default class I_MODEL_OBJECT_DETECTION {
-  TITLE         : string = ""
-  i18n_TITLE    : string = ""
-  _modelDetector: any | null = null
-  mirror        : boolean = false
+  TITLE                  : string = ""
+  i18n_TITLE             : string = ""
+  _modelDetector         : any | null = null
+  mirror                 : boolean = false
   usesTensorForPrediction: boolean = true
-  faces         : boolean = false
-  t             : TFunction<"translation", undefined>
+  faces                  : boolean = false
+  t                      : TFunction<"translation", undefined>
 
   constructor(_t: TFunction<"translation", undefined>) {
     this.t = _t
@@ -41,7 +41,6 @@ export default class I_MODEL_OBJECT_DETECTION {
    * explicabilidad. Por defecto devuelve un vector vacío; cada modelo lo
    * sobrescribe según su tipo de salida.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   NORMALIZE_PREDICTIONS(_predictions: any, _labels?: Array<string | number>): number[] {
     return []
   }

@@ -1,13 +1,14 @@
 import { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as dfd from 'danfojs'
+import { DataFrameReadCSV } from '@core/dataframe/DataFrameUtils'
 
 import * as _Types from '@core/types'
 import RegressionContext from '@context/RegressionContext'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import alertHelper from '@utils/alertHelper'
-import { UPLOAD } from '@/DATA_MODEL'
+import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import type { DropEvent, FileRejection } from 'react-dropzone'
 
@@ -37,8 +38,8 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
     }
     try {
       const file_csv = new File([files[0]], files[0].name, { type: files[0].type })
-      const _dataframeOriginal = await dfd.readCSV(file_csv)
-      const _dataframeProcessed = await dfd.readCSV(file_csv)
+      const _dataframeOriginal = await DataFrameReadCSV(file_csv)
+      const _dataframeProcessed = await DataFrameReadCSV(file_csv)
 
       /**@type {_Types.DatasetProcessed_t} */
       const newDataset: _Types.DatasetProcessed_t = {

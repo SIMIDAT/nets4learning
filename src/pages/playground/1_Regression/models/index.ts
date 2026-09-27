@@ -1,32 +1,18 @@
 import I_MODEL_REGRESSION from './_model'
-import MODEL_1_SALARY from './MODEL_1_SALARY'
-import MODEL_2_AUTO_MPG from './MODEL_2_AUTO_MPG'
-import MODEL_3_HOUSING_PRICES from './MODEL_3_HOUSING_PRICES'
-import MODEL_4_BREAST_CANCER from './MODEL_4_BREAST_CANCER'
-import MODEL_5_STUDENT_PERFORMANCE from './MODEL_5_STUDENT_PERFORMANCE'
-import MODEL_6_WINE from './MODEL_6_WINE'
-import * as _Types from '@core/types'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
+import type { ModelRegistry } from '@core/models/modelRegistry'
 
-/**
- * @type {_Types.MAP_LR_CLASSES_t}
- */
-const MAP_LR_CLASSES = {
-  [MODEL_1_SALARY.KEY]             : MODEL_1_SALARY,
-  [MODEL_2_AUTO_MPG.KEY]           : MODEL_2_AUTO_MPG,
-  [MODEL_3_HOUSING_PRICES.KEY]     : MODEL_3_HOUSING_PRICES,
-  [MODEL_4_BREAST_CANCER.KEY]      : MODEL_4_BREAST_CANCER,
-  [MODEL_5_STUDENT_PERFORMANCE.KEY]: MODEL_5_STUDENT_PERFORMANCE,
-  [MODEL_6_WINE.KEY]               : MODEL_6_WINE,
+/** Clases de modelos de regresión, cargadas bajo demanda. */
+const MAP_LR_CLASSES: ModelRegistry<I_MODEL_REGRESSION> = {
+  [LR_MODEL_KEYS.SALARY]             : () => import('./MODEL_1_SALARY').then((m) => m.default),
+  [LR_MODEL_KEYS.AUTO_MPG]           : () => import('./MODEL_2_AUTO_MPG').then((m) => m.default),
+  [LR_MODEL_KEYS.HOUSING_PRICES]     : () => import('./MODEL_3_HOUSING_PRICES').then((m) => m.default),
+  [LR_MODEL_KEYS.BREAST_CANCER]      : () => import('./MODEL_4_BREAST_CANCER').then((m) => m.default),
+  [LR_MODEL_KEYS.STUDENT_PERFORMANCE]: () => import('./MODEL_5_STUDENT_PERFORMANCE').then((m) => m.default),
+  [LR_MODEL_KEYS.WINE]               : () => import('./MODEL_6_WINE').then((m) => m.default),
 }
 
 export {
   MAP_LR_CLASSES,
-
   I_MODEL_REGRESSION,
-  MODEL_1_SALARY,
-  MODEL_2_AUTO_MPG,
-  MODEL_3_HOUSING_PRICES,
-  MODEL_4_BREAST_CANCER,
-  MODEL_5_STUDENT_PERFORMANCE,
-  MODEL_6_WINE,
 }

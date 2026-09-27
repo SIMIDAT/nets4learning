@@ -15,13 +15,14 @@ import N4LJoyride from '@components/joyride/N4LJoyride'
 import DebugJSON from '@components/debug/DebugJSON'
 
 import { MAP_LR_CLASSES } from './models'
+import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 
 import * as _Types from '@core/types'
 // import LinearRegressionModelController_Simple from '@core/controller/01-regression/LinearRegressionModelController_Simple'
 import { createRegressionCustomModel } from '@core/controller/01-regression/RegressionModelController'
 import RegressionContext from '@context/RegressionContext'
 import alertHelper from '@utils/alertHelper'
-import { UPLOAD } from '@/DATA_MODEL'
+import { UPLOAD } from '@/TASKS'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
 
 // Manual and datasets
@@ -96,9 +97,9 @@ export default function Regression({ dataset }: RegressionProps_t) {
       await tfjs.ready()
       if (dataset === UPLOAD) {
         console.debug('ENABLE Upload csv | Regression')
-      } else if (dataset in MAP_LR_CLASSES) {
+      } else if (hasModel(MAP_LR_CLASSES, dataset)) {
         /** @type {_Types.I_MODEL_REGRESSION_t} */
-        const _iModelInstance = new MAP_LR_CLASSES[dataset](t, setAccordionActive)
+        const _iModelInstance = new (await loadModelClass(MAP_LR_CLASSES, dataset))(t, setAccordionActive)
         const _datasets = await _iModelInstance.DATASETS()
         setIModelInstance(_iModelInstance)
         
@@ -122,7 +123,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
   useEffect(() => {
     if (dataset === UPLOAD) {
       console.debug('Regression upload csv')
-    } else if (dataset in MAP_LR_CLASSES) {
+    } else if (hasModel(MAP_LR_CLASSES, dataset)) {
       if (iModelInstance
         && datasets
         && datasets.data

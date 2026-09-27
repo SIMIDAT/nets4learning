@@ -355,6 +355,71 @@ export function DataFrameDeepCopy(dataframe: dfd.DataFrame) {
   return new dfd.DataFrame(dataframe_deep_copy_JSON);
 }
 
+const NUMERIC_DTYPES = ["int32", "float32"];
+
+const isTextValue = (value: unknown) =>
+  typeof value === "string" && value.trim() !== "" && Number.isNaN(Number(value));
+
+/**
+ * danfojs infiere el tipo de cada columna mirando solo las primeras filas (500 por defecto).
+ * En una columna categórica como "Doors" de car.csv (2, 3, 4, 5more) ordenada por valor,
+ * "5more" aparece más tarde y la columna queda como int32: describe() y las conversiones
+ * fallan con `Cannot convert "5more" to a number`.
+ *
+ * Devuelve un DataFrame nuevo en el que las columnas numéricas con algún valor de texto pasan
+ * a ser de texto. La codificación no cambia: el LabelEncoder usa claves de texto ("2" y 2 son
+ * la misma clave) y el orden de aparición de los valores es el mismo.
+ */
+export function DataFrameFixMixedColumns(dataframe: dfd.DataFrame): dfd.DataFrame {
+  let fixed = dataframe;
+  dataframe.columns.forEach((column, i) => {
+    if (!NUMERIC_DTYPES.includes(dataframe.dtypes[i])) return;
+    const values = dataframe.column(column).values as unknown[];
+    if (values.some(isTextValue)) {
+      fixed = fixed.asType(column, "string") as dfd.DataFrame;
+    }
+  });
+  return fixed;
+}
+
+/** `dfd.readCSV` + {@link DataFrameFixMixedColumns}: usar siempre esta función para leer CSV. */
+export async function DataFrameReadCSV(
+  ...args: Parameters<typeof dfd.readCSV>
+): Promise<dfd.DataFrame> {
+  return DataFrameFixMixedColumns(await dfd.readCSV(...args));
+}
+
+/**
+ * `describe()` de las columnas numéricas, o `null` si no hay ninguna (p. ej. un dataset
+ * totalmente categórico como car.csv): danfojs lanza un error en ese caso.
+ */
+export function DataFrameDescribeNumeric(dataframe: dfd.DataFrame): dfd.DataFrame | null {
+  const hasNumericColumns = dataframe.dtypes.some((dtype) => NUMERIC_DTYPES.includes(dtype));
+  return hasNumericColumns ? dataframe.describe() : null;
+}
+
+type TablePlotConfig = NonNullable<Parameters<ReturnType<dfd.DataFrame["plot"]>["table"]>[0]>["config"];
+
+/**
+ * Pinta en el elemento `plotID` la tabla de `describe()` de las columnas numéricas o, si no
+ * hay ninguna, el texto `emptyText`.
+ */
+export function DataFrameDescribePlot(
+  dataframe: dfd.DataFrame,
+  plotID: string,
+  options: { config: TablePlotConfig; emptyText: string; transpose?: boolean }
+): void {
+  const element = document.getElementById(plotID);
+  if (!element) return;
+  element.textContent = "";
+  const describe = DataFrameDescribeNumeric(dataframe);
+  if (describe === null) {
+    element.textContent = options.emptyText;
+    return;
+  }
+  (options.transpose ? describe.T : describe).plot(plotID).table({ config: options.config });
+}
+
 /**
  * @param {dfd.DataFrame} dataframe
  * @return {Array<Array<string|number|boolean>>}
