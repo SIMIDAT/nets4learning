@@ -11,7 +11,7 @@
       "about-lrp": "LRP (Layer-wise Relevance Propagation) runs backwards through the network from the predicted class, distributing its relevance down to the input pixels. The heatmap shows which areas of the image support the model's prediction.",
       "about-shap": "We split the image into segments (superpixels) and measure each one's importance by masking it or keeping it visible across many different combinations, observing how the prediction changes. The heatmap colours each segment by how much it contributes to the prediction.",
       "perturbationSamples": "Perturbation samples:",
-      "gridSide": "Grid Side (features per side)",
+      "gridSide": "Zones per side (the image is split into N×N segments)",
       "nSamples": "nSamples (SHAP)",
       "mask": "Mask (SHAP)",
       "maskRange": "Mask (0..1)",
@@ -19,7 +19,53 @@
       "explainPrediction": "Explain prediction",
       "hideExplanation": "Hide explanation",
       "noData": "No explanation data available.",
-      "class": "Class #{{index}}"
+      "class": "Class {{index}}",
+      "positive": "Supports the prediction",
+      "negative": "Against the prediction",
+      "shap-value": "SHAP value",
+      "error": "Error calculating the explanation",
+      "model-not-available": "The model is not available for explainability",
+      "lrp-not-available": "LRP is not available for this model",
+      "cancel": "Cancel",
+      "labels": {
+        "face": "Face",
+        "pose": "Body pose",
+        "hand": "Hand",
+        "sign": "Sign «{{sign}}»",
+        "body": {
+          "head": "Head",
+          "arms": "Arms",
+          "legs": "Legs"
+        }
+      },
+      "face-parts": {
+        "background": "Background (outside the face)",
+        "skin": "Skin",
+        "lips": "Lips",
+        "rightEye": "Right eye",
+        "leftEye": "Left eye",
+        "rightEyebrow": "Right eyebrow",
+        "leftEyebrow": "Left eyebrow",
+        "nose": "Nose"
+      },
+      "summary": {
+        "equation-title": "How the model arrives at «{{target}}»",
+        "contributions": "sum of contributions",
+        "most-positive": "Pushes most in favour",
+        "most-negative": "Pushes most against",
+        "base-image": "with the image covered",
+        "base-tabular": "average prediction over the reference data",
+        "lrp": "Red pixels support «{{target}}» and blue pixels go against it. LRP distributes the network output backwards; because of the biases of each layer, the total relevance does not have to match the score exactly.",
+        "scaled-values": "The values shown when hovering over a point are the normalised ones the model receives, not the original units."
+      },
+      "perturbation-help": "Some of the images the model saw during the calculation: SHAP covers different zones and observes how the prediction changes.",
+      "nothing-detected": "The model has not detected anything in this image, so there is nothing to explain. Try another image (for example, one where the object is larger).",
+      "no-predictions": "The model has not returned any prediction for this image, so there is nothing to explain.",
+      "notes": {
+        "presence-only": "This model only answers «face» or «no face» (0 or 100 %), so the explanation shows the minimum it needs to see to find a face: the skin is usually enough.",
+        "body-parts": "The confidence in the whole pose and in each body part is explained. The model first needs to find the person, so areas of the torso also help it locate the arms or legs.",
+        "wrong-prediction": "Did the model get it wrong? The explanation is still useful: it shows what the model looked at to reach that answer."
+      }
     }
   },
   "welcome": "Welcome to Nets4Learning",
@@ -221,7 +267,8 @@
         "1": "This feature is useful for getting a quick idea of the distribution of your data and can help you identify outliers or anomalies in your data.",
         "title": "Description"
       },
-      "link": "Consult more information in the following <link1> link </link1>"
+      "link": "Consult more information in the following <link1> link </link1>",
+      "no-numeric": "There are no numeric columns to describe: all the columns are categorical."
     },
     "query": {
       "title": "DataFrame | Query",
@@ -291,7 +338,8 @@
     "file-upload": "File upload successful"
   },
   "info": {
-    "the-class-is-__value__": "Does the class have the index {{value}}?"
+    "the-class-is-__value__": "Does the class have the index {{value}}?",
+    "insert-input": "Enter the input values and make a prediction first"
   },
   "alert": {
     "menu": {
@@ -1032,7 +1080,90 @@
               "0": "You can find more information <link1> Coco Dataset </link1>"
             }
           }
-        }
+        },
+        "classes": {
+          "person": "Person",
+          "bicycle": "Bicycle",
+          "car": "Car",
+          "motorcycle": "Motorcycle",
+          "airplane": "Airplane",
+          "bus": "Bus",
+          "train": "Train",
+          "truck": "Truck",
+          "boat": "Boat",
+          "traffic light": "Traffic light",
+          "fire hydrant": "Fire hydrant",
+          "stop sign": "Stop sign",
+          "parking meter": "Parking meter",
+          "bench": "Bench",
+          "bird": "Bird",
+          "cat": "Cat",
+          "dog": "Dog",
+          "horse": "Horse",
+          "sheep": "Sheep",
+          "cow": "Cow",
+          "elephant": "Elephant",
+          "bear": "Bear",
+          "zebra": "Zebra",
+          "giraffe": "Giraffe",
+          "backpack": "Backpack",
+          "umbrella": "Umbrella",
+          "handbag": "Handbag",
+          "tie": "Tie",
+          "suitcase": "Suitcase",
+          "frisbee": "Frisbee",
+          "skis": "Skis",
+          "snowboard": "Snowboard",
+          "sports ball": "Sports ball",
+          "kite": "Kite",
+          "baseball bat": "Baseball bat",
+          "baseball glove": "Baseball glove",
+          "skateboard": "Skateboard",
+          "surfboard": "Surfboard",
+          "tennis racket": "Tennis racket",
+          "bottle": "Bottle",
+          "wine glass": "Wine glass",
+          "cup": "Cup",
+          "fork": "Fork",
+          "knife": "Knife",
+          "spoon": "Spoon",
+          "bowl": "Bowl",
+          "banana": "Banana",
+          "apple": "Apple",
+          "sandwich": "Sandwich",
+          "orange": "Orange",
+          "broccoli": "Broccoli",
+          "carrot": "Carrot",
+          "hot dog": "Hot dog",
+          "pizza": "Pizza",
+          "donut": "Donut",
+          "cake": "Cake",
+          "chair": "Chair",
+          "couch": "Couch",
+          "potted plant": "Potted plant",
+          "bed": "Bed",
+          "dining table": "Dining table",
+          "toilet": "Toilet",
+          "tv": "Tv",
+          "laptop": "Laptop",
+          "mouse": "Mouse",
+          "remote": "Remote",
+          "keyboard": "Keyboard",
+          "cell phone": "Cell phone",
+          "microwave": "Microwave",
+          "oven": "Oven",
+          "toaster": "Toaster",
+          "sink": "Sink",
+          "refrigerator": "Refrigerator",
+          "book": "Book",
+          "clock": "Clock",
+          "vase": "Vase",
+          "scissors": "Scissors",
+          "teddy bear": "Teddy bear",
+          "hair drier": "Hair drier",
+          "toothbrush": "Toothbrush"
+        },
+        "render-label": "{{label}} with {{score}}% confidence"
       },
       "face-api": {
         "title": "FaceAPI - Face Expressions",
@@ -1586,7 +1717,7 @@
           "explain-panel-local-body": "SHAP explains a single prediction by distributing the difference between this prediction and the model's average prediction (base value) across the features. Each bar shows how much, and in which direction, a feature pushes: positive toward the selected class, negative against it.",
           "explain-panel-local-body-regression": "SHAP explains a single prediction by distributing the difference between the predicted value and the model's average prediction (base value) across the features. Each bar shows how much, and in which direction, a feature pushes: positive raises the predicted value, negative lowers it.",
           "explain-panel-global-title": "Global importance (all instances)",
-          "explain-panel-global-body": "Global importance aggregates many local explanations. The bar chart shows the mean of the absolute values (mean |SHAP|): how much each feature weighs on average. The beeswarm adds the direction and spread of the effect, colouring each point by the feature value."
+          "explain-panel-global-body": "Global importance aggregates many local explanations. The bar chart shows the mean of the absolute values (mean |SHAP|): how much each feature weighs on average. The beeswarm adds the direction and spread of the effect, colouring each point by the feature value. Other methods, such as permutation importance, may rank the features somewhat differently, especially when features are related to each other: each method measures importance in its own way."
         },
         "0_upload": {
           "upload": "Upload",

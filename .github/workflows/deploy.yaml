@@ -8,23 +8,24 @@ on:
 jobs:
   deploy-stable:
     name: 'Deploy to netlify stable'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: 'Create env file'
         run: |
           echo "${{ vars.NETLIFY_ENV_FILE_STABLE }}" > .env.netlify
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v3
+
+      # La versión de pnpm se toma de "packageManager" en package.json (pnpm 12).
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-      
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 10
+          cache: 'pnpm'
 
       - uses: jsmrcaga/action-netlify-deploy@v2.4.0
         with:
@@ -32,9 +33,12 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STABLE }}
           NETLIFY_DEPLOY_MESSAGE: "Deploy v${{ github.ref }}"
           NETLIFY_DEPLOY_TO_PROD: true
-          INSTALL_COMMAND: pnpm install
+          # NODE_ENV=production (abajo) haría que pnpm omitiera las devDependencies (vite, typescript…)
+          # que necesita el build: --production=false las instala igualmente.
+          INSTALL_COMMAND: pnpm install --frozen-lockfile --production=false
           BUILD_COMMAND: pnpm run build:netlify
-          BUILD_DIRECTORY: 'build'
+          # Vite genera el build en dist/ (no en build/, que era la carpeta de Create React App).
+          BUILD_DIRECTORY: 'dist'
         env:
           CI: false
           NODE_OPTIONS: "--max_old_space_size=6144"

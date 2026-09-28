@@ -15,6 +15,8 @@
       "@/CONSTANTS_ChartsJs": ["src/CONSTANTS_ChartsJs"],
       "@/CONSTANTS_DanfoJS": ["src/CONSTANTS_DanfoJS"],
       "@/DATA_MODEL": ["src/DATA_MODEL"],
+      "@/TASKS": ["src/TASKS"],
+      "@/MODEL_KEYS": ["src/MODEL_KEYS"],
       "@/types/*": ["src/types/*"],
       
       "@assets/*": ["src/assets/*"],

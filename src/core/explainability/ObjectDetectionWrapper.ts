@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as tf from '@tensorflow/tfjs';
 
 interface ObjectDetectionOptions {
-  maskValue?: number;
-  blur?: boolean;
+  maskValue?     : number;
+  blur?          : boolean;
   blurKernelSize?: number;
-  blurPasses?: number;
-  [key: string]: any;
+  blurPasses?    : number;
+  [key: string]  : any;
 }
 
 const normalizeBlurKernelSize = (kernelSize: number, maxSize: number): number => {
@@ -29,27 +28,27 @@ const normalizeBlurPasses = (passes: number | undefined): number => {
   return Math.max(1, Math.min(6, p));
 };
 
+/**
+ * Crea el predictor para KernelSHAP por segmentos: cada fila de `x` indica qué segmentos se
+ * mantienen (1) o se enmascaran (0), y el predictor devuelve la salida del modelo para esa
+ * imagen perturbada. `debugImages` recoge una muestra de las imágenes perturbadas (1 de cada 50).
+ */
 export const objectDetectionWrapper = (
   modelRef: any,
   imagenOriginal: ImageData,
   segmentationTensor: tf.Tensor,
-  debugImages: string[],
   usesTensorForPrediction: boolean,
   labels: Array<string | number>,
   options: ObjectDetectionOptions = {},
-) => {
-  return async (x: number[][]): Promise<number[][]> => {
+): { predict: (x: number[][]) => Promise<number[][]>, debugImages: string[] } => {
+  const debugImages: string[] = [];
+  const predict = async (x: number[][]): Promise<number[][]> => {
     if (!x || x.length === 0) return [];
 
     // Sin logs: este wrapper se llama una vez por perturbación de KernelSHAP (hot path).
 
     // imgoriginal ---> tensor
-    const imgToTensor = tf.tidy(() => {
-      return tf.browser
-        .fromPixels(imagenOriginal)
-        .resizeBilinear([imagenOriginal.height, imagenOriginal.width])
-        .toFloat();
-    });
+    const imgToTensor = tf.tidy(() => tf.browser.fromPixels(imagenOriginal).toFloat());
 
     const batchVectors: number[][] = [];
     const maskValue = options.maskValue || Number(0);
@@ -146,27 +145,19 @@ export const objectDetectionWrapper = (
         // Llamada al predictor (modelRef debe exponer PREDICTION)
         const detections = await modelRef.PREDICTION(predictionInput, options);
 
-        // IMPORTANTE: La salida debe tener dimensión fija.
-        // En COCO-SSD esto viene dado por `labels.length` (labels del caso base).
-        // Si labels no existe/está vacío (p.ej. modelos faciales), forzamos salida escalar.
-        // Si no hay detecciones (p.ej. no detecta cara), devolvemos [0].
+        // Un número por etiqueta (misma longitud y orden que `labels`); sin detecciones, todo 0.
+        // Si el modelo devuelve otra longitud es un error de programación: antes se sustituía en
+        // silencio por ceros y la explicación salía vacía sin que nadie lo notara.
         const safeDetections = Array.isArray(detections) ? detections : [];
-        const expectedLength = Array.isArray(labels) ? labels.length : 0;
-        const outputLength = expectedLength > 0 ? expectedLength : 1;
-
-        if (safeDetections.length === 0) {
-          batchVectors.push(new Array(outputLength).fill(0));
-        } else {
-          const normalized = modelRef.NORMALIZE_PREDICTIONS(
-            safeDetections,
-            labels,
+        const vector = safeDetections.length === 0
+          ? new Array(labels.length).fill(0)
+          : modelRef.NORMALIZE_PREDICTIONS(safeDetections, labels);
+        if (!Array.isArray(vector) || vector.length !== labels.length) {
+          throw new Error(
+            `NORMALIZE_PREDICTIONS debe devolver ${labels.length} valores (uno por etiqueta) y ha devuelto ${vector?.length}`,
           );
-          const vector =
-            Array.isArray(normalized) && normalized.length === outputLength
-              ? normalized
-              : new Array(outputLength).fill(0);
-          batchVectors.push(vector);
         }
+        batchVectors.push(vector);
 
         inputTensor.dispose();
       }
@@ -180,4 +171,5 @@ export const objectDetectionWrapper = (
 
     return batchVectors;
   };
+  return { predict, debugImages };
 };

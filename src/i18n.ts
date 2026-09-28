@@ -25,4 +25,9 @@ i18n
   .then((_r) => {
   })
 
+// `<html lang>` sigue al idioma activo (lectores de pantalla, traductor del navegador, guiones…).
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.lang = lng
+})
+
 export default i18n

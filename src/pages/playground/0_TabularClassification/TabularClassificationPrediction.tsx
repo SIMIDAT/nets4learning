@@ -4,7 +4,7 @@ import { Bar } from 'react-chartjs-2'
 import * as _tfjs from '@tensorflow/tfjs'
 
 import * as _Types from '@core/types'
-import { UPLOAD } from '@/DATA_MODEL'
+import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import TabularClassificationPredictionForm from '@pages/playground/0_TabularClassification/TabularClassificationPredictionForm'

@@ -1,7 +1,7 @@
 import '@styles/ScrollBar.css'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Plot from 'react-plotly.js'
+import Plot from './Plot'
 import * as dfd from 'danfojs'
 
 import { VERBOSE } from '@/CONSTANTS'

@@ -6,9 +6,10 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_TABULAR_CLASSIFICATION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
-  static KEY = 'CAR'
+  static KEY = TC_MODEL_KEYS.CAR
   static URL = 'https://archive.ics.uci.edu/ml/datasets/Car+Evaluation'
   TITLE = 'datasets-models.0-tabular-classification.car.title'
   i18n_TITLE = 'datasets-models.0-tabular-classification.car.title'
@@ -143,8 +144,8 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
     const dataset_promise_info = await fetch(path_dataset + car_info)
     const car_container_info = await dataset_promise_info.text()
 
-    const dataframe_original = await dfd.readCSV(path_dataset + car_csv)
-    let dataframe_processed = await dfd.readCSV(path_dataset + car_csv)
+    const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + car_csv)
+    let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + car_csv)
     /** @type {_Types.Dataset_t} */
     const dataset: _Types.Dataset_t = [
       { column_name: 'Buying', column_role: 'Feature', column_type: 'Categorical', column_missing_values: false },

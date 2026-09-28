@@ -6,10 +6,11 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_REGRESSION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_2_AUTO_MPG extends I_MODEL_REGRESSION {
 
-  static KEY = 'AUTO_MPG'
+  static KEY = LR_MODEL_KEYS.AUTO_MPG
   static URL = 'https://archive.ics.uci.edu/ml/datasets/auto+mpg'
 
   URL = 'https://archive.ics.uci.edu/ml/datasets/auto+mpg'
@@ -98,8 +99,8 @@ export default class MODEL_2_AUTO_MPG extends I_MODEL_REGRESSION {
 
     const auto_promise_info = await fetch(path_datasets + auto_info)
     const auto_container_info = await auto_promise_info.text()
-    const auto_dataframe_original = await dfd.readCSV(path_datasets + auto_csv)
-    let auto_dataframe_processed = await dfd.readCSV(path_datasets + auto_csv)
+    const auto_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + auto_csv)
+    let auto_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + auto_csv)
     /** @type {_Types.Dataset_t} */
     const auto_dataset: _Types.Dataset_t = [
       { column_name: 'cylinders',    column_role: 'Feature', column_type: 'Integer',     column_missing_values: false },

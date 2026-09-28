@@ -6,9 +6,10 @@ import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import I_MODEL_REGRESSION from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
+import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
-  static KEY = 'SALARY'
+  static KEY = LR_MODEL_KEYS.SALARY
 
   URL_SALARY = 'https://www.kaggle.com/datasets/saquib7hussain/experience-salary-dataset/data'
   URL_SALARY_EXTRA = 'https://www.kaggle.com/datasets/rkiattisak/salaly-prediction-for-beginer'
@@ -77,8 +78,8 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
       ...salary_dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
       // { column_name: 'Salary', column_type: 'drop' }
     ]
-    const salary_dataframe_original = await dfd.readCSV(path_datasets + salary_csv)
-    let salary_dataframe_processed = await dfd.readCSV(path_datasets + salary_csv)
+    const salary_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + salary_csv)
+    let salary_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + salary_csv)
     const salary_dataframe_encoder = DataFrameUtils.DataFrameTransformAndEncoder(salary_dataframe_processed, salary_dataset_transforms)
     const salary_encoders_map = salary_dataframe_encoder.encoder_map
     salary_dataframe_processed = salary_dataframe_encoder.dataframe_processed
@@ -111,8 +112,8 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
       ...salary_extra_dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
       // { column_name: 'Salary', column_type: 'drop' }
     ]
-    const salary_extra_dataframe_original = await dfd.readCSV(path_datasets + salary_extra_csv)
-    let salary_extra_dataframe_processed = await dfd.readCSV(path_datasets + salary_extra_csv)
+    const salary_extra_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + salary_extra_csv)
+    let salary_extra_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + salary_extra_csv)
     const salary_extra_dataframe_encoder = DataFrameUtils.DataFrameTransformAndEncoder(salary_extra_dataframe_processed, salary_extra_dataset_transforms)
     const salary_extra_encoders_map = salary_extra_dataframe_encoder.encoder_map
     salary_extra_dataframe_processed = salary_extra_dataframe_encoder.dataframe_processed

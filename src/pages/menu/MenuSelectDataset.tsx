@@ -6,11 +6,11 @@ import N4LModal from '@components/modal/N4LModal'
 import alertHelper from '@utils/alertHelper'
 import {
   TASK_DATASET_OPTIONS,
-  TASK_MODEL_OPTIONS_CLASS,
   type DATASET_OPTIONS_TYPE,
   type TASKS_TYPE_V
 } from '@/DATA_MODEL'
 import { VERBOSE } from '@/CONSTANTS'
+import { useMenuModel } from '@hooks/useMenuModel'
 
 export default function MenuSelectDataset() {
   const { id } = useParams<{ id: TASKS_TYPE_V }>()
@@ -23,6 +23,8 @@ export default function MenuSelectDataset() {
   const [datasetKey, setDatasetKey] = useState("select-dataset")
   const [options, setOptions] = useState<DATASET_OPTIONS_TYPE>([])
   const [showDescription, setShowDescription] = useState(false)
+  // Solo se descarga el modelo del dataset seleccionado, para mostrar su título y descripción.
+  const selectedModel = useMenuModel(id, datasetKey)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -53,24 +55,18 @@ export default function MenuSelectDataset() {
 
   const Dataset_Title = () => {
     if (!id) return <></>
-    if (datasetKey === "select-model") return <></>
+    if (datasetKey === "select-dataset") return <></>
     if (datasetKey === "UPLOAD") return t("upload-dataset")
-    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
-    if (!(datasetKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
-
-    const _model = new TASK_MODEL_OPTIONS_CLASS[id][datasetKey]._class_(t, () => { })
-    return t(_model.i18n_TITLE)
+    if (!selectedModel) return <></>
+    return t(selectedModel.i18n_TITLE)
   }
 
   const Dataset_Body = () => {
     if (!id) return <></>
-    if (datasetKey === "select-model") return <></>
+    if (datasetKey === "select-dataset") return <></>
     if (datasetKey === "UPLOAD") return <>{t("upload-dataset-info")}</>
-    if (!(id in TASK_MODEL_OPTIONS_CLASS)) return <></>
-    if (!(datasetKey in TASK_MODEL_OPTIONS_CLASS[id])) return <></>
-
-    const _model = new TASK_MODEL_OPTIONS_CLASS[id][datasetKey]._class_(t, () => { })
-    return <>{_model.DESCRIPTION()}</>
+    if (!selectedModel) return <></>
+    return <>{selectedModel.DESCRIPTION()}</>
   }
 
 

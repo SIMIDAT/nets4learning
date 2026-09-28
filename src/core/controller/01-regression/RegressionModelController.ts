@@ -1,14 +1,11 @@
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
-import * as dfd from 'danfojs'
-import * as sk from 'scikitjs'
+import { trainTestSplit } from '@utils/trainTestSplit'
 
 import * as _Types from '@core/types'
 import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import AlertHelper from '@utils/alertHelper'
-
-sk.setBackend(dfd.tensorflow)
 
 /**
  * @typedef {Object} CustomRegression_DatasetParams_t
@@ -62,8 +59,8 @@ export async function createRegressionCustomModel(params: CustomRegression_Datas
   }
   const { X, y } = data_processed
 
-  // @ts-ignore
-  const [XTrain, XTest, yTrain, yTest] = sk.trainTestSplit(X.values, y.values, testSize, 0.99 - testSize, 42)
+  // Tras el preprocesado X es numérico e y es la columna objetivo (un número por fila).
+  const [XTrain, XTest, yTrain, yTest] = trainTestSplit(X.values as number[][], y.values as number[], testSize, 42)
   const XTrain_tensor = tfjs.tensor(XTrain)
   const XTest_tensor = tfjs.tensor(XTest)
   const yTrain_tensor = tfjs.tensor(yTrain)

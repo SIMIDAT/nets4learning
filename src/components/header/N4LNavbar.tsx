@@ -84,8 +84,8 @@ export default function N4LNavbar() {
                 </NavDropdown.Item>
                 <NavDropdown.Item
                   onClick={() => {
-                    i18n.changeLanguage('jp')
-                    localStorage.setItem('language', 'jp')
+                    i18n.changeLanguage('ja')
+                    localStorage.setItem('language', 'ja')
                     window.dispatchEvent(new Event('storage'))
                   }}>
                   <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}>

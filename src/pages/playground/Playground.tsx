@@ -1,20 +1,24 @@
+import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router'
 
 import NotFoundPage from '../notFound/NotFoundPage'
-// Tabular Classification
-import TabularClassification from './0_TabularClassification/TabularClassification'
-import ModelReviewTabularClassification from './0_TabularClassification/ModelReviewTabularClassification'
-// Regression
-import Regression from './1_Regression/Regression'
-import ModelReviewRegression from './1_Regression/ModelReviewRegression'
-// Object Detection
-import ModelReviewObjectDetection from './2_ObjectDetection/ModelReviewObjectDetection'
-// Image Classification
-import ImageClassification from './3_ImageClassification/ImageClassification'
-import ModelReviewImageClassification from './3_ImageClassification/ModelReviewImageClassification'
-
+import Loading from '../Loading'
 import { RegressionProvider } from '@context/RegressionContext'
-import { TASKS } from '@/DATA_MODEL'
+import { TASKS } from '@/TASKS'
+
+// Cada vista se carga bajo demanda: así una tarea no descarga los modelos y librerías
+// de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe).
+// Tabular Classification
+const TabularClassification = lazy(() => import('./0_TabularClassification/TabularClassification'))
+const ModelReviewTabularClassification = lazy(() => import('./0_TabularClassification/ModelReviewTabularClassification'))
+// Regression
+const Regression = lazy(() => import('./1_Regression/Regression'))
+const ModelReviewRegression = lazy(() => import('./1_Regression/ModelReviewRegression'))
+// Object Detection
+const ModelReviewObjectDetection = lazy(() => import('./2_ObjectDetection/ModelReviewObjectDetection'))
+// Image Classification
+const ImageClassification = lazy(() => import('./3_ImageClassification/ImageClassification'))
+const ModelReviewImageClassification = lazy(() => import('./3_ImageClassification/ModelReviewImageClassification'))
 
 
 type MisParams = {
@@ -68,11 +72,13 @@ export default function Playground() {
   return (
     <>
       <main className={'mb-3'} data-title={'Playground'} data-testid={'Test-Playground'}>
-        <PrintHTMLPlaygroundView
-          id={id}
-          option={option}
-          example={example}
-        />
+        <Suspense fallback={<Loading />}>
+          <PrintHTMLPlaygroundView
+            id={id}
+            option={option}
+            example={example}
+          />
+        </Suspense>
       </main>
     </>
   )

@@ -33,7 +33,8 @@ const DataFramePlotContext = createContext(null as unknown as DataFramePlotConte
 
 export function DataFramePlotProvider({ children }: { children: React.ReactNode }) {
   const [dataFrameLocal, setDataFrameLocal] = useState(new DataFrame())
-  const [dataframePlotConfig, setDataframePlotConfig] = useState(DEFAULT_DATAFRAME_PLOT_CONFIG)
+  // Copia profunda: el estado no debe compartir objetos anidados con la constante por defecto.
+  const [dataframePlotConfig, setDataframePlotConfig] = useState(() => structuredClone(DEFAULT_DATAFRAME_PLOT_CONFIG))
   const [showDescription, setShowDescription] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
 

@@ -1,9 +1,10 @@
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { Trans } from 'react-i18next'
 import * as poseDetection from '@tensorflow-models/pose-detection'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'MOVE-NET--POSE-NET'
+  static KEY = OD_MODEL_KEYS.MOVE_NET_POSE_NET
   TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   i18n_TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   URL = 'https://github.com/tensorflow/tfjs-models/tree/master/pose-detection'
@@ -120,30 +121,42 @@ export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimatePoses(input_image_or_video, estimationConfig__MoveNet)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  NORMALIZE_PREDICTIONS(predictions: any[], _labels?: Array<string | number>): number[] {
-    // Vector con la detección (1/0) de cada keypoint de cada pose.
-    const vectorPredictions: number[] = []
-    if (!predictions || predictions.length === 0) {
-      for (let i = 0; i <= 16; i++) {
-        vectorPredictions.push(0)
-      }
-      return vectorPredictions
-    }
+  /** Partes del cuerpo que se explican, con los índices de sus puntos clave (orden COCO de MoveNet). */
+  EXPLAIN_NOTE_KEY = 'ui.explain.notes.body-parts'
 
-    for (let j = 0; j < predictions.length; j++) {
-      for (let i = 0; i < predictions[j].keypoints.length; i++) {
-        if (
-          predictions[j].keypoints[i].score != null &&
-          predictions[j].keypoints[i].score >= 0.2
-        ) {
-          vectorPredictions.push(1)
-        } else {
-          vectorPredictions.push(0)
-        }
-      }
+  static readonly BODY_PARTS: Record<string, number[]> = {
+    head: [0, 1, 2, 3, 4], // nariz, ojos y orejas
+    arms: [5, 6, 7, 8, 9, 10], // hombros, codos y muñecas
+    legs: [11, 12, 13, 14, 15, 16], // caderas, rodillas y tobillos
+  }
+
+  // Se explica la confianza en la pose completa y en cada parte del cuerpo: «¿qué zonas de la imagen
+  // hacen que el modelo vea los brazos?». Con una sola media de 17 puntos, tapar una zona apenas se notaba.
+  EXPLAIN_LABELS(detections: poseDetection.Pose[]): string[] {
+    return detections?.length ? ['pose', ...Object.keys(MODEL_3_MOVE_NET_POSE_NET.BODY_PARTS)] : []
+  }
+
+  EXPLAIN_LABEL_TEXT(label: string | number): string {
+    return label === 'pose' ? this.t('ui.explain.labels.pose') : this.t(`ui.explain.labels.body.${label}`)
+  }
+
+  /** Por etiqueta, confianza media de sus puntos clave en la pose más segura (0 si no hay poses). */
+  NORMALIZE_PREDICTIONS(predictions: poseDetection.Pose[], labels: Array<string | number>): number[] {
+    const meanScore = (pose: poseDetection.Pose, indices?: number[]) => {
+      const keypoints = indices ? indices.map((i) => pose.keypoints[i]) : pose.keypoints
+      const scores = keypoints.map((k) => k?.score ?? 0)
+      return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0
     }
-    return vectorPredictions
+    let best: poseDetection.Pose | null = null
+    for (const pose of predictions ?? []) {
+      if (best === null || meanScore(pose) > meanScore(best)) best = pose
+    }
+    return labels.map((label) => {
+      if (best === null) return 0
+      if (label === 'pose') return meanScore(best)
+      const indices = MODEL_3_MOVE_NET_POSE_NET.BODY_PARTS[label]
+      return indices ? meanScore(best, indices) : 0
+    })
   }
 
   /**

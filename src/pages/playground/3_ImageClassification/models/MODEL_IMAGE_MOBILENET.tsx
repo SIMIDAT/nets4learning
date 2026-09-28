@@ -2,6 +2,7 @@ import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import { Trans } from 'react-i18next'
 import * as tf_mobilenet from '@tensorflow-models/mobilenet'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
+import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export const LIST_OF_IMAGES_MOBILENET = [
   'beef-burger.jpg',
@@ -15,7 +16,7 @@ export const LIST_OF_IMAGES_MOBILENET = [
   'lion.jpg',
 ]
 export default class MODEL_IMAGE_MOBILENET extends I_MODEL_IMAGE_CLASSIFICATION {
-  static KEY = 'IMAGE-MOBILENET'
+  static KEY = IC_MODEL_KEYS.MOBILENET
   TITLE = 'datasets-models.3-image-classifier.mobilenet.title'
   i18n_TITLE = 'datasets-models.3-image-classifier.mobilenet.title'
 
@@ -72,7 +73,6 @@ export default class MODEL_IMAGE_MOBILENET extends I_MODEL_IMAGE_CLASSIFICATION 
   }
 
   async GET_IMAGE_DATA(canvas: HTMLCanvasElement, canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
-    canvas_ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height)
     return canvas_ctx.getImageData(0, 0, canvas.width, canvas.height)
   }
 

@@ -2,6 +2,7 @@ import { Trans } from 'react-i18next'
 import * as Train_KMNIST from '@pages/playground/3_ImageClassification/custom/Train_KMNIST'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export type ParamsTrain_KMNIST_t = {
   learningRate : number,
@@ -13,7 +14,7 @@ export type ParamsTrain_KMNIST_t = {
   layers       : any[],
 }
 export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_CLASSIFICATION {
-  static KEY = 'IMAGE-KMNIST'
+  static KEY = IC_MODEL_KEYS.KMNIST
   TITLE = 'datasets-models.3-image-classifier.kmnist.title'
   i18n_TITLE = 'datasets-models.3-image-classifier.kmnist.title'
 

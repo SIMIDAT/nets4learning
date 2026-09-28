@@ -11,7 +11,7 @@
       "about-lrp": "LRP (propagación de la relevancia capa a capa) recorre la red hacia atrás desde la clase predicha y reparte su relevancia hasta los píxeles de entrada. El mapa de calor muestra qué zonas de la imagen sostienen la predicción del modelo.",
       "about-shap": "Dividimos la imagen en segmentos (superpíxeles) y medimos la importancia de cada uno tapándolo o dejándolo visible en muchas combinaciones distintas, observando cómo cambia la predicción. El mapa de calor colorea cada segmento según cuánto aporta a la predicción.",
       "perturbationSamples": "Muestras de Perturbación:",
-      "gridSide": "Grid Side (features per side)",
+      "gridSide": "Zonas por lado (la imagen se divide en N×N segmentos)",
       "nSamples": "nSamples (SHAP)",
       "mask": "Máscara (SHAP)",
       "maskRange": "Máscara (0..1)",
@@ -19,7 +19,53 @@
       "explainPrediction": "Explicar Predicción",
       "hideExplanation": "Ocultar explicación",
       "noData": "No hay datos de explicación disponibles.",
-      "class": "Clase #{{index}}"
+      "class": "Clase {{index}}",
+      "positive": "A favor de la predicción",
+      "negative": "En contra de la predicción",
+      "shap-value": "Valor SHAP",
+      "error": "Error al calcular la explicación",
+      "model-not-available": "El modelo no está disponible para la explicabilidad",
+      "lrp-not-available": "LRP no está disponible para este modelo",
+      "cancel": "Cancelar",
+      "labels": {
+        "face": "Cara",
+        "pose": "Pose del cuerpo",
+        "hand": "Mano",
+        "sign": "Signo «{{sign}}»",
+        "body": {
+          "head": "Cabeza",
+          "arms": "Brazos",
+          "legs": "Piernas"
+        }
+      },
+      "face-parts": {
+        "background": "Fondo (fuera de la cara)",
+        "skin": "Piel",
+        "lips": "Labios",
+        "rightEye": "Ojo derecho",
+        "leftEye": "Ojo izquierdo",
+        "rightEyebrow": "Ceja derecha",
+        "leftEyebrow": "Ceja izquierda",
+        "nose": "Nariz"
+      },
+      "summary": {
+        "equation-title": "Cómo llega el modelo a «{{target}}»",
+        "contributions": "suma de contribuciones",
+        "most-positive": "Lo que más empuja a favor",
+        "most-negative": "Lo que más empuja en contra",
+        "base-image": "con la imagen tapada",
+        "base-tabular": "predicción media sobre los datos de referencia",
+        "lrp": "Los píxeles rojos apoyan «{{target}}» y los azules van en contra. LRP reparte hacia atrás la salida de la red; por los sesgos (bias) de cada capa, la relevancia total no tiene por qué coincidir exactamente con la puntuación.",
+        "scaled-values": "Los valores que aparecen al pasar el ratón por un punto son los normalizados que recibe el modelo, no las unidades originales."
+      },
+      "perturbation-help": "Algunas de las imágenes que ha visto el modelo durante el cálculo: SHAP tapa zonas distintas y observa cómo cambia la predicción.",
+      "nothing-detected": "El modelo no ha detectado nada en esta imagen, así que no hay nada que explicar. Prueba con otra imagen (por ejemplo, una en la que el objeto se vea más grande).",
+      "no-predictions": "El modelo no ha devuelto ninguna predicción para esta imagen, así que no hay nada que explicar.",
+      "notes": {
+        "presence-only": "Este modelo solo responde «hay cara» o «no hay cara» (0 o 100 %), así que la explicación muestra qué necesita ver como mínimo para encontrar una cara: suele bastar con la piel.",
+        "body-parts": "Se explica la confianza en la pose completa y en cada parte del cuerpo. El modelo necesita encontrar primero a la persona, así que zonas del tronco también le ayudan a localizar los brazos o las piernas.",
+        "wrong-prediction": "¿El modelo se ha equivocado? La explicación sigue siendo útil: muestra en qué se ha fijado para llegar a esa respuesta."
+      }
     }
   },
   "welcome": "Bienvenido a Nets4Learning",
@@ -221,7 +267,8 @@
         "1": "Esta función es útil para obtener una idea rápida de la distribución de los datos y puede ayudarte a identificar valores atípicos o anomalías en tus datos.",
         "title": "Descripción"
       },
-      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>",
+      "no-numeric": "No hay columnas numéricas que describir: todas las columnas son categóricas."
     },
     "query": {
       "title": "DataFrame | Consulta",
@@ -291,7 +338,8 @@
     "file-upload": "Archivo cargado correctamente"
   },
   "info": {
-    "the-class-is-__value__": "¿La clase tiene el índice {{value}}?"
+    "the-class-is-__value__": "¿La clase tiene el índice {{value}}?",
+    "insert-input": "Introduce los valores de entrada y realiza primero una predicción"
   },
   "alert": {
     "menu": {
@@ -1032,7 +1080,90 @@
               "0": "Puede encontrar más información <link1>Coco dataset</link1>"
             }
           }
-        }
+        },
+        "classes": {
+          "person": "Persona",
+          "bicycle": "Bicicleta",
+          "car": "Coche",
+          "motorcycle": "Moto",
+          "airplane": "Avión",
+          "bus": "Autobús",
+          "train": "Tren",
+          "truck": "Camión",
+          "boat": "Barco",
+          "traffic light": "Semáforo",
+          "fire hydrant": "Boca de incendios",
+          "stop sign": "Señal de stop",
+          "parking meter": "Parquímetro",
+          "bench": "Banco",
+          "bird": "Pájaro",
+          "cat": "Gato",
+          "dog": "Perro",
+          "horse": "Caballo",
+          "sheep": "Oveja",
+          "cow": "Vaca",
+          "elephant": "Elefante",
+          "bear": "Oso",
+          "zebra": "Cebra",
+          "giraffe": "Jirafa",
+          "backpack": "Mochila",
+          "umbrella": "Paraguas",
+          "handbag": "Bolso",
+          "tie": "Corbata",
+          "suitcase": "Maleta",
+          "frisbee": "Frisbi",
+          "skis": "Esquís",
+          "snowboard": "Tabla de snowboard",
+          "sports ball": "Pelota",
+          "kite": "Cometa",
+          "baseball bat": "Bate de béisbol",
+          "baseball glove": "Guante de béisbol",
+          "skateboard": "Monopatín",
+          "surfboard": "Tabla de surf",
+          "tennis racket": "Raqueta de tenis",
+          "bottle": "Botella",
+          "wine glass": "Copa de vino",
+          "cup": "Taza",
+          "fork": "Tenedor",
+          "knife": "Cuchillo",
+          "spoon": "Cuchara",
+          "bowl": "Cuenco",
+          "banana": "Plátano",
+          "apple": "Manzana",
+          "sandwich": "Sándwich",
+          "orange": "Naranja",
+          "broccoli": "Brócoli",
+          "carrot": "Zanahoria",
+          "hot dog": "Perrito caliente",
+          "pizza": "Pizza",
+          "donut": "Dónut",
+          "cake": "Tarta",
+          "chair": "Silla",
+          "couch": "Sofá",
+          "potted plant": "Planta en maceta",
+          "bed": "Cama",
+          "dining table": "Mesa de comedor",
+          "toilet": "Inodoro",
+          "tv": "Televisor",
+          "laptop": "Portátil",
+          "mouse": "Ratón",
+          "remote": "Mando a distancia",
+          "keyboard": "Teclado",
+          "cell phone": "Teléfono móvil",
+          "microwave": "Microondas",
+          "oven": "Horno",
+          "toaster": "Tostadora",
+          "sink": "Fregadero",
+          "refrigerator": "Frigorífico",
+          "book": "Libro",
+          "clock": "Reloj",
+          "vase": "Jarrón",
+          "scissors": "Tijeras",
+          "teddy bear": "Osito de peluche",
+          "hair drier": "Secador de pelo",
+          "toothbrush": "Cepillo de dientes"
+        },
+        "render-label": "{{label}} con {{score}} % de confianza"
       },
       "face-api": {
         "title": "FaceAPI - Expresiones en cara",
@@ -1586,7 +1717,7 @@
           "explain-panel-local-body": "SHAP explica una predicción concreta repartiendo la diferencia entre esta predicción y la predicción media del modelo (valor base) entre las características. Cada barra indica cuánto y en qué dirección empuja una característica: positiva hacia la clase seleccionada, negativa en contra.",
           "explain-panel-local-body-regression": "SHAP explica una predicción concreta repartiendo la diferencia entre el valor predicho y la predicción media del modelo (valor base) entre las características. Cada barra indica cuánto y en qué dirección empuja una característica: positiva sube el valor predicho, negativa lo baja.",
           "explain-panel-global-title": "Importancia global (todas las instancias)",
-          "explain-panel-global-body": "La importancia global agrega muchas explicaciones locales. El gráfico de barras muestra la media de los valores absolutos (media |SHAP|): cuánto pesa cada característica en promedio. El beeswarm añade la dirección y la dispersión del efecto, coloreando cada punto según el valor de la característica."
+          "explain-panel-global-body": "La importancia global agrega muchas explicaciones locales. El gráfico de barras muestra la media de los valores absolutos (media |SHAP|): cuánto pesa cada característica en promedio. El beeswarm añade la dirección y la dispersión del efecto, coloreando cada punto según el valor de la característica. Otros métodos, como la importancia por permutación, pueden ordenar las variables de forma algo distinta, sobre todo cuando hay variables relacionadas entre sí: cada método mide la importancia a su manera."
         },
         "0_upload": {
           "upload": "Subir",

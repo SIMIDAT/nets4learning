@@ -2,14 +2,17 @@ import { Trans } from 'react-i18next'
 import { Card, Col } from 'react-bootstrap'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
+import { toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
 
 type Props = {
-  iModelRef      : React.RefObject<any>,
-  iModelRef_model: React.RefObject<any>,
-  iChartRef_image: React.RefObject<any>,
-  setBarDataImage: React.Dispatch<React.SetStateAction<any>>,
+  iModelRef        : React.RefObject<any>,
+  iModelRef_model  : React.RefObject<any>,
+  iChartRef_image  : React.RefObject<any>,
+  setBarDataImage  : React.Dispatch<React.SetStateAction<any>>,
+  /** Canvas de resultado donde se muestra el dígito dibujado. */
+  canvasResultRef  : React.RefObject<HTMLCanvasElement | null>,
   onImageDataReady?: (imageData: ImageData) => void,
-  onResetExplain?: () => void,
+  onResetExplain?  : () => void,
 }
 export default function ModelReviewImageClassificationMNIST (props: Props) {
   const {
@@ -17,23 +20,22 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     iModelRef_model,
     iChartRef_image,
     setBarDataImage,
+    canvasResultRef,
     onImageDataReady,
     onResetExplain
   } = props
 
-  // TODO Cambiar a ref
   const handleCanvasDraw_Clear = async () => {
-    const originalImage_canvas =  document.getElementById('originalImage') as HTMLCanvasElement
-    const originalImage_canvas_ctx = originalImage_canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
-    originalImage_canvas_ctx.clearRect(0, 0, originalImage_canvas.width, originalImage_canvas.height)
+    const canvas = canvasResultRef.current
+    canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height)
   }
 
   const handleCanvasDraw_Submit = async (draw_canvas: HTMLCanvasElement, _draw_canvas_ctx: CanvasRenderingContext2D) => {
-    const canvas: HTMLCanvasElement =  document.getElementById('originalImage') as HTMLCanvasElement
-    const canvas_ctx: CanvasRenderingContext2D = canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
-    canvas_ctx.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
-    canvas_ctx.drawImage(draw_canvas, 10, 10, 28, 28)
-    const imageData = canvas_ctx.getImageData(10, 10, 28, 28)
+    // Mostramos el dibujo en el canvas de resultado y reducimos a 28×28 en un canvas aparte:
+    // antes la miniatura se pintaba encima del dibujo grande y se leían los dos mezclados.
+    const canvas = canvasResultRef.current
+    canvas?.getContext('2d')?.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
+    const imageData = toImageData(draw_canvas, 28, 28)
     const { predictions } = await iModelRef.current.CLASSIFY(iModelRef_model.current, imageData)
 
     updatePredictionMNIST(predictions)

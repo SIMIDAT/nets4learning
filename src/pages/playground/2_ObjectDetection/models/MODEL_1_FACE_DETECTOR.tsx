@@ -1,16 +1,22 @@
 import '@tensorflow/tfjs-backend-webgl';
 import * as faceDetection from '@tensorflow-models/face-detection'
 import { Trans } from 'react-i18next'
+import { syncMediaPipeMirror } from './mediapipeMirror'
 
 import * as _Types from '@core/types'
 import I_MODEL_OBJECT_DETECTION from './_model'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'FACE-DETECTOR'
+  static KEY = OD_MODEL_KEYS.FACE_DETECTOR
   TITLE = 'datasets-models.2-object-detection.face-detection.title'
   i18n_TITLE = 'datasets-models.2-object-detection.face-detection.title'
   URL = ''
   mirror = true
+  // Salida sí/no: la explicación muestra lo mínimo que necesita ver para detectar la cara.
+  EXPLAIN_NOTE_KEY = 'ui.explain.notes.presence-only'
+  // Explicabilidad por zonas de la cara (ojos, nariz, labios…) en vez de una rejilla.
+  faces = true
 
   /**
    * @type {faceDetection.FaceDetector}
@@ -92,7 +98,22 @@ export class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
       console.error('MODEL_1_FACE_DETECTOR: PREDICTION: modelDetector is null')
       return []
     }
+    syncMediaPipeMirror(this._modelDetector, config.flipHorizontal)
     return await this._modelDetector.estimateFaces(input_image_or_video, { flipHorizontal: config.flipHorizontal })
+  }
+
+  // Se explica una sola salida: "¿hay una cara?" (el detector no da una confianza por cara).
+  EXPLAIN_LABELS(detections: faceDetection.Face[]): string[] {
+    return detections?.length ? ['face'] : []
+  }
+
+  EXPLAIN_LABEL_TEXT(_label: string | number): string {
+    return this.t('ui.explain.labels.face')
+  }
+
+  /** 1 si se detecta alguna cara, 0 si no. */
+  NORMALIZE_PREDICTIONS(predictions: faceDetection.Face[], _labels: Array<string | number>): number[] {
+    return [Array.isArray(predictions) && predictions.length > 0 ? 1 : 0]
   }
 
   /**

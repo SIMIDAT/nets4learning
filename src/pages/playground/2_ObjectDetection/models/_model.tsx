@@ -1,13 +1,13 @@
 import type { TFunction } from "i18next"
 
 export default class I_MODEL_OBJECT_DETECTION {
-  TITLE         : string = ""
-  i18n_TITLE    : string = ""
-  _modelDetector: any | null = null
-  mirror        : boolean = false
+  TITLE                  : string = ""
+  i18n_TITLE             : string = ""
+  _modelDetector         : any | null = null
+  mirror                 : boolean = false
   usesTensorForPrediction: boolean = true
-  faces         : boolean = false
-  t             : TFunction<"translation", undefined>
+  faces                  : boolean = false
+  t                      : TFunction<"translation", undefined>
 
   constructor(_t: TFunction<"translation", undefined>) {
     this.t = _t
@@ -36,15 +36,48 @@ export default class I_MODEL_OBJECT_DETECTION {
    */
   RENDER(_ctx: CanvasRenderingContext2D, _predictions: any) {}
 
+  // region EXPLICABILIDAD
+  // SHAP explica un número por cada "etiqueta": tapa trozos de la imagen, vuelve a predecir y
+  // mide cuánto cambia ese número. Cada modelo decide qué etiquetas tiene sentido explicar y
+  // cómo convertir su predicción en esos números. Por defecto: modelos de clases (COCO-SSD).
+
   /**
-   * Normaliza las predicciones a un vector numérico de longitud fija para la
-   * explicabilidad. Por defecto devuelve un vector vacío; cada modelo lo
-   * sobrescribe según su tipo de salida.
+   * Configuración que se pasa a PREDICTION al evaluar las imágenes tapadas. Sirve, p. ej., para
+   * bajar el umbral de confianza: con el umbral normal la puntuación cae a 0 de golpe y SHAP
+   * reparte a partes iguales efectos que en realidad son graduales.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  NORMALIZE_PREDICTIONS(_predictions: any, _labels?: Array<string | number>): number[] {
-    return []
+  EXPLAIN_PREDICTION_CONFIG: Record<string, unknown> = {}
+
+  /**
+   * Etiquetas que se explican, a partir de las detecciones de la imagen original.
+   * Por defecto, las clases detectadas.
+   */
+  EXPLAIN_LABELS(detections: any[]): string[] {
+    const classes = (detections ?? []).map((d) => d?.class).filter((c): c is string => typeof c === "string")
+    return Array.from(new Set(classes))
   }
+
+  /**
+   * Convierte una predicción en un número por etiqueta (misma longitud y orden que `labels`);
+   * 0 si la etiqueta no aparece. Por defecto, la mayor puntuación de las detecciones de cada clase.
+   */
+  NORMALIZE_PREDICTIONS(predictions: any, labels: Array<string | number>): number[] {
+    const scores: number[] = new Array(labels.length).fill(0)
+    for (const det of Array.isArray(predictions) ? predictions : []) {
+      const idx = labels.indexOf(det?.class)
+      if (idx !== -1 && typeof det.score === "number") scores[idx] = Math.max(scores[idx], det.score)
+    }
+    return scores
+  }
+
+  /** Texto con el que se muestra una etiqueta en la explicación. */
+  EXPLAIN_LABEL_TEXT(label: string | number): string {
+    return String(label)
+  }
+
+  /** Clave de i18n de una nota sobre cómo leer la explicación de este modelo (o null). */
+  EXPLAIN_NOTE_KEY: string | null = null
+  // endregion
 
   /**
    *
@@ -129,17 +162,5 @@ export default class I_MODEL_OBJECT_DETECTION {
     ctx.beginPath()
     ctx.arc(x, y, r, 1, 3 * Math.PI)
     ctx.fill()
-  }
-
-  _ImageData_To_Image(imageData: ImageData) {
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")!
-    canvas.width = imageData.width
-    canvas.height = imageData.height
-    ctx.putImageData(imageData, 0, 0)
-
-    const image = new Image()
-    image.src = canvas.toDataURL()
-    return image
   }
 }

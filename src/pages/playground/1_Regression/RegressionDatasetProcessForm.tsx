@@ -70,18 +70,16 @@ export default function RegressionDatasetProcessForm() {
       new_dataset[index] = {
         column_name          : dataframe_original.columns[index],
         column_type          : DataFrameUtils.DataFrameColumnType_To_DatasetColumnType(dataframe_original.dtypes[index]),
-        column_role          : index === dataframe_original.columns.length ? 'Target' : 'Feature',
+        column_role          : dataframe_original.columns[index] === columnNameTarget ? 'Target' : 'Feature',
         column_missing_values: false,
       }
     }
-    console.log({ new_dataset })
     const new_dataset_transforms = [
       // Los que sean de tipo String se pasan a categoricos y se filtran para añadir la función de transformación label encoder
       ...new_dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
       // listColumnNameTransformations
     ]
 
-    console.log({ new_dataset_transforms })
     const dataframe_encoder = DataFrameUtils.DataFrameTransformAndEncoder(dataframe_processed, new_dataset_transforms)
     const new_encoders_map = dataframe_encoder.encoder_map
     dataframe_processed = dataframe_encoder.dataframe_processed

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Container, Row, Col, Card } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 import * as dfd from "danfojs"
+import { DataFrameReadCSV } from "@core/dataframe/DataFrameUtils"
 
 import AlertHelper from "@utils/alertHelper"
 
@@ -30,7 +31,7 @@ export default function AnalyzeDataFrame() {
   const handleFileUpload_CSV_Accepted = async (files: File[], _event: DropEvent) => {
     const file_dataframe = new File([files[0]], files[0].name, { type: files[0].type })
     try {
-      const _dataframe = await dfd.readCSV(file_dataframe)
+      const _dataframe = await DataFrameReadCSV(file_dataframe)
       setDataFrameOriginal(_dataframe)
       setIsDataFrameUpload(true)
       await AlertHelper.alertSuccess(t("success.file-upload"))

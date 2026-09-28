@@ -3,11 +3,13 @@ import * as tfjs from '@tensorflow/tfjs'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import * as Train_MNIST from '@pages/playground/3_ImageClassification/custom/Train_MNIST'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
+import { imageDataToMnistTensor4d, toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t, Layer_t } from '@/types/nn-types'
 import {
-  createEmbeddingActivationsHelpers,
+  createActivationsHelpers,
   applyLRP,
 } from '@pages/playground/3_ImageClassification/explainPrediction/modelEmbeddingActivations'
+import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export type ParamsTrain_MNIST_t = {
   learningRate : number,
@@ -31,31 +33,12 @@ export const LIST_OF_IMAGES_MNIST: string[] = [
   '9_new.png'
 ]
 
-function _imageDataToMnistTensor4d(imageData: ImageData): tfjs.Tensor4D {
-  const arr: number[][][] = []
-  let row: number[][] = []
-
-  // Mantiene el preprocesado consistente: invierte colores y mapea a [0,1],
-  // pero NO muta imageData.
-  for (let p = 0; p < imageData.data.length; p += 4) {
-    const inverted = 255 - imageData.data[p]
-    const value01 = inverted / 255
-    row.push([value01])
-    if (row.length === 28) {
-      arr.push(row)
-      row = []
-    }
-  }
-
-  return tfjs.tensor4d([arr])
-}
-
-const _embedActHelpers = createEmbeddingActivationsHelpers({
-  imageDataToTensor4d: _imageDataToMnistTensor4d,
+const _activationsHelpers = createActivationsHelpers({
+  imageDataToTensor4d: imageDataToMnistTensor4d,
 })
 
 export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
-  static KEY = 'IMAGE-MNIST'
+  static KEY = IC_MODEL_KEYS.MNIST
   TITLE = 'datasets-models.3-image-classifier.mnist.title'
   i18n_TITLE = 'datasets-models.3-image-classifier.mnist.title'
 
@@ -124,68 +107,22 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
     }
   }
 
-  async CLASSIFY(model: tfjs.LayersModel, imageData: ImageData) {
-    const arr = []
-    let arr28 = []
-    for (let p = 0; p < imageData.data.length; p += 4) {
-      const valor = imageData.data[p + 3] / 255
-      arr28.push([valor])
-      if (arr28.length === 28) {
-        arr.push(arr28)
-        arr28 = []
-      }
-    }
-    const tensor4 = tfjs.tensor4d([arr])
-    // TypeScript fix
-    const model_predictions = model.predict(tensor4) as tfjs.Tensor<tfjs.Rank>
-    const predictions = model_predictions.dataSync() as unknown as number[]
-    const index = predictions.indexOf(Math.max.apply(null, predictions))
+  async CLASSIFY(model: tfjs.LayersModel, imageData: ImageData): Promise<{ predictions: number[]; index: number }> {
+    const predictions = Array.from(tfjs.tidy(() => {
+      const predTensor = model.predict(imageDataToMnistTensor4d(imageData)) as tfjs.Tensor
+      return predTensor.dataSync()
+    }))
+    const index = predictions.indexOf(Math.max(...predictions))
     return { predictions, index }
   }
 
   async CLASSIFY_IMAGE(model: tfjs.LayersModel, imageData: ImageData): Promise<{ predictions: number[]; index: number }> {
-    const arr: number[][][] = []
-    let arr28: number[][] = []
-    for (let p = 0; p < imageData.data.length; p += 4) {
-      imageData.data[p] = 255 - imageData.data[p]
-      imageData.data[p + 1] = 255 - imageData.data[p + 1]
-      imageData.data[p + 2] = 255 - imageData.data[p + 2]
-      imageData.data[p + 3] = 255
-      const valor = imageData.data[p] / 255
-      arr28.push([valor])
-      if (arr28.length === 28) {
-        arr.push(arr28)
-        arr28 = []
-      }
-    }
-
-    // Convertir a tensor 4D dentro de tidy para liberar memoria
-    const predictions = tfjs.tidy(() => {
-      const tensor4 = tfjs.tensor4d([arr], [1, 28, 28, 1]);
-      const predTensor = model.predict(tensor4) as tfjs.Tensor;
-      return predTensor.dataSync(); // devuelve Float32Array
-    });
-
-    // Obtener índice máximo fuera de tidy
-    const index = predictions.indexOf(Math.max(...predictions));
-
-    return {
-      predictions: predictions as unknown as number[],
-      index,
-    };
+    return this.CLASSIFY(model, imageData)
   }
 
-  async GET_IMAGE_DATA(canvas: HTMLCanvasElement, canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
-    canvas_ctx.drawImage(canvas, 10, 10, 28, 28)
-    return canvas_ctx.getImageData(10, 10, 28, 28)
-  }
-
-  async GET_EMBEDDING_IMAGE(
-    model: tfjs.LayersModel,
-    imageData: ImageData,
-    options: { layerName?: string } = {},
-  ) {
-    return _embedActHelpers.GET_EMBEDDING_IMAGE(model, imageData, options)
+  /** Imagen del canvas reducida a 28×28 (entrada del modelo), sin dibujar en el canvas. */
+  async GET_IMAGE_DATA(canvas: HTMLCanvasElement, _canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
+    return toImageData(canvas, 28, 28)
   }
 
   /**
@@ -197,7 +134,7 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
     imageData: ImageData,
     options: { layerNames?: string[]; includeInput?: boolean } = {},
   ) {
-    return _embedActHelpers.GET_ACTIVATIONS_IMAGE(model, imageData, options)
+    return _activationsHelpers.GET_ACTIVATIONS_IMAGE(model, imageData, options)
   }
 
   /**
@@ -209,13 +146,13 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
     _imageData: ImageData,
     activations: {
       layers: Record<string, { data: Float32Array; shape: number[] }>
-      order: string[]
+      order : string[]
     },
     options: {
-      rule?: 'simple' | 'epsilon' | 'alpha_beta'
-      epsilon?: number
-      alpha?: number
-      beta?: number
+      rule?          : 'epsilon' | 'alpha_beta'
+      epsilon?       : number
+      alpha?         : number
+      beta?          : number
       winnerTakesAll?: boolean
     } = {},
   ): Promise<tfjs.Tensor> {
@@ -236,19 +173,14 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
       let logits: tfjs.Tensor = xLast.matMul(wLast)
       if (bLast) logits = logits.add(bLast) // Podría no tener sesgo
 
-        // Máscara one-hot sobre la clase predicha: solo R_c ≠ 0
+      // Máscara one-hot sobre la clase predicha: solo R_c ≠ 0
       const probs = tfjs.tensor(lastLayerData.data, lastLayerData.shape)
-      const targetClass = probs.argMax(-1)  
+      const targetClass = probs.argMax(-1)
       const numClasses = logits.shape[logits.shape.length - 1] as number
       const mask = tfjs.oneHot(targetClass, numClasses).cast('float32')
 
       // Inicializar relevancia con la salida de la última capa
       let R: tfjs.Tensor = logits.mul(mask)
-
-      console.log(
-        `\n=== Iniciando LRP Propagation con regla: ${options.rule || 'epsilon'} ===`,
-      )
-      console.log(`Forma inicial de relevancia: [${R.shape}]`)
 
       // Ir hacia atrás por todas las capas
       for (let i = 0; i < orderReversed.length - 1; i++) {
@@ -265,15 +197,12 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
         // Aplicar LRP según el tipo de capa
         R = applyLRP({
           layerType,
-          inputTensor: x,
+          inputTensor : x,
           relevanceOut: R,
-          layer: currentLayer,
+          layer       : currentLayer,
           options,
         })
       }
-
-      console.log(`\n=== LRP Propagation completada ===`)
-      console.log(`Forma final de relevancia: [${R.shape}]`)
 
       return R
     })

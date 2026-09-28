@@ -1,0 +1,2652 @@
+{
+  "welcome": "Nets4Learningへようこそ",
+  "welcome-2": "続けるには、以下のタスクから一つ選択してください",
+  "list_map": "<1></1>",
+  "layer-id": "レイヤー {{index}}",
+  "map_item": "<0></0>",
+  "loading": "読み込み中",
+  "Loading": "読み込み中",
+  "upload": "画像をアップロード",
+  "example-i": "例 {{i}}",
+  "Files": "ファイル",
+  "wait-document": "ドキュメントを待機中",
+  "references": "参照",
+  "download": "ダウンロード",
+  "DataFrame": "データフレーム",
+  "Features": "特徴量",
+  "{{X_feature}} x {{target}}": "{{X_feature}} x {{target}}",
+  "Predicted": "予測結果",
+  "Waiting": "待機中",
+  "waiting": "待機中",
+  "and": "と",
+  "dataset": {
+    "__index__": "データセット {{index}}"
+  },
+  "model": {
+    "__index__": "モデル {{index}}"
+  },
+  "instance": {
+    "__index__": "インスタンス {{index}}"
+  },
+  "more-information-in-link": "詳細は<link1>こちらのリンク</link1>から",
+  "more-information-in-tutorial": "<link1>こちらのチュートリアル</link1>をご利用ください",
+  "downloaded": "ダウンロード済み",
+  "downloading": "ダウンロード中",
+  "Data set processing": "データセット処理",
+  "Column target": "予測対象の列",
+  "Scaler": "スケーラー",
+  "Processed": "処理済み",
+  "Default": "デフォルト",
+  "Need permissions": "権限が必要です",
+  "Get Screenshot": "スクリーンショットを取得",
+  "ASL": "アメリカ手話",
+  "SSL": "スペイン手話",
+  "Info Hand sign": "手話に関する情報",
+  "Info": "情報",
+  "Target": "ターゲット",
+  "Update": "更新",
+  "Reference": "参照",
+  "Predict": "予測",
+  "selector-dataset": "データセット選択",
+  "selector-model": "モデル選択",
+  "selector-instance": "インスタンス選択",
+  "Device info": "デバイス情報",
+  "__VOID__": null,
+  "prediction-input": "元のデータ",
+  "prediction-input-description": "スケーリングとエンコード後の元のデータ",
+  "prediction-input-encoding": "エンコードされた処理済みデータ",
+  "prediction-input-encoding-description": "ラベルエンコーダによるエンコード後の処理済みデータ",
+  "prediction-input-scaling": "スケーリングされた処理済みデータ",
+  "prediction-input-scaling-description": "MinMaxScalerによるスケーリング後の処理済みデータ",
+  "prediction-input-processed": "処理済みデータ",
+  "prediction-input-processed-description": "スケーリングとエンコード後の処理済みデータ",
+  "prediction-result": "結果",
+  "prediction-result-description": "予測の結果",
+  "Validate": "検証",
+  "Layers": "レイヤー",
+  "Classify": "分類",
+  "Types of layers": "レイヤーの種類",
+  "equations": {
+    "title": "計算式",
+    "title-metrics": "評価関数 | 計算式",
+    "title-losses": "損失関数 | 計算式",
+    "title-activation": "活性化関数 | 計算式",
+    "title-optimization": "最適化関数 | 計算式",
+    "loss-functions": {
+      "huber-loss": {
+        "title": "Huber Loss (フーバー損失)",
+        "text-1": "誤差が特定の間隔内でのみ二乗として扱われるため、$MSE$よりも外れ値に対して感度が低くなります。"
+      },
+      "cross-entropy": {
+        "title": "Cross Entropy (交差エントロピー)",
+        "text-1": "二項分類（クラス数 $M=2$）の場合、二項交差エントロピー（BCE）は次のように計算できます：",
+        "text-2": "$M > 2$（多クラス分類）の場合、観測値ごとに各クラスラベルの個別の損失を計算し、結果を合計します。",
+        "text-3": "$M$: クラス数 <br />$log$: 自然対数 <br />$y$: 観測値 $o$ のクラスラベル $c$ が正しい分類である場合の二項インジケータ (0または1) <br />$p$: 観測値 $o$ がクラス $c$ に属する予測確率"
+      },
+      "negative-log": {
+        "title": "Negative Loglikelihood (負の対数尤度)",
+        "text-1": "負の対数尤度を最小化することは",
+        "text-2": "最尤推定（MLE）と同等です。"
+      },
+      "kj-divergence": {
+        "title": "KL/JS divergence (KL/JSダイバージェンス)"
+      },
+      "hinge-loss": {
+        "title": "Hinge loss (ヒンジ損失)"
+      },
+      "mae": {
+        "title": "Mean Absolute Error (MAE) (平均絶対誤差)"
+      },
+      "mse": {
+        "title": "Mean Squared Error (MSE) (平均二乗誤差)"
+      },
+      "rmse": {
+        "title": "Root Mean Square Error (RMSE) (二乗平均平方根誤差)"
+      },
+      "cosine-distance": {
+        "title": "Cosine Proximity / Cosine Similarity (コサイン近接度/類似度)"
+      }
+    },
+    "metric-functions": {
+      "accuracy": {
+        "title": "Accuracy (正解率)"
+      },
+      "precision": {
+        "title": "Precision (適合率)"
+      },
+      "recall": {
+        "title": "Recall (再現率)"
+      },
+      "f1": {
+        "title": "F1"
+      },
+      "sensitivity": {
+        "title": "Sensitivity (感度)"
+      },
+      "acc-prec-recall-f1": {
+        "title": "Accuracy, Precision, Recall, F1"
+      },
+      "sen-spe-auc": {
+        "title": "Sensitivity, Specificity, and AUC (感度、特異度、AUC)",
+        "text-1": "AUCは、$Sensitivity$ (真陽性率: TPR) - $(1-Specificity)$ (偽陽性率: FPR) 曲線の下面積として計算されます。"
+      }
+    }
+  },
+  "datasets": {
+    "title": "データセット",
+    "upload-dataset": null,
+    "text-0": "表形式分類用のデータセットをダウンロード",
+    "dataset-name": "データセット名",
+    "dataset-size": "サンプル数",
+    "dataset-web": "元のウェブサイト",
+    "dataset-reference": "参照元",
+    "download-dataset-car": "車両評価データセット",
+    "download-dataset-hepatitis-c": "C型肝炎データセット",
+    "download-dataset-iris": "アヤメ (Iris) データセット",
+    "download-dataset-titanic": "タイタニック生存データセット*",
+    "download-dataset-new-thyroid": "New Thyroid データセット",
+    "download-dataset-wine": "ワインデータセット",
+    "download-dataset-ecoli": "E.coli データセット",
+    "download": {
+      "dataset": {
+        "1-regression": {
+          "salary": "給与データセット",
+          "auto-mpg": "燃費消費量データセット",
+          "housing-prices": "住宅価格データセット",
+          "breast-cancer-original": "ウィスコンシン乳がんデータセット",
+          "breast-cancer-wdbc": "ウィスコンシン乳がん (診断) データセット",
+          "breast-cancer-wpbc": "ウィスコンシン乳がん (予後) データセット",
+          "student-performance-mathematics": "数学の学生成績データセット",
+          "student-performance-portuguese": "ポルトガル語の学生成績データセット",
+          "wine-red": "赤ワインデータセット",
+          "wine-white": "白ワインデータセット"
+        }
+      }
+    }
+  },
+  "dataframe-original": "データフレーム | 元データ",
+  "dataframe-form": "データフレーム | 前処理フォーム",
+  "dataframe": {
+    "dataframe": {
+      "title": "データフレーム | データセット"
+    },
+    "dataset": {
+      "title": "データセット"
+    },
+    "correlation-matrix": {
+      "title": "データフレーム | 相関行列",
+      "description": {
+        "0": "ピアソン相関係数（線形相関または積率相関係数とも呼ばれる）は、2つの量的変数間の線形関係を定量化するために使用される統計的尺度です。これは、最も一般的に使用される相関係数の一つであり、変数間の関係の強さと方向に関する情報を提供します。",
+        "1": "ピアソン相関係数は-1から1の範囲で変化します：",
+        "2": "値が-1の場合、完全に負の線形相関を示します。これは、一方が増加すると、他方が逆の線形関係で減少することを意味します。",
+        "3": "値が1の場合、完全に正の線形相関を示します。これは、一方が増加すると、他方も直接的な線形関係で増加することを意味します。",
+        "4": "値が0の場合、変数間に線形相関がないことを示します。これは、それらの間に線形関係がないことを意味します。",
+        "5": "ピアソン相関係数の計算は、2つの変数の共分散と標準偏差に基づいています。数学的には次のように計算されます：",
+        "6": "ここで：",
+        "7": "は、各観測値における2つの変数の値です。",
+        "8": "は、それぞれ2つの変数の平均です。",
+        "9": "ピアソン相関係数は、2つの変数間の線形関係を分析し、それらの間に相関があるかどうかを判断するための便利なツールです。科学研究、経済学、心理学、社会学など、さまざまな分野で広く使用されており、2つの変数がどのように連携しているかを理解するのに役立ちます。ただし、ピアソン相関係数は線形関係のみを測定するものであり、変数間の他の種類の非線形関係を捉えるものではないことに注意することが重要です。",
+        "title": "説明"
+      },
+      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください",
+      "plot": "相関行列"
+    },
+    "describe": {
+      "title": "データフレーム | 要約統計量",
+      "description": {
+        "0": "この関数は、データフレームの数値列の統計的要約を生成するために使用されます。平均、標準偏差、最小値、最大値、および数値列のさまざまな四分位数など、主要な記述統計量を提供します。これは、データの分布と傾向をすばやく把握するのに役立ちます。",
+        "1": "この機能は、データの分布をすばやく把握し、データ内の外れ値や異常値を特定するのに役立ちます。",
+        "title": "説明"
+      },
+      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください",
+      "no-numeric": "説明できる数値列がありません。すべての列がカテゴリ列です。"
+    },
+    "query": {
+      "title": "データフレーム | クエリ",
+      "description": {
+        "0": "論理比較またはブールマスクの結果に基づいてデータフレームをクエリします。",
+        "1": "論理比較を連結して独自のクエリを作成できます。比較方法の例を次に示します。",
+        "title": "説明"
+      },
+      "query": "クエリ",
+      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください"
+    },
+    "plot": {
+      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください"
+    }
+  },
+  "dataframe-processed": "データフレーム | 処理済み",
+  "dataframe-scatterplot": {
+    "title": "散布図"
+  },
+  "model-selector": {
+    "title": "モデル選択"
+  },
+  "form": {
+    "select-dataset": {
+      "title": "データセットを選択",
+      "info": "データセットを選択"
+    }
+  },
+  "preprocessing": {
+    "title": "前処理",
+    "transformations-columns": "列ごとの変換",
+    "transformations-set-X": "Xセットの変換",
+    "transformations-set-Y": "Yセットの変換"
+  },
+  "prediction": "予測",
+  "prediction-class": "予測クラス: {{num}}",
+  "model-loaded-successfully": "モデルが正常に読み込まれました",
+  "predict": "予測",
+  "cookies-policies": {
+    "title": "クッキーポリシー",
+    "text-0": "このウェブサイトは、ユーザーエクスペリエンスを向上させ、アプリケーションの使用状況を分析するためにクッキーを使用しています。クッキーは、お客様が当社のウェブサイトを訪問したときにデバイスに保存される小さなテキストファイルです。これらのクッキーは、ユーザーが当社のウェブサイトとどのようにやり取りしているか、どのページが最も訪問されているか、およびユーザーエクスペリエンスをどのように改善できるかを理解するのに役立ちます。",
+    "text-1": "当社は、広告目的でお客様のデータを処理することはありません。クッキーは、分析目的およびウェブサイトの機能を向上させる目的でのみ使用します。当社のウェブサイトを引き続き使用する場合、お客様は当社のプライバシーポリシーに記載されているクッキーの使用に同意したものと見なされます。",
+    "accept": "同意する"
+  },
+  "error": {
+    "load-json-csv": "エラー：ファイルを読み込めませんでした",
+    "need-to-upload-image": "最初に画像をアップロードする必要があります",
+    "need-dataset": "最初にデータをロードする必要があります",
+    "model-selected": "モデルの選択エラー",
+    "tensor-shape": "テンソルの形状が正しくありません",
+    "tensor-shape-description": "テンソルの形状が正しくありません。期待された形状 [{{target_tensor_shape_0}},{{target_tensor_shape_1}}] でしたが、形状 [{{tensor_shape_0}},{{tensor_shape_1}}] のテンソルが受信されました。おそらく、最後のレイヤーを修正する必要があります。",
+    "tensor-shape-change": "出力レイヤーの形状は (* ,{{last_layer_units}}) です。<br> 形状を (*, {{classes_length}}) にする必要があります",
+    "need-one-feature": "少なくとも1つの特徴量が必要です。",
+    "new-element-need-to-be-unique": "Xセットの要素は一意である必要があります。",
+    "layers-length": "ニューロン数とその活性化関数を持つレイヤーが少なくとも1つ必要です",
+    "parsing-csv": "データセットの準備エラー",
+    "file-not-valid": "エラー：ファイルが無効です",
+    "metrics-length": "エラー：メトリクス数は1から10の間である必要があります"
+  },
+  "warning": {
+    "the-first-layer-need-to-be-__value__": "警告：最初のレイヤーはタイプ {{value}} である必要があります",
+    "not-more-layers": "警告：これ以上レイヤーを追加することはできません",
+    "error-layers": "警告：レイヤーは1から10の間である必要があります",
+    "need-a-model": "警告：最初にモデルを作成し、トレーニングする必要があります。"
+  },
+  "success": {
+    "file-upload": "ファイルのアップロードに成功しました"
+  },
+  "info": {
+    "the-class-is-__value__": "クラスはインデックス {{value}} ですか？",
+    "insert-input": "まず入力値を入力して予測を実行してください"
+  },
+  "alert": {
+    "menu": {
+      "need-select-dataset": "データセットを選択する必要があります",
+      "need-select-model": "モデルを選択する必要があります"
+    },
+    "0-tabular-classification": {
+      "not-more-layers": "これ以上レイヤーを追加できません"
+    },
+    "model-load-success": "モデルが読み込まれました",
+    "error": "エラー",
+    "warning": "警告",
+    "success": "成功",
+    "info": "情報",
+    "model-train-success": "モデルのトレーニングに成功しました",
+    "prediction": "予測結果: {{index}}",
+    "file-upload-success": "ファイルのアップロードに成功しました",
+    "file-upload-error-incorrect-format": "ファイルの形式が正しくありません"
+  },
+  "header": {
+    "language": "言語",
+    "manual": "マニュアル",
+    "glossary": "用語集",
+    "home": "ホーム",
+    "datasets": "データセット",
+    "theme": "テーマ",
+    "dataframe": "データフレーム",
+    "analyze": "AED (探索的データ分析)"
+  },
+  "footer": {
+    "description-app": "深層学習モデルの設計と実行のためのウェブプラットフォーム。",
+    "about-us": "私たちについて",
+    "developers": "開発者",
+    "directors": "指導者",
+    "maintainers": "保守と改善",
+    "terms": "利用規約",
+    "contribute": "貢献する",
+    "documentation": "ドキュメント",
+    "version": "バージョン"
+  },
+  "drag-and-drop": {
+    "label-files-one": "ファイル:",
+    "label-files-more": "ファイル:",
+    "image": "画像例を追加",
+    "binary": "バイナリファイルを追加",
+    "json": "JSONファイルを追加",
+    "csv": "CSVファイルを追加",
+    "csv-json": "テンプレートデータファイル template.json を入力"
+  },
+  "ui": {
+    "blur": {
+      "enable": "マスクされた領域にブラーを適用",
+      "kernelSize": "ブラーカーネルサイズ（奇数）",
+      "passes": "ブラーの回数"
+    },
+    "explain": {
+      "title": "説明可能性 (SHAP)",
+      "method": "手法",
+      "about-lrp": "LRP（層ごとの関連性伝播）は、予測されたクラスからネットワークを逆向きにたどり、その関連性を入力ピクセルまで分配します。ヒートマップは、モデルの予測を支える画像の領域を示します。",
+      "about-shap": "画像をセグメント（スーパーピクセル）に分割し、さまざまな組み合わせで各セグメントを隠したり表示したりして予測の変化を観察することで、各セグメントの重要度を測定します。ヒートマップは、各セグメントが予測にどれだけ寄与するかで色付けします。",
+      "perturbationSamples": "摂動サンプル:",
+      "gridSide": "1辺あたりの領域数（画像を N×N のセグメントに分割）",
+      "nSamples": "nSamples (SHAP)",
+      "mask": "マスク (SHAP)",
+      "maskRange": "マスク (0..1)",
+      "calculating": "計算中...",
+      "explainPrediction": "予測を説明",
+      "hideExplanation": "説明を非表示",
+      "noData": "説明データはありません。",
+      "class": "クラス {{index}}",
+      "positive": "予測を支持",
+      "negative": "予測に反する",
+      "shap-value": "SHAP値",
+      "error": "説明の計算中にエラーが発生しました",
+      "model-not-available": "このモデルは説明可能性に対応していません",
+      "lrp-not-available": "このモデルではLRPを利用できません",
+      "cancel": "キャンセル",
+      "labels": {
+        "face": "顔",
+        "pose": "体のポーズ",
+        "hand": "手",
+        "sign": "サイン「{{sign}}」",
+        "body": {
+          "head": "頭",
+          "arms": "腕",
+          "legs": "脚"
+        }
+      },
+      "face-parts": {
+        "background": "背景（顔の外）",
+        "skin": "肌",
+        "lips": "唇",
+        "rightEye": "右目",
+        "leftEye": "左目",
+        "rightEyebrow": "右眉",
+        "leftEyebrow": "左眉",
+        "nose": "鼻"
+      },
+      "summary": {
+        "equation-title": "モデルが「{{target}}」に至る仕組み",
+        "contributions": "寄与の合計",
+        "most-positive": "最も予測を後押しする要素",
+        "most-negative": "最も予測に反する要素",
+        "base-image": "画像を隠した状態",
+        "base-tabular": "参照データでの平均予測",
+        "lrp": "赤いピクセルは「{{target}}」を支持し、青いピクセルは反対に働きます。LRP はネットワークの出力を逆向きに分配します。各層のバイアスのため、関連性の合計がスコアと完全に一致するとは限りません。",
+        "scaled-values": "点にマウスを重ねたときに表示される値は、元の単位ではなく、モデルに入力される正規化された値です。"
+      },
+      "perturbation-help": "計算中にモデルが見た画像の一部です。SHAP はさまざまな領域を隠し、予測がどう変わるかを観察します。",
+      "nothing-detected": "この画像ではモデルが何も検出しなかったため、説明するものがありません。別の画像（例えば対象が大きく写っている画像）を試してください。",
+      "no-predictions": "この画像に対してモデルが予測を返さなかったため、説明するものがありません。",
+      "notes": {
+        "presence-only": "このモデルは「顔がある」か「顔がない」か（0 か 100%）しか答えません。そのため、説明は顔を見つけるために最低限何を見る必要があるかを示します。通常は肌だけで十分です。",
+        "body-parts": "ポーズ全体と体の各部位に対する信頼度を説明します。モデルはまず人物を見つける必要があるため、胴体の領域も腕や脚の位置を特定するのに役立ちます。",
+        "wrong-prediction": "モデルが間違えましたか？それでも説明は役に立ちます。モデルがその答えに至るまでにどこを見ていたかを示します。"
+      }
+    }
+  },
+  "custom-canvas-drawer": {
+    "validate": "検証",
+    "clear": "クリア"
+  },
+  "table": {
+    "dataset": "データセット"
+  },
+  "modality": {
+    "0": "表形式分類",
+    "1": "回帰",
+    "2": "物体認識",
+    "3": "画像分類",
+    "tabular-classification": "表形式分類",
+    "regression": "回帰",
+    "object-detection": "物体認識",
+    "image-classification": "画像分類"
+  },
+  "graphic-red": {
+    "input": "入力",
+    "output": "出力"
+  },
+  "datasets-models": {
+    "0-tabular-classification": {
+      "upload": {
+        "html-example": {
+          "text": "値をセミコロンで区切って入力してください。",
+          "items": "(パラメータ-1; パラメータ-2; パラメータ-3; ... ; パラメータ-n)。"
+        }
+      },
+      "car": {
+        "title": "CAR - 車両評価分類",
+        "description": {
+          "text-1": "<i>Car Evaluation</i> データセットは、次の構造を通じて車両を評価できます",
+          "text-2": "このデータセットの詳細については、<link1>ics.uci.edu</link1>リポジトリをご覧ください。",
+          "details-1": {
+            "title": "情報",
+            "list": {
+              "1": "<b>buying:</b> 購入価格。",
+              "2": "<b>maint:</b> 維持費。",
+              "3": "<b>doors:</b> ドア数。",
+              "4": "<b>persons:</b> 乗車定員。",
+              "5": "<b>lug_boot:</b> トランクのサイズ。",
+              "6": "<b>safety:</b> 車両の推定安全性。"
+            }
+          },
+          "details-2": {
+            "title": "入力データ",
+            "text-1": "車両の特徴",
+            "list": {
+              "1": "<b>buying:</b> vhigh (非常に高い), high (高い), med (中), low (低い)。",
+              "2": "<b>maint:</b> vhigh, high, med, low。",
+              "3": "<b>doors:</b> 2, 3, 4, 5more (5以上)。",
+              "4": "<b>persons:</b> 2, 4, more (それ以上)。",
+              "5": "<b>lug_boot:</b> small (小), med (中), big (大)。",
+              "6": "<b>safety:</b> low, med, high (高)。"
+            }
+          },
+          "details-3": {
+            "title": "出力データ",
+            "text-1": "車両の受容性",
+            "list": {
+              "1": "<b>unacc</b>: 受け入れられない",
+              "2": "<b>acc</b>: 受け入れられる",
+              "3": "<b>good</b>: 良い",
+              "4": "<b>vgood</b>: 非常に良い"
+            }
+          },
+          "details-4": {
+            "title": "参照元",
+            "list": {
+              "1": "データセット"
+            }
+          }
+        },
+        "html-example": {
+          "text": "評価する車両の対応する値を入力してください：",
+          "items": "(buying; maint; doors; persons; lug_boot; safety)",
+          "examples": "例:"
+        }
+      },
+      "iris": {
+        "title": "IRIS - アヤメ分類",
+        "description": {
+          "text-1": "Iris-Data データセットは、花弁と萼の長さと幅から、アヤメのどのタイプかを検出できます。",
+          "details-1": {
+            "title": "入力データ",
+            "list": {
+              "1": "<b>Sepal length (萼の長さ)</b>: 連続値",
+              "2": "<b>Sepal width (萼の幅)</b>: 連続値",
+              "3": "<b>Petal length (花弁の長さ)</b>: 連続値",
+              "4": "<b>Petal width (花弁の幅)</b>: 連続値"
+            }
+          },
+          "details-2": {
+            "title": "出力データ",
+            "list": {
+              "1": "<b>0</b>: Iris Setosa",
+              "2": "<b>1</b>: Iris Versicolor",
+              "3": "<b>2</b>: Iris Virginica"
+            }
+          },
+          "details-3": {
+            "title": "参照元",
+            "list": {
+              "1": "データセット"
+            }
+          }
+        },
+        "html-example": {
+          "text": "評価する植物に対応する値を入力してください：",
+          "items": "(萼の長さ; 萼の幅; 花弁の長さ; 花弁の幅)。",
+          "examples": "例:"
+        }
+      },
+      "lymphography": {
+        "title": "LYMPHOGRAPHY - リンパ腫データ分類",
+        "description": {
+          "text-1": "<i>lymphography</i> データセットは、リンパ腫の可能な病期と状態を検出できます。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<b>lymphatics</b>: normal (正常), arched (アーチ状), deformed (変形), displaced (変位)",
+              "1": "<b>block of affere (流入リンパ管の閉塞)</b>: no (なし), yes (あり)",
+              "2": "<b>bl. of lymph. c (リンパ管の閉塞 C)</b>: no, yes",
+              "3": "<b>bl. of lymph. s (リンパ管の閉塞 S)</b>: no, yes",
+              "4": "<b>by pass</b>: no, yes",
+              "5": "<b>extravasates (漏出)</b>: no, yes",
+              "6": "<b>regeneration of (再生)</b>: no, yes",
+              "7": "<b>early uptake in (早期取り込み)</b>: no, yes",
+              "8": "<b>lym.nodes dimin (リンパ節の縮小)</b>: 0-3",
+              "9": "<b>lym.nodes enlar (リンパ節の肥大)</b>: 1-4",
+              "10": "<b>changes in lym. (リンパ管の変化)</b>: bean (豆状), oval (卵型), round (円形)",
+              "11": "<b>defect in node (節の欠陥)</b>: no, lacunar (空隙), lac. marginal (空隙縁), lac. central (空隙中央)",
+              "12": "<b>changes in node (節の変化)</b>: No, lacunar, lac. margin, lac. central",
+              "13": "<b>changes in stru (構造の変化)</b>: no, grainy (粒状), drop-like (滴状), coarse (粗い), diluted (希釈), reticular (網状), stripped (縞状), faint (かすか),",
+              "14": "<b>special forms (特殊な形態)</b>: no, chalices (杯状), vesicles (小胞)",
+              "15": "<b>dislocation of (転位)</b>: no, yes",
+              "16": "<b>exclusion of no (除外なし)</b>: no, yes",
+              "17": "<b>no. of nodes in (節の数)</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, >=70"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "<b>normal find (正常所見)</b>: normal",
+              "1": "<b>metastases (転移)</b>: Metastasis",
+              "2": "<b>malign lymph (悪性リンパ腫)</b>: Malignant lymphoma",
+              "3": "<b>fibrosis (線維症)</b>: fibrosis"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "データセット"
+            }
+          }
+        },
+        "html-example": {
+          "text": "評価する患者の対応する値を入力してください：",
+          "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in)。",
+          "examples": "例:"
+        }
+      },
+      "list-datasets": {
+        "0-option-1": "データセット - 車両評価分類",
+        "0-option-2": "データセット - アヤメ分類",
+        "0-option-3": "データセット - リンパ腫分類"
+      },
+      "list-models": {
+        "0-option-1": "モデル - 車両評価分類",
+        "0-option-2": "モデル - アヤメ分類",
+        "0-option-3": "モデル - リンパ腫分類"
+      },
+      "joyride": {
+        "title": "チュートリアルをアクティブ化",
+        "steps": {
+          "manual": {
+            "title": "マニュアル",
+            "content": "情報を探すためにマニュアルを参照できます"
+          },
+          "dataset-info": {
+            "title": "データセット情報",
+            "content": "データセットを分析します"
+          },
+          "dataset": {
+            "title": "データセット",
+            "content": "データセットを表示し、その説明から統計情報を抽出できます"
+          },
+          "dataset-plot": {
+            "title": "データセットのグラフ",
+            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
+          },
+          "layer-visualizer": {
+            "title": "ニューラルネットワーク層のビジュアライザー",
+            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
+          },
+          "layer-editor": {
+            "title": "レイヤーエディタ",
+            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
+          },
+          "params-editor": {
+            "title": "ハイパーパラメータエディタ",
+            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
+          },
+          "list-of-models": {
+            "title": "モデルリスト",
+            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、分類を実行できます。"
+          },
+          "classify-and-visualizer": {
+            "title": "分類と可視化",
+            "content": "表形式分類のモデルをロードしたら、分類を実行し、結果を可視化できます"
+          }
+        }
+      }
+    },
+    "1-regression": {
+      "salary": {
+        "title": "経験年数に基づく給与",
+        "description": {
+          "text": {
+            "0": "「Salary」データセットは、個人の職務経験年数とそれに対応する給与の関係を関連付ける情報のコレクションです。",
+            "1": "データセットの各エントリは、「Years of Experience」（経験年数）と「Salary」（給与）の2つの主要な変数で構成されています。「Years of Experience」変数は、従業員が特定の分野で働いた年数を表し、「Salary」変数は、その従業員が年間稼ぐ金額を表します。"
+          },
+          "link": "このデータセットの詳細については、<link1>www.kaggle.com</link1>リポジトリをご覧ください。",
+          "details-1-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "Years of experience - 経験年数",
+              "1": "Salary - 給与"
+            }
+          },
+          "details-2-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "計算された回帰 (<b>Salary</b>)"
+            }
+          },
+          "details-3-references": {
+            "title": "参照元",
+            "list": {
+              "0": "データセット 1",
+              "1": "データセット 2"
+            }
+          }
+        }
+      },
+      "auto-mpg": {
+        "title": "燃費性能",
+        "description": {
+          "text": {
+            "0": "<i>AUTO MPG</i> データセットは、カーネギーメロン大学で管理されているStatLibライブラリから取得されました。このデータセットは、1983年の米国統計学会の展示会で使用されました。",
+            "1": "「Auto MPG」（ガロンあたりのマイル）という用語は、一般的に米国で使用される燃費効率の測定単位を指します。この尺度は、車両が1ガロンの燃料で走行できるマイル数を示します。スペイン語では、通常、「consumo de combustible」（燃料消費量）または「rendimiento de combustible」（燃費性能）という用語が使用されます。国によって測定単位が異なることに注意することが重要です。"
+          },
+          "link": "このデータセットの詳細は<link1>ICS.UCI.edu リポジトリ</link1>をご覧ください。",
+          "details-0": {
+            "title": "情報",
+            "list": {
+              "0": "<b>MPG</b>: MPG は Miles Per Gallon（1ガロンあたりの走行マイル）の略で、各インスタンスの車両の燃費を表します。任意の車について予測対象の変数としても使用できます",
+              "1": "<b>cylinders</b>: 各車のシリンダー数を表す属性です。離散値の属性です",
+              "2": "<b>displacement</b>: エンジンの排気量を表す、連続値の量的属性です",
+              "3": "<b>horsepower</b>: 車の馬力を表す連続値の変数です",
+              "4": "<b>weight</b>: 各車の重量を表す連続値の量的変数です",
+              "5": "<b>acceleration</b>: 車の加速性能です",
+              "6": "<b>model year</b>: そのモデルが発売された年です",
+              "7": "<b>origin</b>: 3つの離散値をとる属性で、1 は米国製、2 は欧州製、3 はアジア製の車を表します",
+              "8": "<b>car name</b>: 車名を表す文字列です"
+            }
+          },
+          "details-1": {
+            "title": "入力データ",
+            "list": {
+              "0": "<b>MPG</b>: 連続値",
+              "1": "<b>cylinders</b>: 多値の離散値（4, 6, 8）",
+              "2": "<b>displacement</b>: 連続値",
+              "3": "<b>horsepower</b>: 連続値",
+              "4": "<b>weight</b>: 連続値",
+              "5": "<b>acceleration</b>: 連続値",
+              "6": "<b>model year</b>: 多値の離散値",
+              "7": "<b>origin</b>: 多値の離散値。1 は米国製、2 は欧州製、3 はアジア製の車を表します",
+              "8": "<b>car name</b>: 文字列（インスタンスごとに一意）"
+            }
+          },
+          "details-2": {
+            "title": "出力データ",
+            "list": {
+              "0": "回帰による計算値（<b>MPG</b>）"
+            }
+          },
+          "details-3": {
+            "title": "参考文献",
+            "list": {
+              "0": "<link1>Auto MPG</link1>"
+            }
+          }
+        }
+      },
+      "housing-prices": {
+        "title": "住宅価格",
+        "description": {
+          "text": {
+            "0": "ボストン住宅データセットは、米国国勢調査局がボストン地域の住宅について収集した情報から派生しています。",
+            "1": "このデータセットは、米国マサチューセッツ州ボストン地域のさまざまな近隣地域の住宅価格の回帰およびモデリングの問題に対処するように設計されています。このデータセットは、教育および研究の例や実践に一般的に使用されています。"
+          },
+          "link": "<link1>UCIデータセットエントリ</link1>",
+          "details-input": {
+            "title": "入力データ",
+            "california": {
+              "list": {
+                "0": "<strong>Median House Value</strong>: ブロック内の世帯の平均住宅価値（米ドル）[$]。",
+                "1": "<strong>Median Income</strong>: ブロック内の世帯の収入中央値（数万米ドル）[10k$]。",
+                "2": "<strong>Median Age</strong>: ブロック内の住宅の年齢中央値。値が低いほど新しい建物を意味します [年]。",
+                "3": "<strong>Total Rooms</strong>: ブロック内の総部屋数",
+                "4": "<strong>Total Bedrooms</strong>: ブロック内の総寝室数",
+                "5": "<strong>Population</strong>: ブロック内に居住する総人数",
+                "6": "<strong>Households</strong>: ブロック内の世帯総数",
+                "7": "<strong>Latitude</strong>: 住宅が北にある距離の測定値 [°]。",
+                "8": "<strong>Longitude</strong>: 住宅が西にある距離の測定値 [°]。",
+                "9": "<strong>Distance to coast</strong>: 最も近い海岸線までの距離 [m]",
+                "10": "<strong>Distance to Los Angeles</strong>: ロサンゼルス中心部までの距離 [m]。",
+                "11": "<strong>Distance to San Diego</strong>: サンディエゴ中心部までの距離 [m]",
+                "12": "<strong>Distance to San Jose</strong>: サンホセ中心部までの距離 [m]",
+                "13": "<strong>Distance to San Francisco</strong>: サンフランシスコ中心部までの距離 [m]",
+                "14": null
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<strong>CRIM</strong> 市内の一人当たりの犯罪率",
+                "1": "<strong>ZN</strong> 25,000平方フィート以上の区画の住宅地の割合。",
+                "2": "<strong>INDUS</strong> 市内の一人当たりの非小売業の割合",
+                "3": "<strong>CHAS</strong> チャールズ川ダミー変数（トラクトが川と接している場合は1、それ以外の場合は0）",
+                "4": "<strong>NOX</strong> 窒素酸化物濃度（1000万分の1）",
+                "5": "<strong>RM</strong> 住宅あたりの平均部屋数",
+                "6": "<strong>AGE</strong> 1940年より前に建てられた所有者居住ユニットの割合",
+                "7": "<strong>DIS</strong> 5つのボストン雇用センターまでの加重距離",
+                "8": "<strong>RAD</strong> ラジアル高速道路へのアクセス指数",
+                "9": "<strong>TAX</strong> 10,000ドルあたりの固定資産税",
+                "10": "<strong>PTRATIO</strong> 生徒と教師の比率",
+                "11": "<strong>B</strong> 1000 (Bk - 0.63)^2 (Bkは市内の一人当たりの黒人の割合)",
+                "12": "<strong>LSTAT</strong> 人口の低所得者層の割合",
+                "13": "<strong>MEDV</strong> 所有者居住住宅の平均価値（1000ドル）"
+              }
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "california": {
+              "list": {
+                "0": "計算された回帰"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "計算された回帰"
+              }
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "california": {
+              "list": {
+                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
+              }
+            },
+            "boston": {
+              "list": {
+                "0": "<link1>UCIデータセット情報</link1>",
+                "1": "<link1>ボストン住宅データセットに関する論争</link1>"
+              }
+            }
+          }
+        }
+      },
+      "breast-cancer": {
+        "title": "ウィスコンシン乳がん (診断と予後)",
+        "description": {
+          "text": {
+            "0": "ウィスコンシン大学病院の乳がん関連データセットです。良性か悪性かを区別し、乳がん腫瘍の予測と識別に役立ちます。",
+            "1": "各レコードは、1984年以来Dr. Wolbergによって治療された浸潤性乳がんの症例追跡データであり、転移の証拠がない症例のみが含まれます。",
+            "2": "最初の30の特徴量は、乳腺腫瘤の穿刺吸引細胞診（FNAB）のデジタル画像から計算され、画像に存在する細胞核の特徴を記述しています。いくつかの画像は<link1>cs wisc</link1>で見つけることができます。",
+            "3": "ファイル <kbd>wdbc.csv</kbd> は診断データセットに対応し、<kbd>wpbc.csv</kbd> は予後データセットに対応します。"
+          },
+          "link": "<link1>UCIデータセット入力</link1>",
+          "details-1-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<strong>ID番号</strong>",
+              "1": "<strong>結果</strong> (R = 再発, N = 非再発)",
+              "2": "<strong>時間</strong> (フィールド 2 = R の場合は再発までの時間、フィールド 2 = N の場合は無病期間)",
+              "3": "4-33 各細胞核について10個の実数値特徴量が計算されます：",
+              "4": "<strong>半径</strong> (中心から周囲までの距離の平均)",
+              "5": "<strong>テクスチャ</strong> (グレースケール値の標準偏差)",
+              "6": "<strong>周囲長</strong>",
+              "7": "<strong>面積</strong>",
+              "8": "<strong>平滑性</strong> (半径の長さの局所的な変動)",
+              "9": "<strong>コンパクトさ</strong> (周囲長^2 / 面積 - 1.0)",
+              "10": "<strong>凹面</strong> (輪郭の凹状部分の重症度)",
+              "11": "<strong>凹点</strong> (輪郭の凹状部分の数)",
+              "12": "<strong>対称性</strong>",
+              "13": "<strong>フラクタル次元</strong> (「海岸線近似」 - 1)"
+            }
+          },
+          "details-2-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "計算された回帰 (<b>給与</b>)"
+            }
+          },
+          "details-3-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>Breast Cancer Wisconsin</link1>",
+              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
+              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
+            }
+          }
+        }
+      },
+      "student-performance": {
+        "title": "学生の成績",
+        "description": {
+          "text": {
+            "0": "このデータセットには、2つのポルトガル学校の生徒の学業成績データが含まれています。データには、生徒の人口統計、社会的な特徴、成績などが含まれています。数学（mat）とポルトガル語（por）の2つの異なる科目に関する成績データセットが含まれています。",
+            "1": "データセットには多変量データ、実数型の属性、649インスタンス、および12個の異なる属性が含まれています。",
+            "2": "重要な注意: ターゲット属性G3は、G2およびG1属性と強い相関があります。これは、G3が最終学年の成績（3学期に発行）であり、G1およびG2が1学期と2学期の成績に対応しているためです。G2とG1なしでG3を予測することはより困難ですが、そのような予測はより有用です。",
+            "3": "ファイル <kbd>student-por.csv</kbd> はポルトガル語の学生成績データセットに対応し、<kbd>student-mat.csv</kbd> は数学の学生成績データセットに対応します。"
+          },
+          "link": "<link1>UCIデータセット入力</link1>",
+          "details-1-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<strong>school</strong> - 生徒の学校（バイナリ: 'GP' - Gabriel Pereira または 'MS' - Mousinho da Silveira）",
+              "1": "<strong>sex</strong> - 生徒の性別（バイナリ: 'F' - 女性 または 'M' - 男性）",
+              "2": "<strong>age</strong> - 生徒の年齢（数値: 15歳から22歳）",
+              "3": "<strong>address</strong> - 生徒の住居の種類（バイナリ: 'U' - 都市 または 'R' - 地方）",
+              "4": "<strong>famsize</strong> - 家族のサイズ（バイナリ: 'LE3' - 3人以下 または 'GT3' - 3人以上）",
+              "5": "<strong>Pstatus</strong> - 両親の同居状況（バイナリ: 'T' - 同居 または 'A' - 別居）",
+              "6": "<strong>Medu</strong> - 母親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
+              "7": "<strong>Fedu</strong> - 父親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
+              "8": "<strong>Mjob</strong> - 母親の職業（名義尺度: 'teacher' (教師), 'health' (医療関連), 'services' (サービス業) (例: 管理職や警察), 'at_home' (主婦) または 'other' (その他)）",
+              "9": "<strong>Fjob</strong> - 父親の職業（名義尺度: 'teacher', 'health', 'services', 'at_home' または 'other'）",
+              "10": "<strong>reason</strong> - 学校を選んだ理由（名義尺度: 'home'（家が近い）, 'reputation'（評判）, 'course'（コース） または 'other'（その他）",
+              "11": "<strong>guardian</strong> - 生徒の保護者（名義尺度: 'mother' (母), 'father' (父) または 'other' (その他)）",
+              "12": "<strong>traveltime</strong> - 通学時間（数値: 1 - 15分未満, 2 - 15分から30分, 3 - 30分から1時間, または 4 - 1時間以上）",
+              "13": "<strong>studytime</strong> - 週間の学習時間（数値: 1 - 2時間未満, 2 - 2時間から5時間, 3 - 5時間から10時間, または 4 - 10時間以上）",
+              "14": "<strong>failures</strong> - 以前のクラスでの落第回数（数値: nが1 <= n <= 3の場合 n, それ以外の場合は4）",
+              "15": "<strong>schoolsup</strong> - 追加の教育サポート（バイナリ: yes または no）",
+              "16": "<strong>famsup</strong> - 家族の教育サポート（バイナリ: yes または no）",
+              "17": "<strong>paid</strong> - 有料追加クラス（科目内）の有無（バイナリ: yes または no）",
+              "18": "<strong>activities</strong> - 課外活動（バイナリ: yes または no）",
+              "19": "<strong>nursery</strong> - 幼稚園に通っていたか（バイナリ: yes または no）",
+              "20": "<strong>higher</strong> - 高等教育を希望するか（バイナリ: yes または no）",
+              "21": "<strong>internet</strong> - 自宅でのインターネットアクセス（バイナリ: yes または no）",
+              "22": "<strong>romantic</strong> - 恋愛関係にあるか（バイナリ: yes または no）",
+              "23": "<strong>famrel</strong> - 家族関係の質（数値: 1 - 非常に悪い から 5 - 非常に良い）",
+              "24": "<strong>freetime</strong> - 放課後の自由時間（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "25": "<strong>goout</strong> - 友達と外出（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "26": "<strong>Dalc</strong> - 平日のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "27": "<strong>Walc</strong> - 週末のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "28": "<strong>health</strong> - 現在の健康状態（数値: 1 - 非常に悪い から 5 - 非常に良い）",
+              "29": "<strong>absences</strong> - 学校の欠席日数（数値: 0から93）"
+            }
+          },
+          "details-2-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "計算された回帰"
+            }
+          },
+          "details-3-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>Student Performance</link1>"
+            }
+          }
+        }
+      },
+      "wine": {
+        "title": "ワインの品質",
+        "description": {
+          "text": {
+            "0": "この2つのデータセットは関連しており、ポルトガルワインの赤ワインと白ワインのバリアントが含まれています。このデータセットには、理化学変数（入力）と感覚変数（出力）のみが含まれており、ブドウの品種、ワインのブランド、または販売価格のデータは含まれていません。",
+            "1": "データセットには多変量データ、実数型の属性、4898インスタンス、および12個の異なる属性が含まれています。",
+            "2": "このデータセットは、分類タスクまたは回帰タスクに使用できます。クラスは順序付けされていますが、データセットは不均衡です。",
+            "3": "ファイル <kbd>wine-quality-red.csv</kbd> は赤ワインデータセットに対応し、<kbd>wine-quality-white.csv</kbd> は白ワインデータセットに対応します。"
+          },
+          "link": "このデータセットの詳細については、<link1>archive.ics.uci.edu</link1>リポジトリをご覧ください。",
+          "details-1-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<strong>Fixed Acidity (固定酸度)</strong>: ワイン中の非揮発性酸の濃度を指します。新鮮さと安定性に貢献します。",
+              "1": "<strong>Volatile Acidity (揮発性酸度)</strong>: 酢酸などの揮発性酸の濃度を指します。過剰に存在すると不快な味を与える可能性があります。",
+              "2": "<strong>Citric Acid (クエン酸)</strong>: ワインに存在する天然の有機酸の1つです。風味と新鮮さに影響を与える可能性があります。",
+              "3": "<strong>Residual Sugar (残糖)</strong>: 発酵後にワインに残る砂糖の量です。",
+              "4": "<strong>Chlorides (塩化物)</strong>: ワイン中の塩化物濃度は、その風味と香りに影響を与えます。",
+              "5": "<strong>Free Sulfur Dioxide (遊離二酸化硫黄)</strong>: 酸化や不要な微生物の増殖を防ぐ一般的な防腐剤です。",
+              "6": "<strong>Total Sulfur Dioxide (総二酸化硫黄)</strong>: 遊離二酸化硫黄と結合した二酸化硫黄の合計を表します。ワインの保存にも関連しています。",
+              "7": "<strong>Density (密度)</strong>: 単位体積あたりのワインの質量を指します。アルコールと砂糖の濃度に関する情報を提供できます。",
+              "8": "<strong>pH</strong>: ワインの酸性度またはアルカリ度を測定します。",
+              "9": "<strong>Sulphates (硫酸塩)</strong>: ワインの生産で時々使用される添加剤です。安定性と香りに影響を与える可能性があります。",
+              "10": "<strong>Alcohol (アルコール)</strong>: ワイン中のアルコール濃度。風味と口当たりに影響します。",
+              "11": "<strong>Quality (品質)</strong>: テイスターの評価に従って、通常0から10のスケールで、ワインの全体的な品質スコア。"
+            }
+          },
+          "details-2-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "計算された回帰"
+            }
+          },
+          "details-3-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>ワインの品質</link1>"
+            }
+          }
+        }
+      },
+      "list-datasets": {
+        "salary": "データセット - 給与",
+        "auto-mpg": "データセット - 燃費性能",
+        "housing-prices": "データセット - 住宅価格",
+        "breast-cancer": "データセット - 乳がん",
+        "student-performance": "データセット - 学生成績",
+        "wine": "データセット - ワイン"
+      },
+      "list-models": {
+        "salary": "モデル - 給与",
+        "auto-mpg": "モデル - 燃費性能",
+        "housing-prices": "モデル - 住宅価格",
+        "breast-cancer": "モデル - 乳がん",
+        "student-performance": "モデル - 学生成績",
+        "wine": "モデル - ワイン"
+      },
+      "joyride": {
+        "title": "チュートリアルをアクティブ化",
+        "steps": {
+          "manual": {
+            "title": "マニュアル",
+            "content": "情報を探すためにマニュアルを参照できます"
+          },
+          "dataset-info": {
+            "title": "データセット情報",
+            "content": "データセットの情報を参照します"
+          },
+          "dataset": {
+            "title": "データセット",
+            "content": "データセットを表示し、その説明から統計情報を抽出できます"
+          },
+          "pre-process-dataset": {
+            "title": "前処理",
+            "content": "データセットのクリーニングと準備"
+          },
+          "dataset-plot": {
+            "title": "データセットのグラフ",
+            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
+          },
+          "layer-visualizer": {
+            "title": "ニューラルネットワーク層のビジュアライザー",
+            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
+          },
+          "layer-editor": {
+            "title": "レイヤーエディタ",
+            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
+          },
+          "params-editor": {
+            "title": "ハイパーパラメータエディタ",
+            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
+          },
+          "list-of-models": {
+            "title": "モデルリスト",
+            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、予測を実行できます。"
+          },
+          "predict-and-visualizer": {
+            "title": "予測と可視化",
+            "content": "回帰モデルをロードしたら、予測を実行し、結果を可視化できます"
+          }
+        }
+      }
+    },
+    "2-object-detection": {
+      "interface": {
+        "process-webcam": {
+          "title": "リアルタイム認識",
+          "sub-title": "Webカメラ",
+          "button": "Webカメラ"
+        },
+        "process-image": {
+          "title": "画像処理",
+          "sub-title": "画像をアップロード"
+        }
+      },
+      "face-detection": {
+        "title": "FaceDetector - 顔の幾何学",
+        "description": {
+          "text-0": "このモデルは、入力画像またはビデオから、目、耳、鼻、口などの顔のさまざまな部分を認識できます。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "画像またはビデオ。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "顔のさまざまな部分を区切る一連のポイントを持つ元の入力要素。"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>tensorflowリポジトリのモデルエントリ</link1>"
+            }
+          }
+        }
+      },
+      "face-mesh": {
+        "title": "FaceMesh - 顔メッシュ",
+        "description": {
+          "text-0": "このモデルは、入力画像またはビデオから、顔のさまざまなポイントを認識し、最終的に顔のメッシュを作成できます。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "画像またはビデオ。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "顔のさまざまな部分を区切る一連のポイントを持つ元の入力要素。"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>tensorflowリポジトリのモデルエントリ</link1>"
+            }
+          }
+        }
+      },
+      "move-net--pose-net": {
+        "title": "MoveNet - 関節検出器",
+        "description": {
+          "text-0": "MoveNetは、身体の位置をリアルタイムで認識できる機械学習モデルです。単一のポーズまたは複数のポーズを同時に推定するために使用できます。",
+          "text-1": "以下の例では、パフォーマンスへの影響を減らすために、一度に1つのポーズのみを検出します。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "カラー画像またはビデオ（Webカメラ）。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "肩、肘、手、足、膝、腰に加えて、顔のさまざまな部分を区切る一連のポイントと線を持つ元の入力要素。"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>tensorflowリポジトリへのエントリ</link1>",
+              "1": "<link1>TFHubモデル</link1>"
+            }
+          }
+        }
+      },
+      "coco-ssd": {
+        "title": "COCO SSD - 物体検出器",
+        "description": {
+          "text-0": "物体検出のSSD（Single Shot MultiBox Detection）モデルは、単一の画像内の複数の物体を検出し、識別することを目的としています。",
+          "text-1": "tensorflow物体検出APIの詳細については、<link1>Tensorflow/Object_detection</link1>のREADMEを参照してください。",
+          "text-2": "このモデルは、COCOデータセット（大規模な物体検出、セグメンテーション、キャプション付けのデータセット）で定義された物体を検出します。モデルは<link1>80クラスの物体</link1>を検出できます",
+          "text-3": "この例は、COCO-SSDモデルのTensorFlow.jsへの適応です。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "カラー画像またはビデオ（Webカメラ）。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "元の入力要素と同じで、さまざまな物体を区切る一連のボックスとそれらのラベルが表示されます。"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "<link1>Coco Dataset</link1>の詳細情報"
+            }
+          }
+        },
+        "classes": {
+          "person": "人",
+          "bicycle": "自転車",
+          "car": "車",
+          "motorcycle": "オートバイ",
+          "airplane": "飛行機",
+          "bus": "バス",
+          "train": "電車",
+          "truck": "トラック",
+          "boat": "ボート",
+          "traffic light": "信号機",
+          "fire hydrant": "消火栓",
+          "stop sign": "一時停止標識",
+          "parking meter": "パーキングメーター",
+          "bench": "ベンチ",
+          "bird": "鳥",
+          "cat": "猫",
+          "dog": "犬",
+          "horse": "馬",
+          "sheep": "羊",
+          "cow": "牛",
+          "elephant": "象",
+          "bear": "熊",
+          "zebra": "シマウマ",
+          "giraffe": "キリン",
+          "backpack": "リュックサック",
+          "umbrella": "傘",
+          "handbag": "ハンドバッグ",
+          "tie": "ネクタイ",
+          "suitcase": "スーツケース",
+          "frisbee": "フリスビー",
+          "skis": "スキー板",
+          "snowboard": "スノーボード",
+          "sports ball": "ボール",
+          "kite": "凧",
+          "baseball bat": "野球のバット",
+          "baseball glove": "野球のグローブ",
+          "skateboard": "スケートボード",
+          "surfboard": "サーフボード",
+          "tennis racket": "テニスラケット",
+          "bottle": "ボトル",
+          "wine glass": "ワイングラス",
+          "cup": "カップ",
+          "fork": "フォーク",
+          "knife": "ナイフ",
+          "spoon": "スプーン",
+          "bowl": "ボウル",
+          "banana": "バナナ",
+          "apple": "リンゴ",
+          "sandwich": "サンドイッチ",
+          "orange": "オレンジ",
+          "broccoli": "ブロッコリー",
+          "carrot": "ニンジン",
+          "hot dog": "ホットドッグ",
+          "pizza": "ピザ",
+          "donut": "ドーナツ",
+          "cake": "ケーキ",
+          "chair": "椅子",
+          "couch": "ソファ",
+          "potted plant": "鉢植え",
+          "bed": "ベッド",
+          "dining table": "ダイニングテーブル",
+          "toilet": "トイレ",
+          "tv": "テレビ",
+          "laptop": "ノートパソコン",
+          "mouse": "マウス",
+          "remote": "リモコン",
+          "keyboard": "キーボード",
+          "cell phone": "携帯電話",
+          "microwave": "電子レンジ",
+          "oven": "オーブン",
+          "toaster": "トースター",
+          "sink": "シンク",
+          "refrigerator": "冷蔵庫",
+          "book": "本",
+          "clock": "時計",
+          "vase": "花瓶",
+          "scissors": "はさみ",
+          "teddy bear": "テディベア",
+          "hair drier": "ヘアドライヤー",
+          "toothbrush": "歯ブラシ"
+        },
+        "render-label": "{{label}}（信頼度 {{score}}%）"
+      },
+      "face-api": {
+        "title": "FaceAPI - 顔の表情",
+        "description": {
+          "text-0": "顔の管理のためにグループ化された異なるタイプの複数のニューラルネットワーク。複数の顔の検出、年齢、感情、顔のマークの検出、異なる種類の顔を比較するための記述子としてのキーポイントの抽出を可能にします。",
+          "details-input": {
+            "title": "入力データ",
+            "text-0": "カラー画像またはビデオ（Webカメラ）。"
+          },
+          "details-output": {
+            "title": "出力データ",
+            "text-0": "元の入力要素と同じで、各感情の表現度を示すパーセンテージと、その人の年齢を示すボックスが表示されます。",
+            "list": {
+              "0": "年齢",
+              "1": "ニュートラル",
+              "2": "幸せ",
+              "3": "悲しい",
+              "4": "怒っている",
+              "5": "恐れている",
+              "6": "嫌悪",
+              "7": "驚いている",
+              "bounding": "境界ボックス"
+            }
+          },
+          "details-references": {
+            "title": "参照元"
+          }
+        }
+      },
+      "hand-sign": {
+        "title": "手話",
+        "description": {
+          "text-0": "手の検出とランドマーク検出のためのニューラルネットワーク。位置記述子と組み合わせて、アメリカ手話（ASL）またはスペイン手話（SSL）の可能なサインを分類するために使用されます。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "カラー画像またはビデオ（Webカメラ）。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "指の関節",
+              "1": "対応する文字"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "list": {
+              "0": "TFJS hand pose detection"
+            }
+          }
+        }
+      },
+      "list-models": {
+        "2-option-1": "モデル - FaceDetector - 顔の幾何学",
+        "2-option-2": "モデル - FaceMesh - 顔メッシュ",
+        "2-option-3": "モデル - MoveNet - 関節検出器",
+        "2-option-4": "モデル - COCO SSD - 物体検出器",
+        "2-option-5": "モデル - Face API - 顔マネージャー",
+        "2-option-6": "モデル - HandSign - サイン検出器"
+      }
+    },
+    "3-image-classifier": {
+      "interface": {
+        "0-upload": {
+          "title": "モデルをロード",
+          "sub-title": "最初に.jsonファイル、次に.binファイル"
+        },
+        "process-examples": {
+          "title": "サンプルを使用した処理"
+        },
+        "process-draw": {
+          "title": "描画"
+        },
+        "process-image": {
+          "title": "画像処理",
+          "sub-title": "-",
+          "validate": "検証"
+        },
+        "result": "結果",
+        "button-accept": "受け入れる",
+        "modal": {
+          "title": "予測"
+        }
+      },
+      "mnist": {
+        "title": "MNIST - 数字の分類",
+        "description": {
+          "text-0": "<strong>MNISTデータベース</strong>は、手書き数字の大規模なデータベースです。このデータベースは、機械学習の分野でのトレーニングとテストに広く使用されています。",
+          "text-1": "元のNISTデータセットのサンプルを「再混合」して作成されました。",
+          "text-2": "NISTトレーニングデータセットは、米国国勢調査局から取得されました。さらに、NISTの白黒画像は、<strong>28 x 28</strong>ピクセルの境界ボックスに収まるように正規化され、平滑化されました。これにより、グレースケールレベルが導入されました。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<strong>28 x 28</strong>ピクセルサイズのグレースケール画像"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "0から9までの数字"
+            }
+          },
+          "details-references": {
+            "title": "参照元"
+          }
+        }
+      },
+      "mobilenet": {
+        "title": "MobileNet - 画像分類",
+        "description": {
+          "text-0": "MobileNet V2は、画像分類などに使用されるニューラルネットワークアーキテクチャのファミリーです。",
+          "text-1": "このモデルは、画像の主要なコンテキストを識別することで、1001のカテゴリを区別できます。",
+          "details-input": {
+            "title": "入力データ",
+            "list": {
+              "0": "<strong>224 x 224</strong>ピクセルサイズで、[0, 1]の色の値を持つ画像。"
+            }
+          },
+          "details-output": {
+            "title": "出力データ",
+            "list": {
+              "0": "この<link1>リスト</link1>の各カテゴリに対応する0から1001までの数字"
+            }
+          },
+          "details-references": {
+            "title": "参照元",
+            "text-0": "Mark Sandler、Andrew Howard、Menglong Zhu、Andrey Zhmoginov、Liang-Chieh Chenによって最初に公開されました：",
+            "list": {
+              "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
+            }
+          }
+        }
+      },
+      "face-mesh": {
+        "title": "-"
+      },
+      "list-models": {
+        "3-option-1": "モデル - MNIST - 数字の分類",
+        "3-option-2": "モデル - MobileNet - 画像分類器",
+        "3-option-3": "モデル - ResNet - 画像分類器"
+      }
+    },
+    "3-image-classification": {
+      "list-datasets": {
+        "mnist": "データセット - MNIST"
+      },
+      "joyride": {
+        "title": "チュートリアルをアクティブ化",
+        "steps": {
+          "manual": {
+            "title": "マニュアル",
+            "content": "情報を探すためにマニュアルを参照できます"
+          },
+          "dataset-info": {
+            "title": "データセット情報",
+            "content": "データセットの情報を照会します"
+          },
+          "dataset": {
+            "title": "データセット",
+            "content": "データセットを表示し、その説明から統計情報を抽出できます"
+          },
+          "dataset-plot": {
+            "title": "データセットのグラフ",
+            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
+          },
+          "layer-visualizer": {
+            "title": "ニューラルネットワーク層のビジュアライザー",
+            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
+          },
+          "layer-editor": {
+            "title": "レイヤーエディタ",
+            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
+          },
+          "params-editor": {
+            "title": "ハイパーパラメータエディタ",
+            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
+          },
+          "list-of-models": {
+            "title": "モデルリスト",
+            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、予測を実行できます。"
+          },
+          "classify": {
+            "title": "予測と可視化",
+            "content": "回帰モデルをロードしたら、予測を実行し、結果を可視化できます"
+          }
+        }
+      }
+    }
+  },
+  "dataframe-plot": {
+    "title": "データフレーム | プロット",
+    "info": "情報",
+    "description": {
+      "title": "チャートタイプの概要"
+    },
+    "configuration": {
+      "title": "設定",
+      "reset": "リセット",
+      "select-all-columns": "すべての列を選択",
+      "delete-all-columns": "すべての列を削除",
+      "layout": {
+        "plot": {
+          "title": "チャートのタイトル",
+          "x-axis": "X軸のタイトル",
+          "y-axis": "Y軸のタイトル"
+        },
+        "title": "レイアウト"
+      },
+      "columns": {
+        "title": "データフレームの列"
+      },
+      "pie-charts": {
+        "labels": "ラベル"
+      }
+    },
+    "buttons": {
+      "configuration": "設定",
+      "description": "概要"
+    },
+    "bar-charts": {
+      "title": "棒グラフ",
+      "description": {
+        "intro": {
+          "0": "棒グラフは、長方形の棒を使用して異なるカテゴリやグループの比較を示す視覚的表現です。このタイプのグラフは、棒の長さまたは高さを使用して、特定の変数の大きさまたは量を示します。",
+          "1": "棒グラフでは、横軸がカテゴリやグループを表し、縦軸が分析対象の変数の大きさや頻度を示します。各カテゴリには個別の棒があり、棒の長さまたは高さは対応する値または量に比例します。棒は、チャートの向きに応じて、水平または垂直にすることができます。",
+          "2": "棒グラフには、いくつかの注目すべき特徴と用途があります。"
+        },
+        "list": {
+          "0": "カテゴリの比較: 棒グラフは、異なるカテゴリやグループを視覚的に比較するのに理想的です。棒を見ることで、カテゴリ間の大きさや量の違いをすばやく特定できます。",
+          "1": "カテゴリデータまたは離散データの表現: 棒グラフは、カテゴリ変数または離散変数を表現するのに適しています。各棒は特定のカテゴリを表し、棒の高さまたは長さは、そのカテゴリに関連付けられた大きさまたは量を示します。",
+          "2": "カテゴリのソート: 棒グラフのカテゴリは、アルファベット順、大きさの順、またはその他の論理的な順序など、さまざまな基準に基づいてソートできます。これにより、カテゴリ間の特定のパターンや傾向を強調することができます。",
+          "3": "頻度またはパーセンテージの表示: 棒グラフは、頻度またはパーセンテージを表すためにも使用されます。この場合、棒の高さまたは長さは、各カテゴリに対応する割合またはパーセンテージを表します。",
+          "4": "効果的なプレゼンテーション: 棒グラフは、情報を明確かつ簡潔に提示するための効果的なツールです。シンプルな構造とカテゴリ間の違いを強調する能力により、レポート、プレゼンテーション、およびドキュメントで広く使用されています。",
+          "5": "棒グラフは、大きさや量に基づいてカテゴリやグループを視覚化および比較するための効果的な方法です。カテゴリデータまたは離散データを表現するのに理想的であり、情報の効果的な提示を可能にします。その単純さと違いを強調する能力により、データ分析とコミュニケーションで一般的に使用されるツールになっています。"
+        },
+        "end": {
+          "0": "棒グラフは、大きさや量に基づいてカテゴリやグループを視覚化および比較するための効果的な方法です。カテゴリデータまたは離散データを表現するのに理想的であり、情報の効果的な提示を可能にします。その単純さと違いを強調する能力により、データ分析とコミュニケーションで一般的に使用されるツールになっています。"
+        }
+      }
+    },
+    "box-plots": {
+      "title": "ボックスプロット",
+      "description": {
+        "intro": {
+          "0": "ボックスプロット（箱ひげ図）は、数値データセットの分布と統計的要約を示すために使用される視覚的表現です。このタイプのチャートは、四分位範囲（IQR）を表す長方形に基づいており、中央の線は中央値を示し、ひげと呼ばれる延長線は、IQRを超える値の範囲を表します。",
+          "1": "ボックスチャートでは、長方形は垂直または水平に描画され、下部と上部の2本の線で区切られています。長方形の中央の線は中央値を表します。これは、順序付けられたデータを2つの等しい部分に分割する値です。ひげは長方形の端から極端な値に向かって伸びており、その長さはデータのばらつきによって決まります。",
+          "2": "ボックスチャートには、いくつかの注目すべき特徴と用途があります。"
+        },
+        "list": {
+          "0": "統計的要約: ボックスチャートは、データセットの主要な統計情報の視覚的な要約を提供します。中央値に加えて、データを4つの等しい部分に分割する四分位数（Q1とQ3）や、ひげの外側に点またはアスタリスクとして表示される外れ値も表示できます。",
+          "1": "非対称性と外れ値の識別: ボックスタイプのチャートを観察することで、データの分布における非対称性を特定できます。ひげの長さが同じでない場合、一方の端に向かって非対称性があることを示している可能性があります。さらに、ひげの外側の外れ値は簡単に強調表示できます。",
+          "2": "グループまたはカテゴリ間の比較: ボックスチャートは、異なるグループまたはカテゴリ間のデータの分布を比較するためにも使用されます。複数のボックスプロットを同じグラフに重ねることで、グループ間の中央値、四分位範囲、および外れ値の存在の違いを視覚化できます。",
+          "3": "バイアスと分布の検出: ボックスグラフは、データの分布が対称であるか、一方の端に偏っているかを視覚的に識別できます。長方形の中央線が中央にない場合、反対方向にバイアスがあることを示している可能性があります。",
+          "4": "分散の視覚化: データの中心位置とばらつきに関する情報を提供するだけでなく、ボックスチャートでは、データの分散とばらつきを単一のグラフで視覚化することもできます。これは、データの全体的な分布とばらつきをすばやく把握するのに役立ちます。"
+        },
+        "end": {
+          "0": "ボックスプロットは、数値データセットの分布、統計的要約、およびばらつきを視覚化するための便利なツールです。非対称性、外れ値を特定し、グループ間の分布を比較できます。その簡潔で効果的な視覚的表現により、データ分析とコミュニケーションで一般的に使用されるツールになっています。"
+        }
+      }
+    },
+    "histograms": {
+      "title": "ヒストグラム",
+      "description": {
+        "intro": {
+          "0": "ヒストグラムは、数値データまたは連続データの分布を示すために使用される視覚的表現です。このタイプのグラフは、一連の隣接する長方形の棒に基づいており、各棒の幅は値の範囲を表し、棒の高さはその範囲内の観測の頻度または数を示します。",
+          "1": "ヒストグラムタイプのグラフでは、横軸は、間隔またはビンに分割された、調査中の変数の値の範囲を表すために使用されます。縦軸は、各間隔の観測の頻度または数を表します。各棒の高さは、その特定の区間にいくつの観測値が含まれるかを示します。",
+          "2": "ヒストグラムタイプのチャートには、いくつかの注目すべき特徴と用途があります。"
+        },
+        "list": {
+          "0": "分布の表示: ヒストグラムを使用すると、数値データの形状と分布を表示できます。データが対称、歪み、マルチモーダル、または均一な分布に従っているかどうかを示すことができます。",
+          "1": "外れ値の識別: ヒストグラムを観察することで、ほとんどのデータの範囲外にある外れ値または極値を特定できます。これらの値は、孤立した棒として、または値の主要な範囲を超えて伸びる棒として表されます。",
+          "2": "傾向とパターンの分析: ヒストグラムは、データのパターンと傾向を明らかにすることができます。たとえば、左または右に歪んだ分布は、データの非対称性を示し、正規分布は近似的な対称性を示します。",
+          "3": "グループまたはカテゴリの比較: ヒストグラムは、異なるグループまたはカテゴリ間のデータの分布を比較するためにも使用できます。複数のヒストグラムを同じグラフに重ねることで、グループ間の違いと類似性を視覚化できます。",
+          "4": "密度推定: 絶対頻度を表示するだけでなく、ヒストグラムはデータの確率密度の視覚的な推定値も提供できます。棒の高さを正規化することで、各区間における値の発生確率の相対的な表現を取得できます。"
+        },
+        "end": {
+          "0": "ヒストグラムは、数値データの分布とパターンを視覚化するための便利なツールです。外れ値を特定し、傾向を分析し、グループ間の分布を比較できます。その明確で簡潔な視覚的表現により、データの分布に関する情報を理解しやすい方法で伝達するための効果的なツールになっています。"
+        }
+      }
+    },
+    "line-charts": {
+      "title": "折れ線グラフ",
+      "description": {
+        "intro": {
+          "0": "折れ線グラフは、時系列または連続変数にわたるデータの関係と進化を示す視覚的表現です。これらのグラフは、デカルト座標系にデータポイントをプロットすることによって構築され、各ポイントは、時間または横軸の独立変数の関数として、垂直軸上の変数の測定値または特定の値を表します。",
+          "1": "折れ線グラフでは、データポイントは直線で接続され、一連の接続されたポイントが作成されます。これらの線は、時間または独立変数にわたるデータの軌道と変化のパターンを視覚化できます。線の傾きは、増加または減少の傾向を示すことができ、線の方向と形状の変化は、データ内の追加のパターンを明らかにすることができます。",
+          "2": "折れ線グラフには、いくつかの注目すべき特徴と用途があります。"
+        },
+        "list": {
+          "0": "傾向の表現: 折れ線グラフは、時間の経過に伴う傾向と変化を示すのに特に役立ちます。時間の経過とともにデータ内の成長、減少、または変動のパターンを明らかにすることができます。",
+          "1": "変化と変動の識別: 折れ線グラフを観察することで、データの急激な変化や変動を特定できます。これらの変化は、測定された変数に影響を与える重要なイベントまたは要因を示している可能性があります。",
+          "2": "複数の系列の比較: 折れ線グラフでは、単一のチャートで複数のデータ系列を比較することもできます。これは、時間の経過とともに進化する異なる変数間の関係を分析および視覚化するのに役立ちます。",
+          "3": "季節性とサイクルの分析: データが季節的または周期的なパターンを示す場合、折れ線グラフはこれらのパターンを識別および分析するのに役立ちます。これは、データに定期的な変動が存在する経済学、気象学、販売分析などの分野で役立ちます。",
+          "4": "予測と投影: 折れ線グラフは、履歴データに基づいて予測と投影を行うためにも使用されます。過去の傾向を見ることで、データが将来どのように振る舞うかを推測し、予測するための数学的または統計的モデルを構築できます。"
+        },
+        "end": {
+          "0": "折れ線グラフは、時系列または連続変数にわたるデータの関係と進化を視覚化および分析するための貴重なツールです。傾向、季節的なパターン、変化、および予測に関する貴重な情報を提供し、情報に基づいた決定と比較分析を可能にします。"
+        }
+      }
+    },
+    "pie-charts": {
+      "title": "円グラフ",
+      "description": {
+        "intro": {
+          "0": "円グラフは、全体に対する異なるカテゴリまたは部分の割合を示す視覚的表現です。これらのグラフは、セクターに分割された円に基づいており、各セクターは特定のカテゴリを表し、その相対的なサイズは、そのカテゴリがデータセット全体に占める割合を反映します。",
+          "1": "円グラフでは、完全な円が100％またはデータの合計を表します。各セクターは円の一部として表示され、それが表すカテゴリに対応する名前またはラベルでラベル付けされます。セクターの角度の尺度は、そのカテゴリがデータセットに占める割合に比例します。",
+          "2": "円グラフには、いくつかの注目すべき特徴と用途があります。"
+        },
+        "list": {
+          "0": "割合の表現: 円グラフは、割合とパーセンテージを表すのに理想的です。データセット全体における各カテゴリの相対的な貢献をすばやく視覚化できます。",
+          "1": "主要なカテゴリの識別: 円グラフのセクターの相対的なサイズは、主要なカテゴリや最も重要なカテゴリを簡単に識別するのに役立ちます。最大のセクターは、他との関係でより大きな割合または貢献をしているカテゴリを示します。",
+          "2": "カテゴリ間の比較: 円グラフはカテゴリの割合を示すのに役立ちますが、それらの間で正確な比較を行うには制限される場合があります。これは、人間の知覚が角度やセクターのサイズの違いを正確に評価することが難しいためです。ただし、セクターのサイズ間の相対的な比較は、カテゴリ間の割合に関する一般的な情報を提供することができます。",
+          "3": "カテゴリデータの表現: 円グラフは、カテゴリが相互に排他的であり、固有の順序がないカテゴリデータを表すのに特に役立ちます。たとえば、異なる費用カテゴリの収入のパーセンテージ分布を示すために使用できます。",
+          "4": "視覚的プレゼンテーションの改善: 円グラフは、視覚的に魅力的で理解しやすい方法で情報を伝達するために、プレゼンテーションやドキュメントで一般的に使用されます。円形と使用される色は、注意をすばやく引き付け、カテゴリ間の比例関係を強調することができます。"
+        },
+        "end": {
+          "0": "円グラフは、データセット内のカテゴリの割合とパーセンテージを表すための効果的なツールです。主要なカテゴリを特定し、魅力的な視覚的プレゼンテーションを提供できます。ただし、カテゴリ間の正確な比較とカテゴリデータへの焦点という点での制限に注意することが重要です。"
+        }
+      }
+    },
+    "scatter-plots": {
+      "title": "散布図",
+      "description": {
+        "intro": {
+          "0": "散布図（またはドットプロット、英語でscatter plot）は、2つの変数間の関係を示すためにデカルト座標を使用する視覚的表現です。このタイプのグラフでは、データは2次元空間の個々の点として表され、各点は2つの変数に対応する値のペアを表します。",
+          "1": "散布図では、横軸は通常、独立変数に割り当てられ、縦軸は従属変数に割り当てられます。グラフ上の各点は個々の観測値を表し、グラフ上の位置は両方の変数に対して持つ値によって決定されます。グラフ上の点の相対的な位置は、2つの変数間のパターンと関係を明らかにします。",
+          "2": "散布図には、いくつかの注目すべき用途と特徴があります。"
+        },
+        "list": {
+          "0": "変数間の関係: 散布図は、2つの変数間の関係を分析できます。正の相関（点が上向きに集まる傾向）、負の相関（点が下向きに集まる傾向）、または相関の欠如（点が明確なパターンを示さない）があるかどうかを示すことができます。",
+          "1": "傾向の特定: 散布図は、データ内の傾向またはパターンを明らかにすることができます。点の一般的な方向を見ることで、変数間に線形、非線形、または曲線的な関係があるかどうかを特定できます。",
+          "2": "外れ値の検出: 散布図は、データ内の外れ値または極値を特定するのに役立ちます。これらの点は目立ち、主要なグループから遠く離れており、追加の分析が必要な異常なまたは例外的な観測を示唆しています。",
+          "3": "クラスターまたはグループの分析: 散布図内の点がグループ化されたり、異なるパターンを形成したりする場合、これはクラスターまたはグループの存在を示している可能性があります。これは、データセグメンテーションまたは分類分析で役立ちます。",
+          "4": "多次元データの可視化: 追加の色や点のサイズを使用する場合、散布図は2次元空間で追加の情報を表すこともできます。これにより、多次元データをより直感的に表示できます。"
+        },
+        "end": {
+          "0": "散布図は、2つの変数間の関係を探索および視覚化するための強力なツールです。データ内のパターン、傾向、および外れ値を特定でき、相関分析、クラスター検出、多次元データの可視化などのさまざまなアプリケーションで役立ちます。"
+        }
+      },
+      "index-info": "座標軸",
+      "form": {
+        "x": "X軸 (0)",
+        "y": "Y軸 (1)"
+      }
+    },
+    "time-series-plots": {
+      "title": "時系列プロット",
+      "description": {
+        "intro": {
+          "0": "時系列チャートは、時間を追って一定の間隔で収集および記録されるデータの視覚的表現です。これらのチャートは、経済学、金融、気象学、工学、その他多くの分野で広く使用されており、時間の経過に伴うデータの変化を分析および理解するために使用されます。",
+          "1": "グラフの横軸は時間を表し、縦軸は観測または記録されているデータ値を表します。データポイントは線で接続され、時間の経過に伴うパターンと傾向を特定できます。",
+          "2": "時系列チャートには、いくつかの利点と実用的なアプリケーションがあります。"
+        },
+        "list": {
+          "0": "傾向分析: 時系列グラフは、データ内の長期的な傾向を特定および分析するのに役立ちます。これは、データが将来どのように振る舞うかを予測し、情報に基づいた決定を下すのに役立ちます。",
+          "1": "季節パターンの識別: 多くのデータセットには、ホリデーシーズン中の売上や農業生産の季節的な変動など、時間とともに定期的に繰り返される季節的なパターンがあります。時系列チャートは、これらの季節的なパターンを特定し、データへの影響を理解するのに役立ちます。",
+          "2": "変化と異常の検出: 時系列グラフを観察することで、データ内の急激な変化や異常を特定できます。これらの変化は、さらなる調査と分析が必要な重要または異常なイベントを示している可能性があります。",
+          "3": "モデリングと予測: 時系列グラフは、モデルと予測を開発するための基本的なツールです。過去のパターンを見ることで、関係を捉え、将来に関する予測を行う数学的または統計的モデルを構築できます。",
+          "4": "比較分析: 時系列チャートは、同じ期間に収集された異なるデータセットを比較するためにも使用されます。これは、観測された変数間の違い、類似性、および関係を特定するのに役立ちます。"
+        },
+        "end": {
+          "0": "時系列チャートは、時間の経過に伴うデータの変化を分析および理解するための不可欠なツールです。傾向、季節的なパターン、変化、および予測に関する貴重な情報を提供し、情報に基づいた決定と比較分析を可能にします。"
+        }
+      },
+      "index-info": "選択するインデックスは一意の系列を含み、表示する列の隣のインデックスを選択してはいけません",
+      "form": {
+        "index": "インデックス"
+      }
+    },
+    "time-series": {
+      "warning": {
+        "index": "このデータフレームは、一意の値を持つ特性の条件を満たしていないため、適切な視覚化を許可しません"
+      }
+    },
+    "violin-plots": {
+      "title": "バイオリンプロット",
+      "description": {
+        "intro": {
+          "0": "バイオリンプロットは、箱ひげ図の特徴と確率密度関数を組み合わせた視覚的表現です。このタイプのチャートは、データの分布の詳細なビューを提供し、単一のチャートで複数のグループまたはカテゴリを比較できます。",
+          "1": "バイオリンチャートの外観はバイオリンの形状に似ています。データのメジアンを表す中心線と、確率密度分布を表す両側の2つの陰影領域があります。これらの陰影領域は、中心線に沿って対称性を持ち、データの対称性または非対称性を反映します。",
+          "2": "バイオリンプロットの形状は、データの分布に関する情報を提供します。たとえば、特定のセクションのバイオリンプロットが広いほど、その領域のデータ密度が高いことを示し、セクションが狭いほど、密度が低いことを示します。さらに、バイオリンチャートは、複数のバイオリンをグループ化または重ね合わせることで、異なるグループまたはカテゴリの視覚的な比較を可能にします。",
+          "3": "バイオリンプロットには、いくつかの実用的なアプリケーションがあります。"
+        },
+        "list": {
+          "0": "分布の比較: バイオリンプロットを使用すると、異なるグループまたはカテゴリ間のデータ分布を比較できます。これは、データの形状、分散、および傾向の違いや類似性を特定するのに役立ちます。",
+          "1": "外れ値の識別: バイオリンプロットは、データ内の外れ値または極値の存在に関する視覚的な情報を提供します。これらの値は、陰影領域の外側のポイントとして表され、追加の分析が必要な異常な観測を示している可能性があります。",
+          "2": "確率密度の可視化: バイオリンプロットは、データの確率密度のグラフィカルな表現も提供します。これにより、高密度または低密度の領域、および分布の可能なバイアスまたは非対称性を簡単に特定できます。",
+          "3": "効果的なデータ通信: バイオリンチャートは、視覚的に魅力的な方法でデータの分布に関する複雑な情報を伝達するための効果的な方法です。情報を簡潔に要約し、非技術的な聴衆に重要なパターンと特徴を伝えるのに役立ちます。"
+        },
+        "end": {
+          "0": "バイオリンプロットは、データ分布を視覚化および比較するための便利なツールです。データの形状、分散、対称性、および外れ値の存在を分析でき、複数のグループまたはカテゴリ間の比較が必要な場合に特に役立ちます。その魅力的で簡潔なグラフィカルな表現は、複雑な情報を理解しやすい方法で伝達するための効果的なツールになります。"
+        }
+      }
+    }
+  },
+  "face-api": {
+    "years": "年齢",
+    "neutral": "ニュートラル",
+    "happy": "幸せ",
+    "sad": "悲しい",
+    "angry": "怒っている",
+    "fearful": "恐れている",
+    "disgusted": "嫌悪",
+    "surprised": "驚いている"
+  },
+  "pages": {
+    "version": {
+      "title": "バージョン"
+    },
+    "index": {
+      "tabular-classification": {
+        "1-title": "表形式分類",
+        "1-description-1": "分類とは、その特徴（独立変数）から要素（従属変数）が属するクラスを決定するタスクです。",
+        "1-description-2": "予測タスクであり、その値が分類される要素が属することができる異なるクラスである離散変数を持ちます。",
+        "1-button": "事前訓練済みモデル",
+        "2-title": "ネットワークアーキテクチャの設計、作成、および編集",
+        "2-description-1": "このツールを通じて、マルチクラスデータを分類するためのニューラルネットワークを作成できます。",
+        "2-description-2": "カスタムアーキテクチャを設計、作成、トレーニング、および評価するには、以下が必要です。",
+        "2-description-list": {
+          "1": "レイヤーの数、その活性化関数を定義します。",
+          "2": "学習率を定義します。",
+          "3": "エポック数を定義します。",
+          "4": "オプティマイザーを定義します。",
+          "5": "損失関数を定義します。",
+          "6": "メトリクス関数を定義します。"
+        },
+        "2-button": "モデルを作成して訓練する"
+      },
+      "regression": {
+        "1-title": "回帰",
+        "2-title": "ネットワークアーキテクチャの設計、作成、および編集",
+        "1-description-1": "回帰とは、その特徴（独立変数）から特定の数値（従属変数）を決定するタスクです。",
+        "1-description-2": "出力として連続変数を持つ予測タスクであり、データに最もよく適合し、独立変数に基づいて従属変数の数値を予測できる直線を見つけることを目的としています。",
+        "1-button": "事前訓練済みモデル",
+        "2-description-1": "このツールを通じて、予測を行うためのニューラルネットワークを作成できます。",
+        "2-description-2": "モデルで使用される独立変数を定義し、予測しようとしている数値である従属変数を定義します。",
+        "2-description-3": null,
+        "2-description-list": {
+          "1": "レイヤーの数、その活性化関数を定義します。",
+          "2": "学習率を定義します。",
+          "3": "エポック数を定義します。",
+          "4": "オプティマイザーを定義します。",
+          "5": "損失関数を定義します。",
+          "6": "メトリクス関数を定義します。",
+          "title": "回帰を適用し、変数間の関係をモデル化するには、次の手順に従う必要があります。"
+        }
+      },
+      "object-detection": {
+        "1-title": "物体認識",
+        "1-description-1": "物体の分類とは、その違いと類似性に従って要素を整理することから成ります。",
+        "1-description-2": "これらのモデルは、各物体を特徴づけるものを少しずつ学習できるように、さまざまな画像を多数使用して訓練されます。",
+        "1-button": "事前訓練済みモデル",
+        "2-title": "物体認識"
+      },
+      "image-classification": {
+        "1-title": "画像分類",
+        "1-description-1": "画像分類は、古典的な分類と同じ方法で、1つ以上の独立変数に応じて従属変数が属するクラスを決定するのに役立ちます。",
+        "1-button": "事前訓練済みモデル",
+        "2-title": "ネットワークアーキテクチャの設計、作成、および編集",
+        "2-description-1": "このツールを通じて、マルチクラスデータを分類するためのニューラルネットワークを作成できます。",
+        "2-description-2": "カスタムアーキテクチャを設計、作成、トレーニング、および評価するには、以下が必要です。",
+        "2-description-list": {
+          "1": "レイヤーの数、その活性化関数を定義します。",
+          "2": "学習率を定義します。",
+          "3": "エポック数を定義します。",
+          "4": "オプティマイザーを定義します。",
+          "5": "損失関数を定義します。",
+          "6": "メトリクス関数を定義します。"
+        },
+        "2-button": "モデルを作成して訓練する"
+      }
+    },
+    "contribute": {
+      "title": "貢献する",
+      "github": {
+        "title": "GitHubのプロジェクト"
+      },
+      "license": {
+        "title": "ライセンス"
+      }
+    },
+    "menu-selection-dataset": {
+      "0-tabular-classification": {
+        "csv": "データセットをアップロード - CSV",
+        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+      },
+      "form-description-1": "次に、作業するデータセットを選択するか、独自のデータセットをロードします。",
+      "form-label": "データセットを選択",
+      "form-option-_-1": "データセットを選択",
+      "form-upload-description": "次に、必要に応じて独自のアーキテクチャをロードできます。そうしない場合は、続行をクリックすると、デフォルトの例のアーキテクチャがロードされます。",
+      "form-submit": "続行",
+      "1-regression": {
+        "csv": "データセットをアップロード - CSV",
+        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+      }
+    },
+    "menu-selection-model": {
+      "form-description-1": "作業する訓練済みモデルを選択します。",
+      "form-description-2": "-",
+      "form-label": "事前訓練済みモデルを選択",
+      "form-option-_-1": "事前訓練済みモデルを選択",
+      "form-submit": "続行"
+    },
+    "playground": {
+      "form": {
+        "select-parameter": "パラメータを選択",
+        "parameter": "パラメータ",
+        "parameter-integer": "整数パラメータ",
+        "parameter-decimal": "小数パラメータ",
+        "parameter-float": "単精度浮動小数点パラメータ",
+        "parameter-double": "倍精度浮動小数点パラメータ",
+        "parameter-categorical": "カテゴリパラメータ",
+        "data-to-check": "テストするデータ",
+        "vector-to-check": "テストするベクトル",
+        "button-check-result": "予測"
+      },
+      "0-tabular-classification": {
+        "general": {
+          "model": "モデル",
+          "description-input": "データエントリの説明",
+          "description-features": "特徴量編集フォーム",
+          "description-data": "フォームデータ",
+          "description-vector": "データベクトル",
+          "explainability": "モデルの解釈性",
+          "select-class": "クラスを選択",
+          "n-samples": "サンプル数",
+          "n-samples-help": "KernelSHAP が使用するサンプル数",
+          "calculating": "計算中...",
+          "show-explain": "説明を表示",
+          "hide-explain": "説明を非表示",
+          "n-instances": "集約するインスタンス数",
+          "n-instances-help": "グローバル重要度（平均 |SHAP|）の計算に集約するデータセットのインスタンス数",
+          "show-global": "グローバル重要度を表示",
+          "hide-global": "グローバル重要度を非表示",
+          "no-data": "グローバル重要度を計算するためのデータセットがありません",
+          "sort-order": "並び替え",
+          "sort-desc": "重要度の高い順",
+          "sort-asc": "重要度の低い順",
+          "sort-none": "元の順序",
+          "chart-type": "グラフの種類",
+          "chart-bar": "棒グラフ（平均 |SHAP|）",
+          "chart-beeswarm": "ビースウォーム",
+          "beeswarm-shap-value": "SHAP 値",
+          "beeswarm-feature-value": "特徴量の値",
+          "beeswarm-low": "低",
+          "beeswarm-high": "高",
+          "explain-panel-title": "説明可能性",
+          "explain-panel-local-title": "局所的な説明（1つのインスタンス）",
+          "explain-panel-local-body": "SHAP は、この予測とモデルの平均予測（基準値）との差を各特徴量に分配することで、1つの予測を説明します。各バーは、特徴量がどれだけ、どの方向に作用するかを示します。正の値は選択したクラスに向かって、負の値はそれに反して作用します。",
+          "explain-panel-local-body-regression": "SHAP は、予測値とモデルの平均予測（基準値）との差を各特徴量に分配することで、1つの予測を説明します。各バーは、特徴量がどれだけ、どの方向に作用するかを示します。正の値は予測値を上げ、負の値は予測値を下げます。",
+          "explain-panel-global-title": "グローバル重要度（すべてのインスタンス）",
+          "explain-panel-global-body": "グローバル重要度は、多数の局所的な説明を集約します。棒グラフは絶対値の平均（平均 |SHAP|）、つまり各特徴量が平均してどれだけ重要かを示します。ビースウォームは、各点を特徴量の値で色付けし、効果の方向とばらつきを加えて示します。順列重要度などの他の手法では、特に特徴量同士が関連している場合、特徴量の順位が多少異なることがあります。手法ごとに重要度の測り方が違うためです。"
+        },
+        "0_upload": {
+          "upload": "アップロード",
+          "upload-your-model": "モデルをロード",
+          "upload-your-model-description": "モデルをロードするには、<strong>.json</strong>ファイルと<strong>.bin</strong>ファイルをアップロードする必要があることに注意してください",
+          "button-upload-your-model": "モデルをロード"
+        },
+        "generator": {
+          "manual": {
+            "title": "モデルジェネレーターマニュアル",
+            "details-edit-layers": {
+              "title": "レイヤーエディタ",
+              "text-0": "ニューラルネットワークのレイヤーを編集できます。開始時または終了時に「レイヤーを追加」ボタンを押して、必要な数だけ追加できます。",
+              "list": {
+                "0": "<b>レイヤーニューロン</b>: <br /> レイヤー内の各ニューロンには、出力値を重み付けする一連の関連付けられた重みがあります。 <br /> レイヤー内のニューロンの数を編集できます。",
+                "1": "<b>活性化関数</b>: <br /> ニューロンの活性化関数は、受信した入力に基づいて出力を計算する数学関数を指します。各レイヤーのニューロンの活性化関数を編集できます。"
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "ハイパーパラメータエディタ",
+              "text-0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。",
+              "list": {
+                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
+                "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
+                "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
+                "4": "<b>損失関数</b>: <br /> トレーニング中のモデルの効率を測定するための誤差計算方法です。",
+                "5": "<b>メトリクス関数</b>: <br /> テストデータを使用した機械学習モデルのパフォーマンスを評価するために使用される平均評価です。"
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "ハイパーパラメータ情報",
+              "list": {
+                "0": "<b>学習率</b>: <br /> 学習率は、トレーニング中に計算された誤差に応じて、ニューラルネットワークの重みがどの程度更新される必要があるかを決定するパラメータです。",
+                "1": "<b>エポック数</b>: <br /> エポック数は、トレーニングプロセス中にトレーニングデータがニューラルネットワークに提示される回数を指します。各反復は、計算された誤差の関数としてのネットワークの重みの更新を意味します。",
+                "2": "<b>テストセットサイズ</b>: <br /> テストセットのサイズは、トレーニング後にニューラルネットワークのパフォーマンスを評価するために使用されるデータの量を指します。このデータセットはニューラルネットワークのトレーニングには使用されず、新しいデータに一般化するネットワークの能力を測定するために使用されます。",
+                "3": "<b>オプティマイザー</b>: <br /> オプティマイザーは、トレーニング中に計算された誤差に応じてニューラルネットワークの重みを更新するために使用されるアルゴリズムです。一般的なオプティマイザーの例には、確率的勾配降下法（SGD）、Adam、およびAdagradがあります。",
+                "4": "<b>損失関数</b>: <br /> 損失関数は、ニューラルネットワークの予測と実際の出力との間の不一致を測定する尺度です。トレーニング中にニューラルネットワークを最適化するために使用され、交差エントロピーや平均二乗誤差など、さまざまな損失関数があります。"
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "モデルを作成して訓練する",
+              "text-0": "前のすべてのフィールドが入力されたら、「モデルを作成して訓練する」ボタンを押してモデルを作成できます。",
+              "text-1": "メトリック関数 <i>Accuracy</i> でモデルを訓練した場合、バイザーに2つのグラフが表示されます。私たちにとって最も関連性の高いのは下のグラフです。tensorflow.jsでは、<i>acc</i>と<i>val_acc</i>は、ニューラルネットワークのモデルのトレーニングで一般的に使用される評価メトリクスです。<br /><i>Acc</i>は、トレーニングデータセットにおけるモデルの精度（Accuracy）を表します。精度は、正しい予測の数を予測の総数で割ったものとして定義されます。<br /><i>Val_acc</i>は、検証データセットにおけるモデルの精度を表します。検証は、トレーニング中に見られなかった新しいデータに一般化するモデルの能力を評価するために使用されます。",
+              "text-2": "検証の精度は、モデルがトレーニングデータに過度に適合し、新しいデータにうまく一般化できない場合に発生する過剰適合（<i>overfitting</i>）を検出するために重要です。"
+            },
+            "details-export-models": {
+              "title": "モデルをエクスポート",
+              "text-0": "モデルを正しく作成した場合、生成されたモデルのテーブルにエントリが追加されます。生成されたモデルをエクスポートしてローカルに保存できます。"
+            },
+            "details-prediction": {
+              "title": "予測",
+              "text-0": "最終フォームでは、クラスを決定するために使用される主要な特徴量を選択できます。",
+              "text-1": "「結果を表示」ボタンを押すと、要素の入力特徴量から出力クラスの予測が取得されます。"
+            }
+          }
+        }
+      },
+      "generator": {
+        "prediction": {
+          "class_id_name": "ターゲットのID <strong>{{class_target_id}}</strong> はクラス <strong>{{name}}</strong> に対応します"
+        },
+        "layer-design": "レイヤー設計",
+        "neural_network_modes": {
+          "title": "視覚化モード",
+          "compact": "コンパクトモード",
+          "extend": "拡張モード"
+        },
+        "dataset": {
+          "title": "データセット",
+          "upload-dataset": "データセットをアップロード",
+          "attributes": {
+            "title": "属性",
+            "int32": "数値",
+            "float32": "小数",
+            "string": "テキスト",
+            "label-encoder": "ラベルエンコーダ",
+            "one-hot-encoder": "OneHotエンコーダ",
+            "classes": "クラス"
+          },
+          "details": {
+            "dataframe-processed": "処理済みデータフレーム",
+            "description-original": "元のデータフレームの説明",
+            "description-processed": "処理済みデータフレームの説明",
+            "data": "データセット情報",
+            "info": "情報"
+          }
+        },
+        "layers": {
+          "title": "レイヤー設計",
+          "page-info": "<link1>netron.app</link1>にアクセスしてトポロジ全体を視覚化できます"
+        },
+        "editor-layers": {
+          "title": "レイヤーエディタ",
+          "add-layer-start": "最初にレイヤーを追加",
+          "add-layer-end": "最後にレイヤーを追加",
+          "delete-layer": "レイヤー {{index}}を削除",
+          "layer-id": "レイヤー {{index}}",
+          "kernel-size": "カーネルサイズ",
+          "kernel-size-placeholder": "レイヤーのカーネルサイズを入力してください",
+          "filters-size": "フィルターサイズ",
+          "filters-size-placeholder": "レイヤーのフィルターを入力してください",
+          "units": "レイヤーニューロン",
+          "units-placeholder": "レイヤーのニューロン数を入力してください",
+          "activation-function-select": "活性化関数を選択",
+          "activation-function-info": "関数をアクティブ化するために使用されるオプティマイザーになります",
+          "strides": "ストライド",
+          "strides-placeholder": "レイヤーのストライドを入力してください",
+          "pool-size": "プールサイズ",
+          "pool-size-placeholder": "レイヤーのプールサイズを入力してください"
+        },
+        "editor-feature-selector": {
+          "title": "特徴量セレクター",
+          "feature-selector-x": "特徴量セレクター / セット (X)",
+          "feature-selector-y": "特徴量セレクター / ターゲット (Y)",
+          "add-feature": "特徴量を追加",
+          "delete-feature": "特徴量 {{value}}を削除"
+        },
+        "general-parameters": {
+          "title": "ハイパーパラメータエディタ",
+          "learning-rate": "学習率",
+          "learning-rate-placeholder": "学習率を入力してください",
+          "learning-rate-info": "0から100までの値（パーセンテージ）",
+          "number-of-epochs": "エポック数",
+          "number-of-epochs-placeholder": "エポック数",
+          "number-of-epochs-info": "値が高いほど、トレーニングの実行に時間がかかります",
+          "train-rate": "テストセットサイズ",
+          "train-rate-placeholder": "テストセットのサイズを入力してください",
+          "train-rate-info": "テストセットサイズの0から100までの値（パーセンテージ）",
+          "optimizer-id": "オプティマイザーを選択",
+          "optimizer-id-info": "誤差を修正するために使用されるオプティマイザーになります。",
+          "loss-id": "損失関数を選択",
+          "loss-id-info": "ニューロンの誤差を評価するために使用される関数になります。",
+          "metrics-id": "メトリクスを選択",
+          "metrics-id-info": "トレーニング評価に使用されるメトリクスタイプになります。",
+          "test-size": "テストセットサイズ",
+          "test-size-placeholder": "テストセットサイズ",
+          "test-size-info": "テストセットサイズの0から100までの値（パーセンテージ）",
+          "delete-metric": "メトリクス関数 {{index}}を削除",
+          "add-metric": "メトリクス関数を追加",
+          "metric-id-__index__": "メトリクス {{index}}",
+          "metric-id-select": "メトリクス関数を選択",
+          "metric-id-info": "メトリクス関数の一つになります"
+        },
+        "loaded": "ロード済み",
+        "load": "ロード",
+        "waiting-for-file": "ファイルを待機中",
+        "waiting-for-process": "データセット処理を待機中",
+        "waiting-for-training": "モデルトレーニングを待機中",
+        "models": {
+          "title": "モデル",
+          "history-train": "トレーニング履歴",
+          "train": "トレーニング履歴",
+          "button-submit": "モデルを訓練",
+          "open-visor": "バイザーを開く",
+          "close-visor": "バイザーを閉じる",
+          "export-current-model": "現在のモデルをエクスポート"
+        },
+        "table": {
+          "id": "ID",
+          "load": "ロード",
+          "learning-rate": "学習率",
+          "number-of-epochs": "エポック数",
+          "train-rate": "テストセットサイズ",
+          "layers": "レイヤー",
+          "optimizer-id": "オプティマイザー",
+          "loss-id": "損失",
+          "metric-id": "メトリクス",
+          "download": "ダウンロード"
+        },
+        "dynamic-form-dataset": {
+          "title": "予測",
+          "text-0-__column_name_target__": "予測する例の各入力特徴量の値を入力してください <b>{{column_name_target}}</b>",
+          "select-option": "オプションを選択",
+          "input-data": "テストするデータを入力",
+          "input-vector": "テストするベクトルを入力",
+          "test-vector": "テストするベクトル",
+          "test-input-data": "フォームデータ",
+          "test-input-vector": "テストするベクトル",
+          "selector-entity": "エンティティを選択",
+          "selector-model": "モデルを選択"
+        },
+        "list-models-generated": "生成されたモデルのリスト",
+        "visor": {
+          "title": "バイザーの設定",
+          "rmse": "RMSE",
+          "val_rmse": "VAL RMSE",
+          "mae": "MAE",
+          "val_mae": "VAL MAE",
+          "history-train": "トレーニング履歴",
+          "train": "トレーニング履歴",
+          "summary": "概要",
+          "scatterplot": {
+            "__feature____target__": "{{feature}} x {{target}}"
+          },
+          "original-vs-predictions": "元のデータ/予測",
+          "model": "モデル",
+          "dataset": "データセット",
+          "predictions": "予測結果",
+          "predicted": "予測",
+          "confusion-matrix": "混同行列",
+          "line-chart": "折れ線グラフ"
+        },
+        "waiting-for-models": "モデルの作成を待機中"
+      },
+      "1-regression": {
+        "generator": {
+          "manual": {
+            "title": "モデルジェネレーターマニュアル",
+            "simple-regression": "単回帰",
+            "multiple-regression": "重回帰",
+            "details-edit-layers": {
+              "title": "レイヤーエディタ",
+              "text": {
+                "0": "ニューラルネットワークのレイヤーを編集できます。開始時または終了時に「レイヤーを追加」ボタンを押して、必要な数だけ追加できます。"
+              },
+              "list": {
+                "0": "<b>レイヤーニューロン</b>: <br /> レイヤー内の各ニューロンには、出力値を重み付けする一連の関連付けられた重みがあります。 <br /> レイヤー内のニューロンの数を編集できます。",
+                "1": "<b>活性化関数</b>: <br /> ニューロンの活性化関数は、受信した入力に基づいて出力を計算する数学関数を指します。各レイヤーのニューロンの活性化関数を編集できます。"
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "ハイパーパラメータエディタ",
+              "text": {
+                "0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。"
+              },
+              "list": {
+                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
+                "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
+                "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
+                "4": "<b>損失関数</b>: <br /> トレーニング中のモデルの効率を測定するための誤差計算方法です。",
+                "5": "<b>メトリクス関数</b>: <br /> テストデータを使用した機械学習モデルのパフォーマンスを評価するために使用される平均評価です。"
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "ハイパーパラメータ情報",
+              "list": {
+                "0": "<b>学習率</b>: <br /> 学習率は、トレーニング中に計算された誤差に応じて、ニューラルネットワークの重みがどの程度更新される必要があるかを決定するパラメータです。",
+                "1": "<b>エポック数</b>: <br /> エポック数は、トレーニングプロセス中にトレーニングデータがニューラルネットワークに提示される回数を指します。各反復は、計算された誤差の関数としてのネットワークの重みの更新を意味します。",
+                "2": "<b>テストセットサイズ</b>: <br /> テストセットのサイズは、トレーニング後にニューラルネットワークのパフォーマンスを評価するために使用されるデータの量を指します。",
+                "3": "<b>オプティマイザー</b>: <br /> オプティマイザーは、トレーニング中に計算された誤差に応じてニューラルネットワークの重みを更新するために使用されるアルゴリズムです。一般的なオプティマイザーの例には、確率的勾配降下法（SGD）、Adam、およびAdagradがあります。",
+                "4": "<b>損失関数</b>: <br /> 損失関数は、ニューラルネットワークの予測と実際の出力との間の不一致を測定する尺度です。トレーニング中にニューラルネットワークを最適化するために使用され、交差エントロピーや平均二乗誤差など、さまざまな損失関数があります。"
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "モデルを作成して訓練する",
+              "text": {
+                "0": "前のすべてのフィールドが入力されたら、「モデルを作成して訓練する」ボタンを押してモデルを作成できます。",
+                "1": "メトリック関数 <i>Accuracy</i> でモデルを訓練した場合、バイザーに2つのグラフが表示されます。私たちにとって最も関連性の高いのは下のグラフです。tensorflow.jsでは、<i>acc</i>と<i>val_acc</i>は、ニューラルネットワークのモデルのトレーニングで一般的に使用される評価メトリクスです。<br /><i>Acc</i>は、トレーニングデータセットにおけるモデルの精度（Accuracy）を表します。精度は、正しい予測の数を予測の総数で割ったものとして定義されます。<br /><i>Val_acc</i>は、検証データセットにおけるモデルの精度を表します。検証は、トレーニング中に見られなかった新しいデータに一般化するモデルの能力を評価するために使用されます。",
+                "2": "検証の精度は、モデルがトレーニングデータに過度に適合し、新しいデータにうまく一般化できない場合に発生する過剰適合（<i>overfitting</i>）を検出するために重要です。"
+              }
+            },
+            "details-export-models": {
+              "title": "モデルをエクスポート",
+              "text": {
+                "0": "モデルを正しく作成した場合、生成されたモデルのテーブルにエントリが追加されます。生成されたモデルをエクスポートしてローカルに保存できます。"
+              }
+            },
+            "details-plot-models": {
+              "title": "予測のプロット",
+              "text": {
+                "0": "このタスクには疎なグラフを使用できます。これにより、元のデータを点の雲で表し、線を使用してモデルの予測をプロットします。使用するアーキテクチャに応じて、特定の傾きを持つ直線、またはデータにより適合して湾曲する線が得られます。これを行うには、最初の値から最後の値まで、100個の離散的な<i>x</i>予測が作成されます。"
+              }
+            }
+          },
+          "simple-regression": "単回帰",
+          "multiple-regression": "重回帰"
+        },
+        "dataframe": {
+          "title": "処理済みデータフレーム"
+        },
+        "selector-instance": {
+          "option": "インスタンスセレクター"
+        },
+        "selector-model": {
+          "option": "モデルセレクター"
+        },
+        "details": {
+          "description-processed": {
+            "dataset": "データフレーム情報",
+            "describe": "データフレームの説明"
+          }
+        },
+        "predict": {
+          "title": "予測",
+          "instance": {
+            "__index__": "インスタンス {{index}}"
+          },
+          "model": {
+            "__index__": "モデル {{index}}"
+          },
+          "button-submit": "予測",
+          "list-models-generated": "生成されたモデルのリスト",
+          "list-models": "生成されたモデルのリスト",
+          "list-instances": "インスタンスのリスト"
+        },
+        "model-selector": {
+          "title": "モデルセレクター",
+          "option": "モデルを選択"
+        }
+      },
+      "3-image-classification": {
+        "generator": {
+          "manual": {
+            "title": "モデルジェネレーターマニュアル",
+            "details-edit-layers": {
+              "title": "レイヤーエディタ",
+              "text-0": "ニューラルネットワークのレイヤーを編集できます。開始時または終了時に「レイヤーを追加」ボタンを押して、必要な数だけ追加できます。",
+              "list": {
+                "0": "<b>レイヤーニューロン</b>: <br /> レイヤー内の各ニューロンには、出力値を重み付けする一連の関連付けられた重みがあります。 <br /> レイヤー内のニューロンの数を編集できます。",
+                "1": "<b>活性化関数</b>: <br /> ニューロンの活性化関数は、受信した入力に基づいて出力を計算する数学関数を指します。各レイヤーのニューロンの活性化関数を編集できます。"
+              }
+            },
+            "details-edit-layers-more-info": {
+              "title": "追加情報レイヤー",
+              "text-0": "さらに、画像分類に焦点を当てた他の機械学習ネットワークに共通するレイヤーが2つあります。",
+              "list": {
+                "0": "<b>dense</b> <br /> 密な（完全に接続された）レイヤーを作成します。",
+                "1": "<b>dropout</b> <br /> ドロップアウトは、トレーニング時間中の各更新で入力ユニットの分数率をランダムに0に設定することで構成され、過剰適合を防ぐのに役立ちます。",
+                "2": "<b>embedding</b> <br /> 正の整数（インデックス）を固定サイズの密なベクトルにマッピングします。例：[[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]",
+                "3": "<b>flatten</b> <br /> Flattenレイヤーは、入力内の各バッチを1Dに平坦化します（出力を2Dにします）。",
+                "4": "<b>permute</b> <br /> 指定されたパターンに従って入力の次元を並べ替えます。",
+                "5": "<b>repeatVector</b> <br /> 入力を新しい次元でn回繰り返します。",
+                "6": "<b>reshape</b> <br /> 入力を特定の形状に再形成します。",
+                "7": "<b>spatialDropout1d</b> <br /> ドロップアウトの空間1Dバージョン。"
+              }
+            },
+            "details-hyper-parameters-editor": {
+              "title": "ハイパーパラメータエディタ",
+              "text-0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。",
+              "list": {
+                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
+                "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
+                "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
+                "4": "<b>損失関数</b>: <br /> トレーニング中のモデルの効率を測定するための誤差計算方法です。",
+                "5": "<b>メトリクス関数</b>: <br /> テストデータを使用した機械学習モデルのパフォーマンスを評価するために使用される平均評価です。"
+              }
+            },
+            "details-hyper-parameters-info": {
+              "title": "ハイパーパラメータ情報",
+              "list": {
+                "0": "<b>学習率</b>: <br /> 学習率は、トレーニング中に計算された誤差に応じて、ニューラルネットワークの重みがどの程度更新される必要があるかを決定するパラメータです。",
+                "1": "<b>エポック数</b>: <br /> エポック数は、トレーニングプロセス中にトレーニングデータがニューラルネットワークに提示される回数を指します。各反復は、計算された誤差の関数としてのネットワークの重みの更新を意味します。",
+                "2": "<b>テストセットサイズ</b>: <br /> テストセットのサイズは、トレーニング後にニューラルネットワークのパフォーマンスを評価するために使用されるデータの量を指します。",
+                "3": "<b>オプティマイザー</b>: <br /> オプティマイザーは、トレーニング中に計算された誤差に応じてニューラルネットワークの重みを更新するために使用されるアルゴリズムです。一般的なオプティマイザーの例には、確率的勾配降下法（SGD）、Adam、およびAdagradがあります。",
+                "4": "<b>損失関数</b>: <br /> 損失関数は、ニューラルネットワークの予測と実際の出力との間の不一致を測定する尺度です。トレーニング中にニューラルネットワークを最適化するために使用され、交差エントロピーや平均二乗誤差など、さまざまな損失関数があります。"
+              }
+            },
+            "details-create-and-train-models": {
+              "title": "モデルを作成して訓練する",
+              "text-0": "前のすべてのフィールドが入力されたら、「モデルを作成して訓練する」ボタンを押してモデルを作成できます。",
+              "text-1": "メトリック関数 <i>Accuracy</i> でモデルを訓練した場合、バイザーに2つのグラフが表示されます。私たちにとって最も関連性の高いのは下のグラフです。tensorflow.jsでは、<i>acc</i>と<i>val_acc</i>は、ニューラルネットワークのモデルのトレーニングで一般的に使用される評価メトリクスです。<br /><i>Acc</i>は、トレーニングデータセットにおけるモデルの精度（Accuracy）を表します。精度は、正しい予測の数を予測の総数で割ったものとして定義されます。<br /><i>Val_acc</i>は、検証データセットにおけるモデルの精度を表します。検証は、トレーニング中に見られなかった新しいデータに一般化するモデルの能力を評価するために使用されます。",
+              "text-2": "検証の精度は、モデルがトレーニングデータに過度に適合し、新しいデータにうまく一般化できない場合に発生する過剰適合（<i>overfitting</i>）を検出するために重要です。"
+            },
+            "details-export-models": {
+              "title": "モデルをエクスポート",
+              "text-0": "モデルを正しく作成した場合、生成されたモデルのテーブルにエントリが追加されます。生成されたモデルをエクスポートしてローカルに保存できます。"
+            },
+            "details-prediction": {
+              "title": "分類",
+              "text-0": "最終フォームでは、クラスを決定するために使用される主要な特徴量を選択できます。",
+              "text-1": "「結果を表示」ボタンを押すと、要素の入力特徴量から出力クラスの予測が取得されます。"
+            }
+          }
+        }
+      }
+    },
+    "dataframe": {
+      "title": "データセットを分析",
+      "upload-csv": "データセットをアップロード"
+    },
+    "menu": {
+      "select-model": {
+        "description": "説明"
+      },
+      "select-dataset": {
+        "description": "説明"
+      }
+    },
+    "documentation": {
+      "title": "ドキュメント"
+    },
+    "manual": {
+      "title": "マニュアル",
+      "00-tabular-classification": {
+        "upload-and-process": {
+          "title": "ステップ 1: データセットをアップロードして前処理する"
+        },
+        "dataset": {
+          "title": "ステップ 2: データセットを分析する"
+        },
+        "layer-design": {
+          "title": "ステップ 3: ニューラルネットワークの層構成を確認する"
+        },
+        "editor-layers": {
+          "title": "ステップ 4: ニューラルネットワークの層を編集する"
+        },
+        "editor-hyperparameters": {
+          "title": "ステップ 5: 学習のハイパーパラメータを編集する"
+        },
+        "table-models": {
+          "title": "ステップ 6: 学習とモデル一覧"
+        },
+        "prediction": {
+          "title": "ステップ 7: 予測"
+        }
+      },
+      "app": {
+        "title": "ツールの目的",
+        "description-1": "このアプリケーションでは、表形式データの分類、画像分類、物体識別など、人工ニューラルネットワークが実行できる代表的なタスクを紹介します。ニューラルネットワークは機械学習の分野に属する人工知能の手法で、データセットから学習（訓練）するモデルを構築します。",
+        "description-2": "ニューラルネットワークを学ぶ理由には、次のようなものがあります。",
+        "list": {
+          "0": {
+            "title": "実践的な応用",
+            "description": "ニューラルネットワークは、音声認識やコンピュータビジョンからデータ分析、結果の予測まで、幅広い用途で使われています。ニューラルネットワークを学ぶことで、医療、工学、データサイエンス、マーケティングなど多くの分野で役立つスキルを身につけることができます。"
+          },
+          "1": {
+            "title": "複雑な問題の解決",
+            "description": "ニューラルネットワークは、多数の変数と非線形な関係を持つ複雑な問題の解決に役立ちます。ニューラルネットワークを学ぶことで、こうした問題に対してより効果的な解決策を開発し、分析の精度と効率を高めることができます。"
+          },
+          "2": {
+            "title": "技術革新",
+            "description": "ニューラルネットワークは進化と改良を続ける革新的な技術です。ニューラルネットワークを学ぶことで、機械学習と人工知能の分野における最新の動向や発展に追いつくことができます。"
+          }
+        },
+        "description-3": "ニューラルネットワークは、人間の脳の働きを模倣した機械学習の一形態です。過去のデータや経験から学習して改善し続けるように設計されており、従来のプログラムでは不可能または非常に困難だった複雑なタスクを機械が実行できるようにします。",
+        "description-4": "まとめると、ニューラルネットワークを学ぶことは、幅広い分野で価値のあるスキルを身につけ、複雑な問題をより効果的に解決し、技術と革新の最新動向に追いつくために重要です。"
+      },
+      "0-tabular-classification": {
+        "title": "表形式データの分類",
+        "1-title": "学習済みモデル",
+        "1-description-1": "学習済みモデルのセクションにアクセスし、利用可能なモデルの中から1つを選択します。",
+        "1-description-2": "ツールには代表的な例の一覧があり、それを使って特徴量のフォームを変更できます。",
+        "1-description-3": "モデルのツールセクションでは、予測する要素の特徴量を編集できます。ツールには動的なフォームがあり、ニューラルネットワークへの入力データを変更できます。",
+        "2-title": "モデルの学習",
+        "2-description-1": "ツールにはデータセットのクラスと属性を表示するデータビューアと、データモデルを作成・設計・学習・エクスポートするための管理機能があります。",
+        "2-description-2": "左側には、ニューラルネットワークの各層を編集するエディタがあります。ネットワークの最終層のニューロン数は、予測するクラス数と同じにする必要があります。",
+        "2-description-3": "<b>エポック数</b>: <br /> 学習の過程で学習データをニューラルネットワークに提示する回数です。各反復では、計算された誤差に応じてネットワークの重みが更新されます。",
+        "2-description-4": "「モデルを作成して学習」ボタンを押すと、ニューラルネットワークの学習が始まります。設定と関数の選択がすべて正しければ、学習済みモデルの行が下の表に追加されます。",
+        "2-description-5": "データからモデルを学習したら、予測を行うことができます。そのために、データセットの特徴量を含む動的なフォームが用意されています。予測の精度は、学習内容と選択したオプションによって高くも低くもなります。"
+      },
+      "1-regression": {
+        "title": "回帰",
+        "1-title": "学習済みモデル",
+        "1-description": {
+          "0": "学習済みモデルのセクションにアクセスし、利用可能なモデルの中から1つを選択します。",
+          "1": null,
+          "2": null
+        },
+        "2-title": "モデルの学習",
+        "2-description": {
+          "0": "このセクションでは、独自のデータセットのアップロード、用意されたデータセット、説明、グラフや統計による可視化ツールを利用できます。",
+          "1": "回帰モデルの生成機能があり、ニューラルネットワークの層、ハイパーパラメータ、最適化関数、損失関数、評価指標、そして特徴量の選択を管理できます。",
+          "2": "「モデルを作成して学習」ボタンを押すと、ニューラルネットワークの学習が始まります。設定と関数の選択がすべて正しければ、学習済みモデルの項目が一覧に追加されます。",
+          "3": null
+        },
+        "2-link": "詳しくは次の<link1>リンク</link1>をご覧ください"
+      },
+      "2-object-identification": {
+        "title": "物体識別",
+        "1-title": "学習済みモデル",
+        "1-description-1": "物体識別には4つのモデルがあります。使い方は簡単で、Webカメラを有効にするか画像をアップロードするだけです。",
+        "1-description-2": "このセクションでは4つの物体識別モデルを提供しています。これらのモデルはモバイル端末でも動作するよう最適化されています。モデルは次のとおりです。",
+        "1-description-3": "Webカメラを入力に使うと、検出中の点を映像上でリアルタイムに確認できるフィルターが生成されます。画像をアップロードする場合は png または jpg 形式のファイルを添付できます。結果として、元の画像、生成されたフィルター、フィルターを適用した画像が表示されます。",
+        "1-list": {
+          "0": "顔の形状の識別。",
+          "1": "顔全体のメッシュの識別。",
+          "2": "関節の識別。",
+          "3": "物体の識別（分類器でもあります）。"
+        }
+      },
+      "3-image-classification": {
+        "title": "画像分類",
+        "1-title": "学習済みモデル",
+        "1-description-1": "画像分類のセクションでは、ニューラルネットワークの代表的な2つの例、MNIST の画像セットと一般画像のセットから選択できます。",
+        "1-list": {
+          "0": "MNIST: 数字を識別する画像分類。",
+          "1": "MobileNet: 1001 カテゴリに属する画像の分類。"
+        },
+        "1-description-2": "MNIST モデルでは、数字を含む画像の一覧から選ぶか、キャンバスに予測したい数字を描くか、数字の画像をアップロードできます。",
+        "1-description-3": "MobileNet モデルには選択できるサンプル画像の一覧があり、ニューラルネットワークに分類させる画像をアップロードすることもできます。",
+        "1-description-4": "どちらのモデルでも、予測結果とその確率（パーセンテージ）が表示されます。"
+      },
+      "layer-editor": {
+        "title": "層エディタ"
+      },
+      "hyperparameters-editor": {
+        "title": "ハイパーパラメータエディタ"
+      }
+    },
+    "glossary": {
+      "title": "用語集",
+      "table-head": {
+        "name": "名前",
+        "description": "説明",
+        "references": "参考文献",
+        "characteristics": "特徴",
+        "function": "関数"
+      },
+      "tabular-classification": {
+        "title": "表形式データの分類",
+        "text-1": "表形式データの分類は教師あり学習の一種で、ラベル付きのデータセットを使って機械学習モデルを学習させ、学習に使っていない新しいデータ例のクラスを予測できるようにします。表形式データの分類では、入力と出力のデータが行と列からなる表として表され、各行はデータのインスタンス（例）を、各列はデータの特徴量（属性）を表します。",
+        "text-2": "例えば、銀行の顧客に返済能力があるかどうかを予測したい場合、収入、負債、信用履歴、年齢などを特徴量（属性）として使えます。表形式データの分類では、データセットの各インスタンスがこれらの特徴量の値と、顧客に返済能力があるかどうかを示すラベル（クラス）を持ちます。",
+        "text-3": "ラベル付きのデータセットが用意できたら、機械学習アルゴリズムを使って、新しいデータのラベルを予測できるモデルを学習させます。このモデルを使えば、新しいデータに対して正確かつ高速に予測できます。",
+        "text-4": "表形式データの分類は、医療、電子商取引、銀行、セキュリティなど、さまざまな分野の分類問題を解くのにとても有用な手法です。"
+      },
+      "regression": {
+        "title": "回帰",
+        "text": {
+          "0": "回帰は機械学習で使われる統計的な分析手法で、独立変数と従属変数の間の線形な関係をモデル化し、データに最もよく当てはまる直線を見つけて予測を行います。",
+          "1": "回帰では、データは通常、デカルト平面上に散らばった点として表されます。独立変数を X 軸、従属変数を Y 軸に置き、それらの点との距離が最小になる直線の方程式（y = mx + b）を求めます。この方程式が得られれば、独立変数の値から従属変数の将来の値を予測できます。",
+          "2": "例えば、Webサイトの広告量と商品の売上の関係を分析する場合、広告量が独立変数、商品の売上が従属変数になります。回帰を使うと、広告費と売上の間に線形な関係があるかどうかを調べ、関係があれば広告費から将来の売上を予測できます。",
+          "3": "回帰はデータ分析における強力なツールで、経済学、社会科学、医学研究など多くの分野で変数間の関係を理解し予測するために使われています。"
+        }
+      },
+      "object-identification": {
+        "title": "物体識別",
+        "text-1": "ニューラルネットワークによる物体識別は、機械学習とコンピュータビジョンの分野で画像や動画の中の物体を検出・認識するために使われる手法です。画像解析における重要なタスクで、顔認識、物体のリアルタイム追跡、医用画像での物体分類、自動運転車での物体検出などに応用されています。",
+        "text-2": "物体識別に使われるニューラルネットワークは、ラベル付きのデータセットで学習した深層学習モデルです。学習では、ラベル付きの大量の画像をネットワークに与え、ニューロン間の結合の重みを調整して、新しい画像の中の物体を高い精度で識別できるようにします。",
+        "text-3": "学習を終えたニューラルネットワークは、新しい画像の中の物体を識別するために使われます。ネットワークは画像を調べ、複数の層で処理して、対象の物体を識別するための重要な特徴を抽出します。そして、その特徴を使って画像内で検出した各物体にラベルを割り当てます。",
+        "text-4": "まとめると、ニューラルネットワークによる物体識別は、画像や動画の中の物体を検出・認識するための、コンピュータビジョンと機械学習における重要な手法です。ラベル付きのデータセットで学習した深層ニューラルネットワークを使い、新しい画像の中の物体を高い精度で識別・分類します。"
+      },
+      "image-classification": {
+        "title": "画像分類",
+        "text-1": "画像分類は、画像をさまざまなカテゴリ（ラベル）に分類するためにニューラルネットワークで使われる手法です。画像分類器の目的は、入力された画像があらかじめ定められたカテゴリ（ラベル）のどれに属するかを予測することです。",
+        "text-2": "深層学習では、画像分類器は画像処理に特化したアーキテクチャである畳み込みニューラルネットワーク（CNN）に基づいています。これらのネットワークは複数の層と畳み込み演算を持ち、エッジ、形状、テクスチャなど画像の重要な特徴を抽出できます。",
+        "text-3": "画像分類器を学習させるには、画像とそれぞれのクラスラベルを含むラベル付きのデータセットを使います。ニューラルネットワークはこのデータセットで学習し、画像のパターンを見つけて対応するクラスラベルと結び付けることを学びます。",
+        "text-4": "学習を終えたニューラルネットワークは、新しい画像をさまざまなカテゴリに分類するために使えます。画像分類器は入力画像をニューラルネットワークで処理して重要な特徴を抽出し、その画像がどのクラスに属するかを予測します。",
+        "text-5": "要するに、ニューラルネットワークによる画像分類は、畳み込みニューラルネットワークを使って画像をさまざまなカテゴリ（ラベル）に分類する手法です。ラベル付きのデータセットでニューラルネットワークを学習させ、画像から重要な特徴を抽出して、新しい入力画像がどのクラスに属するかを予測します。"
+      },
+      "activation-functions": {
+        "title": "活性化関数",
+        "sub-title-1": "線形層",
+        "sub-title-2": "非線形活性化（重み付き和、非線形性）",
+        "sub-title-3": "非線形活性化（その他）",
+        "text-1": "活性化関数は、人工ニューラルネットワークにおいて、受け取った入力に基づいてニューロン（またはニューロンの集まり）の出力を決める数学的な関数です。活性化関数はニューラルネットワークに非線形性を導入し、入力データのより複雑なパターンを学習できるようにします。代表的な活性化関数は次のとおりです。",
+        "table": {
+          "softmax": {
+            "title": "Softmax",
+            "description": "出力を確率の形に変換し、すべての確率の合計が 1 になるようにします",
+            "characteristics": {
+              "0": "0 から 1 の範囲に収まる",
+              "1": "最終層に適している",
+              "2": "多クラス分類の出力の正規化に使われる"
+            }
+          },
+          "sigmoid": {
+            "title": "Sigmoid",
+            "description": "シグモイド関数は入力値を 0 から 1 の範囲に変換します。ニューラルネットワークでは二値分類の問題によく使われます。",
+            "characteristics": {
+              "0": "出力は [0, 1] の範囲。",
+              "1": "二値分類器の出力層で有用。",
+              "2": "深いネットワークでは勾配消失の問題が起こることがある。"
+            }
+          },
+          "hard-sigmoid": {
+            "title": "Hard Sigmoid",
+            "description": "Hard Sigmoid は、計算効率のためにシグモイド関数を簡略化したものです。",
+            "characteristics": {
+              "0": "シグモイドより高速に計算できる。",
+              "1": "0 と 1 の間の遷移がなめらかではない。"
+            }
+          },
+          "relu": {
+            "title": "ReLU (Rectified Linear Unit)",
+            "description": "ReLU は、負の値に対して 0 を返し、正の値はそのまま保つ、シンプルで効果的な関数です",
+            "characteristics": {
+              "0": "計算効率が高い。",
+              "1": "勾配消失の問題を緩和する。",
+              "2": "ニューロンをスパースに活性化できる。"
+            }
+          },
+          "relu6": {
+            "title": "ReLU 6",
+            "description": "ReLU と似ていますが、正の値の上限を 6 に制限するため、勾配爆発を防ぐのに役立ちます。",
+            "characteristics": {
+              "0": "勾配消失の問題を緩和する。",
+              "1": "勾配が不安定なネットワークで有用。"
+            }
+          },
+          "leaky-relu": {
+            "title": "LeakyReLU",
+            "description": "Leaky ReLU は ReLU の変種で、負の値のごく一部を通過させます。",
+            "characteristics": {
+              "0": "ReLU に比べてニューロンが死ぬ問題を緩和する。",
+              "1": "負の勾配の情報を保つのに役立つ。"
+            }
+          },
+          "elu": {
+            "title": "ELU (Exponential Linear Unit)",
+            "description": "ELU は正の値では ReLU に似ていますが、負の値でも勾配が定義されている関数です。",
+            "characteristics": {
+              "0": "勾配消失の問題を軽減する。",
+              "1": "より多くのニューロンを活性な状態に保つのに役立つ。"
+            }
+          },
+          "tanh": {
+            "title": "Tanh（双曲線正接）",
+            "description": "双曲線正接関数は入力値を [-1, 1] の範囲に変換します。",
+            "characteristics": {
+              "0": "出力は [-1, 1] の範囲。",
+              "1": "二値分類の問題で有用。",
+              "2": "深いネットワークでは勾配消失が起こる。"
+            }
+          },
+          "soft-plus": {
+            "title": "SoftPlus",
+            "description": "SoftPlus はなめらかな関数で、ReLU のなめらかな代替としてよく使われます。",
+            "characteristics": {
+              "0": "なめらかで、あらゆる点で微分可能。",
+              "1": "生成モデルや回帰のネットワークで有用なことがある。"
+            }
+          },
+          "mish": {
+            "title": "Mish",
+            "description": "Mish は比較的新しい活性化関数で、双曲線正接関数やシグモイド関数などの特徴を組み合わせています。",
+            "characteristics": {
+              "0": "定義域全体でなめらかかつ微分可能。",
+              "1": "一部の用途でより良い性能を示す。"
+            }
+          },
+          "selu": {
+            "title": "SELU (Scaled Exponential Linear Unit)",
+            "description": "SELU は特定の正規化の恩恵を受ける関数で、ネットワークの安定性を保つのに役立ちます。",
+            "characteristics": {
+              "0": "自己正規化: 層を通じて安定した統計量を伝播する。",
+              "1": "オートエンコーダ構造のネットワークで有用なことがある。"
+            }
+          }
+        }
+      },
+      "editor-layers": {
+        "title": "層エディタの用語集",
+        "table": {
+          "activation-function": {
+            "title": "層のニューロン（Layer Neurons）",
+            "description": "ネットワークの特定の層にある個々のユニット（ノード）です。各ニューロンは入力を受け取り、計算を行い、次の層に渡す出力を生成します。層のニューロン数は変えることができ、通常はモデルのハイパーパラメータです。層のニューロン数の選び方は、モデルがデータの表現を学習する能力に影響します。"
+          },
+          "units": {
+            "title": "層の活性化関数（Layer Activation Function）",
+            "description": "ニューラルネットワークの層の各ニューロンでは、モデルに非線形性を導入するために活性化関数が適用されます。活性化関数は、入力と対応する重みに応じてニューロンの出力を決めます。"
+          }
+        }
+      },
+      "editor-hyperparameters": {
+        "title": "ハイパーパラメータエディタ",
+        "table": {
+          "learning-rate": {
+            "title": "学習率（Learning Rate）",
+            "description": "学習率は、機械学習アルゴリズムとニューラルネットワークにおける重要なハイパーパラメータです。学習の各反復でモデルの重みをどれだけ更新するかを決めます。学習率が高いと速く収束することがありますが不安定になる可能性があり、低いと収束が遅くなったり局所解にとどまったりすることがあります。"
+          },
+          "number-or-epochs": {
+            "title": "エポック数（Number of Epochs）",
+            "description": "エポックとは、学習の過程で学習データセット全体をモデルに通した回数のことです。エポック数を増やすと一般にモデルはデータによく適合しますが、ある限度を超えると過学習につながることがあります。"
+          },
+          "test-size": {
+            "title": "テストサイズ（Test Size）",
+            "description": "学習後にモデルの性能を評価するために取り分けておくデータの割合です。テストセットは、未知のデータに対するモデルの精度と全体的な性能を測るために使われます。"
+          },
+          "optimizer": {
+            "title": "最適化手法（Optimizer）",
+            "description": "最適化手法は、学習中に機械学習モデルのパラメータを調整するアルゴリズムです。モデルの重みを効率的に更新して損失関数を最小化することを目的とします。代表的な最適化手法には、確率的勾配降下法（SGD）、Adam、RMSprop などがあります。"
+          },
+          "loss-function": {
+            "title": "損失関数（Loss Function）",
+            "description": "損失関数は、モデルの予測がどれだけうまくいっているかを数値化する指標です。モデルの予測とデータセットの実際の値との差を計算します。損失の値が小さいほどモデルがデータによく適合していることを示すため、学習の目的はこの関数を最小化することです。"
+          },
+          "metric-function": {
+            "title": "評価指標（Metric Function）",
+            "description": "学習中にモデルを最適化するために使う損失関数とは異なり、評価指標は学習後のモデルの性能を評価するために使います。正解率、再現率、適合率、F1 スコアなどの情報を提供し、特定のタスクでモデルがどのように振る舞うかを理解するのに役立ちます。"
+          }
+        }
+      },
+      "optimization-functions": {
+        "title": "最適化関数",
+        "text-1": "最適化関数は、目的関数を最小化または最大化するための数学的な手法です。機械学習では、目的関数は通常、ある学習データセットに対するニューラルネットワークの出力と期待される出力との差を測る誤差関数です。",
+        "text-2": "最適化関数は、目的関数を最小化するようにニューラルネットワークのパラメータを調整し、新しい入力データに対してより正確な予測ができるようにします。代表的な最適化関数には、確率的勾配降下法や Adam アルゴリズムがあります。",
+        "table": {
+          "sgd": {
+            "references": "確率的勾配降下法\n (Instituto Tecnológico Autónomo de México, 2017)",
+            "description": "勾配降下法は、関数が最小値をとる位置を推定するアルゴリズムです。機械学習モデルの規模が大きい場合、この計算は非常に高コストになることがあります。\n                          そこで、一定数のサンプルを使い、計算する勾配の数を固定する確率的勾配降下法が生まれました。"
+          },
+          "momentum": {
+            "references": "-",
+            "description": "前の関数の変種です。異なるステップで勾配の符号が同じ場合に、勾配降下を加速する値を定義します。"
+          },
+          "adagrad": {
+            "references": "(Velasco, 2020)",
+            "description": "学習率の考え方に変化を加えたものです。各反復で累積した勾配に応じて、重みごとに学習率をスケーリング・調整します。"
+          },
+          "adadelta": {
+            "references": "(Velasco, 2020)",
+            "description": "AdaGrad の変種で、各重みの学習率の計算を、各反復の累積勾配ではなく直近 n 個の勾配からなる固定サイズの窓に限定します。"
+          },
+          "rmsprop": {
+            "references": "二乗平均平方根伝播\n (Root Mean Square Propagation)\n (Velasco, 2020)",
+            "description": "次元ごとに異なる学習率を保持しますが、学習率のスケーリングは勾配の二乗の指数移動平均で割ることで行います。"
+          },
+          "adam": {
+            "references": "適応的モーメント推定\n (Adaptive Moment Estimation)\n (Velasco, 2020)",
+            "description": "<i>AdaGrad</i> と <i>RMSProp</i> を組み合わせたものです。パラメータごとの学習率を保持して <i>RMSProp</i> を計算し、さらに各学習率が勾配の <i>momentum</i> の影響を受けます。"
+          },
+          "adamax": {
+            "description": "モメンタムと適応的な学習の手法を組み合わせ、ニューラルネットワークの学習の収束を加速します。学習率を自動的に調整し、発散の問題を避けるために勾配のスケーリングを使います。"
+          }
+        }
+      },
+      "loss-functions": {
+        "title": "損失関数",
+        "text": {
+          "0": "機械学習において、損失関数（コスト関数とも呼ばれる）は、モデルが予測した出力と実際の（期待される）出力との差を数値化する指標です。言い換えると、損失関数はモデルが学習データにどれだけよく適合しているかを測ります。",
+          "1": "機械学習アルゴリズムの目的は損失関数を最小化すること、つまり学習データに最もよく適合するモデルのパラメータを見つけることです。そのため損失関数の選択は非常に重要で、モデルがデータのパターンを正しく学習し、新しいデータに対して正確に予測する能力に影響します。",
+          "2": "TensorFlow.js にはさまざまな損失関数があり、どれを使うかは扱う問題の種類によって決まります。以下にいくつかの例を示します。"
+        },
+        "table": {
+          "AbsoluteDifference": {
+            "references": "絶対差\n (Acervolima, s.f.)",
+            "description": "目標値との距離を絶対値で計算します。"
+          },
+          "ComputeWeightedLoss": {
+            "references": "加重平均\n (Acervolima, s.f.)",
+            "description": "2つのテンソル間の重み付き損失を計算します。"
+          },
+          "CosineDistance": {
+            "references": "コサイン距離\n (Acervolima, s.f.)",
+            "description": "2つのテンソル間の距離のコサインを使って損失を計算します。"
+          },
+          "HingeLoss": {
+            "references": "ヒンジ損失\n (Rennie & Srebro, 2005)",
+            "description": "2つのテンソル間のヒンジ損失を計算します。分類問題で使われます。"
+          },
+          "HuberLoss": {
+            "references": "(Huber 損失)",
+            "description": "推定手法によって生じる損失を計算します。"
+          },
+          "LogLoss": {
+            "references": "対数損失\n (Shen, 2005)",
+            "description": "<i>LogLoss</i>（<i>Logistic Loss</i>）は、負の数に対して線形に増加する凸関数で、外れ値の影響を受けにくい性質を持ちます。2つのテンソル間の対数損失を計算します。"
+          },
+          "MeanSquaredError": {
+            "references": "平均二乗誤差\n (Acervolima, s.f.)",
+            "description": "目標値との二乗距離を幾何的に計算します。この関数は回帰問題で使われます。"
+          },
+          "CategoricalCrossEntropy": {
+            "references": "(Acervolima, s.f.)",
+            "description": "確率分布間の距離を測ります。出力層が確率を表すネットワークで使われます。"
+          },
+          "SigmoidCrossEntropy": {
+            "references": "(Acervolima, s.f.)",
+            "description": "<i>CategoricalCrossEntropy</i> 関数の変種で、損失を 0 から 1 の間の値として計算します。"
+          },
+          "SoftmaxCrossEntropy": {
+            "references": "(Bendersky, 2016)",
+            "description": "<i>softmax</i> 関数と <i>CrossEntropy</i> 関数を組み合わせてネットワークの損失を計算します。"
+          }
+        }
+      },
+      "metric-functions": {
+        "title": "評価指標",
+        "text-1": "テストデータセットでニューラルネットワークモデルの性能を評価するために使われます。評価指標はモデルの予測をテストデータの実際の値と比較し、モデルの精度を求めます。",
+        "text-2": "扱う問題の種類に応じて、ニューラルネットワークではさまざまな評価指標を使えます。例えば、二値分類の問題では正解率（Accuracy）を、回帰問題では平均二乗誤差（Mean Squared Error）を評価指標として使えます。",
+        "text-3": "まとめると、評価指標は、テストデータセットに対してニューラルネットワークが正確に予測できるかを評価し、性能を高めるためにモデルのパラメータを調整する際に役立つ重要なツールです。",
+        "text-4": "主に <i>accuracy</i> 関数を使います。マルチラベル分類では、この関数は部分集合の正解率を計算します。つまり、あるサンプルについて予測したラベルの集合が、y の対応するラベルの集合と完全に一致する必要があります",
+        "table": {
+          "BinaryAccuracy": {
+            "references": "二値正解率 <br /> (Acervolima, s.f.)",
+            "description": "予測が二値ラベルと一致する頻度を計算します。"
+          },
+          "BinaryCrossentropy": {
+            "references": "二値交差エントロピー <br /> (Saxena, 2021)",
+            "description": "正しいクラスに対して予測された確率の対数の負の平均です。"
+          },
+          "CategoricalAccuracy": {
+            "references": "カテゴリ正解率",
+            "description": "予測が one-hot ラベルと一致する頻度を計算します。"
+          },
+          "CategoricalCrossentropy": {
+            "references": "カテゴリ交差エントロピー",
+            "description": "ラベルと予測の間の交差エントロピーを計算します。"
+          },
+          "CosineProximity": {
+            "references": "コサイン近接度",
+            "description": "ラベルと予測の間のコサイン近接度を計算します。通常は負の値になります。"
+          },
+          "MeanAbsoluteError": {
+            "references": "平均絶対誤差",
+            "description": "統計学では、2つの連続変数の差を測る指標です。機械学習モデルに適用する場合、これらの変数はラベルと予測です。"
+          },
+          "MeanAbsolutePercentageError": {
+            "references": "平均絶対パーセント誤差",
+            "description": "<i>Mean absolute error</i> と同様にラベルと予測の差を計算しますが、パーセントで表します。"
+          },
+          "MeanSquaredError": {
+            "references": "平均二乗誤差",
+            "description": "ラベルと予測の間の平均二乗誤差を求めます。"
+          }
+        }
+      }
+    },
+    "terms": {
+      "title": "プライバシーポリシーと Cookie",
+      "privacy-title": "プライバシーポリシー",
+      "privacy-text": "当サイトでは、サイトの性能と機能を改善するために、訪問に関する統計情報のみを収集しています。ユーザーの個人情報を収集・保存することはありません。訪問者数の把握と閲覧体験の向上のために Cookie を使用しています。プライバシーポリシーについてご質問やご不明な点があれば、お問い合わせページからお気軽にご連絡ください。",
+      "cookies-title": "Cookie",
+      "cookies-text": "当サイトでは、訪問者数を把握するために Google Analytics の Cookie を使用しています。これらの Cookie により、当サイトの利用状況に関する匿名の統計情報を収集し、性能と機能の改善に役立てています。Google Analytics の Cookie はユーザーの個人情報を収集しません。当サイトを閲覧することで、これらの Cookie の使用に同意したものとみなされます。Cookie の使用方法について詳しくは、プライバシーポリシーをご覧ください。"
+    }
+  },
+  "generator": {
+    "table-models": {
+      "list-models-generated": "生成されたモデルの一覧",
+      "learning-rate": "学習率",
+      "test-size": "テストセットのサイズ",
+      "n-of-epochs": "エポック数",
+      "n-epochs": "エポック数",
+      "id-optimizer": "オプティマイザ",
+      "id-loss": "損失",
+      "id-metrics": "評価指標",
+      "layers": "レイヤー",
+      "download": "ダウンロード",
+      "features": "特徴量",
+      "open-visor": "ビューアを開く",
+      "close-visor": "ビューアを閉じる",
+      "history": "結果"
+    }
+  },
+  "hr": {
+    "information": "情報",
+    "editor": "エディタ",
+    "dataset": "データセット",
+    "model": "モデル",
+    "generated-models": "生成されたモデル",
+    "predict": "予測",
+    "classify": "分類",
+    "tasks": "タスク",
+    "00-tabular-classification": "表形式データの分類",
+    "tutorial-00-tabular-classification": "表形式データ分類のモデルを学習",
+    "01-regression": "回帰",
+    "02-object-detection": "物体検出",
+    "03-image-classification": "画像分類",
+    "optimization-function": "最適化関数",
+    "activation-functions": "活性化関数",
+    "loss-functions": "損失関数",
+    "metric-function": "評価指標関数",
+    "layers": "レイヤー",
+    "process-dataset": "データセットの処理",
+    "project": "プロジェクト",
+    "add-model-dataset": "プロジェクトにモデルを追加",
+    "dataframe": "データフレーム"
+  },
+  "form-dataframe": {
+    "int32": "整数",
+    "float32": "浮動小数点数",
+    "string": "テキスト",
+    "label-encoder": "ラベルエンコーダ",
+    "one-hot-encoder": "ワンホットエンコーダ",
+    "drop": "削除",
+    "ignored": "無視",
+    "submit": "データフレームを処理"
+  },
+  "joyride": {
+    "back": "戻る",
+    "close": "閉じる",
+    "last": "最後",
+    "next": "次へ",
+    "open": "開く",
+    "skip": "スキップ"
+  },
+  "upload-dataset-info": "タスクを実行するにはデータセットをアップロードする必要があります。",
+  "upload-model-info": "タスクを実行するにはモデルをアップロードする必要があります。",
+  "select-attr": "属性を選択",
+  "upload-dataset": "データセットをアップロード",
+  "00-tc": {
+    "car": {
+      "buying": "購入価格",
+      "maint": "メンテナンス費用",
+      "doors": "ドアの数",
+      "persons": "乗車定員",
+      "lug_boot": "トランクの大きさ",
+      "safety": "車の推定安全性",
+      "result": "結果",
+      "unacc": "不可",
+      "acc": "可",
+      "good": "良",
+      "vgood": "優"
+    },
+    "iris": {
+      "sepal_length": "がく片の長さ",
+      "sepal_width": "がく片の幅",
+      "petal_length": "花弁の長さ",
+      "petal_width": "花弁の幅",
+      "class": "クラス",
+      "Iris-setosa": "ヒオウギアヤメ (setosa)",
+      "Iris-versicolor": "ブルーフラッグ (versicolor)",
+      "Iris-virginica": "バージニカ (virginica)"
+    },
+    "lymphography": {
+      "lymphatics": "リンパ管",
+      "block of affere": "輸入リンパ管の閉塞",
+      "bl": {
+        " of lymph": {
+          " c": "リンパ管(c)の閉塞",
+          " s": "リンパ管(s)の閉塞"
+        }
+      },
+      "by pass": "バイパス",
+      "extravasates": "血管外漏出",
+      "regeneration": "再生",
+      "early uptake in": "早期取り込み",
+      "lym": {
+        "nodes dimin": "リンパ節の縮小",
+        "nodes enlar": "リンパ節の腫大"
+      },
+      "changes in lym": "リンパ管の変化",
+      "defect in node": "リンパ節の欠損",
+      "changes in node": "リンパ節の変化",
+      "changes in stru": "構造の変化",
+      "special forms": "特殊な形態",
+      "dislocation of": "転位",
+      "exclusion of": "除外",
+      "no": {
+        " of nodes in": "リンパ節の数"
+      },
+      "Category": "カテゴリ",
+      "normal find": "正常所見",
+      "metastases": "転移",
+      "malign lymph": "悪性リンパ腫",
+      "fibrosis": "線維症"
+    }
+  }
+}

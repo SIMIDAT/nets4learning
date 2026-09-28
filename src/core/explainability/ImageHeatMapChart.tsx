@@ -1,12 +1,66 @@
 import { useRef, useEffect } from 'react';
 import { Card } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 interface ShapHeatmapProps {
-  imageSrc?: ImageData | string;
-  shapValues?: number[] | number[][];
-  segmentationMap?: Int32Array | Uint8Array | number[] | null;
-  opacity?: number;
-  title?: string;
+  imageSrc?          : ImageData | string;
+  shapValues?        : number[] | number[][];
+  /** Id de segmento por píxel, en el tamaño `segmentationWidth × segmentationHeight`. */
+  segmentationMap?   : Int32Array | Uint8Array | number[] | null;
+  segmentationWidth? : number;
+  segmentationHeight?: number;
+  opacity?           : number;
+  title?             : string;
+}
+
+type SegmentMap = Int32Array | Uint8Array | number[];
+
+/**
+ * Devuelve el id de segmento de cada píxel del canvas (width × height).
+ * - Con mapa de segmentación: se escala por vecino más cercano desde su tamaño original.
+ * - Sin mapa: rejilla cuadrada con un valor por celda (p. ej. relevancia LRP por píxel).
+ */
+function buildCanvasSegmentMap(
+  width: number,
+  height: number,
+  numValues: number,
+  segmentationMap: SegmentMap | null,
+  segmentationWidth?: number,
+  segmentationHeight?: number,
+): SegmentMap {
+  let mapW = segmentationWidth ?? 0;
+  let mapH = segmentationHeight ?? 0;
+  if (segmentationMap && (!mapW || !mapH)) {
+    // Sin dimensiones explícitas: mismo tamaño que el canvas o mapa cuadrado.
+    if (segmentationMap.length === width * height) {
+      mapW = width;
+      mapH = height;
+    } else {
+      mapW = mapH = Math.round(Math.sqrt(segmentationMap.length));
+    }
+  }
+
+  const out = new Int32Array(width * height);
+  if (segmentationMap && mapW * mapH === segmentationMap.length) {
+    for (let y = 0; y < height; y++) {
+      const sy = Math.min(Math.floor((y * mapH) / height), mapH - 1);
+      for (let x = 0; x < width; x++) {
+        const sx = Math.min(Math.floor((x * mapW) / width), mapW - 1);
+        out[y * width + x] = segmentationMap[sy * mapW + sx];
+      }
+    }
+    return out;
+  }
+
+  const cols = Math.ceil(Math.sqrt(numValues));
+  for (let y = 0; y < height; y++) {
+    const row = Math.min(Math.floor((y * cols) / height), cols - 1);
+    for (let x = 0; x < width; x++) {
+      const col = Math.min(Math.floor((x * cols) / width), cols - 1);
+      out[y * width + x] = row * cols + col;
+    }
+  }
+  return out;
 }
 
 export default function ShapHeatmap(props: ShapHeatmapProps) {
@@ -14,157 +68,121 @@ export default function ShapHeatmap(props: ShapHeatmapProps) {
     imageSrc,
     shapValues,
     segmentationMap = null,
+    segmentationWidth,
+    segmentationHeight,
     opacity = 0.6,
-    title = 'Mapa de Importancia (SHAP)',
+    title,
   } = props;
+  const { t } = useTranslation();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current || !shapValues || shapValues.length === 0) return;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
-    let valuesToPaint: number[] = Array.isArray(shapValues[0])
+    const valuesToPaint: number[] = Array.isArray(shapValues[0])
       ? (shapValues[0] as number[])
       : (shapValues as number[]);
 
-    // Definimos renderOverlay PRIMERO. La generación del mapa se hará dentro,
-    // cuando ya sepamos el tamaño real del canvas.
+    // Se llama cuando el canvas ya tiene la imagen base y su tamaño real.
     const renderOverlay = () => {
-      const width = canvas.width;
-      const height = canvas.height;
-      const totalPixels = width * height;
+      const { width, height } = canvas;
+      const map = buildCanvasSegmentMap(
+        width,
+        height,
+        valuesToPaint.length,
+        segmentationMap,
+        segmentationWidth,
+        segmentationHeight,
+      );
 
-      // Calculamos/verificamos el mapa aquí dentro
-      let activeMap: Int32Array | Uint8Array | number[] | null = segmentationMap;
-
-      // Si no hay mapa o el tamaño no coincide, regeneramos el GRID
-      if (!activeMap || activeMap.length !== totalPixels) {
-        activeMap = new Int32Array(totalPixels);
-        const totalCells = valuesToPaint.length;
-        const gridSize = Math.sqrt(totalCells);
-        const cols = Math.ceil(gridSize);
-
-        const cellWidth = width / cols;
-        const cellHeight = height / cols;
-
-        for (let y = 0; y < height; y++) {
-          for (let x = 0; x < width; x++) {
-            // Aseguramos que no se salga de los índices
-            const col = Math.min(Math.floor(x / cellWidth), cols - 1);
-            const row = Math.min(Math.floor(y / cellHeight), cols - 1);
-
-            activeMap[y * width + x] = row * cols + col;
-          }
-        }
-      }
-
-      const map = activeMap as Int32Array | Uint8Array | number[];
-
-      // Pintamos usando el mapa correcto
       const imgData = ctx.getImageData(0, 0, width, height);
       const data = imgData.data;
-      const maxAbsValue = Math.max(...valuesToPaint.map(Math.abs)) || 1;
+      let maxAbsValue = 0;
+      for (const v of valuesToPaint) maxAbsValue = Math.max(maxAbsValue, Math.abs(v));
+      if (maxAbsValue === 0) maxAbsValue = 1;
 
-      for (let i = 0; i < totalPixels; i++) {
+      for (let i = 0; i < map.length; i++) {
         const segmentId = map[i];
+        if (segmentId < 0 || segmentId >= valuesToPaint.length) continue;
 
-        if (segmentId !== -1 && segmentId < valuesToPaint.length) {
-          const shapVal = valuesToPaint[segmentId];
-          const absVal = Math.abs(shapVal);
+        const shapVal = valuesToPaint[segmentId];
+        const absVal = Math.abs(shapVal);
+        if (absVal < maxAbsValue * 0.05) continue;
 
-          if (absVal < maxAbsValue * 0.05) continue;
+        const alpha = (absVal / maxAbsValue) * opacity;
+        const rOverlay = shapVal > 0 ? 255 : 0;
+        const bOverlay = shapVal > 0 ? 0 : 255;
 
-          const intensity = absVal / maxAbsValue;
-          const alpha = intensity * opacity;
-
-          const rOverlay = shapVal > 0 ? 255 : 0;
-          const gOverlay = 0;
-          const bOverlay = shapVal > 0 ? 0 : 255;
-
-          const idx = i * 4;
-          data[idx] = data[idx] * (1 - alpha) + rOverlay * alpha;
-          data[idx + 1] = data[idx + 1] * (1 - alpha) + gOverlay * alpha;
-          data[idx + 2] = data[idx + 2] * (1 - alpha) + bOverlay * alpha;
-        }
+        const idx = i * 4;
+        data[idx] = data[idx] * (1 - alpha) + rOverlay * alpha;
+        data[idx + 1] = data[idx + 1] * (1 - alpha);
+        data[idx + 2] = data[idx + 2] * (1 - alpha) + bOverlay * alpha;
       }
 
       ctx.putImageData(imgData, 0, 0);
     };
 
-    // Carga de imagen
     if (imageSrc && typeof imageSrc === 'object' && imageSrc.data) {
-      // Caso ImageData (ya tiene tamaño)
       canvas.width = imageSrc.width;
       canvas.height = imageSrc.height;
       ctx.putImageData(imageSrc, 0, 0);
       renderOverlay();
-    } else if (typeof imageSrc === 'string' && imageSrc.length > 0) {
-      // Caso URL
+      return;
+    }
+
+    if (typeof imageSrc === 'string' && imageSrc.length > 0) {
+      // Si las props cambian antes de que cargue la imagen, ignoramos la carga antigua.
+      let cancelled = false;
       const img = new window.Image();
-      img.src = imageSrc;
       img.crossOrigin = 'Anonymous';
       img.onload = () => {
-        // Aquí cambia el tamaño del canvas
+        if (cancelled) return;
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-
-        // Y ahora llamamos a renderOverlay, que leerá el nuevo tamaño
         renderOverlay();
       };
+      img.src = imageSrc;
+      return () => {
+        cancelled = true;
+      };
     }
-  }, [imageSrc, shapValues, segmentationMap, opacity]);
+  }, [imageSrc, shapValues, segmentationMap, segmentationWidth, segmentationHeight, opacity]);
+
+  const legendSwatch = (background: string) => ({
+    width       : 10,
+    height      : 10,
+    background,
+    marginRight : 5,
+    borderRadius: 2,
+  });
 
   return (
     <Card className="shadow-sm border-0">
       <Card.Body className="p-2 text-center">
-        {title && (
-          <h6 className="mb-2 text-muted" style={{ fontSize: '0.9rem' }}>
-            {title}
-          </h6>
-        )}
-        <div style={{ position: 'relative', width: '100%' }}>
-          <canvas
-            ref={canvasRef}
-            style={{
-              width: '100%',
-              maxWidth: '300px',
-              height: 'auto',
-              borderRadius: '6px',
-              border: '1px solid #eee',
-            }}
-          />
-        </div>
-        <div
-          className="d-flex justify-content-center gap-3 mt-2"
-          style={{ fontSize: '0.75rem', color: '#666' }}
-        >
+        {title && <h6 className="mb-2 text-body-secondary small">{title}</h6>}
+        <canvas
+          ref={canvasRef}
+          className="border rounded"
+          style={{
+            width         : '100%',
+            maxWidth      : '300px',
+            height        : 'auto',
+            imageRendering: 'pixelated',
+          }}
+        />
+        <div className="d-flex justify-content-center gap-3 mt-2 small text-body-secondary">
           <div className="d-flex align-items-center">
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                background: 'rgba(255,0,0,0.6)',
-                marginRight: 5,
-                borderRadius: 2,
-              }}
-            ></span>{' '}
-            + Importancia
+            <span style={legendSwatch('rgba(255,0,0,0.6)')} />
+            {t('ui.explain.positive')}
           </div>
           <div className="d-flex align-items-center">
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                background: 'rgba(0,0,255,0.6)',
-                marginRight: 5,
-                borderRadius: 2,
-              }}
-            ></span>{' '}
-            - Importancia
+            <span style={legendSwatch('rgba(0,0,255,0.6)')} />
+            {t('ui.explain.negative')}
           </div>
         </div>
       </Card.Body>

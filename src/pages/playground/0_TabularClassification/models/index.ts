@@ -1,26 +1,16 @@
 import I_MODEL_TABULAR_CLASSIFICATION from './_model'
-import MODEL__UPLOAD from './MODEL__UPLOAD'
-import MODEL_CAR from './MODEL_CAR'
-import MODEL_IRIS from './MODEL_IRIS'
-import MODEL_LYMPHOGRAPHY from './MODEL_LYMPHOGRAPHY'
-import * as _Types from '@core/types'
+import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
+import type { ModelRegistry } from '@core/models/modelRegistry'
 
-/**
- * @type {_Types.MAP_TC_CLASSES_t}
- * [x: string]: typeof MODEL_IRIS | typeof MODEL_CAR | typeof MODEL_LYMPHOGRAPHY;
- */
-const MAP_TC_CLASSES: Record<string, typeof MODEL__UPLOAD | typeof MODEL_CAR | typeof MODEL_IRIS | typeof MODEL_LYMPHOGRAPHY>  = {
-  [MODEL__UPLOAD.KEY]     : MODEL__UPLOAD,
-  [MODEL_CAR.KEY]         : MODEL_CAR,
-  [MODEL_IRIS.KEY]        : MODEL_IRIS,
-  [MODEL_LYMPHOGRAPHY.KEY]: MODEL_LYMPHOGRAPHY,
+/** Clases de modelos de clasificación tabular, cargadas bajo demanda. */
+const MAP_TC_CLASSES: ModelRegistry<I_MODEL_TABULAR_CLASSIFICATION> = {
+  [TC_MODEL_KEYS.UPLOAD]      : () => import('./MODEL__UPLOAD').then((m) => m.default),
+  [TC_MODEL_KEYS.CAR]         : () => import('./MODEL_CAR').then((m) => m.default),
+  [TC_MODEL_KEYS.IRIS]        : () => import('./MODEL_IRIS').then((m) => m.default),
+  [TC_MODEL_KEYS.LYMPHOGRAPHY]: () => import('./MODEL_LYMPHOGRAPHY').then((m) => m.default),
 }
 
 export {
   MAP_TC_CLASSES,
-
   I_MODEL_TABULAR_CLASSIFICATION,
-  MODEL_CAR,
-  MODEL_IRIS,
-  MODEL_LYMPHOGRAPHY
 }

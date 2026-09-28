@@ -1,19 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as tfjs from '@tensorflow/tfjs';
 
-interface EmbeddingCacheEntry {
-  layerName: string;
-  embedModel: tfjs.LayersModel;
-}
 interface ActivationsCacheEntry {
   layerNames: string[];
-  actModel: tfjs.LayersModel;
+  actModel  : tfjs.LayersModel;
 }
 
-// Caches are module-level so both MNIST and KMNIST can reuse them.
-// WeakMap makes sure we don't keep models alive accidentally.
-export const _embeddingModelCache = new WeakMap<object, EmbeddingCacheEntry>();
-export const _activationsModelCache = new WeakMap<
+// Caché a nivel de módulo para reutilizarla entre modelos (MNIST, KMNIST…).
+// WeakMap evita mantener vivos los modelos accidentalmente.
+const _activationsModelCache = new WeakMap<
   object,
   Map<string, ActivationsCacheEntry>
 >();
@@ -43,44 +37,10 @@ function normalizeHw(
   return [fallback, fallback];
 }
 
-export function guessEmbeddingLayerName(model: any): string | null {
-  const denseLayers = model.layers.filter(
-    (l: any) => l?.getClassName?.() === 'Dense',
-  );
-  if (denseLayers.length >= 2)
-    return denseLayers[denseLayers.length - 2].name;
-  if (model.layers.length >= 2)
-    return model.layers[model.layers.length - 2].name;
-  return null;
-}
-
 export function defaultActivationLayerNames(model: any): string[] {
   return model.layers
-    .filter(
-      (l: any) =>
-        l?.getClassName?.() !== 'InputLayer' &&
-        l?.getClassName?.() !== 'Dropout' &&
-        l?.getClassName?.() !== 'Flatten' &&
-        l?.getClassName?.() !== 'MaxPooling2D',
-    )
+    .filter((l: any) => l?.getClassName?.() !== 'InputLayer')
     .map((l: any) => l.name);
-}
-
-function _getOrCreateEmbeddingModel(
-  model: any,
-  layerName: string,
-): EmbeddingCacheEntry {
-  let cached = _embeddingModelCache.get(model);
-  if (!cached || cached.layerName !== layerName) {
-    const layer = model.getLayer(layerName);
-    const embedModel = tfjs.model({
-      inputs: model.inputs,
-      outputs: layer.output,
-    });
-    cached = { layerName, embedModel };
-    _embeddingModelCache.set(model, cached);
-  }
-  return cached;
 }
 
 function _getOrCreateActivationsModel(
@@ -104,63 +64,29 @@ function _getOrCreateActivationsModel(
   return cached;
 }
 
-interface EmbeddingActivationsParams {
+interface ActivationsParams {
   imageDataToTensor4d: (imageData: ImageData) => tfjs.Tensor4D;
-  guessLayerName?: (model: any) => string | null;
 }
 
 /**
- * Factory que crea helpers para obtener embeddings y activaciones de un modelo, con caché.
+ * Factory que crea un helper para obtener las activaciones de un modelo, con caché.
  */
-export function createEmbeddingActivationsHelpers(
-  params: EmbeddingActivationsParams,
-) {
-  const { imageDataToTensor4d, guessLayerName } = params;
+export function createActivationsHelpers(params: ActivationsParams) {
+  const { imageDataToTensor4d } = params;
   if (typeof imageDataToTensor4d !== 'function') {
     throw new Error(
-      'createEmbeddingActivationsHelpers: imageDataToTensor4d must be a function',
+      'createActivationsHelpers: imageDataToTensor4d must be a function',
     );
   }
 
-  const _guess = guessLayerName ?? guessEmbeddingLayerName;
-
   return {
-    async GET_EMBEDDING_IMAGE(
-      model: any,
-      imageData: ImageData,
-      options: { layerName?: string } = {},
-    ): Promise<{ embedding: Float32Array; layerName: string }> {
-      const layerName = options.layerName ?? _guess(model);
-      if (!layerName) {
-        throw new Error(
-          'GET_EMBEDDING_IMAGE: unable to infer embedding layer name',
-        );
-      }
-
-      const cached = _getOrCreateEmbeddingModel(model, layerName);
-
-      const x = imageDataToTensor4d(imageData);
-      const y = cached.embedModel.predict(x) as tfjs.Tensor;
-      const embedding = Float32Array.from(y.dataSync());
-      x.dispose();
-      y.dispose();
-
-      console.log('GET_EMBEDDING_IMAGE:', {
-        layerName,
-        embeddingLength: embedding.length,
-      });
-      console.log(embedding);
-
-      return { embedding, layerName };
-    },
-
     async GET_ACTIVATIONS_IMAGE(
       model: any,
       imageData: ImageData,
       options: { layerNames?: string[]; includeInput?: boolean } = {},
     ): Promise<{
       layers: Record<string, { data: Float32Array; shape: number[] }>;
-      order: string[];
+      order : string[];
     }> {
       const layerNames =
         options.layerNames ?? defaultActivationLayerNames(model);
@@ -182,29 +108,28 @@ export function createEmbeddingActivationsHelpers(
         {};
       const order: string[] = [];
 
-      if (includeInput) {
-        layers.__input__ = {
-          data: Float32Array.from(x.dataSync()),
-          shape: Array.from(x.shape),
-        };
-        order.push('__input__');
+      try {
+        if (includeInput) {
+          layers.__input__ = {
+            data : Float32Array.from(await x.data()),
+            shape: Array.from(x.shape),
+          };
+          order.push('__input__');
+        }
+
+        for (let i = 0; i < cached.layerNames.length; i++) {
+          const name = cached.layerNames[i];
+          const t = tensors[i];
+          layers[name] = {
+            data : Float32Array.from(await t.data()),
+            shape: Array.from(t.shape),
+          };
+          order.push(name);
+        }
+      } finally {
+        x.dispose();
+        tensors.forEach((t) => t.dispose());
       }
-
-      for (let i = 0; i < cached.layerNames.length; i++) {
-        const name = cached.layerNames[i];
-        const t = tensors[i];
-        layers[name] = {
-          data: Float32Array.from(t.dataSync()),
-          shape: Array.from(t.shape),
-        };
-        order.push(name);
-      }
-
-      x.dispose();
-      tensors.forEach((t) => t.dispose());
-
-      console.log('GET_ACTIVATIONS_IMAGE:', { layerNames: order });
-      console.log(layers);
 
       return { layers, order };
     },
@@ -214,19 +139,104 @@ export function createEmbeddingActivationsHelpers(
 interface ConvConfig {
   strides?: number | number[];
   padding?: 'same' | 'valid';
-  bias?: tfjs.Tensor | null;
+  bias?   : tfjs.Tensor | null;
 }
 
 interface PoolConfig {
   poolSize?: number | number[];
-  strides?: number | number[];
-  padding?: 'same' | 'valid';
+  strides? : number | number[];
+  padding? : 'same' | 'valid';
+}
+
+type Forward = (x: tfjs.Tensor) => tfjs.Tensor;
+
+/**
+ * Estabilizador de la regla epsilon: z + epsilon * sign(z), con sign(0) = +1
+ * para que nunca haya divisiones entre cero.
+ */
+function stabilize(z: tfjs.Tensor, epsilon: number): tfjs.Tensor {
+  return z.add(
+    tfjs.where(z.greaterEqual(0), tfjs.scalar(epsilon), tfjs.scalar(-epsilon)),
+  );
 }
 
 /**
- * LRP para capa Dense con regla epsilon.
- * R_i = sum_j ( (x_i * w_ij) / (z_j + epsilon * sign(z_j)) * R_j )
+ * Paso hacia atrás genérico de LRP en su formulación gradiente × entrada
+ * (Montavon et al. 2019, §10.2.2):
+ *
+ *   z = forward(x)          s = R_out / z (constante)
+ *   c = ∇_x Σ(forward(x) · s)
+ *   R_in = x ⊙ c
+ *
+ * Sirve para cualquier capa lineal (Dense, Conv2D, AvgPool) y, con MaxPool,
+ * reparte la relevancia a la neurona ganadora (winner-takes-all). Conserva la
+ * relevancia salvo la parte absorbida por el sesgo y el estabilizador.
  */
+function lrpBackward(
+  forward: Forward,
+  x: tfjs.Tensor,
+  s: tfjs.Tensor,
+): tfjs.Tensor {
+  const c = tfjs.grad((xx: tfjs.Tensor) => forward(xx).mul(s).sum())(x);
+  return x.mul(c);
+}
+
+/** Regla epsilon genérica: R_i = Σ_j x_i·w_ij / (z_j + ε·sign(z_j)) · R_j */
+function lrpEpsilon(
+  forward: Forward,
+  x: tfjs.Tensor,
+  relevanceOut: tfjs.Tensor,
+  epsilon: number,
+): tfjs.Tensor {
+  return tfjs.tidy(() => {
+    const z = stabilize(forward(x), epsilon);
+    return lrpBackward(forward, x, relevanceOut.div(z));
+  });
+}
+
+/**
+ * Regla alpha-beta genérica (con α − β = 1):
+ *   R_i = Σ_j ( α · (x_i·w⁺_ij)/z⁺_j − β · (x_i·w⁻_ij)/z⁻_j ) · R_j
+ * Supone entradas no negativas (salida de ReLU o píxeles en [0, 1]).
+ */
+function lrpAlphaBeta(
+  forwardPos: Forward,
+  forwardNeg: Forward,
+  x: tfjs.Tensor,
+  relevanceOut: tfjs.Tensor,
+  alpha: number,
+  beta: number,
+  epsilon: number,
+): tfjs.Tensor {
+  return tfjs.tidy(() => {
+    const zPos = forwardPos(x).add(epsilon);
+    const zNeg = forwardNeg(x).sub(epsilon);
+    const rPos = lrpBackward(forwardPos, x, relevanceOut.div(zPos));
+    const rNeg = lrpBackward(forwardNeg, x, relevanceOut.div(zNeg));
+    return rPos.mul(alpha).sub(rNeg.mul(beta));
+  });
+}
+
+const denseForward =
+  (weights: tfjs.Tensor, bias: tfjs.Tensor | null): Forward =>
+  (x) => {
+    const z = x.matMul(weights);
+    return bias ? z.add(bias) : z;
+  };
+
+const convForward =
+  (kernel: tfjs.Tensor4D, config: ConvConfig, bias: tfjs.Tensor | null): Forward =>
+  (x) => {
+    const z = tfjs.conv2d(
+      x as tfjs.Tensor4D,
+      kernel,
+      normalizeHw(config.strides, 1),
+      config.padding ?? 'valid',
+    );
+    return bias ? z.add(bias) : z;
+  };
+
+/** LRP para capa Dense con regla epsilon. */
 export function lrpDense(
   inputTensor: tfjs.Tensor,
   weights: tfjs.Tensor,
@@ -234,83 +244,33 @@ export function lrpDense(
   bias: tfjs.Tensor | null = null,
   epsilon = 1e-9,
 ): tfjs.Tensor {
-  return tfjs.tidy(() => {
-    // Forward pass: z = x * W + b
-    let z: tfjs.Tensor = inputTensor.matMul(weights);
-    if (bias) {
-      z = z.add(bias);
-    }
-
-    // Prevenimos divisiones entre cero
-    const stabilizer = tfjs.where(
-      z.greaterEqual(tfjs.scalar(0)),
-      tfjs.scalar(epsilon),
-      tfjs.scalar(-epsilon),
-    );
-    z = z.add(stabilizer);
-
-    // Backward pass: s = R_out / z
-    const s = relevanceOut.div(z);
-
-    // c = s * W^T
-    const c = s.matMul(weights, false, true);
-
-    // R_in = x * c
-    const relevanceIn = inputTensor.mul(c);
-
-    return relevanceIn;
-  });
+  return lrpEpsilon(denseForward(weights, bias), inputTensor, relevanceOut, epsilon);
 }
 
-/**
- * LRP para capa Dense con regla alpha-beta.
- */
+/** LRP para capa Dense con regla alpha-beta. */
 export function lrpDenseAlphaBeta(
   inputTensor: tfjs.Tensor,
   weights: tfjs.Tensor,
   relevanceOut: tfjs.Tensor,
   bias: tfjs.Tensor | null = null,
-  alpha = 0.5,
-  beta = 0.5,
+  alpha = 1,
+  beta = 0,
   epsilon = 1e-9,
 ): tfjs.Tensor {
   return tfjs.tidy(() => {
-    // Separar pesos en positivos y negativos
-    const wPos = tfjs.maximum(weights, 0);
-    const wNeg = tfjs.minimum(weights, 0);
-
-    // Forward pass con pesos positivos
-    let zPos: tfjs.Tensor = inputTensor.matMul(wPos);
-    if (bias) {
-      const bPos = tfjs.maximum(bias, 0);
-      zPos = zPos.add(bPos);
-    }
-    zPos = zPos.add(epsilon);
-
-    // Forward pass con pesos negativos
-    let zNeg: tfjs.Tensor = inputTensor.matMul(wNeg);
-    if (bias) {
-      const bNeg = tfjs.minimum(bias, 0);
-      zNeg = zNeg.add(bNeg);
-    }
-    zNeg = zNeg.sub(epsilon);
-
-    // Backward pass
-    const sPos = relevanceOut.div(zPos).mul(alpha);
-    const sNeg = relevanceOut.div(zNeg).mul(beta);
-
-    const cPos = sPos.matMul(wPos, false, true);
-    const cNeg = sNeg.matMul(wNeg, false, true);
-
-    const relevanceIn = inputTensor.mul(cPos.add(cNeg));
-
-    return relevanceIn;
+    const forwardPos = denseForward(
+      tfjs.maximum(weights, 0),
+      bias ? tfjs.maximum(bias, 0) : null,
+    );
+    const forwardNeg = denseForward(
+      tfjs.minimum(weights, 0),
+      bias ? tfjs.minimum(bias, 0) : null,
+    );
+    return lrpAlphaBeta(forwardPos, forwardNeg, inputTensor, relevanceOut, alpha, beta, epsilon);
   });
 }
 
-/**
- * LRP para capa Convolucional 2D con regla epsilon.
- */
+/** LRP para capa Convolucional 2D con regla epsilon. */
 export function lrpConv2D(
   inputTensor: tfjs.Tensor,
   kernel: tfjs.Tensor4D,
@@ -318,172 +278,90 @@ export function lrpConv2D(
   config: ConvConfig = {},
   epsilon = 1e-9,
 ): tfjs.Tensor {
-  return tfjs.tidy(() => {
-    const { padding = 'valid', bias = null } = config;
-    const strides = normalizeHw(config.strides, 1);
-    const x4 = inputTensor as tfjs.Tensor4D;
-    const r4 = relevanceOut as tfjs.Tensor4D;
-
-    // Forward pass: z = conv2d(x, W) + b
-    let z: tfjs.Tensor = tfjs.conv2d(x4, kernel, strides, padding);
-    if (bias) {
-      z = z.add(bias);
-    }
-
-    // Estabilización
-    const stabilizer = tfjs.where(
-      z.greaterEqual(0),
-      tfjs.scalar(epsilon),
-      tfjs.scalar(-epsilon),
-    );
-    z = z.add(stabilizer);
-
-    // s = R_out / z
-    const s = r4.div(z) as tfjs.Tensor4D;
-
-    // Convolución transpuesta (equivalente al paso hacia atrás)
-    const outputShape = x4.shape as [number, number, number, number];
-    const c = tfjs.conv2dTranspose(s, kernel, outputShape, strides, padding);
-
-    // R_in = x * c
-    const relevanceIn = x4.mul(c);
-
-    return relevanceIn;
-  });
+  return lrpEpsilon(
+    convForward(kernel, config, config.bias ?? null),
+    inputTensor,
+    relevanceOut,
+    epsilon,
+  );
 }
 
-/**
- * LRP para capa Convolucional 2D con regla alpha-beta.
- */
+/** LRP para capa Convolucional 2D con regla alpha-beta. */
 export function lrpConv2DAlphaBeta(
   inputTensor: tfjs.Tensor,
   kernel: tfjs.Tensor4D,
   relevanceOut: tfjs.Tensor,
   config: ConvConfig = {},
-  alpha = 0.5,
-  beta = 0.5,
+  alpha = 1,
+  beta = 0,
   epsilon = 1e-9,
 ): tfjs.Tensor {
   return tfjs.tidy(() => {
-    const { padding = 'valid', bias = null } = config;
-    const strides = normalizeHw(config.strides, 1);
-    const x4 = inputTensor as tfjs.Tensor4D;
-    const r4 = relevanceOut as tfjs.Tensor4D;
-
-    const kernelPos = tfjs.maximum(kernel, 0) as tfjs.Tensor4D;
-    const kernelNeg = tfjs.minimum(kernel, 0) as tfjs.Tensor4D;
-
-    // Forward con pesos positivos
-    let zPos: tfjs.Tensor = tfjs.conv2d(x4, kernelPos, strides, padding);
-    if (bias) {
-      const bPos = tfjs.maximum(bias, 0);
-      zPos = zPos.add(bPos);
-    }
-    zPos = zPos.add(epsilon);
-
-    // Forward con pesos negativos
-    let zNeg: tfjs.Tensor = tfjs.conv2d(x4, kernelNeg, strides, padding);
-    if (bias) {
-      const bNeg = tfjs.minimum(bias, 0);
-      zNeg = zNeg.add(bNeg);
-    }
-    zNeg = zNeg.sub(epsilon);
-
-    // Backward
-    const sPos = r4.div(zPos).mul(alpha) as tfjs.Tensor4D;
-    const sNeg = r4.div(zNeg).mul(beta) as tfjs.Tensor4D;
-
-    const outputShape = x4.shape as [number, number, number, number];
-    const cPos = tfjs.conv2dTranspose(
-      sPos,
-      kernelPos,
-      outputShape,
-      strides,
-      padding,
+    const bias = config.bias ?? null;
+    const forwardPos = convForward(
+      tfjs.maximum(kernel, 0) as tfjs.Tensor4D,
+      config,
+      bias ? tfjs.maximum(bias, 0) : null,
     );
-    const cNeg = tfjs.conv2dTranspose(
-      sNeg,
-      kernelNeg,
-      outputShape,
-      strides,
-      padding,
+    const forwardNeg = convForward(
+      tfjs.minimum(kernel, 0) as tfjs.Tensor4D,
+      config,
+      bias ? tfjs.minimum(bias, 0) : null,
     );
-
-    const relevanceIn = x4.mul(cPos.add(cNeg));
-
-    return relevanceIn;
+    return lrpAlphaBeta(forwardPos, forwardNeg, inputTensor, relevanceOut, alpha, beta, epsilon);
   });
 }
 
+const poolArgs = (config: PoolConfig) =>
+  [
+    normalizeHw(config.poolSize, 2),
+    normalizeHw(config.strides ?? config.poolSize, 2),
+    config.padding ?? 'valid',
+  ] as const;
+
 /**
  * LRP para capa MaxPooling2D.
- * Implementa la relajación heurística asimilada a Average Pooling
- * para entornos Edge-AI, garantizando el Axioma de Conservación (Bach et al.)
+ * - winnerTakesAll = true: toda la relevancia de cada ventana va a la neurona
+ *   ganadora (gradiente de maxPool).
+ * - winnerTakesAll = false: se reparte en proporción a la activación, como si
+ *   fuera un AveragePooling.
  */
 export function lrpMaxPooling2D(
   inputTensor: tfjs.Tensor,
   relevanceOut: tfjs.Tensor,
-  config: PoolConfig = {}
+  config: PoolConfig = {},
+  winnerTakesAll = true,
+  epsilon = 1e-9,
 ): tfjs.Tensor {
-  return tfjs.tidy(() => {
-    const poolSize = normalizeHw(config.poolSize, 2);
-    const strides = normalizeHw(config.strides, 2);
-    const x4 = inputTensor as tfjs.Tensor4D;
-    const r4 = relevanceOut as tfjs.Tensor4D;
-
-    // Despliegue espacial y normalización matemática
-    const upsampled = upsampleRelevance(r4, x4.shape, poolSize, strides);
-
-    return upsampled;
-  });
+  if (!winnerTakesAll) {
+    return lrpAvgPooling2D(inputTensor, relevanceOut, config, epsilon);
+  }
+  const [poolSize, strides, padding] = poolArgs(config);
+  return lrpEpsilon(
+    (x) => tfjs.maxPool(x as tfjs.Tensor4D, poolSize, strides, padding),
+    inputTensor,
+    relevanceOut,
+    epsilon,
+  );
 }
 
 /**
- * LRP para capa AveragePooling2D.
- * La relevancia se distribuye uniformemente entre los elementos de la ventana.
+ * LRP para capa AveragePooling2D: la relevancia de cada ventana se reparte
+ * en proporción a la contribución de cada entrada.
  */
 export function lrpAvgPooling2D(
   inputTensor: tfjs.Tensor,
   relevanceOut: tfjs.Tensor,
   config: PoolConfig = {},
+  epsilon = 1e-9,
 ): tfjs.Tensor {
-  return tfjs.tidy(() => {
-    const poolSize = normalizeHw(config.poolSize, 2);
-    const strides = normalizeHw(config.strides, 2);
-    const x4 = inputTensor as tfjs.Tensor4D;
-    const r4 = relevanceOut as tfjs.Tensor4D;
-
-    const upsampled = upsampleRelevance(r4, x4.shape, poolSize, strides);
-
-    return upsampled;
-  });
-}
-
-/**
- * Función auxiliar para hacer upsample de la relevancia.
- * Distribuye la relevancia de salida al tamaño de entrada.
- */
-function upsampleRelevance(
-  relevanceOut: tfjs.Tensor4D,
-  inputShape: number[],
-  poolSize: number | [number, number],
-  _strides: number | [number, number],
-): tfjs.Tensor {
-  return tfjs.tidy(() => {
-    const inH = inputShape[1];
-    const inW = inputShape[2];
-
-    const [poolH, poolW] = Array.isArray(poolSize)
-      ? poolSize
-      : [poolSize, poolSize];
-
-    // Usamos resize bilinear como aproximación al despliegue espacial
-    const resized = tfjs.image.resizeBilinear(relevanceOut, [inH, inW]);
-
-    // Ajustamos por el área de la ventana de pooling (conservación)
-    const poolArea = poolH * poolW;
-    return resized.div(poolArea);
-  });
+  const [poolSize, strides, padding] = poolArgs(config);
+  return lrpEpsilon(
+    (x) => tfjs.avgPool(x as tfjs.Tensor4D, poolSize, strides, padding),
+    inputTensor,
+    relevanceOut,
+    epsilon,
+  );
 }
 
 /**
@@ -497,15 +375,15 @@ export function lrpFlatten(
 }
 
 interface ApplyLRPParams {
-  layerType: string;
-  inputTensor: tfjs.Tensor;
+  layerType   : string;
+  inputTensor : tfjs.Tensor;
   relevanceOut: tfjs.Tensor;
-  layer: any;
+  layer       : any;
   options?: {
-    rule?: 'simple' | 'epsilon' | 'alpha_beta';
-    epsilon?: number;
-    alpha?: number;
-    beta?: number;
+    rule?          : 'epsilon' | 'alpha_beta';
+    epsilon?       : number;
+    alpha?         : number;
+    beta?          : number;
     winnerTakesAll?: boolean;
   };
 }
@@ -521,61 +399,44 @@ export function applyLRP(params: ApplyLRPParams): tfjs.Tensor {
     epsilon = 0.01,
     alpha = 2,
     beta = 1,
+    winnerTakesAll = true,
   } = options;
 
   switch (layerType) {
     case 'Dense': {
-      const [weights, bias] = layer.getWeights();
-      if (rule === 'alpha_beta') {
-        return lrpDense(
-          inputTensor,
-          weights,
-          relevanceOut,
-          bias,
-          epsilon,
-        );
-      } else {
-        return lrpDense(inputTensor, weights, relevanceOut, bias, epsilon);
-      }
+      const [weights, bias = null] = layer.getWeights();
+      return rule === 'alpha_beta'
+        ? lrpDenseAlphaBeta(inputTensor, weights, relevanceOut, bias, alpha, beta, epsilon)
+        : lrpDense(inputTensor, weights, relevanceOut, bias, epsilon);
     }
 
     case 'Conv2D': {
-      const [kernel, bias] = layer.getWeights();
+      const [kernel, bias = null] = layer.getWeights();
       const config: ConvConfig = {
         strides: layer.strides,
         padding: layer.padding,
-        bias: bias,
+        bias,
       };
-      if (rule === 'alpha_beta') {
-        return lrpConv2DAlphaBeta(
-          inputTensor,
-          kernel,
-          relevanceOut,
-          config,
-          alpha,
-          beta,
-          epsilon,
-        );
-      } else {
-        return lrpConv2D(inputTensor, kernel, relevanceOut, config, epsilon);
-      }
+      return rule === 'alpha_beta'
+        ? lrpConv2DAlphaBeta(inputTensor, kernel, relevanceOut, config, alpha, beta, epsilon)
+        : lrpConv2D(inputTensor, kernel, relevanceOut, config, epsilon);
     }
 
     case 'MaxPooling2D': {
       const config: PoolConfig = {
         poolSize: layer.poolSize,
-        strides: layer.strides,
-        padding: layer.padding,
+        strides : layer.strides,
+        padding : layer.padding,
       };
-      return lrpMaxPooling2D(inputTensor, relevanceOut, config);
+      return lrpMaxPooling2D(inputTensor, relevanceOut, config, winnerTakesAll);
     }
 
     case 'AveragePooling2D':
     case 'AvgPool2D': {
       const config: PoolConfig = {
         poolSize: layer.poolSize,
-        strides: layer.strides,
-        padding: layer.padding,
+        strides : layer.strides,
+        padding : layer.padding,
       };
       return lrpAvgPooling2D(inputTensor, relevanceOut, config);
     }

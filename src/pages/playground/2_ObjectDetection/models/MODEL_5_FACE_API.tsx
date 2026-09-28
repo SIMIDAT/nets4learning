@@ -1,6 +1,7 @@
  
-//import * as faceapi from '@vladmandic/face-api/dist/face-api.esm-nobundle.js'
-import * as faceapi from "@vladmandic/face-api"
+// Versión sin TensorFlow.js empaquetado: usa el @tensorflow/tfjs del proyecto (con el paquete
+// por defecto se cargaba una segunda copia de TF.js y se registraban de nuevo todos los kernels).
+import * as faceapi from "@vladmandic/face-api/dist/face-api.esm-nobundle.js"
 import { Trans } from "react-i18next"
 import I_MODEL_OBJECT_DETECTION from "./_model"
 import {
@@ -10,9 +11,10 @@ import {
   TINY_BIBTEX,
   FACE_RECOGNITION_MODEL_BIBTEX,
 } from "./MODEL_5_FACE_API_INFO"
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
-  static KEY = "FACE-API"
+  static KEY = OD_MODEL_KEYS.FACE_API
   TITLE = "datasets-models.2-object-detection.face-api.title"
   i18n_TITLE = "datasets-models.2-object-detection.face-api.title"
   URL = "https://justadudewhohacks.github.io/face-api.js/docs/index.html"
@@ -31,39 +33,31 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     surprised: "face-api.surprised",
   }
 
-  GET_LABELS(): string[] {
-    return [
-      "age",
-      "neutral",
-      "happy",
-      "sad",
-      "angry",
-      "fearful",
-      "disgusted",
-      "surprised",
-    ]
+  // region EXPLICABILIDAD
+  // Se explican las expresiones que el modelo ve en la cara (probabilidad ≥ 10 %, y siempre la
+  // principal). La edad no: al tapar la cara el modelo deja de verla y la "edad" pasa a 0, así que
+  // SHAP explicaría "hay cara o no" en lugar de "qué hace parecer mayor o más joven".
+  static readonly MIN_EXPRESSION_TO_EXPLAIN = 0.1
+  EXPLAIN_PREDICTION_CONFIG = { minConfidence: 0.2 }
+
+  EXPLAIN_LABELS(detections: any[]): string[] {
+    const expressions: Record<string, number> = detections?.[0]?.expressions ?? {}
+    const sorted = Object.entries(expressions).sort((a, b) => b[1] - a[1])
+    return sorted
+      .filter(([, p], i) => i === 0 || p >= MODEL_5_FACE_API.MIN_EXPRESSION_TO_EXPLAIN)
+      .map(([name]) => name)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  EXPLAIN_LABEL_TEXT(label: string | number): string {
+    return this.i18n_face_api[String(label)] ?? String(label)
+  }
+
+  /** Probabilidad de cada expresión en la primera cara detectada (0 si no hay cara). */
   NORMALIZE_PREDICTIONS(predictions: any[] = [], labels: Array<string | number>): number[] {
-    if (!Array.isArray(labels) || labels.length === 0) return []
-    const scores: number[] = new Array(labels.length).fill(0)
-    if (!Array.isArray(predictions) || predictions.length === 0) return scores
-
-    // Tomamos la primera cara detectada
-    const pred = predictions[0]
-    if (!pred) return scores
-
-    for (let i = 0; i < labels.length; i++) {
-      const label = labels[i]
-      if (label === "age") {
-        scores[i] = pred.age || 0
-      } else if (pred.expressions && typeof pred.expressions[label] === "number") {
-        scores[i] = pred.expressions[label]
-      }
-    }
-    return scores
+    const expressions: Record<string, number> = predictions?.[0]?.expressions ?? {}
+    return labels.map((label) => expressions[String(label)] ?? 0)
   }
+  // endregion
 
   DESCRIPTION() {
     const prefix = "datasets-models.2-object-detection.face-api.description."
@@ -217,12 +211,17 @@ export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     }
   }
 
-  async PREDICTION(input_image_or_video: any, _config = {}) {
+  async PREDICTION(input_image_or_video: any, config: { minConfidence?: number } = {}) {
     let _input = input_image_or_video
-    if (input_image_or_video.constructor === ImageData) {
-      _input = this._ImageData_To_Image(input_image_or_video)
+    if (input_image_or_video instanceof ImageData) {
+      // Canvas (síncrono): con una <img> habría que esperar a que cargue antes de detectar.
+      _input = document.createElement("canvas")
+      _input.width = input_image_or_video.width
+      _input.height = input_image_or_video.height
+      _input.getContext("2d").putImageData(input_image_or_video, 0, 0)
     }
-    const minConfidence = 0.8
+    // 0.8 para mostrar detecciones; la explicabilidad pasa un umbral más bajo.
+    const minConfidence = config.minConfidence ?? 0.8
     const maxResults = 10
     const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResults })
     const predictions = await faceapi

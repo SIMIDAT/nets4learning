@@ -5,17 +5,19 @@ import * as handPoseDetection from '@tensorflow-models/hand-pose-detection'
 import * as handsignMultiligual from 'handsign-multilingual'
 import { Trans } from 'react-i18next'
 import { Container, Row, Col } from 'react-bootstrap'
+import { syncMediaPipeMirror } from './mediapipeMirror'
 
 import * as _Types from '@core/types'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { HandSignInfo } from './MODEL_6_HAND_SIGN_HandSignInfo'
 import { TFJS_handpose_bibtex } from './MODEL_6_HAND_SIGN_INFO'
+import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 type Finger_t = 'thumb' | 'index' | 'mid' | 'ring' | 'pinky'
 
 
 export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
-  static KEY = 'HAND-SIGN'
+  static KEY = OD_MODEL_KEYS.HAND_SIGN
   TITLE = 'datasets-models.2-object-detection.hand-sign.title'
   i18n_TITLE = 'datasets-models.2-object-detection.hand-sign.title'
   URL = 'https://github.com/nonodev96/handsign-multilingual'
@@ -111,13 +113,58 @@ export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
   /**
    * 
    * @param {ImageData} input_image_or_video 
-   * @param {{flipHorizontal: boolean}} config 
+   * @param {{flipHorizontal?: boolean, resetTracking?: boolean}} config
    * @returns {Promise<handPoseDetection.Hand[]>}
    */
-  async PREDICTION (input_image_or_video: ImageData, config = { flipHorizontal: false }) {
+  async PREDICTION (input_image_or_video: ImageData, config: { flipHorizontal?: boolean, resetTracking?: boolean } = {}) {
     if (this._modelDetector === null) return []
-    return await this._modelDetector.estimateHands(input_image_or_video, { flipHorizontal: config.flipHorizontal })
+    // El runtime de MediaPipe sigue la mano del fotograma anterior (ignora `staticImageMode`);
+    // al explicar, cada imagen perturbada debe evaluarse sin memoria de la anterior.
+    if (config.resetTracking) this._modelDetector.reset()
+    const flipHorizontal = config.flipHorizontal ?? false
+    syncMediaPipeMirror(this._modelDetector, flipHorizontal)
+    return await this._modelDetector.estimateHands(input_image_or_video, { flipHorizontal })
   }
+
+  // region EXPLICABILIDAD
+  EXPLAIN_PREDICTION_CONFIG = { resetTracking: true }
+
+  // Se explican la presencia de la mano y cada letra reconocida: "¿qué partes de la mano hacen
+  // que el modelo lea la letra X?".
+  static readonly HAND_LABEL = 'hand'
+
+  /** Puntuación (0-1) de cada gesto para una mano; sin umbral para que la señal sea gradual. */
+  _gestureScores(hand: handPoseDetection.Hand): Record<string, number> {
+    if (!this.gestureEstimator || !hand.keypoints3D) return {}
+    const keypoints3D: any = hand.keypoints3D.map(({ x, y, z }) => [x, y, z])
+    const { gestures } = this.gestureEstimator.estimate(keypoints3D, 0)
+    return Object.fromEntries(gestures.map(({ name, score }: { name: string, score: number }) => [name, score / 10]))
+  }
+
+  EXPLAIN_LABELS(detections: handPoseDetection.Hand[]): string[] {
+    if (!detections?.length || !this.gestureEstimator) return detections?.length ? [MODEL_6_HAND_SIGN.HAND_LABEL] : []
+    // Las letras que se muestran en pantalla (umbral 7 de 10, como en RENDER).
+    const letters = detections.flatMap((hand) => {
+      const keypoints3D: any = hand.keypoints3D?.map(({ x, y, z }) => [x, y, z]) ?? []
+      return keypoints3D.length ? this.gestureEstimator!.estimate(keypoints3D, 7).gestures.map(({ name }: { name: string }) => name) : []
+    })
+    return [MODEL_6_HAND_SIGN.HAND_LABEL, ...Array.from(new Set(letters))]
+  }
+
+  EXPLAIN_LABEL_TEXT(label: string | number): string {
+    return label === MODEL_6_HAND_SIGN.HAND_LABEL
+      ? this.t('ui.explain.labels.hand')
+      : this.t('ui.explain.labels.sign', { sign: String(label) })
+  }
+
+  NORMALIZE_PREDICTIONS(predictions: handPoseDetection.Hand[], labels: Array<string | number>): number[] {
+    const hands = Array.isArray(predictions) ? predictions : []
+    const perHand = hands.map((hand) => this._gestureScores(hand))
+    return labels.map((label) => label === MODEL_6_HAND_SIGN.HAND_LABEL
+      ? Math.max(0, ...hands.map((hand) => hand.score ?? 1))
+      : Math.max(0, ...perHand.map((scores) => scores[String(label)] ?? 0)))
+  }
+  // endregion
 
   /**
    * 

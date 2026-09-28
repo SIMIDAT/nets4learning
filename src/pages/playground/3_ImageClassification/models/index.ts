@@ -1,21 +1,16 @@
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
-import MODEL_IMAGE_MNIST from './MODEL_IMAGE_MNIST'
-import MODEL_IMAGE_KMNIST from './MODEL_IMAGE_KMNIST'
-import MODEL_IMAGE_MOBILENET from './MODEL_IMAGE_MOBILENET'
-import MODEL_IMAGE_RESNET from './MODEL_IMAGE_RESNET'
+import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
+import type { ModelRegistry } from '@core/models/modelRegistry'
 
-const MAP_IC_CLASSES = {
-  [MODEL_IMAGE_MNIST.KEY]    : MODEL_IMAGE_MNIST,
-  [MODEL_IMAGE_KMNIST.KEY]   : MODEL_IMAGE_KMNIST,
-  [MODEL_IMAGE_MOBILENET.KEY]: MODEL_IMAGE_MOBILENET,
-  [MODEL_IMAGE_RESNET.KEY]   : MODEL_IMAGE_RESNET,
+/** Clases de modelos de clasificación de imágenes, cargadas bajo demanda. */
+const MAP_IC_CLASSES: ModelRegistry<I_MODEL_IMAGE_CLASSIFICATION> = {
+  [IC_MODEL_KEYS.MNIST]    : () => import('./MODEL_IMAGE_MNIST').then((m) => m.default),
+  [IC_MODEL_KEYS.KMNIST]   : () => import('./MODEL_IMAGE_KMNIST').then((m) => m.default),
+  [IC_MODEL_KEYS.MOBILENET]: () => import('./MODEL_IMAGE_MOBILENET').then((m) => m.default),
+  [IC_MODEL_KEYS.RESNET]   : () => import('./MODEL_IMAGE_RESNET').then((m) => m.default),
 }
+
 export {
   MAP_IC_CLASSES,
-
   I_MODEL_IMAGE_CLASSIFICATION,
-  MODEL_IMAGE_MNIST,
-  MODEL_IMAGE_KMNIST,
-  MODEL_IMAGE_MOBILENET,
-  MODEL_IMAGE_RESNET
 }

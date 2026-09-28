@@ -1,107 +1,129 @@
+import * as tfjs from '@tensorflow/tfjs'
+
 export const UTILS_image = {
   failed                        : (event: Event) => console.error(event),
-  drawImageInCanvasWithContainer: (image: HTMLImageElement, canvas_id: string) => {
-    const canvas = document.getElementById(canvas_id) as HTMLCanvasElement
+  /**
+   * Redimensiona `canvas` para que la imagen quepa en 200×200 manteniendo su proporción y la
+   * dibuja. No modifica la imagen.
+   */
+  drawImageInCanvasWithContainer: (image: HTMLImageElement, canvas: HTMLCanvasElement) => {
+    const MAX_SIDE = 200
+    const ratio = image.naturalWidth / image.naturalHeight
+    canvas.width = ratio > 1 ? MAX_SIDE : MAX_SIDE * ratio
+    canvas.height = ratio > 1 ? MAX_SIDE / ratio : MAX_SIDE
     const canvas_ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-    // const container_w = document.getElementById(container_canvas_id).getBoundingClientRect().width
-    const original_ratio = image.width / image.height
-    let designer_width = 200
-    let designer_height = 200
-    const designer_ratio = designer_width / designer_height
-    if (original_ratio > designer_ratio) {
-      designer_height = designer_width / original_ratio
-    } else {
-      designer_width = designer_height * original_ratio
-    }
-    image.width = designer_width
-    image.height = designer_height
-    // Dibujamos a tam original
-    canvas.width = image.width
-    canvas.height = image.height
     canvas_ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
   },
 }
 
-export function resample_single(canvas: HTMLCanvasElement, width: number, height: number, resize_canvas: HTMLCanvasElement) {
-  const width_source = canvas.width
-  const height_source = canvas.height
+/** ImageData vacía; fuera del navegador (tests) devuelve un objeto con la misma forma. */
+function createImageData(width: number, height: number): ImageData {
+  const data = new Uint8ClampedArray(width * height * 4)
+  return typeof ImageData !== 'undefined'
+    ? new ImageData(data, width, height)
+    : ({ data, width, height, colorSpace: 'srgb' } as ImageData)
+}
+
+/**
+ * Devuelve la ImageData de `source` redimensionada a `width × height`, usando un canvas
+ * auxiliar fuera del DOM: no dibuja nada en los canvas visibles.
+ */
+export function toImageData(source: CanvasImageSource, width: number, height: number): ImageData {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
+  ctx.drawImage(source, 0, 0, width, height)
+  return ctx.getImageData(0, 0, width, height)
+}
+
+/** Todo el contenido de un canvas como ImageData (sin modificarlo). */
+export function canvasToImageData(canvas: HTMLCanvasElement): ImageData {
+  const ctx = canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
+  return ctx.getImageData(0, 0, canvas.width, canvas.height)
+}
+
+/**
+ * Reduce `source` a `width × height` con un filtro Hermite, más nítido que `drawImage` al
+ * reducir mucho (p. ej. el lienzo de 600×600 a 28×28). El color se pondera por el alfa para que
+ * los píxeles transparentes no oscurezcan los bordes. Función pura: devuelve una ImageData nueva.
+ */
+export function resampleImageData(source: ImageData, width: number, height: number): ImageData {
   width = Math.round(width)
   height = Math.round(height)
+  const { data, width: sourceWidth, height: sourceHeight } = source
+  const result = createImageData(width, height)
+  const out = result.data
 
-  const ratio_w = width_source / width
-  const ratio_h = height_source / height
-  const ratio_w_half = Math.ceil(ratio_w / 2)
-  const ratio_h_half = Math.ceil(ratio_h / 2)
-
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-  const ctx2 = resize_canvas.getContext('2d') as CanvasRenderingContext2D
-  const img = ctx.getImageData(0, 0, width_source, height_source)
-  const img2 = ctx2.createImageData(width, height)
-  const data = img.data
-  const data2 = img2.data
+  const ratioW = sourceWidth / width
+  const ratioH = sourceHeight / height
+  const ratioWHalf = Math.ceil(ratioW / 2)
+  const ratioHHalf = Math.ceil(ratioH / 2)
 
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
-      const x2 = (i + j * width) * 4
-      let weight = 0
-      let weights = 0
-      let weights_alpha = 0
-      let gx_r = 0
-      let gx_g = 0
-      let gx_b = 0
-      let gx_a = 0
-      const center_y = (j + 0.5) * ratio_h
-      const yy_start = Math.floor(j * ratio_h)
-      const yy_stop = Math.ceil((j + 1) * ratio_h)
-      for (let yy = yy_start; yy < yy_stop; yy++) {
-        const dy = Math.abs(center_y - (yy + 0.5)) / ratio_h_half
-        const center_x = (i + 0.5) * ratio_w
-        const w0 = dy * dy //pre-calc part of w
-        const xx_start = Math.floor(i * ratio_w)
-        const xx_stop = Math.ceil((i + 1) * ratio_w)
-        for (let xx = xx_start; xx < xx_stop; xx++) {
-          const dx = Math.abs(center_x - (xx + 0.5)) / ratio_w_half
-          const w = Math.sqrt(w0 + dx * dx)
-          if (w >= 1) {
-            //pixel too far
-            continue
-          }
-          //hermite filter
-          weight = 2 * w * w * w - 3 * w * w + 1
-          const pos_x = 4 * (xx + yy * width_source)
-          //alpha
-          gx_a += weight * data[pos_x + 3]
-          weights_alpha += weight
-          //colors
-          if (data[pos_x + 3] < 255) weight = (weight * data[pos_x + 3]) / 250
-          gx_r += weight * data[pos_x]
-          gx_g += weight * data[pos_x + 1]
-          gx_b += weight * data[pos_x + 2]
-          weights += weight
+      let weightsColor = 0
+      let weightsAlpha = 0
+      let r = 0
+      let g = 0
+      let b = 0
+      let a = 0
+      const centerY = (j + 0.5) * ratioH
+      const centerX = (i + 0.5) * ratioW
+      for (let yy = Math.floor(j * ratioH); yy < Math.ceil((j + 1) * ratioH); yy++) {
+        const dy = Math.abs(centerY - (yy + 0.5)) / ratioHHalf
+        for (let xx = Math.floor(i * ratioW); xx < Math.ceil((i + 1) * ratioW); xx++) {
+          const dx = Math.abs(centerX - (xx + 0.5)) / ratioWHalf
+          const w = Math.sqrt(dy * dy + dx * dx)
+          if (w >= 1) continue // píxel fuera del filtro
+          const weight = 2 * w * w * w - 3 * w * w + 1 // filtro Hermite
+          const pos = 4 * (xx + yy * sourceWidth)
+          a += weight * data[pos + 3]
+          weightsAlpha += weight
+          const weightColor = weight * (data[pos + 3] / 255)
+          r += weightColor * data[pos]
+          g += weightColor * data[pos + 1]
+          b += weightColor * data[pos + 2]
+          weightsColor += weightColor
         }
       }
-      data2[x2] = gx_r / weights
-      data2[x2 + 1] = gx_g / weights
-      data2[x2 + 2] = gx_b / weights
-      data2[x2 + 3] = gx_a / weights_alpha
+      const idx = (i + j * width) * 4
+      out[idx] = weightsColor > 0 ? r / weightsColor : 0
+      out[idx + 1] = weightsColor > 0 ? g / weightsColor : 0
+      out[idx + 2] = weightsColor > 0 ? b / weightsColor : 0
+      out[idx + 3] = weightsAlpha > 0 ? a / weightsAlpha : 0
     }
   }
+  return result
+}
 
-  // Ya que esta, exagerarlo. Blancos blancos y negros negros..?
-
-  for (let p = 0; p < data2.length; p += 4) {
-    let gris = data2[p] // Está en blanco y negro
-
-    if (gris < 100) {
-      gris = 0 //exagerarlo
-    } else {
-      gris = 255 //al infinito
-    }
-
-    data2[p] = gris
-    data2[p + 1] = gris
-    data2[p + 2] = gris
+/**
+ * Lleva el color de cada píxel a negro o blanco según su canal rojo (imagen en escala de grises);
+ * el alfa no cambia. Función pura: devuelve una ImageData nueva.
+ */
+export function thresholdImageData(image: ImageData, threshold = 100): ImageData {
+  const result = createImageData(image.width, image.height)
+  result.data.set(image.data)
+  for (let p = 0; p < result.data.length; p += 4) {
+    const value = result.data[p] < threshold ? 0 : 255
+    result.data[p] = value
+    result.data[p + 1] = value
+    result.data[p + 2] = value
   }
+  return result
+}
 
-  ctx2.putImageData(img2, 0, 0)
+/**
+ * Entrada de los modelos MNIST/KMNIST (1×28×28×1), sin modificar `imageData`.
+ * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) · alfa.
+ * - Imagen opaca con dígito oscuro sobre fondo claro → 1 − rojo.
+ * - Dibujo en el lienzo (trazo negro sobre fondo transparente) → alfa.
+ */
+export function imageDataToMnistTensor4d(imageData: ImageData): tfjs.Tensor4D {
+  const { data, width, height } = imageData
+  const values = new Float32Array(width * height)
+  for (let i = 0, p = 0; p < data.length; i++, p += 4) {
+    values[i] = ((255 - data[p]) / 255) * (data[p + 3] / 255)
+  }
+  return tfjs.tensor4d(values, [1, height, width, 1])
 }
