@@ -1,6 +1,6 @@
 {
   "name": "nets4learning",
-  "version": "3.0.0",
+  "version": "4.0.1",
   "homepage": ".",
   "private": true,
   "packageManager": "pnpm@12.6.0",
