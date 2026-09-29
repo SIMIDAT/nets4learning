@@ -30,12 +30,14 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height)
   }
 
-  const handleCanvasDraw_Submit = async (draw_canvas: HTMLCanvasElement, _draw_canvas_ctx: CanvasRenderingContext2D) => {
+  const handleCanvasDraw_Submit = async (draw_canvas: HTMLCanvasElement, _draw_canvas_ctx: CanvasRenderingContext2D, canvas_small?: HTMLCanvasElement) => {
     // Mostramos el dibujo en el canvas de resultado y reducimos a 28×28 en un canvas aparte:
     // antes la miniatura se pintaba encima del dibujo grande y se leían los dos mezclados.
     const canvas = canvasResultRef.current
     canvas?.getContext('2d')?.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
     const imageData = toImageData(draw_canvas, 28, 28)
+    // Miniatura 28×28: lo que realmente recibe el modelo (CustomCanvasDrawer la deja vacía si no se pinta aquí).
+    canvas_small?.getContext('2d')?.putImageData(imageData, 0, 0)
     const { predictions } = await iModelRef.current.CLASSIFY(iModelRef_model.current, imageData)
 
     updatePredictionMNIST(predictions)
@@ -71,13 +73,13 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
         </Card.Header>
         <Card.Body>
           <CustomCanvasDrawer
-            submitFunction={async (canvas: HTMLCanvasElement | null, canvas_ctx: CanvasRenderingContext2D | null) => {
+            submitFunction={async (canvas: HTMLCanvasElement | null, canvas_ctx: CanvasRenderingContext2D | null, canvas_small: HTMLCanvasElement | null) => {
               if (canvas === null || canvas_ctx === null) {
                 console.error("canvas or canvas_ctx is null")
                 return
               }
               await handleCanvasDraw_Clear()
-              await handleCanvasDraw_Submit(canvas, canvas_ctx)
+              await handleCanvasDraw_Submit(canvas, canvas_ctx, canvas_small ?? undefined)
             }}
             clearFunction={async () => {
               await handleCanvasDraw_Clear()

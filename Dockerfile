@@ -30,9 +30,9 @@ FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine AS production
 COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html/n4l/
 COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 8080
+EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget -qO- http://127.0.0.1:8080/n4l/ >/dev/null || exit 1
+    CMD wget -qO- http://127.0.0.1:80/n4l/ >/dev/null || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

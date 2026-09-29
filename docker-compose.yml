@@ -6,4 +6,9 @@ services:
     container_name: n4l-app
     ports:
       - "3000:80"
+    # nginx-unprivileged (no root) necesita esta capability para poder
+    # escuchar en el puerto 80: lo exige el traefik.yml de producción
+    # (services.n4l-svc -> http://n4l:80), que no se puede modificar.
+    cap_add:
+      - NET_BIND_SERVICE
     restart: unless-stopped
