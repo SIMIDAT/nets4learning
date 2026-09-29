@@ -21,7 +21,8 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN NODE_OPTIONS="--max-old-space-size=8192" pnpm run build
+ARG BUILD_MODE=simidat
+RUN NODE_OPTIONS="--max-old-space-size=8192" pnpm run build:${BUILD_MODE}
 
 # ---------- Stage 2: Production ----------
 FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine AS production
