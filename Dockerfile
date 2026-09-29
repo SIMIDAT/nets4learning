@@ -1,38 +1,37 @@
-# Stage 1: Builder
-FROM node:22-alpine AS builder
+# syntax=docker/dockerfile:1.7
 
-# 1. Instalar pnpm y configurar el store (Capa de herramientas)
-RUN npm install --global corepack@latest && \
-    corepack enable && corepack prepare pnpm@latest --activate
+ARG NODE_VERSION=22
+ARG PNPM_VERSION=12.6.0
+ARG NGINX_VERSION=1.27
 
-# Configurar el directorio del store de pnpm para aprovechar la caché de Docker
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+# ---------- Stage 1: Builder ----------
+FROM node:${NODE_VERSION}-alpine AS builder
+
+ARG PNPM_VERSION
+ENV CI=true
+
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 WORKDIR /app
 
-# 2. Copiar SOLO archivos de dependencias (Capa de dependencias)
-# Esto evita que un cambio en el código fuente invalide la caché de la instalación
-COPY package.json pnpm-lock.yaml ./
+# pnpm-workspace.yaml contiene las overrides: debe estar antes del install
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# 3. Instalar dependencias usando un "mount" de caché (Opcional pero recomendado)
-# Esto guarda los paquetes en el host para que el próximo build sea instantáneo
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
-# 4. Copiar el resto del código (Capa de código fuente)
 COPY . .
 
-# 5. Build
-ENV NODE_OPTIONS="--max-old-space-size=8192"
-# RUN pnpm run build
+RUN NODE_OPTIONS="--max-old-space-size=8192" pnpm run build
 
-# Stage 2: Production
-FROM nginx:alpine
+# ---------- Stage 2: Production ----------
+FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}-alpine AS production
 
-# Copiar configuración y assets
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist /usr/share/nginx/html/n4l/
+COPY --from=builder --chown=nginx:nginx /app/dist /usr/share/nginx/html/n4l/
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:8080/n4l/ >/dev/null || exit 1
+
 CMD ["nginx", "-g", "daemon off;"]
