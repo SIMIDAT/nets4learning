@@ -10,7 +10,7 @@ import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import TabularClassificationPredictionForm from '@pages/playground/0_TabularClassification/TabularClassificationPredictionForm'
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { BarOptions_t } from '@/types/types'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
@@ -149,7 +149,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
       <Card.Body>
 
         {generatedModels.length === 0 && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-models'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-models'} />
         </>}
 
 
@@ -179,7 +179,8 @@ export default function TabularClassificationPrediction(props: TabularClassifica
               datasets={datasets}
             />
             <hr />
-            <Bar
+            {predictionBar.data.length === 0 && <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-prediction'} />}
+            {predictionBar.data.length > 0 && <Bar
               options={bar_options}
               data={{
                 labels  : predictionBar.labels,
@@ -192,7 +193,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
                     borderWidth    : 1,
                   },
                 ],
-              }} />
+              }} />}
           </Form>
         </>}
       </Card.Body>

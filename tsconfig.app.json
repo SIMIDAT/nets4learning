@@ -16,6 +16,7 @@
       "@/CONSTANTS_DanfoJS": ["src/CONSTANTS_DanfoJS"],
       "@/DATA_MODEL": ["src/DATA_MODEL"],
       "@/TASKS": ["src/TASKS"],
+      "@/TASK_OPTIONS": ["src/TASK_OPTIONS"],
       "@/MODEL_KEYS": ["src/MODEL_KEYS"],
       "@/types/*": ["src/types/*"],
       

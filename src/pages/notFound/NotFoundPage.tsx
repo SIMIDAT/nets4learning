@@ -5,24 +5,18 @@ import { Link } from 'react-router'
 export default function NotFoundPage () {
   return <>
     <div
-      style={{
-        backgroundColor: '#222',
-        color          : '#fff',
-        height         : 'calc(100vh - 56px)',
-        display        : 'flex',
-        alignItems     : 'center',
-        justifyContent : 'center',
-      }}
+      className={'d-flex align-items-center justify-content-center'}
+      style={{ minHeight: 'calc(100vh - 56px)' }}
       data-testid={'Test-NotFoundPage'}
     >
       <div className="text-center">
         <h1 className={`display-1 fw-bold ${styles.title_404}`}>404</h1>
-        <h4 className={`fw-bold ${styles.subtitle_404}`}>
-          <Trans>Error 404</Trans>
-        </h4>
+        <h2 className={`fw-bold ${styles.subtitle_404}`}>
+          <Trans i18nKey={'pages.not-found.title'} />
+        </h2>
         <p className="lead mt-4">
-          <Link className="btn btn-outline-light btn-lg" to="/" style={{ transition: '0.3s' }}>
-            <Trans>Return to Home</Trans>
+          <Link className="btn btn-outline-primary btn-lg" to="/">
+            <Trans i18nKey={'pages.not-found.return-home'} />
           </Link>
         </p>
       </div>

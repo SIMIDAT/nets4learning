@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
 import VisGraph, { type GraphData, type Network } from 'react-vis-graph-wrapper'
 import { VERBOSE } from '@/CONSTANTS'
@@ -29,6 +29,7 @@ type NeuralNetworkProps = {
 
 export default function NeuralNetwork(props: NeuralNetworkProps) {
   const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
+  const { t } = useTranslation()
 
   const [options, setOptions] = useState({ height: 250, width: 300 })
 
@@ -52,27 +53,33 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
     }
   }
 
-  const getElementText = (index: number, element: DrawableLayer_t) => {
-    let label = ''
-    let title = ''
-    if (element?._class && element?._class === 'flatten') {
-      label = `Layer: ${index}\n\nFlatten`
-      title = `Layer: ${index} {flatten}`
-    } else if (element?._class && element?._class === 'dense') {
-      label = `Layer: ${index}\n\nDense\nU: ${element.units} F.A:  ${element.activation}`
-      title = `Layer: ${index} {dense}\nUnits: ${element.units} F.Activation: ${element.activation}`
-    } else if (element?._class && element?._class === 'conv2d') {
-      label = `Layer: ${index}\n\nConv 2D\nK: ${element.kernelSize}\nF: ${element.filters}\nF.A: ${element.activation}`
-      title = `Layer: ${index} {conv2d}\nKernelSize: ${element.kernelSize}\nFilters: ${element.filters}\nF. Activation: ${element.activation}`
-    } else if (element?._class && element?._class === 'maxPooling2d') {
-      label = `Layer: ${index}\n\nMax Pooling 2D\nP.S: ${element.poolSize}\nS: ${element.strides}`
-      title = `Layer: ${index} {maxPooling2d}\nPool Size: ${element.poolSize}\nStrides: ${element.strides}`
-    } else {
-      label = `Layer: ${index}\nU: ${element.units}\nF.A: ${element.activation}`
-      title = `Layer: ${index} {dense}\nUnits: ${element.units}\nF.Activation: ${element.activation}`
+  // Texto de cada nodo (y de su tooltip). Las capas se numeran desde 1, como en el editor de capas; los tipos
+  // de capa y las activaciones se dejan con su nombre técnico
+  const getElementText = useCallback((index: number, element: DrawableLayer_t) => {
+    const layer = t('neural-network.layer', { index: index + 1 })
+    const units = t('neural-network.units', { units: element.units })
+    let lines: string[]
+    switch (element?._class) {
+      case 'flatten':
+        lines = [layer, '', 'Flatten']
+        break
+      case 'dense':
+        lines = [layer, '', 'Dense', units, String(element.activation)]
+        break
+      case 'conv2d':
+        lines = [layer, '', 'Conv 2D', t('neural-network.kernel-size', { value: element.kernelSize }),
+          t('neural-network.filters', { value: element.filters }), String(element.activation)]
+        break
+      case 'maxPooling2d':
+        lines = [layer, '', 'Max Pooling 2D', t('neural-network.pool-size', { value: element.poolSize }),
+          t('neural-network.strides', { value: element.strides })]
+        break
+      default:
+        lines = [layer, units, String(element.activation)]
     }
-    return { label, title }
-  }
+    const label = lines.join('\n')
+    return { label, title: lines.filter(Boolean).join('\n') }
+  }, [t])
 
   // Ajusta el grafo al tamaño del contenedor, también cuando este cambia (p. ej. al redimensionar la ventana)
   useEffect(() => {
@@ -123,7 +130,7 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       edges.push({ from: index - 1, to: index })
     }
     return { edges, nodes }
-  }, [layers])
+  }, [layers, getElementText])
 
   const modeExtend = useCallback(() => {
     const nodes = [], edges = []
@@ -146,7 +153,7 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       }
     }
     return { nodes, edges }
-  }, [layers])
+  }, [layers, getElementText])
 
   const graphState = useMemo<GraphData>(() => {
     switch (mode) {

@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 import * as _Types from '@core/types'
-import ReactGA from 'react-ga4'
+import { trackPageView } from '@core/analytics'
 
 import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 import * as ImageClassificationUtils from './utils/utils'
@@ -12,6 +12,7 @@ import * as ImageClassificationUtils from './utils/utils'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 import ImageClassificationClassify from '@pages/playground/3_ImageClassification/ImageClassificationClassify'
@@ -97,7 +98,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const [GeneratedModels, setGeneratedModels] = useState<Array<_Types.ImageClassificationGeneratedModel_t>>([])
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/ImageClassification/${dataset}`, title: dataset })
+    trackPageView(`/ImageClassification/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -191,7 +192,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
   const handleSubmit_VectorTest = async (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, canvas_small: HTMLCanvasElement | null) => {
     if (Model === null) {
-      await alertHelper.alertWarning('Antes debes de crear y entrenar el modelo.')
+      await alertHelper.alertWarning(t('error.need-model'))
       return
     }
     if (canvas === null || canvas_small === null || context === null) {
@@ -293,7 +294,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       <Container>
         <Row className={'mt-3'}>
           <Col xl={12}>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center">
               <h1><Trans i18nKey={'modality.3'} /></h1>
               <Button
                 size={'sm'}
@@ -312,7 +313,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
             <Accordion>
               <Accordion.Item eventKey={'manual'} className={'joyride-step-1-manual'}>
-                <Accordion.Header><h2>Manual</h2></Accordion.Header>
+                <Accordion.Header><h2><Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} /></h2></Accordion.Header>
                 <Accordion.Body>
                   <ImageClassificationManual />
                 </Accordion.Body>
@@ -414,6 +415,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
               <Card.Body>
                 {showExplain && explainResult && <ImageExplainResults result={explainResult} />}
 
+                {!hasExplainInput && <N4LEmptyState i18nKey={'ui.explain.waiting-for-prediction'} />}
                 <div className="mt-3">
                   <Button
                     type="button"

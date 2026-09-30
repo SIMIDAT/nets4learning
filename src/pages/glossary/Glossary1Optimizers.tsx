@@ -98,67 +98,65 @@ export default function Glossary1Optimizers() {
             </ol>
           </Accordion.Body>
         </Accordion.Item>
-        {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-          <Accordion.Item eventKey={"equations-optimization"}>
-            <Accordion.Header>
-              <h2>
-                <Trans i18nKey={"equations.title-optimization"} />
-              </h2>
-            </Accordion.Header>
-            <Accordion.Body>
-              <Tabs
-                defaultActiveKey="Momentum"
-                transition={true}
-                className="mb-3"
-              >
-                <Tab eventKey="Momentum" title="Momentum">
-                  <h4 className={"text-lg-center"}>Momentum</h4>
-                  <N4LLatex>
-                    {
-                      "$$ \\begin{split}v_{dW} = \\beta v_{dW} + (1 - \\beta) \\frac{\\partial \\mathcal{J} }{ \\partial W } \\\\\n W = W - \\alpha v_{dW}\\end{split} $$"
-                    }
-                  </N4LLatex>
-                </Tab>
-                <Tab eventKey="Adagrad" title="Adagrad">
-                  <h4 className={"text-lg-center"}>Adagrad</h4>
-                  <N4LLatex>
-                    {
-                      "$$ \\begin{split}g_{t}^{i} = \\frac{\\partial \\mathcal{J}(w_{t}^{i})}{\\partial W} \\\\\n W = W - \\alpha \\frac{\\partial \\mathcal{J}(w_{t}^{i})}{\\sqrt{\\sum_{r=1}^{t}\\left ( g_{r}^{i} \\right )^{2} + \\varepsilon }}\\end{split} $$"
-                    }
-                  </N4LLatex>
-                </Tab>
-                <Tab eventKey="Adadelta" title="Adadelta">
-                  <h4 className={"text-lg-center"}>Adadelta</h4>
-                  <N4LLatex>
-                    {
-                      "$$ \\begin{split}v_t = \\rho v_{t-1} + (1-\\rho) \\nabla_\\theta^2 J( \\theta) \\\\\n \\Delta\\theta &= \\dfrac{\\sqrt{w_t + \\epsilon}}{\\sqrt{v_t + \\epsilon}} \\nabla_\\theta J( \\theta) \\\\\n \\theta &= \\theta - \\eta \\Delta\\theta \\\\\n w_t = \\rho w_{t-1} + (1-\\rho) \\Delta\\theta^2\\end{split} $$"
-                    }
-                  </N4LLatex>
-                </Tab>
-                <Tab eventKey="Adam" title="Adam">
-                  <h4 className={"text-lg-center"}>Adam</h4>
-                  <N4LLatex>
-                    {`
-                      $$ \\begin{split}v_{dW} = \\beta_1 v_{dW} + (1 - \\beta_1) \\frac{\\partial \\mathcal{J} }{ \\partial W } 
-                      \\\\ s_{dW} = \\beta_2 s_{dW} + (1 - \\beta_2) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 
-                      \\\\ v^{corrected}_{dW} = \\frac{v_{dW}}{1 - (\\beta_1)^t} 
-                      \\\\ s^{corrected}_{dW} = \\frac{s_{dW}}{1 - (\\beta_1)^t} 
-                      \\\\ W = W - \\alpha \\frac{v^{corrected}_{dW}}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$
-                    `}
-                  </N4LLatex>
-                </Tab>
-                <Tab eventKey="RMSProp" title="RMSProp">
-                  <h4 className={"text-lg-center"}>RMSProp</h4>
-                  <N4LLatex>
-                    {
-                      "$$ \\begin{split}s_{dW} = \\beta s_{dW} + (1 - \\beta) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 \\\\\n W = W - \\alpha \\frac{\\frac{\\partial \\mathcal{J} }{\\partial W }}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$"
-                    }
-                  </N4LLatex>
-                </Tab>
-              </Tabs>
-            </Accordion.Body>
-          </Accordion.Item>
-        )}
+        <Accordion.Item eventKey={"equations-optimization"}>
+          <Accordion.Header>
+            <h2>
+              <Trans i18nKey={"equations.title-optimization"} />
+            </h2>
+          </Accordion.Header>
+          <Accordion.Body>
+            <Tabs
+              defaultActiveKey="Momentum"
+              transition={true}
+              className="mb-3"
+            >
+              <Tab eventKey="Momentum" title="Momentum">
+                <h4 className={"text-lg-center"}>Momentum</h4>
+                <N4LLatex>
+                  {
+                    "$$ \\begin{split}v_{dW} = \\beta v_{dW} + (1 - \\beta) \\frac{\\partial \\mathcal{J} }{ \\partial W } \\\\\n W = W - \\alpha v_{dW}\\end{split} $$"
+                  }
+                </N4LLatex>
+              </Tab>
+              <Tab eventKey="Adagrad" title="Adagrad">
+                <h4 className={"text-lg-center"}>Adagrad</h4>
+                <N4LLatex>
+                  {
+                    "$$ \\begin{split}g_{t}^{i} = \\frac{\\partial \\mathcal{J}(w_{t}^{i})}{\\partial W} \\\\\n W = W - \\alpha \\frac{\\partial \\mathcal{J}(w_{t}^{i})}{\\sqrt{\\sum_{r=1}^{t}\\left ( g_{r}^{i} \\right )^{2} + \\varepsilon }}\\end{split} $$"
+                  }
+                </N4LLatex>
+              </Tab>
+              <Tab eventKey="Adadelta" title="Adadelta">
+                <h4 className={"text-lg-center"}>Adadelta</h4>
+                <N4LLatex>
+                  {
+                    "$$ \\begin{split}v_t = \\rho v_{t-1} + (1-\\rho) \\nabla_\\theta^2 J( \\theta) \\\\\n \\Delta\\theta &= \\dfrac{\\sqrt{w_t + \\epsilon}}{\\sqrt{v_t + \\epsilon}} \\nabla_\\theta J( \\theta) \\\\\n \\theta &= \\theta - \\eta \\Delta\\theta \\\\\n w_t = \\rho w_{t-1} + (1-\\rho) \\Delta\\theta^2\\end{split} $$"
+                  }
+                </N4LLatex>
+              </Tab>
+              <Tab eventKey="Adam" title="Adam">
+                <h4 className={"text-lg-center"}>Adam</h4>
+                <N4LLatex>
+                  {`
+                    $$ \\begin{split}v_{dW} = \\beta_1 v_{dW} + (1 - \\beta_1) \\frac{\\partial \\mathcal{J} }{ \\partial W } 
+                    \\\\ s_{dW} = \\beta_2 s_{dW} + (1 - \\beta_2) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 
+                    \\\\ v^{corrected}_{dW} = \\frac{v_{dW}}{1 - (\\beta_1)^t} 
+                    \\\\ s^{corrected}_{dW} = \\frac{s_{dW}}{1 - (\\beta_1)^t} 
+                    \\\\ W = W - \\alpha \\frac{v^{corrected}_{dW}}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$
+                  `}
+                </N4LLatex>
+              </Tab>
+              <Tab eventKey="RMSProp" title="RMSProp">
+                <h4 className={"text-lg-center"}>RMSProp</h4>
+                <N4LLatex>
+                  {
+                    "$$ \\begin{split}s_{dW} = \\beta s_{dW} + (1 - \\beta) (\\frac{\\partial \\mathcal{J} }{\\partial W })^2 \\\\\n W = W - \\alpha \\frac{\\frac{\\partial \\mathcal{J} }{\\partial W }}{\\sqrt{s^{corrected}_{dW}} + \\varepsilon}\\end{split} $$"
+                  }
+                </N4LLatex>
+              </Tab>
+            </Tabs>
+          </Accordion.Body>
+        </Accordion.Item>
       </Accordion>
     </>
   )

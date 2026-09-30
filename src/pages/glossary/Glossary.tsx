@@ -54,29 +54,27 @@ export default function Glossary() {
                     </p>
                   </Accordion.Body>
                 </Accordion.Item>
-                {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-                  <Accordion.Item eventKey={"regression"}>
-                    <Accordion.Header>
-                      <h2>
-                        <Trans i18nKey={"pages.glossary.regression.title"} />
-                      </h2>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <p>
-                        <Trans i18nKey={"pages.glossary.regression.text.0"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.glossary.regression.text.1"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.glossary.regression.text.2"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.glossary.regression.text.3"} />
-                      </p>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                )}
+                <Accordion.Item eventKey={"regression"}>
+                  <Accordion.Header>
+                    <h2>
+                      <Trans i18nKey={"pages.glossary.regression.title"} />
+                    </h2>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <p>
+                      <Trans i18nKey={"pages.glossary.regression.text.0"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.glossary.regression.text.1"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.glossary.regression.text.2"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.glossary.regression.text.3"} />
+                    </p>
+                  </Accordion.Body>
+                </Accordion.Item>
                 <Accordion.Item eventKey={"classification-imagen"}>
                   <Accordion.Header>
                     <h2>

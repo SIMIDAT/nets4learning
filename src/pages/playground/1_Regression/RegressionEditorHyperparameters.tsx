@@ -9,9 +9,9 @@ import {
   DEFAULT_NUMBER_OF_EPOCHS,
   DEFAULT_TEST_SIZE,
 } from './CONSTANTS'
-import { HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
+import { HyperparameterLearningRate, HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 
 export default function RegressionEditorHyperparameters() {
@@ -107,10 +107,10 @@ export default function RegressionEditorHyperparameters() {
       </Card.Header>
       <Card.Body>
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {show && <>
-          <HyperparameterNumber controlId={'FormControl_Trainer-LearningRate'} name="learning-rate" min={1} max={100}
+          <HyperparameterLearningRate controlId={'FormControl_Trainer-LearningRate'}
             defaultValue={DEFAULT_LEARNING_RATE} onChange={handlerChange_LearningRate} />
           <HyperparameterNumber controlId={'FormControl_Trainer_n_of_epochs'} name="number-of-epochs" min={1} max={1000}
             defaultValue={DEFAULT_NUMBER_OF_EPOCHS} onChange={handlerChange_NumberOfEpochs} />
@@ -124,7 +124,7 @@ export default function RegressionEditorHyperparameters() {
           <hr />
           <HyperparameterSelect controlId={'FormControl_IdLoss'} label="loss-id" info="loss-id-info"
             value={params.params_training.id_loss} onChange={(value) => change_params_training('id_loss', value as IdLoss_t)}>
-            <LossOptions />
+            <LossOptions task={'regression'} />
           </HyperparameterSelect>
           <hr />
           <MetricsList

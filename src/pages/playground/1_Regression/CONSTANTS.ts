@@ -1,7 +1,7 @@
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
 
 // 0 - 1 --> 0 - 100
-const DEFAULT_LEARNING_RATE = 1
+const DEFAULT_LEARNING_RATE = 0.01
 // 1 - Inf(1000)
 const DEFAULT_NUMBER_OF_EPOCHS = (import.meta.env.VITE_ENVIRONMENT === 'development') ? 5 : 50
 // 0 - 1 --> 0 - 100

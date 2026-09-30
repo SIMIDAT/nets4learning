@@ -22,8 +22,3 @@
   animation: fadeIn 1s ease forwards;
   animation-delay: 0.5s;
 }
-
-.btn-outline-light:hover {
-  background-color: #fff;
-  color: #222;
-}

@@ -165,7 +165,7 @@ export default function RegressionPredictionForm (props: RegressionPredictionFor
         }
         default: {
           return <Col key={index} className="mb-3">
-            Error, option not valid
+            {t('error.option-not-valid')}
           </Col>
         }
       }

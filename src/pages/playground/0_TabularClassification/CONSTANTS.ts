@@ -1,14 +1,13 @@
 import type { IdLoss_t, IdMetric_t } from '@/types/nn-types'
 import * as _Types from '@core/types'
 
-const DEFAULT_LEARNING_RATE = 1
+const DEFAULT_LEARNING_RATE = 0.01
 const DEFAULT_NUMBER_EPOCHS = 10
 const DEFAULT_TEST_SIZE = 10
 const DEFAULT_ID_OPTIMIZATION = 'adam'
-// TypeScript change: DEFAULT_ID_LOSS old metrics-categoricalCrossentropy
-const DEFAULT_ID_LOSS: IdLoss_t = 'losses-meanSquaredError'
-// TypeScript change: DEFAULT_ID_METRICS old accuracy
-const DEFAULT_ID_METRICS: IdMetric_t = 'metrics-binaryAccuracy'
+const DEFAULT_ID_LOSS: IdLoss_t = 'losses-categoricalCrossentropy'
+// Mismo valor que la opción del selector (MetricOptions no lleva prefijo)
+const DEFAULT_ID_METRICS: IdMetric_t = 'categoricalAccuracy'
 const DEFAULT_START_LAYER_UNITS = 10
 const DEFAULT_START_LAYER_ACTIVATION = 'sigmoid'
 const DEFAULT_END_LAYER_UNITS = 10

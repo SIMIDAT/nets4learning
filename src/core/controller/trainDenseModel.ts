@@ -4,6 +4,7 @@ import { trainTestSplit } from '@utils/trainTestSplit'
 import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
 import * as _Types from '@core/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import i18next from 'i18next'
 import AlertHelper from '@utils/alertHelper'
 import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 
@@ -89,7 +90,7 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
     model.compile({ optimizer, loss, metrics })
   } catch (error) {
     console.error('model.compile()', { error, idOptimizer, idLoss, idMetrics })
-    AlertHelper.alertError('Error compiling the model. See console for details.')
+    AlertHelper.alertError(i18next.t('error.model-compile'))
     throw error
   }
 

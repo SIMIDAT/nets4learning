@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import { Bar } from 'react-chartjs-2'
 import { VERBOSE } from '@/CONSTANTS'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 type ModelReviewTabularClassificationPredictProps = {
   prediction: {
     labels: string[]
@@ -23,7 +24,8 @@ export default function ModelReviewTabularClassificationPredict(props: ModelRevi
         </h3>
       </Card.Header>
       <Card.Body>
-        <Bar
+        {prediction.data.length === 0 && <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-prediction'} />}
+        {prediction.data.length > 0 && <Bar
           options={{
             responsive: true,
             plugins   : {
@@ -42,7 +44,7 @@ export default function ModelReviewTabularClassificationPredict(props: ModelRevi
               borderWidth    : 1,
             }],
           }}
-        />
+        />}
       </Card.Body>
     </Card>
   </>

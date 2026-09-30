@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap'
 import { Camera as IconCamera } from 'react-bootstrap-icons'
-import ReactGA from 'react-ga4'
+import { trackPageView } from '@core/analytics'
 import Webcam from 'react-webcam'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -104,7 +104,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const [shapOptions, setShapOptions] = useState({ ...DEFAULT_SHAP_IMAGE_OPTIONS, maskValue: 0 })
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/ModelReviewObjectDetection/${dataset}`, title: dataset })
+    trackPageView(`/ModelReviewObjectDetection/${dataset}`, dataset)
   }, [dataset])
 
   const handleDevices = useCallback(async () => {

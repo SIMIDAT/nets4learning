@@ -2,12 +2,12 @@ import { Card } from "react-bootstrap"
 import { Trans } from "react-i18next"
 
 import { VERBOSE } from "@/CONSTANTS"
-import { Link } from "react-router"
 import TabularClassificationDatasetProcessForm from "@pages/playground/0_TabularClassification/TabularClassificationDatasetProcessForm"
-import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
+import N4LEmptyState from "@components/loading/N4LEmptyState"
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from "@/CONSTANTS_ACTIONS"
 import * as _Types from "@core/types"
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import N4LHelpLink from "@components/helpLink/N4LHelpLink"
 
 
 /**
@@ -36,7 +36,7 @@ export default function TabularClassificationDatasetProcess() {
         <Card.Body>
           {!isFileUploaded() && (
             <>
-              <WaitingPlaceholder i18nKey_title={"pages.playground.generator.waiting-for-file"} />
+              <N4LEmptyState i18nKey={"pages.playground.generator.waiting-for-file"} />
             </>
           )}
           {isFileUploaded() && (
@@ -51,15 +51,7 @@ export default function TabularClassificationDatasetProcess() {
               i18nKey="more-information-in-link"
               components={{
                 link1: (
-                  <Link
-                    className="text-info"
-                    state={{
-                      action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                    }}
-                    to={{
-                      pathname: "/glossary/",
-                    }}
-                  />
+                  <N4LHelpLink page={"glossary"} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
                 ),
               }}
             />
@@ -69,15 +61,7 @@ export default function TabularClassificationDatasetProcess() {
               i18nKey="more-information-in-tutorial"
               components={{
                 link1: (
-                  <Link
-                    className="text-info"
-                    state={{
-                      action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                    }}
-                    to={{
-                      pathname: "/manual/",
-                    }}
-                  />
+                  <N4LHelpLink page={"manual"} action={MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
                 ),
               }}
             />

@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 import { Trans } from 'react-i18next'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import type { DropEvent, FileRejection } from 'react-dropzone'
 
@@ -44,7 +44,7 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
       </Card.Header>
       <Card.Body>
         {!showComponent && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-training'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
         </>}
         {showComponent && <>
           <Row>

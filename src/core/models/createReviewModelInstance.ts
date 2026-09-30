@@ -2,7 +2,6 @@ import * as tfjs from '@tensorflow/tfjs'
 import type { NavigateFunction } from 'react-router'
 
 import { UPLOAD } from '@/TASKS'
-import alertHelper from '@utils/alertHelper'
 import { hasModel, loadModelClass, type ModelClass, type ModelRegistry } from '@core/models/modelRegistry'
 
 /**
@@ -22,8 +21,8 @@ export async function createReviewModelInstance<T>(
     return null
   }
   if (!hasModel(registry, key)) {
+    // La página 404 ya explica el problema: sin alerta encima de la página vacía
     console.error('Error, option not valid', { key })
-    await alertHelper.alertError('Error, option not valid')
     navigate('/404')
     return null
   }

@@ -1,11 +1,14 @@
 import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router'
+import { Container } from 'react-bootstrap'
 
 import NotFoundPage from '../notFound/NotFoundPage'
 import Loading from '../Loading'
 import { RegressionProvider } from '@context/RegressionContext'
 import { TabularClassificationProvider } from '@context/TabularClassificationContext'
 import { TASKS } from '@/TASKS'
+import N4LBreadcrumb from '@components/breadcrumb/N4LBreadcrumb'
+import { isTask } from '@components/task/taskInfo'
 
 // Cada vista se carga bajo demanda: así una tarea no descarga los modelos y librerías
 // de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe).
@@ -78,10 +81,16 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
 export default function Playground() {
   const { id, option, example } = useParams<MisParams>()
   if (!id || !option || !example) return null
+  const kind = option === 'model' || option === 'dataset' ? option : undefined
 
   return (
     <>
       <main className={'mb-3'} data-title={'Playground'} data-testid={'Test-Playground'}>
+        {isTask(id) && kind !== undefined &&
+          <Container className={'mt-3'}>
+            <N4LBreadcrumb task={id} kind={kind} example={example} />
+          </Container>
+        }
         <Suspense fallback={<Loading />}>
           <PrintHTMLPlaygroundView
             id={id}

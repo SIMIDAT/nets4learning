@@ -102,8 +102,10 @@ export default function Manual() {
         }
       }
     }
-    if (location.state?.action) {
-      openManualInSection(location.state.action)
+    // Los enlaces de ayuda del playground llevan la sección en la URL (?action=…)
+    const action = new URLSearchParams(location.search).get("action") ?? location.state?.action
+    if (action) {
+      openManualInSection(action)
     }
   }, [location, toggleAccordionActiveManual])
 
@@ -164,59 +166,57 @@ export default function Manual() {
                     </p>
                   </Accordion.Body>
                 </Accordion.Item>
-                {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-                  <Accordion.Item eventKey={"manual-1-regression"}>
-                    <Accordion.Header>
-                      <h2>
-                        <Trans i18nKey={"pages.manual.1-regression.title"} />
-                      </h2>
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <h4>
-                        <Trans i18nKey={"pages.manual.1-regression.1-title"} />
-                      </h4>
-                      <p>
-                        <Trans i18nKey={"pages.manual.1-regression.1-description.0"} />
-                      </p>
-                      {/*TODO*/}
-                      {/*<p><Trans i18nKey={'pages.manual.1-regression.1-description.1'} /></p>*/}
-                      {/*<p><Trans i18nKey={'pages.manual.1-regression.1-description.2'} /></p>*/}
-                      <hr />
-                      <h4>
-                        <Trans i18nKey={"pages.manual.1-regression.2-title"} />
-                      </h4>
-                      <p>
-                        <Trans i18nKey={"pages.manual.1-regression.2-description.0"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.manual.1-regression.2-description.1"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.manual.1-regression.2-description.2"} />
-                      </p>
-                      <p>
-                        <Trans i18nKey={"pages.manual.1-regression.2-description.3"} />
-                      </p>
-                      <p>
-                        <Trans
-                          i18nKey={"pages.manual.1-regression.2-link"}
-                          components={{
-                            link1: (
-                              <a
-                                href={"https://www.ugr.es/~jsalinas/apuntes/C5.pdf"}
-                                target={"_blank"}
-                                rel={"noreferrer"}
-                                className={"text-info"}
-                              >
-                                link
-                              </a>
-                            ),
-                          }}
-                        />
-                      </p>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                )}
+                <Accordion.Item eventKey={"manual-1-regression"}>
+                  <Accordion.Header>
+                    <h2>
+                      <Trans i18nKey={"pages.manual.1-regression.title"} />
+                    </h2>
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <h4>
+                      <Trans i18nKey={"pages.manual.1-regression.1-title"} />
+                    </h4>
+                    <p>
+                      <Trans i18nKey={"pages.manual.1-regression.1-description.0"} />
+                    </p>
+                    {/*TODO*/}
+                    {/*<p><Trans i18nKey={'pages.manual.1-regression.1-description.1'} /></p>*/}
+                    {/*<p><Trans i18nKey={'pages.manual.1-regression.1-description.2'} /></p>*/}
+                    <hr />
+                    <h4>
+                      <Trans i18nKey={"pages.manual.1-regression.2-title"} />
+                    </h4>
+                    <p>
+                      <Trans i18nKey={"pages.manual.1-regression.2-description.0"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.manual.1-regression.2-description.1"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.manual.1-regression.2-description.2"} />
+                    </p>
+                    <p>
+                      <Trans i18nKey={"pages.manual.1-regression.2-description.3"} />
+                    </p>
+                    <p>
+                      <Trans
+                        i18nKey={"pages.manual.1-regression.2-link"}
+                        components={{
+                          link1: (
+                            <a
+                              href={"https://www.ugr.es/~jsalinas/apuntes/C5.pdf"}
+                              target={"_blank"}
+                              rel={"noreferrer"}
+                              className={"text-info"}
+                            >
+                              link
+                            </a>
+                          ),
+                        }}
+                      />
+                    </p>
+                  </Accordion.Body>
+                </Accordion.Item>
                 <Accordion.Item eventKey={"manual-2-object-identification"}>
                   <Accordion.Header>
                     <h2>

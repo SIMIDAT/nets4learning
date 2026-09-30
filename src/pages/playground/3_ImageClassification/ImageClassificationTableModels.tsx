@@ -6,7 +6,7 @@ import * as tfvis from '@tensorflow/tfjs-vis'
 import { VERBOSE } from '@/CONSTANTS'
 import { parseLogs } from '@core/history/utils'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
 
@@ -70,7 +70,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
       <Card.Body>
         <Container fluid={true}>
           {!showTable && <>
-            <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-training'} />
+            <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
           </>}
           {showTable && <>
             <Row>
@@ -98,7 +98,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                       .map((value, index) => {
                         return <tr key={index}>
                           <th>{(activePage * rowsPerPage) + index + 1}</th>
-                          <td>{value.params.learning_rate}%</td>
+                          <td>{value.params.learning_rate}</td>
                           <td>{value.params.test_size}%</td>
                           <td>{value.params.n_epochs}</td>
                           <td>
@@ -130,7 +130,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                           <td>
                             <Button variant={'outline-primary'}
                               size={'sm'}
-                              onClick={() => handleClick_DownloadGeneratedModel(value, index)}>
+                              onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}>
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
                           </td>

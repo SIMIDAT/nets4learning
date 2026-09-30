@@ -106,7 +106,6 @@ The app uses these variables:
 | `VITE_PATH`              | Path the app is served under: `"/n4l"` or `""` for the domain root. It also sets Vite's `base`.                                                                                                    |
 | `VITE_ENVIRONMENT`       | `development` enables i18next debug logs, shorter default training and development panels. Any value other than `production` also enables the development-only pages, `/debug` and the test pages. |
 | `VITE_GA_MEASUREMENT_ID` | Google Analytics 4 measurement ID.                                                                                                                                                                 |
-| `VITE_SHOW_NEW_FEATURE`  | `"true"` shows sections that are still in progress (glossary, datasets page).                                                                                                                      |
 
 ## Deployment
 

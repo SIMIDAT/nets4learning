@@ -1,6 +1,5 @@
 import type { DropEvent, FileRejection } from "react-dropzone"
 import { Trans, useTranslation } from "react-i18next"
-import { Link } from "react-router"
 import { DataFrameReadCSV } from "@core/dataframe/DataFrameUtils"
 
 import alertHelper from "@utils/alertHelper"
@@ -8,9 +7,10 @@ import * as _Types from "@core/types"
 import { UPLOAD } from "@/TASKS"
 import { VERBOSE } from "@/CONSTANTS"
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from "@/CONSTANTS_ACTIONS"
-import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
+import N4LEmptyState from "@components/loading/N4LEmptyState"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import N4LHelpLink from "@components/helpLink/N4LHelpLink"
 
 type PropsTabularClassificationDatasetProps_t = {
   dataset: string
@@ -90,22 +90,14 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
           />
           {datasets.length === 0 && (
             <>
-              <WaitingPlaceholder i18nKey_title={"pages.playground.generator.waiting-for-file"} />
+              <N4LEmptyState i18nKey={"pages.playground.generator.waiting-for-file"} />
 
               <p className={"text-end text-muted mb-0 pb-0"}>
                 <Trans
                   i18nKey={"more-information-in-link"}
                   components={{
                     link1: (
-                      <Link
-                        className={"text-info"}
-                        state={{
-                          action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                        }}
-                        to={{
-                          pathname: "/glossary/",
-                        }}
-                      />
+                      <N4LHelpLink page={"glossary"} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
                     ),
                   }}
                 />
@@ -116,15 +108,7 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
                   i18nKey={"more-information-in-tutorial"}
                   components={{
                     link1: (
-                      <Link
-                        className={"text-info"}
-                        state={{
-                          action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS,
-                        }}
-                        to={{
-                          pathname: "/manual/",
-                        }}
-                      />
+                      <N4LHelpLink page={"manual"} action={MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
                     ),
                   }}
                 />

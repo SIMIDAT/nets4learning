@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
-import ReactGA from 'react-ga4'
+import { trackPageView } from '@core/analytics'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
@@ -20,6 +20,7 @@ import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 import TabularClassificationManual from '@pages/playground/0_TabularClassification/TabularClassificationManual'
 import TabularClassificationDataset from '@pages/playground/0_TabularClassification/TabularClassificationDataset'
@@ -119,7 +120,7 @@ export default function TabularClassification(props: Props) {
   const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/TabularClassification/${dataset}`, title: dataset })
+    trackPageView(`/TabularClassification/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -160,7 +161,7 @@ export default function TabularClassification(props: Props) {
 
     const { data_processed } = datasets.datasets[datasets.index]
     if (!data_processed || !data_processed.classes) {
-      await alertHelper.alertError(t('error'))
+      await alertHelper.alertError(t('error.dataset-not-processed'))
       console.error('Error, dataset not processed')
       return
     }
@@ -180,7 +181,7 @@ export default function TabularClassification(props: Props) {
     try {
       setIsTraining(true)
       const _dataset_processed = datasets.datasets[datasets.index]
-      const _learningRate = learningRate / 100
+      const _learningRate = learningRate
       const _numberOfEpoch = numberEpochs
       const _testSize = testSize / 100
       const _layerList = layers
@@ -231,24 +232,24 @@ export default function TabularClassification(props: Props) {
     e.preventDefault()
     if (dataset === UPLOAD) {
       if (datasets.datasets.length === 0) {
-        await alertHelper.alertError('First you must load a dataset')
+        await alertHelper.alertError(t('error.need-dataset'))
         return
       }
     }
     if (model === undefined || model === null) {
-      await alertHelper.alertError('First you must load a model')
+      await alertHelper.alertError(t('error.need-model'))
       return
     }
     try {
       const { data_processed } = datasets.datasets[datasets.index]
       if (!data_processed) {
-        await alertHelper.alertError('Error, dataset not processed')
+        await alertHelper.alertError(t('error.dataset-not-processed'))
         console.error('Error, dataset not processed')
         return
       }
       const { scaler, classes } = data_processed
       if (!scaler || !classes) {
-        await alertHelper.alertError('Error, dataset not processed')
+        await alertHelper.alertError(t('error.dataset-not-processed'))
         console.error('Error, dataset not processed')
         return
       }
@@ -274,7 +275,7 @@ export default function TabularClassification(props: Props) {
       })
     } catch (error) {
       console.error(error)
-      await alertHelper.alertError('Error, model not valid')
+      await alertHelper.alertError(t('error.model-not-valid'))
     }
   }
   // endregion
@@ -295,15 +296,13 @@ export default function TabularClassification(props: Props) {
       <Container className={'mb-3'}>
         <Row className={'mt-3 mb-3'}>
           <Col xl={12}>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center">
               <h1><Trans i18nKey={'modality.0'} /></h1>
-              {import.meta.env.VITE_SHOW_NEW_FEATURE === 'true' &&
-                <Button size={'sm'}
-                  variant={'outline-primary'}
-                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                  <Trans i18nKey={'datasets-models.0-tabular-classification.joyride.title'} />
-                </Button>
-              }
+              <Button size={'sm'}
+                variant={'outline-primary'}
+                onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
+                <Trans i18nKey={'datasets-models.0-tabular-classification.joyride.title'} />
+              </Button>
             </div>
           </Col>
         </Row>
@@ -359,7 +358,7 @@ export default function TabularClassification(props: Props) {
               <h3><Trans i18nKey={'pages.playground.generator.layer-design'} /></h3>
             </Card.Header>
             <Card.Body>
-              <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+              <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
             </Card.Body>
           </Card>
         </>}
@@ -430,6 +429,8 @@ export default function TabularClassification(props: Props) {
               classes={dataProcessed?.classes ?? []}
               predictedClassIndex={predictedClassIndex}
               inputKey={predictionBar}
+              modelReady={model !== null && model !== undefined}
+              hasPrediction={predictionBar.data.length > 0}
               getModel={() => model}
               getInstance={() => predictedVector_ref.current}
               getPool={() => dataframeRowsToNumbers(dataProcessed?.X.values)}

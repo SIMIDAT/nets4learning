@@ -1,32 +1,31 @@
 import "./N4LNavbar.css"
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
-import IconLangES from '@assets/es.svg'
-import IconLangGB from '@assets/gb.svg'
 import IconThemeLight from '@assets/sun.svg'
 import IconThemeDark from '@assets/moon.svg'
 import IconGithub from '@assets/github.svg'
 import { changeUserLanguage, type Language_t } from '@core/i18n/language'
+import { changeUserTheme, type Theme_t } from '@core/theme'
 
-// Cada idioma con su nombre en ese idioma
-const LANGUAGE_OPTIONS: Array<{ language: Language_t, label: string, icon: React.ReactNode }> = [
-  { language: 'en', label: 'English', icon: <IconLangGB /> },
-  { language: 'es', label: 'Español', icon: <IconLangES /> },
-  { language: 'ja', label: '日本語', icon: '🇯🇵' },
+// Cada idioma con su nombre en ese idioma (sin banderas: un idioma no es un país)
+const LANGUAGE_OPTIONS: Array<{ language: Language_t, label: string }> = [
+  { language: 'en', label: 'English' },
+  { language: 'es', label: 'Español' },
+  { language: 'ja', label: '日本語' },
 ]
 
 export default function N4LNavbar() {
   const { t, i18n } = useTranslation()
-  const [dataTheme, setDataTheme] = useState('light')
+  // main.tsx ya ha aplicado el tema inicial (el guardado o el del sistema)
+  const [theme, setTheme] = useState<Theme_t>(() => document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light')
 
-  useEffect(() => {
-    const htmlElement = document.querySelector('html')!
-    htmlElement.setAttribute('data-bs-theme', dataTheme)
-    htmlElement.setAttribute('data-theme', dataTheme)
-  }, [dataTheme])
+  const handleClick_ChangeTheme = (newTheme: Theme_t) => {
+    changeUserTheme(newTheme)
+    setTheme(newTheme)
+  }
 
   return (
     <>
@@ -37,8 +36,8 @@ export default function N4LNavbar() {
               src={import.meta.env.VITE_PATH + '/without_background.png'}
               width="30"
               height="30"
-              className="d-inline-block align-top"
-              alt="N4L" />
+              className="d-inline-block align-top me-1"
+              alt="" />
             Nets4Learning
           </Navbar.Brand>
 
@@ -49,9 +48,7 @@ export default function N4LNavbar() {
               <Nav.Item><Nav.Link as={Link} to={'/manual'}><Trans i18nKey={'header.manual'} /></Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link as={Link} to={'/glossary'}><Trans i18nKey={'header.glossary'} /></Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link as={Link} to={'/datasets'}><Trans i18nKey={'header.datasets'} /></Nav.Link></Nav.Item>
-              {import.meta.env.VITE_SHOW_NEW_FEATURE === 'true' &&
-                <Nav.Item><Nav.Link as={Link} to={'/analyze'}><Trans i18nKey={'header.analyze'} /></Nav.Link></Nav.Item>
-              }
+              <Nav.Item><Nav.Link as={Link} to={'/analyze'}><Trans i18nKey={'header.analyze'} /></Nav.Link></Nav.Item>
               {/*<Nav.Link onClick={() => handleClick_GoTo__PAGE__('/contribute/')}>*/}
               {/*  <Trans i18nKey={'header.contribute'} />*/}
               {/*</Nav.Link>*/}
@@ -61,32 +58,35 @@ export default function N4LNavbar() {
             </Nav>
             <Nav>
               <Nav.Item>
-                <Nav.Link href={'https://github.com/SIMIDAT/nets4learning'}>
-                  <div className={'me-2 n4l-icon-1rem'}>
+                <Nav.Link href={'https://github.com/SIMIDAT/nets4learning'}
+                  target={'_blank'}
+                  rel={'noreferrer'}
+                  aria-label={'GitHub'}
+                  title={'GitHub'}>
+                  <span className={'n4l-icon-1rem'} aria-hidden={true}>
                     <IconGithub />
-                  </div>
+                  </span>
                 </Nav.Link>
               </Nav.Item>
               <NavDropdown title={t('header.language')} id="change-language-nav-dropdown">
-                {LANGUAGE_OPTIONS.map(({ language, label, icon }) => (
-                  <NavDropdown.Item key={language} active={i18n.language === language} onClick={() => changeUserLanguage(i18n, language)}>
-                    <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}>{icon}</span>
+                {LANGUAGE_OPTIONS.map(({ language, label }) => (
+                  <NavDropdown.Item key={language} lang={language} active={i18n.language === language} onClick={() => changeUserLanguage(i18n, language)}>
                     {label}
                   </NavDropdown.Item>
                 ))}
               </NavDropdown>
               <NavDropdown title={t('header.theme')} id="change-theme-nav-dropdown">
-                <NavDropdown.Item onClick={() => setDataTheme('light')}>
+                <NavDropdown.Item active={theme === 'light'} onClick={() => handleClick_ChangeTheme('light')}>
                   <span className={'me-2 n4l-icon-1rem'}>
                     <IconThemeLight />
                   </span>
-                  Light
+                  <Trans i18nKey={'header.theme-light'} />
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => setDataTheme('dark')}>
+                <NavDropdown.Item active={theme === 'dark'} onClick={() => handleClick_ChangeTheme('dark')}>
                   <span className={'me-2 n4l-icon-1rem'}>
                     <IconThemeDark />
                   </span>
-                  Dark
+                  <Trans i18nKey={'header.theme-dark'} />
                 </NavDropdown.Item>
               </NavDropdown>
             </Nav>

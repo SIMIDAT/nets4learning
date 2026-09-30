@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Button, Card, Col, Container, Form, ProgressBar, Row } from "react-bootstrap"
-import ReactGA from "react-ga4"
+import { trackPageView } from "@core/analytics"
 import * as tfjs from "@tensorflow/tfjs"
-import * as tfvis from "@tensorflow/tfjs-vis"
 
 import alertHelper from "@utils/alertHelper"
 import type I_MODEL_TABULAR_CLASSIFICATION from "./models/_model"
@@ -19,6 +18,7 @@ import ModelReviewTabularClassificationPredictForm from "@pages/playground/0_Tab
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import type { BasicPrediction_t, DatasetProcessed_t } from "@core/types"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
+import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
 import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
 type Props = {
   dataset: string
@@ -59,13 +59,6 @@ export default function ModelReviewTabularClassification(props: Props) {
     setProgress(fraction * 100)
   }
   useEffect(() => {
-    if (VERBOSE) console.debug("useEffect []")
-    return () => {
-      tfvis.visor().close()
-    }
-  }, [])
-
-  useEffect(() => {
     if (VERBOSE) console.debug("useEffect [dataToPredict]")
     // TODO encoders to dataToPredict
     const init = async () => {
@@ -87,7 +80,7 @@ export default function ModelReviewTabularClassification(props: Props) {
   }, [dataToPredict, iModelInstance])
 
   useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: `/ModelReviewTabularClassification/${dataset}`, title: dataset })
+    trackPageView(`/ModelReviewTabularClassification/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -166,7 +159,7 @@ export default function ModelReviewTabularClassification(props: Props) {
       setPrediction(_prediction)
     } catch (error) {
       console.error(error)
-      await alertHelper.alertError("Error, option not valid")
+      await alertHelper.alertError(t("error.prediction"))
     }
 
     setIsButtonToPredictDisabled(false)
@@ -187,18 +180,6 @@ export default function ModelReviewTabularClassification(props: Props) {
     iModelInstance.DATA_DEFAULT_KEYS.every((key) => String(example[key]) === String(dataToPredict[key]))
   ) ?? -1
 
-  const handleClick_openSummary = async () => {
-    if (model === null) {
-      console.error("Error, model is null")
-      return
-    }
-    if (!tfvis.visor().isOpen()) {
-      await tfvis.show.modelSummary({ name: "Model Summary" }, model)
-      tfvis.visor().open()
-    } else {
-      tfvis.visor().close()
-    }
-  }
   if (VERBOSE) console.debug("render ModelReviewTabularClassification")
   return (
     <>
@@ -230,19 +211,13 @@ export default function ModelReviewTabularClassification(props: Props) {
         {iModelInstance !== null && model !== null && <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
             <Card className={"sticky-top mt-3 border-info"} style={{ zIndex: 0 }}>
-              <Card.Header className={"d-flex align-items-center justify-content-between"}>
+              <Card.Header>
                 <h2>
                   <Trans i18nKey={"pages.playground.0-tabular-classification.general.model"} />
                 </h2>
-                {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-                  <div className="d-flex">
-                    <Button size={"sm"} variant={"outline-info"} onClick={handleClick_openSummary}>
-                      Summary
-                    </Button>
-                  </div>
-                )}
               </Card.Header>
               <Card.Body>
+                <N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />
                 <Card.Title>
                   <Trans i18nKey={iModelInstance.TITLE} />
                 </Card.Title>
@@ -336,6 +311,7 @@ export default function ModelReviewTabularClassification(props: Props) {
               classes={explainMeta.classes}
               predictedClassIndex={predictedClassIndex}
               inputKey={prediction}
+              hasPrediction={prediction.data.length > 0}
               getModel={() => model}
               getInstance={() => predictedVector_ref.current}
               getPool={() => backgroundPool_ref.current}

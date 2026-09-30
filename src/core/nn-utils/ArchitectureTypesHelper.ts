@@ -1,4 +1,4 @@
-import type { IdOptimizer_t, LossMap_t, MetricMap_t } from "@/types/nn-types"
+import type { IdOptimizer_t, LossName_t, MetricMap_t } from "@/types/nn-types"
 import type { LayerActivation_t } from "@core/types"
 
 const TYPE_GRADIENTS = [
@@ -27,18 +27,25 @@ const withLabels = <K extends string>(keys: K[]) => keys.map((key) => ({ key, la
 // Desactivado: 'momentum'
 const TYPE_OPTIMIZER = withLabels<IdOptimizer_t>(['sgd', 'adagrad', 'adadelta', 'adam', 'adamax', 'rmsprop'])
 
-// tf.losses.*
-const TYPE_LOSSES = withLabels<keyof LossMap_t>([
-  'absoluteDifference',
-  'computeWeightedLoss',
-  'cosineDistance',
-  'hingeLoss',
-  'huberLoss',
-  'logLoss',
-  'meanSquaredError',
-  'sigmoidCrossEntropy',
-  'softmaxCrossEntropy',
+// Pérdidas de tfjs-layers, separadas según el tipo de salida para la que tienen sentido
+const TYPE_LOSSES_CLASSIFICATION = withLabels<LossName_t>([
+  'categoricalCrossentropy',
+  'binaryCrossentropy',
+  'kullbackLeiblerDivergence',
+  'hinge',
+  'squaredHinge',
+  'categoricalHinge',
 ])
+const TYPE_LOSSES_REGRESSION = withLabels<LossName_t>([
+  'meanSquaredError',
+  'meanAbsoluteError',
+  'meanAbsolutePercentageError',
+  'meanSquaredLogarithmicError',
+  'logcosh',
+  'poisson',
+  'cosineProximity',
+])
+const TYPE_LOSSES = [...TYPE_LOSSES_CLASSIFICATION, ...TYPE_LOSSES_REGRESSION]
 
 // tf.metrics.* — desactivadas: 'binaryAccuracy', 'binaryCrossentropy', 'recall', 'sparseCategoricalAccuracy'
 const TYPE_METRICS = withLabels<keyof MetricMap_t>([
@@ -86,6 +93,8 @@ export {
   TYPE_GRADIENTS,
   TYPE_OPTIMIZER,
   TYPE_LOSSES,
+  TYPE_LOSSES_CLASSIFICATION,
+  TYPE_LOSSES_REGRESSION,
   TYPE_METRICS,
   TYPE_ACTIVATION,
   TYPE_CLASS

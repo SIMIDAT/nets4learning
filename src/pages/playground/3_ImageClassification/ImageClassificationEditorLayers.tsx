@@ -1,6 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
-import { Link } from 'react-router'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
@@ -8,6 +7,7 @@ import { TYPE_CLASS } from '@core/nn-utils/ArchitectureTypesHelper'
 import alertHelper from '@utils/alertHelper'
 import ImageClassificationEditorLayersItem from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayersItem'
 import type { Layer_t } from 'src/types/types'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 const DEFAULT_LAYER_END: Layer_t = {
   _class    : 'maxPooling2d',
@@ -73,7 +73,7 @@ export default function ImageClassificationEditorLayers(props: Props) {
 
   const handleClick_RemoveLayer = async (indexLayer: number) => {
     if (Layers[indexLayer]._protected) {
-      await alertHelper.alertWarning('Error, first layer cant be removed')
+      await alertHelper.alertWarning(t('warning.first-layer-cant-be-removed'))
       return
     }
     if (Layers.length === 1) {
@@ -86,7 +86,7 @@ export default function ImageClassificationEditorLayers(props: Props) {
 
   const handleChange_Class = async (e: React.ChangeEvent<HTMLSelectElement>, indexLayer: number) => {
     if (Layers[indexLayer]._protected) {
-      await alertHelper.alertWarning('Error, first layer cant be changed')
+      await alertHelper.alertWarning(t('warning.first-layer-cant-be-changed'))
       return
     }
     const option = e.target.value
@@ -187,15 +187,7 @@ export default function ImageClassificationEditorLayers(props: Props) {
           <Trans
             i18nKey={'more-information-in-link'}
             components={{
-              link1: <Link
-                className={'text-info'}
-                state={{
-                  action: MANUAL_ACTIONS.IMAGE_CLASSIFICATION.STEP_3_LAYERS
-                }}
-                to={{
-                  pathname: '/manual/'
-                }}
-              />
+              link1: <N4LHelpLink page={'manual'} action={MANUAL_ACTIONS.IMAGE_CLASSIFICATION.STEP_3_LAYERS} />
             }} />
         </p>
       </Card.Footer>

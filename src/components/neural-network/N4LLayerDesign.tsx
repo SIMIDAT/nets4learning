@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react'
-import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Form } from 'react-bootstrap'
 
@@ -8,8 +7,9 @@ import type { Layer_t as ImageLayer_t } from '@/types/types'
 import { VERBOSE } from '@/CONSTANTS'
 import NeuralNetwork from './NeuralNetwork'
 import type { Network } from 'react-vis-graph-wrapper'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { NEURAL_NETWORK_MODES } from './neural_network'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 /**
  * @typedef N4LLayerDesignProps_t
@@ -80,7 +80,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
           />
         </>}
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
       </Card.Body>
       {(actions.length > 0 || glossary_action !== '' || manual_action !== '') && <>
@@ -99,14 +99,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <Trans
                 i18nKey={'more-information-in-link'}
                 components={{
-                  link1: <Link className={'text-info'}
-                    state={{
-                      action: glossary_action,
-                    }}
-                    to={{
-                      pathname: '/glossary/',
-                    }}
-                  />,
+                  link1: <N4LHelpLink page={'glossary'} action={glossary_action} />,
                 }}
               />
             </p>}
@@ -115,14 +108,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <Trans
                 i18nKey={'more-information-in-tutorial'}
                 components={{
-                  link1: <Link className={'text-info'}
-                    state={{
-                      action: manual_action,
-                    }}
-                    to={{
-                      pathname: '/manual/',
-                    }}
-                  />,
+                  link1: <N4LHelpLink page={'manual'} action={manual_action} />,
                 }}
               />
             </p>

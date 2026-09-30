@@ -1,158 +1,104 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router'
-import { Form, Button, Row, Col, Container, Card } from 'react-bootstrap'
+import { useState } from 'react'
+import { Link, Navigate, useParams } from 'react-router'
+import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import N4LModal from '@components/modal/N4LModal'
-import alertHelper from '@utils/alertHelper'
 
-import {
-  TASK_DATASET_OPTIONS,
-  TASK_MODEL_OPTIONS,
-  type DATASET_OPTIONS_TYPE,
-  type MODEL_OPTIONS_TYPE,
-  type TASKS_TYPE_V
-} from '@/DATA_MODEL'
+import N4LModal from '@components/modal/N4LModal'
+import N4LBreadcrumb from '@components/breadcrumb/N4LBreadcrumb'
+import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import { isTask, TASK_INFO } from '@components/task/taskInfo'
+import { taskOptions, type TaskKind_t } from '@/TASK_OPTIONS'
+import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import { useMenuModel } from '@hooks/useMenuModel'
 
-
-export type MenuKind_t = 'model' | 'dataset'
-
-// Opciones de cada tarea: modelos preentrenados o datasets para entrenar
-const TASK_OPTIONS: Record<MenuKind_t, Record<string, MODEL_OPTIONS_TYPE | DATASET_OPTIONS_TYPE>> = {
-  model  : TASK_MODEL_OPTIONS,
-  dataset: TASK_DATASET_OPTIONS,
-}
+export type MenuKind_t = TaskKind_t
 
 /**
- * Selector de modelo preentrenado (`kind="model"`) o de dataset (`kind="dataset"`) de una tarea.
- * Las claves de i18n, los test-id y la ruta de destino siguen el mismo patrón en los dos casos.
+ * Galería de modelos preentrenados (`kind="model"`) o de datasets (`kind="dataset"`) de una tarea. Cada tarjeta
+ * abre el playground con un clic; la descripción completa solo se descarga al pedirla (la clase de cada modelo
+ * puede arrastrar librerías pesadas).
  */
 export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
-
-  const { id } = useParams<{ id: TASKS_TYPE_V }>()
+  const { id } = useParams<{ id: string }>()
   const { t } = useTranslation()
-  const prefix = `pages.menu.select-${kind}.`
-  const navigate = useNavigate()
-  const NO_SELECTION = `select-${kind}`
   const testId = `Test-MenuSelect${kind === 'model' ? 'Model' : 'Dataset'}`
 
-  const [selectedKey, setSelectedKey] = useState(NO_SELECTION)
-  const options = id !== undefined && id in TASK_OPTIONS[kind] ? TASK_OPTIONS[kind][id] : []
-  const [showDescription, setShowDescription] = useState(false)
-  // Solo se descarga el modelo seleccionado, para mostrar su título y descripción.
-  const selectedModel = useMenuModel(id, selectedKey)
+  // Modelo cuya descripción se está enseñando en el modal
+  const [descriptionKey, setDescriptionKey] = useState<string | null>(null)
+  const descriptionModel = useMenuModel(id, descriptionKey ?? '')
 
-  const handleSubmit = async ($event: React.FormEvent<HTMLFormElement>) => {
-    $event.preventDefault()
-    if (selectedKey === NO_SELECTION) {
-      await alertHelper.alertWarning(t(`alert.menu.need-select-${kind}`))
-    } else {
-      navigate(`/playground/${id}/${kind}/${selectedKey}`)
-    }
-  }
-
-  useEffect(() => {
-    if (!id) {
-      console.error('Error, id is undefined')
-      return
-    }
-    if (!(id in TASK_OPTIONS[kind])) {
-      console.error(`Error, ${kind} not valid`)
-      return
-    }
-  }, [id, kind])
-
-  const Menu_Title = () => {
-    if (!id) return <></>
-    if (selectedKey === NO_SELECTION) return <></>
-    if (selectedKey === 'UPLOAD') return t(`upload-${kind}`)
-    if (!selectedModel) return <></>
-    return t(selectedModel.i18n_TITLE)
-  }
-
-  const Menu_Body = () => {
-    if (!id) return <></>
-    if (selectedKey === NO_SELECTION) return <></>
-    if (selectedKey === 'UPLOAD') return <>{t(`upload-${kind}-info`)}</>
-    if (!selectedModel) return <></>
-    return <>{selectedModel.DESCRIPTION()}</>
-  }
+  const options = isTask(id) ? taskOptions(id, kind) : []
+  if (!isTask(id) || options.length === 0) return <Navigate to={'/404'} replace />
+  const { i18nTitle } = TASK_INFO[id]
+  const descriptionOption = options.find(({ value }) => value === descriptionKey)
+  const uploadOption = options.find(({ value }) => value === UPLOAD)
+  const listOptions = options.filter(({ value }) => value !== UPLOAD)
 
   if (VERBOSE) console.debug(`render MenuSelect ${kind}`)
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
+    <main className={'mb-4'} data-testid={testId}>
+      <Container className={'mt-3'}>
+        <N4LBreadcrumb task={id} kind={kind} />
 
-        <Container id={testId.replace('Test-', '')} data-testid={testId}>
-          <Row className="mt-3 mb-3">
-            <Col>
-              <Card>
-                <Card.Header><h2><Trans i18nKey={'modality.' + id} /></h2></Card.Header>
+        <header className={'py-3'} data-task={id}>
+          <h1><Trans i18nKey={i18nTitle} /></h1>
+          <p className={'lead mb-0'}><Trans i18nKey={`pages.menu-selection-${kind}.form-description-1`} /></p>
+        </header>
+
+        {/* Subir un CSV propio va aparte de los datasets de ejemplo */}
+        {uploadOption !== undefined && <>
+          <h2 className={'h5 mb-3'}><Trans i18nKey={'pages.menu-selection-dataset.own-dataset'} /></h2>
+          <Card className={'n4l-task-card mb-4'} data-task={id} data-testid={`${testId}-Option-${UPLOAD}`}>
+            <Card.Body className={'d-flex flex-column flex-md-row align-items-md-center gap-3'}>
+              <div className={'flex-grow-1'}>
+                <Card.Title as={'h3'} className={'h5'}>{t(uploadOption.i18n)}</Card.Title>
+                <Card.Text><Trans i18nKey={'pages.menu-selection-dataset.upload-text'} /></Card.Text>
+              </div>
+              <Link className={'btn btn-primary px-4'}
+                to={`/playground/${id}/${kind}/${UPLOAD}`}
+                data-testid={`${testId}-Open-${UPLOAD}`}>
+                <Trans i18nKey={'pages.menu.open'} />
+              </Link>
+            </Card.Body>
+          </Card>
+          <h2 className={'h5 mb-3'}><Trans i18nKey={'pages.menu-selection-dataset.example-datasets'} /></h2>
+        </>}
+
+        <Row xs={1} md={2} lg={3} className={'g-3'}>
+          {listOptions.map(({ value, i18n }) => (
+            <Col key={value}>
+              <Card className={'n4l-task-card h-100'} data-task={id} data-testid={`${testId}-Option-${value}`}>
                 <Card.Body>
-                  <Card.Text>
-                    <Trans i18nKey={`pages.menu-selection-${kind}.form-description-1`} />
-                  </Card.Text>
-                  <Row>
-                    <Col xs={12} sm={12} md={12} lg={10} xl={10} xxl={10}>
-                      <Form.Group controlId="FormModel">
-                        <Form.Label><Trans i18nKey={`pages.menu-selection-${kind}.form-label`} /></Form.Label>
-                        <Form.Select
-                          aria-label={t(`pages.menu-selection-${kind}.form-label`)}
-                          defaultValue={NO_SELECTION}
-                          data-testid={`${testId}-Select`}
-                          onChange={(e) => {
-                            setSelectedKey(e.target.value)
-                          }}>
-                          <option value={NO_SELECTION} disabled>{t(`pages.menu-selection-${kind}.form-option-_-1`)}</option>
-                          {options.map(({ value, i18n }, index) => {
-                            return <option value={value} key={index}>{t(i18n)}</option>
-                          })}
-                        </Form.Select>
-                      </Form.Group>
-                    </Col>
-                    <Col
-                      className={'d-flex flex-column-reverse'}
-                      xs={12} sm={12} md={12} lg={2} xl={2} xxl={2}>
-                      <div className="d-grid gap-2">
-                        <Button variant={'outline-info'}
-                          className={'mt-3'}
-                          disabled={selectedKey === NO_SELECTION}
-                          onClick={() => { setShowDescription(true) }}>
-                          <Trans i18nKey={prefix + 'description'} />
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col 
-                    className={'mx-auto'}
-                      xs={12} sm={12} md={12} lg={6} xl={6} xxl={6}>
-                      <div className="d-grid gap-2">
-                        <Button
-                          variant={'outline-primary'}
-                          className={'mt-3'}
-                          size={'lg'}
-                          type={'submit'}
-                          disabled={selectedKey === NO_SELECTION}
-                          data-testid={`${testId}-Submit`}>
-                          <Trans i18nKey={`pages.menu-selection-${kind}.form-submit`} />
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
+                  <Card.Title as={'h3'} className={'h5'}>{t(i18n)}</Card.Title>
                 </Card.Body>
+                <Card.Footer className={'bg-transparent border-0 d-flex gap-2 pb-3'}>
+                  <Link className={'btn btn-primary flex-grow-1'}
+                    to={`/playground/${id}/${kind}/${value}`}
+                    data-testid={`${testId}-Open-${value}`}>
+                    <Trans i18nKey={'pages.menu.open'} />
+                  </Link>
+                  <Button variant={'outline-secondary'} onClick={() => setDescriptionKey(value)}>
+                    <Trans i18nKey={`pages.menu.select-${kind}.description`} />
+                  </Button>
+                </Card.Footer>
               </Card>
             </Col>
-          </Row>
-        </Container>
-      </Form>
+          ))}
+        </Row>
+      </Container>
 
-      <N4LModal showModal={showDescription}
-        setShowModal={setShowDescription}
+      <N4LModal showModal={descriptionKey !== null}
+        setShowModal={() => setDescriptionKey(null)}
         size={'lg'}
-        title={Menu_Title()}
-        ComponentBody={Menu_Body()}
-        ComponentFooter={<></>}
+        title={descriptionModel !== null ? t(descriptionModel.i18n_TITLE) : descriptionOption && t(descriptionOption.i18n)}
+        ComponentBody={descriptionModel !== null ? descriptionModel.DESCRIPTION() : <WaitingPlaceholder />}
+        ComponentFooter={descriptionKey !== null &&
+          <Link className={'btn btn-primary'} to={`/playground/${id}/${kind}/${descriptionKey}`}>
+            <Trans i18nKey={'pages.menu.open'} />
+          </Link>
+        }
       />
-    </>
+    </main>
   )
 }

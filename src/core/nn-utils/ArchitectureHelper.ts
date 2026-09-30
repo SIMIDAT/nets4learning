@@ -1,4 +1,5 @@
-import type { IdLoss_t, IdLossAndMetric_t, IdMetric_t, IdOptimizer_t, LossAndMetricMap_t, LossMap_t, MetricMap_t, TrainMap_t } from '@/types/nn-types';
+import type { IdLoss_t, IdLossAndMetric_t, IdMetric_t, IdOptimizer_t, LossAndMetricMap_t, LossName_t, MetricMap_t, TrainMap_t } from '@/types/nn-types';
+import { TYPE_LOSSES } from '@core/nn-utils/ArchitectureTypesHelper'
 import * as tfjs from '@tensorflow/tfjs'
 import { VERBOSE } from '@/CONSTANTS'
 
@@ -59,49 +60,15 @@ export function createOptimizer(idOptimizer: IdOptimizer_t, params: Params_t = D
  * @param {any} params
  * @returns {Loss_t} loss
  */
-export function createLoss(idLoss: IdLoss_t, params: any) {
+export function createLoss(idLoss: IdLoss_t, params: any): LossName_t {
   if (VERBOSE) console.debug('>> createLoss', { idLoss, params })
-  //
-
-  // https://github.com/tensorflow/tfjs/issues/1315
-  const lossMap: LossMap_t = {
-    // losses
-    // 'losses-absoluteDifference'          : tfjs.losses.absoluteDifference,
-    // 'losses-computeWeightedLoss'         : tfjs.losses.computeWeightedLoss,
-    // 'losses-cosineDistance'              : tfjs.losses.cosineDistance,
-    // 'losses-hingeLoss'                   : tfjs.losses.hingeLoss,
-    // 'losses-huberLoss'                   : tfjs.losses.huberLoss,
-    // 'losses-logLoss'                     : tfjs.losses.logLoss,
-    // 'losses-meanSquaredError'            : tfjs.losses.meanSquaredError,
-    // 'losses-sigmoidCrossEntropy'         : tfjs.losses.sigmoidCrossEntropy,
-    // 'losses-softmaxCrossEntropy'         : tfjs.losses.softmaxCrossEntropy,
-    'absoluteDifference'        : 'absoluteDifference',
-    'computeWeightedLoss'       : 'computeWeightedLoss',
-    'cosineDistance'            : 'cosineDistance',
-    'hingeLoss'                 : 'hingeLoss',
-    'huberLoss'                 : 'huberLoss',
-    'logLoss'                   : 'logLoss',
-    'meanSquaredError'          : 'meanSquaredError',
-    'sigmoidCrossEntropy'       : 'sigmoidCrossEntropy',
-    'softmaxCrossEntropy'       : 'softmaxCrossEntropy',
-    'losses-absoluteDifference' : 'absoluteDifference',
-    'losses-computeWeightedLoss': 'computeWeightedLoss',
-    'losses-cosineDistance'     : 'cosineDistance',
-    'losses-hingeLoss'          : 'hingeLoss',
-    'losses-huberLoss'          : 'huberLoss',
-    'losses-logLoss'            : 'logLoss',
-    'losses-meanSquaredError'   : 'meanSquaredError',
-    'losses-sigmoidCrossEntropy': 'sigmoidCrossEntropy',
-    'losses-softmaxCrossEntropy': 'softmaxCrossEntropy',
-
-  }
-
-  const result = lossMap[idLoss]
-  if (!result) {
+  // El identificador es el nombre de la pérdida en tfjs-layers, con o sin el prefijo "losses-"
+  const lossName = idLoss.replace(/^losses-/, '')
+  if (!TYPE_LOSSES.some(({ key }) => key === lossName)) {
     console.warn('createLoss()', { idLoss })
     return 'categoricalCrossentropy' // Default fallback
   }
-  return result
+  return lossName as LossName_t
 }
 
 /**

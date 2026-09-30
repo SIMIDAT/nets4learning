@@ -7,7 +7,7 @@ import { DataFrameReadCSV } from "@core/dataframe/DataFrameUtils"
 import AlertHelper from "@utils/alertHelper"
 
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
-import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
+import N4LEmptyState from "@components/loading/N4LEmptyState"
 
 import { VERBOSE } from "@/CONSTANTS"
 import { DataFramePlotProvider } from "@components/_context/DataFramePlotContext"
@@ -80,7 +80,7 @@ export default function AnalyzeDataFrame() {
                   />
                   {!isDataFrameUpload && (
                     <>
-                      <WaitingPlaceholder i18nKey_title={"pages.playground.generator.waiting-for-file"} />
+                      <N4LEmptyState i18nKey={"pages.playground.generator.waiting-for-file"} />
                     </>
                   )}
                 </Card.Body>

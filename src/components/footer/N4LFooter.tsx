@@ -2,6 +2,7 @@
 import { Col, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
+import { openConsentPreferences } from '@core/analytics'
 
 export default function N4LFooter () {
   const { t } = useTranslation()
@@ -32,6 +33,11 @@ export default function N4LFooter () {
                   </Link>
                 </li>
                 <li>
+                  <button type={'button'} className={'btn btn-link link-secondary p-0 align-baseline'} onClick={openConsentPreferences}>
+                    <Trans i18nKey={'footer.cookies'} />
+                  </button>
+                </li>
+                <li>
                   <Link to={'/contribute'} className="link-secondary">
                     <Trans i18nKey={'footer.contribute'} />
                   </Link>
@@ -45,7 +51,14 @@ export default function N4LFooter () {
             </Col>
             <Col xs={12} sm={12} md={6}>
               <h4>Nets4Learning</h4>
-              <p><Trans i18nKey={'footer.description-app'} /></p>
+              <p className={'mb-1'}><Trans i18nKey={'footer.description-app'} /></p>
+              {/* Cita del artículo que describe la plataforma (igual en todos los idiomas) */}
+              <p className={'small text-body-secondary'}>
+                Mudarra Machuca et al. (2024).{' '}
+                <a href="https://doi.org/10.3390/electronics13224378" target="_blank" rel="noreferrer" className="link-secondary">
+                  Nets4Learning: A Web Platform for Designing and Testing ANN/DNN Models
+                </a>. <i>Electronics</i>, 13(22), 4378.
+              </p>
               <Row className="align-items-center text-center">
                 <Col>
                   <a href="https://simidat.ujaen.es" target="_blank" rel="noreferrer">

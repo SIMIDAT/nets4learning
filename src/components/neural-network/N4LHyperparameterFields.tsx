@@ -2,7 +2,7 @@ import React from 'react'
 import { Accordion, Button, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { TYPE_LOSSES, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
+import { TYPE_LOSSES_CLASSIFICATION, TYPE_LOSSES_REGRESSION, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
 
 // Campos comunes de los editores de hiperparámetros de las tareas que entrenan modelos
 const prefix = 'pages.playground.generator.general-parameters.'
@@ -37,6 +37,31 @@ export function HyperparameterNumber({ controlId, name, min, max, defaultValue, 
           onChange(Number.isNaN(value) ? min : Math.min(max, Math.max(min, value)))
         }} />
       <Form.Text className="text-muted"><Trans i18nKey={prefix + name + '-info'} /></Form.Text>
+    </Form.Group>
+  )
+}
+
+// Valores habituales de la tasa de aprendizaje, en escala logarítmica
+const LEARNING_RATES = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]
+
+type HyperparameterLearningRateProps = {
+  controlId   : string
+  defaultValue: number
+  onChange    : (value: number) => void
+}
+
+/** Selector de la tasa de aprendizaje con su valor real (0.01, no "1 %"). */
+export function HyperparameterLearningRate({ controlId, defaultValue, onChange }: HyperparameterLearningRateProps) {
+  return (
+    <Form.Group className="mb-3" controlId={controlId}>
+      <Form.Label><Trans i18nKey={prefix + 'learning-rate'} /></Form.Label>
+      <Form.Select
+        aria-describedby={controlId + '-info'}
+        defaultValue={defaultValue}
+        onChange={(e) => onChange(parseFloat(e.target.value))}>
+        {LEARNING_RATES.map((value) => <option key={value} value={value}>{value}</option>)}
+      </Form.Select>
+      <Form.Text id={controlId + '-info'} className="text-muted"><Trans i18nKey={prefix + 'learning-rate-info'} /></Form.Text>
     </Form.Group>
   )
 }
@@ -76,15 +101,20 @@ export function OptimizerOptions({ valuePrefix = '' }: { valuePrefix?: string })
   return <>{TYPE_OPTIMIZER.map(({ key, label }) => <option key={key} value={valuePrefix + key}>{label}</option>)}</>
 }
 
-/** Opciones de función de pérdida; con `withMetrics` también se pueden usar las métricas como pérdida. */
-export function LossOptions({ withMetrics = false }: { withMetrics?: boolean }) {
-  const losses = TYPE_LOSSES.map(({ key, label }) => <option key={key} value={'losses-' + key}>{label}</option>)
-  if (!withMetrics) return <>{losses}</>
+/** Opciones de función de pérdida, agrupadas por tipo de tarea; primero va el grupo de `task`. */
+export function LossOptions({ task }: { task: 'classification' | 'regression' }) {
+  const { t } = useTranslation()
+  const groups = [
+    { name: 'classification', losses: TYPE_LOSSES_CLASSIFICATION },
+    { name: 'regression', losses: TYPE_LOSSES_REGRESSION },
+  ]
+  if (task === 'regression') groups.reverse()
   return <>
-    <optgroup label={'Losses'}>{losses}</optgroup>
-    <optgroup label={'Metrics'}>
-      {TYPE_METRICS.map(({ key, label }) => <option key={key} value={'metrics-' + key}>{label}</option>)}
-    </optgroup>
+    {groups.map(({ name, losses }) => (
+      <optgroup key={name} label={t(prefix + 'loss-group-' + name)}>
+        {losses.map(({ key, label }) => <option key={key} value={'losses-' + key}>{label}</option>)}
+      </optgroup>
+    ))}
   </>
 }
 

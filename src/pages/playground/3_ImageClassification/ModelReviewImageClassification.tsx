@@ -6,7 +6,7 @@ import * as tfjs from "@tensorflow/tfjs"
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js"
 import { Bar } from "react-chartjs-2"
 import { Trans, useTranslation } from "react-i18next"
-import ReactGA from "react-ga4"
+import { trackPageView } from "@core/analytics"
 
 
 import type I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
@@ -30,6 +30,8 @@ import {
 } from "@core/explainability/ImageExplainPanel"
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from "@core/explainability/shapImageOptions"
 import { explainErrorKey } from "@core/explainability/explainError"
+import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
+import N4LEmptyState from "@components/loading/N4LEmptyState"
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
@@ -75,6 +77,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   const [barDataImage, setBarDataImage] = useState<BarChartData_t>(DEFAULT_BAR_DATA)
   const [barDataModal, setBarDataModal] = useState<BarChartData_t>(DEFAULT_BAR_DATA)
+  const hasResult = barDataImage.labels.length > 0
 
   // === Explicabilidad (SHAP / LRP) ===
   // Imagen clasificada que se explicará (misma ImageData que recibió el modelo).
@@ -105,7 +108,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   }
 
   useEffect(() => {
-    ReactGA.send({ hitType: "pageview", page: `/ModelReviewImageClassification/${dataset}`, title: dataset })
+    trackPageView(`/ModelReviewImageClassification/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -324,7 +327,10 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                     {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
                   </h2>
                 </Card.Header>
-                <Card.Body>{dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}</Card.Body>
+                <Card.Body>
+                  <N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ""} />
+                  {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
+                </Card.Body>
               </Card>
 
               {/* Panel narrativo del método de explicabilidad (idéntico patrón al review tabular). */}
@@ -436,7 +442,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                 </h3>
               </Card.Header>
               <Card.Body>
-                <Container fluid={true}>
+                {!hasResult && <N4LEmptyState i18nKey={"pages.playground.generator.waiting-for-prediction"} />}
+                {/* Siempre montados: la predicción dibuja en el lienzo y la gráfica a través de sus ref */}
+                <Container fluid={true} className={hasResult ? "" : "d-none"}>
                   <Row>
                     <Col className={"d-flex align-items-center justify-content-center"} id={"container_canvas"}>
                       <Row>
@@ -494,6 +502,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               <Card.Body>
                 {showExplain && explainResult && <ImageExplainResults result={explainResult} />}
 
+                {!hasExplainInput && <N4LEmptyState i18nKey={"ui.explain.waiting-for-prediction"} />}
                 <div className="mt-3">
                   {!isDrawable && explainMethod === "shap" && (
                     <ShapImageControls idPrefix={"ic-explain"} options={shapOptions} onChange={setShapOptions} />

@@ -15,23 +15,15 @@ describe('Regression', () => {
     await waitFor(() => {
       expect(getByTestId('Test-InitialMenu')).toBeInTheDocument()
     })
-    const Button_InitialMenu_Regression = getByTestId('Test-InitialMenu-LinearRegression')
-    await waitFor(() => fireEvent.click(Button_InitialMenu_Regression))
-
-    // Seleccionamos el botón de Modelos de Regresión lineal
+    // Seleccionamos el botón de Regresión y después el de sus modelos preentrenados
+    await waitFor(() => fireEvent.click(getByTestId('Test-InitialMenu-LinearRegression')))
     const Button_GoTo_SelectModel_Regression = await waitFor(() => getByTestId('Test-GoTo-SelectModel-LinearRegression'))
     await waitFor(() => fireEvent.click(Button_GoTo_SelectModel_Regression))
 
-    // Esperamos a que se cargue el menu de selección de modelos
+    // Esperamos a que se cargue la galería de modelos y abrimos AUTO_MPG
     await waitFor(() => getByTestId('Test-MenuSelectModel'))
-
-    // Cambiamos el selector de los modelos a AUTO_MPG
-    const Select_SelectModel = await waitFor(() => getByTestId('Test-MenuSelectModel-Select'))
-    await waitFor(() => fireEvent.change(Select_SelectModel, { target: { value: 'AUTO_MPG' } }))
-
-    // Cargamos la nueva página con el modelo de regresión lineal con el conjunto de datos de AUTO_MPG
-    const Button_Submit_GoTo_ModelReviewRegression = await waitFor(() => getByTestId('Test-MenuSelectModel-Submit'))
-    await waitFor(() => fireEvent.click(Button_Submit_GoTo_ModelReviewRegression))
+    const Link_Open_AUTO_MPG = await waitFor(() => getByTestId('Test-MenuSelectModel-Open-AUTO_MPG'))
+    await waitFor(() => fireEvent.click(Link_Open_AUTO_MPG))
 
     await waitFor(() => expect(getByTestId('Test-ModelReviewRegression')).toBeInTheDocument())
     // debug_ModelReviewRegression()

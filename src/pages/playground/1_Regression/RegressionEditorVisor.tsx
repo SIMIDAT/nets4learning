@@ -4,7 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 const DEFAULT_VISOR_OPTIONS = { 
   rmse    : true, 
@@ -67,7 +67,7 @@ export default function RegressionEditorVisor() {
       </Card.Header>
       <Card.Body>
         {!isReady && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {isReady && <>
           <Row>

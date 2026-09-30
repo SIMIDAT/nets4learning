@@ -45,26 +45,24 @@ export type LossAndMetricMap_t = {
     "metrics-sparseCategoricalAccuracy"  : "sparseCategoricalAccuracy" | typeof tfjs.metrics.sparseCategoricalAccuracy
 }
 export type IdLossAndMetric_t = keyof LossAndMetricMap_t
-export type LossMap_t = {
-    "absoluteDifference"        : "absoluteDifference" // | typeof tfjs.losses.absoluteDifference
-    "computeWeightedLoss"       : "computeWeightedLoss" // | typeof tfjs.losses.computeWeightedLoss
-    "cosineDistance"            : "cosineDistance" // | typeof tfjs.losses.cosineDistance
-    "hingeLoss"                 : "hingeLoss" // | typeof tfjs.losses.hingeLoss
-    "huberLoss"                 : "huberLoss" // | typeof tfjs.losses.huberLoss
-    "logLoss"                   : "logLoss" // | typeof tfjs.losses.logLoss
-    "meanSquaredError"          : "meanSquaredError" // | typeof tfjs.losses.meanSquaredError
-    "sigmoidCrossEntropy"       : "sigmoidCrossEntropy" // | typeof tfjs.losses.sigmoidCrossEntropy
-    "softmaxCrossEntropy"       : "softmaxCrossEntropy" // | typeof tfjs.losses.softmaxCrossEntropy
-    "losses-absoluteDifference" : "absoluteDifference" // | typeof tfjs.losses.absoluteDifference
-    "losses-computeWeightedLoss": "computeWeightedLoss" // | typeof tfjs.losses.computeWeightedLoss
-    "losses-cosineDistance"     : "cosineDistance" // | typeof tfjs.losses.cosineDistance
-    "losses-hingeLoss"          : "hingeLoss" // | typeof tfjs.losses.hingeLoss
-    "losses-huberLoss"          : "huberLoss" // | typeof tfjs.losses.huberLoss
-    "losses-logLoss"            : "logLoss" // | typeof tfjs.losses.logLoss
-    "losses-meanSquaredError"   : "meanSquaredError" // | typeof tfjs.losses.meanSquaredError
-    "losses-sigmoidCrossEntropy": "sigmoidCrossEntropy" // | typeof tfjs.losses.sigmoidCrossEntropy
-    "losses-softmaxCrossEntropy": "softmaxCrossEntropy" // | typeof tfjs.losses.softmaxCrossEntropy
-}
+// Pérdidas que model.compile() acepta por nombre (lossesMap de @tensorflow/tfjs-layers).
+// Las de tf.losses.* (absoluteDifference, huberLoss, softmaxCrossEntropy…) no valen: lanzan "Unknown loss".
+export type LossName_t =
+    | "meanSquaredError"
+    | "meanAbsoluteError"
+    | "meanAbsolutePercentageError"
+    | "meanSquaredLogarithmicError"
+    | "logcosh"
+    | "poisson"
+    | "cosineProximity"
+    | "categoricalCrossentropy"
+    | "binaryCrossentropy"
+    | "kullbackLeiblerDivergence"
+    | "hinge"
+    | "squaredHinge"
+    | "categoricalHinge"
+// La clave puede llevar el prefijo "losses-", como los valores de los selectores
+export type LossMap_t = { [K in LossName_t]: K } & { [K in LossName_t as `losses-${K}`]: K }
 
 export type IdLoss_t = keyof LossMap_t
 // Metrics

@@ -7,7 +7,7 @@ import { VERBOSE } from '@/CONSTANTS'
 import { parseLogs } from '@core/history/utils'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { CustomModelGenerated_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
 
@@ -63,7 +63,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
       <Card.Body>
         <Container fluid={true}>
           {!showTable && <>
-            <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-training'} />
+            <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
           </>}
           {showTable && <>
             <Row>
@@ -92,7 +92,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
                       .map((value: CustomModelGenerated_t, index: number) => {
                         return <tr key={index}>
                           <th>{(activePage * rowsPerPage) + index + 1}</th>
-                          <td>{value.params_training.learning_rate}%</td>
+                          <td>{value.params_training.learning_rate}</td>
                           <td>{value.params_training.test_size}%</td>
                           <td>{value.params_training.n_of_epochs}</td>
                           <td>
@@ -127,7 +127,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
                             <Button
                               variant={'outline-primary'}
                               size={'sm'}
-                              onClick={() => handleClick_DownloadGeneratedModel(value, index)}
+                              onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>

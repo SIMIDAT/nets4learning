@@ -17,7 +17,7 @@ describe('nnLabel', () => {
 
   test('las opciones de los selectores usan las mismas etiquetas', () => {
     expect(TYPE_OPTIMIZER.map((o) => o.label)).toStrictEqual(['SGD', 'Adagrad', 'Adadelta', 'Adam', 'Adamax', 'RMSProp'])
-    expect(TYPE_LOSSES.find((o) => o.key === 'softmaxCrossEntropy')?.label).toBe('SoftmaxCrossEntropy')
+    expect(TYPE_LOSSES.find((o) => o.key === 'categoricalCrossentropy')?.label).toBe('CategoricalCrossentropy')
     expect(TYPE_METRICS.find((o) => o.key === 'accuracy')?.label).toBe('Accuracy')
   })
 })

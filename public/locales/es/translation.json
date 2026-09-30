@@ -65,7 +65,9 @@
         "presence-only": "Este modelo solo responde «hay cara» o «no hay cara» (0 o 100 %), así que la explicación muestra qué necesita ver como mínimo para encontrar una cara: suele bastar con la piel.",
         "body-parts": "Se explica la confianza en la pose completa y en cada parte del cuerpo. El modelo necesita encontrar primero a la persona, así que zonas del tronco también le ayudan a localizar los brazos o las piernas.",
         "wrong-prediction": "¿El modelo se ha equivocado? La explicación sigue siendo útil: muestra en qué se ha fijado para llegar a esa respuesta."
-      }
+      },
+      "waiting-for-prediction": "Haz una predicción para poder explicarla.",
+      "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones."
     }
   },
   "welcome": "Bienvenido a Nets4Learning",
@@ -310,9 +312,10 @@
   "predict": "Predecir",
   "cookies-policies": {
     "title": "Política de cookies",
-    "text-0": "Este sitio web utiliza cookies para mejorar la experiencia del usuario y analizar el uso de la aplicación. Las cookies son pequeños archivos de texto que se almacenan en su dispositivo cuando visita nuestro sitio web. Estas cookies nos ayudan a entender cómo los usuarios interactúan con nuestro sitio web, qué páginas son las más visitadas y cómo podemos mejorar la experiencia del usuario.",
-    "text-1": "No realizamos ningún tratamiento de los datos del usuario con fines publicitarios. Utilizamos las cookies únicamente para fines analíticos y para mejorar la funcionalidad del sitio web. Si continúa utilizando nuestro sitio web, entendemos que está de acuerdo con el uso de cookies tal como se describe en nuestra política de privacidad.",
-    "accept": "Aceptar"
+    "accept": "Aceptar",
+    "banner": "Usamos cookies de Google Analytics para saber qué partes de la aplicación se usan y así mejorarla. No se usan con fines publicitarios y solo se activan si las aceptas.",
+    "more-info": "Más información",
+    "reject": "Rechazar"
   },
   "error": {
     "load-json-csv": "Error, no se ha podido cargar el fichero",
@@ -328,13 +331,21 @@
     "layers-length": "Debes tener al menos una capa con el número de neuronas y su función de activación",
     "parsing-csv": "Error en la preparación del conjunto de datos",
     "file-not-valid": "Error, fichero no válido",
-    "metrics-length": "Error, el número de métricas debe estar entre 1 y 10"
+    "metrics-length": "Error, el número de métricas debe estar entre 1 y 10",
+    "need-model": "Primero debes crear y entrenar un modelo",
+    "dataset-not-processed": "El conjunto de datos no está procesado",
+    "model-not-valid": "El modelo no es válido para estos datos",
+    "model-compile": "No se ha podido compilar el modelo. Revisa la consola para ver los detalles.",
+    "option-not-valid": "Opción no válida",
+    "prediction": "No se ha podido hacer la predicción"
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "Advertencia, la primera capa debe ser de tipo {{value}}",
     "not-more-layers": "Advertencia, no se pueden añadir más capas",
     "error-layers": "Advertencia, se debe tener entre 1 y 10 capas",
-    "need-a-model": "Advertencia, antes debes de crear y entrenar el modelo."
+    "need-a-model": "Advertencia, antes debes de crear y entrenar el modelo.",
+    "first-layer-cant-be-removed": "La primera capa no se puede eliminar",
+    "first-layer-cant-be-changed": "La primera capa no se puede cambiar"
   },
   "success": {
     "file-upload": "Archivo cargado correctamente"
@@ -368,9 +379,11 @@
     "glossary": "Glosario",
     "home": "Inicio",
     "datasets": "Conjuntos de datos",
-    "theme": "Tema",
     "dataframe": "DataFrame",
-    "analyze": "AED"
+    "analyze": "AED",
+    "theme": "Tema",
+    "theme-light": "Claro",
+    "theme-dark": "Oscuro"
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -381,7 +394,8 @@
     "terms": "Términos y condiciones",
     "contribute": "Contribuye",
     "documentation": "Documentación",
-    "version": "Versión"
+    "version": "Versión",
+    "cookies": "Preferencias de cookies"
   },
   "drag-and-drop": {
     "label-files-one": "Fichero:",
@@ -393,8 +407,8 @@
     "csv-json": "Introduce el fichero de datos plantilla.json"
   },
   "custom-canvas-drawer": {
-    "validate": "Validar",
-    "clear": "Limpiar"
+    "validate": "Clasificar",
+    "clear": "Borrar"
   },
   "table": {
     "dataset": "Conjunto de datos"
@@ -1245,7 +1259,7 @@
         "process-image": {
           "title": "Procesamiento de imágenes",
           "sub-title": "-",
-          "validate": "Validar"
+          "validate": "Clasificar"
         },
         "result": "Resultado",
         "button-accept": "Aceptar",
@@ -1684,6 +1698,9 @@
           "6": "Definir las funciones de métricas"
         },
         "2-button": "Crear y entrenar un modelo"
+      },
+      "hero": {
+        "text": "Nets4Learning es una plataforma web para aprender cómo funcionan las redes neuronales: eliges una tarea, diseñas la red, la entrenas y la pruebas, todo en el navegador y sin instalar nada. Está pensada para estudiantes y docentes."
       }
     },
     "contribute": {
@@ -1700,7 +1717,7 @@
         "csv": "Subir conjunto de datos - CSV",
         "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
       },
-      "form-description-1": "Selecciona a continuación el conjunto de datos sobre se va a trabajar o carga tu propio conjunto de datos.",
+      "form-description-1": "Elige el conjunto de datos con el que vas a entrenar o sube el tuyo.",
       "form-label": "Selecciona un conjunto de datos",
       "form-option-_-1": "Selecciona un conjunto de datos",
       "form-upload-description": "Ahora si lo deseas puedes cargar tu propia arquitectura, en caso contrario pulsa en continuar y se cargará una arquitectura por defecto de ejemplo.",
@@ -1708,7 +1725,10 @@
       "1-regression": {
         "csv": "Subir conjunto de datos - CSV",
         "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
-      }
+      },
+      "upload-text": "Sube tu propio conjunto de datos en formato CSV y prepáralo antes de entrenar.",
+      "own-dataset": "Tu propio conjunto de datos",
+      "example-datasets": "Conjuntos de datos de ejemplo"
     },
     "menu-selection-model": {
       "form-description-1": "Selecciona a continuación el modelo entrenado con el que se va a trabajar.",
@@ -1788,7 +1808,7 @@
               "title": "Editor de hiperparámetros",
               "text-0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:",
               "list": {
-                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "0": "<b>Tasa de aprendizaje</b>:<br />Cuánto cambian los pesos de la red en cada paso del entrenamiento (por ejemplo, 0.01).",
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
@@ -1888,7 +1908,7 @@
           "title": "Editor de hiperparámetros",
           "learning-rate": "Tasa de aprendizaje",
           "learning-rate-placeholder": "Introduce la tasa de aprendizaje",
-          "learning-rate-info": "Valor entre 0 y 100 (es un porcentaje)",
+          "learning-rate-info": "Cuánto cambian los pesos en cada paso del entrenamiento. Con valores altos aprende más rápido pero puede no converger; con valores bajos es más estable pero más lento.",
           "number-of-epochs": "N. épocas",
           "number-of-epochs-placeholder": "Número de épocas",
           "number-of-epochs-info": "Mientras más alto sea, mas tardará en ejecutarse el entrenamiento",
@@ -1908,13 +1928,15 @@
           "add-metric": "Añadir función de métrica",
           "metric-id-__index__": "Métrica {{index}}",
           "metric-id-select": "Selecciona la función de métrica",
-          "metric-id-info": "Será una de las funciones de métrica"
+          "metric-id-info": "Será una de las funciones de métrica",
+          "loss-group-classification": "Clasificación",
+          "loss-group-regression": "Regresión"
         },
         "loaded": "Cargado",
         "load": "Cargar",
-        "waiting-for-file": "Esperando archivo",
-        "waiting-for-process": "Esperando el procesamiento del conjunto de datos",
-        "waiting-for-training": "Esperando el entrenamiento del modelo",
+        "waiting-for-file": "Sube un fichero CSV para empezar.",
+        "waiting-for-process": "Procesa el conjunto de datos para continuar.",
+        "waiting-for-training": "Todavía no hay modelos entrenados. Configura la red y entrena uno para verlo aquí.",
         "models": {
           "title": "Modelos",
           "history-train": "Historial del entrenamiento",
@@ -1969,7 +1991,8 @@
           "confusion-matrix": "Matriz de confusión",
           "line-chart": "Gráfico de líneas"
         },
-        "waiting-for-models": "Esperando a la creación de un modelo"
+        "waiting-for-models": "Entrena un modelo para poder hacer predicciones.",
+        "waiting-for-prediction": "Haz una predicción para ver aquí el resultado."
       },
       "1-regression": {
         "generator": {
@@ -1993,7 +2016,7 @@
                 "0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:"
               },
               "list": {
-                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "0": "<b>Tasa de aprendizaje</b>:<br />Cuánto cambian los pesos de la red en cada paso del entrenamiento (por ejemplo, 0.01).",
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
@@ -2098,7 +2121,7 @@
               "title": "Editor de hiperparámetros",
               "text-0": "Se pueden editar los parámetros generales necesarios para la creación del modelo. <br />Estos parámetros son:",
               "list": {
-                "0": "<b>Tasa de aprendizaje</b>:<br />Valor entre 0 y 100 el cual indica el porcentaje de cambio de los pesos de la red.",
+                "0": "<b>Tasa de aprendizaje</b>:<br />Cuánto cambian los pesos de la red en cada paso del entrenamiento (por ejemplo, 0.01).",
                 "1": "<b>Número de épocas</b>:<br />Cantidad de veces que se le pasa el conjunto de entrenamiento a la red (a mayor número, más tiempo tarda en entrenar).",
                 "2": "<b>Tamaño del conjunto de pruebas</b>:<br />Porcentaje del conjunto de datos que se utilizaran para las pruebas del modelo (datos de prueba).  El resto de datos se utilizarán para el entrenamiento de la red (datos de entrenamiento).",
                 "3": "<b>Optimizador</b>:<br />Es una función que se utiliza para ajustar los pesos de la red.",
@@ -2565,14 +2588,19 @@
       },
       "select-dataset": {
         "description": "Descripción"
-      }
+      },
+      "open": "Abrir"
     },
     "terms": {
       "title": "Políticas de privacidad y cookies",
       "privacy-title": "Políticas de privacidad",
       "privacy-text": "En nuestro sitio web, solo recopilamos información estadística sobre las visitas con el fin de mejorar el rendimiento y la funcionalidad del sitio. No recopilamos ni almacenamos ninguna información personal de nuestros usuarios. Utilizamos cookies para contabilizar el número de visitantes y mejorar la experiencia de navegación. Si tienes alguna pregunta o duda sobre nuestra política de privacidad, no dudes en ponerte en contacto con nosotros a través de nuestra página de contacto.",
       "cookies-title": "Cookies",
-      "cookies-text": "Nuestra página web utiliza cookies de Google Analytics para contabilizar el número de visitantes que recibimos. Estas cookies nos permiten recopilar información estadística anónima sobre el uso de nuestro sitio web y nos ayudan a mejorar su rendimiento y funcionalidad. Las cookies de Google Analytics no recopilan información personal de los usuarios. Al navegar por nuestra web, aceptas el uso de estas cookies. Si deseas obtener más información acerca de cómo utilizamos las cookies, por favor consulta nuestra política de privacidad."
+      "cookies-text": "Nuestra página web utiliza cookies de Google Analytics para contabilizar el número de visitantes que recibimos. Estas cookies nos permiten recopilar información estadística anónima sobre el uso de nuestro sitio web y nos ayudan a mejorar su rendimiento y funcionalidad. Las cookies de Google Analytics no recopilan información personal de los usuarios. Solo se activan si las aceptas en el aviso de cookies, y puedes cambiar tu decisión en cualquier momento desde «Preferencias de cookies», en el pie de página."
+    },
+    "not-found": {
+      "title": "Página no encontrada",
+      "return-home": "Volver al inicio"
     }
   },
   "generator": {
@@ -2697,5 +2725,20 @@
       "malign lymph": "Linfoma maligno",
       "fibrosis": "Fibrosis"
     }
+  },
+  "model-summary": "Resumen del modelo",
+  "breadcrumb": {
+    "label": "Ruta de navegación",
+    "models": "Modelos pre-entrenados",
+    "datasets": "Entrenar un modelo",
+    "change": "Cambiar a otro de la lista"
+  },
+  "neural-network": {
+    "layer": "Capa {{index}}",
+    "units": "{{units}} neuronas",
+    "kernel-size": "Kernel {{value}}",
+    "filters": "{{value}} filtros",
+    "pool-size": "Pool {{value}}",
+    "strides": "Paso {{value}}"
   }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState, useId } from "react"
 import { useParams, useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
-import ReactGA from "react-ga4"
+import { trackPageView } from "@core/analytics"
 import * as dfd from "danfojs"
 import * as tfjs from "@tensorflow/tfjs"
 
@@ -10,6 +10,7 @@ import * as _Types from "@core/types"
 import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, DEFAULT_SELECTOR_INSTANCE_INDEX } from "@/CONSTANTS"
 import { TABLE_PLOT_STYLE_CONFIG } from "@/CONSTANTS_DanfoJS"
 import N4LSummary from "@components/summary/N4LSummary"
+import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
 import DataFrameDatasetCard from "@components/dataframe/DataFrameDatasetCard"
 import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
 import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
@@ -81,11 +82,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   })
 
   useEffect(() => {
-    ReactGA.send({
-      hitType: "pageview",
-      page   : `/ModelReviewRegression/${dataset}`,
-      title  : dataset,
-    })
+    trackPageView(`/ModelReviewRegression/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -258,6 +255,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                   </h2>
                 </Card.Header>
                 <Card.Body>
+                  <N4LModelSummaryButton model={explainModel} title={`${t(iModelInstance.i18n_TITLE)} (${listDatasets.data[listDatasets.index]?.csv ?? ""})`} />
                   <Form.Group controlId="FormSelector_Dataset">
                     <Form.Label>
                       <Trans i18nKey={"form.select-dataset.title"} />
@@ -375,6 +373,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
               <TabularShapPanel
                 features={explainDataProcessed?.X.columns ?? []}
                 inputKey={prediction.input_3_dataframe_scaling}
+                hasPrediction={prediction.input_3_dataframe_scaling.values.length > 0}
                 getModel={() => explainModel}
                 getInstance={() => (prediction.input_3_dataframe_scaling.values[0] as number[] | undefined) ?? null}
                 getPool={() => dataframeRowsToNumbers(explainDataProcessed?.X.values)}

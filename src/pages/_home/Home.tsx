@@ -6,7 +6,20 @@ import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 
 import { TASKS, type TASKS_TYPE_V } from '@/TASKS'
 import N4LDivider from '@components/divider/N4LDivider'
-import CookiesModal from '@components/cookiesModal/CookiesModal'
+
+const SELECTED_TASK_STORAGE_KEY = 'selected-task'
+
+// La última tarea que eligió el usuario; sin almacenamiento o sin elección válida, clasificación tabular
+const readSelectedTask = (): TASKS_TYPE_V => {
+  try {
+    const saved = localStorage.getItem(SELECTED_TASK_STORAGE_KEY)
+    const task = Object.values(TASKS).find((value) => value === saved)
+    if (task !== undefined) return task
+  } catch {
+    // Sin localStorage (modo privado, almacenamiento bloqueado…)
+  }
+  return TASKS.TABULAR_CLASSIFICATION
+}
 
 const SELECTOR: Record<string, string> = {
   MODEL  : 'MODEL',
@@ -213,13 +226,17 @@ export default function Home() {
   // botones de disciplina (que usan <Trans>) se actualizan al momento, no solo las tarjetas.
   const { i18n } = useTranslation()
 
-  const [activeTask, setActiveTask] = useState<TASKS_TYPE_V>(TASKS.TABULAR_CLASSIFICATION)
+  const [activeTask, setActiveTask] = useState<TASKS_TYPE_V>(readSelectedTask)
 
 
 
   const handleClick_OpenCardModel = (task: TASKS_TYPE_V) => {
     setActiveTask(task)
-    localStorage.setItem('selected-task', task)
+    try {
+      localStorage.setItem(SELECTED_TASK_STORAGE_KEY, task)
+    } catch {
+      // Sin almacenamiento: la tarea solo dura esta visita
+    }
   }
 
 
@@ -231,12 +248,11 @@ export default function Home() {
           <Row>
             <Col>
               <h1 className="mt-3"><Trans i18nKey={'welcome'} /></h1>
+              <p className="lead mb-0"><Trans i18nKey={'pages.index.hero.text'} /></p>
               <h2 className="mt-3"><Trans i18nKey={'welcome-2'} /></h2>
             </Col>
           </Row>
         </Container>
-
-        <CookiesModal />
 
         <Container>
           <Row>

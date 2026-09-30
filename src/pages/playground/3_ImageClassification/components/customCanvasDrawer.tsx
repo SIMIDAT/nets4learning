@@ -176,7 +176,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
           <Trans i18nKey={"custom-canvas-drawer.validate"} />
         </Button>
         <Button
-          variant={"warning"}
+          variant={"outline-secondary"}
           onClick={() => {
             clear()
             clearFunction()

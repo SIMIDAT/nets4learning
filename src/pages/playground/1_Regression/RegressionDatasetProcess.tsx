@@ -1,12 +1,12 @@
 import { Card } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
-import { Link } from 'react-router'
 
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
 import RegressionDatasetProcessForm from './RegressionDatasetProcessForm'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 export default function RegressionDatasetProcess() {
 
@@ -28,7 +28,7 @@ export default function RegressionDatasetProcess() {
       <Card.Header><h3><Trans i18nKey={'Data set processing'} /></h3></Card.Header>
       <Card.Body>
         {!showDatasetProcess() && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-file'} />
         </>}
 
         {showDatasetProcess() && <>
@@ -39,14 +39,7 @@ export default function RegressionDatasetProcess() {
         <p className="text-muted mb-0 pb-0">
           <Trans i18nKey="more-information-in-link"
             components={{
-              link1: <Link className="text-info"
-                  state={{
-                    action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS
-                  }}
-                  to={{
-                    pathname: '/glossary/',
-                  }}
-                />
+              link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
             }}
           />
         </p>

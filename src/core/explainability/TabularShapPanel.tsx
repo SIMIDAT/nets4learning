@@ -5,6 +5,7 @@ import * as tf from '@tensorflow/tfjs'
 import { KernelSHAP } from '@core/explainability/webshap'
 
 import alertHelper from '@utils/alertHelper'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { myModelWrapper } from '@core/explainability/ModelExplanation'
 import ShapExplanationChart from '@core/explainability/ModelExplanationChart'
 import ShapBeeswarmChart from '@core/explainability/ShapBeeswarmChart'
@@ -40,11 +41,15 @@ type TabularShapPanelProps = {
   getPoolDisplay?     : () => Array<Array<string | number>> | null
   /** Las features llegan al modelo escaladas: si no hay `getPoolDisplay`, se avisa en el beeswarm. */
   valuesAreScaled?    : boolean
+  /** Hay un modelo que explicar; si no, el panel solo avisa de que hay que entrenar uno. */
+  modelReady?         : boolean
+  /** Hay una entrada predicha que explicar; si no, la explicación local avisa de que hay que predecir. */
+  hasPrediction?      : boolean
 }
 
 /** Explicabilidad SHAP de modelos tabulares: explicación local e importancia global. */
 export default function TabularShapPanel(props: TabularShapPanelProps) {
-  const { features, classes, predictedClassIndex = 0, getModel, getInstance, getPool, inputKey, targetName, getInstanceDisplay, getPoolDisplay, valuesAreScaled } = props
+  const { features, classes, predictedClassIndex = 0, getModel, getInstance, getPool, inputKey, targetName, getInstanceDisplay, getPoolDisplay, valuesAreScaled, modelReady = true, hasPrediction = true } = props
   const { t } = useTranslation()
   const isClassification = (classes?.length ?? 0) > 0
 
@@ -193,6 +198,19 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
     }
   }
 
+  if (!modelReady) {
+    return (
+      <Card className={'mt-3'} data-testid={'explainability-card'}>
+        <Card.Header>
+          <h3>{t(PREFIX + 'explainability')}</h3>
+        </Card.Header>
+        <Card.Body>
+          <N4LEmptyState i18nKey={'ui.explain.waiting-for-model'} />
+        </Card.Body>
+      </Card>
+    )
+  }
+
   return (
     <Card className={'mt-3'} data-testid={'explainability-card'}>
       <Card.Header>
@@ -222,14 +240,17 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
         </Row>
 
         {/* === SHAP local: una instancia === */}
-        <div className="d-grid gap-2 mb-3">
-          <Button size={'lg'} variant={localVisible ? 'outline-secondary' : 'primary'}
-                  onClick={handleClick_ExplainLocal} disabled={isCalculatingLocal}>
-            {isCalculatingLocal
-              ? t(PREFIX + 'calculating')
-              : localVisible ? t(PREFIX + 'hide-explain') : t(PREFIX + 'show-explain')}
-          </Button>
-        </div>
+        {!hasPrediction && <div className="mb-3"><N4LEmptyState i18nKey={'ui.explain.waiting-for-prediction'} /></div>}
+        {hasPrediction && (
+          <div className="d-grid gap-2 mb-3">
+            <Button size={'lg'} variant={localVisible ? 'outline-secondary' : 'primary'}
+                    onClick={handleClick_ExplainLocal} disabled={isCalculatingLocal}>
+              {isCalculatingLocal
+                ? t(PREFIX + 'calculating')
+                : localVisible ? t(PREFIX + 'hide-explain') : t(PREFIX + 'show-explain')}
+            </Button>
+          </div>
+        )}
         {localVisible && localShap && (
           <>
             <h4 className="h6">{t(PREFIX + 'explain-panel-local-title')}</h4>

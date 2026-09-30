@@ -6,7 +6,7 @@ import { DataFrameReadCSV } from '@core/dataframe/DataFrameUtils'
 import * as _Types from '@core/types'
 import { useRegressionContext } from '@context/useRegressionContext'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import alertHelper from '@utils/alertHelper'
 import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
@@ -108,7 +108,7 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
         function_DropRejected={handleChange_FileUpload_CSV_reject} />
 
       {!showDatasetInfo && <>
-        <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-file'} />
+        <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-file'} />
       </>}
       {showDatasetInfo && <>
         <ol>

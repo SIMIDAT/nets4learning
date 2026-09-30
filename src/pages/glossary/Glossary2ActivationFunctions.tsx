@@ -186,197 +186,195 @@ export default function Glossary2ActivationFunctions() {
             </ol>
           </Accordion.Body>
         </Accordion.Item>
-        {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-          <Accordion.Item eventKey={"equations-activation"}>
-            <Accordion.Header>
-              <h2>{t("equations.title-activation")}</h2>
-            </Accordion.Header>
-            <Accordion.Body>
-              <>
-                {activationsFunctions.map((section, index) => {
-                  return (
-                    <div key={index}>
-                      <h4 className={"text-center text-muted"}>{t(section.i18n_title_section)}</h4>
-                      <Row xs={1} sm={1} md={2} lg={3} xl={3} xxl={3} className={"mb-3 justify-content-center"}>
-                        <>
-                          {section.layers.map((value, index) => {
-                            return (
-                              <Col key={index}>
-                                <Row>
-                                  <Col>
-                                    <h4 className={"text-lg-center"}>{value.i18n_title}</h4>
-                                    {value.img && (
-                                      <div>
-                                        {value.ref ? (
-                                          <a href={value.ref} target="_blank" rel="noreferrer" className="link-info">
-                                            <img
-                                              src={value.img}
-                                              alt="linear-activation-function"
-                                              className={"img-n4l-glossary img-thumbnail d-block mx-auto"}
-                                            />
-                                          </a>
-                                        ) : (
+        <Accordion.Item eventKey={"equations-activation"}>
+          <Accordion.Header>
+            <h2>{t("equations.title-activation")}</h2>
+          </Accordion.Header>
+          <Accordion.Body>
+            <>
+              {activationsFunctions.map((section, index) => {
+                return (
+                  <div key={index}>
+                    <h4 className={"text-center text-muted"}>{t(section.i18n_title_section)}</h4>
+                    <Row xs={1} sm={1} md={2} lg={3} xl={3} xxl={3} className={"mb-3 justify-content-center"}>
+                      <>
+                        {section.layers.map((value, index) => {
+                          return (
+                            <Col key={index}>
+                              <Row>
+                                <Col>
+                                  <h4 className={"text-lg-center"}>{value.i18n_title}</h4>
+                                  {value.img && (
+                                    <div>
+                                      {value.ref ? (
+                                        <a href={value.ref} target="_blank" rel="noreferrer" className="link-info">
                                           <img
                                             src={value.img}
                                             alt="linear-activation-function"
                                             className={"img-n4l-glossary img-thumbnail d-block mx-auto"}
                                           />
-                                        )}
-                                      </div>
-                                    )}
-                                    {!value.img && <div className="img-n4l-glossary"></div>}
-                                  </Col>
-                                </Row>
-                                <Row style={{ fontSize: "0.75em" }}>
-                                  <Col>
-                                    <p>
-                                      <N4LLatex>{value.latex}</N4LLatex>
-                                    </p>
-                                  </Col>
-                                </Row>
-                              </Col>
-                            )
-                          })}
-                        </>
-                      </Row>
-                      {activationsFunctions.length - 1 !== index && <hr />}
-                    </div>
-                  )
-                })}
-              </>
-              <Row xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}></Row>
-              {/*
-              <Row xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>Linear</h4>
-                      <div><img src={IMGLinear} alt="linear-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ \\begin{split} R(z,m) = \\begin{Bmatrix} z*m \\end{Bmatrix} \\end{split} $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+                                        </a>
+                                      ) : (
+                                        <img
+                                          src={value.img}
+                                          alt="linear-activation-function"
+                                          className={"img-n4l-glossary img-thumbnail d-block mx-auto"}
+                                        />
+                                      )}
+                                    </div>
+                                  )}
+                                  {!value.img && <div className="img-n4l-glossary"></div>}
+                                </Col>
+                              </Row>
+                              <Row style={{ fontSize: "0.75em" }}>
+                                <Col>
+                                  <p>
+                                    <N4LLatex>{value.latex}</N4LLatex>
+                                  </p>
+                                </Col>
+                              </Row>
+                            </Col>
+                          )
+                        })}
+                      </>
+                    </Row>
+                    {activationsFunctions.length - 1 !== index && <hr />}
+                  </div>
+                )
+              })}
+            </>
+            <Row xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}></Row>
+            {/*
+            <Row xs={1} sm={1} md={2} lg={4} xl={4} xxl={4}>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>Linear</h4>
+                    <div><img src={IMGLinear} alt="linear-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ \\begin{split} R(z,m) = \\begin{Bmatrix} z*m \\end{Bmatrix} \\end{split} $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>Sigmoid</h4>
-                      <div><img src={IMGSigmoid} alt="sigmoid-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ S(z) = \\frac{1} {1 + e^{-z}} $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>Sigmoid</h4>
+                    <div><img src={IMGSigmoid} alt="sigmoid-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ S(z) = \\frac{1} {1 + e^{-z}} $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>ReLU</h4>
-                      <div><img src={IMGRelU} alt="relu-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ ReLu(z) = max(0, z) $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>ReLU</h4>
+                    <div><img src={IMGRelU} alt="relu-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ ReLu(z) = max(0, z) $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>ReLU6</h4>
-                      <div><img src={IMGRelU6} alt="relu6-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ ReLU6(x) = min(max(0,x),6) $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>ReLU6</h4>
+                    <div><img src={IMGRelU6} alt="relu6-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ ReLU6(x) = min(max(0,x),6) $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>LeakyReLU</h4>
-                      <div><img src={IMGLeakyReLU} alt="LeakyReLU-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ \\begin{split}R(z) = \\begin{Bmatrix} z & z > 0 \\\\ \\alpha z & z <= 0 \\end{Bmatrix}\\end{split} $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>LeakyReLU</h4>
+                    <div><img src={IMGLeakyReLU} alt="LeakyReLU-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ \\begin{split}R(z) = \\begin{Bmatrix} z & z > 0 \\\\ \\alpha z & z <= 0 \\end{Bmatrix}\\end{split} $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>Tanh</h4>
-                      <div><img src={IMGTanh} alt="tanh-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ tanh(z) = \\frac{e^{z} - e^{-z}}{e^{z} + e^{-z}} $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>Tanh</h4>
+                    <div><img src={IMGTanh} alt="tanh-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ tanh(z) = \\frac{e^{z} - e^{-z}}{e^{z} + e^{-z}} $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>SoftPlus</h4>
-                      <div><img src={IMGSoftPlus} alt="tanh-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ Softplus(x) = \\frac{1}{\\beta} \\log(1 + \\exp(\\beta * x)) $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>SoftPlus</h4>
+                    <div><img src={IMGSoftPlus} alt="tanh-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ Softplus(x) = \\frac{1}{\\beta} \\log(1 + \\exp(\\beta * x)) $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>Mish</h4>
-                      <div><img src={IMGMish} alt="mish-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ Mish(x) = x * Tanh(Softplus(x)) $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>Mish</h4>
+                    <div><img src={IMGMish} alt="mish-activation-function" className={"img-n4l-glossary img-thumbnail d-block mx-auto"} /></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ Mish(x) = x * Tanh(Softplus(x)) $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
 
-                <Col>
-                  <Row>
-                    <Col>
-                      <h4 className={"text-lg-center"}>Softmax</h4>
-                      <div className="img-n4l-glossary"></div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p><N4LLatex>{"$$ \\sigma(z_i) = \\frac{e^{z_{i}}}{\\sum_{j=1}^K e^{z_{j}}} \\ \\ \\ for\\ i=1,2,\\dots,K $$"}</N4LLatex></p>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-              */}
-            </Accordion.Body>
-          </Accordion.Item>
-        )}
+              <Col>
+                <Row>
+                  <Col>
+                    <h4 className={"text-lg-center"}>Softmax</h4>
+                    <div className="img-n4l-glossary"></div>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p><N4LLatex>{"$$ \\sigma(z_i) = \\frac{e^{z_{i}}}{\\sum_{j=1}^K e^{z_{j}}} \\ \\ \\ for\\ i=1,2,\\dots,K $$"}</N4LLatex></p>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            */}
+          </Accordion.Body>
+        </Accordion.Item>
       </Accordion>
     </>
   )

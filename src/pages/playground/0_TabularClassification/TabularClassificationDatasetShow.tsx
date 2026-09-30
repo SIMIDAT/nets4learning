@@ -1,5 +1,4 @@
 import React, { useEffect, useId, useState } from 'react'
-import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import * as dfd from 'danfojs'
@@ -12,10 +11,11 @@ import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 
 import N4LSummary from '@components/summary/N4LSummary'
 import N4LTablePagination from '@components/table/N4LTablePagination'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 /**
  * @typedef {object} PropsTabularClassificationDatasetShow
@@ -90,7 +90,7 @@ export default function TabularClassificationDatasetShow() {
       </Card.Header>
       <Card.Body>
         {!showDataset && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {showDataset && <>
           <Row>
@@ -122,28 +122,14 @@ export default function TabularClassificationDatasetShow() {
           <Trans
             i18nKey={'more-information-in-link'}
             components={{
-              link1: <Link
-                className={'text-info'}
-                state={{
-                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
-                }}
-                to={{
-                  pathname: '/glossary/',
-                }} />,
+              link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET} />,
             }} />
         </p>
         <p className={'text-muted mb-0 pb-0'}>
           <Trans
             i18nKey={'more-information-in-tutorial'}
             components={{
-              link1: <Link
-                className={'text-info'}
-                state={{
-                  action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET,
-                }}
-                to={{
-                  pathname: '/manual/',
-                }} />,
+              link1: <N4LHelpLink page={'manual'} action={MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_2_DATASET} />,
             }} />
         </p>
       </Card.Footer>

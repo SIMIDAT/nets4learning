@@ -6,7 +6,7 @@ import { Trans } from 'react-i18next'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 /**
  * 
@@ -99,7 +99,7 @@ export default function RegressionEditorFeaturesSelector() {
       </Card.Header>
       <Card.Body>
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {show && <>
           <Accordion defaultActiveKey="Target">

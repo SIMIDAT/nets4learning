@@ -37,6 +37,7 @@ export default defineConfig(({ mode }) => {
         "@/CONSTANTS_DanfoJS" : path.resolve(__dirname, "src/CONSTANTS_DanfoJS"),
         "@/DATA_MODEL"        : path.resolve(__dirname, "src/DATA_MODEL"),
         "@/TASKS"             : path.resolve(__dirname, "src/TASKS"),
+        "@/TASK_OPTIONS"      : path.resolve(__dirname, "src/TASK_OPTIONS"),
         "@/MODEL_KEYS"        : path.resolve(__dirname, "src/MODEL_KEYS"),
         "@/types"             : path.resolve(__dirname, "src/types"),
         "@assets"             : path.resolve(__dirname, "src/assets"),

@@ -5,6 +5,7 @@ import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { parseLogs } from '@core/history/utils'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import type { TabularClassificationGeneratedModel_t } from '@core/types'
@@ -72,8 +73,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
       </Card.Header>
       <Card.Body>
         {listModels.length === 0 && <>
-          <WaitingPlaceholder />
-
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
         </>}
         {listModels.length > 0 && <>
           <Container fluid={true}>
@@ -102,7 +102,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
                       .map((value, index) => {
                         return <tr key={index}>
                           <th>{(activePage * rowsPerPage) + index + 1}</th>
-                          <td><span className={'n4l-table-cell'}>{value.learningRate * 100}%</span></td>
+                          <td><span className={'n4l-table-cell'}>{value.learningRate}</span></td>
                           <td><span className={'n4l-table-cell'}>{value.numberOfEpoch}</span></td>
                           <td><span className={'n4l-table-cell'}>{value.testSize * 100}%</span></td>
                           <td>
@@ -130,7 +130,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
                           <td>
                             <Button variant={'outline-primary'}
                               size={'sm'}
-                              onClick={() => handleClick_DownloadGeneratedModel(value, index)}
+                              onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>

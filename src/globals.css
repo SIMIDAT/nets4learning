@@ -46,6 +46,33 @@ body {
   --bc-drag-and-drop: var(--bs-dark)
 }
 
+/* Color de cada tarea: los mismos que sus botones en la home (primary, danger, info y warning) */
+[data-task="tabular-classification"] { --n4l-task-color: var(--bs-primary); }
+[data-task="regression"] { --n4l-task-color: var(--bs-danger); }
+[data-task="image-classification"] { --n4l-task-color: var(--bs-info); }
+[data-task="object-detection"] { --n4l-task-color: var(--bs-warning); }
+
+.n4l-task-card {
+  border-top: 4px solid var(--n4l-task-color);
+}
+
+/* Aviso de que falta un paso del usuario (N4LEmptyState) */
+.n4l-empty-state {
+  margin: 0;
+  padding: 1.5rem 1rem;
+  border: 2px dashed var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  color: var(--bs-secondary-color);
+  text-align: center;
+}
+
+/* Desplegable de la última miga de pan: mismo tamaño y alineación que el resto de migas */
+.n4l-breadcrumb-toggle {
+  padding: 0;
+  font-size: inherit;
+  vertical-align: baseline;
+}
+
 html[data-theme="dark"] .body {
   background-color: #212529;
   min-height: 100vh;

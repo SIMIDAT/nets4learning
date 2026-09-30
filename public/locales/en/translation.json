@@ -65,7 +65,9 @@
         "presence-only": "This model only answers «face» or «no face» (0 or 100 %), so the explanation shows the minimum it needs to see to find a face: the skin is usually enough.",
         "body-parts": "The confidence in the whole pose and in each body part is explained. The model first needs to find the person, so areas of the torso also help it locate the arms or legs.",
         "wrong-prediction": "Did the model get it wrong? The explanation is still useful: it shows what the model looked at to reach that answer."
-      }
+      },
+      "waiting-for-prediction": "Make a prediction to be able to explain it.",
+      "waiting-for-model": "Train a model to be able to explain its predictions."
     }
   },
   "welcome": "Welcome to Nets4Learning",
@@ -310,9 +312,10 @@
   "predict": "Predict",
   "cookies-policies": {
     "title": "Cookie Policy",
-    "text-0": "This website uses cookies to improve the user experience and analyse the use of the application. Cookies are small text files that are stored on your device when you visit our website. These cookies help us understand how users interact with our website, which pages are most visited and how we can improve the user experience.",
-    "text-1": "It is important to note that we do not process user data for advertising purposes. We use cookies only for analytical purposes and to improve the functionality of the website. If you continue to use our website, we understand that you agree to the use of cookies as described in our privacy policy.",
-    "accept": "Accept"
+    "accept": "Accept",
+    "banner": "We use Google Analytics cookies to learn which parts of the app are used and improve it. They are not used for advertising and are only enabled if you accept them.",
+    "more-info": "More information",
+    "reject": "Reject"
   },
   "error": {
     "load-json-csv": "Error, the file could not be loaded",
@@ -328,13 +331,21 @@
     "layers-length": "You must have at least one layer with the number of neurons and their activation function",
     "parsing-csv": "Error, parsing data set",
     "file-not-valid": "Error, file not valid",
-    "metrics-length": "Error, the number of metrics must be between 1 and 10"
+    "metrics-length": "Error, the number of metrics must be between 1 and 10",
+    "need-model": "First you must create and train a model",
+    "dataset-not-processed": "The dataset is not processed",
+    "model-not-valid": "The model is not valid for this data",
+    "model-compile": "The model could not be compiled. See the console for details.",
+    "option-not-valid": "Option not valid",
+    "prediction": "The prediction could not be made"
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "Warning, the first layer must be of type {{value}}",
     "not-more-layers": "Warning, no more layers can be added",
     "error-layers": "Warning, you should have between 1 and 10 layers",
-    "need-a-model": "Warning, you must first create and train the model."
+    "need-a-model": "Warning, you must first create and train the model.",
+    "first-layer-cant-be-removed": "The first layer cannot be removed",
+    "first-layer-cant-be-changed": "The first layer cannot be changed"
   },
   "success": {
     "file-upload": "File upload successful"
@@ -368,9 +379,11 @@
     "glossary": "Glossary",
     "home": "Home",
     "datasets": "Data sets",
-    "theme": "Theme",
     "dataframe": "DataFrame",
-    "analyze": "EDA"
+    "analyze": "EDA",
+    "theme": "Theme",
+    "theme-light": "Light",
+    "theme-dark": "Dark"
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -381,7 +394,8 @@
     "terms": "Terms and conditions",
     "contribute": "Contribute",
     "documentation": "Documentation",
-    "version": "Version"
+    "version": "Version",
+    "cookies": "Cookie preferences"
   },
   "drag-and-drop": {
     "label-files-one": "File:",
@@ -393,8 +407,8 @@
     "csv-json": "Enter the template data file.json"
   },
   "custom-canvas-drawer": {
-    "validate": "Validate",
-    "clear": "Clean"
+    "validate": "Classify",
+    "clear": "Clear"
   },
   "table": {
     "dataset": "Dataset"
@@ -1245,7 +1259,7 @@
         "process-image": {
           "title": "Image processing",
           "sub-title": "-",
-          "validate": "Validate"
+          "validate": "Classify"
         },
         "result": "Result",
         "button-accept": "Accept",
@@ -1684,6 +1698,9 @@
           "6": "Define metric functions."
         },
         "2-button": "Create and train a model"
+      },
+      "hero": {
+        "text": "Nets4Learning is a web platform to learn how neural networks work: pick a task, design the network, train it and test it, all in the browser with nothing to install. It is aimed at students and teachers."
       }
     },
     "contribute": {
@@ -1700,7 +1717,7 @@
         "csv": "Upload dataset - CSV",
         "csv-text": "Upload a file with a dataset treated in <Oce> .CSV format </code>"
       },
-      "form-description-1": "Then select the dataset on you will work or load your own dataset.",
+      "form-description-1": "Choose the dataset you are going to train with, or upload your own.",
       "form-label": "Select a dataset",
       "form-option-_-1": "Select a dataset",
       "form-upload-description": "Now if you wish you can load your own architecture, otherwise click on continuing and an architecture will be loaded by example default.",
@@ -1708,7 +1725,10 @@
       "1-regression": {
         "csv": "Upload dataset - CSV",
         "csv-text": "Upload a file with a dataset treated in <code> .CSV format </code>"
-      }
+      },
+      "upload-text": "Upload your own dataset as a CSV file and prepare it before training.",
+      "own-dataset": "Your own dataset",
+      "example-datasets": "Example datasets"
     },
     "menu-selection-model": {
       "form-description-1": "Select the trained model on which you are going to work.",
@@ -1788,7 +1808,7 @@
               "title": "Hyperparameter editor",
               "text-0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:",
               "list": {
-                "0": "<b>Learning rate</b>: <br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "0": "<b>Learning rate</b>:<br />How much the network weights change at each training step (for example, 0.01).",
                 "1": "<b>Number of epochs</b>: <br /> Number of times the network training set (the greatest number, it takes longer to train).",
                 "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
@@ -1888,7 +1908,7 @@
           "title": "Hyperparameter editor",
           "learning-rate": "Learning rate",
           "learning-rate-placeholder": "Enter the learning rate",
-          "learning-rate-info": "A value between 0 and 100 (it is a percentage)",
+          "learning-rate-info": "How much the weights change at each training step. High values learn faster but may not converge; low values are more stable but slower.",
           "number-of-epochs": "N. epochs",
           "number-of-epochs-placeholder": "Number of epochs",
           "number-of-epochs-info": "The higher it, the more training will be executed",
@@ -1908,13 +1928,15 @@
           "add-metric": "Add metric function",
           "metric-id-__index__": "Metric {{index}}",
           "metric-id-select": "Select the metric function",
-          "metric-id-info": "It will be one of the metric functions"
+          "metric-id-info": "It will be one of the metric functions",
+          "loss-group-classification": "Classification",
+          "loss-group-regression": "Regression"
         },
         "loaded": "Loaded",
         "load": "Load",
-        "waiting-for-file": "Waiting for file",
-        "waiting-for-process": "Waiting for data set processing",
-        "waiting-for-training": "Waiting for model training",
+        "waiting-for-file": "Upload a CSV file to get started.",
+        "waiting-for-process": "Process the dataset to continue.",
+        "waiting-for-training": "No trained models yet. Set up the network and train one to see it here.",
         "models": {
           "title": "Models",
           "history-train": "Training history",
@@ -1969,7 +1991,8 @@
           "confusion-matrix": "Confusion matrix",
           "line-chart": "Line chart"
         },
-        "waiting-for-models": "Waiting for the creation of a model"
+        "waiting-for-models": "Train a model to make predictions.",
+        "waiting-for-prediction": "Make a prediction to see the result here."
       },
       "1-regression": {
         "generator": {
@@ -1993,7 +2016,7 @@
                 "0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:"
               },
               "list": {
-                "0": "<b>Learning rate</b>:<br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "0": "<b>Learning rate</b>:<br />How much the network weights change at each training step (for example, 0.01).",
                 "1": "<b>Number of epochs</b>:<br /> Number of times the network training set (the greatest number, it takes longer to train).",
                 "2": "<b>Test set size</b>:<br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>:<br /> It is a function that is used to adjust the weights of the network.",
@@ -2098,7 +2121,7 @@
               "title": "Hyperparameter editor",
               "text-0": "The necessary general parameters can be edited for the creation of the model. <br /> These parameters are:",
               "list": {
-                "0": "<b>Learning rate</b>: <br /> Value between 0 and 100 which indicates the percentage of the weight weights.",
+                "0": "<b>Learning rate</b>:<br />How much the network weights change at each training step (for example, 0.01).",
                 "1": "<b>Number of epochs</b>: <br /> Number of times the network training set (the greatest number, it takes longer to train).",
                 "2": "<b>Test set size</b>: <br /> Percentage of the data set that will be used for model tests (test data). The rest of the data will be used for network training (training data).",
                 "3": "<b>Optimizer</b>: <br /> It is a function that is used to adjust the weights of the network.",
@@ -2565,14 +2588,19 @@
       },
       "select-dataset": {
         "description": "Description"
-      }
+      },
+      "open": "Open"
     },
     "terms": {
       "title": "Privacy Policies and Cookies",
       "privacy-title": "Privacy policies",
       "privacy-text": "On our website, we only collect statistical information about visits in order to improve the performance and functionality of the site. We do not collect or store any personal information from our users. We use cookies to account for the number of visitors and improve the navigation experience. If you have any questions or doubt about our privacy policy, do not hesitate to contact us through our contact page.",
       "cookies-title": "Cookies",
-      "cookies-text": "Our website uses Google Analytics cookies to account for the number of visitors we receive. These cookies allow us to collect anonymous statistical information about the use of our website and help us improve their performance and functionality. Google Analytics cookies do not collect personal information from users. When navigating our website, you accept the use of these cookies. If you want to get more information about how we use cookies, please consult our privacy policy."
+      "cookies-text": "Our website uses Google Analytics cookies to account for the number of visitors we receive. These cookies allow us to collect anonymous statistical information about the use of our website and help us improve its performance and functionality. Google Analytics cookies do not collect personal information from users. They are only enabled if you accept them in the cookie notice, and you can change your decision at any time from \"Cookie preferences\" in the footer."
+    },
+    "not-found": {
+      "title": "Page not found",
+      "return-home": "Return to home"
     }
   },
   "generator": {
@@ -2697,5 +2725,20 @@
       "malign lymph": "malign lymph",
       "fibrosis": "fibrosis"
     }
+  },
+  "model-summary": "Model summary",
+  "breadcrumb": {
+    "label": "Breadcrumb",
+    "models": "Pre-trained models",
+    "datasets": "Train a model",
+    "change": "Switch to another one in the list"
+  },
+  "neural-network": {
+    "layer": "Layer {{index}}",
+    "units": "{{units}} neurons",
+    "kernel-size": "Kernel {{value}}",
+    "filters": "{{value}} filters",
+    "pool-size": "Pool {{value}}",
+    "strides": "Stride {{value}}"
   }
 }

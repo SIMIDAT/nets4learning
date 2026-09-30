@@ -3,7 +3,7 @@ import { Accordion, Button, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 export type EditableLayer_t = {
   units       : number
@@ -25,6 +25,12 @@ type N4LEditorLayersProps = {
 }
 
 const prefix = 'pages.playground.generator.editor-layers.'
+
+// Nombre legible de una activación (ReLU, Sigmoid…); sin activación, relu, como el selector
+const activationLabel = (activation: string | null) => {
+  const key = activation || 'relu'
+  return TYPE_ACTIVATION.find((option) => option.key === key)?.label ?? key
+}
 
 /**
  * Editor de capas dense: añadir al principio o al final, borrar y cambiar unidades y activación.
@@ -48,13 +54,17 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
         </div>
       </Card.Header>
       <Card.Body>
-        {waiting && <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />}
+        {waiting && <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />}
         {!waiting && (
           <Accordion>
             {layers.map((item, index) => (
               <Accordion.Item key={index} eventKey={index.toString()}>
                 <Accordion.Header>
                   <Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} />
+                  {/* Resumen de la capa para no tener que abrirla */}
+                  <span className={'ms-2 text-body-secondary'}>
+                    · {t('neural-network.units', { units: item.units })} · {activationLabel(item.activation)}
+                  </span>
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="d-grid gap-2">
@@ -74,7 +84,7 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
                   </Form.Group>
                   <Form.Group className="mt-3" controlId={'formActivationLayer' + index}>
                     <Form.Label><Trans i18nKey={prefix + 'activation-function-select'} /></Form.Label>
-                    <Form.Select aria-label={'Default select example: ' + item.activation}
+                    <Form.Select aria-label={t(prefix + 'activation-function-select')}
                       disabled={item.is_disabled}
                       value={item.activation || 'relu'}
                       onChange={(e) => onChange(index, { units: item.units, activation: e.target.value })}>

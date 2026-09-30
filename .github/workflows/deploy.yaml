@@ -4,6 +4,16 @@ on:
   push:
     tags:
       - 'v*'
+    # Rama de mejoras de la interfaz: se publica en Netlify antes de pasar a main
+    branches:
+      - 'mejoras-ui'
+  # Despliegue manual desde la pestaña Actions
+  workflow_dispatch:
+
+# Si llegan dos pushes seguidos, solo se publica el último
+concurrency:
+  group: deploy-netlify-stable
+  cancel-in-progress: true
 
 jobs:
   deploy-stable:
@@ -31,7 +41,7 @@ jobs:
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STABLE }}
-          NETLIFY_DEPLOY_MESSAGE: "Deploy v${{ github.ref }}"
+          NETLIFY_DEPLOY_MESSAGE: "Deploy ${{ github.ref_name }} (${{ github.sha }})"
           NETLIFY_DEPLOY_TO_PROD: true
           # NODE_ENV=production (abajo) haría que pnpm omitiera las devDependencies (vite, typescript…)
           # que necesita el build: --production=false las instala igualmente.
@@ -48,4 +58,3 @@ jobs:
           VITE_PATH: ""
           VITE_PUBLIC_URL: "https://nets4learning.netlify.app"
           VITE_GA_MEASUREMENT_ID: "G-3644EFBXMG"
-          VITE_SHOW_NEW_FEATURE: "false"

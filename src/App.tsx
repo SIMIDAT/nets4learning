@@ -1,10 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
-import ReactGA from 'react-ga4'
 
 import Loading from './pages/Loading'
 import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
+import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
+import { readConsent, startAnalytics } from '@core/analytics'
 
 import './ConfigChartJS'
 
@@ -29,12 +30,12 @@ const TestPageEasy_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageEasy'
 const TestPageAdvanced_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageAdvanced'))
 
 const VITE_PATH = import.meta.env.VITE_PATH
-const VITE_GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 
 function App() {
   
+  // Google Analytics solo se carga si el usuario lo ha aceptado (N4LCookiesBanner)
   useEffect(() => {
-    ReactGA.initialize(VITE_GA_MEASUREMENT_ID)
+    if (readConsent() === 'accepted') startAnalytics()
   }, [])
 
   return (
@@ -71,6 +72,7 @@ function App() {
         </Suspense>
         <Suspense fallback={''}>
           <N4LFooter />
+          <N4LCookiesBanner />
         </Suspense>
       </BrowserRouter>
     </div>

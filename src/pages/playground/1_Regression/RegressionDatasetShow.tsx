@@ -7,7 +7,7 @@ import { DataFrame } from 'danfojs'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LSummary from '@components/summary/N4LSummary'
 import { useRegressionContext } from '@context/useRegressionContext'
@@ -121,9 +121,7 @@ export default function RegressionDatasetShow() {
       </Card.Header>
       <Card.Body>
         {!showDataset && <>
-          <WaitingPlaceholder
-            i18nKey_title={'pages.playground.generator.waiting-for-process'}
-          />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {showDataset && <>
           <Row>

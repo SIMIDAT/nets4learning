@@ -137,18 +137,13 @@ export default function Datasets() {
           <Row className={"mt-3"}>
             <Col>
               <h1>
-                <Trans i18nKey={"pages.contribute.title"} />
+                <Trans i18nKey={"datasets.title"} />
               </h1>
             </Col>
           </Row>
           <Row className={"mt-3"}>
             <Col>
               <Card>
-                <Card.Header>
-                  <h2>
-                    <Trans i18nKey={"datasets.title"} />
-                  </h2>
-                </Card.Header>
                 <Card.Body>
                   <Tabs defaultActiveKey={"tabular-classification"} justify>
                     <Tab eventKey="tabular-classification" title={t("pages.index.tabular-classification.1-title")}>
@@ -192,51 +187,49 @@ export default function Datasets() {
                         </tbody>
                       </Table>
                     </Tab>
-                    {import.meta.env.VITE_SHOW_NEW_FEATURE === "true" && (
-                      <Tab eventKey="regression" title={t("pages.index.regression.1-title")}>
-                        <Table className={"mt-3"} responsive={true}>
-                          <thead>
-                            <tr>
-                              <th>{t("datasets.dataset-name")}</th>
-                              <th>{t("datasets.dataset-size")}</th>
-                              <th>{t("datasets.dataset-reference")}</th>
-                              <th>{t("download")}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {regression_datasets_list.map((_value, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{t(_value.i18n)}</td>
-                                  <td>{_value.size}</td>
-                                  <td>
-                                    <a
-                                      className="link-secondary"
-                                      href={_value.url_original}
-                                      rel="noreferrer"
-                                      target="_blank"
-                                    >
-                                      {t("Reference")}
-                                    </a>
-                                  </td>
-                                  <td>
-                                    <a
-                                      download
-                                      href={
-                                        import.meta.env.VITE_PATH + "/datasets/01-regression/" + _value.url_download
-                                      }
-                                      className={"btn btn-outline-primary btn-sm mt-2"}
-                                    >
-                                      {t("download")}
-                                    </a>
-                                  </td>
-                                </tr>
-                              )
-                            })}
-                          </tbody>
-                        </Table>
-                      </Tab>
-                    )}
+                    <Tab eventKey="regression" title={t("pages.index.regression.1-title")}>
+                      <Table className={"mt-3"} responsive={true}>
+                        <thead>
+                          <tr>
+                            <th>{t("datasets.dataset-name")}</th>
+                            <th>{t("datasets.dataset-size")}</th>
+                            <th>{t("datasets.dataset-reference")}</th>
+                            <th>{t("download")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {regression_datasets_list.map((_value, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{t(_value.i18n)}</td>
+                                <td>{_value.size}</td>
+                                <td>
+                                  <a
+                                    className="link-secondary"
+                                    href={_value.url_original}
+                                    rel="noreferrer"
+                                    target="_blank"
+                                  >
+                                    {t("Reference")}
+                                  </a>
+                                </td>
+                                <td>
+                                  <a
+                                    download
+                                    href={
+                                      import.meta.env.VITE_PATH + "/datasets/01-regression/" + _value.url_download
+                                    }
+                                    className={"btn btn-outline-primary btn-sm mt-2"}
+                                  >
+                                    {t("download")}
+                                  </a>
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </Table>
+                    </Tab>
                     {/*<Tab eventKey="object-detection" title={t("pages.index.object-detection.1-title")}>*/}
                     {/*TODO*/}
                     {/*</Tab>*/}

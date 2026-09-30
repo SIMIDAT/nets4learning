@@ -5,7 +5,7 @@ import * as tfjs from '@tensorflow/tfjs'
 
 import { DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_MODEL_INDEX, VERBOSE } from '@/CONSTANTS'
 import N4LSummary from '@components/summary/N4LSummary'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { useRegressionContext } from '@context/useRegressionContext'
 import RegressionPredictionForm from '@pages/playground/1_Regression/RegressionPredictionForm'
 import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionPredictionInfo'
@@ -144,7 +144,7 @@ export default function RegressionPrediction() {
       </Card.Header>
       <Card.Body>
         {!showPrediction && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-models'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-models'} />
         </>}
         {showPrediction && <>
           <Row>

@@ -85,7 +85,7 @@ async function showEvaluation(model: tfjs.Sequential, data: SpriteImageDataset, 
 
 function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
   const model = tfjs.sequential()
-  const optimizer = createOptimizer(idOptimizer, { learningRate: (learningRate / 100), momentum: 0.99 })
+  const optimizer = createOptimizer(idOptimizer, { learningRate, momentum: 0.99 })
   const loss = createLoss(idLoss, {})
   const metrics = createMetricsList(idMetrics_list, {})
 

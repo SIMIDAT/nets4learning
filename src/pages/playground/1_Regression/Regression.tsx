@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router'
+import { useParams, useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
-import ReactGA from 'react-ga4'
+import { trackPageView } from '@core/analytics'
 import * as tfjs from '@tensorflow/tfjs'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
@@ -24,6 +24,7 @@ import { useRegressionContext } from '@context/useRegressionContext'
 import alertHelper from '@utils/alertHelper'
 import { UPLOAD } from '@/TASKS'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 // Manual and datasets
 const RegressionManual = lazy(() => import('./RegressionManual'))
@@ -78,7 +79,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
 
   useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/Regression/${dataset}`, title: dataset })
+    trackPageView(`/Regression/${dataset}`, dataset)
   }, [dataset])
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
           })
         }
       } else {
-        await alertHelper.alertError('Error in selection of model')
+        await alertHelper.alertError(t('error.model-selected'))
         console.error('Error, option not valid', { ID: dataset })
         navigate('/404')
       }
@@ -134,7 +135,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
     const result = await createRegressionCustomModel({
       dataset_processed: dataset_processed,
       layerList        : params.params_layers,
-      learningRate     : params.params_training.learning_rate / 100,
+      learningRate     : params.params_training.learning_rate,
       numberOfEpoch    : params.params_training.n_of_epochs,
       testSize         : params.params_training.test_size / 100,
       idOptimizer      : params.params_training.id_optimizer,
@@ -224,7 +225,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
       <Container>
         <Row className={'mt-2 mb-3'}>
           <Col xl={12}>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center">
               <h1><Trans i18nKey={'modality.' + param_id} /></h1>
               <Button size={'sm'}
                 variant={'outline-primary'}
@@ -291,14 +292,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
                   <Trans
                     i18nKey={'more-information-in-link'}
                     components={{
-                      link1: <Link className={'text-info'}
-                        state={{
-                          action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_0_LAYER_DESIGN,
-                        }}
-                        to={{
-                          pathname: '/glossary/',
-                        }}
-                      />,
+                      link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_0_LAYER_DESIGN} />,
                     }} />
                 </>
               ]}

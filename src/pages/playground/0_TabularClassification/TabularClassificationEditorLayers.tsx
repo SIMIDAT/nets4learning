@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
 import alertHelper from '@utils/alertHelper'
@@ -7,6 +6,7 @@ import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 import * as _Types from '@core/types'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 
 
@@ -118,15 +118,7 @@ export default function TabularClassificationEditorLayers() {
           <Trans
             i18nKey={'more-information-in-link'}
             components={{
-              link1: <Link
-                className={'text-info'}
-                state={{
-                  action: GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
-                }}
-                to={{
-                  pathname: '/glossary/',
-                }}
-              />,
+              link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS} />,
             }}
           />
         </p>
@@ -134,14 +126,7 @@ export default function TabularClassificationEditorLayers() {
           <Trans
             i18nKey={'more-information-in-tutorial'}
             components={{
-              link1: <Link
-                className={'text-info'}
-                state={{
-                  action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS,
-                }}
-                to={{
-                  pathname: '/manual/',
-                }} />,
+              link1: <N4LHelpLink page={'manual'} action={MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_3_LAYERS} />,
             }} />
         </p>
       </>}

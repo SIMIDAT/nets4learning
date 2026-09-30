@@ -1,11 +1,11 @@
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
 import type { Layer_t } from "src/types/types"
 
-const DEFAULT_LEARNING_RATE = 1
+const DEFAULT_LEARNING_RATE = 0.01
 const DEFAULT_NUMBER_EPOCHS = 5
 const DEFAULT_TEST_SIZE = 10
 const DEFAULT_ID_OPTIMIZATION: IdOptimizer_t = 'adam'
-const DEFAULT_ID_LOSS: IdLoss_t | IdMetric_t = 'categoricalCrossentropy'
+const DEFAULT_ID_LOSS: IdLoss_t = 'losses-categoricalCrossentropy'
 const DEFAULT_ID_METRICS: (IdLoss_t | IdMetric_t)[] = ['categoricalCrossentropy']
 
 /** Datos del gráfico de barras con la predicción (uno o varios colores por serie) */
