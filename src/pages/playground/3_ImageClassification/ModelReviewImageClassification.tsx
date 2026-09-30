@@ -9,7 +9,7 @@ import { Trans, useTranslation } from "react-i18next"
 import ReactGA from "react-ga4"
 
 
-import I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
+import type I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
 import { VERBOSE } from "@/CONSTANTS"
 import { UPLOAD } from "@/TASKS"
 import alertHelper from "@utils/alertHelper"
@@ -53,11 +53,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const iModelRef = useRef(new I_MODEL_IMAGE_CLASSIFICATION(t))
-  /**
-   * @type {ReturnType<typeof useRef<tfjs.LayersModel | null>>}
-   */
-  const iModelRef_model = useRef<tfjs.LayersModel | null>(null)
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
+  const [model, setModel] = useState<tfjs.LayersModel | null>(null)
 
   const iChartRef_modal = useRef<_chartjs.Chart<"bar">>(null)
   const iChartRef_image = useRef<_chartjs.Chart<"bar">>(null)
@@ -130,9 +127,10 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       } else if (hasModel(MAP_IC_CLASSES, dataset)) {
         try {
           const _iModelClass = await loadModelClass(MAP_IC_CLASSES, dataset)
-          iModelRef.current = new _iModelClass(t)
-          iModelRef_model.current = await iModelRef.current.ENABLE_MODEL() as tfjs.LayersModel
-          setLrpAvailable(supportsLrp(iModelRef.current))
+          const _iModelInstance = new _iModelClass(t)
+          setIModelInstance(_iModelInstance)
+          setModel(await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel)
+          setLrpAvailable(supportsLrp(_iModelInstance))
           setIsLoading(false)
           await alertHelper.alertSuccess(t("model-loaded-successfully"))
         } catch (error) {
@@ -199,6 +197,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const handleModal_Exited = () => { }
 
   const handleModal_Entered = async () => {
+    if (iModelInstance === null) return
     // const canvas = document.getElementById('modal_canvas_image')
     const canvas = canvas_modal_image_ref.current as HTMLCanvasElement
     const canvas_modal_ctx = canvas.getContext("2d") as CanvasRenderingContext2D
@@ -210,9 +209,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     })
     image.onload = async () => {
       UTILS_image.drawImageInCanvasWithContainer(image, canvas)
-      const imageData = await iModelRef.current.GET_IMAGE_DATA(canvas, canvas_modal_ctx)
-      const { predictions } = await iModelRef.current.CLASSIFY_IMAGE(iModelRef_model.current, imageData)
-      const barDataPrediction = await iModelRef.current.PREDICTION_FORMAT(predictions)
+      const imageData = await iModelInstance.GET_IMAGE_DATA(canvas, canvas_modal_ctx)
+      const { predictions } = await iModelInstance.CLASSIFY_IMAGE(model, imageData)
+      const barDataPrediction = await iModelInstance.PREDICTION_FORMAT(predictions)
 
       // La pintamos también en el canvas original (id "originalImage"), que es la imagen base
       // del heatmap; si no, al explicar un ejemplo el mapa de calor se ve sobre blanco.
@@ -226,6 +225,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   }
 
   const handleClick_ImageUploaded_Predict = async () => {
+    if (iModelInstance === null) return
     if (!isImageUploaded || !info.image_upload) {
       await alertHelper.alertError(t("error.need-to-upload-image"))
       return
@@ -245,9 +245,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     canvas_ctx.clearRect(0, 0, canvas.width, canvas.height)
     image.onload = async () => {
       UTILS_image.drawImageInCanvasWithContainer(image, canvas)
-      const imageData = await iModelRef.current.GET_IMAGE_DATA(canvas, canvas_ctx)
-      const { predictions } = await iModelRef.current.CLASSIFY_IMAGE(iModelRef_model.current, imageData)
-      const barDataPrediction = await iModelRef.current.PREDICTION_FORMAT(predictions)
+      const imageData = await iModelInstance.GET_IMAGE_DATA(canvas, canvas_ctx)
+      const { predictions } = await iModelInstance.CLASSIFY_IMAGE(model, imageData)
+      const barDataPrediction = await iModelInstance.PREDICTION_FORMAT(predictions)
 
       setExplainInput(imageData)
 
@@ -276,8 +276,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     }
 
     const imageData = imgData_ref.current
-    const modelInstance = iModelRef_model.current
-    if (!imageData || !modelInstance) {
+    const modelInstance = model
+    if (!imageData || !modelInstance || iModelInstance === null) {
       await alertHelper.alertInfo(t("info.insert-input"))
       return
     }
@@ -291,8 +291,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     setIsCalculo(true)
     try {
       const result = useLrp
-        ? await runImageClassificationExplainLrp({ iModel: iModelRef.current, modelInstance, imageData })
-        : await runImageClassificationExplain({ iModel: iModelRef.current, modelInstance, imageData, ...shapOptions })
+        ? await runImageClassificationExplainLrp({ iModel: iModelInstance, modelInstance, imageData })
+        : await runImageClassificationExplain({ iModel: iModelInstance, modelInstance, imageData, ...shapOptions })
 
       setExplainResult({
         method            : useLrp ? "lrp" : "shap",
@@ -339,10 +339,10 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               <Card className={"mt-3 border-info"}>
                 <Card.Header>
                   <h2>
-                    <Trans i18nKey={iModelRef.current.TITLE} />
+                    {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
                   </h2>
                 </Card.Header>
-                <Card.Body>{dataset === UPLOAD ? <></> : iModelRef.current.DESCRIPTION()}</Card.Body>
+                <Card.Body>{dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}</Card.Body>
               </Card>
 
               {/* Panel narrativo del método de explicabilidad (idéntico patrón al review tabular). */}
@@ -375,7 +375,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   <Card.Body>
                     <Container fluid={true}>
                       <Row className={(isMNIST() ? "" : "row-cols-3") + " justify-content-center g-2"}>
-                        {iModelRef.current.LIST_IMAGES_EXAMPLES().map((image, index) => {
+                        {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
                           const path_image = import.meta.env.VITE_PATH + "/assets/" + image
                           return (
                             <Col className={"border"} key={index}>
@@ -435,8 +435,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               {isMNIST() && (
                 <>
                   <ModelReviewImageClassificationMNIST
-                    iModelRef={iModelRef}
-                    iModelRef_model={iModelRef_model}
+                    iModelInstance={iModelInstance}
+                    model={model}
                     iChartRef_image={iChartRef_image}
                     setBarDataImage={setBarDataImage}
                     canvasResultRef={canvas_original_image_ref}

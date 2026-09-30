@@ -3,7 +3,7 @@ import I_MODEL_OBJECT_DETECTION from './_model'
 import * as coCoSsdDetection from '@tensorflow-models/coco-ssd'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
+export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.COCO_SSD
   static URL = 'https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd'
   static URL_MODEL = ''

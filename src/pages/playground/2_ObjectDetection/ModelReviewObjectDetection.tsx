@@ -15,7 +15,7 @@ import FakeProgressBar from '@components/loading/FakeProgressBar'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 import alertHelper from '@utils/alertHelper'
-import I_MODEL_OBJECT_DETECTION from './models/_model'
+import type I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@utils/utils'
 import {
   ImageExplainResults,
@@ -61,10 +61,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const [deviceId, setDeviceId] = useState('default')
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
 
-  /**
-   * @type {ReturnType<typeof useRef<I_MODEL_OBJECT_DETECTION>>}
-   */
-  const iModel_ref = useRef(new I_MODEL_OBJECT_DETECTION(t))
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_OBJECT_DETECTION | null>(null)
   /**
    * @type {ReturnType<typeof useState<Ratio_t>>}
    */
@@ -185,8 +182,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       } else if (hasModel(MAP_OD_CLASSES, dataset)) {
         try {
           const _iModelClass = await loadModelClass(MAP_OD_CLASSES, dataset)
-          iModel_ref.current = new _iModelClass(t)
-          await iModel_ref.current.ENABLE_MODEL()
+          const _iModelInstance = new _iModelClass(t)
+          setIModelInstance(_iModelInstance)
+          await _iModelInstance.ENABLE_MODEL()
           setLoading(false)
           await alertHelper.alertSuccess(t('model-loaded-successfully'))
         } catch (error) {
@@ -240,59 +238,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   //   }
   // }, [/*ratioCamera*/]);
 
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[isCameraEnable]', { isCameraEnable })
-    if (isCameraEnable === false) {
-      console.debug(`stop AnimationFrame(${requestAnimation_ref.current});`)
-      if (requestAnimation_ref.current !== null) {
-        cancelAnimationFrame(requestAnimation_ref.current)
-      }
-    }
-
-    try {
-      const fps = 20
-      let fpsInterval: number, now: number, then: number, elapsed: number
-      const animate = async () => {
-        if (isCameraEnable) {
-          requestAnimation_ref.current = requestAnimationFrame(animate)
-          now = Date.now()
-          elapsed = now - then
-          if (elapsed > fpsInterval) {
-            then = now - (elapsed % fpsInterval)
-            const _processWebcam = processWebcam()
-            if (_processWebcam !== null) {
-              if (_processWebcam.ctx !== null && _processWebcam.video !== null) {
-                await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: iModel_ref.current.mirror })
-              }
-            }
-          }
-        }
-      }
-      // Comienza la animación al cargar el componente
-      const startAnimating = async (fps: number) => {
-        fpsInterval = 1000 / fps
-        then = Date.now()
-        await animate()
-        console.debug('start animation')
-      }
-      startAnimating(fps)
-    } catch (error) {
-      console.error(error)
-      if (requestAnimation_ref.current !== null) {
-        cancelAnimationFrame(requestAnimation_ref.current)
-      }
-    }
-
-    // Limpia la animación cuando el componente se desmonta
-    return () => {
-      console.log(`delete AnimationFrame(${requestAnimation_ref.current});`)
-      if (requestAnimation_ref.current !== null) {
-        cancelAnimationFrame(requestAnimation_ref.current)
-      }
-    }
-  }, [isCameraEnable])
-
-  const processWebcam = () => {
+  const processWebcam = useCallback(() => {
     if (
       WebCam_ref.current === null ||
       WebCam_ref.current.video === null ||
@@ -321,7 +267,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // ctx.setTransform(-1, 0, 0, 1, canvas_ref.current.width, 0)
 
     return { ctx, video }
-  }
+  }, [])
 
   /**
    * 
@@ -329,14 +275,67 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
    * @param {ImageData|HTMLImageElement|HTMLVideoElement|HTMLCanvasElement} input_img_or_video 
    * @param {{ flipHorizontal: boolean }} config 
    */
-  const processData = async (
+  const processData = useCallback(async (
     ctx: CanvasRenderingContext2D,
     input_img_or_video: ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
     config: { flipHorizontal: boolean }
   ) => {
-    const predictions = await iModel_ref.current.PREDICTION(input_img_or_video, config)
-    iModel_ref.current.RENDER(ctx, predictions)
-  }
+    if (iModelInstance === null) return
+    const predictions = await iModelInstance.PREDICTION(input_img_or_video, config)
+    iModelInstance.RENDER(ctx, predictions)
+  }, [iModelInstance])
+
+  useEffect(() => {
+    if (VERBOSE) console.debug('useEffect[isCameraEnable]', { isCameraEnable })
+    if (isCameraEnable === false) {
+      console.debug(`stop AnimationFrame(${requestAnimation_ref.current});`)
+      if (requestAnimation_ref.current !== null) {
+        cancelAnimationFrame(requestAnimation_ref.current)
+      }
+    }
+
+    try {
+      const fps = 20
+      let fpsInterval: number, now: number, then: number, elapsed: number
+      const animate = async () => {
+        if (isCameraEnable) {
+          requestAnimation_ref.current = requestAnimationFrame(animate)
+          now = Date.now()
+          elapsed = now - then
+          if (elapsed > fpsInterval) {
+            then = now - (elapsed % fpsInterval)
+            const _processWebcam = processWebcam()
+            if (_processWebcam !== null) {
+              if (_processWebcam.ctx !== null && _processWebcam.video !== null) {
+                await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: iModelInstance?.mirror ?? false })
+              }
+            }
+          }
+        }
+      }
+      // Comienza la animación al cargar el componente
+      const startAnimating = async (fps: number) => {
+        fpsInterval = 1000 / fps
+        then = Date.now()
+        await animate()
+        console.debug('start animation')
+      }
+      startAnimating(fps)
+    } catch (error) {
+      console.error(error)
+      if (requestAnimation_ref.current !== null) {
+        cancelAnimationFrame(requestAnimation_ref.current)
+      }
+    }
+
+    // Limpia la animación cuando el componente se desmonta
+    return () => {
+      console.log(`delete AnimationFrame(${requestAnimation_ref.current});`)
+      if (requestAnimation_ref.current !== null) {
+        cancelAnimationFrame(requestAnimation_ref.current)
+      }
+    }
+  }, [isCameraEnable, iModelInstance, processWebcam, processData])
 
   const handleChange_Camera = (e: React.ChangeEvent<HTMLInputElement>) => {
     const webcamChecked = e.target.checked
@@ -427,8 +426,13 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       return;
     }
 
+    if (iModelInstance === null) {
+      console.error("Model not loaded");
+      return;
+    }
+
     // 2. Reload Model
-    await iModel_ref.current.ENABLE_MODEL();
+    await iModelInstance.ENABLE_MODEL();
 
     const objectUrl = URL.createObjectURL(_files[0]);
     const img = new Image();
@@ -506,7 +510,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     }
 
     const imageData = imgData_ref.current
-    if (!imageData) {
+    if (!imageData || iModelInstance === null) {
       await alertHelper.alertInfo(t('info.insert-input'))
       return
     }
@@ -514,7 +518,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     setIsCalculo(true)
     try {
       const result = await runObjectDetectionExplain({
-        model         : iModel_ref.current,
+        model: iModelInstance,
         imageData,
         ...shapOptions,
       })
@@ -532,7 +536,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         baseValues        : result.baseValues,
         predictedValues   : result.predictedValues,
         segmentLabelKeys  : result.segmentLabelKeys,
-        noteKey           : iModel_ref.current.EXPLAIN_NOTE_KEY,
+        noteKey           : iModelInstance.EXPLAIN_NOTE_KEY,
       })
       setShowExplain(true)
     } catch (error) {
@@ -569,11 +573,11 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                   className={'d-flex align-items-center justify-content-between'}
                 >
                   <h2>
-                    <Trans i18nKey={iModel_ref.current.TITLE} />
+                    {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
                   </h2>
                 </Card.Header>
                 <Card.Body>
-                  {dataset !== UPLOAD && <>{iModel_ref.current.DESCRIPTION()}</>}
+                  {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
                 </Card.Body>
               </Card>
 
@@ -714,7 +718,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                                   max  : 1080
                                 }
                               }}
-                              mirrored={iModel_ref.current.mirror}
+                              mirrored={iModelInstance?.mirror ?? false}
                               style={{
                                 position: 'absolute',
                                 width   : '100%',

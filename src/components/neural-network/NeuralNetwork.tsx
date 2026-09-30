@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
@@ -11,8 +11,6 @@ import { NEURAL_NETWORK_MODES } from './neural_network'
 export default function NeuralNetwork(props: any) {
   const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const [graphState, setGraphState] = useState<GraphData>({ nodes: [], edges: [] })
   const [options, setOptions] = useState({ height: 250, width: 300 })
 
   const events = {
@@ -33,10 +31,6 @@ export default function NeuralNetwork(props: any) {
       // e.stopPropagation()
       // e.stopImmediatePropagation()
     }
-  }
-
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth)
   }
 
   const getElementText = (index: number, element: any) => {
@@ -61,25 +55,22 @@ export default function NeuralNetwork(props: any) {
     return { label, title }
   }
 
+  // Ajusta el grafo al tamaño del contenedor, también cuando este cambia (p. ej. al redimensionar la ventana)
   useEffect(() => {
-    window.addEventListener('resize', handleResize)
-    const element = document.getElementById(id_parent) as HTMLElement
-    const cs = getComputedStyle(element)
-    const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
-    const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
-    const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth)
-    const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
-    const elementWidth = element.offsetWidth - paddingX - borderX
-    const elementHeight = element.offsetHeight - paddingY - borderY
-
-    setOptions((prevState) => {
-      // const maxHeight = mode === NEURAL_NETWORK_MODES.EXTEND ? 500 : 250
-      return {
-        ...prevState,
-        height: Math.max(250, (elementHeight)),
-        width : Math.max(350, (elementWidth))
-      }
+    const element = document.getElementById(id_parent)
+    if (element === null) return
+    const observer = new ResizeObserver(() => {
+      const cs = getComputedStyle(element)
+      const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
+      const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
+      const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth)
+      const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
+      const height = Math.max(250, element.offsetHeight - paddingY - borderY)
+      const width = Math.max(350, element.offsetWidth - paddingX - borderX)
+      // Mismo tamaño → mismo objeto, para no volver a renderizar
+      setOptions((prevState) => (prevState.height === height && prevState.width === width ? prevState : { height, width }))
     })
+    observer.observe(element)
 
 
     // Quita el evento de zoom para que no moleste al usar el scroll
@@ -94,9 +85,9 @@ export default function NeuralNetwork(props: any) {
     // }
 
     return () => {
-      window.removeEventListener('resize', handleResize)
+      observer.disconnect()
     }
-  }, [windowWidth, id_parent, mode])
+  }, [id_parent])
 
   const modeCompact = useCallback(() => {
     const nodes = [], edges = []
@@ -138,26 +129,17 @@ export default function NeuralNetwork(props: any) {
     return { nodes, edges }
   }, [layers])
 
-  useEffect(() => {
+  const graphState = useMemo<GraphData>(() => {
     switch (mode) {
-      case NEURAL_NETWORK_MODES.COMPACT: {
-        const { nodes, edges } = modeCompact()
-        const graph = { nodes, edges }
-        setGraphState(graph)
-        break
-      }
-      case NEURAL_NETWORK_MODES.EXTEND: {
-        const { nodes, edges } = modeExtend()
-        const graph = { nodes, edges }
-        setGraphState(graph)
-        break
-      }
+      case NEURAL_NETWORK_MODES.COMPACT:
+        return modeCompact()
+      case NEURAL_NETWORK_MODES.EXTEND:
+        return modeExtend()
       default:
         console.error('Error, option not valid')
-        break
+        return { nodes: [], edges: [] }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, modeCompact, modeExtend, JSON.stringify(layers)])
+  }, [mode, modeCompact, modeExtend])
 
   return <>
     <Row className={'mt-3'}>

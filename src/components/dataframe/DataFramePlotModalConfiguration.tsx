@@ -1,6 +1,6 @@
 import { Col, Container, Form, Modal, Row, Button } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 
 import { VERBOSE } from '@/CONSTANTS'
 import {
@@ -33,16 +33,10 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
     showOptions,
     setShowOptions,
   } = useContext(DataFramePlotContext)
-  const [listColumns, setListColumns] = useState<string[]>([])
+  const listColumns = dataFrameLocal.columns
 
   const prefix = 'dataframe-plot.configuration.'
   const { t } = useTranslation()
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect [dataFrameLocal.columns]')
-    // TODO FIX
-    setListColumns(dataFrameLocal.columns) // eslint-disable-line
-  }, [dataFrameLocal.columns])
 
   // Todas las actualizaciones crean objetos nuevos en cada nivel que cambia: el estado anterior
   // (y la constante DEFAULT_DATAFRAME_PLOT_CONFIG) no se modifican nunca.

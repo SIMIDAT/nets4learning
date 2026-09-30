@@ -31,7 +31,7 @@ import TabularClassificationPrediction from '@pages/playground/0_TabularClassifi
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
 
-import I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
+import type I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
 import { VERBOSE } from '@/CONSTANTS'
 
 import {
@@ -142,8 +142,7 @@ export default function TabularClassification(props: Props) {
 
   // Class && Controllers
   // La clase del modelo se carga bajo demanda en el init; hasta entonces se muestra la carga.
-  const iModelInstance = useRef<I_MODEL_TABULAR_CLASSIFICATION | null>(null)
-  const [isModelReady, setIsModelReady] = useState(false)
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_TABULAR_CLASSIFICATION | null>(null)
 
   // Prediction
   const [inputDataToPredict, setInputDataToPredict] = useState<Array<_Types.N4LDataFrameType>>([])
@@ -154,10 +153,7 @@ export default function TabularClassification(props: Props) {
   const predictedVector_ref = useRef<number[] | null>(null)
   const predictedDisplay_ref = useRef<Array<string | number> | null>(null)
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
-  /**
-   * @type {ReturnType<typeof useRef<_Types.Joyride_t|_Types.Joyride_void_t>>}
-   */
-  const joyrideButton_ref = useRef<_Types.Joyride_t | _Types.Joyride_void_t>({})
+  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
 
   useEffect(() => {
     ReactGA.send({ hitType: 'pageview', page: `/TabularClassification/${dataset}`, title: dataset })
@@ -169,10 +165,10 @@ export default function TabularClassification(props: Props) {
       await tfjs.ready()
       if (hasModel(MAP_TC_CLASSES, dataset)) {
         const _iModelClass = await loadModelClass(MAP_TC_CLASSES, dataset)
-        iModelInstance.current = new _iModelClass(t, () => {})
-        setIsModelReady(true)
-        const _datasets = await iModelInstance.current.DATASETS()
-        const _default_layers = iModelInstance.current.DEFAULT_LAYERS()
+        const _iModelInstance = new _iModelClass(t, () => {})
+        setIModelInstance(_iModelInstance)
+        const _datasets = await _iModelInstance.DATASETS()
+        const _default_layers = _iModelInstance.DEFAULT_LAYERS()
         setLayers(_default_layers)
         setDatasetsProcessed({ index: 0, datasets: _datasets })
       } else {
@@ -319,7 +315,7 @@ export default function TabularClassification(props: Props) {
     }
   }
   // endregion
-  if (!isModelReady || iModelInstance.current === null) {
+  if (iModelInstance === null) {
     return <WaitingPlaceholder />
   }
 
@@ -328,7 +324,7 @@ export default function TabularClassification(props: Props) {
   return (
     <>
       <N4LJoyride joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.current.JOYRIDE()}
+        JOYRIDE_state={iModelInstance.JOYRIDE()}
         TASK={'tabular-classification'}
         KEY={'TabularClassification'}
       />
@@ -341,7 +337,7 @@ export default function TabularClassification(props: Props) {
               {import.meta.env.VITE_SHOW_NEW_FEATURE === 'true' &&
                 <Button size={'sm'}
                   variant={'outline-primary'}
-                  onClick={joyrideButton_ref.current.handleClick_StartJoyride}>
+                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
                   <Trans i18nKey={'datasets-models.0-tabular-classification.joyride.title'} />
                 </Button>
               }
@@ -364,7 +360,7 @@ export default function TabularClassification(props: Props) {
               </Accordion.Item>
               <Accordion.Item className={'joyride-step-dataset-info'} key={'1'} eventKey={'dataset_info'}>
                 <Accordion.Header>
-                  <h2><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.current.TITLE : prefix + 'dataset.upload-dataset'} /></h2>
+                  <h2><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} /></h2>
                 </Accordion.Header>
                 <Accordion.Body>
                   <TabularClassificationDataset

@@ -1,17 +1,23 @@
-// @ts-nocheck
-import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import Joyride from 'react-joyride'
+import Joyride, { type StoreHelpers } from 'react-joyride'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { DEFAULT_JOYRIDE_STYLE } from '@/CONSTANTS_JOYRIDE'
+import type * as _Types from '@core/types'
 
-export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state = {}, TASK = 'DEFAULT', KEY = 'DEFAULT' }) {
+type N4LJoyrideProps = {
+  joyrideButton_ref: React.Ref<_Types.JoyrideHandle_t>
+  JOYRIDE_state?   : _Types.Joyride_t | void
+  TASK?            : string
+  KEY?             : string
+}
+
+export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state, TASK = 'DEFAULT', KEY = 'DEFAULT' }: N4LJoyrideProps) {
 
   const { t } = useTranslation()
 
-  const [joyride, setJoyride] = useState({  })
-  const joyride_ref = useRef()
+  const helpers_ref = useRef<StoreHelpers | null>(null)
 
   const joyride_locale = {
     back : t('joyride.back'),
@@ -36,34 +42,25 @@ export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state = {}, TAS
   }, [updateScreenJoyride])
 
   useEffect(() => {
-
-    setJoyride(JOYRIDE_state)
-
     if (localStorage.getItem(`${TASK}.joyride-` + KEY) !== null) {
       localStorage.setItem(`${TASK}.joyride-` + KEY, JSON.stringify({ run: true }))
     }
-  }, [JOYRIDE_state, TASK, KEY])
-
-  const handleClick_StartJoyride = () => {
-    if (joyride_ref && joyride_ref.current) {
-      joyride_ref.current?.store.reset()
-      joyride_ref.current?.store.start()
-    }
-  }
+  }, [TASK, KEY])
 
   useImperativeHandle(joyrideButton_ref, () => ({
-    handleClick_StartJoyride
+    // Reinicia el tour desde el primer paso
+    handleClick_StartJoyride: () => helpers_ref.current?.reset(true)
   }), [])
 
   if(VERBOSE) console.debug('render N4LJoyride')
   return <>
-    <Joyride ref={joyride_ref}
+    <Joyride getHelpers={(helpers) => { helpers_ref.current = helpers }}
              styles={DEFAULT_JOYRIDE_STYLE}
              locale={joyride_locale}
-             callback={joyride.handleJoyrideCallback}
-             continuous={joyride.continuous}
-             run={joyride.run}
-             steps={joyride.steps}
+             callback={JOYRIDE_state?.handleJoyrideCallback}
+             continuous={JOYRIDE_state?.continuous}
+             run={JOYRIDE_state?.run}
+             steps={JOYRIDE_state?.steps ?? []}
              showProgress={true}
              spotlightClicks={true} />
   </>

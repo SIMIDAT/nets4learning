@@ -304,6 +304,7 @@ export default function Manual() {
                               <Accordion.Body>
                                 <N4LMarkdownDownloader
                                   base={`${import.meta.env.VITE_PATH}/docs/${i18n.language}/`}
+                                  fallbackBase={`${import.meta.env.VITE_PATH}/docs/en/`}
                                   file_name={file.file_name}
                                 />
                               </Accordion.Body>

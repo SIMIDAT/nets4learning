@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next'
 import * as poseDetection from '@tensorflow-models/pose-detection'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
+export default class MODEL_3_MOVE_NET_POSE_NET extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.MOVE_NET_POSE_NET
   TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'
   i18n_TITLE = 'datasets-models.2-object-detection.move-net--pose-net.title'

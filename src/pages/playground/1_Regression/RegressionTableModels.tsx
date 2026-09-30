@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Table, Card, Button, Container, Row, Col, Pagination } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { parseIDOptimizer, parseLogs, parseLossAndMetric } from '@core/history/utils'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import type { CustomModelGenerated_t } from '@core/types'
 
@@ -14,27 +14,13 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
 
   const {
     listModels
-  } = useContext(RegressionContext)
-  const [showTable, setShowTable] = useState(false)
+  } = useRegressionContext()
 
   const [activePage, setActivePage] = useState(0)
-  const [pageCount, setPageCount] = useState(0)
   const startPage = 0
 
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[listModels.data, rowsPerPage]')
-    const rowsCount = listModels.data.length
-    const pageCount = Math.ceil(rowsCount / rowsPerPage)
-
-    setPageCount(pageCount) // eslint-disable-line
-  }, [listModels, listModels.data, listModels.index, rowsPerPage])
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[listModels.data]')
-    if (listModels.data.length > 0) {
-      setShowTable(true) // eslint-disable-line
-    }
-  }, [listModels, listModels.data, listModels.index])
+  const showTable = listModels.data.length > 0
+  const pageCount = Math.ceil(listModels.data.length / rowsPerPage)
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)

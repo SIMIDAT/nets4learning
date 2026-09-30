@@ -1,6 +1,6 @@
 import { Modal } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useMemo } from 'react'
 import DataFramePlotContext from '../_context/DataFramePlotContext'
 import { VERBOSE } from '@/CONSTANTS'
 
@@ -8,11 +8,6 @@ type PlotDescriptionType = {
   plot_intro: string[]
   plot_list : string[]
   plot_end  : string[]
-}
-const DEFAULT_PLOT_DESCRIPTION: PlotDescriptionType = {
-  plot_intro: [],
-  plot_list : [],
-  plot_end  : []
 }
 export default function DataFramePlotModalDescription() {
   const {
@@ -23,25 +18,17 @@ export default function DataFramePlotModalDescription() {
   } = useContext(DataFramePlotContext)
   const URL = 'https://danfo.jsdata.org/api-reference/plotting'
 
-  const [plotDescription, setPlotDescription] = useState(DEFAULT_PLOT_DESCRIPTION)
   const { t } = useTranslation()
 
-  const descriptionPlot = useCallback(() => {
+  const plotDescription = useMemo<PlotDescriptionType>(() => {
+    if (VERBOSE) console.debug('useMemo [ plotDescription ]')
     const prefix = `dataframe-plot.${dataframePlotConfig.PLOT_ENABLE}.description.`
-    const plot_intro = Object.values(t(prefix + 'intro', { returnObjects: true, defaultValue: {} }))
-    const plot_list = Object.values(t(prefix + 'list', { returnObjects: true, defaultValue: {} }))
-    const plot_end = Object.values(t(prefix + 'end', { returnObjects: true, defaultValue: {} }))
-    setPlotDescription({
-      plot_intro,
-      plot_list,
-      plot_end
-    })
-  }, [dataframePlotConfig.PLOT_ENABLE, t, setPlotDescription])
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect [ descriptionPlot() ]')
-    descriptionPlot()
-  }, [descriptionPlot])
+    return {
+      plot_intro: Object.values(t(prefix + 'intro', { returnObjects: true, defaultValue: {} })),
+      plot_list : Object.values(t(prefix + 'list', { returnObjects: true, defaultValue: {} })),
+      plot_end  : Object.values(t(prefix + 'end', { returnObjects: true, defaultValue: {} })),
+    }
+  }, [dataframePlotConfig.PLOT_ENABLE, t])
 
   return <>
     <Modal show={showDescription} onHide={() => setShowDescription(false)} size={'xl'} fullscreen={'md-down'}>

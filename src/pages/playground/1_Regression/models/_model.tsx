@@ -5,7 +5,7 @@ import { delay } from "@utils/utils"
 import Errors from "@shared/Errors"
 import type { TFunction } from "i18next"
 
-export default class I_MODEL_REGRESSION {
+export default abstract class I_MODEL_REGRESSION {
   _KEY = ""
   i18n_TITLE = ""
   URL_DATASET = ""
@@ -68,7 +68,7 @@ export default class I_MODEL_REGRESSION {
    *
    * @return {_Types.Joyride_t}
    */
-  JOYRIDE() {
+  JOYRIDE(): _Types.Joyride_t {
     const handleJoyrideCallback = async (data: any) => {
       const { action, lifecycle, step /*, status, type*/ } = data
       const { target } = step

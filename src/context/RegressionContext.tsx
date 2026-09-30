@@ -1,8 +1,7 @@
 import { createContext, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import * as _dfd from 'danfojs'
 
-import { I_MODEL_REGRESSION } from '@pages/playground/1_Regression/models'
+import type { I_MODEL_REGRESSION } from '@pages/playground/1_Regression/models'
 import * as _Types from '@core/types'
 import {
   DEFAULT_LEARNING_RATE,
@@ -39,12 +38,12 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX } from '@/
  * @property {React.Dispatch<React.SetStateAction<string[]>>} setAccordionActive
  *
  *
- * @property {I_MODEL_REGRESSION} iModelInstance
- * @property {React.Dispatch<React.SetStateAction<I_MODEL_REGRESSION>>} setIModelInstance
+ * @property {I_MODEL_REGRESSION | null} iModelInstance
+ * @property {React.Dispatch<React.SetStateAction<I_MODEL_REGRESSION | null>>} setIModelInstance
  *
  */
 
-type CustomRegressionContext_t = {
+export type CustomRegressionContext_t = {
   prediction        : _Types.StatePrediction_t;
   setPrediction     : React.Dispatch<React.SetStateAction<_Types.StatePrediction_t>>;
   datasets          : { data: _Types.DatasetProcessed_t[]; index: number; dataset: 'select-dataset'; };
@@ -57,21 +56,14 @@ type CustomRegressionContext_t = {
   setIsTraining     : React.Dispatch<React.SetStateAction<boolean>>;
   accordionActive   : string[];
   setAccordionActive: React.Dispatch<React.SetStateAction<string[]>>;
-  iModelInstance    : I_MODEL_REGRESSION;
-  setIModelInstance : React.Dispatch<React.SetStateAction<I_MODEL_REGRESSION>>;
+  iModelInstance    : I_MODEL_REGRESSION | null;
+  setIModelInstance : React.Dispatch<React.SetStateAction<I_MODEL_REGRESSION | null>>;
 }
 
-/**@type {any} */
-const C_ANY: any = {}
-
-/**
- * @type {ReturnType<typeof createContext<CustomRegressionContext_t>>}
- */
-const RegressionContext = createContext<CustomRegressionContext_t>(C_ANY)
+// null fuera del Provider: se accede a través de useRegressionContext(), que avisa del error
+const RegressionContext = createContext<CustomRegressionContext_t | null>(null)
 
 export function RegressionProvider({ children }: { children: React.ReactNode }) {
-
-  const { t } = useTranslation()
 
   /** @type {_Types.DatasetProcessed_t[]} */
   const DEFAULT_DATASETS: _Types.DatasetProcessed_t[] = []
@@ -145,10 +137,8 @@ export function RegressionProvider({ children }: { children: React.ReactNode }) 
    */
   const [accordionActive, setAccordionActive] = useState(['dataset_info'])
 
-  /**
-   * @type {ReturnType<typeof useState<I_MODEL_REGRESSION>>}
-   */
-  const [iModelInstance, setIModelInstance] = useState(new I_MODEL_REGRESSION(t, setAccordionActive))
+  // La clase del modelo se carga bajo demanda en Regression; hasta entonces no hay instancia
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_REGRESSION | null>(null)
 
   return (
     <RegressionContext.Provider value={{

@@ -4,6 +4,7 @@ import type { ModelRegistry } from '@core/models/modelRegistry'
 
 /** Clases de modelos de regresión, cargadas bajo demanda. */
 const MAP_LR_CLASSES: ModelRegistry<I_MODEL_REGRESSION> = {
+  [LR_MODEL_KEYS.UPLOAD]             : () => import('./MODEL__UPLOAD').then((m) => m.default),
   [LR_MODEL_KEYS.SALARY]             : () => import('./MODEL_1_SALARY').then((m) => m.default),
   [LR_MODEL_KEYS.AUTO_MPG]           : () => import('./MODEL_2_AUTO_MPG').then((m) => m.default),
   [LR_MODEL_KEYS.HOUSING_PRICES]     : () => import('./MODEL_3_HOUSING_PRICES').then((m) => m.default),

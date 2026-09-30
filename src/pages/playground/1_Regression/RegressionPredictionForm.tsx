@@ -1,5 +1,4 @@
 import styles from '@pages/playground/1_Regression/Regression.module.css'
-import { useContext } from 'react'
 import { Row, Col, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import * as dfd from 'danfojs'
@@ -7,7 +6,7 @@ import * as dfd from 'danfojs'
 import * as _Types from '@core/types'
 import { VERBOSE } from '@/CONSTANTS'
 import { DataFrameSetCellValue } from '@core/dataframe/DataFrameUtils'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 
 /**
  * @typedef {Object} RegressionPredictionFormProps_t
@@ -29,7 +28,7 @@ export default function RegressionPredictionForm (props: RegressionPredictionFor
   const {
     prediction,
     setPrediction
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const { t } = useTranslation()
 

@@ -6,12 +6,13 @@ import * as tfvis from '@tensorflow/tfjs-vis'
 import * as _Types from '@core/types'
 import ReactGA from 'react-ga4'
 
-import I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
+import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 import * as ImageClassificationUtils from './utils/utils'
 
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 import ImageClassificationClassify from '@pages/playground/3_ImageClassification/ImageClassificationClassify'
 import { ImageExplainResults, type ImageExplainResult_t } from '@core/explainability/ImageExplainPanel'
@@ -53,7 +54,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const { dataset } = props
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const iModelInstance = useRef(new I_MODEL_IMAGE_CLASSIFICATION(t))
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
 
   const prefix = 'pages.playground.generator.'
 
@@ -70,7 +71,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
 
-  const joyrideButton_ref = useRef<any | null>({})
+  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
   /**
    * @type {ReturnType<typeof useState<tfjs.Sequential>>}
    */
@@ -107,8 +108,9 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         console.error('Error, upload not valid')
       } else if (hasModel(MAP_IC_CLASSES, dataset)) {
         const _iModelClass = await loadModelClass(MAP_IC_CLASSES, dataset)
-        iModelInstance.current = new _iModelClass(t)
-        setLayers(iModelInstance.current.DEFAULT_LAYERS())
+        const _iModelInstance = new _iModelClass(t)
+        setIModelInstance(_iModelInstance)
+        setLayers(_iModelInstance.DEFAULT_LAYERS())
       } else {
         console.error('Error, opción not valid')
         navigate('/404')
@@ -124,6 +126,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   // region CREACIÓN DEL MODELO
   const handleSubmit_Play = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (iModelInstance === null) return
     if (Layers[0]._class !== 'conv2d') {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
       return
@@ -138,7 +141,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         idMetricsList: idMetricsList,
         layers       : Layers,
       }
-      const tranin_model = await iModelInstance.current.TRAIN_MODEL(params)
+      const tranin_model = await iModelInstance.TRAIN_MODEL(params)
       if (tranin_model === null) {
         await alertHelper.alertError(t('alert.model-train-error'))
         return
@@ -242,11 +245,11 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     }
 
     const input = explainInput_ref.current
-    if (!input || !Model) {
+    if (!input || !Model || iModelInstance === null) {
       await alertHelper.alertInfo(t('info.insert-input'))
       return
     }
-    if (!supportsLrp(iModelInstance.current)) {
+    if (!supportsLrp(iModelInstance)) {
       await alertHelper.alertError(t('ui.explain.lrp-not-available'))
       return
     }
@@ -254,7 +257,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     setIsCalculo(true)
     try {
       const result = await runImageClassificationExplainLrp({
-        iModel       : iModelInstance.current,
+        iModel       : iModelInstance,
         modelInstance: Model,
         imageData    : input.imageData,
       })
@@ -277,12 +280,17 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   }
   // endregion
 
+  // La clase del modelo se carga bajo demanda en el init; hasta entonces se muestra la carga.
+  if (iModelInstance === null) {
+    return <WaitingPlaceholder />
+  }
+
   if (VERBOSE) console.debug('render ImageClassification')
   return (
     <>
       <N4LJoyride
         joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.current.JOYRIDE()}
+        JOYRIDE_state={iModelInstance.JOYRIDE()}
         TASK={'image-classification'}
         KEY={'ImageClassification'}
       />
@@ -296,7 +304,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
               <Button
                 size={'sm'}
                 variant={'outline-primary'}
-                onClick={joyrideButton_ref.current.handleClick_StartJoyride}>
+                onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
                 <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
               </Button>
             </div>
@@ -318,10 +326,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
               <Accordion.Item eventKey={'description-dataset'} className={'joyride-step-2-dataset-info'}>
                 <Accordion.Header>
-                  <h3><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.current.TITLE : prefix + 'dataset.upload-dataset'} /></h3>
+                  <h3><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} /></h3>
                 </Accordion.Header>
                 <Accordion.Body>
-                  {iModelInstance.current.DESCRIPTION()}
+                  {iModelInstance.DESCRIPTION()}
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>

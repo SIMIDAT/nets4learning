@@ -30,6 +30,34 @@ type TabularClassificationDatasetProcessFormProps_t = {
   datasets   : { index: number, datasets: _Types.DatasetProcessed_t[] },
   setDatasets: React.Dispatch<React.SetStateAction<{ index: number, datasets: _Types.DatasetProcessed_t[] }>>,
 }
+/** Estado inicial del formulario para un dataframe: el objetivo en la última columna y los textos con label encoder. */
+function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
+  const _columns = dataframe_original.columns
+
+  const _dtypes = /** @type {_Types.DataFrameColumnType_t[]} */ (dataframe_original.dtypes)
+
+  /**
+   * @type {_Types.DataFrameColumnNameAndType_t[]}
+   */
+  const _listColumnNameType = _columns.map((_, index) => {
+    return { column_name: _columns[index], column_type: _dtypes[index] }
+  })
+
+  const _listTransformations = _listColumnNameType.map(({ column_name, column_type }) => {
+    const _column_transform = (column_type === 'string') ? 'label-encoder' : column_type
+    return {
+      column_name     : column_name,
+      column_type     : column_type,
+      column_transform: _column_transform
+    }
+  })
+  return {
+    listColumnNameType           : _listColumnNameType,
+    listColumnNameTransformations: _listTransformations,
+    columnNameTarget             : _columns[_columns.length - 1],
+  }
+}
+
 /**
  * @param {TabularClassificationDatasetProcessFormProps_t} props 
  * @returns 
@@ -43,12 +71,24 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
   /**
    * @type {ReturnType<typeof useState<_Types.DataFrameColumnNameAndType_t[]>>}
    */
-  const [listColumnNameType, setListColumnNameType] = useState([])
+  const dataframeOriginal = datasets.datasets[datasets.index].dataframe_original
+  const [listColumnNameType, setListColumnNameType] = useState(() => getDefaultColumns(dataframeOriginal).listColumnNameType)
   /**
    * @type {ReturnType<typeof useState<_Types.DataFrameColumnTransform_t[]>>}
    */
-  const [listColumnNameTransformations, setListColumnNameTransformations] = useState([])
-  const [columnNameTarget, setColumnNameTarget] = useState<string>('')
+  const [listColumnNameTransformations, setListColumnNameTransformations] = useState(() => getDefaultColumns(dataframeOriginal).listColumnNameTransformations)
+  const [columnNameTarget, setColumnNameTarget] = useState<string>(() => getDefaultColumns(dataframeOriginal).columnNameTarget)
+
+  // Al cambiar de dataset se reinicia el formulario. Se ajusta durante el render, no en un efecto:
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevDataframeOriginal, setPrevDataframeOriginal] = useState(dataframeOriginal)
+  if (dataframeOriginal !== prevDataframeOriginal) {
+    const defaultColumns = getDefaultColumns(dataframeOriginal)
+    setPrevDataframeOriginal(dataframeOriginal)
+    setListColumnNameType(defaultColumns.listColumnNameType)
+    setListColumnNameTransformations(defaultColumns.listColumnNameTransformations)
+    setColumnNameTarget(defaultColumns.columnNameTarget)
+  }
   const [typeScaler, setTypeScaler] = useState('min-max-scaler')
   const [showDetails, setShowDetails] = useState({
     show_dataframe_original : false,
@@ -59,30 +99,6 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
   const { t } = useTranslation()
   const prefix = 'form-dataframe.'
 
-  useEffect(() => {
-    const _columns = datasets.datasets[datasets.index].dataframe_original.columns
-
-    const _dtypes = /** @type {_Types.DataFrameColumnType_t[]} */ (datasets.datasets[datasets.index].dataframe_original.dtypes)
-
-    /**
-     * @type {_Types.DataFrameColumnNameAndType_t[]}
-     */
-    const _listColumnNameType = _columns.map((_, index) => {
-      return { column_name: _columns[index], column_type: _dtypes[index] }
-    })
-
-    const _listTransformations = _listColumnNameType.map(({ column_name, column_type }) => {
-      const _column_transform = (column_type === 'string') ? 'label-encoder' : column_type
-      return {
-        column_name     : column_name,
-        column_type     : column_type,
-        column_transform: _column_transform
-      }
-    })
-    setColumnNameTarget(_columns[_columns.length - 1]) //eslint-disable-line
-    setListColumnNameType(_listColumnNameType)
-    setListColumnNameTransformations(_listTransformations)
-  }, [datasets])
 
   useEffect(() => {
     datasets.datasets[datasets.index]

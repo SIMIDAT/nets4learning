@@ -1,4 +1,4 @@
-import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { useParams } from 'react-router'
 import { useNavigate, Link } from 'react-router-dom'
 import { Trans, useTranslation } from 'react-i18next'
@@ -13,6 +13,7 @@ import N4LDivider from '@components/divider/N4LDivider'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LJoyride from '@components/joyride/N4LJoyride'
 import DebugJSON from '@components/debug/DebugJSON'
+import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 import { MAP_LR_CLASSES } from './models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
@@ -20,7 +21,7 @@ import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 import * as _Types from '@core/types'
 // import LinearRegressionModelController_Simple from '@core/controller/01-regression/LinearRegressionModelController_Simple'
 import { createRegressionCustomModel } from '@core/controller/01-regression/RegressionModelController'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import alertHelper from '@utils/alertHelper'
 import { UPLOAD } from '@/TASKS'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
@@ -72,13 +73,9 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
     iModelInstance,
     setIModelInstance,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
-  const [ready, setReady] = useState(false)
-  /**
-   * @type {ReturnType<typeof useRef<_Types.Joyride_t|_Types.Joyride_void_t>>}
-   */
-  const joyrideButton_ref = useRef<_Types.Joyride_t|_Types.Joyride_void_t>({})
+  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
 
 
   useEffect(() => {
@@ -86,28 +83,24 @@ export default function Regression({ dataset }: RegressionProps_t) {
   }, [dataset])
 
   useEffect(() => {
-    setReady(datasets && datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0)
-  }, [setReady, datasets])
-
-  useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history ]')
     const init = async () => {
       await tfjs.ready()
-      if (dataset === UPLOAD) {
-        console.debug('ENABLE Upload csv | Regression')
-      } else if (hasModel(MAP_LR_CLASSES, dataset)) {
+      if (hasModel(MAP_LR_CLASSES, dataset)) {
         /** @type {_Types.I_MODEL_REGRESSION_t} */
         const _iModelInstance = new (await loadModelClass(MAP_LR_CLASSES, dataset))(t, setAccordionActive)
-        const _datasets = await _iModelInstance.DATASETS()
         setIModelInstance(_iModelInstance)
-        
-        setDatasets(() => {
-          return {
-            data   : _datasets,
-            index  : 0,
-            dataset: 'select-dataset',
-          }
-        })
+        // Al subir un CSV no hay datasets predefinidos: los aporta el usuario
+        if (dataset !== UPLOAD) {
+          const _datasets = await _iModelInstance.DATASETS()
+          setDatasets(() => {
+            return {
+              data   : _datasets,
+              index  : 0,
+              dataset: 'select-dataset',
+            }
+          })
+        }
       } else {
         await alertHelper.alertError('Error in selection of model')
         console.error('Error, option not valid', { ID: dataset })
@@ -212,6 +205,13 @@ export default function Regression({ dataset }: RegressionProps_t) {
     })
   }
 
+  const ready = datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0
+
+  // La clase del modelo se carga bajo demanda en el init; hasta entonces se muestra la carga.
+  if (iModelInstance === null) {
+    return <WaitingPlaceholder />
+  }
+
   if (VERBOSE) console.debug('render Regression')
   return (
     <>
@@ -229,7 +229,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
               <h1><Trans i18nKey={'modality.' + param_id} /></h1>
               <Button size={'sm'}
                 variant={'outline-primary'}
-                onClick={joyrideButton_ref.current.handleClick_StartJoyride}>
+                onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
                 <Trans i18nKey={'datasets-models.1-regression.joyride.title'} />
               </Button>
             </div>

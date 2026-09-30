@@ -4,7 +4,8 @@ import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import * as Train_MNIST from '@pages/playground/3_ImageClassification/custom/Train_MNIST'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import { imageDataToMnistTensor4d, toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t, Layer_t } from '@/types/nn-types'
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { Layer_t } from '@/types/types'
 import {
   createActivationsHelpers,
   applyLRP,

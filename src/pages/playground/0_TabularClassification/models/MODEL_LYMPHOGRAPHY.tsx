@@ -16,11 +16,13 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
   URL_DATASET = 'https://archive.ics.uci.edu/dataset/63/lymphography'
 
   // region ATTR
+  // En el orden de las salidas del modelo: el OneHotEncoder de danfo numera las clases por orden de
+  // aparición en lymphography.csv (3, 2, 4, 1), no de 1 a 4.
   CLASSES: string[] = [
-    '00-tc.lymphography.normal find',
-    '00-tc.lymphography.metastases',
     '00-tc.lymphography.malign lymph',
+    '00-tc.lymphography.metastases',
     '00-tc.lymphography.fibrosis',
+    '00-tc.lymphography.normal find',
   ]
   TABLE_HEADER: string[] = [
     '00-tc.lymphography.lymphatics',
@@ -29,17 +31,17 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     '00-tc.lymphography.bl. of lymph. s',
     '00-tc.lymphography.by pass',
     '00-tc.lymphography.extravasates',
-    '00-tc.lymphography.regeneration of',
+    '00-tc.lymphography.regeneration',
     '00-tc.lymphography.early uptake in',
     '00-tc.lymphography.lym.nodes dimin',
     '00-tc.lymphography.lym.nodes enlar',
-    '00-tc.lymphography.changes in lym.',
+    '00-tc.lymphography.changes in lym',
     '00-tc.lymphography.defect in node',
     '00-tc.lymphography.changes in node',
     '00-tc.lymphography.changes in stru',
     '00-tc.lymphography.special forms',
     '00-tc.lymphography.dislocation of',
-    '00-tc.lymphography.exclusion of no',
+    '00-tc.lymphography.exclusion of',
     '00-tc.lymphography.no. of nodes in',
     '00-tc.lymphography.Category',
   ]
@@ -133,25 +135,25 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
       'exclusion of no': '1',
       'no. of nodes in': '2'
     },
-    // metastasis
+    // metastasis (fila 54 de lymphography.csv)
     {
-      'lymphatics'     : '1',
-      'block of affere': '1',
-      'bl. of lymph. c': '1',
+      'lymphatics'     : '2',
+      'block of affere': '2',
+      'bl. of lymph. c': '2',
       'bl. of lymph. s': '1',
-      'by pass'        : '1',
-      'extravasates'   : '1',
+      'by pass'        : '2',
+      'extravasates'   : '2',
       'regeneration of': '1',
       'early uptake in': '1',
       'lym.nodes dimin': '1',
-      'lym.nodes enlar': '1',
-      'changes in lym.': '1',
-      'defect in node' : '1',
-      'changes in node': '1',
-      'changes in stru': '1',
-      'special forms'  : '1',
+      'lym.nodes enlar': '2',
+      'changes in lym.': '2',
+      'defect in node' : '3',
+      'changes in node': '3',
+      'changes in stru': '4',
+      'special forms'  : '2',
       'dislocation of' : '1',
-      'exclusion of no': '1',
+      'exclusion of no': '2',
       'no. of nodes in': '1'
     },
     // malign lymph
@@ -285,25 +287,26 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
     let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
     /** @type {_Types.Dataset_t} */
+    // Todos los atributos son categóricos (códigos 1..n): el modelo preentrenado recibe cada columna
+    // codificada con LabelEncoder, igual que aquí.
     const dataset: _Types.Dataset_t = [
-      { column_name: 'lymphatics',        column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'block of affere',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'bl. of lymph. c',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'bl. of lymph. s',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'by pass',           column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'extravasates',      column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'regeneration of',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'early uptake in',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'lym.nodes dimin',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'lym.nodes enlar',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'changes in lym',    column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'defect in node',    column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'changes in node',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'changes in node',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'changes in stru',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'special forms',     column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'dislocation of',    column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
-      { column_name: 'exclusion of no',   column_role: 'Feature',   column_type: 'Integer',     column_missing_values: false },
+      { column_name: 'lymphatics',        column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'block of affere',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'bl. of lymph. c',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'bl. of lymph. s',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'by pass',           column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'extravasates',      column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'regeneration of',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'early uptake in',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'lym.nodes dimin',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'lym.nodes enlar',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'changes in lym.',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'defect in node',    column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'changes in node',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'changes in stru',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'special forms',     column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'dislocation of',    column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
+      { column_name: 'exclusion of no',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
       { column_name: 'no. of nodes in',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
       { column_name: 'class',             column_role: 'Target',    column_type: 'Integer',     column_missing_values: false },
     ]

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useId } from "react"
+import { useEffect, useState, useId } from "react"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
 import { Trans, useTranslation } from "react-i18next"
@@ -14,7 +14,7 @@ import { TABLE_PLOT_STYLE_CONFIG } from "@/CONSTANTS_DanfoJS"
 import N4LSummary from "@components/summary/N4LSummary"
 import DataFrameDatasetCard from "@components/dataframe/DataFrameDatasetCard"
 import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
-import { I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
+import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
 import { hasModel, loadModelClass } from "@core/models/modelRegistry"
 import ModelReviewRegressionPredict from "./ModelReviewRegressionPredict"
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from "./utils"
@@ -38,7 +38,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   const { t } = useTranslation()
   const dataframe_processed_dataset_plotID = useId()
   const dataframe_processed_describe_plotID = useId()
-  const iModelInstance_ref = useRef<I_MODEL_REGRESSION>(new I_MODEL_REGRESSION(t, () => { }))
+  const [iModelInstance, setIModelInstance] = useState<I_MODEL_REGRESSION | null>(null)
 
   const [dataframe_X, setDataFrame_X] = useState(new dfd.DataFrame())
 
@@ -101,8 +101,9 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       } else if (hasModel(MAP_LR_CLASSES, dataset)) {
         try {
           const _iModelClass = await loadModelClass(MAP_LR_CLASSES, dataset)
-          iModelInstance_ref.current = new _iModelClass(t, () => { })
-          const _datasets = await iModelInstance_ref.current.DATASETS()
+          const _iModelInstance = new _iModelClass(t, () => { })
+          setIModelInstance(_iModelInstance)
+          const _datasets = await _iModelInstance.DATASETS()
           setDatasets({
             data   : _datasets,
             index  : 0,
@@ -128,9 +129,9 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       if (
         listDatasets.index !== DEFAULT_SELECTOR_DATASET_INDEX &&
         listDatasets.data.length > 0 &&
-        iModelInstance_ref.current
+        iModelInstance
       ) {
-        const _models = await iModelInstance_ref.current.MODELS(listDatasets.data[listDatasets.index].csv)
+        const _models = await iModelInstance.MODELS(listDatasets.data[listDatasets.index].csv)
         setListCustomModels({
           data : _models,
           index: 0,
@@ -140,7 +141,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     }
 
     init().then(() => undefined)
-  }, [listDatasets])
+  }, [listDatasets, iModelInstance])
 
   useEffect(() => {
     if (VERBOSE)
@@ -261,13 +262,13 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
           </Col>
         </Row>
 
-        {iModelInstance_ref !== null && (
+        {iModelInstance !== null && (
           <Row>
             <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
               <Card className={"sticky-top border-info mt-3"}>
                 <Card.Header>
                   <h2>
-                    <Trans i18nKey={iModelInstance_ref.current.i18n_TITLE} />
+                    <Trans i18nKey={iModelInstance.i18n_TITLE} />
                   </h2>
                 </Card.Header>
                 <Card.Body>
@@ -297,7 +298,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                     </Form.Text>
                   </Form.Group>
 
-                  {iModelInstance_ref.current.DESCRIPTION()}
+                  {iModelInstance.DESCRIPTION()}
                 </Card.Body>
               </Card>
             </Col>

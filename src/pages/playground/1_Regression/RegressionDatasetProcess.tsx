@@ -1,9 +1,8 @@
-import { useContext } from 'react'
 import { Card } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
@@ -13,7 +12,7 @@ export default function RegressionDatasetProcess() {
 
   const {
     datasets,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const showDatasetProcess = () => {
     return datasets 

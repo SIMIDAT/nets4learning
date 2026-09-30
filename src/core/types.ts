@@ -8,6 +8,8 @@ import type MODEL_IRIS from "@pages/playground/0_TabularClassification/models/MO
 import type MODEL_CAR from "@pages/playground/0_TabularClassification/models/MODEL_CAR"
 import type MODEL_LYMPHOGRAPHY from "@pages/playground/0_TabularClassification/models/MODEL_LYMPHOGRAPHY"
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
+// Capas de clasificación de imágenes (conv2d, maxPooling2d, flatten, dense): distinto de Layer_t, que son capas dense
+import type { Layer_t as ImageLayer_t } from "@/types/types"
 
 export type BasicPrediction_t = {
   labels: string[]
@@ -503,7 +505,7 @@ export type ImageClassificationGeneratedModel_t = {
     learning_rate  : number
     test_size      : number
     n_epochs       : number
-    layers         : Layer_t[]
+    layers         : ImageLayer_t[]
     id_optimizer   : IdOptimizer_t
     id_loss        : IdLoss_t | IdMetric_t
     id_metrics_list: Array<IdLoss_t | IdMetric_t>
@@ -681,22 +683,19 @@ export type JoyrideStep_t = {
  * @property {boolean} run
  * @property {boolean} continuous
  * @property {(data: any) => Promise<void>} [handleJoyrideCallback]
- * @property {(data: any) => Promise<void>} [handleClick_StartJoyride]
  * @property {Array<JoyrideStep_t>} steps
  */
 
 export type Joyride_t = {
-  run                      : boolean
-  continuous               : boolean
-  handleJoyrideCallback?   : (data: any) => Promise<void>
-  handleClick_StartJoyride?: (data: any) => Promise<void>
-  steps                    : Array<JoyrideStep_t>
+  run                   : boolean
+  continuous            : boolean
+  handleJoyrideCallback?: (data: any) => Promise<void>
+  steps                 : Array<JoyrideStep_t>
 }
 
 /**
- * @typedef Joyride_void_t
- * @property {any} [handleClick_StartJoyride]
+ * Lo que N4LJoyride expone a la página (vía ref) para arrancar el tour desde un botón.
  */
-export type Joyride_void_t = {
-  handleClick_StartJoyride?: (data: any) => Promise<void>
+export type JoyrideHandle_t = {
+  handleClick_StartJoyride?: () => void
 }

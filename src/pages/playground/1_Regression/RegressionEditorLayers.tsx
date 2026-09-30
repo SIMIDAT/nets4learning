@@ -1,4 +1,3 @@
-import { useContext, useEffect, useState } from 'react'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -6,7 +5,7 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import type { CustomParamsLayerModel_t } from '@core/types'
 import alertHelper from '@utils/alertHelper'
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 export default function RegressionEditorLayers() {
@@ -18,30 +17,11 @@ export default function RegressionEditorLayers() {
 
     params,
     setParams,
-  } = useContext(RegressionContext)
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    setShow(() => {
-      if (!datasets) {
-        return false
-      }
-      if (!datasets.data || datasets.data.length === 0) {
-        return false
-      }
-      if (datasets.index === DEFAULT_SELECTOR_DATASET_INDEX) {
-        return false
-      }
-      if (datasets.index < 0) {
-        return false
-      }
-      if (!datasets.data[datasets.index].is_dataset_processed) {
-        return false
-      }
-      return true
-    })
-  }, [setShow, datasets, datasets.index])
+  } = useRegressionContext()
+  const show = datasets.data.length > 0
+    && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX
+    && datasets.index >= 0
+    && datasets.data[datasets.index].is_dataset_processed
 
   const handlerClick_AddLayer_Start = async () => {
     if (params.params_layers.length <= 10) {

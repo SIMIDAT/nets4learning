@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Card, Form } from 'react-bootstrap'
 
 import * as _Types from '@core/types'
+import type { Layer_t as ImageLayer_t } from '@/types/types'
 import { VERBOSE } from '@/CONSTANTS'
 import NeuralNetwork from './NeuralNetwork'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
@@ -11,14 +12,14 @@ import { NEURAL_NETWORK_MODES } from './neural_network'
 
 /**
  * @typedef N4LLayerDesignProps_t
- * @property {Array<_Types.CustomParamsLayerModel_t>} layers
+ * @property {Array<_Types.CustomParamsLayerModel_t | ImageLayer_t>} layers
  * @property {boolean} [show=true]
  * @property {string} [glossary_action='']
  * @property {string} [manual_action='']
  * @property {Array} [actions=[]]
  */
 type N4LLayerDesignProps_t = {
-  layers          : Array<_Types.CustomParamsLayerModel_t>;
+  layers          : Array<_Types.CustomParamsLayerModel_t | ImageLayer_t>;
   show?           : boolean;
   glossary_action?: string;
   manual_action?  : string;

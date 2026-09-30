@@ -4,9 +4,10 @@ import type {MobileNet} from '@tensorflow-models/mobilenet'
 
 import { delay } from '@utils/utils'
 import Errors from '@shared/Errors'
+import type * as _Types from '@core/types'
 import type { TFunction } from 'i18next'
 
-export default class I_MODEL_IMAGE_CLASSIFICATION {
+export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   TITLE     : string = ''
   i18n_TITLE: string = ''
   t         : TFunction<"translation", undefined>
@@ -66,7 +67,7 @@ export default class I_MODEL_IMAGE_CLASSIFICATION {
     })
   }
 
-  JOYRIDE () {
+  JOYRIDE (): _Types.Joyride_t {
     const handleJoyrideCallback = async (data: any) => {
       const { action, lifecycle, step/*, status, type*/ } = data
       const { target } = step

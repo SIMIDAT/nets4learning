@@ -10,6 +10,7 @@ export const TC_MODEL_KEYS = {
 } as const
 
 export const LR_MODEL_KEYS = {
+  UPLOAD             : 'UPLOAD',
   SALARY             : 'SALARY',
   AUTO_MPG           : 'AUTO_MPG',
   HOUSING_PRICES     : 'HOUSING_PRICES',

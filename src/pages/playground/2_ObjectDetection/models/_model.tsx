@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next"
 
-export default class I_MODEL_OBJECT_DETECTION {
+export default abstract class I_MODEL_OBJECT_DETECTION {
   TITLE                  : string = ""
   i18n_TITLE             : string = ""
   _modelDetector         : any | null = null

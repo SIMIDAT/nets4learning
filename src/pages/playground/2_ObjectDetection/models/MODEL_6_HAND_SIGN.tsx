@@ -16,7 +16,7 @@ import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 type Finger_t = 'thumb' | 'index' | 'mid' | 'ring' | 'pinky'
 
 
-export class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
+export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.HAND_SIGN
   TITLE = 'datasets-models.2-object-detection.hand-sign.title'
   i18n_TITLE = 'datasets-models.2-object-detection.hand-sign.title'

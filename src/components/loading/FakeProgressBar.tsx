@@ -47,8 +47,6 @@ export default function FakeProgressBar(props: FakeProgressBarProps) {
 
     // 1. Completion State: If loading is done, snap to 100% immediately
     if (!isLoading) {
-      // TODO FIX
-      setProgress(100) // eslint-disable-line
       return // Exit the effect, no interval needed
     }
 
@@ -80,13 +78,15 @@ export default function FakeProgressBar(props: FakeProgressBarProps) {
     return () => clearInterval(intervalId);
   }, [isLoading]);
 
+  const shownProgress = isLoading ? progress : 100
+
   return <>
     <div className={isLoading ? '' : 'n4l-fade-hidden'}>
       <ProgressBar
-        label={progress < 100 ? t('downloading') + ' ' + progress + '%' : t('downloaded')}
+        label={shownProgress < 100 ? t('downloading') + ' ' + shownProgress + '%' : t('downloaded')}
         striped={true}
         animated={true}
-        now={isLoading ? progress : 100}
+        now={shownProgress}
       />
     </div>
   </>

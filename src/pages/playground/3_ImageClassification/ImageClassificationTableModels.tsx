@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Table, Card, Button, Container, Row, Col, Pagination } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
@@ -25,22 +25,11 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
 
   const prefix = 'generator.table-models.'
 
-  const [showTable, setShowTable] = useState(false)
   const [activePage, setActivePage] = useState(0)
-  const [pageCount, setPageCount] = useState(0)
   const startPage = 0
 
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[listModels.length, rowsPerPage]')
-    const rowsCount = GeneratedModels.length
-    const pageCount = Math.ceil(rowsCount / rowsPerPage)
-
-    if (GeneratedModels.length > 0) {
-      // FIX
-      setShowTable(true) // eslint-disable-line
-    }
-    setPageCount(pageCount)
-  }, [GeneratedModels.length, rowsPerPage])
+  const showTable = GeneratedModels.length > 0
+  const pageCount = Math.ceil(GeneratedModels.length / rowsPerPage)
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)

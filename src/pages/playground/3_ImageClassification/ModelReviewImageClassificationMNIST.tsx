@@ -3,10 +3,12 @@ import { Card, Col } from 'react-bootstrap'
 import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 import { toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
+import type * as tfjs from '@tensorflow/tfjs'
+import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 
 type Props = {
-  iModelRef        : React.RefObject<any>,
-  iModelRef_model  : React.RefObject<any>,
+  iModelInstance   : I_MODEL_IMAGE_CLASSIFICATION | null,
+  model            : tfjs.LayersModel | null,
   iChartRef_image  : React.RefObject<any>,
   setBarDataImage  : React.Dispatch<React.SetStateAction<any>>,
   /** Canvas de resultado donde se muestra el dígito dibujado. */
@@ -16,8 +18,8 @@ type Props = {
 }
 export default function ModelReviewImageClassificationMNIST (props: Props) {
   const {
-    iModelRef,
-    iModelRef_model,
+    iModelInstance,
+    model,
     iChartRef_image,
     setBarDataImage,
     canvasResultRef,
@@ -38,7 +40,8 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     const imageData = toImageData(draw_canvas, 28, 28)
     // Miniatura 28×28: lo que realmente recibe el modelo (CustomCanvasDrawer la deja vacía si no se pinta aquí).
     canvas_small?.getContext('2d')?.putImageData(imageData, 0, 0)
-    const { predictions } = await iModelRef.current.CLASSIFY(iModelRef_model.current, imageData)
+    if (iModelInstance === null) return
+    const { predictions } = await iModelInstance.CLASSIFY(model, imageData)
 
     updatePredictionMNIST(predictions)
 

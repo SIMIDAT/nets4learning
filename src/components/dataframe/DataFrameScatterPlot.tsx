@@ -1,5 +1,5 @@
 import '@styles/ScrollBar.css'
-import { useEffect, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Plot from './Plot'
 import * as dfd from 'danfojs'
@@ -19,9 +19,7 @@ export default function DataFrameScatterPlot(props: DataFrameScatterPlotProps) {
 
   const { t } = useTranslation()
   const refPlot = useRef<Plot>(null)
-  const [data, setData] = useState<Plotly.Data[]>([])
-
-  useEffect(() => {
+  const data = useMemo<Plotly.Data[]>(() => {
     if (dataframe.columns.length > 0)
       if (dataframe.columns.includes(selector_x) && dataframe.columns.includes(selector_y)) {
         const trace: Plotly.Data = {
@@ -35,9 +33,9 @@ export default function DataFrameScatterPlot(props: DataFrameScatterPlotProps) {
             color: 'blue'
           }
         }
-        // TODO FIX
-        setData([trace]) // eslint-disable-line
+        return [trace]
       }
+    return []
   }, [dataframe, selector_x, selector_y, t])
 
   if (VERBOSE) console.debug('render DataFramePlot')

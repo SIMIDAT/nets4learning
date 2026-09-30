@@ -22,7 +22,7 @@ export default function MenuSelectModel() {
   const navigate = useNavigate()
 
   const [modelKey, setModelKey] = useState('select-model')
-  const [options, setOptions] = useState<MODEL_OPTIONS_TYPE>([])
+  const options: MODEL_OPTIONS_TYPE = id !== undefined && id in TASK_MODEL_OPTIONS ? TASK_MODEL_OPTIONS[id] : []
   const [showDescription, setShowDescription] = useState(false)
   // Solo se descarga el modelo seleccionado, para mostrar su título y descripción.
   const selectedModel = useMenuModel(id, modelKey)
@@ -44,11 +44,6 @@ export default function MenuSelectModel() {
     if (!(id in TASK_MODEL_OPTIONS)) {
       console.error('Error, model not valid')
       return
-    }
-    if (id in TASK_MODEL_OPTIONS) {
-      const _options = TASK_MODEL_OPTIONS[id]
-      // TODO FIX
-      setOptions(_options) // eslint-disable-line
     }
   }, [id])
 

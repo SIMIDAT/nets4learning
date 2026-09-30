@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Col, Container, Pagination, Row, Table } from 'react-bootstrap'
 import { VERBOSE } from '@/CONSTANTS'
 import * as dfd from 'danfojs'
@@ -6,52 +6,46 @@ import * as dfd from 'danfojs'
 type DataFrameDatasetProps = {
   dataframe: dfd.DataFrame
 }
+const dataFrameToMatrix = (dataframe: dfd.DataFrame) => {
+  const matrix = []
+  for (const column_name of dataframe.columns) {
+    const row = []
+    for (const value of dataframe[column_name].values) {
+      row.push(value)
+    }
+    matrix.push(row)
+  }
+
+  return matrix
+}
+
+const transposeMatrix = (matrix: any[][]) => {
+  const numRows = matrix.length
+  const numCols = matrix[0].length
+  const transposedMatrix: any[][] = []
+  for (let i = 0; i < numCols; i++) {
+    transposedMatrix[i] = []
+  }
+  for (let i = 0; i < numRows; i++) {
+    for (let j = 0; j < numCols; j++) {
+      transposedMatrix[j][i] = matrix[i][j]
+    }
+  }
+  return transposedMatrix
+}
+
 export default function DataFrameDataset(props: DataFrameDatasetProps) {
   const { dataframe } = props
   const [activePage, setActivePage] = useState(0)
-  const [pageCount, setPageCount] = useState(0)
-  const [data, setData] = useState<(any[])[]>([])
   const startPage = 0
   const rowsPerPage = 10
 
-  const dataFrameToMatrix = (dataframe: dfd.DataFrame) => {
-    const matrix = []
-    for (const column_name of dataframe.columns) {
-      const row = []
-      for (const value of dataframe[column_name].values) {
-        row.push(value)
-      }
-      matrix.push(row)
-    }
 
-    return matrix
-  }
-
-  const transposeMatrix = (matrix: any[][]) => {
-    const numRows = matrix.length
-    const numCols = matrix[0].length
-    const transposedMatrix: any[][] = []
-    for (let i = 0; i < numCols; i++) {
-      transposedMatrix[i] = []
-    }
-    for (let i = 0; i < numRows; i++) {
-      for (let j = 0; j < numCols; j++) {
-        transposedMatrix[j][i] = matrix[i][j]
-      }
-    }
-    return transposedMatrix
-  }
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[ dataframe ]')
-    if (dataframe.columns.length > 0) {
-      const _data = transposeMatrix(dataFrameToMatrix(dataframe))
-      const _rowsCount = _data.length
-      const _pageCount = Math.ceil(_rowsCount / rowsPerPage)
-      setPageCount(_pageCount) // eslint-disable-line
-      setData(_data)
-    }
+  const data = useMemo<(any[])[]>(() => {
+    if (VERBOSE) console.debug('useMemo[ dataframe ]')
+    return dataframe.columns.length > 0 ? transposeMatrix(dataFrameToMatrix(dataframe)) : []
   }, [dataframe])
+  const pageCount = Math.ceil(data.length / rowsPerPage)
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)

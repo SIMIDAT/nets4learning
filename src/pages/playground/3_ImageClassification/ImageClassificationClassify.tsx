@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Button, Card, Col, Row } from 'react-bootstrap'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 import { Trans } from 'react-i18next'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
-import { VERBOSE } from '@/CONSTANTS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import type { DropEvent, FileRejection } from 'react-dropzone'
 
@@ -36,14 +35,7 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
   const canvas_image_ref = React.useRef<HTMLCanvasElement | null>(null)
   const canvas_image_28x28_ref = React.useRef<HTMLCanvasElement | null>(null)
 
-  const [showComponent, setShowComponent] = useState(false)
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect[GeneratedModels]')
-    if (GeneratedModels.length > 0) {
-      setShowComponent(true) // eslint-disable-line
-    }
-  }, [GeneratedModels.length])
+  const showComponent = GeneratedModels.length > 0
 
   return <>
     <Card className="mt-3">

@@ -13,7 +13,7 @@ import {
 } from "./MODEL_5_FACE_API_INFO"
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
+export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.FACE_API
   TITLE = "datasets-models.2-object-detection.face-api.title"
   i18n_TITLE = "datasets-models.2-object-detection.face-api.title"

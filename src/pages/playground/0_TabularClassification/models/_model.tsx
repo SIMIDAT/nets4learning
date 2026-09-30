@@ -63,7 +63,7 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
     return <></>
   }
 
-  JOYRIDE() {
+  JOYRIDE(): _Types.Joyride_t {
     const handleJoyrideCallback = async (data: any) => {
       const { action, lifecycle, step/*, status, type*/ } = data
       const { target } = step

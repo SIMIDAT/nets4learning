@@ -26,6 +26,8 @@ type TabularClassificationDatasetShowProps = {
   datasets: { index: number, datasets: Array<_Types.DatasetProcessed_t> },
 }
 
+const EMPTY_DATAFRAME = new dfd.DataFrame()
+
 /**
  * 
  * @param {TabularClassificationDatasetShowProps} props 
@@ -38,33 +40,15 @@ export default function TabularClassificationDatasetShow(props: TabularClassific
   const dataframe_original_plotID = useId()
   const dataframe_processed_plotID = useId()
 
-  const [dataframe, setDataframe] = useState(new dfd.DataFrame())
   const [showProcessed, setShowProcessed] = useState(false)
-  const [showDataset, setShowDataset] = useState(false)
+
+  const datasetSelected = datasets.index >= 0 ? datasets.datasets[datasets.index] : undefined
+  const showDataset = Boolean(datasetSelected?.is_dataset_processed)
+  const dataframe = (showProcessed ? datasetSelected?.dataframe_processed : datasetSelected?.dataframe_original) ?? EMPTY_DATAFRAME
 
   const handleChange_Dataset = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked
-    setShowProcessed(!!checked)
-    if (checked) {
-      setDataframe(datasets.datasets[datasets.index].dataframe_processed)
-    } else {
-      setDataframe(datasets.datasets[datasets.index].dataframe_original)
-    }
+    setShowProcessed(e.target.checked)
   }
-
-
-  useEffect(() => {
-    let canRenderDataset = false
-    if (datasets && datasets.datasets.length > 0 && datasets.index >= 0) {
-      if (datasets.datasets[datasets.index].is_dataset_processed) {
-        canRenderDataset = true
-      }
-    }
-    if (canRenderDataset) {
-      setDataframe(datasets.datasets[datasets.index].dataframe_original)
-    }
-    setShowDataset(canRenderDataset)
-  }, [datasets, dataframe_original_plotID, dataframe_processed_plotID])
 
   useEffect(() => {
 

@@ -1,4 +1,4 @@
-import { useContext, useState, useId, useEffect } from 'react'
+import { useState, useId, useEffect } from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as dfd from 'danfojs'
@@ -6,11 +6,41 @@ import * as dfd from 'danfojs'
 import * as _Types from '@core/types'
 import { DEFAULT_SCALER, DEFAULT_SELECTOR_DATASET_INDEX, E_TRANSFORMS, VERBOSE } from '@/CONSTANTS'
 import { TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1, F_TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2 } from '@/CONSTANTS_DanfoJS'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { LIST_TRANSFORMATIONS } from './CONSTANTS'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
 
+
+/** Estado inicial del formulario para un dataframe: todas las columnas activas y el objetivo en la última. */
+function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
+  /** 
+   * @type {_Types.DataFrameColumnNameTypeEnable_t[]}
+   */
+  const _listColumnNameType: _Types.DataFrameColumnNameTypeEnable_t[] = dataframe_original.columns.map((_, index) => {
+    return {
+      column_enable   : true,
+      column_name     : dataframe_original.columns[index],
+      column_type     : dataframe_original.dtypes[index] as _Types.DataFrameColumnType_t,
+      // FIX TypeScript
+      column_transform: dataframe_original.dtypes[index],
+    }
+  })
+  const _listTransformations: _Types.DataFrameColumnTransformEnable_t[] = _listColumnNameType.map(({ column_name, column_type, column_enable }) => {
+    const _column_transform: _Types.ColumnTransform_t = /** @type {_Types.ColumnTransform_t} */ ((column_type === 'string') ? 'label-encoder' : column_type)
+    return {
+      column_name     : column_name,
+      column_type     : column_type,
+      column_enable   : column_enable,
+      column_transform: _column_transform,
+    }
+  })
+  return {
+    listColumnNameType           : _listColumnNameType,
+    listColumnNameTransformations: _listTransformations,
+    columnNameTarget             : dataframe_original.columns[dataframe_original.columns.length - 1],
+  }
+}
 
 export default function RegressionDatasetProcessForm() {
 
@@ -23,20 +53,32 @@ export default function RegressionDatasetProcessForm() {
   const {
     datasets,
     setDatasets,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   /**
    * @type {ReturnType<typeof useState<Array<_Types.DataFrameColumnNameTypeEnable_t>>>}
    */
-  const [listColumnNameType, setListColumnNameTypes] = useState<_Types.DataFrameColumnNameTypeEnable_t[]>([])
+  const { dataframe_original: dataframeOriginal } = datasets.data[datasets.index as number]
+  const [listColumnNameType, setListColumnNameTypes] = useState<_Types.DataFrameColumnNameTypeEnable_t[]>(() => getDefaultColumns(dataframeOriginal).listColumnNameType)
   /**
    * @type {ReturnType<typeof useState<_Types.DataFrameColumnTransformEnable_t[]>>}
    */
-  const [listColumnNameTransformations, setListColumnNameTransformations] = useState<_Types.DataFrameColumnTransformEnable_t[]>([])
+  const [listColumnNameTransformations, setListColumnNameTransformations] = useState<_Types.DataFrameColumnTransformEnable_t[]>(() => getDefaultColumns(dataframeOriginal).listColumnNameTransformations)
   /**
    * @type {ReturnType<typeof useState<string>>}
    */
-  const [columnNameTarget, setColumnNameTarget] = useState<string>('')
+  const [columnNameTarget, setColumnNameTarget] = useState<string>(() => getDefaultColumns(dataframeOriginal).columnNameTarget)
+
+  // Al cambiar de dataset se reinicia el formulario. Se ajusta durante el render, no en un efecto:
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevDataframeOriginal, setPrevDataframeOriginal] = useState(dataframeOriginal)
+  if (dataframeOriginal !== prevDataframeOriginal) {
+    const defaultColumns = getDefaultColumns(dataframeOriginal)
+    setPrevDataframeOriginal(dataframeOriginal)
+    setListColumnNameTypes(defaultColumns.listColumnNameType)
+    setListColumnNameTransformations(defaultColumns.listColumnNameTransformations)
+    setColumnNameTarget(defaultColumns.columnNameTarget)
+  }
 
   /**
    * @type {ReturnType<typeof useState<_Types.ScalerKey_t>>}
@@ -161,35 +203,6 @@ export default function RegressionDatasetProcessForm() {
   }
 
 
-  useEffect(() => {
-    // const dataframe_original = datasetLocal.dataframe_original
-    const _index: number = datasets.index as number
-    const { dataframe_original } = datasets.data[_index]
-    /** 
-     * @type {_Types.DataFrameColumnNameTypeEnable_t[]}
-     */
-    const _listColumnNameType: _Types.DataFrameColumnNameTypeEnable_t[] = dataframe_original.columns.map((_, index) => {
-      return {
-        column_enable   : true,
-        column_name     : dataframe_original.columns[index],
-        column_type     : dataframe_original.dtypes[index] as _Types.DataFrameColumnType_t,
-        // FIX TypeScript
-        column_transform: dataframe_original.dtypes[index],
-      }
-    })
-    const _listTransformations: _Types.DataFrameColumnTransformEnable_t[] = _listColumnNameType.map(({ column_name, column_type, column_enable }) => {
-      const _column_transform: _Types.ColumnTransform_t = /** @type {_Types.ColumnTransform_t} */ ((column_type === 'string') ? 'label-encoder' : column_type)
-      return {
-        column_name     : column_name,
-        column_type     : column_type,
-        column_enable   : column_enable,
-        column_transform: _column_transform,
-      }
-    })
-    setColumnNameTarget(dataframe_original.columns[dataframe_original.columns.length - 1])
-    setListColumnNameTypes(_listColumnNameType)
-    setListColumnNameTransformations(_listTransformations)
-  }, [datasets])
 
   useEffect(() => {
     // datasetLocal

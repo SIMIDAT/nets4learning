@@ -5,7 +5,7 @@ import { syncMediaPipeMirror } from './mediapipeMirror'
 import I_MODEL_OBJECT_DETECTION from './_model'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
+export default class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.FACE_MESH
   TITLE = 'datasets-models.2-object-detection.face-mesh.title'
   i18n_TITLE = 'datasets-models.2-object-detection.face-mesh.title'

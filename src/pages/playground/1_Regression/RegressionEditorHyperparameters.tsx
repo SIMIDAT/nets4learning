@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -10,7 +10,7 @@ import {
   DEFAULT_TEST_SIZE,
 } from './CONSTANTS'
 import { TYPE_LOSSES, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 
@@ -23,7 +23,7 @@ export default function RegressionEditorHyperparameters() {
 
     params,
     setParams,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
 
   // const [show, setShow] = useState(false)

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Card, Col, Row, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
@@ -6,7 +6,7 @@ import * as tfjs from '@tensorflow/tfjs'
 import { DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_MODEL_INDEX, VERBOSE } from '@/CONSTANTS'
 import N4LSummary from '@components/summary/N4LSummary'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import RegressionPredictionForm from '@pages/playground/1_Regression/RegressionPredictionForm'
 import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionPredictionInfo'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
@@ -23,9 +23,8 @@ export default function RegressionPrediction() {
 
     listModels,
     setListModels,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
-  const [showPrediction, setShowPrediction] = useState(false)
 
   /**
    * @type {ReturnType<typeof useState<string|number>>}
@@ -76,22 +75,10 @@ export default function RegressionPrediction() {
     }))
   }
 
-  useEffect(() => {
-    // setShowPrediction((listModels.data.length > 0 && listModels.index !== DEFAULT_SELECTOR_MODEL && listModels.index >= 0))
-    // eslint-disable-next-line
-    setShowPrediction(() => {
-      if (listModels.data.length > 0 && listModels.index !== DEFAULT_SELECTOR_MODEL_INDEX) {
-        const isNumber = Number.isInteger(listModels.index)
-        if (isNumber) {
-          const _index: number = listModels.index as number
-          if (_index >= 0) {
-            return true
-          }
-        }
-      }
-      return false
-    })
-  }, [listModels, listModels.data, listModels.index, setShowPrediction])
+  const showPrediction = listModels.data.length > 0
+    && listModels.index !== DEFAULT_SELECTOR_MODEL_INDEX
+    && Number.isInteger(listModels.index)
+    && listModels.index >= 0
 
   const _indexModel: number = listModels.index as number
   // Explicabilidad: el modelo recibe la instancia ESCALADA (input_3_dataframe_scaling), así que el

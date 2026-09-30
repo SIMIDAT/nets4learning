@@ -17,9 +17,9 @@ import type { ChartOptions } from 'chart.js'
 export type Layer_t = {
   _class            : ClassLayer_t;
   _protected?       : boolean;
-  // Dense layer properties
-  activation        : string | null;
-  units             : number;
+  // Solo en las capas que las usan (dense y conv2d)
+  activation?       : string | null;
+  units?            : number;
   // if _class === Conv2D
   kernelSize?       : number;
   inputShape?       : number[];

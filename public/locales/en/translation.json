@@ -77,6 +77,7 @@
   "Loading": "Loading",
   "upload": "Upload Image",
   "example-i": "Example {{i}}",
+  "example-custom": "Custom values",
   "Files": "Files",
   "wait-document": "Waiting for document",
   "references": "References",
@@ -315,6 +316,7 @@
   },
   "error": {
     "load-json-csv": "Error, the file could not be loaded",
+    "file-upload": "Error, the file could not be uploaded",
     "need-to-upload-image": "You must first upload an image",
     "need-dataset": "You must load the data first",
     "model-selected": "Model selection error",
@@ -355,6 +357,7 @@
     "success": "Success",
     "info": "Info",
     "model-train-success": "model trained successfully",
+    "model-train-error": "Error training the model",
     "prediction": "The prediction is: {{index}}",
     "file-upload-success": "Successfully loaded file",
     "file-upload-error-incorrect-format": "The file could not be loaded, it is not the correct format"
@@ -689,7 +692,7 @@
         "title": "The Housing prices",
         "description": {
           "text": {
-            "0": null,
+            "0": "The Boston housing data set is derived from information collected by the U.S. Census Service concerning housing in the Boston area.",
             "1": "The data set is designed to address house price modeling and regression problems in different neighborhoods in Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research."
           },
           "link": "<link1>UCI data set info</link1>",
@@ -2166,7 +2169,7 @@
           "0": "The section has the possibility of uploading your data sets, prepared data sets, descriptions, graphical and statistical visualization tools.",
           "1": "It has a regression model generator. Manages neural network layers, hyperparameters, optimization functions, loss functions and metrics. as well as the feature selector.",
           "2": "We must press the \"Create and train model\" button to start the neural network training process. If all the configuration and selection of the functions is correct then an entry with the trained model will be added to the list.",
-          "3": null
+          "3": "For the prediction, the scatter plot is used, drawing a line."
         },
         "2-link": "Consult more information in the following <link1> link </link1>"
       },
@@ -2588,6 +2591,7 @@
     "skip": "Skip"
   },
   "upload-dataset-info": "You must upload a dataset to perform the task.",
+  "upload-model": "Upload model",
   "upload-model-info": "You must upload a model to perform the task.",
   "select-attr": "Select attribute",
   "upload-dataset": "Upload dataset",
@@ -2626,19 +2630,19 @@
       },
       "by pass": "by pass",
       "extravasates": "extravasates",
-      "regeneration": "regeneration",
+      "regeneration": "regeneration of",
       "early uptake in": "early uptake in",
       "lym": {
         "nodes dimin": "lym.nodes dimin",
         "nodes enlar": "lym.nodes enlar"
       },
-      "changes in lym": "changes in lym",
+      "changes in lym": "changes in lym.",
       "defect in node": "defect in node",
       "changes in node": "changes in node",
       "changes in stru": "changes in stru",
       "special forms": "special forms",
       "dislocation of": "dislocation of",
-      "exclusion of": "exclusion of",
+      "exclusion of": "exclusion of no",
       "no": {
         " of nodes in": "no. of nodes in"
       },

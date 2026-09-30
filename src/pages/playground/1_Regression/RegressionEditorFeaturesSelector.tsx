@@ -1,11 +1,11 @@
 import styles from './Regression.module.css'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { ChangeEvent } from 'react'
 import { Card, Form, Accordion } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 /**
@@ -19,26 +19,15 @@ export default function RegressionEditorFeaturesSelector() {
     datasets,
     params,
     setParams,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
 
-  const [show, setShow] = useState(false)
-
-  const isReady = useMemo(() => (
+  const show = useMemo(() => (
     datasets?.data?.length > 0 &&
     datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX &&
     datasets.index >= 0 &&
     datasets.data[datasets.index]?.is_dataset_processed
   ), [datasets]);
-
-  useEffect(() => {
-    // const isReady = datasets
-    //   && datasets.data.length > 0
-    //   && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX
-    //   && datasets.index >= 0
-    //   && datasets.data[datasets.index].is_dataset_processed;
-    setShow(isReady);
-  }, [isReady]);
 
   const handleChange_FeatureSelector_Y = (event_Y_target: ChangeEvent<HTMLSelectElement>) => {
     setParams((prevState) => {

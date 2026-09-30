@@ -14,6 +14,7 @@
       "@/CONSTANTS_ACTIONS": ["src/CONSTANTS_ACTIONS"],
       "@/CONSTANTS_ChartsJs": ["src/CONSTANTS_ChartsJs"],
       "@/CONSTANTS_DanfoJS": ["src/CONSTANTS_DanfoJS"],
+      "@/CONSTANTS_JOYRIDE": ["src/CONSTANTS_JOYRIDE"],
       "@/DATA_MODEL": ["src/DATA_MODEL"],
       "@/TASKS": ["src/TASKS"],
       "@/MODEL_KEYS": ["src/MODEL_KEYS"],

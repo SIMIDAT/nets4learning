@@ -2,7 +2,6 @@ import styles from "@pages/playground/1_Regression/Regression.module.css"
 import { Row, Col, Form } from "react-bootstrap"
 import { Trans } from "react-i18next"
 import * as _Types from "@core/types"
-import { useEffect, useState } from "react"
 
 /**
  * @typedef {Object} RegressionPredictionInfoProps
@@ -19,20 +18,12 @@ type RegressionPredictionInfoProps = {
 export default function RegressionPredictionInfo(props: RegressionPredictionInfoProps) {
   const { prediction } = props
 
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    if (
-      prediction &&
-      prediction.input_1_dataframe_original &&
-      Array.isArray(prediction.input_1_dataframe_original.values) &&
-      prediction.input_1_dataframe_original.values.length >= 1
-    ) {
-      setReady(true)
-    } else {
-      setReady(false)
-    }
-  }, [prediction, prediction.input_1_dataframe_original])
+  const ready = Boolean(
+    prediction &&
+    prediction.input_1_dataframe_original &&
+    Array.isArray(prediction.input_1_dataframe_original.values) &&
+    prediction.input_1_dataframe_original.values.length >= 1
+  )
 
   return (
     <>

@@ -1,10 +1,10 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as dfd from 'danfojs'
 import { DataFrameReadCSV } from '@core/dataframe/DataFrameUtils'
 
 import * as _Types from '@core/types'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import alertHelper from '@utils/alertHelper'
@@ -27,7 +27,7 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
     // setDatasetLocal,
 
     iModelInstance,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const [showDatasetInfo, setShowDatasetInfo] = useState(false)
 
@@ -119,6 +119,6 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
         <p><strong>{datasets.data[datasets.index].csv}</strong></p>
       </>}
     </>}
-    {dataset !== UPLOAD && <>{iModelInstance.DESCRIPTION()}</>}
+    {dataset !== UPLOAD && <>{iModelInstance?.DESCRIPTION()}</>}
   </>
 }

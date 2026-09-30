@@ -43,7 +43,7 @@ let faceMeshInitPromise: Promise<any> | null = null;
 async function getFaceMeshInstance(): Promise<any> {
   if (!faceMeshInstance) {
     // Import dinámico: FaceMesh (mediapipe) solo se descarga si hace falta segmentar una cara.
-    const { MODEL_2_FACE_MESH } = await import('../models/MODEL_2_FACE_MESH');
+    const { default: MODEL_2_FACE_MESH } = await import('../models/MODEL_2_FACE_MESH');
     // Esta instancia solo se usa para obtener keypoints (PREDICTION); la
     // función de traducción `t` solo afecta a textos de UI, así que pasamos
     // una identidad.

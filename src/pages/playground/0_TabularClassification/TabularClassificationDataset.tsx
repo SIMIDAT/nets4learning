@@ -23,7 +23,7 @@ import type { I_MODEL_TABULAR_CLASSIFICATION } from "./models"
  */
 type PropsTabularClassificationDatasetProps_t = {
   dataset       : string
-  iModelInstance: React.RefObject<I_MODEL_TABULAR_CLASSIFICATION | null>
+  iModelInstance: I_MODEL_TABULAR_CLASSIFICATION
   datasets      : _Types.DatasetProcessed_t[]
   setDatasets   : React.Dispatch<React.SetStateAction<{ index: number, datasets: _Types.DatasetProcessed_t[] }>>
 }
@@ -143,7 +143,7 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
           )}
         </>
       )}
-      {dataset !== UPLOAD && <>{iModelInstance.current?.DESCRIPTION()}</>}
+      {dataset !== UPLOAD && <>{iModelInstance.DESCRIPTION()}</>}
     </>
   )
 }

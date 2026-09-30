@@ -98,17 +98,3 @@ export type MetricMap_t = {
 }
 export type IdMetric_t = keyof MetricMap_t
 
-export type Layer_t = {
-    _class            : string;
-    _protected        : boolean;
-    units?            : number;
-    // if _class === Conv2D
-    kernelSize?       : number;
-    inputShape?       : number[];
-    filters?          : number;
-    strides?          : number;
-    activation?       : string;
-    kernelInitializer?: string;
-    poolSize?         : number;
-}
-

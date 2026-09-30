@@ -21,7 +21,7 @@ export default function MenuSelectDataset() {
 
   const prefix = "pages.menu.select-dataset."
   const [datasetKey, setDatasetKey] = useState("select-dataset")
-  const [options, setOptions] = useState<DATASET_OPTIONS_TYPE>([])
+  const options: DATASET_OPTIONS_TYPE = id !== undefined && id in TASK_DATASET_OPTIONS ? TASK_DATASET_OPTIONS[id] : []
   const [showDescription, setShowDescription] = useState(false)
   // Solo se descarga el modelo del dataset seleccionado, para mostrar su título y descripción.
   const selectedModel = useMenuModel(id, datasetKey)
@@ -43,13 +43,6 @@ export default function MenuSelectDataset() {
     if (!(id in TASK_DATASET_OPTIONS)) {
       console.error("Error, dataset not valid")
       return
-    }
-    if (id in TASK_DATASET_OPTIONS) {
-      const _options: DATASET_OPTIONS_TYPE = TASK_DATASET_OPTIONS[id]
-      // TODO FIX
-      setOptions(_options) // eslint-disable-line
-    } else {
-      console.error("Error, option not valid")
     }
   }, [id])
 

@@ -4,7 +4,8 @@ import { MnistData } from '../models/MODEL_IMAGE_MNIST_Data'
 import { createOptimizer, createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 import { TAB_03_IMAGE_CLASSIFICATION } from '@/CONSTANTS'
 import type { ParamsTrain_MNIST_t } from '../models/MODEL_IMAGE_MNIST'
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t, Layer_t } from '@/types/nn-types'
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { Layer_t } from '@/types/types'
 
 const classNames = [
   'Zero',

@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { VERBOSE } from '@/CONSTANTS'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 const DEFAULT_VISOR_OPTIONS = { 
@@ -27,7 +27,7 @@ export default function RegressionEditorVisor() {
 
     params, 
     setParams, 
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const [visorOptions, setVisorOptions] = useState(DEFAULT_VISOR_OPTIONS)
   // const [show, setShow] = useState(false)

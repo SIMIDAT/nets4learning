@@ -1,14 +1,13 @@
-import { useContext } from 'react'
 
 import { VERBOSE } from '@/CONSTANTS'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import { DataFramePlotProvider } from '@components/_context/DataFramePlotContext'
 import DataFramePlot from '@components/dataframe/DataFramePlot'
 
 export default function RegressionDatasetShowPlot() {
   const {
     datasets,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const dataset = datasets.data[datasets.index]
   if (!dataset || !dataset.dataframe_processed) {

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState, useId } from 'react'
+import { useCallback, useEffect, useState, useId } from 'react'
 import type { ChangeEvent } from 'react'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -10,14 +10,16 @@ import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LSummary from '@components/summary/N4LSummary'
-import RegressionContext from '@context/RegressionContext'
+import { useRegressionContext } from '@context/useRegressionContext'
 import type { DatasetProcessed_t } from '@core/types'
+
+const EMPTY_DATAFRAME = new DataFrame()
 
 export default function RegressionDatasetShow() {
   const {
     datasets,
     setDatasets,
-  } = useContext(RegressionContext)
+  } = useRegressionContext()
 
   const dataframe_processed_plotID = useId()
   const dataframe_processed_describe_plotID = useId()
@@ -27,28 +29,18 @@ export default function RegressionDatasetShow() {
   // i18n
   const prefix = 'pages.playground.generator.dataset.'
 
-  const [dataframe, setDataframe] = useState(new DataFrame())
   const [showProcessed, setShowProcessed] = useState(false)
-  const [showDataset, setShowDataset] = useState(false)
+
+  const datasetSelected = datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0 ? datasets.data[datasets.index] : undefined
+  const showDataset = Boolean(datasetSelected?.is_dataset_processed)
+  const dataframe = (showProcessed ? datasetSelected?.dataframe_processed : datasetSelected?.dataframe_original) ?? EMPTY_DATAFRAME
 
   /**
    * 
    * @param {React.ChangeEvent<HTMLInputElement>} e 
    */
   const handleChange_DatasetProcessed = (e: ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked
-    setShowProcessed(!!checked)
-    if (checked === true) {
-      setDataframe(() => {
-        const _index = datasets.index as number
-        return datasets.data[_index].dataframe_processed
-      })
-    } else {
-      setDataframe(() => {
-        const _index = datasets.index as number
-        return datasets.data[_index].dataframe_original
-      })
-    }
+    setShowProcessed(e.target.checked)
   }
 
   /**
@@ -65,18 +57,6 @@ export default function RegressionDatasetShow() {
       }
     })
   }
-
-  useEffect(() => {
-    const canRenderDataset = datasets
-      && datasets.data.length > 0
-      && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX
-      && datasets.index >= 0
-      && datasets.data[datasets.index].is_dataset_processed
-    setShowDataset(canRenderDataset)
-    if (canRenderDataset) {
-      setDataframe(datasets.data[datasets.index].dataframe_original)
-    }
-  }, [datasets, datasets.index])
 
 
   const updateDataFrameLocal = useCallback(async (_datasetSelected: DatasetProcessed_t) => {

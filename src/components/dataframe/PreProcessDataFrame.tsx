@@ -35,6 +35,36 @@ export type PreProcessDataFrameProps_t = {
   isDataFrameProcessed   : boolean,
   setIsDataFrameProcessed: React.Dispatch<React.SetStateAction<boolean>>,
 }
+/** Estado inicial del formulario para un dataframe: todas las columnas activas y el objetivo en la última. */
+function getDefaultColumns(dataframe: _Types.DataFrame_t) {
+  /** 
+   * FIX
+   * @type {_Types.DataFrameColumnNameAndType_t[]} 
+   */
+  const _listColumnNameType: _Types.DataFrameColumnNameTypeEnable_t[] = dataframe.columns.map((_, index) => {
+    return {
+      column_name     : dataframe.columns[index],
+      column_type     : dataframe.dtypes[index] as _Types.DataFrameColumnType_t,
+      column_enable   : true,
+      column_transform: dataframe.dtypes[index],
+    }
+  })
+  const _listTransformations: _Types.DataFrameColumnTransformEnable_t[] = _listColumnNameType.map(({ column_name, column_type }) => {
+    const _column_transform = (column_type === 'string') ? 'label-encoder' : column_type
+    return {
+      column_name     : column_name,
+      column_type     : column_type as _Types.DataFrameColumnType_t,
+      column_enable   : true,
+      column_transform: _column_transform,
+    }
+  })
+  return {
+    listColumnNameType           : _listColumnNameType,
+    listColumnNameTransformations: _listTransformations,
+    columnNameTarget             : dataframe.columns[dataframe.columns.length - 1],
+  }
+}
+
 /**
  * 
  * @param {PreProcessDataFrameProps_t} props 
@@ -58,12 +88,23 @@ export default function PreProcessDataFrame(props: PreProcessDataFrameProps_t) {
   /**
    * @type {ReturnType<typeof useState<Array<_Types.DataFrameColumnNameTypeEnable_t>>>}
    */
-  const [listColumnNameType, setListColumnNameTypes] = useState<_Types.DataFrameColumnNameTypeEnable_t[]>([])
+  const [listColumnNameType, setListColumnNameTypes] = useState<_Types.DataFrameColumnNameTypeEnable_t[]>(() => getDefaultColumns(dataFrameOriginal).listColumnNameType)
   /**
    * @type {ReturnType<typeof useState<_Types.DataFrameColumnTransformEnable_t[]>>}
    */
-  const [listColumnNameTransformations, setListColumnNameTransformations] = useState<_Types.DataFrameColumnTransformEnable_t[]>([])
-  const [columnNameTarget, setColumnNameTarget] = useState<string>('')
+  const [listColumnNameTransformations, setListColumnNameTransformations] = useState<_Types.DataFrameColumnTransformEnable_t[]>(() => getDefaultColumns(dataFrameOriginal).listColumnNameTransformations)
+  const [columnNameTarget, setColumnNameTarget] = useState<string>(() => getDefaultColumns(dataFrameOriginal).columnNameTarget)
+
+  // Al cambiar de dataframe se reinicia el formulario. Se ajusta durante el render, no en un efecto:
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [prevDataFrameOriginal, setPrevDataFrameOriginal] = useState(dataFrameOriginal)
+  if (dataFrameOriginal !== prevDataFrameOriginal) {
+    const defaultColumns = getDefaultColumns(dataFrameOriginal)
+    setPrevDataFrameOriginal(dataFrameOriginal)
+    setListColumnNameTypes(defaultColumns.listColumnNameType)
+    setListColumnNameTransformations(defaultColumns.listColumnNameTransformations)
+    setColumnNameTarget(defaultColumns.columnNameTarget)
+  }
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
@@ -86,33 +127,6 @@ export default function PreProcessDataFrame(props: PreProcessDataFrameProps_t) {
     }
   }
 
-  useEffect(() => {
-    /** 
-     * FIX
-     * @type {_Types.DataFrameColumnNameAndType_t[]} 
-     */
-    const _listColumnNameType: _Types.DataFrameColumnNameTypeEnable_t[] = dataFrameOriginal.columns.map((_, index) => {
-      return {
-        column_name     : dataFrameOriginal.columns[index],
-        column_type     : dataFrameOriginal.dtypes[index] as _Types.DataFrameColumnType_t,
-        column_enable   : true,
-        column_transform: dataFrameOriginal.dtypes[index],
-      }
-    })
-    const _listTransformations: _Types.DataFrameColumnTransformEnable_t[] = _listColumnNameType.map(({ column_name, column_type }) => {
-      const _column_transform = (column_type === 'string') ? 'label-encoder' : column_type
-      return {
-        column_name     : column_name,
-        column_type     : column_type as _Types.DataFrameColumnType_t,
-        column_enable   : true,
-        column_transform: _column_transform,
-      }
-    })
-    const newColumnNameTarget = dataFrameOriginal.columns[dataFrameOriginal.columns.length - 1]
-    setColumnNameTarget(newColumnNameTarget)
-    setListColumnNameTypes(_listColumnNameType)
-    setListColumnNameTransformations(_listTransformations)
-  }, [dataFrameOriginal])
 
   const [showDetails, setShowDetails] = useState({
     show_dataframe_original : false,
