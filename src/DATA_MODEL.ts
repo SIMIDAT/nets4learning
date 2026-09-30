@@ -36,6 +36,7 @@ const TASK_MODEL_OPTIONS = {
   ],
   [TASKS.IMAGE_CLASSIFICATION]: [
     { i18n: 'datasets-models.3-image-classifier.list-models.3-option-1', value: IC_MODEL_KEYS.MNIST },
+    { i18n: 'datasets-models.3-image-classifier.list-models.3-option-4', value: IC_MODEL_KEYS.KMNIST },
     { i18n: 'datasets-models.3-image-classifier.list-models.3-option-2', value: IC_MODEL_KEYS.MOBILENET },
   ],
 }

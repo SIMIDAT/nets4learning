@@ -16,9 +16,8 @@ import alertHelper from "@utils/alertHelper"
 import FakeProgressBar from "@components/loading/FakeProgressBar"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 
-import ModelReviewImageClassificationMNIST from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationMNIST"
+import ModelReviewImageClassificationDraw from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw"
 import { MAP_IC_CLASSES } from "@pages/playground/3_ImageClassification/models"
-import { IC_MODEL_KEYS } from "@/MODEL_KEYS"
 import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
 import { DEFAULT_BAR_DATA, type BarChartData_t } from "@pages/playground/3_ImageClassification/CONSTANTS"
 import { UTILS_image } from "@pages/playground/3_ImageClassification/utils/utils"
@@ -84,7 +83,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
   const [isCalculo, setIsCalculo] = useState(false)
-  // MNIST solo ofrece LRP; el resto elige entre SHAP y LRP (si el modelo implementa LRP).
+  // Los modelos de dibujos (MNIST, KMNIST) solo ofrecen LRP; el resto elige entre SHAP y LRP (si el modelo implementa LRP).
   const [explainMethod, setExplainMethod] = useState<"shap" | "lrp">("shap")
   const [lrpAvailable, setLrpAvailable] = useState(false)
   const [shapOptions, setShapOptions] = useState(DEFAULT_SHAP_IMAGE_OPTIONS)
@@ -142,9 +141,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     }
   }, [barDataImage])
 
-  const isMNIST = () => {
-    return dataset === IC_MODEL_KEYS.MNIST
-  }
+  // MNIST y KMNIST: se puede dibujar la entrada y la explicación es siempre con LRP
+  const isDrawable = iModelInstance?.DRAWABLE ?? false
 
   const handleClick_ImageByExamples_OpenDrawAndPredict = (image_src: string) => {
     setInfo((prevState) => {
@@ -264,7 +262,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       return
     }
 
-    const useLrp = isMNIST() || explainMethod === "lrp"
+    const useLrp = isDrawable || explainMethod === "lrp"
     if (useLrp && !lrpAvailable) {
       await alertHelper.alertError(t("ui.explain.lrp-not-available"))
       return
@@ -280,6 +278,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         method            : useLrp ? "lrp" : "shap",
         values            : result.shapValues,
         labels            : result.selectedLabels,
+        // Con MNIST/KMNIST las etiquetas son índices; MobileNet ya devuelve el nombre de la clase
+        labelTexts        : result.selectedLabels.map((label) => iModelInstance.CLASS_LABELS[Number(label)] ?? String(label)),
         galleryImages     : result.debugImages,
         imageSrc          : canvas_original_image_ref.current?.toDataURL(),
         segmentationMap   : result.segmentationMapArray,
@@ -336,7 +336,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                 </Card.Header>
                 <Card.Body>
                   <p className={"small mb-0"}>
-                    {isMNIST() || explainMethod === "lrp"
+                    {isDrawable || explainMethod === "lrp"
                       ? t("ui.explain.about-lrp")
                       : t("ui.explain.about-shap")}
                   </p>
@@ -356,7 +356,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   </Card.Header>
                   <Card.Body>
                     <Container fluid={true}>
-                      <Row className={(isMNIST() ? "" : "row-cols-3") + " justify-content-center g-2"}>
+                      <Row className={(isDrawable ? "" : "row-cols-3") + " justify-content-center g-2"}>
                         {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
                           const path_image = import.meta.env.VITE_PATH + "/assets/" + image
                           return (
@@ -383,9 +383,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                 className={"d-grid"}
                 xs={12}
                 sm={12}
-                md={isMNIST() ? 6 : 12}
-                xl={isMNIST() ? 6 : 12}
-                xxl={isMNIST() ? 6 : 12}
+                md={isDrawable ? 6 : 12}
+                xl={isDrawable ? 6 : 12}
+                xxl={isDrawable ? 6 : 12}
               >
                 <Card className={"mt-3"}>
                   <Card.Header>
@@ -414,9 +414,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   </Card.Body>
                 </Card>
               </Col>
-              {isMNIST() && (
+              {isDrawable && (
                 <>
-                  <ModelReviewImageClassificationMNIST
+                  <ModelReviewImageClassificationDraw
                     iModelInstance={iModelInstance}
                     model={model}
                     iChartRef_image={iChartRef_image}
@@ -467,8 +467,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
             <Card className={"mt-3"} data-testid={"explainability-card"}>
               <Card.Header className="d-flex justify-content-between align-items-center">
-                <h3>{t("pages.playground.0-tabular-classification.general.explain-panel-title")} ({isMNIST() || explainMethod === "lrp" ? "LRP" : "SHAP"})</h3>
-                {!isMNIST() && (
+                <h3>{t("pages.playground.0-tabular-classification.general.explain-panel-title")} ({isDrawable || explainMethod === "lrp" ? "LRP" : "SHAP"})</h3>
+                {!isDrawable && (
                   <div className="d-flex align-items-center gap-2">
                     <span className="small">{t("ui.explain.method")}:</span>
                     <Button
@@ -495,7 +495,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                 {showExplain && explainResult && <ImageExplainResults result={explainResult} />}
 
                 <div className="mt-3">
-                  {!isMNIST() && explainMethod === "shap" && (
+                  {!isDrawable && explainMethod === "shap" && (
                     <ShapImageControls idPrefix={"ic-explain"} options={shapOptions} onChange={setShapOptions} />
                   )}
 

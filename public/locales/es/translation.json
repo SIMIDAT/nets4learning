@@ -1281,7 +1281,7 @@
         "description": {
           "text-0": "<strong>Kuzushiji-MNIST (KMNIST)</strong> es un sustituto directo de MNIST: imágenes en escala de grises de <strong>28 x 28</strong> píxeles y 10 clases, pero en lugar de dígitos contiene caracteres japoneses manuscritos en <i>kuzushiji</i> (escritura cursiva).",
           "text-1": "El kuzushiji fue la forma habitual de escribir japonés durante más de mil años, pero dejó de enseñarse tras la reforma de la escritura de principios del siglo XX y hoy muy poca gente sabe leerlo. Las imágenes proceden de libros clásicos digitalizados por el Instituto Nacional de Literatura Japonesa y las preparó el ROIS-DS Center for Open Data in the Humanities (CODH).",
-          "text-2": "Cada clase es un carácter hiragana (お, き, す, つ, な, は, ま, や, れ, を) y un mismo carácter puede escribirse de muchas formas, por lo que es más difícil que MNIST. Aquí se usa un subconjunto equilibrado: <strong>2.000</strong> imágenes de entrenamiento y <strong>500</strong> de test por carácter.",
+          "text-2": "Cada clase es un carácter hiragana (お, き, す, つ, な, は, ま, や, れ, を) y un mismo carácter puede escribirse de muchas formas, por lo que es más difícil que MNIST.",
           "details-input": {
             "title": "Datos de entrada",
             "list": {
@@ -1292,6 +1292,13 @@
             "title": "Datos de salida",
             "list": {
               "0": "Uno de los 10 caracteres hiragana: お, き, す, つ, な, は, ま, や, れ, を"
+            }
+          },
+          "details-model": {
+            "title": "Modelos",
+            "list": {
+              "0": "Modelo preentrenado: red convolucional entrenada con las 55.000 imágenes de entrenamiento (y otras 5.000 para validar), con una precisión del <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> en las 10.000 imágenes de test.",
+              "1": "Entrenamiento en el navegador: se usa un subconjunto equilibrado, con <strong>2.000</strong> imágenes de entrenamiento y <strong>500</strong> de test por carácter."
             }
           }
         }
@@ -1328,7 +1335,8 @@
       "list-models": {
         "3-option-1": "Modelo - MNIST - Clasificación de números",
         "3-option-2": "Modelo - MobileNet - Clasificación de imágenes",
-        "3-option-3": "Modelo - ResNet - Clasificación de imágenes"
+        "3-option-3": "Modelo - ResNet - Clasificación de imágenes",
+        "3-option-4": "Modelo - KMNIST - Clasificación de caracteres japoneses"
       }
     },
     "3-image-classification": {

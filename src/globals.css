@@ -88,12 +88,8 @@ code {
 
 .nets4-border-1 {
   background: #fff;
-  border: solid black;
-  float: left;
-
-  border-width: 3px 4px 3px 5px;
-  border-radius: 95% 4% 92% 5%/4% 95% 6% 95%;
-  transform: rotate(2deg);
+  border: 3px solid black;
+  aspect-ratio: 1 / 1;
 }
 
 .nets4-full-canvas {

@@ -21,6 +21,7 @@ const _activationsHelpers = createActivationsHelpers({
  */
 export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFICATION {
   abstract DATASET: SpriteDatasetConfig_t
+  DRAWABLE = true
 
   async PREDICTION_FORMAT(predictions: number[]): Promise<BarChartData_t> {
     return {

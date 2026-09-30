@@ -1,6 +1,5 @@
 import { Trans } from 'react-i18next'
 import { Card, Col } from 'react-bootstrap'
-import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 import { toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
 import type * as tfjs from '@tensorflow/tfjs'
@@ -11,12 +10,13 @@ type Props = {
   model            : tfjs.LayersModel | null,
   iChartRef_image  : React.RefObject<any>,
   setBarDataImage  : React.Dispatch<React.SetStateAction<any>>,
-  /** Canvas de resultado donde se muestra el dígito dibujado. */
+  /** Canvas de resultado donde se muestra el dibujo. */
   canvasResultRef  : React.RefObject<HTMLCanvasElement | null>,
   onImageDataReady?: (imageData: ImageData) => void,
   onResetExplain?  : () => void,
 }
-export default function ModelReviewImageClassificationMNIST (props: Props) {
+/** Lienzo para dibujar la entrada de los modelos de 28x28 en escala de grises (MNIST, KMNIST). */
+export default function ModelReviewImageClassificationDraw (props: Props) {
   const {
     iModelInstance,
     model,
@@ -42,30 +42,13 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     canvas_small?.getContext('2d')?.putImageData(imageData, 0, 0)
     if (iModelInstance === null || model === null) return
     const { predictions } = await iModelInstance.CLASSIFY(model, imageData)
-
-    // Este panel solo se muestra con MNIST, que devuelve una probabilidad por dígito
-    updatePredictionMNIST(predictions as number[])
+    setBarDataImage(await iModelInstance.PREDICTION_FORMAT(predictions))
+    iChartRef_image.current.update()
 
     // Notificamos la imagen dibujada al padre para la explicabilidad
     if (typeof onImageDataReady === 'function') {
       onImageDataReady(imageData)
     }
-  }
-
-  const updatePredictionMNIST = (predictions: number[]) => {
-    setBarDataImage(() => {
-      return {
-        labels  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-        datasets: [{
-          label          : 'MNIST',
-          data           : predictions,
-          backgroundColor: DEFAULT_BAR_DATA.datasets[0].backgroundColor,
-          borderColor    : DEFAULT_BAR_DATA.datasets[0].borderColor,
-          borderWidth    : DEFAULT_BAR_DATA.datasets[0].borderWidth,
-        }],
-      }
-    })
-    iChartRef_image.current.update()
   }
 
   return <>

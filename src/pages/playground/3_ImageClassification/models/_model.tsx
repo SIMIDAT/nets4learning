@@ -27,6 +27,8 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   i18n_TITLE  : string = ''
   /** Nombre de cada clase, en el orden de las salidas del modelo (p. ej. '0'…'9') */
   CLASS_LABELS: string[] = []
+  /** Clasifica dibujos de 28x28 en escala de grises: la revisión del modelo ofrece el lienzo y explica con LRP */
+  DRAWABLE = false
   t           : TFunction<"translation", undefined>
 
   constructor (_t: TFunction<"translation", undefined>) {
