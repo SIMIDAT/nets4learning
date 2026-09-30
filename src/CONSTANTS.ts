@@ -18,7 +18,7 @@ const DEFAULT_SELECTOR_INSTANCE = 'select-instance'
 const DEFAULT_SCALER: _Types.ScalerKey_t = 'min-max-scaler'
 
 const TAB_00_TABULAR_CLASSIFICATION = 'Tabular classification'
-const TAB_01_LINEAR_REGRESSION = 'Tabular classification'
+const TAB_01_LINEAR_REGRESSION = 'Linear regression'
 const TAB_02_OJECT_DETECTION = 'Object Detection'
 const TAB_03_IMAGE_CLASSIFICATION = 'Image classification'
 

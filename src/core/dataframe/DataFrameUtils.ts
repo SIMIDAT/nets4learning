@@ -170,7 +170,7 @@ export function DataFrameEncoder(
         const encoder = new dfd.OneHotEncoder();
         encoder.fit(dataframe_local[column_name]);
         encoder_map[column_name] = {
-          type   : "label-encoder",
+          type   : "one-hot-encoder",
           encoder: encoder,
         };
         break;

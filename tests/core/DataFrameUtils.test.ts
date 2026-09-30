@@ -34,6 +34,17 @@ describe('DataFrameUtils — columnas con tipos mezclados', () => {
     expect(encode(after)).toStrictEqual(encode(before))
   })
 
+  test('DataFrameEncoder etiqueta cada encoder con su tipo', () => {
+    const df = new dfd.DataFrame({ A: ['x', 'y', 'x'], B: ['p', 'q', 'q'] })
+    const encoders = DataFrameEncoder(df, [
+      { column_name: 'A', column_transform: 'label-encoder' },
+      { column_name: 'B', column_transform: 'one-hot-encoder' },
+    ] as never)
+    expect(encoders.A.type).toBe('label-encoder')
+    expect(encoders.B.type).toBe('one-hot-encoder')
+    expect(encoders.B.encoder).toBeInstanceOf(dfd.OneHotEncoder)
+  })
+
   test('DataFrameFixMixedColumns no toca columnas numéricas ni la entrada', () => {
     const df = new dfd.DataFrame({ A: [1, 2, 3], B: [1.5, 2.5, 3.5] })
     const fixed = DataFrameFixMixedColumns(df)

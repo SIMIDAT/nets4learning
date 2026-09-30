@@ -1,4 +1,4 @@
-import { createContext, useState, useRef } from 'react'
+import { createContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as _dfd from 'danfojs'
 
@@ -19,8 +19,6 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX } from '@/
 /**
  * @typedef CustomRegressionContext_t
  *
- * @property {ReturnType<typeof useRef<_Types.CustomModel_t | null>>} model_ref
- * 
  * Este contiene los datos de predicción
  * @property {_Types.StatePrediction_t} prediction
  * @property {React.Dispatch<React.SetStateAction<_Types.StatePrediction_t>>} setPrediction
@@ -47,7 +45,6 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX } from '@/
  */
 
 type CustomRegressionContext_t = {
-  model_ref         : React.RefObject<_Types.CustomModel_t | null>;
   prediction        : _Types.StatePrediction_t;
   setPrediction     : React.Dispatch<React.SetStateAction<_Types.StatePrediction_t>>;
   datasets          : { data: _Types.DatasetProcessed_t[]; index: number; dataset: 'select-dataset'; };
@@ -111,11 +108,6 @@ export function RegressionProvider({ children }: { children: React.ReactNode }) 
     }
   )
   /**
-   * @type {ReturnType<typeof useRef<_Types.CustomModel_t | null>>}
-   */
-  const model_ref = useRef<_Types.CustomModel_t | null>(null)
-
-  /**
    * @type {ReturnType<typeof useState<_Types.StatePrediction_t>>}
    */
   const [prediction, setPrediction] = useState<_Types.StatePrediction_t>({
@@ -160,8 +152,6 @@ export function RegressionProvider({ children }: { children: React.ReactNode }) 
 
   return (
     <RegressionContext.Provider value={{
-      model_ref,
-
       prediction,
       setPrediction,
 

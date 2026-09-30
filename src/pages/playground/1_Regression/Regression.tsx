@@ -53,8 +53,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
   const { t } = useTranslation()
 
   const {
-    model_ref,
-
     // prediction,
     setPrediction,
 
@@ -117,7 +115,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
       }
     }
     init().then(() => undefined)
-  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, navigate, model_ref])
+  }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, navigate])
 
 
   useEffect(() => {
@@ -140,9 +138,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
   }, [dataset, iModelInstance, datasets, setParams])
 
   const TrainModel = async () => {
-    model_ref.current = {
-      model: new tfjs.Sequential(),
-    }
     const dataset_processed = datasets.data[datasets.index]
     const result = await createRegressionCustomModel({
       dataset_processed: dataset_processed,
@@ -159,7 +154,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
       return
     }
     const { model, history } = result
-    model_ref.current.model = model
 
     /** @type {_Types.CustomModelGenerated_t} */
     const newModel: _Types.CustomModelGenerated_t = {

@@ -129,7 +129,7 @@ export async function createRegressionCustomModel(params: CustomRegression_Datas
     batchSize     : 32,
     shuffle       : true,
     validationData: [XTest_tensor, yTest_tensor],
-    epochs        : numberOfEpoch + 1,
+    epochs        : numberOfEpoch,
     callbacks     : fitCallbackHandlers,
   })
 

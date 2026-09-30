@@ -5,6 +5,7 @@ import * as dfd from 'danfojs'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1 } from '@/CONSTANTS_DanfoJS'
+import { parseDataFrameQuery } from '@core/dataframe/DataFrameQueryParser'
 
 
 export default function DataFrameQuery({ dataframe }: { dataframe: dfd.DataFrame }) {
@@ -23,14 +24,7 @@ export default function DataFrameQuery({ dataframe }: { dataframe: dfd.DataFrame
   const handleClick_UpdateQuery = () => {
     if (dataframe.columns.length > 0 && columnToQuery !== '') {
       try {
-        // @ts-ignore
-        window.n4l_data = {
-          dataframe
-        }
-
-        const _stringToQuery = stringToQuery.replaceAll('df[', 'window.n4l_data.dataframe[')
-
-        const query = new Function(`return (window.n4l_data.dataframe['${columnToQuery}']${_stringToQuery})`)()
+        const query = parseDataFrameQuery(dataframe, columnToQuery, stringToQuery)
         const query_df = dataframe.query(query)
         query_df.plot(dataframeID).table({ config: TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1 })
       } catch (e) {

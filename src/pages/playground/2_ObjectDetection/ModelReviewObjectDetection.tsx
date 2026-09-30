@@ -419,8 +419,13 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       return;
     }
 
-    const originalCtx = originalCanvas.getContext('2d')!;
-    const resultCtx = resultCanvas.getContext('2d')!;
+    const originalCtx = originalCanvas.getContext('2d');
+    const resultCtx = resultCanvas.getContext('2d');
+
+    if (!originalCtx || !resultCtx) {
+      console.error("Canvas 2D context not available");
+      return;
+    }
 
     // 2. Reload Model
     await iModel_ref.current.ENABLE_MODEL();

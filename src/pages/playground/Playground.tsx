@@ -50,7 +50,11 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       break
     }
     case TASKS.OBJECT_DETECTION: {
-      return <ModelReviewObjectDetection dataset={example} />
+      // Solo hay modelos preentrenados: no existe vista de entrenamiento con dataset
+      if (option === 'model') {
+        return <ModelReviewObjectDetection dataset={example} />
+      }
+      break
     }
     case TASKS.IMAGE_CLASSIFICATION: {
       if (option === 'model') {
@@ -60,9 +64,9 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       }
       break
     }
-    default:
-      return <NotFoundPage />
   }
+  // Tarea u opción no reconocida
+  return <NotFoundPage />
 }
 
 export default function Playground() {
