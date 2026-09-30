@@ -2,6 +2,7 @@ import "./customCanvasDrawer.css"
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { Button } from "react-bootstrap"
 import { Trans } from "react-i18next"
+import { VERBOSE } from '@/CONSTANTS'
 
 /**
  * @typedef {Object} CustomCanvasDrawerProps
@@ -124,7 +125,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
   }
 
   const onChange = (event: FormEvent<HTMLCanvasElement>) => {
-    console.log("onChange event:", event)
+    if (VERBOSE) console.debug("onChange event:", event)
     event.preventDefault()
   }
 

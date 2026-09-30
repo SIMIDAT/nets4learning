@@ -1,11 +1,13 @@
 import { Col, Form, Row } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 import { VERBOSE } from "@/CONSTANTS"
+import type I_MODEL_TABULAR_CLASSIFICATION from "./models/_model"
+import type { TabularInstance_t } from "./models/_model"
 
 type ModelReviewTabularClassificationPredictFormProps = {
-  iModelInstance: any
-  dataToTest    : any
-  setDataToTest : React.Dispatch<React.SetStateAction<any>>
+  iModelInstance: I_MODEL_TABULAR_CLASSIFICATION
+  dataToTest    : TabularInstance_t
+  setDataToTest : React.Dispatch<React.SetStateAction<TabularInstance_t>>
 }
 
 export default function ModelReviewTabularClassificationPredictForm(
@@ -19,21 +21,21 @@ export default function ModelReviewTabularClassificationPredictForm(
   const { t } = useTranslation()
 
   const handleChange_Parameter_int32 = (key_parameter: string, value: string) => {
-    setDataToTest((prevState: any) => ({
+    setDataToTest((prevState) => ({
       ...prevState,
       [key_parameter]: parseInt(value),
     }))
   }
 
   const handleChange_Parameter_float32 = (key_parameter: string, value: string) => {
-    setDataToTest((prevState: any) => ({
+    setDataToTest((prevState) => ({
       ...prevState,
       [key_parameter]: parseFloat(value),
     }))
   }
 
-  const handleChange_Parameter = (key_parameter: string, value: any) => {
-    setDataToTest((prevState: any) => ({
+  const handleChange_Parameter = (key_parameter: string, value: string) => {
+    setDataToTest((prevState) => ({
       ...prevState,
       [key_parameter]: value,
     }))
@@ -43,7 +45,7 @@ export default function ModelReviewTabularClassificationPredictForm(
   return (
     <>
       <Row xs={2} sm={2} md={4} lg={4} xl={4} xxl={3}>
-        {iModelInstance.FORM.map((value: any, index: number) => {
+        {iModelInstance.FORM.map((value, index) => {
           // VALUES:
           // {name: "type1", type: "int32" },
           // {name: "type2", type: "float32" },

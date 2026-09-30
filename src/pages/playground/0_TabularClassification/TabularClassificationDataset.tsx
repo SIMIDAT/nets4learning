@@ -1,6 +1,6 @@
 import type { DropEvent, FileRejection } from "react-dropzone"
 import { Trans, useTranslation } from "react-i18next"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import { DataFrameReadCSV } from "@core/dataframe/DataFrameUtils"
 
 import alertHelper from "@utils/alertHelper"
@@ -10,22 +10,10 @@ import { VERBOSE } from "@/CONSTANTS"
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from "@/CONSTANTS_ACTIONS"
 import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
-import type { I_MODEL_TABULAR_CLASSIFICATION } from "./models"
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
-/**
- * @typedef {object} PropsTabularClassificationDatasetProps_t
- * @property {string} dataset
- * @property {_Types.I_MODEL_TABULAR_CLASSIFICATION_t} iModelInstance
- * @property {_Types.DatasetProcessed_t[]} datasets
- * @property {React.Dispatch<React.SetStateAction<_Types.DatasetProcessed_t[]>>} setDatasets
- * @property {number} datasetIndex
- * @property {React.Dispatch<React.SetStateAction<number>>} setDatasetIndex
- */
 type PropsTabularClassificationDatasetProps_t = {
-  dataset       : string
-  iModelInstance: I_MODEL_TABULAR_CLASSIFICATION
-  datasets      : _Types.DatasetProcessed_t[]
-  setDatasets   : React.Dispatch<React.SetStateAction<{ index: number, datasets: _Types.DatasetProcessed_t[] }>>
+  dataset: string
 }
 
 /**
@@ -34,7 +22,9 @@ type PropsTabularClassificationDatasetProps_t = {
  * @returns
  */
 export default function TabularClassificationDataset(props: PropsTabularClassificationDatasetProps_t) {
-  const { dataset, iModelInstance, datasets, setDatasets } = props
+    const { dataset } = props
+  const { datasets: datasetsState, setDatasets, iModelInstance } = useTabularClassificationContext()
+  const datasets = datasetsState.datasets
 
   const { t } = useTranslation()
   // region Dataset
@@ -143,7 +133,7 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
           )}
         </>
       )}
-      {dataset !== UPLOAD && <>{iModelInstance.DESCRIPTION()}</>}
+      {dataset !== UPLOAD && <>{iModelInstance?.DESCRIPTION()}</>}
     </>
   )
 }

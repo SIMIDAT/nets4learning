@@ -1,16 +1,13 @@
-import { Accordion, Button, Card, Form } from 'react-bootstrap'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import type { CustomParamsLayerModel_t } from '@core/types'
 import alertHelper from '@utils/alertHelper'
-import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
 
 export default function RegressionEditorLayers() {
 
-  const prefix = 'pages.playground.generator.editor-layers.'
   const { t } = useTranslation()
   const {
     datasets,
@@ -72,92 +69,19 @@ export default function RegressionEditorLayers() {
   }
 
   if (VERBOSE) console.debug('render RegressionEditorLayers')
-  return <>
-    <Card>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
-        <h2><Trans i18nKey={prefix + 'title'} /></h2>
-        <div className={'d-flex'}>
-          <Button disabled={show === false}
-            variant={'outline-primary'}
-            size={'sm'}
-            onClick={() => handlerClick_AddLayer_Start()}>
-            <Trans i18nKey={prefix + 'add-layer-start'} />
-          </Button>
-          <Button disabled={show === false}
-            variant={'outline-primary'}
-            size={'sm'}
-            className={'ms-3'}
-            onClick={() => handlerClick_AddLayer_End()}>
-            <Trans i18nKey={prefix + 'add-layer-end'} />
-          </Button>
-        </div>
-      </Card.Header>
-      <Card.Body>
-        {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
-        </>}
-        {show && <>
-          <Accordion defaultValue={''} defaultActiveKey={''}>
-            <>
-              {params
-                .params_layers
-                .map((item, index) => {
-                  return <Accordion.Item eventKey={index.toString()} key={index}>
-                    <Accordion.Header>
-                      <Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} />
-                    </Accordion.Header>
-                    <Accordion.Body>
-                      <div className="d-grid gap-2">
-                        <Button variant={'outline-danger'}
-                          disabled={item.is_disabled}
-                          onClick={() => handlerClick_RemoveLayer(index)}>
-                          <Trans i18nKey={prefix + 'delete-layer'} values={{ index: index + 1 }} />
-                        </Button>
-                      </div>
-                      <Form.Group className="mt-3" controlId={'formUnitsLayer' + index}>
-                        <Form.Label>
-                          <Trans i18nKey={prefix + 'units'} />
-                        </Form.Label>
-                        <Form.Control type="number"
-                          disabled={item.is_disabled}
-                          min={1}
-                          max={200}
-                          placeholder={t(prefix + 'units-placeholder')}
-                          value={item.units}
-                          onChange={(e) => handleChange_Layer(index, {
-                            is_disabled: item.is_disabled,
-                            activation : item.activation,
-                            units      : parseInt(e.target.value),
-                          })} />
-                      </Form.Group>
-
-                      <Form.Group className="mt-3" controlId={'formActivationLayer' + index}>
-                        <Form.Label>
-                          <Trans i18nKey={prefix + 'activation-function-select'} />
-                        </Form.Label>
-                        <Form.Select aria-label={'Default select example: ' + item.activation}
-                          disabled={item.is_disabled}
-                          value={item.activation || 'relu'}
-                          onChange={(e) => handleChange_Layer(index, {
-                            is_disabled: item.is_disabled,
-                            activation : e.target.value,
-                            units      : item.units,
-                          })}>
-                          {TYPE_ACTIVATION.map(({ key, label }, index) => {
-                            return (<option key={index} value={key}>{label}</option>)
-                          })}
-                        </Form.Select>
-                        <Form.Text className="text-muted">
-                          <Trans i18nKey={prefix + 'activation-function-info'} />
-                        </Form.Text>
-                      </Form.Group>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                })}
-            </>
-          </Accordion>
-        </>}
-      </Card.Body>
-    </Card>
-  </>
+  return (
+    <N4LEditorLayers
+      layers={params.params_layers}
+      onAddStart={handlerClick_AddLayer_Start}
+      onAddEnd={handlerClick_AddLayer_End}
+      onRemove={handlerClick_RemoveLayer}
+      onChange={(index, layer) => handleChange_Layer(index, {
+        is_disabled: params.params_layers[index].is_disabled,
+        units      : layer.units,
+        activation : layer.activation,
+      })}
+      waiting={!show}
+      titleAs={'h2'}
+    />
+  )
 }

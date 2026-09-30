@@ -4,6 +4,7 @@ import { useParams } from 'react-router'
 import NotFoundPage from '../notFound/NotFoundPage'
 import Loading from '../Loading'
 import { RegressionProvider } from '@context/RegressionContext'
+import { TabularClassificationProvider } from '@context/TabularClassificationContext'
 import { TASKS } from '@/TASKS'
 
 // Cada vista se carga bajo demanda: así una tarea no descarga los modelos y librerías
@@ -33,7 +34,12 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       if (option === 'model') {
         return <ModelReviewTabularClassification dataset={example} />
       } else if (option === 'dataset') {
-        return <TabularClassification dataset={example} />
+        return (
+          // key: cada dataset empieza con su propio estado (modelos entrenados, predicción…)
+          <TabularClassificationProvider key={example}>
+            <TabularClassification dataset={example} />
+          </TabularClassificationProvider>
+        )
       }
       break
     }
@@ -42,7 +48,7 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
         return <ModelReviewRegression dataset={example} />
       } else if (option === 'dataset') {
         return <>
-          <RegressionProvider>
+          <RegressionProvider key={example}>
             <Regression dataset={example} />
           </RegressionProvider>
         </>

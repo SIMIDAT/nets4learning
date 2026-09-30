@@ -1,39 +1,30 @@
 import userEvent from '@testing-library/user-event'
 import { render } from '@testing-library/react'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import App from '@/App'
 
-/**
- *
- * @param ui
- * @param {{basename?: string, path?: string[]}} route
- * @return {ReturnType<typeof render<>>}
- */
-export const renderWithRouter = (ui: React.ReactElement, route: {basename?: string, path?: string[]} = {}) => {
-  if (route.basename === undefined) route.basename = '/nets4learning'
-  if (route.path === undefined) route.path = []
-  const slash = route.path.length > 0 ? '/' : ''
-  const _address = route.basename + slash + route.path.join('/')
+type Route_t = { basename?: string, path?: string[] }
 
-  window.history.pushState({}, '', _address)
+// Misma base que usa <App /> (VITE_PATH), si no el router no reconoce ninguna ruta
+const goTo = ({ basename = import.meta.env.VITE_PATH, path = [] }: Route_t) => {
+  window.history.pushState({}, '', basename + (path.length > 0 ? '/' + path.join('/') : ''))
+  return basename
+}
+
+/** Renderiza la aplicación completa en la ruta indicada. <App /> ya monta su propio router. */
+export const renderApp = (route: Route_t = {}) => {
+  goTo(route)
   return {
     user: userEvent.setup(),
-    ...render(ui, { wrapper: BrowserRouter }),
+    ...render(<App />),
   }
 }
 
-export const renderAppWithMemoryRouter = (route: {basename?: string, path?: string[]} = {}) => {
-  if (route.basename === undefined) route.basename = '/nets4learning'
-  if (route.path === undefined) route.path = []
-  const slash = route.path.length > 0 ? '/' : ''
-  const _address = route.basename + slash + route.path.join('/')
-
+/** Renderiza un componente suelto dentro de un router, en la ruta indicada. */
+export const renderWithRouter = (ui: React.ReactElement, route: Route_t = {}) => {
+  const basename = goTo(route)
   return {
-    user  : userEvent.setup(),
-    render: render(
-      <MemoryRouter initialEntries={[_address]}>
-        <App />
-      </MemoryRouter>,
-    ),
+    user: userEvent.setup(),
+    ...render(ui, { wrapper: ({ children }) => <BrowserRouter basename={basename}>{children}</BrowserRouter> }),
   }
 }

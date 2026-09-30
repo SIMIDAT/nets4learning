@@ -40,10 +40,11 @@ export default function ModelReviewImageClassificationMNIST (props: Props) {
     const imageData = toImageData(draw_canvas, 28, 28)
     // Miniatura 28×28: lo que realmente recibe el modelo (CustomCanvasDrawer la deja vacía si no se pinta aquí).
     canvas_small?.getContext('2d')?.putImageData(imageData, 0, 0)
-    if (iModelInstance === null) return
+    if (iModelInstance === null || model === null) return
     const { predictions } = await iModelInstance.CLASSIFY(model, imageData)
 
-    updatePredictionMNIST(predictions)
+    // Este panel solo se muestra con MNIST, que devuelve una probabilidad por dígito
+    updatePredictionMNIST(predictions as number[])
 
     // Notificamos la imagen dibujada al padre para la explicabilidad
     if (typeof onImageDataReady === 'function') {

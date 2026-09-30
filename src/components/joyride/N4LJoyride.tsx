@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import Joyride, { type StoreHelpers } from 'react-joyride'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { DEFAULT_JOYRIDE_STYLE } from '@/CONSTANTS_JOYRIDE'
 import type * as _Types from '@core/types'
 
 type N4LJoyrideProps = {
@@ -55,7 +54,6 @@ export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state, TASK = '
   if(VERBOSE) console.debug('render N4LJoyride')
   return <>
     <Joyride getHelpers={(helpers) => { helpers_ref.current = helpers }}
-             styles={DEFAULT_JOYRIDE_STYLE}
              locale={joyride_locale}
              callback={JOYRIDE_state?.handleJoyrideCallback}
              continuous={JOYRIDE_state?.continuous}

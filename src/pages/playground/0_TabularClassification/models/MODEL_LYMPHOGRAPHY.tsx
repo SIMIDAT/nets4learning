@@ -5,7 +5,7 @@ import * as dfd from 'danfojs'
 import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
-import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import I_MODEL_TABULAR_CLASSIFICATION, { type LoadModelCallbacks_t, type TabularFormField_t } from './_model'
 import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
@@ -46,26 +46,6 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     '00-tc.lymphography.Category',
   ]
 
-  DATA_OBJECT = {
-    'lymphatics'     : ['1', '2', '3', '4'],
-    'block of affere': ['1', '2'],
-    'bl. of lymph. c': ['1', '2'],
-    'bl. of lymph. s': ['1', '2'],
-    'by pass'        : ['1', '2'],
-    'extravasates'   : ['1', '2'],
-    'regeneration of': ['1', '2'],
-    'early uptake in': ['1', '2'],
-    'lym.nodes dimin': ['1', '2', '3'],
-    'lym.nodes enlar': ['1', '2', '3', '4'],
-    'changes in lym.': ['1', '2', '3'],
-    'defect in node' : ['1', '2', '3', '4'],
-    'changes in node': ['1', '2', '3', '4'],
-    'changes in stru': ['1', '2', '3', '4', '5', '6', '7'],
-    'special forms'  : ['1', '2', '3'],
-    'dislocation of' : ['1', '2'],
-    'exclusion of no': ['1', '2'],
-    'no. of nodes in': ['1', '2', '3', '4', '5', '6', '7', '8'],
-  }
   DATA_DEFAULT = {
     // 4 -> fibrosis
     'lymphatics'     : '3',
@@ -200,7 +180,7 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     },
   ]
   // @formatter:off
-  FORM             = [
+  FORM: TabularFormField_t[] = [
     { type: 'label-encoder', name: 'lymphatics',       options: [{ value: '1', text: 'normal' }, { value: '2', text: 'arched' },    { value: '3', text: 'deformed' },     { value: '4', text: 'displaced' }]},
     { type: 'label-encoder', name: 'block of affere',  options: [{ value: '1', text: 'No' },     { value: '2', text: '2' }]},
     { type: 'label-encoder', name: 'bl. of lymph. c',  options: [{ value: '1', text: 'No' },     { value: '2', text: 'Yes' }]},
@@ -356,13 +336,8 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     ]
   }
 
-  async LOAD_GRAPH_MODEL (callbacks: any) {
-    return await tfjs.loadGraphModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/lymphography/my-model-lymphography.json', {
-      onProgress: callbacks.onProgress,
-    })
-  }
 
-  async LOAD_LAYERS_MODEL (callbacks: any) {
+  async LOAD_LAYERS_MODEL(callbacks: LoadModelCallbacks_t) {
     return await tfjs.loadLayersModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/lymphography/my-model-lymphography.json', {
       onProgress: callbacks.onProgress,
     })

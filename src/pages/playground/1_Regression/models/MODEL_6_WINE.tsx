@@ -241,7 +241,6 @@ export default class MODEL_WINE extends I_MODEL_REGRESSION {
     )
     const red_encoders_map = red_dataframe_encoder.encoder_map
     red_dataframe_processed = red_dataframe_encoder.dataframe_processed
-    console.log("red_dataframe_processed", red_dataframe_processed)
     const red_dataframe_X = red_dataframe_processed.drop({ columns: [red_target] }).copy()
     const red_dataframe_y = red_dataframe_original[red_target]
     const minMaxScaler_1 = new dfd.MinMaxScaler()

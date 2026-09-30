@@ -12,41 +12,11 @@ import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularCla
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import type { BarOptions_t } from '@/types/types'
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
-/**
- * @typedef TabularClassificationPredictionProps_t
- * @property {string} dataset - KEY
- * @property {_Types.DatasetProcessed_t[]} datasets
- * @property {number} datasetIndex
- * @property {_Types.TabularClassificationGeneratedModel_t[]} generatedModels
- * @property {React.Dispatch<React.SetStateAction<_Types.TabularClassificationGeneratedModel_t[]>>} setGeneratedModels
- * @property {number} generatedModelsIndex
- * @property {React.Dispatch<React.SetStateAction<number>>} setGeneratedModelsIndex
- * @property {_tfjs.Sequential} Model
- * @property {React.Dispatch<React.SetStateAction<_tfjs.Sequential>>} setModel
- * @property {Array<any>} inputDataToPredict
- * @property {React.Dispatch<React.SetStateAction<Array<any>>>} setInputDataToPredict
- * @property {Array<any>} inputVectorToPredict
- * @property {React.Dispatch<React.SetStateAction<Array<any>>>} setInputVectorToPredict
- * @property {_Types.TabularClassificationPredictionBar_t} predictionBar
- * @property {(e: any) => Promise<void>} handleSubmit_PredictVector
- * 
- */
 type TabularClassificationPredictionProps_t = {
   dataset                   : string,
-  datasets                  : {index: number, datasets: _Types.DatasetProcessed_t[]},
-  generatedModels           : _Types.TabularClassificationGeneratedModel_t[],
-  setGeneratedModels        : React.Dispatch<React.SetStateAction<_Types.TabularClassificationGeneratedModel_t[]>>,
-  generatedModelsIndex      : number,
-  setGeneratedModelsIndex   : React.Dispatch<React.SetStateAction<number>>,
-  Model                     : _tfjs.Sequential | null,
-  setModel                  : React.Dispatch<React.SetStateAction<_tfjs.Sequential | null>>,
-  inputDataToPredict        : Array<_Types.N4LDataFrameType>,
-  setInputDataToPredict     : React.Dispatch<React.SetStateAction<Array<_Types.N4LDataFrameType>>>,
-  inputVectorToPredict      : Array<_Types.N4LDataFrameType>,
-  setInputVectorToPredict   : React.Dispatch<React.SetStateAction<Array<_Types.N4LDataFrameType>>>,
-  predictionBar             : _Types.TabularClassificationPredictionBar_t,
-  handleSubmit_PredictVector: (e: any) => Promise<void>,
+  handleSubmit_PredictVector: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
 }
 
 /**
@@ -55,30 +25,17 @@ type TabularClassificationPredictionProps_t = {
  * @returns 
  */
 export default function TabularClassificationPrediction(props: TabularClassificationPredictionProps_t) {
+    const { dataset, handleSubmit_PredictVector } = props
   const {
-    dataset,
-
     datasets,
-
     generatedModels,
-    // setGeneratedModels,
-
     generatedModelsIndex,
     setGeneratedModelsIndex,
-
-    Model,
+    model: Model,
     setModel,
-
-    inputDataToPredict,
     setInputDataToPredict,
-
-    inputVectorToPredict,
-    setInputVectorToPredict,
-
     predictionBar,
-
-    handleSubmit_PredictVector,
-  } = props
+  } = useTabularClassificationContext()
 
   const prefix = 'pages.playground.generator.dynamic-form-dataset.'
   const { t } = useTranslation()
@@ -204,14 +161,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
               <br />
               <b>({dataset_selected?.data_processed?.attributes?.map(att => att.name).join(', ')}).</b>
             </Card.Text>
-            <TabularClassificationPredictionForm
-              datasets={datasets}
-              inputDataToPredict={inputDataToPredict}
-              setInputDataToPredict={setInputDataToPredict}
-              inputVectorToPredict={inputVectorToPredict}
-              setInputVectorToPredict={setInputVectorToPredict}
-
-            />
+            <TabularClassificationPredictionForm />
 
             {/* SUBMIT BUTTON */}
             <hr />

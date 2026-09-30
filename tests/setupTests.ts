@@ -19,6 +19,18 @@ vi.mock('react-i18next', async () => {
 });
 
 
+// tfjs-vis (el panel visual de TensorFlow.js) hace require() de la build ESM de tfjs-core, que Node
+// no puede cargar ("Cannot find module .../chained_ops/abs"). Los tests no lo usan: API mínima vacía.
+vi.mock('@tensorflow/tfjs-vis', () => {
+  const visor = { open: vi.fn(), close: vi.fn(), toggle: vi.fn(), setActiveTab: vi.fn(), isOpen: () => false, surface: () => ({ drawArea: document.createElement('div') }) }
+  return {
+    visor  : () => visor,
+    show   : { modelSummary: vi.fn().mockResolvedValue(undefined), fitCallbacks: vi.fn(() => ({})), perClassAccuracy: vi.fn().mockResolvedValue(undefined) },
+    render : { confusionMatrix: vi.fn().mockResolvedValue(undefined) },
+    metrics: { perClassAccuracy: vi.fn().mockResolvedValue([]), confusionMatrix: vi.fn().mockResolvedValue([]) },
+  }
+})
+
 vi.mock('@tensorflow/tfjs-node', () => ({
   // mock mínimo
   loadGraphModel: vi.fn(),

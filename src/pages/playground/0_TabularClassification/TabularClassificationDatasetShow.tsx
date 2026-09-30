@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import * as dfd from 'danfojs'
@@ -15,6 +15,7 @@ import N4LTablePagination from '@components/table/N4LTablePagination'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
 /**
  * @typedef {object} PropsTabularClassificationDatasetShow
@@ -22,9 +23,6 @@ import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularCla
  * @property {number} datasetIndex
  */
 
-type TabularClassificationDatasetShowProps = {
-  datasets: { index: number, datasets: Array<_Types.DatasetProcessed_t> },
-}
 
 const EMPTY_DATAFRAME = new dfd.DataFrame()
 
@@ -33,8 +31,8 @@ const EMPTY_DATAFRAME = new dfd.DataFrame()
  * @param {TabularClassificationDatasetShowProps} props 
  * @returns 
  */
-export default function TabularClassificationDatasetShow(props: TabularClassificationDatasetShowProps) {
-  const { datasets } = props
+export default function TabularClassificationDatasetShow() {
+    const { datasets } = useTabularClassificationContext()
   const prefix = 'pages.playground.generator.dataset.'
   const { t } = useTranslation()
   const dataframe_original_plotID = useId()

@@ -9,63 +9,47 @@ const TYPE_GRADIENTS = [
   { key: 'variableGrads', label: 'variableGrads' }
 ]
 
-const TYPE_OPTIMIZER: { key: IdOptimizer_t, label: string }[] = [
-  { key: 'sgd', label: 'SGD' },
-  { key: 'adagrad', label: 'Adagrad' },
-  { key: 'adadelta', label: 'Adadelta' },
-  { key: 'adam', label: 'Adam' },
-  { key: 'adamax', label: 'Adamax' },
-  { key: 'rmsprop', label: 'RMSProp' },
-  // { key: 'momentum', label: 'Momentum' },
-]
+// Nombres que no siguen la regla general (la clave con la primera letra en mayúscula)
+const SPECIAL_LABELS: Record<string, string> = { sgd: 'SGD', rmsprop: 'RMSProp' }
 
-// tf.losses.absoluteDifference
-// tf.losses.computeWeightedLoss
-// tf.losses.cosineDistance
-// tf.losses.hingeLoss
-// tf.losses.huberLoss
-// tf.losses.logLoss
-// tf.losses.meanSquaredError
-// tf.losses.sigmoidCrossEntropy
-// tf.losses.softmaxCrossEntropy
-const TYPE_LOSSES: { key: keyof LossMap_t, label: string }[] = [
-  { key: 'absoluteDifference', label: 'AbsoluteDifference' },
-  { key: 'computeWeightedLoss', label: 'ComputeWeightedLoss' },
-  { key: 'cosineDistance', label: 'CosineDistance' },
-  { key: 'hingeLoss', label: 'HingeLoss' },
-  { key: 'huberLoss', label: 'HuberLoss' },
-  { key: 'logLoss', label: 'LogLoss' },
-  { key: 'meanSquaredError', label: 'MeanSquaredError' },
-  { key: 'sigmoidCrossEntropy', label: 'SigmoidCrossEntropy' },
-  { key: 'softmaxCrossEntropy', label: 'SoftmaxCrossEntropy' },
-]
+/**
+ * Nombre legible de un optimizador, función de pérdida o métrica. La clave puede llevar prefijo
+ * ("train-adam", "losses-logLoss", "metrics-recall"), como en los modelos generados.
+ */
+export function nnLabel(id: string): string {
+  const key = id.replace(/^(train|losses|metrics)-/, '')
+  return SPECIAL_LABELS[key] ?? key.charAt(0).toUpperCase() + key.slice(1)
+}
 
-// Metrics
-// tf.metrics.binaryAccuracy
-// tf.metrics.binaryCrossentropy
-// tf.metrics.categoricalAccuracy
-// tf.metrics.categoricalCrossentropy
-// tf.metrics.cosineProximity
-// tf.metrics.meanAbsoluteError
-// tf.metrics.meanAbsolutePercentageError
-// tf.metrics.meanSquaredError
-// tf.metrics.precision
-// tf.metrics.recall
-// tf.metrics.sparseCategoricalAccuracy
-const TYPE_METRICS: { key: keyof MetricMap_t, label: string }[] = [
-  // { key: 'binaryAccuracy', label: 'BinaryAccuracy' },
-  // { key: 'binaryCrossentropy', label: 'BinaryCrossentropy' },
-  { key: 'categoricalAccuracy', label: 'CategoricalAccuracy' },
-  { key: 'categoricalCrossentropy', label: 'CategoricalCrossentropy' },
-  { key: 'cosineProximity', label: 'CosineProximity' },
-  { key: 'meanAbsoluteError', label: 'MeanAbsoluteError' },
-  { key: 'meanAbsolutePercentageError', label: 'MeanAbsolutePercentageError' },
-  { key: 'meanSquaredError', label: 'MeanSquaredError' },
-  { key: 'precision', label: 'Precision' },
-  // { key: 'recall', label: 'Recall' },
-  // { key: 'sparseCategoricalAccuracy', label: 'SparseCategoricalAccuracy' },
-  { key: 'accuracy', label: 'Accuracy' }
-]
+const withLabels = <K extends string>(keys: K[]) => keys.map((key) => ({ key, label: nnLabel(key) }))
+
+// Desactivado: 'momentum'
+const TYPE_OPTIMIZER = withLabels<IdOptimizer_t>(['sgd', 'adagrad', 'adadelta', 'adam', 'adamax', 'rmsprop'])
+
+// tf.losses.*
+const TYPE_LOSSES = withLabels<keyof LossMap_t>([
+  'absoluteDifference',
+  'computeWeightedLoss',
+  'cosineDistance',
+  'hingeLoss',
+  'huberLoss',
+  'logLoss',
+  'meanSquaredError',
+  'sigmoidCrossEntropy',
+  'softmaxCrossEntropy',
+])
+
+// tf.metrics.* — desactivadas: 'binaryAccuracy', 'binaryCrossentropy', 'recall', 'sparseCategoricalAccuracy'
+const TYPE_METRICS = withLabels<keyof MetricMap_t>([
+  'categoricalAccuracy',
+  'categoricalCrossentropy',
+  'cosineProximity',
+  'meanAbsoluteError',
+  'meanAbsolutePercentageError',
+  'meanSquaredError',
+  'precision',
+  'accuracy',
+])
 
 const TYPE_ACTIVATION = [
   { key: 'sigmoid', label: 'Sigmoid' },

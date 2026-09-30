@@ -1,4 +1,5 @@
 // import * as handpose from '@tensorflow-models/handpose'
+import i18next from 'i18next'
 import * as fp from 'fingerpose'
 // import * as tf from '@tensorflow/tfjs-core';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection'
@@ -85,7 +86,7 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
   async ENABLE_MODEL() {
     const { HandSignsSSL, HandSignsASL } = handsignMultiligual
     let HandSign = null
-    if (localStorage.getItem('language') === 'es') {
+    if (i18next.language === 'es') {
       HandSign = HandSignsSSL
     } else {
       HandSign = HandSignsASL

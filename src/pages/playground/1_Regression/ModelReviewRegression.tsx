@@ -1,6 +1,5 @@
 import { useEffect, useState, useId } from "react"
-import { useParams } from "react-router"
-import { useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
 import ReactGA from "react-ga4"
@@ -9,16 +8,14 @@ import * as tfjs from "@tensorflow/tfjs"
 
 import * as _Types from "@core/types"
 import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, DEFAULT_SELECTOR_INSTANCE_INDEX } from "@/CONSTANTS"
-import { UPLOAD } from "@/TASKS"
 import { TABLE_PLOT_STYLE_CONFIG } from "@/CONSTANTS_DanfoJS"
 import N4LSummary from "@components/summary/N4LSummary"
 import DataFrameDatasetCard from "@components/dataframe/DataFrameDatasetCard"
 import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
 import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
-import { hasModel, loadModelClass } from "@core/models/modelRegistry"
+import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
 import ModelReviewRegressionPredict from "./ModelReviewRegressionPredict"
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from "./utils"
-import alertHelper from "@utils/alertHelper"
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from "@core/explainability/shapSampling"
@@ -94,30 +91,19 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init][ dataset, t ]")
     const init = async () => {
-      await tfjs.ready()
-      // =========================
-      if (dataset === UPLOAD) {
-        console.warn("Error, option not valid", { ID: dataset })
-      } else if (hasModel(MAP_LR_CLASSES, dataset)) {
-        try {
-          const _iModelClass = await loadModelClass(MAP_LR_CLASSES, dataset)
-          const _iModelInstance = new _iModelClass(t, () => { })
-          setIModelInstance(_iModelInstance)
-          const _datasets = await _iModelInstance.DATASETS()
-          setDatasets({
-            data   : _datasets,
-            index  : 0,
-            dataset: "select-dataset",
-          })
-        } catch (error) {
-          console.error("Error", error)
-        }
-      } else {
-        console.error("Error, option not valid", { ID: dataset })
-        await alertHelper.alertError("Error, option not valid")
-        navigate("/404")
+      const _iModelInstance = await createReviewModelInstance(MAP_LR_CLASSES, dataset, (ModelClass) => new ModelClass(t, () => { }), navigate)
+      if (_iModelInstance === null) return
+      try {
+        setIModelInstance(_iModelInstance)
+        const _datasets = await _iModelInstance.DATASETS()
+        setDatasets({
+          data   : _datasets,
+          index  : 0,
+          dataset: "select-dataset",
+        })
+      } catch (error) {
+        console.error("Error", error)
       }
-      // =========================
     }
     init().then(() => undefined)
   }, [dataset, t, navigate])
@@ -154,7 +140,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
         const { dataframe_original /* data_processed */ } = dataset_processed
         setDataFrame_X(dataframe_original)
         setInstances((_prevState) => ({
-          data    : dataframe_original.values,
+          data    : dataframe_original.values as Array<Array<string | number | boolean>>,
           index   : DEFAULT_SELECTOR_INSTANCE_INDEX,
           instance: "select-instance",
         }))

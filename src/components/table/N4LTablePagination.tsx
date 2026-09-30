@@ -1,6 +1,7 @@
 import './N4LTablePagination.css'
-import { useEffect, useState } from 'react'
-import { Pagination, Table } from 'react-bootstrap'
+import { useState } from 'react'
+import { Table } from 'react-bootstrap'
+import N4LPagination from '@components/table/N4LPagination'
 
 type N4LTablePaginationProps = {
   data_head     : string[]
@@ -14,16 +15,11 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
 
   const rowsPerPage = rows_per_page
   const rowsCount = data_body.length
-  const startPage = 0
   const pageCount = Math.ceil(rowsCount / rowsPerPage)
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
   }
-
-  useEffect(() => {
-    // setActivePage(0)
-  }, [data_body])
 
   return <>
     <div className={'n4l-table-paginator-table-wrapper-scroll-x'}>
@@ -52,61 +48,7 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
       </Table>
     </div>
 
-    <Pagination size="sm" className={'mt-2 n4l-pagination justify-content-center'}>
-      {(activePage > 0) && <></>}
-      <Pagination.First disabled={!(activePage > 0)}
-                        onClick={() => handleClick_ChangePage(0)} />
-
-      {(activePage - 1 >= startPage) && <></>}
-      <Pagination.Prev disabled={!(activePage - 1 >= startPage)}
-                       onClick={() => handleClick_ChangePage(activePage - 1)} />
-
-      {(activePage - 3 >= startPage) && <></>}
-      <Pagination.Item disabled={!(activePage - 3 >= startPage)}
-                       onClick={() => handleClick_ChangePage(activePage - 3)}>
-        {(activePage - 3 >= startPage) ? activePage - 3 : '-'}
-      </Pagination.Item>
-
-      {(activePage - 2 >= startPage) && <></>}
-      <Pagination.Item disabled={!(activePage - 2 >= startPage)}
-                       onClick={() => handleClick_ChangePage(activePage - 2)}>
-        {(activePage - 2 >= startPage) ? activePage - 2 : '-'}
-      </Pagination.Item>
-
-      {(activePage - 1 >= startPage) && <></>}
-      <Pagination.Item disabled={!(activePage - 1 >= startPage)}
-                       onClick={() => handleClick_ChangePage(activePage - 1)}>
-        {(activePage - 1 >= startPage) ? activePage - 1 : '-'}
-      </Pagination.Item>
-      <Pagination.Item active={true}>
-        {activePage}
-      </Pagination.Item>
-      <Pagination.Item disabled={!(activePage + 1 < pageCount)}
-                       onClick={() => handleClick_ChangePage(activePage + 1)}>
-        {(activePage + 1 < pageCount) ? activePage + 1 : '-'}
-      </Pagination.Item>
-      {(activePage + 1 < pageCount) && <></>}
-
-      <Pagination.Item disabled={!(activePage + 2 < pageCount)}
-                       onClick={() => handleClick_ChangePage(activePage + 2)}>
-        {(activePage + 2 < pageCount) ? activePage + 2 : '-'}
-      </Pagination.Item>
-      {(activePage + 2 < pageCount) && <></>}
-
-      <Pagination.Item disabled={!(activePage + 3 < pageCount)}
-                       onClick={() => handleClick_ChangePage(activePage + 3)}>
-        {(activePage + 3 < pageCount) ? activePage + 3 : '-'}
-      </Pagination.Item>
-      {(activePage + 3 < pageCount) && <></>}
-
-
-      {(activePage + 1 < pageCount) && <></>}
-      <Pagination.Next disabled={!(activePage + 1 < pageCount)}
-                       onClick={() => handleClick_ChangePage(activePage + 1)} />
-      {(activePage + 1 <= pageCount - 1) && <></>}
-      <Pagination.Last disabled={!(activePage + 1 <= pageCount - 1)}
-                       onClick={() => handleClick_ChangePage(pageCount - 1)} />
-    </Pagination>
+    <N4LPagination activePage={activePage} pageCount={pageCount} onChange={handleClick_ChangePage} className={'mt-2 n4l-pagination'} />
   </>
 }
 

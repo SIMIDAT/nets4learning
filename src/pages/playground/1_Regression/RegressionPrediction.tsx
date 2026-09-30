@@ -34,14 +34,13 @@ export default function RegressionPrediction() {
   const handleSubmit_Predict = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const vector = prediction.input_3_dataframe_scaling.values[0]
-    // @ts-ignore
+    const vector = prediction.input_3_dataframe_scaling.values[0] as number[]
     const tensor = tfjs.tensor2d([vector])
     const _indexModel: number = listModels.index as number
     const model = (/**@type {tfjs.LayersModel}*/(listModels.data[_indexModel].model))
     const predictTensor = (/**@type {tfjs.Tensor}*/(model.predict(tensor)) as tfjs.Tensor)
 
-    const result = [predictTensor.dataSync()]
+    const result = Array.from(predictTensor.dataSync())
 
     setPrediction((prevState) => ({
       ...prevState,

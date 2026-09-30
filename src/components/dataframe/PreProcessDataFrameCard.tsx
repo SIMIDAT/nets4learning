@@ -1,7 +1,5 @@
-import { Card } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import DataFrameCard from '@components/dataframe/DataFrameCard'
 import PreProcessDataFrame from './PreProcessDataFrame'
-import WaitingPlaceholder from '../loading/WaitingPlaceholder'
 import type { PreProcessDataFrameProps_t } from './PreProcessDataFrame'
 
 /**
@@ -35,25 +33,15 @@ export default function PreProcessDataFrameCard(props: Props) {
     isDataFrameUpload
   } = props
 
-  return <>
-    <Card className={'mt-3'}>
-      <Card.Header>
-        <h3><Trans i18nKey={'dataframe-form'} /></h3>
-      </Card.Header>
-      <Card.Body>
-        {!isDataFrameUpload && <>
-          <WaitingPlaceholder i18nKey_title={'Waiting'} />
-        </>}
-        {isDataFrameUpload && <>
-          <PreProcessDataFrame
-            dataFrameOriginal={dataFrameOriginal}
-            setDataFrameOriginal={setDataFrameOriginal}
-            dataFrameProcessed={dataFrameProcessed}
-            setDataFrameProcessed={setDataFrameProcessed}
-            isDataFrameProcessed={isDataFrameProcessed}
-            setIsDataFrameProcessed={setIsDataFrameProcessed} />
-        </>}
-      </Card.Body>
-    </Card>
-  </>
+  return (
+    <DataFrameCard title={'dataframe-form'} ready={isDataFrameUpload}>
+      <PreProcessDataFrame
+        dataFrameOriginal={dataFrameOriginal}
+        setDataFrameOriginal={setDataFrameOriginal}
+        dataFrameProcessed={dataFrameProcessed}
+        setDataFrameProcessed={setDataFrameProcessed}
+        isDataFrameProcessed={isDataFrameProcessed}
+        setIsDataFrameProcessed={setIsDataFrameProcessed} />
+    </DataFrameCard>
+  )
 }

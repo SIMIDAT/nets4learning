@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Button, Card, Col, Container, Modal, Row } from "react-bootstrap"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router"
 import * as _chartjs from "chart.js"
 import * as tfjs from "@tensorflow/tfjs"
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from "chart.js"
@@ -19,8 +19,8 @@ import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 import ModelReviewImageClassificationMNIST from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationMNIST"
 import { MAP_IC_CLASSES } from "@pages/playground/3_ImageClassification/models"
 import { IC_MODEL_KEYS } from "@/MODEL_KEYS"
-import { hasModel, loadModelClass } from "@core/models/modelRegistry"
-import { DEFAULT_BAR_DATA } from "@pages/playground/3_ImageClassification/CONSTANTS"
+import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
+import { DEFAULT_BAR_DATA, type BarChartData_t } from "@pages/playground/3_ImageClassification/CONSTANTS"
 import { UTILS_image } from "@pages/playground/3_ImageClassification/utils/utils"
 import type { BarOptions_t } from "@/types/types"
 
@@ -66,14 +66,6 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   /**
    * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
    */
-  const canvas_result_ref = useRef<HTMLCanvasElement>(null)
-  /**
-   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
-   */
-  const canvas_image_ref = useRef<HTMLCanvasElement>(null)
-  /**
-   * @type {ReturnType<typeof useRef<HTMLCanvasElement>>}
-   */
   const canvas_modal_image_ref = useRef<HTMLCanvasElement>(null)
 
   const [isLoading, setIsLoading] = useState(true)
@@ -82,8 +74,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const [isModalShow, setIsModelShow] = useState(false)
   const [info, setInfo] = useState(DEFAULT_INFO)
 
-  const [barDataImage, setBarDataImage] = useState(DEFAULT_BAR_DATA)
-  const [barDataModal, setBarDataModal] = useState(DEFAULT_BAR_DATA)
+  const [barDataImage, setBarDataImage] = useState<BarChartData_t>(DEFAULT_BAR_DATA)
+  const [barDataModal, setBarDataModal] = useState<BarChartData_t>(DEFAULT_BAR_DATA)
 
   // === Explicabilidad (SHAP / LRP) ===
   // Imagen clasificada que se explicará (misma ImageData que recibió el modelo).
@@ -120,42 +112,31 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init][ dataset, t, history ]")
     const init = async () => {
-      await tfjs.ready()
-      // =========================
-      if (dataset === UPLOAD) {
-        console.error("Error, data set not valid")
-      } else if (hasModel(MAP_IC_CLASSES, dataset)) {
-        try {
-          const _iModelClass = await loadModelClass(MAP_IC_CLASSES, dataset)
-          const _iModelInstance = new _iModelClass(t)
-          setIModelInstance(_iModelInstance)
-          setModel(await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel)
-          setLrpAvailable(supportsLrp(_iModelInstance))
-          setIsLoading(false)
-          await alertHelper.alertSuccess(t("model-loaded-successfully"))
-        } catch (error) {
-          console.error("Error", error)
-        }
-      } else {
-        console.error("Error, option not valid", { ID: dataset })
-        await alertHelper.alertError("Error, option not valid")
-        navigate("/404")
+      const _iModelInstance = await createReviewModelInstance(MAP_IC_CLASSES, dataset, (ModelClass) => new ModelClass(t), navigate)
+      if (_iModelInstance === null) return
+      try {
+        setIModelInstance(_iModelInstance)
+        setModel(await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel)
+        setLrpAvailable(supportsLrp(_iModelInstance))
+        setIsLoading(false)
+        await alertHelper.alertSuccess(t("model-loaded-successfully"))
+      } catch (error) {
+        console.error("Error", error)
       }
-      // =========================
     }
 
     init().then()
   }, [dataset, t, navigate])
 
   useEffect(() => {
-    console.debug("useEffect [barDataModal]")
+    if (VERBOSE) console.debug("useEffect [barDataModal]")
     if (iChartRef_modal.current) {
       iChartRef_modal.current.update()
     }
   }, [barDataModal])
 
   useEffect(() => {
-    console.debug("useEffect [barDataImage]")
+    if (VERBOSE) console.debug("useEffect [barDataImage]")
     if (iChartRef_image.current) {
       iChartRef_image.current.update()
     }
@@ -197,7 +178,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const handleModal_Exited = () => { }
 
   const handleModal_Entered = async () => {
-    if (iModelInstance === null) return
+    // Hasta que termina la carga no hay modelo con el que clasificar
+    if (iModelInstance === null || model === null) return
     // const canvas = document.getElementById('modal_canvas_image')
     const canvas = canvas_modal_image_ref.current as HTMLCanvasElement
     const canvas_modal_ctx = canvas.getContext("2d") as CanvasRenderingContext2D
@@ -225,7 +207,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   }
 
   const handleClick_ImageUploaded_Predict = async () => {
-    if (iModelInstance === null) return
+    if (iModelInstance === null || model === null) return
     if (!isImageUploaded || !info.image_upload) {
       await alertHelper.alertError(t("error.need-to-upload-image"))
       return
@@ -464,26 +446,6 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                             ref={canvas_original_image_ref}
                             width={200}
                             height={200}
-                            className={"nets4-border-1"}
-                          ></canvas>
-                        </Col>
-                        <Col className={"col-12 d-flex justify-content-center"}>
-                          <canvas
-                            id="resultCanvas"
-                            ref={canvas_result_ref}
-                            style={{ display: "none" }}
-                            width={250}
-                            height={250}
-                            className={"nets4-border-1"}
-                          ></canvas>
-                        </Col>
-                        <Col className={"col-12 d-flex justify-content-center"}>
-                          <canvas
-                            id="imageCanvas"
-                            ref={canvas_image_ref}
-                            style={{ display: "none" }}
-                            width={250}
-                            height={250}
                             className={"nets4-border-1"}
                           ></canvas>
                         </Col>

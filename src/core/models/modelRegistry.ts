@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /** Constructor de una clase de modelo (cada tarea tiene su propia firma de constructor). */
 export type ModelClass<T> = new (...args: any[]) => T
 

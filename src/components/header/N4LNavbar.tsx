@@ -1,7 +1,7 @@
 import "./N4LNavbar.css"
 import { useEffect, useState } from 'react'
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
 import IconLangES from '@assets/es.svg'
@@ -9,6 +9,14 @@ import IconLangGB from '@assets/gb.svg'
 import IconThemeLight from '@assets/sun.svg'
 import IconThemeDark from '@assets/moon.svg'
 import IconGithub from '@assets/github.svg'
+import { changeUserLanguage, type Language_t } from '@core/i18n/language'
+
+// Cada idioma con su nombre en ese idioma
+const LANGUAGE_OPTIONS: Array<{ language: Language_t, label: string, icon: React.ReactNode }> = [
+  { language: 'en', label: 'English', icon: <IconLangGB /> },
+  { language: 'es', label: 'Español', icon: <IconLangES /> },
+  { language: 'ja', label: '日本語', icon: '🇯🇵' },
+]
 
 export default function N4LNavbar() {
   const { t, i18n } = useTranslation()
@@ -60,39 +68,12 @@ export default function N4LNavbar() {
                 </Nav.Link>
               </Nav.Item>
               <NavDropdown title={t('header.language')} id="change-language-nav-dropdown">
-                <NavDropdown.Item
-                  onClick={() => {
-                    i18n.changeLanguage('en')
-                    localStorage.setItem('language', 'en')
-                    window.dispatchEvent(new Event('storage'))
-                  }}>
-                  <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }} >
-                    <IconLangGB />
-                  </span>
-                  Ingles
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={() => {
-                    i18n.changeLanguage('es')
-                    localStorage.setItem('language', 'es')
-                    window.dispatchEvent(new Event('storage'))
-                  }}>
-                  <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}  >
-                    <IconLangES />
-                  </span>
-                  Español
-                </NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={() => {
-                    i18n.changeLanguage('ja')
-                    localStorage.setItem('language', 'ja')
-                    window.dispatchEvent(new Event('storage'))
-                  }}>
-                  <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}>
-                    🇯🇵
-                  </span>
-                  日本語
-                </NavDropdown.Item>
+                {LANGUAGE_OPTIONS.map(({ language, label, icon }) => (
+                  <NavDropdown.Item key={language} active={i18n.language === language} onClick={() => changeUserLanguage(i18n, language)}>
+                    <span className={'me-2 n4l-icon-1rem'} style={{ verticalAlign: 'unset' }}>{icon}</span>
+                    {label}
+                  </NavDropdown.Item>
+                ))}
               </NavDropdown>
               <NavDropdown title={t('header.theme')} id="change-theme-nav-dropdown">
                 <NavDropdown.Item onClick={() => setDataTheme('light')}>

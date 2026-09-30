@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useTranslation, Trans } from 'react-i18next'
 import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 

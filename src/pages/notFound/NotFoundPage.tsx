@@ -1,6 +1,6 @@
 import styles from './NotFoundPage.module.css'
 import { Trans } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export default function NotFoundPage () {
   return <>

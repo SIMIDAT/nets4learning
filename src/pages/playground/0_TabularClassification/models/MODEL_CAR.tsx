@@ -4,7 +4,7 @@ import * as dfd from 'danfojs'
 
 import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
-import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import I_MODEL_TABULAR_CLASSIFICATION, { type LoadModelCallbacks_t, type TabularFormField_t } from './_model'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
 import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
@@ -48,7 +48,7 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
     { Buying: 'med', Maint: 'low', Doors: '5more', Persons: 'more', Lug_boot: 'med', Safety: 'med' },
     { Buying: 'low', Maint: 'low', Doors: '5more', Persons: 'more', Lug_boot: 'big', Safety: 'high' }
   ]
-  FORM = [
+  FORM: TabularFormField_t[] = [
     {
       type   : 'label-encoder', name   : 'Buying', options: [
         { value: 'vhigh', text: 'vhigh' },
@@ -214,13 +214,8 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
     ]
   }
 
-  async LOAD_GRAPH_MODEL(callbacks: any) {
-    return await tfjs.loadGraphModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/car/my-model-car.json', {
-      onProgress: callbacks.onProgress,
-    })
-  }
 
-  async LOAD_LAYERS_MODEL(callbacks: any) {
+  async LOAD_LAYERS_MODEL(callbacks: LoadModelCallbacks_t) {
     return await tfjs.loadLayersModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/car/my-model-car.json', {
       onProgress: callbacks.onProgress,
     })

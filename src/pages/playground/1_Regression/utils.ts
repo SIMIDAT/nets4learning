@@ -22,8 +22,7 @@ export function TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION (dataset_process
   const _dataframe_X = data_processed.dataframe_X.copy()
   const _X = data_processed.X.copy()
 
-  // @ts-expect-error dfd types error
-  const input_raw = Array.from(_dataframe_original.values[index_row])
+  const input_raw = Array.from(_dataframe_original.values[index_row] as Array<string | number | boolean>)
 
   const prediction_input_original = _dataframe_original.values[index_row]
   const prediction_input_processed = _dataframe_processed.values[index_row]

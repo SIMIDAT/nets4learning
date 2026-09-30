@@ -1,11 +1,26 @@
-import { ACTIONS, LIFECYCLE } from 'react-joyride'
 import type * as _tfjs from '@tensorflow/tfjs'
+import { buildJoyride } from '@components/joyride/buildJoyride'
 import type {MobileNet} from '@tensorflow-models/mobilenet'
 
-import { delay } from '@utils/utils'
-import Errors from '@shared/Errors'
 import type * as _Types from '@core/types'
+import type { Layer_t } from '@/types/types'
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { BarChartData_t } from '../CONSTANTS'
 import type { TFunction } from 'i18next'
+
+/** Modelo que clasifica las imágenes: uno entrenado con tfjs o MobileNet */
+export type ImageClassifierModel_t = _tfjs.LayersModel | MobileNet
+
+/** Parámetros de entrenamiento que recoge la página de clasificación de imágenes */
+export type ImageTrainParams_t = {
+  learningRate : number
+  numberEpochs : number
+  testSize     : number
+  idLoss       : IdLoss_t | IdMetric_t
+  idOptimizer  : IdOptimizer_t
+  idMetricsList: Array<IdLoss_t | IdMetric_t>
+  layers       : Layer_t[]
+}
 
 export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   TITLE     : string = ''
@@ -20,12 +35,8 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return <></>
   }
 
-  DEFAULT_LAYERS (): any[] {
+  DEFAULT_LAYERS (): Layer_t[] {
     return []
-  }
-
-  DEFAULT_HYPERPARAMETERS () {
-    return {}
   }
 
   /**
@@ -40,15 +51,15 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return []
   }
 
-  async CLASSIFY (_model: any, _imageData: any): Promise<{predictions: any[], index: number}> {
+  async CLASSIFY (_model: ImageClassifierModel_t, _imageData: ImageData): Promise<{predictions: unknown[], index: number}> {
     return { predictions: [], index: 0 }
   }
 
-  async CLASSIFY_IMAGE (_model: any, _imageData: any): Promise<{predictions: any[], index: number}> {
+  async CLASSIFY_IMAGE (_model: ImageClassifierModel_t, _imageData: ImageData): Promise<{predictions: unknown[], index: number}> {
     return { predictions: [], index: 0 }
   }
 
-  async PREDICTION_FORMAT (_predictions: any): Promise<{labels: any[], datasets: any[]}> {
+  async PREDICTION_FORMAT (_predictions: unknown[]): Promise<BarChartData_t> {
     return {
       labels  : [],
       datasets: []
@@ -59,7 +70,7 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
    * 
    * @returns {Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null>}
    */
-  async TRAIN_MODEL (_params: any): Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null> {
+  async TRAIN_MODEL (_params: ImageTrainParams_t): Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(null)
@@ -68,122 +79,19 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   }
 
   JOYRIDE (): _Types.Joyride_t {
-    const handleJoyrideCallback = async (data: any) => {
-      const { action, lifecycle, step/*, status, type*/ } = data
-      const { target } = step
-      if (
-        ([ACTIONS.UPDATE.toString()]).includes(action) &&
-        ([LIFECYCLE.TOOLTIP.toString()]).includes(lifecycle)) {
-        switch (target) {
-          case '.joyride-step-1-manual': {
-            break
-          }
-          case '.joyride-step-2-dataset-info': {
-            break
-          }
-          case '.joyride-step-3-dataset': {
-            break
-          }
-          case '.joyride-step-4-dataset-plot': {
-            break
-          }
-          case '.joyride-step-5-layer': {
-            break
-          }
-          case '.joyride-step-6-editor-layers': {
-            break
-          }
-          case '.joyride-step-7-editor-trainer': {
-            break
-          }
-          case '.joyride-step-8-list-of-models': {
-            break
-          }
-          default: {
-            console.warn('Error, option not valid')
-            break
-          }
-        }
-        await delay(500)
-        const isDispatchedEvent = window.dispatchEvent(new Event('resize'))
-        if (!isDispatchedEvent) {
-          Errors.notDispatchedEvent()
-        }
-      }
-    }
-
-    const prefix = 'datasets-models.3-image-classification.joyride.steps.'
-    return {
-      run                  : false,
-      continuous           : true,
-      handleJoyrideCallback: handleJoyrideCallback,
-      steps                : [
-        {
-          title    : this.t(prefix + 'manual.title'),
-          content  : this.t(prefix + 'manual.content'),
-          target   : '.joyride-step-1-manual',
-          placement: 'top',
-        },
-        {
-          title    : this.t(prefix + 'dataset-info.title'),
-          content  : this.t(prefix + 'dataset-info.content'),
-          target   : '.joyride-step-2-dataset-info',
-          placement: 'top',
-        },
-        // {
-        //   title    : this.t(prefix + 'dataset.title'),
-        //   content  : this.t(prefix + 'dataset.content'),
-        //   target   : '.joyride-step-3-dataset',
-        //   placement: 'top',
-        // },
-        // {
-        //   title    : this.t(prefix + 'dataset-plot.title'),
-        //   content  : this.t(prefix + 'dataset-plot.content'),
-        //   target   : '.joyride-step-4-dataset-plot',
-        //   placement: 'top',
-        // },
-        {
-          title    : this.t(prefix + 'layer-visualizer.title'),
-          content  : this.t(prefix + 'layer-visualizer.content'),
-          target   : '.joyride-step-5-layer',
-          placement: 'top',
-        },
-        {
-          title    : this.t(prefix + 'layer-editor.title'),
-          content  : this.t(prefix + 'layer-editor.content'),
-          target   : '.joyride-step-6-editor-layers',
-          placement: 'right',
-        },
-        {
-          title    : this.t(prefix + 'params-editor.title'),
-          content  : this.t(prefix + 'params-editor.content'),
-          target   : '.joyride-step-7-editor-trainer',
-          placement: 'left-start',
-        },
-        {
-          title    : this.t(prefix + 'list-of-models.title'),
-          content  : this.t(prefix + 'list-of-models.content'),
-          target   : '.joyride-step-8-list-of-models',
-          placement: 'bottom',
-        },
-        {
-          title    : this.t(prefix + 'classify.title'),
-          content  : this.t(prefix + 'classify.content'),
-          target   : '.joyride-step-9-classify',
-          placement: 'top',
-        },
-      ],
-    }
-    // return {
-    //   debug     : import.meta.env.VITE_ENVIRONMENT === "development",
-    //   run       : true,
-    //   continuous: false,
-    //   steps     : []
-    // }
+    return buildJoyride(this.t, 'datasets-models.3-image-classification.joyride.steps.', [
+      { key: 'manual', target: '.joyride-step-1-manual', placement: 'top' },
+      { key: 'dataset-info', target: '.joyride-step-2-dataset-info', placement: 'top' },
+      { key: 'layer-visualizer', target: '.joyride-step-5-layer', placement: 'top' },
+      { key: 'layer-editor', target: '.joyride-step-6-editor-layers', placement: 'right' },
+      { key: 'params-editor', target: '.joyride-step-7-editor-trainer', placement: 'left-start' },
+      { key: 'list-of-models', target: '.joyride-step-8-list-of-models', placement: 'bottom' },
+      { key: 'classify', target: '.joyride-step-9-classify', placement: 'top' },
+    ])
   }
 
-  async GET_IMAGE_DATA (_canvas: HTMLCanvasElement, _canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
-    console.log('TODO')
-    return new ImageData(0, 0)
+  /** Imagen que recibe el modelo; por defecto, el canvas entero */
+  async GET_IMAGE_DATA (canvas: HTMLCanvasElement, canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
+    return canvas_ctx.getImageData(0, 0, canvas.width, canvas.height)
   }
 }

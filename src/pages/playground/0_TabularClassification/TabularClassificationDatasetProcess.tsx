@@ -2,36 +2,25 @@ import { Card } from "react-bootstrap"
 import { Trans } from "react-i18next"
 
 import { VERBOSE } from "@/CONSTANTS"
-import { Link } from "react-router-dom"
+import { Link } from "react-router"
 import TabularClassificationDatasetProcessForm from "@pages/playground/0_TabularClassification/TabularClassificationDatasetProcessForm"
 import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from "@/CONSTANTS_ACTIONS"
 import * as _Types from "@core/types"
-/**
- * @typedef PropsTabularClassificationDatasetProcess
- * @property {_Types.DatasetProcessed_t[]} datasets
- * @property {React.Dispatch<React.SetStateAction<Array<_Types.DatasetProcessed_t>>>} setDatasets
- * @property {number} datasetIndex
- * @property {React.Dispatch<React.SetStateAction<number>>} setDatasetIndex
- */
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
-type PropsTabularClassificationDatasetProcess = {
-  datasets   : { index: number, datasets: _Types.DatasetProcessed_t[] }
-  setDatasets: React.Dispatch<React.SetStateAction<{ index: number, datasets: _Types.DatasetProcessed_t[] }>>
-}
 
 /**
  *
  * @param {PropsTabularClassificationDatasetProcess} props
  * @returns
  */
-export default function TabularClassificationDatasetProcess(props: PropsTabularClassificationDatasetProcess) {
-  const { datasets, setDatasets } = props
+export default function TabularClassificationDatasetProcess() {
+    const { datasets } = useTabularClassificationContext()
 
   const isFileUploaded = () => {
     if (datasets.datasets.length > 0 && datasets.index >= 0) {
-      console.log({ dataset: datasets })
-      return datasets.datasets[datasets.index] && datasets.datasets[datasets.index].is_dataset_upload
+          return datasets.datasets[datasets.index] && datasets.datasets[datasets.index].is_dataset_upload
     }
   }
 
@@ -52,10 +41,7 @@ export default function TabularClassificationDatasetProcess(props: PropsTabularC
           )}
           {isFileUploaded() && (
             <>
-              <TabularClassificationDatasetProcessForm
-                datasets={datasets}
-                setDatasets={setDatasets}
-              />
+              <TabularClassificationDatasetProcessForm />
             </>
           )}
         </Card.Body>

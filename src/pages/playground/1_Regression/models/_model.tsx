@@ -1,8 +1,6 @@
-import { ACTIONS, LIFECYCLE } from "react-joyride"
 
 import * as _Types from "@core/types"
-import { delay } from "@utils/utils"
-import Errors from "@shared/Errors"
+import { buildJoyride } from '@components/joyride/buildJoyride'
 import type { TFunction } from "i18next"
 
 export default abstract class I_MODEL_REGRESSION {
@@ -69,123 +67,19 @@ export default abstract class I_MODEL_REGRESSION {
    * @return {_Types.Joyride_t}
    */
   JOYRIDE(): _Types.Joyride_t {
-    const handleJoyrideCallback = async (data: any) => {
-      const { action, lifecycle, step /*, status, type*/ } = data
-      const { target } = step
-      // const nextStepIndex = index + (action === ACTIONS.PREV ? -1 : 1)
-
-      if ([ACTIONS.UPDATE.toString()].includes(action) && [LIFECYCLE.TOOLTIP.toString()].includes(lifecycle)) {
-        switch (target) {
-          case ".joyride-step-1-manual": {
-            this.setAccordionActive(["manual"])
-            break
-          }
-          case ".joyride-step-2-dataset-info": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-3-dataset": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-4-dataset-plot": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-5-layer": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-6-editor-layers": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-7-editor-trainer": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-8-list-of-models": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          case ".joyride-step-9-predict-visualization": {
-            this.setAccordionActive(["manual", "dataset_info"])
-            break
-          }
-          default: {
-            console.warn("Error, option not valid")
-            break
-          }
-        }
-        await delay(500)
-        const isDispatchedEvent = window.dispatchEvent(new Event("resize"))
-        if (!isDispatchedEvent) {
-          Errors.notDispatchedEvent()
-        }
-      }
-    }
-
-    const prefix = "datasets-models.1-regression.joyride.steps."
-    return {
-      run                  : false,
-      continuous           : true,
-      handleJoyrideCallback: handleJoyrideCallback,
-      steps                : [
-        {
-          title    : this.t(prefix + "manual.title"),
-          content  : this.t(prefix + "manual.content"),
-          target   : ".joyride-step-1-manual",
-          placement: "top",
-        },
-        {
-          title    : this.t(prefix + "dataset-info.title"),
-          content  : this.t(prefix + "dataset-info.content"),
-          target   : ".joyride-step-2-dataset-info",
-          placement: "top",
-        },
-        {
-          title    : this.t(prefix + "pre-process-dataset.title"),
-          content  : this.t(prefix + "pre-process-dataset.content"),
-          target   : ".joyride-step-3-pre-process-dataset",
-          placement: "top",
-        },
-        {
-          title    : this.t(prefix + "dataset.title"),
-          content  : this.t(prefix + "dataset.content"),
-          target   : ".joyride-step-4-dataset",
-          placement: "top",
-        },
-        {
-          title    : this.t(prefix + "layer-visualizer.title"),
-          content  : this.t(prefix + "layer-visualizer.content"),
-          target   : ".joyride-step-5-layer",
-          placement: "top",
-        },
-        {
-          title    : this.t(prefix + "layer-editor.title"),
-          content  : this.t(prefix + "layer-editor.content"),
-          target   : ".joyride-step-6-editor-layers",
-          placement: "right",
-        },
-        {
-          title    : this.t(prefix + "params-editor.title"),
-          content  : this.t(prefix + "params-editor.content"),
-          target   : ".joyride-step-7-editor-trainer",
-          placement: "left-start",
-        },
-        {
-          title    : this.t(prefix + "list-of-models.title"),
-          content  : this.t(prefix + "list-of-models.content"),
-          target   : ".joyride-step-8-list-of-models",
-          placement: "bottom",
-        },
-        {
-          title    : this.t(prefix + "predict-and-visualizer.title"),
-          content  : this.t(prefix + "predict-and-visualizer.content"),
-          target   : ".joyride-step-9-predict-visualization",
-          placement: "top",
-        },
-      ],
-    }
+    // Cada paso abre las secciones del acordeón donde está su elemento
+    const openManual = () => this.setAccordionActive(['manual'])
+    const openDatasetInfo = () => this.setAccordionActive(['manual', 'dataset_info'])
+    return buildJoyride(this.t, 'datasets-models.1-regression.joyride.steps.', [
+      { key: 'manual', target: '.joyride-step-1-manual', placement: 'top', onShow: openManual },
+      { key: 'dataset-info', target: '.joyride-step-2-dataset-info', placement: 'top', onShow: openDatasetInfo },
+      { key: 'pre-process-dataset', target: '.joyride-step-3-pre-process-dataset', placement: 'top', onShow: openDatasetInfo },
+      { key: 'dataset', target: '.joyride-step-4-dataset', placement: 'top', onShow: openDatasetInfo },
+      { key: 'layer-visualizer', target: '.joyride-step-5-layer', placement: 'top', onShow: openDatasetInfo },
+      { key: 'layer-editor', target: '.joyride-step-6-editor-layers', placement: 'right', onShow: openDatasetInfo },
+      { key: 'params-editor', target: '.joyride-step-7-editor-trainer', placement: 'left-start', onShow: openDatasetInfo },
+      { key: 'list-of-models', target: '.joyride-step-8-list-of-models', placement: 'bottom', onShow: openDatasetInfo },
+      { key: 'predict-and-visualizer', target: '.joyride-step-9-predict-visualization', placement: 'top', onShow: openDatasetInfo },
+    ])
   }
 }

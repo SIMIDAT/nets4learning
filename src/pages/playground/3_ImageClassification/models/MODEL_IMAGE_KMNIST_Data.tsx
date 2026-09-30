@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs'
+import { VERBOSE } from '@/CONSTANTS'
 
 const IMAGE_SIZE = 784
 const NUM_CLASSES = 10
@@ -91,7 +92,7 @@ export class KmnistData {
     this.trainLabels = this.datasetLabels.slice(0, NUM_CLASSES * NUM_TRAIN_ELEMENTS)
     this.testLabels = this.datasetLabels.slice(NUM_CLASSES * NUM_TRAIN_ELEMENTS)
 
-    console.log({
+    if (VERBOSE) console.debug({
       trainImages: this.trainImages,
       testImages : this.testImages,
       trainLabels: this.trainLabels,

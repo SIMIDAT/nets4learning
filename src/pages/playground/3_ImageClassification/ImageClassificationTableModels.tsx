@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { Table, Card, Button, Container, Row, Col, Pagination } from 'react-bootstrap'
+import { Table, Card, Button, Container, Row, Col } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { parseIDOptimizer, parseLogs, parseLossAndMetric } from '@core/history/utils'
+import { parseLogs } from '@core/history/utils'
+import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
+import N4LPagination from '@components/table/N4LPagination'
 
 type ImageClassificationTableModelsProps = {
   GeneratedModels: ImageClassificationGeneratedModel_t[],
@@ -26,7 +28,6 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
   const prefix = 'generator.table-models.'
 
   const [activePage, setActivePage] = useState(0)
-  const startPage = 0
 
   const showTable = GeneratedModels.length > 0
   const pageCount = Math.ceil(GeneratedModels.length / rowsPerPage)
@@ -106,14 +107,14 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                                 return <span key={index2} className={'n4l-table-cell'}><small>{value._class}</small><br /></span>
                               })}
                           </td>
-                          <td><span className={'n4l-table-cell'}><small>{parseIDOptimizer(value.params.id_optimizer)}</small></span></td>
-                          <td><span className={'n4l-table-cell'}><small>{parseLossAndMetric(value.params.id_loss)}</small></span></td>
+                          <td><span className={'n4l-table-cell'}><small>{nnLabel(value.params.id_optimizer)}</small></span></td>
+                          <td><span className={'n4l-table-cell'}><small>{nnLabel(value.params.id_loss)}</small></span></td>
                           <td>
                             {value.params.id_metrics_list
                               .map((metric, index2) => {
                                 return <span key={index2} className={'n4l-table-cell'}>
                                   <small>
-                                    {parseLossAndMetric(metric)}</small><br />
+                                    {nnLabel(metric)}</small><br />
                                 </span>
                               })}
                           </td>
@@ -141,64 +142,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
             </Row>
             <Row>
               <Col>
-                <Pagination size="sm" className={'justify-content-center'}>
-                  <Pagination.First
-                    disabled={!(activePage > 0)}
-                    onClick={() => handleClick_ChangePage(0)} />
-
-                  <Pagination.Prev
-                    disabled={!(activePage - 1 >= startPage)}
-                    onClick={() => handleClick_ChangePage(activePage - 1)} />
-
-                  <Pagination.Item
-                    disabled={!(activePage - 3 >= startPage)}
-                    onClick={() => handleClick_ChangePage(activePage - 3)}>
-                    {(activePage - 3 >= startPage) ? activePage - 3 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    disabled={!(activePage - 2 >= startPage)}
-                    onClick={() => handleClick_ChangePage(activePage - 2)}>
-                    {(activePage - 2 >= startPage) ? activePage - 2 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    disabled={!(activePage - 1 >= startPage)}
-                    onClick={() => handleClick_ChangePage(activePage - 1)}>
-                    {(activePage - 1 >= startPage) ? activePage - 1 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    active={true}>
-                    {activePage}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    disabled={!(activePage + 1 < pageCount)}
-                    onClick={() => handleClick_ChangePage(activePage + 1)}>
-                    {(activePage + 1 < pageCount) ? activePage + 1 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    disabled={!(activePage + 2 < pageCount)}
-                    onClick={() => handleClick_ChangePage(activePage + 2)}>
-                    {(activePage + 2 < pageCount) ? activePage + 2 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Item
-                    disabled={!(activePage + 3 < pageCount)}
-                    onClick={() => handleClick_ChangePage(activePage + 3)}>
-                    {(activePage + 3 < pageCount) ? activePage + 3 : '-'}
-                  </Pagination.Item>
-
-                  <Pagination.Next
-                    disabled={!(activePage + 1 < pageCount)}
-                    onClick={() => handleClick_ChangePage(activePage + 1)} />
-
-                  <Pagination.Last
-                    disabled={!(activePage + 1 <= pageCount - 1)}
-                    onClick={() => handleClick_ChangePage(pageCount - 1)} />
-                </Pagination>
+                <N4LPagination activePage={activePage} pageCount={pageCount} onChange={handleClick_ChangePage} />
               </Col>
             </Row>
           </>}

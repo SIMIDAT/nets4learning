@@ -250,99 +250,8 @@ export function DataFrameTransform(
   dataframe: dfd.DataFrame,
   dataframe_transforms: Array<_Types.DataFrameColumnTransform_t>
 ): dfd.DataFrame {
-  const dataframe_transform = dataframe.copy();
-  for (const { column_name, column_transform, match } of dataframe_transforms) {
-    switch (column_transform) {
-      case "one-hot-encoder": {
-        const oneHotEncoder = new dfd.OneHotEncoder();
-        const encoder = oneHotEncoder.fit(dataframe_transform[column_name]);
-        const new_serie = encoder.transform(
-          dataframe_transform[column_name].values
-        );
-        dataframe_transform.addColumn(column_name, new_serie, {
-          inplace: true,
-        });
-        break;
-      }
-      case "label-encoder": {
-        const labelEncoder = new dfd.LabelEncoder();
-        const encoder = labelEncoder.fit(dataframe_transform[column_name]);
-        const new_serie = encoder.transform(
-          dataframe_transform[column_name].values
-        );
-        dataframe_transform.addColumn(column_name, new_serie, {
-          inplace: true,
-        });
-        dataframe_transform.asType(column_name, "int32", { inplace: true });
-        break;
-      }
-      case "int32": {
-        break;
-      }
-      case "float32": {
-        break;
-      }
-      case "string": {
-        break;
-      }
-      case "drop_?": {
-        console.debug("TODO");
-        break;
-      }
-      case "replace_?_NaN": {
-        if (VERBOSE)
-          console.debug(`replace_${column_name}_?_NaN`, {
-            _dataframe: dataframe_transform,
-            column_name,
-            c         : dataframe_transform[column_name],
-          });
-        const new_serie = dataframe_transform[column_name].apply((val: string) => {
-          if (val === "?") {
-            if (VERBOSE) console.debug("FOUND");
-            return NaN;
-          }
-          return val;
-        });
-        dataframe_transform.addColumn(column_name, new_serie, {
-          inplace: true,
-        });
-        break;
-      }
-      case "replace_<match>_NaN": {
-        if (VERBOSE)
-          console.debug(`replace_${column_name}_${match}_NaN`, {
-            _dataframe: dataframe_transform,
-            column_name,
-            c         : dataframe_transform[column_name],
-          });
-        const new_serie = dataframe_transform[column_name].apply((val: string) => {
-          if (val === match) {
-            return Number.NaN;
-          }
-          return val;
-        });
-        dataframe_transform.addColumn(column_name, new_serie, {
-          inplace: true,
-        });
-        break;
-      }
-      case "drop": {
-        dataframe_transform.drop({ columns: [column_name], inplace: true });
-        break;
-      }
-      case "dropNa": {
-        dataframe_transform.dropNa({ axis: 1, inplace: true });
-        break;
-      }
-      default: {
-        console.warn("Error, option not valid", {
-          column_transform,
-          column_name,
-        });
-      }
-    }
-  }
-  return dataframe_transform;
+  // Misma transformación, sin quedarse con los encoders
+  return DataFrameTransformAndEncoder(dataframe, dataframe_transforms).dataframe_processed;
 }
 
 /**
@@ -424,9 +333,8 @@ export function DataFrameDescribePlot(
  * @param {dfd.DataFrame} dataframe
  * @return {Array<Array<string|number|boolean>>}
  */
-export function DataFrameIterRows(dataframe: dfd.DataFrame) {
-  // @ts-ignore
-  return dataframe.$data;
+export function DataFrameIterRows(dataframe: dfd.DataFrame): Array<Array<string | number | boolean>> {
+  return dataframe.values as Array<Array<string | number | boolean>>;
 }
 
 /**
@@ -486,7 +394,7 @@ export function DataFrameTransformAndEncoder(
         break;
       }
       case "drop_?": {
-        console.debug("TODO");
+        console.warn(`The "drop_?" transform is not implemented (column ${column_name})`);
         break;
       }
       case "replace_?_NaN": {
@@ -559,9 +467,8 @@ export function DataFrameSetCellValue(
   column_name: string,
   value: number | string
 ): dfd.DataFrame {
-  const oldValuesRows = dataframe.loc({ rows: [row] }).values[0];
+  const oldValuesRows = dataframe.loc({ rows: [row] }).values[0] as Array<string | number | boolean>;
   const columnIndex = dataframe.columns.indexOf(column_name);
-  // @ts-ignore
   const newValuesRows = Array.from(oldValuesRows);
   newValuesRows[columnIndex] = value;
   const df_void = new dfd.DataFrame([], {

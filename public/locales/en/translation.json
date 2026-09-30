@@ -1359,6 +1359,10 @@
     }
   },
   "dataframe-plot": {
+    "warning": {
+      "no-columns": "There are no columns available to plot.",
+      "unexpected": "The plot could not be drawn. See the console for details."
+    },
     "title": "DataFrame | Plot",
     "info": "Information",
     "description": {
@@ -1450,6 +1454,9 @@
       }
     },
     "line-charts": {
+      "warning": {
+        "config": "The current configuration is not valid for a line chart."
+      },
       "title": "Line Charts",
       "description": {
         "intro": {
@@ -1470,6 +1477,9 @@
       }
     },
     "pie-charts": {
+      "warning": {
+        "labels": "Select the column for the pie chart labels in the configuration."
+      },
       "title": "Pie Charts",
       "description": {
         "intro": {
@@ -1490,6 +1500,9 @@
       }
     },
     "scatter-plots": {
+      "warning": {
+        "axes": "Select the X and Y axis columns in the configuration."
+      },
       "title": "Scatter Plots",
       "description": {
         "intro": {
@@ -1544,6 +1557,9 @@
       }
     },
     "violin-plots": {
+      "warning": {
+        "index": "Select at least one column for the violin plot in the configuration."
+      },
       "title": "Violin Plots",
       "description": {
         "intro": {

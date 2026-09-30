@@ -1,25 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import N4LModal from '@components/modal/N4LModal'
 import { Container, Row, Col, Button, ButtonGroup, Tabs, Tab } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ASL_bibtex, SSL_bibtex } from './MODEL_6_HAND_SIGN_INFO'
 
 export function HandSignInfo() {
   const [showModal, setShowModal] = useState(false)
-  const [localLanguage, setLocalLanguage] = useState(localStorage.getItem('language') ?? 'en')
-
-  useEffect(() => {
-    function checkUserData() {
-      const item = localStorage.getItem('language')
-      if (item) {
-        setLocalLanguage(item)
-      }
-    }
-    window.addEventListener('storage', checkUserData)
-    return () => {
-      window.removeEventListener('storage', checkUserData)
-    }
-  }, [])
+  const { i18n } = useTranslation()
+  // Pestaña de la lengua de signos del idioma activo (española en español, americana en los demás);
+  // el usuario puede cambiarla, y vuelve a la del idioma si este cambia
+  const languageTab = i18n.language === 'es' ? 'es' : 'en'
+  const [localLanguage, setLocalLanguage] = useState(languageTab)
+  const [prevLanguageTab, setPrevLanguageTab] = useState(languageTab)
+  if (languageTab !== prevLanguageTab) {
+    setPrevLanguageTab(languageTab)
+    setLocalLanguage(languageTab)
+  }
 
 
   const title = <>

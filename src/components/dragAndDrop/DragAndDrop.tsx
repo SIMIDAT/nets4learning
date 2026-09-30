@@ -69,8 +69,8 @@ export default function DragAndDrop (props: DragAndDropProps) {
     text,
     labelFiles = 'Files',
     multiple = false,
-    function_DropAccepted = (files, event) => console.log('function_DropAccepted', { files, event }),
-    function_DropRejected = (files, event) => console.log('function_DropRejected', { files, event }),
+    function_DropAccepted = () => {},
+    function_DropRejected = () => {},
   } = props
   const { t } = useTranslation()
 

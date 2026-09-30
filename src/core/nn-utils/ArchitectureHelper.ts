@@ -1,6 +1,6 @@
 import type { IdLoss_t, IdLossAndMetric_t, IdMetric_t, IdOptimizer_t, LossAndMetricMap_t, LossMap_t, MetricMap_t, TrainMap_t } from '@/types/nn-types';
 import * as tfjs from '@tensorflow/tfjs'
-import { isProduction } from '@utils/utils'
+import { VERBOSE } from '@/CONSTANTS'
 
 type Params_t = {
   learningRate?: number;
@@ -19,7 +19,7 @@ const DEFAULT_PARAMS: Params_t = {
  * @returns {Optimizer_t}
  */
 export function createOptimizer(idOptimizer: IdOptimizer_t, params: Params_t = DEFAULT_PARAMS): tfjs.Optimizer {
-  if (!isProduction()) console.debug('>> createOptimizer', { idOptimizer, params })
+  if (VERBOSE) console.debug('>> createOptimizer', { idOptimizer, params })
 
   const { learningRate, momentum } = params
   if (learningRate === undefined) {
@@ -60,7 +60,7 @@ export function createOptimizer(idOptimizer: IdOptimizer_t, params: Params_t = D
  * @returns {Loss_t} loss
  */
 export function createLoss(idLoss: IdLoss_t, params: any) {
-  if (!isProduction()) console.debug('>> createLoss', { idLoss, params })
+  if (VERBOSE) console.debug('>> createLoss', { idLoss, params })
   //
 
   // https://github.com/tensorflow/tfjs/issues/1315
@@ -111,7 +111,7 @@ export function createLoss(idLoss: IdLoss_t, params: any) {
  * @returns {Loss_t} loss
  */
 export function createLossAndMetrics(idLossAndMetric_t: IdLossAndMetric_t, params: any) {
-  if (!isProduction()) console.debug('>> createLossAndMetrics', { idLossAndMetric_t, params })
+  if (VERBOSE) console.debug('>> createLossAndMetrics', { idLossAndMetric_t, params })
   //
 
   // https://github.com/tensorflow/tfjs/issues/1315
@@ -183,9 +183,7 @@ export function createLossAndMetrics(idLossAndMetric_t: IdLossAndMetric_t, param
  * @returns {Metric_t} metric
  */
 export function createMetrics(idMetrics: IdMetric_t | IdMetric_t[], params: any) {
-  if (!isProduction()) {
-    console.debug('>> createMetrics', { idMetrics, params })
-  }
+  if (VERBOSE) console.debug('>> createMetrics', { idMetrics, params })
   const metricMap: MetricMap_t = {
     'binaryAccuracy'                     : "binaryAccuracy",
     'binaryCrossentropy'                 : "binaryCrossentropy",
@@ -225,7 +223,7 @@ export function createMetrics(idMetrics: IdMetric_t | IdMetric_t[], params: any)
 }
 
 export function createMetricsList(idMetricsList: IdMetric_t[], params: any) {
-  if (!isProduction()) console.debug('>> createMetricsList', { idMetricsList, params })
+  if (VERBOSE) console.debug('>> createMetricsList', { idMetricsList, params })
 
   const metricMap: Partial<MetricMap_t> = {
     'binaryAccuracy'             : "binaryAccuracy",
@@ -242,7 +240,7 @@ export function createMetricsList(idMetricsList: IdMetric_t[], params: any) {
   }
 
   const metrics = idMetricsList.map((idMetric: IdMetric_t) => metricMap[idMetric] || 'categoricalAccuracy')
-  if (!isProduction()) console.debug(metrics)
+  if (VERBOSE) console.debug(metrics)
   return metrics
 }
 

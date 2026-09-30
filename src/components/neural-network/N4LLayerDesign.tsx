@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Form } from 'react-bootstrap'
 
@@ -7,6 +7,7 @@ import * as _Types from '@core/types'
 import type { Layer_t as ImageLayer_t } from '@/types/types'
 import { VERBOSE } from '@/CONSTANTS'
 import NeuralNetwork from './NeuralNetwork'
+import type { Network } from 'react-vis-graph-wrapper'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import { NEURAL_NETWORK_MODES } from './neural_network'
 
@@ -43,7 +44,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
   const { t } = useTranslation()
 
   const [mode, setMode] = useState<"EXTEND" | "COMPACT">(NEURAL_NETWORK_MODES.COMPACT)
-  const networkRef = useRef<typeof NeuralNetwork>(null)
+  const networkRef = useRef<Network | undefined>(undefined)
 
   const handleChange_mode = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedMode = e.target.value as "EXTEND" | "COMPACT"

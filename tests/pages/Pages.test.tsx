@@ -1,13 +1,12 @@
 import { render, waitFor } from '@testing-library/react'
-import { renderWithRouter } from '../setup/utils'
-import App from '@/App'
+import { renderApp } from '../setup/utils'
 import Glossary from '@pages/glossary/Glossary'
 import Datasets from '@pages/datasets/Datasets'
 
 describe('Tests for Pages', () => {
 
   test('App / Home', async () => {
-    const { getByText, debug: _debug } = renderWithRouter(<App />, {})
+    const { getByText, debug: _debug } = renderApp({})
     // Esto se da por bueno, porque el primero que se carga es el Home
     await waitFor(() => expect(getByText(/header.home/i)).toBeInTheDocument())
     await waitFor(() => expect(getByText(/welcome-2/i)).toBeInTheDocument())
@@ -15,7 +14,7 @@ describe('Tests for Pages', () => {
   })
 
   test('App / Error404', async () => {
-    const { getByTestId, debug: _debug } = renderWithRouter(<App />, { path: ['other-page'] })
+    const { getByTestId, debug: _debug } = renderApp({ path: ['other-page'] })
     await waitFor(() => expect(getByTestId('Test-NotFoundPage')).toBeInTheDocument())
     // _debug()
   })
@@ -27,7 +26,7 @@ describe('Tests for Pages', () => {
   })
 
   test('App with lazy load / Glossary', async () => {
-    const { getByText, debug: _debug } = renderWithRouter(<App />, { path: ['glossary'] })
+    const { getByText, debug: _debug } = renderApp({ path: ['glossary'] })
     await waitFor(() => expect(getByText('pages.glossary.title')).toBeInTheDocument())
     // _debug()
   })
@@ -39,7 +38,7 @@ describe('Tests for Pages', () => {
   })
 
   test('App with lazy load / Datasets', async () => {
-    const { getByText, debug: _debug } = renderWithRouter(<App />, { path: ['datasets'] })
+    const { getByText, debug: _debug } = renderApp({ path: ['datasets'] })
     await waitFor(() => expect(getByText(/datasets.title/i)).toBeInTheDocument())
     // _debug()
   })

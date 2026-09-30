@@ -115,8 +115,7 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
                 <Button
                   variant={'primary'}
                   onClick={() => {
-                    console.log('Validate Image Upload')
-                    const canvas = canvas_image_ref.current
+                                        const canvas = canvas_image_ref.current
                     const canvas_small = canvas_image_28x28_ref.current
                     if (canvas === null || canvas_small === null) {
                       console.error('Canvas, context, or small canvas is null')

@@ -8,16 +8,18 @@ const DEFAULT_ID_OPTIMIZATION: IdOptimizer_t = 'adam'
 const DEFAULT_ID_LOSS: IdLoss_t | IdMetric_t = 'categoricalCrossentropy'
 const DEFAULT_ID_METRICS: (IdLoss_t | IdMetric_t)[] = ['categoricalCrossentropy']
 
-type BarData_t = {
-  labels  : number[],
+/** Datos del gráfico de barras con la predicción (uno o varios colores por serie) */
+export type BarChartData_t = {
+  labels  : Array<string | number>,
   datasets: {
     label          : string,
     data           : number[],
-    backgroundColor: string[],
-    borderColor    : string[],
+    backgroundColor: string | string[],
+    borderColor    : string | string[],
     borderWidth    : number,
   }[],
 }
+type BarData_t = BarChartData_t & { datasets: { backgroundColor: string[], borderColor: string[] }[] }
 const DEFAULT_BAR_DATA: BarData_t = {
   labels  : [],
   datasets: [{

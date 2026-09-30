@@ -1,9 +1,13 @@
 import type { TFunction } from "i18next"
 
+/** Lo que se puede pasar a un detector: una imagen subida, un fotograma de la webcam o un canvas */
+export type DetectionInput_t = ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
+
 export default abstract class I_MODEL_OBJECT_DETECTION {
   TITLE                  : string = ""
   i18n_TITLE             : string = ""
-  _modelDetector         : any | null = null
+  // Cada modelo guarda aquí el detector de su librería y declara su tipo concreto
+  _modelDetector         : unknown = null
   mirror                 : boolean = false
   usesTensorForPrediction: boolean = true
   faces                  : boolean = false
@@ -19,22 +23,13 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
 
   async ENABLE_MODEL() {}
 
-  /**
-   *
-   * @param {any} _input_image_or_video
-   * @param {any} _config
-   * @returns  {Promise<any[]>}
-   */
-  async PREDICTION(_input_image_or_video: any, _config: any): Promise<any[]> {
+  /** Detecciones sobre la entrada; cada modelo concreta el tipo de sus detecciones */
+  async PREDICTION(_input_image_or_video: DetectionInput_t, _config?: Record<string, unknown>): Promise<unknown[]> {
     return []
   }
 
-  /**
-   *
-   * @param {CanvasRenderingContext2D} _ctx
-   * @param {any} _predictions
-   */
-  RENDER(_ctx: CanvasRenderingContext2D, _predictions: any) {}
+  /** Dibuja las detecciones sobre el canvas */
+  RENDER(_ctx: CanvasRenderingContext2D, _predictions?: unknown[]) {}
 
   // region EXPLICABILIDAD
   // SHAP explica un número por cada "etiqueta": tapa trozos de la imagen, vuelve a predecir y
@@ -52,8 +47,8 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
    * Etiquetas que se explican, a partir de las detecciones de la imagen original.
    * Por defecto, las clases detectadas.
    */
-  EXPLAIN_LABELS(detections: any[]): string[] {
-    const classes = (detections ?? []).map((d) => d?.class).filter((c): c is string => typeof c === "string")
+  EXPLAIN_LABELS(detections: unknown[]): string[] {
+    const classes = (detections ?? []).map((d) => (d as { class?: unknown } | null)?.class).filter((c): c is string => typeof c === "string")
     return Array.from(new Set(classes))
   }
 
@@ -61,10 +56,11 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
    * Convierte una predicción en un número por etiqueta (misma longitud y orden que `labels`);
    * 0 si la etiqueta no aparece. Por defecto, la mayor puntuación de las detecciones de cada clase.
    */
-  NORMALIZE_PREDICTIONS(predictions: any, labels: Array<string | number>): number[] {
+  NORMALIZE_PREDICTIONS(predictions: unknown, labels: Array<string | number>): number[] {
     const scores: number[] = new Array(labels.length).fill(0)
-    for (const det of Array.isArray(predictions) ? predictions : []) {
-      const idx = labels.indexOf(det?.class)
+    for (const det of (Array.isArray(predictions) ? predictions : []) as Array<{ class?: string, score?: unknown } | null>) {
+      if (!det || det.class === undefined) continue
+      const idx = labels.indexOf(det.class)
       if (idx !== -1 && typeof det.score === "number") scores[idx] = Math.max(scores[idx], det.score)
     }
     return scores

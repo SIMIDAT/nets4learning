@@ -11,37 +11,8 @@ export default function FakeProgressBar(props: FakeProgressBarProps) {
   const { isLoading } = props
 
   const { t } = useTranslation()
-  // const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const [progress, setProgress] = useState<number>(0)
 
-  // CSS: animation: fadeHidden 1s ease-in-out forwards;
-  // useEffect(() => {
-  //   if (VERBOSE) console.debug('useEffect[]')
-  //   let step = 0.25
-  //   let current_progress = 0.1
-  //   if (isLoading === false) {
-  //     setProgress(100)
-  //     clearInterval(intervalRef.current)
-  //   }
-  //   intervalRef.current = setInterval(() => {
-  //     if (isLoading === false) {
-  //       setProgress(100)
-  //       clearInterval(intervalRef.current)
-  //     } else {
-  //       current_progress += step
-  //       const _progress = Math.round(Math.atan(current_progress) / (Math.PI / 2) * 100 * 1000) / 1000
-  //       setProgress(_progress)
-  //       if (_progress >= 100) {
-  //         clearInterval(intervalRef.current)
-  //       } else if (_progress >= 80) {
-  //         step = 0.15
-  //       } else if (_progress >= 70) {
-  //         step = 0.20
-  //       }
-  //     }
-  //   }, 1000)
-  //   return () => clearInterval(intervalRef.current)
-  // }, [isLoading])
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[isLoading]', isLoading);
 

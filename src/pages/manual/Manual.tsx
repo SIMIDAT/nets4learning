@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Accordion, Col, Container, Row } from "react-bootstrap"
 
@@ -102,7 +102,6 @@ export default function Manual() {
         }
       }
     }
-    console.log({ s: location })
     if (location.state?.action) {
       openManualInSection(location.state.action)
     }

@@ -190,7 +190,6 @@ export default function PreProcessDataFrame(props: PreProcessDataFrameProps_t) {
   }
 
   const exec = async () => {
-    console.log('exec ')
     let dataframe_processed = DataFrameDeepCopy(dataFrameOriginal)
     const dataframe_transforms: _Types.DataFrameColumnTransform_t[] = listColumnNameTransformations
       .filter(({ column_enable }) => column_enable)

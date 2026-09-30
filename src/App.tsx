@@ -1,14 +1,10 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Navigate } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import ReactGA from 'react-ga4'
 
 import Loading from './pages/Loading'
 import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
-// __TESTS__
-// import TestPageEasy from '@pages/TestPageEasy'
-// import TestPageAdvanced from '@pages/TestPageAdvanced'
 
 import './ConfigChartJS'
 
@@ -23,12 +19,14 @@ const PageDatasets = lazy(() => import( './pages/datasets/Datasets'))
 const PageAnalyzeDataFrame = lazy(() => import( './pages/analyze/AnalyzeDataFrame'))
 const PageContribute = lazy(() => import( './pages/contribute/Contribute'))
 const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditions'))
-const PageDebug = lazy(() => import( './pages/debug/Debug'))
 const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
-// __TESTS__
-const TestPageEasy_lazy = lazy(() => import( '@pages/TestPageEasy'))
-const TestPageAdvanced_lazy = lazy(() => import( '@pages/TestPageAdvanced'))
+// Páginas de pruebas para desarrollo: no se publican en producción.
+// /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
+const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
+const PageDebug = /*#__PURE__*/ lazy(() => import( './pages/debug/Debug'))
+const TestPageEasy_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageEasy'))
+const TestPageAdvanced_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageAdvanced'))
 
 const VITE_PATH = import.meta.env.VITE_PATH
 const VITE_GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
@@ -36,7 +34,6 @@ const VITE_GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 function App() {
   
   useEffect(() => {
-    console.log('VITE_PATH:', VITE_PATH)
     ReactGA.initialize(VITE_GA_MEASUREMENT_ID)
   }, [])
 
@@ -61,12 +58,12 @@ function App() {
             <Route path={'/contribute/'} element={<PageContribute />}></Route>
             <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
             <Route path={'/version'} element={<PageVersion />}></Route>
-            <Route path={'/debug'} element={<PageDebug />}></Route>
 
-            {/* <Route path={'/test-page-easy'} element={<TestPageEasy />}></Route> */}
-            {/* <Route path={'/test-page-advanced/:id/:option/:example'} element={<TestPageAdvanced />}></Route> */}
-            <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
-            <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
+            {SHOW_DEV_PAGES && <>
+              <Route path={'/debug'} element={<PageDebug />}></Route>
+              <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
+              <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
+            </>}
 
             <Route path="/404" element={<PageNotFoundPage />} />
             <Route path="*" element={<Navigate to="/404" replace />} />

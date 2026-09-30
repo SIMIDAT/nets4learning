@@ -11,8 +11,8 @@ export function isMobile() {
 }
 
 export function isWebView() {
-  // @ts-ignore
-  const standalone = window.navigator?.standalone
+  // `standalone` solo existe en Safari de iOS (no es estándar)
+  const standalone = (window.navigator as Navigator & { standalone?: boolean }).standalone
   const userAgent = window.navigator.userAgent.toLowerCase()
   const safari = /safari/.test(userAgent)
   const ios = /iphone|ipod|ipad/.test(userAgent)
@@ -28,8 +28,7 @@ export function isWebView() {
   } else {
     if (userAgent.includes("wv")) {
       // Android webview
-      console.log("webview")
-      return true
+        return true
     } else {
       // Chrome
       return false
@@ -37,24 +36,7 @@ export function isWebView() {
   }
 }
 
-export function isProduction() {
-  return import.meta.env.VITE_ENVIRONMENT === "production"
-}
-
 export const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
-
-export function modificarPropiedad(objeto: any, clave: string, nuevoValor: any) {
-  const keys = clave.split(".")
-  const ultimaClave: string = keys.pop()!
-
-  for (const key of keys) {
-    objeto = objeto[key]
-  }
-
-  objeto[ultimaClave] = nuevoValor
-
-  return objeto
-}
 
 export function getRandomInt(max: number) {
   return Math.floor(Math.random() * max)

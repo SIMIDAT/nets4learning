@@ -1,12 +1,11 @@
 import { waitFor, waitForElementToBeRemoved, screen } from '@testing-library/react'
-import { renderWithRouter } from './setup/utils'
+import { renderApp, renderWithRouter } from './setup/utils'
 import TestPageEasy from '@pages/TestPageEasy'
-import App from '@/App'
 
 describe('App', () => {
 
   test('renders App', async () => {
-    const { getByText } = renderWithRouter(<App />)
+    const { getByText } = renderApp()
     await waitFor(() => {})
     await waitForElementToBeRemoved(() => screen.getByText(/Loading\.\.\./i))
     // expect(getByText(/Loading\.\.\./i)).toBeInTheDocument()

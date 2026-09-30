@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react'
-import { useParams } from 'react-router'
-import { useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
 import ReactGA from 'react-ga4'
@@ -113,7 +112,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
   useEffect(() => {
     if (dataset === UPLOAD) {
-      console.debug('Regression upload csv')
+      if (VERBOSE) console.debug('Regression upload csv')
     } else if (hasModel(MAP_LR_CLASSES, dataset)) {
       if (iModelInstance
         && datasets

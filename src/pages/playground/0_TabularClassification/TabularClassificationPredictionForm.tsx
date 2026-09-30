@@ -4,39 +4,22 @@ import { Trans, useTranslation } from 'react-i18next'
 import { VERBOSE } from '@/CONSTANTS'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import * as _Types from '@core/types'
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
-/**
- * @typedef {object} PropsTabularClassificationPredictionForm
- * @property {DatasetProcessed_t[]} datasets
- * @property {number} datasetIndex
- * @property {Array<_Types.N4LDataFrameType>} [inputDataToPredict = []]
- * @property {React.Dispatch<Array<_Types.N4LDataFrameType>>} setInputDataToPredict
- * @property {Array<_Types.N4LDataFrameType>} inputVectorToPredict
- * @property {React.Dispatch<Array<_Types.N4LDataFrameType>>} setInputVectorToPredict
- */
-type PropsTabularClassificationPredictionForm = {
-  datasets               : {index: number, datasets: _Types.DatasetProcessed_t[]},
-  inputDataToPredict?    : Array<_Types.N4LDataFrameType>,
-  setInputDataToPredict  : React.Dispatch<React.SetStateAction<Array<_Types.N4LDataFrameType>>>,
-  inputVectorToPredict   : Array<_Types.N4LDataFrameType>,
-  setInputVectorToPredict: React.Dispatch<React.SetStateAction<Array<_Types.N4LDataFrameType>>>,
-}
 
 /**
  * 
  * @param {PropsTabularClassificationPredictionForm} props 
  * @returns 
  */
-export default function TabularClassificationPredictionForm(props: PropsTabularClassificationPredictionForm) {
-  const {
+export default function TabularClassificationPredictionForm() {
+    const {
     datasets,
-
     inputDataToPredict = [],
     setInputDataToPredict,
-
     inputVectorToPredict,
-    setInputVectorToPredict
-  } = props
+    setInputVectorToPredict,
+  } = useTabularClassificationContext()
 
   const prefix = 'pages.playground.generator.dynamic-form-dataset.'
   const { t } = useTranslation()
@@ -168,7 +151,7 @@ export default function TabularClassificationPredictionForm(props: PropsTabularC
                   size={'sm'}
                   value={String(inputDataToPredict[index])}
                   onChange={(e) => handleChange_Select(e, column_name, index)}>
-                  {column_options
+                  {(column_options ?? [])
                     .map((option_value, option_index) => {
                       return <option key={column_name + '_option_' + option_index}
                         value={option_value.value}>

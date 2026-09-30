@@ -8,15 +8,15 @@ import * as tfvis from "@tensorflow/tfjs-vis"
 
 import alertHelper from "@utils/alertHelper"
 import type I_MODEL_TABULAR_CLASSIFICATION from "./models/_model"
+import type { TabularInstance_t } from "./models/_model"
 import { VERBOSE } from "@/CONSTANTS"
 import { MAP_TC_CLASSES } from "@pages/playground/0_TabularClassification/models"
-import { hasModel, loadModelClass } from "@core/models/modelRegistry"
+import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
 import ModelReviewTabularClassificationDatasetTable from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDatasetTable"
 import ModelReviewTabularClassificationDatasetInfo from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDatasetInfo"
 import ModelReviewTabularClassificationPredict from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredict"
 import ModelReviewTabularClassificationPredictForm from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm"
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
-import { UPLOAD } from "@/TASKS"
 import type { BasicPrediction_t, DatasetProcessed_t } from "@core/types"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
 import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
@@ -39,7 +39,7 @@ export default function ModelReviewTabularClassification(props: Props) {
   const [isButtonToPredictDisabled, setIsButtonToPredictDisabled] = useState(true)
 
   // Datos a predecir crudos
-  const [dataToPredict, setDataToPredict] = useState({})
+  const [dataToPredict, setDataToPredict] = useState<TabularInstance_t>({})
   // Datos a predecir después de codificar
   const [vectorToPredict, setVectorToPredict] = useState<number[]>([])
 
@@ -93,52 +93,41 @@ export default function ModelReviewTabularClassification(props: Props) {
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init]")
     const init = async () => {
-      await tfjs.ready()
-      // =========================
-      if (dataset === UPLOAD) {
-        console.error("Error, option not valid")
-      } else if (hasModel(MAP_TC_CLASSES, dataset)) {
-        try {
-          const _iModelClass = await loadModelClass(MAP_TC_CLASSES, dataset)
-          const _iModelInstance = new _iModelClass(t, () => {})
-          setIModelInstance(_iModelInstance)
-          setModel(await _iModelInstance.LOAD_LAYERS_MODEL({
-            onProgress: handleChange_onProgress,
-          }))
-          setDataToPredict(_iModelInstance.DATA_DEFAULT)
-          const _datasets: DatasetProcessed_t[] = await _iModelInstance.DATASETS()
-          if (!_datasets.length || !_datasets[0].data_processed) {
-            console.warn("No datasets available.")
-            return
-          }
-          const encoders = _datasets[0].data_processed.encoders
-          const _applyEncoders = DataFrameUtils.DataFrameApplyEncoders(
-            encoders,
-            _iModelInstance.DATA_DEFAULT,
-            _iModelInstance.DATA_DEFAULT_KEYS,
-          )
-          setVectorToPredict(_applyEncoders)
-          backgroundPool_ref.current = dataframeRowsToNumbers(_datasets[0].data_processed.dataframe_X.values)
-          setExplainMeta({
-            features: _iModelInstance.FORM.map((field) => formatFeatureName(field.name)),
-            classes : _iModelInstance.CLASSES,
-          })
-          setIsLoading(false)
-          setIsButtonToPredictDisabled(false)
-          await alertHelper.alertSuccess(t("model-loaded-successfully"))
-        } catch (e) {
-          console.error("Error, can't load model", { e })
+      const _iModelInstance = await createReviewModelInstance(MAP_TC_CLASSES, dataset, (ModelClass) => new ModelClass(t, () => {}), navigate)
+      if (_iModelInstance === null) return
+      try {
+        setIModelInstance(_iModelInstance)
+        setModel(await _iModelInstance.LOAD_LAYERS_MODEL({
+          onProgress: handleChange_onProgress,
+        }))
+        setDataToPredict(_iModelInstance.DATA_DEFAULT)
+        const _datasets: DatasetProcessed_t[] = await _iModelInstance.DATASETS()
+        if (!_datasets.length || !_datasets[0].data_processed) {
+          console.warn("No datasets available.")
+          return
         }
-      } else {
-        console.error("Error, model not valid", { ID: dataset })
-        await alertHelper.alertError("Error, option not valid")
-        navigate("/404")
+        const encoders = _datasets[0].data_processed.encoders
+        const _applyEncoders = DataFrameUtils.DataFrameApplyEncoders(
+          encoders,
+          _iModelInstance.DATA_DEFAULT,
+          _iModelInstance.DATA_DEFAULT_KEYS,
+        )
+        setVectorToPredict(_applyEncoders)
+        backgroundPool_ref.current = dataframeRowsToNumbers(_datasets[0].data_processed.dataframe_X.values)
+        setExplainMeta({
+          features: _iModelInstance.FORM.map((field) => formatFeatureName(field.name)),
+          classes : _iModelInstance.CLASSES,
+        })
+        setIsLoading(false)
+        setIsButtonToPredictDisabled(false)
+        await alertHelper.alertSuccess(t("model-loaded-successfully"))
+      } catch (e) {
+        console.error("Error, can't load model", { e })
       }
-      // =========================
     }
 
     init().then((_r) => {
-      console.debug("init end")
+      if (VERBOSE) console.debug("init end")
     })
   }, [dataset, navigate, t])
 
@@ -168,10 +157,10 @@ export default function ModelReviewTabularClassification(props: Props) {
       const model_prediction_data = model_prediction.dataSync()
       const _prediction: BasicPrediction_t = {
         labels: iModelInstance.CLASSES,
-        data  : Array.from(model_prediction_data).map((item) => item.toFixed(4)),
+        data  : Array.from(model_prediction_data).map((item) => Number(item.toFixed(4))),
       }
       predictedVector_ref.current = parse_vectorToPredict
-      predictedDisplay_ref.current = iModelInstance.DATA_DEFAULT_KEYS.map((key) => (dataToPredict as Record<string, string | number>)[key])
+      predictedDisplay_ref.current = iModelInstance.DATA_DEFAULT_KEYS.map((key) => dataToPredict[key])
       const probabilities = Array.from(model_prediction_data)
       setPredictedClassIndex(probabilities.indexOf(Math.max(...probabilities)))
       setPrediction(_prediction)
@@ -183,7 +172,7 @@ export default function ModelReviewTabularClassification(props: Props) {
     setIsButtonToPredictDisabled(false)
   }
 
-  const setExample = (example: Record<string, any>) => {
+  const setExample = (example: TabularInstance_t) => {
     setDataToPredict(example)
   }
 
@@ -195,7 +184,7 @@ export default function ModelReviewTabularClassification(props: Props) {
   // Ejemplo que coincide con los datos del formulario; -1 si no es ninguno (datos por defecto o editados a mano).
   // Así el selector nunca anuncia un ejemplo distinto del que se va a predecir, y se puede volver a elegir.
   const exampleIndex = iModelInstance?.LIST_EXAMPLES.findIndex((example) =>
-    iModelInstance.DATA_DEFAULT_KEYS.every((key) => String(example[key]) === String((dataToPredict as Record<string, unknown>)[key]))
+    iModelInstance.DATA_DEFAULT_KEYS.every((key) => String(example[key]) === String(dataToPredict[key]))
   ) ?? -1
 
   const handleClick_openSummary = async () => {

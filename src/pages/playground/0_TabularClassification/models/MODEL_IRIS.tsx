@@ -5,7 +5,7 @@ import * as dfd from 'danfojs'
 import * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
-import I_MODEL_TABULAR_CLASSIFICATION from './_model'
+import I_MODEL_TABULAR_CLASSIFICATION, { type LoadModelCallbacks_t, type TabularFormField_t } from './_model'
 import { TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
@@ -24,7 +24,7 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
     petal_length: 1.4,
     petal_width : 0.2
   }
-  FORM = [
+  FORM: TabularFormField_t[] = [
     { type: 'float32', name: 'sepal_length' },
     { type: 'float32', name: 'sepal_width' },
     { type: 'float32', name: 'petal_length' },
@@ -174,13 +174,8 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
     ]
   }
 
-  async LOAD_GRAPH_MODEL(callbacks: any) {
-    return await tfjs.loadGraphModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
-      onProgress: callbacks.onProgress
-    })
-  }
 
-  async LOAD_LAYERS_MODEL(callbacks: any) {
+  async LOAD_LAYERS_MODEL(callbacks: LoadModelCallbacks_t) {
     return await tfjs.loadLayersModel(import.meta.env.VITE_PATH + '/models/00-tabular-classification/iris/my-model-iris.json', {
       onProgress: callbacks.onProgress
     })

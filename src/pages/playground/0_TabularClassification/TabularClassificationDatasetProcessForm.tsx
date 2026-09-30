@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -9,6 +8,7 @@ import { VERBOSE } from '@/CONSTANTS'
 import { TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1, TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2 } from '@/CONSTANTS_DanfoJS'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import * as _Types from '@core/types'
+import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
 // @formatter:off
 const DEFAULT_OPTIONS = [
@@ -20,31 +20,25 @@ const DEFAULT_OPTIONS = [
 ]
 // @formatter:on
 
-/**
- * @typedef TabularClassificationDatasetProcessFormProps_t
- * @property {_Types.DatasetProcessed_t[]} datasets
- * @property {React.Dispatch<React.SetStateAction<_Types.DatasetProcessed_t[]>>} setDatasets
- * @property {number} datasetIndex
- */
-type TabularClassificationDatasetProcessFormProps_t = {
-  datasets   : { index: number, datasets: _Types.DatasetProcessed_t[] },
-  setDatasets: React.Dispatch<React.SetStateAction<{ index: number, datasets: _Types.DatasetProcessed_t[] }>>,
+/** Fila del formulario: la transformación elegida para una columna y su dtype original (se muestra al lado) */
+type ColumnTransformRow_t = {
+  column_name     : string
+  column_type     : _Types.DataFrameColumnType_t
+  column_transform: _Types.ColumnTransform_t
 }
+
 /** Estado inicial del formulario para un dataframe: el objetivo en la última columna y los textos con label encoder. */
 function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
   const _columns = dataframe_original.columns
 
-  const _dtypes = /** @type {_Types.DataFrameColumnType_t[]} */ (dataframe_original.dtypes)
+  const _dtypes = dataframe_original.dtypes as _Types.DataFrameColumnType_t[]
 
-  /**
-   * @type {_Types.DataFrameColumnNameAndType_t[]}
-   */
-  const _listColumnNameType = _columns.map((_, index) => {
+  const _listColumnNameType: _Types.DataFrameColumnNameAndType_t[] = _columns.map((_, index) => {
     return { column_name: _columns[index], column_type: _dtypes[index] }
   })
 
-  const _listTransformations = _listColumnNameType.map(({ column_name, column_type }) => {
-    const _column_transform = (column_type === 'string') ? 'label-encoder' : column_type
+  const _listTransformations: ColumnTransformRow_t[] = _listColumnNameType.map(({ column_name, column_type }) => {
+    const _column_transform = ((column_type === 'string') ? 'label-encoder' : column_type) as _Types.ColumnTransform_t
     return {
       column_name     : column_name,
       column_type     : column_type,
@@ -58,16 +52,8 @@ function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
   }
 }
 
-/**
- * @param {TabularClassificationDatasetProcessFormProps_t} props 
- * @returns 
- */
-export default function TabularClassificationDatasetProcessForm(props: TabularClassificationDatasetProcessFormProps_t) {
-  const {
-    datasets,
-    setDatasets,
-    datasetIndex,
-  } = props
+export default function TabularClassificationDatasetProcessForm() {
+    const { datasets, setDatasets } = useTabularClassificationContext()
   /**
    * @type {ReturnType<typeof useState<_Types.DataFrameColumnNameAndType_t[]>>}
    */
@@ -110,17 +96,17 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
           title: t('dataframe-original'),
         },
       })
-  }, [datasets, datasetIndex, t])
+  }, [datasets, t])
 
-  const handleChange_ColumnTransform = (e, columnName) => {
+  const handleChange_ColumnTransform = (e: React.ChangeEvent<HTMLSelectElement>, columnName: string) => {
     setListColumnNameTransformations((prevState) =>
       prevState.map((oldColumn) =>
-        (oldColumn.column_name === columnName) ? { ...oldColumn, column_transform: e.target.value } : oldColumn,
+        (oldColumn.column_name === columnName) ? { ...oldColumn, column_transform: e.target.value as _Types.ColumnTransform_t } : oldColumn,
       ),
     )
   }
 
-  const handleChange_ColumnNameTarget = (e) => {
+  const handleChange_ColumnNameTarget = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setColumnNameTarget(e.target.value)
     setListColumnNameTransformations((prevState) =>
       prevState.map((oldColumn) =>
@@ -134,25 +120,26 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
    * @param event
    * @return {Promise<void>}
    */
-  const handleSubmit_ProcessDataset = async (event) => {
+  const handleSubmit_ProcessDataset = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const dataframe_original = datasets.datasets[datasets.index].dataframe_original
     let dataframe_processed = DataFrameUtils.DataFrameDeepCopy(dataframe_original)
 
-    const encoders_map = DataFrameUtils.DataFrameEncoder(dataframe_original, listColumnNameTransformations)
-    dataframe_processed = DataFrameUtils.DataFrameTransform(dataframe_processed, listColumnNameTransformations)
+    const transforms: _Types.DataFrameColumnTransform_t[] = listColumnNameTransformations.map(({ column_name, column_transform }) => ({ column_name, column_transform }))
+    const encoders_map = DataFrameUtils.DataFrameEncoder(dataframe_original, transforms)
+    dataframe_processed = DataFrameUtils.DataFrameTransform(dataframe_processed, transforms)
     const dataframe_X = dataframe_processed.drop({ columns: [columnNameTarget] })
     const dataframe_y = dataframe_original[columnNameTarget]
 
     const labelEncoder = new dfd.LabelEncoder()
     const dataset_labelEncoder = labelEncoder.fit(dataframe_y.values)
-    // @ts-ignore
     const classes = Object.keys(dataset_labelEncoder.classes)
 
     let attributes = listColumnNameTransformations.map(({ column_name, column_transform }) => {
       if (column_transform === 'label-encoder') {
-        // @ts-ignore
-        const _options = Object.keys(encoders_map[column_name].encoder.classes).map((label) => ({ value: label, text: label }))
+        // Con label-encoder, DataFrameEncoder crea siempre un LabelEncoder
+        const encoder = encoders_map[column_name].encoder as dfd.LabelEncoder
+        const _options = Object.keys(encoder.classes).map((label) => ({ value: label, text: label }))
         return { type: column_transform, name: column_name, options: _options }
       } else {
         return { type: column_transform, name: column_name }
@@ -170,7 +157,9 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
     oneHotEncoder.fit(dataframe_y)
     const y = oneHotEncoder.transform(dataframe_y)
 
-    const data_processed = {
+    const data_processed: _Types.DataProcessed_t = {
+      dataframe_X       : dataframe_X,
+      dataframe_y       : dataframe_y,
       column_name_target: columnNameTarget,
       encoders          : encoders_map,
       scaler            : scaler,
@@ -198,7 +187,7 @@ export default function TabularClassificationDatasetProcessForm(props: TabularCl
               ..._dataset,
               is_dataset_processed: true,
               dataframe_processed : dataframe_processed,
-              dataset_transforms  : [...listColumnNameTransformations],
+              dataset_transforms  : transforms,
               data_processed      : data_processed,
             }
           }

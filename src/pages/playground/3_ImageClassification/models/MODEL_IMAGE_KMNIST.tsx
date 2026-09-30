@@ -2,6 +2,7 @@ import { Trans } from 'react-i18next'
 import * as Train_KMNIST from '@pages/playground/3_ImageClassification/custom/Train_KMNIST'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { Layer_t } from '@/types/types'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export type ParamsTrain_KMNIST_t = {
@@ -11,7 +12,7 @@ export type ParamsTrain_KMNIST_t = {
   idLoss       : IdLoss_t,
   idOptimizer  : IdOptimizer_t,
   idMetricsList: IdMetric_t[],
-  layers       : any[],
+  layers       : Layer_t[],
 }
 export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_CLASSIFICATION {
   static KEY = IC_MODEL_KEYS.KMNIST
@@ -72,7 +73,7 @@ export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_CLASSIFICATION {
     }
   }
 
-  DEFAULT_LAYERS() {
+  DEFAULT_LAYERS(): Layer_t[] {
     return [
       {
         _class    : 'conv2d',

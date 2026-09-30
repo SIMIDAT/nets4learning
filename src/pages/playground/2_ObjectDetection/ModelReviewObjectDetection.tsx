@@ -5,7 +5,7 @@ import { Camera as IconCamera } from 'react-bootstrap-icons'
 import ReactGA from 'react-ga4'
 import Webcam from 'react-webcam'
 import { Trans, useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import * as tfjs from '@tensorflow/tfjs'
 
 import { VERBOSE } from '@/CONSTANTS'
@@ -13,7 +13,7 @@ import { UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import FakeProgressBar from '@components/loading/FakeProgressBar'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
-import { hasModel, loadModelClass } from '@core/models/modelRegistry'
+import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
 import alertHelper from '@utils/alertHelper'
 import type I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@utils/utils'
@@ -29,7 +29,7 @@ import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectio
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
 tfjs.setBackend('webgl').then(() => {
-  console.debug('setBackend: WebGL')
+  if (VERBOSE) console.debug('setBackend: WebGL')
 })
 
 /**
@@ -110,11 +110,11 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const handleDevices = useCallback(async () => {
     if (VERBOSE) console.debug('useCallback[handleDevices]')
     if (!navigator?.mediaDevices?.getUserMedia) {
-      console.log('not support navigator?.mediaDevices?.getUserMedia')
+      console.warn('navigator.mediaDevices.getUserMedia is not supported')
       return
     }
     if (!navigator?.mediaDevices?.enumerateDevices) {
-      console.log('not support navigator?.mediaDevices?.enumerateDevices')
+      console.warn('navigator.mediaDevices.enumerateDevices is not supported')
       return
     }
     const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -148,7 +148,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         await handleDevices()
       }
       permission.onchange = async (ev) => {
-        console.log(`permission state has changed to ${permission.state}`, {
+        if (VERBOSE) console.debug(`permission state has changed to ${permission.state}`, {
           ev: ev,
         })
         setCameraPermission(permission.state)
@@ -176,26 +176,16 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         console.error('Error tensorflow backend webgl not installed in your browser')
         return
       }
-      // =========================
-      if (dataset === UPLOAD) {
-        console.error('Error, option not valid')
-      } else if (hasModel(MAP_OD_CLASSES, dataset)) {
-        try {
-          const _iModelClass = await loadModelClass(MAP_OD_CLASSES, dataset)
-          const _iModelInstance = new _iModelClass(t)
-          setIModelInstance(_iModelInstance)
-          await _iModelInstance.ENABLE_MODEL()
-          setLoading(false)
-          await alertHelper.alertSuccess(t('model-loaded-successfully'))
-        } catch (error) {
-          console.error('Error', error)
-        }
-      } else {
-        console.error('Error, option not valid', { ID: dataset })
-        await alertHelper.alertError('Error, option not valid')
-        navigate('/404')
+      const _iModelInstance = await createReviewModelInstance(MAP_OD_CLASSES, dataset, (ModelClass) => new ModelClass(t), navigate)
+      if (_iModelInstance === null) return
+      try {
+        setIModelInstance(_iModelInstance)
+        await _iModelInstance.ENABLE_MODEL()
+        setLoading(false)
+        await alertHelper.alertSuccess(t('model-loaded-successfully'))
+      } catch (error) {
+        console.error('Error', error)
       }
-      // =========================
     }
 
     init().then(() => undefined)
@@ -203,40 +193,6 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     return () => { }
   }, [dataset, t, navigate])
 
-  // useEffect(() => {
-  //   const eventListener = (event) => {
-  //     const type = event.target.type;
-  //     if (type.includes('landscape')) {
-  //       switch (ratioCamera) {
-  //         case 'ratio-9x16':
-  //           setRatioCamera('ratio-16x9');
-  //           break;
-  //         case 'ratio-3x4':
-  //           setRatioCamera('ratio-4x3');
-  //           break;
-  //         case 'ratio-2x3':
-  //           setRatioCamera('ratio-3x2');
-  //           break;
-  //       }
-  //     } else {
-  //       switch (ratioCamera) {
-  //         case 'ratio-16x9':
-  //           setRatioCamera('ratio-9x16');
-  //           break;
-  //         case 'ratio-4x3':
-  //           setRatioCamera('ratio-3x4');
-  //           break;
-  //         case 'ratio-3x2':
-  //           setRatioCamera('ratio-2x3');
-  //           break;
-  //       }
-  //     }
-  //   }
-  //   screen.orientation.addEventListener('change', eventListener);
-  //   return () => {
-  //     screen.orientation.removeEventListener('change', eventListener);
-  //   }
-  // }, [/*ratioCamera*/]);
 
   const processWebcam = useCallback(() => {
     if (
@@ -245,14 +201,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       WebCam_ref.current.video.readyState !== 4 ||
       typeof WebCam_ref.current === 'undefined'
     ) {
-      console.log('Webcam not ready')
       return null
     }
     if (
       canvas_ref.current === null ||
       typeof canvas_ref.current === 'undefined'
     ) {
-      console.log('Canvas not ready')
       return null
     }
     // Get Video Properties
@@ -288,7 +242,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[isCameraEnable]', { isCameraEnable })
     if (isCameraEnable === false) {
-      console.debug(`stop AnimationFrame(${requestAnimation_ref.current});`)
+      if (VERBOSE) console.debug(`stop AnimationFrame(${requestAnimation_ref.current});`)
       if (requestAnimation_ref.current !== null) {
         cancelAnimationFrame(requestAnimation_ref.current)
       }
@@ -318,7 +272,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         fpsInterval = 1000 / fps
         then = Date.now()
         await animate()
-        console.debug('start animation')
+        if (VERBOSE) console.debug('start animation')
       }
       startAnimating(fps)
     } catch (error) {
@@ -330,7 +284,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
     // Limpia la animación cuando el componente se desmonta
     return () => {
-      console.log(`delete AnimationFrame(${requestAnimation_ref.current});`)
+      if (VERBOSE) console.debug(`delete AnimationFrame(${requestAnimation_ref.current});`)
       if (requestAnimation_ref.current !== null) {
         cancelAnimationFrame(requestAnimation_ref.current)
       }
@@ -382,22 +336,18 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       console.error('WebCam_ref.current is null')
       return
     }
-    //const imageSrc = WebCam_ref.current.getScreenshot()
-    const imageSrc = WebCam_ref.current.getCanvas()?.toDataURL('image/png"') as string
-    const img = new Image()
-    img.src = imageSrc
-    // img.onload = () => {
-    // @ts-ignore
-    img.download = imageSrc
+    const imageSrc = WebCam_ref.current.getCanvas()?.toDataURL('image/png')
+    if (!imageSrc) {
+      console.error('Webcam canvas not available')
+      return
+    }
+    // Descarga la captura como fichero
     const a = document.createElement('a')
-    a.innerHTML = ' '
-    a.target = '_blank'
-    a.href = img.src
+    a.href = imageSrc
     a.download = 'Image'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
-    // }
   }
 
   const handleChangeFileUpload = async (_files: File[]) => {

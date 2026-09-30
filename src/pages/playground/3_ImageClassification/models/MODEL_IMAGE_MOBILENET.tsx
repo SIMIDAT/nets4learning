@@ -1,7 +1,10 @@
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import { Trans } from 'react-i18next'
 import * as tf_mobilenet from '@tensorflow-models/mobilenet'
-import { DEFAULT_BAR_DATA } from '@pages/playground/3_ImageClassification/CONSTANTS'
+import { DEFAULT_BAR_DATA, type BarChartData_t } from '@pages/playground/3_ImageClassification/CONSTANTS'
+
+/** Una clase predicha por MobileNet con su probabilidad */
+type MobileNetPrediction_t = { className: string, probability: number }
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export const LIST_OF_IMAGES_MOBILENET = [
@@ -62,24 +65,20 @@ export default class MODEL_IMAGE_MOBILENET extends I_MODEL_IMAGE_CLASSIFICATION 
     return await tf_mobilenet.load()
   }
 
-  async CLASSIFY(model: tf_mobilenet.MobileNet, imageData: ImageData): Promise<{predictions: any[], index: number}> {
+  async CLASSIFY(model: tf_mobilenet.MobileNet, imageData: ImageData): Promise<{predictions: MobileNetPrediction_t[], index: number}> {
     const predictions = await model.classify(imageData)
     return { predictions, index: 0 }
   }
 
-  async CLASSIFY_IMAGE(model: tf_mobilenet.MobileNet, imageData: ImageData): Promise<{predictions: any[], index: number}> {
+  async CLASSIFY_IMAGE(model: tf_mobilenet.MobileNet, imageData: ImageData): Promise<{predictions: MobileNetPrediction_t[], index: number}> {
     const predictions = await model.classify(imageData)
     return { predictions, index: 0 }
   }
 
-  async GET_IMAGE_DATA(canvas: HTMLCanvasElement, canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
-    return canvas_ctx.getImageData(0, 0, canvas.width, canvas.height)
-  }
-
-  async PREDICTION_FORMAT(predictions: any[]): Promise<{labels: any[], datasets: any[]}> {
+  async PREDICTION_FORMAT(predictions: MobileNetPrediction_t[]): Promise<BarChartData_t> {
     return {
       labels  : [''],
-      datasets: predictions.map((v: any, i: number) => {
+      datasets: predictions.map((v, i) => {
         return {
           label          : v.className,
           data           : [v.probability],

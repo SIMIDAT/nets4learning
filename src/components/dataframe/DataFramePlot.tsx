@@ -1,5 +1,5 @@
 import '@styles/ScrollBar.css'
-import React, { useCallback, useContext, useEffect, useId, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useId, useMemo } from 'react'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as _dfd from 'danfojs'
@@ -48,8 +48,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
   } = useContext(DataFramePlotContext)
 
   const { t } = useTranslation()
-  const [listWarning, setListWarning] = useState<string[]>([])
-  const [showDataframe, setShowDataframe] = useState(false)
+  const showDataframe = isDataFrameProcessed
 
   const dataframe_plot_ID = useId()
 
@@ -117,23 +116,17 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
     })
   }, [dataFrameLocal, setDataframePlotConfig])
 
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect [ isDataFrameProcessed ]')
-    // eslint-disable-next-line
-    setShowDataframe(isDataFrameProcessed)
-  }, [setShowDataframe, isDataFrameProcessed])
-
-  const updateUI = useCallback(() => {
+  // Qué se dibuja con la configuración actual. Los avisos se calculan al renderizar; el dibujo,
+  // que escribe en el DOM, lo hace el efecto de abajo.
+  const plot = useMemo((): { warnings: string[], draw?: () => void } => {
     if (!showDataframe) {
       if (VERBOSE) console.debug('!showDataFrame')
-      setListWarning([])
-      return
+      return { warnings: [] }
     }
 
     const availableColumns = dataFrameLocal?.columns ?? []
     if (availableColumns.length === 0) {
-      setListWarning([])
-      return
+      return { warnings: [] }
     }
 
     const layout = {
@@ -143,10 +136,10 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
     }
 
     const warnings: string[] = []
+    let draw: (() => void) | undefined
     const columnsToShow = dataframePlotConfig.COLUMNS.filter((value) => availableColumns.includes(value))
     if (columnsToShow.length === 0) {
-      setListWarning(['No columns available for plotting'])
-      return
+      return { warnings: ['dataframe-plot.warning.no-columns'] }
     }
 
     try {
@@ -154,20 +147,20 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
       switch (dataframePlotConfig.PLOT_ENABLE) {
         case E_PLOTS.BAR_CHARTS:
           // TODO
-          sub_df.plot(dataframe_plot_ID).bar({ layout })
+          draw = () => { sub_df.plot(dataframe_plot_ID).bar({ layout }) }
           break
         case E_PLOTS.BOX_PLOTS:
-          sub_df.plot(dataframe_plot_ID).box({ layout })
+          draw = () => { sub_df.plot(dataframe_plot_ID).box({ layout }) }
           break
         case E_PLOTS.HISTOGRAMS:
-          sub_df.plot(dataframe_plot_ID).hist({ layout })
+          draw = () => { sub_df.plot(dataframe_plot_ID).hist({ layout }) }
           break
         case E_PLOTS.LINE_CHARTS: {
           const { isValidConfig_LineCharts, config_LineCharts } = lineChartsValidConfig(dataFrameLocal, dataframePlotConfig, columnsToShow)
           if (isValidConfig_LineCharts) {
-            sub_df.plot(dataframe_plot_ID).line({ layout })
+            draw = () => { sub_df.plot(dataframe_plot_ID).line({ layout }) }
           } else {
-            warnings.push('Error, option not valid E_PLOTS.LINE_CHARTS')
+            warnings.push('dataframe-plot.line-charts.warning.config')
             console.error('Error, option not valid E_PLOTS.LINE_CHARTS', { config_LineCharts })
           }
           break
@@ -175,7 +168,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
         case E_PLOTS.PIE_CHARTS: {
           const { isValidConfig_PieCharts, config_PieCharts } = pieChartsValidConfig(dataFrameLocal, dataframePlotConfig)
           if (isValidConfig_PieCharts && availableColumns.includes(config_PieCharts.labels)) {
-            sub_df.plot(dataframe_plot_ID).pie({ layout, config: config_PieCharts })
+            draw = () => { sub_df.plot(dataframe_plot_ID).pie({ layout, config: config_PieCharts }) }
           } else {
             warnings.push('dataframe-plot.pie-charts.warning.labels')
             console.error('Error, option not valid E_PLOTS.PIE_CHARTS', { config_PieCharts })
@@ -186,7 +179,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
           const { x, y } = dataframePlotConfig.SCATTER_PLOTS.config
           const hasAxes = availableColumns.includes(x) && availableColumns.includes(y)
           if (hasAxes) {
-            sub_df.plot(dataframe_plot_ID).scatter({ layout, config: { x, y } })
+            draw = () => { sub_df.plot(dataframe_plot_ID).scatter({ layout, config: { x, y } }) }
           } else {
             warnings.push('dataframe-plot.scatter-plots.warning.axes')
             console.error('Error, option not valid E_PLOTS.SCATTER_PLOTS', { x, y })
@@ -197,7 +190,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
           const { isValidConfig_TimeSeries, config_TimeSeries, index } = timeSeriesPlotsValidConfig(dataFrameLocal, dataframePlotConfig)
           if (isValidConfig_TimeSeries) {
             const sub_sub_df = sub_df.setIndex(index)
-            sub_sub_df.plot(dataframe_plot_ID).line({ layout })
+            draw = () => { sub_sub_df.plot(dataframe_plot_ID).line({ layout }) }
           } else {
             warnings.push('dataframe-plot.time-series.warning.index')
             console.error('Error, option not valid E_PLOTS.TIME_SERIES_PLOTS', { config_TimeSeries, index })
@@ -208,29 +201,27 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
           const { isValidConfig_ViolinPlots, config_ViolinPlots } = violinPlotsValidConfig(dataFrameLocal, dataframePlotConfig)
           if (isValidConfig_ViolinPlots && config_ViolinPlots.columns.length > 0) {
             sub_df = dataFrameLocal.loc({ columns: config_ViolinPlots.columns })
-            sub_df.plot(dataframe_plot_ID).violin({ layout })
+            draw = () => { sub_df.plot(dataframe_plot_ID).violin({ layout }) }
           } else {
             warnings.push('dataframe-plot.violin-plots.warning.index')
-            console.log('Error, option not valid E_PLOTS.VIOLIN_PLOTS', { isValidConfig_ViolinPlots, config_ViolinPlots })
+            console.error('Error, option not valid E_PLOTS.VIOLIN_PLOTS', { isValidConfig_ViolinPlots, config_ViolinPlots })
           }
           break
         }
         default: {
-          warnings.push('Error, option not valid')
+          warnings.push('dataframe-plot.warning.unexpected')
           console.error('Error, option not valid')
           break
         }
       }
     } catch (e) {
-      warnings.push('Unexpected error rendering plot')
+      warnings.push('dataframe-plot.warning.unexpected')
       console.error(e)
     }
 
-    setListWarning(warnings)
+    return { warnings, draw }
   }, [dataFrameLocal, dataframePlotConfig, dataframe_plot_ID, showDataframe])
-
-  useEffect(() => {
-  }, [])
+  const listWarning = plot.warnings
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect [ dataframe, setDataFrameLocal ]')
@@ -244,11 +235,18 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
     init()
   }, [init])
 
+  const drawPlot = useCallback(() => {
+    try {
+      plot.draw?.()
+    } catch (e) {
+      console.error('Unexpected error rendering plot', e)
+    }
+  }, [plot])
+
   useEffect(() => {
-    if (VERBOSE) console.debug('useEffect [ updateUI() ]')
-    // eslint-disable-next-line
-    updateUI()
-  }, [updateUI])
+    if (VERBOSE) console.debug('useEffect [ plot ]')
+    drawPlot()
+  }, [drawPlot])
 
   const handleChange_Plot = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setDataframePlotConfig((prevState) => ({
@@ -324,6 +322,6 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
 
     {/*<DebugJSON obj={dataframePlotConfig} />*/}
     <DataFramePlotModalDescription />
-    <DataFramePlotModalConfiguration updateUI={updateUI} />
+    <DataFramePlotModalConfiguration updateUI={drawPlot} />
   </>
 }

@@ -1,5 +1,6 @@
 import type * as _dfd from "danfojs"
 import type * as _tfjs from "@tensorflow/tfjs"
+import type { CallBackProps } from "react-joyride"
 import type _I_MODEL_TABULAR_CLASSIFICATION from "@pages/playground/0_TabularClassification/models/_model"
 import type _I_MODEL_REGRESSION from "@pages/playground/1_Regression/models/_model"
 import type _I_MODEL_OBJECT_DETECTION from "@pages/playground/2_ObjectDetection/models/_model"
@@ -13,21 +14,11 @@ import type { Layer_t as ImageLayer_t } from "@/types/types"
 
 export type BasicPrediction_t = {
   labels: string[]
-  data  : Array<any>  
+  // Probabilidad de cada clase, redondeada a 4 decimales
+  data  : number[]
 }
 
 export type N4LDataFrameType = string | number | boolean | string[] | number[] | boolean[] | (string | number | boolean)[]
-
-/**
- * Extracts the resolved type of a promise-returning function.
- *
- * @template T - A function type that returns a Promise.
- * @typedef {T extends (...args: any) => Promise<infer R> ? R : any} AsyncReturnType
- */
-
-export type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...args: any) => Promise<infer R>
-  ? R
-  : any
 
 /**
  * @typedef {Object.<string, typeof _I_MODEL_TABULAR_CLASSIFICATION>} MAP_TC_CLASSES_t
@@ -175,12 +166,12 @@ export type ErrorTensorShape_match_groups_t = {
  * @typedef TimeSeriesPlotsValidConfigResponse_t
  * @property {boolean} isValidConfig_TimeSeries
  * @property {{columns: Array<string>}} config_TimeSeries
- * @property {{column: any, drop: boolean}} index
+ * @property {{column: string, drop: boolean}} index
  */
 export type TimeSeriesPlotsValidConfigResponse_t = {
   isValidConfig_TimeSeries: boolean
   config_TimeSeries       : { columns: Array<string> }
-  index                   : { column: any; drop: boolean }
+  index                   : { column: string; drop: boolean }
 }
 
 /**
@@ -326,14 +317,14 @@ export type DataframePlotConfig_t = {
   LIST_OF_AVAILABLE_PLOTS: string[]
   LAYOUT                 : { y_axis: string; x_axis: string; title: string }
   COLUMNS                : string[]
-  BAR_CHARTS             : any
-  BOX_PLOTS              : any
-  HISTOGRAMS             : any
-  LINE_CHARTS            : any
+  BAR_CHARTS             : Record<string, never>
+  BOX_PLOTS              : Record<string, never>
+  HISTOGRAMS             : Record<string, never>
+  LINE_CHARTS            : Record<string, never>
   PIE_CHARTS             : { config: { labels: string } }
   SCATTER_PLOTS          : { config: { x: string; y: string } }
   TIME_SERIES_PLOTS      : { config: { index: string } }
-  VIOLIN_PLOTS           : any
+  VIOLIN_PLOTS           : Record<string, never>
   _DEFAULT_              : { config: { x: string; y: string } }
 }
 
@@ -414,7 +405,8 @@ export type DataProcessed_t = {
       encoder: _dfd.LabelEncoder | _dfd.OneHotEncoder
     }
   }
-  attributes?: Array<{type: string; name: string, options: Array<{value: string; text: string}>}>
+  // Solo las columnas categóricas tienen `options` (sus valores posibles)
+  attributes?: Array<{type: string; name: string, options?: Array<{value: string; text: string}>}>
   scaler     : _dfd.MinMaxScaler | _dfd.StandardScaler
   dataframe_X: _dfd.DataFrame
   dataframe_y: _dfd.DataFrame | _dfd.Series
@@ -454,14 +446,14 @@ export type DatasetProcessed_t = {
 
 /**
  * @typedef TabularClassificationPredictionBar_t
- * @property {Array<any>} classes
- * @property {Array<any>} labels
- * @property {Array<any>} data
+ * @property {string[]} classes
+ * @property {string[]} labels
+ * @property {number[]} data
  */
 export type TabularClassificationPredictionBar_t = {
-  classes: Array<any>
-  labels : Array<any>
-  data   : Array<any>
+  classes: string[]
+  labels : string[]
+  data   : number[]
 }
 
 /**
@@ -480,18 +472,16 @@ export type TabularClassificationPredictionBar_t = {
  * @property {string} idMetrics
  */
 export type TabularClassificationGeneratedModel_t = {
-  idMODEL?           : number
-  TARGET_SET_CLASSES?: any
-  DATA_SET_CLASSES?  : any
-  model              : _tfjs.Sequential
-  history            : _tfjs.History
-  learningRate       : number
-  testSize           : number
-  numberOfEpoch      : number
-  layerList          : Array<Layer_t>
-  idOptimizer        : IdOptimizer_t
-  idLoss             : IdLoss_t
-  idMetrics          : IdMetric_t
+  idMODEL?     : number
+  model        : _tfjs.Sequential
+  history      : _tfjs.History
+  learningRate : number
+  testSize     : number
+  numberOfEpoch: number
+  layerList    : Array<Layer_t>
+  idOptimizer  : IdOptimizer_t
+  idLoss       : IdLoss_t
+  idMetrics    : IdMetric_t
 }
 
 // ================================ REGRESSION
@@ -522,20 +512,20 @@ export type Prediction_t = {
 
 /**
  * @typedef StatePrediction_t
- * @property {any[]} input_0_raw - Incluye el target
+ * @property {Array<string | number | boolean>} input_0_raw - Incluye el target
  * @property {_dfd.DataFrame} input_1_dataframe_original
  * @property {_dfd.DataFrame} input_1_dataframe_processed
  * @property {_dfd.DataFrame} input_2_dataframe_encoding
  * @property {_dfd.DataFrame} input_3_dataframe_scaling
- * @property {any[]} result
+ * @property {number[]} result
  */
 export type StatePrediction_t = {
-  input_0_raw                : Array<any>
+  input_0_raw                : Array<string | number | boolean>
   input_1_dataframe_original : _dfd.DataFrame
   input_1_dataframe_processed: _dfd.DataFrame
   input_2_dataframe_encoding : _dfd.DataFrame
   input_3_dataframe_scaling  : _dfd.DataFrame
-  result                     : Array<any>
+  result                     : number[]
 }
 
 /**
@@ -566,13 +556,6 @@ export type CustomParamsTrainModel_t = {
   list_id_metrics: Array<IdMetric_t>
 }
 
-/**
- * @typedef {{x: *, y: *}} Point_t
- */
-export type Point_t = {
-  x: any
-  y: any
-}
 
 /**
  * @typedef CustomModel_t
@@ -652,12 +635,12 @@ export type StateListCustomModel_t = {
  * TODO
  *
  * @typedef StateInstance_t
- * @property {Array<any>} data
+ * @property {Array<Array<string | number | boolean>>} data
  * @property {number} index
  * @property {"select-instance"} instance
  */
 export type StateInstance_t = {
-  data    : Array<any>
+  data    : Array<Array<string | number | boolean>>
   index   : number
   instance: "select-instance"
 }
@@ -682,14 +665,14 @@ export type JoyrideStep_t = {
  * @typedef Joyride_t
  * @property {boolean} run
  * @property {boolean} continuous
- * @property {(data: any) => Promise<void>} [handleJoyrideCallback]
+ * @property {(data: CallBackProps) => Promise<void>} [handleJoyrideCallback]
  * @property {Array<JoyrideStep_t>} steps
  */
 
 export type Joyride_t = {
   run                   : boolean
   continuous            : boolean
-  handleJoyrideCallback?: (data: any) => Promise<void>
+  handleJoyrideCallback?: (data: CallBackProps) => Promise<void>
   steps                 : Array<JoyrideStep_t>
 }
 

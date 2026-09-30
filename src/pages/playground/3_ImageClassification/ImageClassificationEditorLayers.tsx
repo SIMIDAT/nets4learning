@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
@@ -93,8 +93,7 @@ export default function ImageClassificationEditorLayers(props: Props) {
     setLayers((prevState) => {
       const updatedLayers = [...prevState]
       updatedLayers[indexLayer] = MAP_CLASS_LAYERS[option]
-      console.log(updatedLayers[indexLayer])
-      return updatedLayers
+            return updatedLayers
     })
   }
   // endregion

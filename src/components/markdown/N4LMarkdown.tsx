@@ -18,7 +18,7 @@ import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typesc
 import js from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 SyntaxHighlighter.registerLanguage("markdown", markdown);
 SyntaxHighlighter.registerLanguage("typescript", typescript);

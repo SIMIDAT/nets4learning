@@ -128,16 +128,6 @@ export default function AnalyzeDataFrame() {
             </Col>
           </Row>
 
-          {/*
-        <Row className={'mt-3'}>
-          <Col>
-            <DataFrameEchartCard 
-              dataframe={dataFrameProcessed}
-              isDataFrameProcessed={isDataFrameProcessed} />
-          </Col>
-        </Row>
-        */}
-
           <Row className={"mt-3"}>
             <Col>
               <DataFrameCorrelationMatrixCard

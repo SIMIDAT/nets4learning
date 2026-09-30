@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import Home from '@pages/_home/Home'
 
 describe('Page Home', () => {

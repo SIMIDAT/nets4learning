@@ -1359,6 +1359,10 @@
     }
   },
   "dataframe-plot": {
+    "warning": {
+      "no-columns": "No hay columnas disponibles para dibujar.",
+      "unexpected": "No se ha podido dibujar el gráfico. Consulta la consola para más detalles."
+    },
     "title": "DataFrame | Gráficos",
     "info": "Información",
     "description": {
@@ -1450,6 +1454,9 @@
       }
     },
     "line-charts": {
+      "warning": {
+        "config": "La configuración actual no es válida para un gráfico de líneas."
+      },
       "title": "Gráfico de tipo Línea",
       "description": {
         "intro": {
@@ -1470,6 +1477,9 @@
       }
     },
     "pie-charts": {
+      "warning": {
+        "labels": "Selecciona en la configuración la columna de las etiquetas del gráfico de sectores."
+      },
       "title": "Gráfico de Sectores",
       "description": {
         "intro": {
@@ -1490,6 +1500,9 @@
       }
     },
     "scatter-plots": {
+      "warning": {
+        "axes": "Selecciona en la configuración las columnas de los ejes X e Y."
+      },
       "title": "Gráfico de tipo Dispersión",
       "description": {
         "intro": {
@@ -1544,6 +1557,9 @@
       }
     },
     "violin-plots": {
+      "warning": {
+        "index": "Selecciona en la configuración al menos una columna para el gráfico de violín."
+      },
       "title": "Gráfico de tipo Violin",
       "description": {
         "intro": {

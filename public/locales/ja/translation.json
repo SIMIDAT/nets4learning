@@ -1359,6 +1359,10 @@
     }
   },
   "dataframe-plot": {
+    "warning": {
+      "no-columns": "描画できる列がありません。",
+      "unexpected": "グラフを描画できませんでした。詳細はコンソールを確認してください。"
+    },
     "title": "データフレーム | プロット",
     "info": "情報",
     "description": {
@@ -1450,6 +1454,9 @@
       }
     },
     "line-charts": {
+      "warning": {
+        "config": "現在の設定は折れ線グラフには使えません。"
+      },
       "title": "折れ線グラフ",
       "description": {
         "intro": {
@@ -1470,6 +1477,9 @@
       }
     },
     "pie-charts": {
+      "warning": {
+        "labels": "設定で円グラフのラベルに使う列を選択してください。"
+      },
       "title": "円グラフ",
       "description": {
         "intro": {
@@ -1490,6 +1500,9 @@
       }
     },
     "scatter-plots": {
+      "warning": {
+        "axes": "設定でX軸とY軸の列を選択してください。"
+      },
       "title": "散布図",
       "description": {
         "intro": {
@@ -1544,6 +1557,9 @@
       }
     },
     "violin-plots": {
+      "warning": {
+        "index": "設定でバイオリン図に使う列を1つ以上選択してください。"
+      },
       "title": "バイオリンプロット",
       "description": {
         "intro": {

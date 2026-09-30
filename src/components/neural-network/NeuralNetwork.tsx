@@ -2,38 +2,57 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Trans } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
-import VisGraph, { type GraphData } from 'react-vis-graph-wrapper'
+import VisGraph, { type GraphData, type Network } from 'react-vis-graph-wrapper'
 import { VERBOSE } from '@/CONSTANTS'
-import { NEURAL_NETWORK_MODES } from './neural_network'
+import { NEURAL_NETWORK_MODES, type NEURAL_NETWORK_MODES_t } from './neural_network'
 
 
 
-export default function NeuralNetwork(props: any) {
+/** Lo que se dibuja de una capa; vale para las dense (tabular, regresión) y las de imágenes */
+type DrawableLayer_t = {
+  _class?    : string
+  units?     : number
+  activation?: string | null
+  kernelSize?: number
+  filters?   : number
+  poolSize?  : number
+  strides?   : number
+}
+
+type NeuralNetworkProps = {
+  layers     : DrawableLayer_t[]
+  /** Id del contenedor cuyo tamaño ocupa el grafo */
+  id_parent  : string
+  networkRef?: React.Ref<Network | undefined>
+  mode?      : NEURAL_NETWORK_MODES_t
+}
+
+export default function NeuralNetwork(props: NeuralNetworkProps) {
   const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
 
   const [options, setOptions] = useState({ height: 250, width: 300 })
 
   const events = {
-    afterDrawing: (_e: any) => {
+    afterDrawing: (_e: unknown) => {
       if (VERBOSE) console.debug('afterDrawing', { _e })
     },
-    configChange: (_e: any) => {
+    configChange: (_e: unknown) => {
       if (VERBOSE) console.debug('configChange', { _e })
     },
-    select: (_e: any) => {
+    select: (_e: unknown) => {
       if (VERBOSE) console.debug('select', { _e })
     },
-    resize: (_e: any) => {
+    resize: (_e: unknown) => {
       if (VERBOSE) console.debug('resize', { _e })
     },
-    zoom: (_e: any) => {
+    zoom: (_e: unknown) => {
       // e.preventDefault()
       // e.stopPropagation()
       // e.stopImmediatePropagation()
     }
   }
 
-  const getElementText = (index: number, element: any) => {
+  const getElementText = (index: number, element: DrawableLayer_t) => {
     let label = ''
     let title = ''
     if (element?._class && element?._class === 'flatten') {
@@ -111,7 +130,7 @@ export default function NeuralNetwork(props: any) {
     for (let index = 0; index < layers.length; index++) {
       const element = layers[index]
       const { label, title } = getElementText(index, element)
-      for (let unit = 0; unit < layers[index].units; unit++) {
+      for (let unit = 0; unit < (layers[index].units ?? 0); unit++) {
         const key_id = index + ' - ' + unit
         nodes.push({
           id   : key_id,
@@ -120,7 +139,7 @@ export default function NeuralNetwork(props: any) {
           level: index
         })
         if (index < layers.length - 1) {
-          for (let nextUnit = 0; nextUnit < layers[index + 1].units; nextUnit++) {
+          for (let nextUnit = 0; nextUnit < (layers[index + 1].units ?? 0); nextUnit++) {
             edges.push({ from: key_id, to: (index + 1) + ' - ' + nextUnit })
           }
         }
