@@ -73,7 +73,7 @@ const TASK_DATASET_OPTIONS = {
   [TASKS.OBJECT_DETECTION]    : [],
   [TASKS.IMAGE_CLASSIFICATION]: [
     { i18n: 'datasets-models.3-image-classification.list-datasets.mnist', value: IC_MODEL_KEYS.MNIST },
-    // { i18n: 'datasets-models.3-image-classification.list-datasets.kmnist', value: IC_MODEL_KEYS.KMNIST },
+    { i18n: 'datasets-models.3-image-classification.list-datasets.kmnist', value: IC_MODEL_KEYS.KMNIST },
   ],
 }
 export type TASK_DATASET_OPTIONS_TYPE = typeof TASK_DATASET_OPTIONS

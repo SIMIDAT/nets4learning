@@ -23,9 +23,11 @@ export type ImageTrainParams_t = {
 }
 
 export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
-  TITLE     : string = ''
-  i18n_TITLE: string = ''
-  t         : TFunction<"translation", undefined>
+  TITLE       : string = ''
+  i18n_TITLE  : string = ''
+  /** Nombre de cada clase, en el orden de las salidas del modelo (p. ej. '0'…'9') */
+  CLASS_LABELS: string[] = []
+  t           : TFunction<"translation", undefined>
 
   constructor (_t: TFunction<"translation", undefined>) {
     this.t = _t

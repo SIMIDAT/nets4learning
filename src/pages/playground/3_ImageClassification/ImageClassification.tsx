@@ -123,6 +123,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     return () => { tfvis.visor().close() }
   }, [dataset, navigate, t])
 
+  const classLabel = (index: number) => iModelInstance?.CLASS_LABELS[index] ?? String(index)
+
   // region CREACIÓN DEL MODELO
   const handleSubmit_Play = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -199,12 +201,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
     const { imgData, index: prediction_index } = predictDrawing(canvas, canvas_small, Model)
     setExplainInput(imgData, canvas)
-    await alertHelper.alertInfo(t('info.the-class-is-__value__', { value: prediction_index }),
-      {
-        text  : '',
-        footer: '',
-        html  : <>¿El número es un {prediction_index}?</>
-      })
+    await alertHelper.alertInfo(t('alert.prediction', { index: classLabel(prediction_index) }), { text: '', footer: '', html: <></> })
 
   }
 
@@ -221,11 +218,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     const { imgData, index } = predictDrawing(canvas, canvas_small, Model)
 
     setExplainInput(imgData, canvas)
-    await alertHelper.alertInfo('Resultado de la clasificación', {
-      text  : '',
-      footer: '',
-      html  : <>¿El número es un {index}?</>
-    })
+    await alertHelper.alertInfo(t('alert.prediction', { index: classLabel(index) }), { text: '', footer: '', html: <></> })
   }
   // endregion
 
@@ -265,6 +258,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         method         : 'lrp',
         values         : result.shapValues,
         labels         : result.selectedLabels,
+        labelTexts     : result.selectedLabels.map((label) => classLabel(Number(label))),
         galleryImages  : result.debugImages,
         imageSrc       : input.imageSrc,
         segmentationMap: result.segmentationMapArray,

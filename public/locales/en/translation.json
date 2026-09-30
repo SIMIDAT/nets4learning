@@ -1276,6 +1276,26 @@
           }
         }
       },
+      "kmnist": {
+        "title": "KMNIST - Japanese character classification",
+        "description": {
+          "text-0": "<strong>Kuzushiji-MNIST (KMNIST)</strong> is a drop-in replacement for MNIST: grayscale images of <strong>28 x 28</strong> pixels and 10 classes, but instead of digits it contains handwritten Japanese characters written in <i>kuzushiji</i> (cursive script).",
+          "text-1": "Kuzushiji was the usual way of writing Japanese for over a thousand years, but it stopped being taught after the writing reform of the early 20th century and today very few people can read it. The images come from classical books digitised by the National Institute of Japanese Literature and were prepared by the ROIS-DS Center for Open Data in the Humanities (CODH).",
+          "text-2": "Each class is a hiragana character (お, き, す, つ, な, は, ま, や, れ, を), and one character can be written in many different ways, so it is harder than MNIST. Here a balanced subset is used: <strong>2,000</strong> training images and <strong>500</strong> test images per character.",
+          "details-input": {
+            "title": "Input data",
+            "list": {
+              "0": "Grayscale image of <strong>28 x 28</strong> pixels"
+            }
+          },
+          "details-output": {
+            "title": "Output data",
+            "list": {
+              "0": "One of the 10 hiragana characters: お, き, す, つ, な, は, ま, や, れ, を"
+            }
+          }
+        }
+      },
       "mobilenet": {
         "title": "MobileNet - Image classification",
         "description": {
@@ -1313,7 +1333,8 @@
     },
     "3-image-classification": {
       "list-datasets": {
-        "mnist": "Data set - MNIST"
+        "mnist": "Data set - MNIST",
+        "kmnist": "Data set - KMNIST"
       },
       "joyride": {
         "title": "Activate the tutorial",

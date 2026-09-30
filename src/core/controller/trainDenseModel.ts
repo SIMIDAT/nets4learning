@@ -5,15 +5,10 @@ import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABEL
 import * as _Types from '@core/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import AlertHelper from '@utils/alertHelper'
+import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 
 type DenseLayer_t = Pick<_Types.Layer_t, 'units' | 'activation'>
 
-// Activaciones que acepta tfjs.layers.dense (su tipo ActivationIdentifier es esta misma unión)
-const ACTIVATIONS: readonly _Types.LayerActivation_t[] = [
-  'elu', 'hardSigmoid', 'linear', 'relu', 'relu6', 'selu', 'sigmoid', 'softmax',
-  'softplus', 'softsign', 'tanh', 'swish', 'mish', 'gelu', 'gelu_new',
-]
-const isActivation = (value: string): value is _Types.LayerActivation_t => (ACTIVATIONS as readonly string[]).includes(value)
 
 export type TrainDenseModelParams_t = {
   dataset_processed: _Types.DatasetProcessed_t

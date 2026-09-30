@@ -1,23 +1,15 @@
 import { Trans } from 'react-i18next'
-import * as Train_KMNIST from '@pages/playground/3_ImageClassification/custom/Train_KMNIST'
-import I_MODEL_IMAGE_CLASSIFICATION from './_model'
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-import type { Layer_t } from '@/types/types'
+import I_MODEL_IMAGE_28X28 from './_model_28x28'
+import { KMNIST_DATASET } from './SpriteImageDataset'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export type ParamsTrain_KMNIST_t = {
-  learningRate : number,
-  numberEpochs : number,
-  testSize     : number,
-  idLoss       : IdLoss_t,
-  idOptimizer  : IdOptimizer_t,
-  idMetricsList: IdMetric_t[],
-  layers       : Layer_t[],
-}
-export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_CLASSIFICATION {
+export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_28X28 {
   static KEY = IC_MODEL_KEYS.KMNIST
   TITLE = 'datasets-models.3-image-classifier.kmnist.title'
   i18n_TITLE = 'datasets-models.3-image-classifier.kmnist.title'
+  DATASET = KMNIST_DATASET
+  // Los 10 caracteres hiragana de KMNIST (kmnist_classmap.csv)
+  CLASS_LABELS = ['お', 'き', 'す', 'つ', 'な', 'は', 'ま', 'や', 'れ', 'を']
 
   DESCRIPTION() {
     const prefix = 'datasets-models.3-image-classifier.kmnist.description.'
@@ -55,69 +47,5 @@ export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_CLASSIFICATION {
         </pre>
       </details>
     </>
-  }
-
-  async TRAIN_MODEL(params: ParamsTrain_KMNIST_t) {
-    const { model, history } = await Train_KMNIST.KMNIST_run({
-      learningRate : params.learningRate,
-      numberEpochs : params.numberEpochs,
-      testSize     : params.testSize,
-      idLoss       : params.idLoss,
-      idOptimizer  : params.idOptimizer,
-      idMetricsList: params.idMetricsList,
-      layers       : params.layers,
-    })
-    return {
-      model, 
-      history,
-    }
-  }
-
-  DEFAULT_LAYERS(): Layer_t[] {
-    return [
-      {
-        _class    : 'conv2d',
-        _protected: true,
-        inputShape: [28, 28, 1],
-        kernelSize: 3,
-        filters   : 16,
-        activation: 'relu',
-      },
-      {
-        _class  : 'maxPooling2d',
-        poolSize: 2,
-        strides : 2,
-      },
-      {
-        _class    : 'conv2d',
-        kernelSize: 3,
-        filters   : 32,
-        activation: 'relu'
-      },
-      {
-        _class  : 'maxPooling2d',
-        poolSize: 2,
-        strides : 2,
-      },
-      {
-        _class    : 'conv2d',
-        kernelSize: 3,
-        filters   : 32,
-        activation: 'relu'
-      },
-      {
-        _class: 'flatten',
-      },
-      {
-        _class    : 'dense',
-        units     : 64,
-        activation: 'relu'
-      },
-      {
-        _class    : 'dense',
-        units     : 10,
-        activation: 'softmax'
-      }
-    ]
   }
 }

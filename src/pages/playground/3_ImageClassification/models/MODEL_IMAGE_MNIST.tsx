@@ -1,26 +1,9 @@
 import { Trans } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
-import I_MODEL_IMAGE_CLASSIFICATION from './_model'
-import * as Train_MNIST from '@pages/playground/3_ImageClassification/custom/Train_MNIST'
-import { DEFAULT_BAR_DATA, type BarChartData_t } from '@pages/playground/3_ImageClassification/CONSTANTS'
-import { imageDataToMnistTensor4d, toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-import type { Layer_t } from '@/types/types'
-import {
-  createActivationsHelpers,
-  applyLRP,
-} from '@pages/playground/3_ImageClassification/explainPrediction/modelEmbeddingActivations'
+import I_MODEL_IMAGE_28X28 from './_model_28x28'
+import { MNIST_DATASET } from './SpriteImageDataset'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export type ParamsTrain_MNIST_t = {
-  learningRate : number,
-  numberEpochs : number,
-  testSize     : number,
-  idLoss       : IdLoss_t,
-  idOptimizer  : IdOptimizer_t,
-  idMetricsList: IdMetric_t[],
-  layers       : Layer_t[],
-}
 export const LIST_OF_IMAGES_MNIST: string[] = [
   '0_new.png',
   '1_new.png',
@@ -34,14 +17,12 @@ export const LIST_OF_IMAGES_MNIST: string[] = [
   '9_new.png'
 ]
 
-const _activationsHelpers = createActivationsHelpers({
-  imageDataToTensor4d: imageDataToMnistTensor4d,
-})
-
-export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
+export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_28X28 {
   static KEY = IC_MODEL_KEYS.MNIST
   TITLE = 'datasets-models.3-image-classifier.mnist.title'
   i18n_TITLE = 'datasets-models.3-image-classifier.mnist.title'
+  DATASET = MNIST_DATASET
+  CLASS_LABELS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
   DESCRIPTION() {
     const prefix = 'datasets-models.3-image-classifier.mnist.description.'
@@ -93,189 +74,5 @@ export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_CLASSIFICATION {
   async ENABLE_MODEL() {
     const model = await tfjs.loadLayersModel(import.meta.env.VITE_PATH + '/models/03-image-classification/keras-mnist/model.json')
     return model
-  }
-
-  async PREDICTION_FORMAT(predictions: number[]): Promise<BarChartData_t> {
-    return {
-      labels  : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      datasets: [{
-        label          : 'MNIST',
-        data           : predictions,
-        backgroundColor: DEFAULT_BAR_DATA.datasets[0].backgroundColor,
-        borderColor    : DEFAULT_BAR_DATA.datasets[0].borderColor,
-        borderWidth    : DEFAULT_BAR_DATA.datasets[0].borderWidth,
-      }],
-    }
-  }
-
-  async CLASSIFY(model: tfjs.LayersModel, imageData: ImageData): Promise<{ predictions: number[]; index: number }> {
-    const predictions = Array.from(tfjs.tidy(() => {
-      const predTensor = model.predict(imageDataToMnistTensor4d(imageData)) as tfjs.Tensor
-      return predTensor.dataSync()
-    }))
-    const index = predictions.indexOf(Math.max(...predictions))
-    return { predictions, index }
-  }
-
-  async CLASSIFY_IMAGE(model: tfjs.LayersModel, imageData: ImageData): Promise<{ predictions: number[]; index: number }> {
-    return this.CLASSIFY(model, imageData)
-  }
-
-  /** Imagen del canvas reducida a 28×28 (entrada del modelo), sin dibujar en el canvas. */
-  async GET_IMAGE_DATA(canvas: HTMLCanvasElement, _canvas_ctx: CanvasRenderingContext2D): Promise<ImageData> {
-    return toImageData(canvas, 28, 28)
-  }
-
-  /**
-   * Devuelve las activaciones (salidas de capa) de varias capas en una sola
-   * inferencia. Útil para métodos de explicabilidad (LRP/Grad-CAM).
-   */
-  async GET_ACTIVATIONS_IMAGE(
-    model: tfjs.LayersModel,
-    imageData: ImageData,
-    options: { layerNames?: string[]; includeInput?: boolean } = {},
-  ) {
-    return _activationsHelpers.GET_ACTIVATIONS_IMAGE(model, imageData, options)
-  }
-
-  /**
-   * Calcula la propagación de relevancia LRP retropropagando desde la salida
-   * hasta la entrada, capa a capa.
-   */
-  async CALCULATE_LRP_PROPAGATION(
-    model: tfjs.LayersModel,
-    _imageData: ImageData,
-    activations: {
-      layers: Record<string, { data: Float32Array; shape: number[] }>
-      order : string[]
-    },
-    options: {
-      rule?          : 'epsilon' | 'alpha_beta'
-      epsilon?       : number
-      alpha?         : number
-      beta?          : number
-      winnerTakesAll?: boolean
-    } = {},
-  ): Promise<tfjs.Tensor> {
-    return tfjs.tidy(() => {
-      const order = activations.order
-      const orderReversed = [...order].reverse()
-
-      const lastLayerName = orderReversed[0]
-      const lastLayerData = activations.layers[lastLayerName]
-
-      // LRP se inicializa con el LOGIT pre-softmax de la clase objetivo,
-      // no con las probabilidades (Montavon et al. 2019, §10.2.1).
-      // Como la softmax va fusionada en la última Dense, recalculamos z = x·W + b.
-      const lastLayer = model.getLayer(lastLayerName)
-      const prevData = activations.layers[orderReversed[1]]
-      const xLast = tfjs.tensor(prevData.data, prevData.shape)
-      const [wLast, bLast] = lastLayer.getWeights()
-      let logits: tfjs.Tensor = xLast.matMul(wLast)
-      if (bLast) logits = logits.add(bLast) // Podría no tener sesgo
-
-      // Máscara one-hot sobre la clase predicha: solo R_c ≠ 0
-      const probs = tfjs.tensor(lastLayerData.data, lastLayerData.shape)
-      const targetClass = probs.argMax(-1)
-      const numClasses = logits.shape[logits.shape.length - 1] as number
-      const mask = tfjs.oneHot(targetClass, numClasses).cast('float32')
-
-      // Inicializar relevancia con la salida de la última capa
-      let R: tfjs.Tensor = logits.mul(mask)
-
-      // Ir hacia atrás por todas las capas
-      for (let i = 0; i < orderReversed.length - 1; i++) {
-        const currentLayerName = orderReversed[i]
-        const inputLayerName = orderReversed[i + 1]
-
-        const currentLayer = model.getLayer(currentLayerName)
-        const layerType = currentLayer.getClassName()
-
-        // Entrada de esta capa (salida de la capa anterior)
-        const inputData = activations.layers[inputLayerName]
-        const x = tfjs.tensor(inputData.data, inputData.shape)
-
-        // Aplicar LRP según el tipo de capa
-        R = applyLRP({
-          layerType,
-          inputTensor : x,
-          relevanceOut: R,
-          layer       : currentLayer,
-          options,
-        })
-      }
-
-      return R
-    })
-  }
-
-  async TRAIN_MODEL(params: ParamsTrain_MNIST_t): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {
-    const { model, history } = await Train_MNIST.MNIST_run({
-      learningRate : params.learningRate,
-      numberEpochs : params.numberEpochs,
-      testSize     : params.testSize,
-      idLoss       : params.idLoss,
-      idOptimizer  : params.idOptimizer,
-      idMetricsList: params.idMetricsList,
-      layers       : params.layers,
-    })
-
-    return { model, history }
-  }
-
-  DEFAULT_LAYERS(): Layer_t[] {
-    return [
-      {
-        _class    : 'conv2d',
-        _protected: true,
-        inputShape: [28, 28, 1],
-        kernelSize: 3,
-        filters   : 16,
-        activation: 'relu',
-      },
-      {
-        _class    : 'maxPooling2d',
-        _protected: false,
-        poolSize  : 2,
-        strides   : 2,
-      },
-      {
-        _class    : 'conv2d',
-        _protected: false,
-
-        kernelSize: 3,
-        filters   : 32,
-        activation: 'relu'
-      },
-      {
-        _class    : 'maxPooling2d',
-        _protected: false,
-        poolSize  : 2,
-        strides   : 2,
-      },
-      {
-        _class    : 'conv2d',
-        _protected: false,
-        kernelSize: 3,
-        filters   : 32,
-        activation: 'relu'
-      },
-      {
-        _class    : 'flatten',
-        _protected: false,
-      },
-      {
-        _class    : 'dense',
-        _protected: false,
-        units     : 64,
-        activation: 'relu'
-      },
-      {
-        _class    : 'dense',
-        _protected: false,
-        units     : 10,
-        activation: 'softmax'
-      }
-    ]
   }
 }

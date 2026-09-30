@@ -1,4 +1,5 @@
 import type { IdOptimizer_t, LossMap_t, MetricMap_t } from "@/types/nn-types"
+import type { LayerActivation_t } from "@core/types"
 
 const TYPE_GRADIENTS = [
   { key: 'grad', label: 'grad' },
@@ -50,6 +51,13 @@ const TYPE_METRICS = withLabels<keyof MetricMap_t>([
   'precision',
   'accuracy',
 ])
+
+// Activaciones que aceptan las capas de tfjs (su tipo ActivationIdentifier es esta misma unión)
+const ACTIVATIONS: readonly LayerActivation_t[] = [
+  'elu', 'hardSigmoid', 'linear', 'relu', 'relu6', 'selu', 'sigmoid', 'softmax',
+  'softplus', 'softsign', 'tanh', 'swish', 'mish', 'gelu', 'gelu_new',
+]
+export const isActivation = (value: string): value is LayerActivation_t => (ACTIVATIONS as readonly string[]).includes(value)
 
 const TYPE_ACTIVATION = [
   { key: 'sigmoid', label: 'Sigmoid' },
