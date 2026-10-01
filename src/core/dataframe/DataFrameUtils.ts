@@ -255,6 +255,17 @@ export function DataFrameTransform(
 }
 
 /**
+ * Clases de un LabelEncoder en el orden de sus índices, que es el de su primera aparición, igual que las columnas del
+ * OneHotEncoder. `Object.keys(encoder.classes)` no sirve: pone primero las claves numéricas y ordenadas, así que con
+ * clases "3", "2", "4", "1" (Lymphography) cada índice se quedaría con el nombre de otra clase.
+ */
+export function LabelEncoderClasses(encoder: dfd.LabelEncoder): string[] {
+  return Object.entries(encoder.classes)
+    .sort(([, a], [, b]) => a - b)
+    .map(([label]) => label);
+}
+
+/**
  *
  * @param {dfd.DataFrame} dataframe
  * @return {dfd.DataFrame}

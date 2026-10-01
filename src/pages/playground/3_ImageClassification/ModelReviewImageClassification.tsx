@@ -510,7 +510,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
                   <Button
                     type="button"
-                    variant={"outline-info"}
+                    variant={"outline-primary"}
                     onClick={handleRequest_ExplainPrediction}
                     disabled={isCalculo || !hasExplainInput}
                   >

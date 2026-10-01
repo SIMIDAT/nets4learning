@@ -104,7 +104,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
         <h3>
           <Trans i18nKey={prefix + 'title'} />
           {generatedModelsIndex !== -1 &&
-            <>| <Trans i18nKey={'model.__index__'} values={{ index: generatedModelsIndex }} /></>}
+            <>{' '}| <Trans i18nKey={'model.__index__'} values={{ index: generatedModelsIndex + 1 }} /></>}
         </h3>
         <div className={'d-flex'}>
           {(generatedModels.length !== 0 && dataset_selected && dataset_selected.is_dataset_processed) && <>
@@ -138,7 +138,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
                 onChange={(e) => handleChange_Model(e)}>
                 {generatedModels.map((_row, index) => {
                   return <option key={'option_' + index} value={index}>
-                    <Trans i18nKey={'model.__index__'} values={{ index: index }} />
+                    <Trans i18nKey={'model.__index__'} values={{ index: index + 1 }} />
                   </option>
                 })}
               </Form.Select>

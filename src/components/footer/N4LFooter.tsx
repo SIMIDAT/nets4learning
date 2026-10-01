@@ -1,4 +1,3 @@
-// import './N4LFooter.css'
 import { Col, Container, Row } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
@@ -63,7 +62,7 @@ export default function N4LFooter () {
                 <Col>
                   <a href="https://simidat.ujaen.es" target="_blank" rel="noreferrer">
                     <img src={import.meta.env.VITE_PATH + '/assets/Logo-Simidat-2023-oficial.png'}
-                         className={'img-fluid w-100'}
+                         className={'img-fluid w-100 n4l-footer-logo'}
                          alt="SIMIDAT"
                     />
                   </a>
@@ -71,7 +70,7 @@ export default function N4LFooter () {
                 <Col>
                   <a href="https://ujaen.es" target="_blank" rel="noreferrer">
                     <img src={import.meta.env.VITE_PATH + '/assets/uja.svg'}
-                         className={'img-fluid w-50'}
+                         className={'img-fluid w-50 n4l-footer-logo'}
                          alt="Universidad de Jaén"
                     />
                   </a>
@@ -79,7 +78,7 @@ export default function N4LFooter () {
                 <Col>
                   <a href="https://dasci.es" target="_blank" rel="noreferrer">
                     <img src={import.meta.env.VITE_PATH + '/assets/DaSCI_logo-1.png'}
-                         className={'img-fluid w-100'}
+                         className={'img-fluid w-100 n4l-footer-logo'}
                          alt="DaSCI"
                     />
                   </a>

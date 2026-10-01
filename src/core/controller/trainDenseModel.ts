@@ -27,6 +27,10 @@ export type TrainDenseModelParams_t = {
   seed?            : number
   /** Opciones de las gráficas de entrenamiento del visor */
   fitCallbacks     : { callbacks: string[], zoomToFitAccuracy?: boolean }
+  /** Se llama al terminar cada época (contando desde 1) con el total de épocas, para enseñar el progreso */
+  onEpochEnd?      : (epoch: number, totalEpochs: number) => void
+  /** Si devuelve true, el entrenamiento se detiene al acabar el lote actual (el modelo se queda como esté) */
+  shouldStop?      : () => boolean
 }
 
 /**
@@ -35,7 +39,10 @@ export type TrainDenseModelParams_t = {
  *
  * @throws {Error} si el dataset no está procesado, alguna capa no tiene activación o el modelo no compila
  */
-export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {
+/** Clase real y predicha de cada ejemplo de validación (índices de clase); solo en clasificación */
+export type ClassificationEvaluation_t = { labels: number[], predictions: number[] }
+
+export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<{ model: tfjs.Sequential, history: tfjs.History, evaluation?: ClassificationEvaluation_t }> {
   const {
     dataset_processed,
     name_model,
@@ -49,6 +56,8 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
     idMetrics,
     seed,
     fitCallbacks,
+    onEpochEnd,
+    shouldStop,
   } = params
   tfvis.visor().open()
 
@@ -98,13 +107,36 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
   tfvis.visor().setActiveTab(name_model)
 
   const fitCallbackHandlers = tfvis.show.fitCallbacks({ name: 'Training', tab: name_model }, FIT_CALLBACKS_METRICS_LABELS, fitCallbacks)
+  const progressCallbacks: tfjs.CustomCallbackArgs = {
+    onBatchEnd: async () => {
+      if (shouldStop?.()) model.stopTraining = true
+    },
+    onEpochEnd: async (epoch) => {
+      onEpochEnd?.(epoch + 1, numberOfEpoch)
+      if (shouldStop?.()) model.stopTraining = true
+    },
+  }
   const history = await model.fit(XTrain_tensor, yTrain_tensor, {
     batchSize     : 32,
     shuffle       : true,
     validationData: [XTest_tensor, yTest_tensor],
     epochs        : numberOfEpoch,
-    callbacks     : fitCallbackHandlers,
+    callbacks     : [fitCallbackHandlers, progressCallbacks],
   })
 
-  return { model, history }
+  // En clasificación (y en one-hot) se guarda la predicción de cada ejemplo de validación para la matriz de confusión
+  let evaluation: ClassificationEvaluation_t | undefined
+  if (yTest_tensor.rank === 2 && yTest_tensor.shape[0] > 0) {
+    const [labels, predictions] = tfjs.tidy(() => [
+      yTest_tensor.argMax(-1),
+      (model.predict(XTest_tensor) as tfjs.Tensor).argMax(-1),
+    ])
+    evaluation = { labels: Array.from(labels.dataSync()), predictions: Array.from(predictions.dataSync()) }
+    labels.dispose()
+    predictions.dispose()
+  }
+  // Los datos ya no hacen falta: el modelo guarda sus pesos y el historial guarda números
+  tfjs.dispose([XTrain_tensor, XTest_tensor, yTrain_tensor, yTest_tensor])
+
+  return { model, history, evaluation }
 }

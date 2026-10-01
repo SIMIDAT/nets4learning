@@ -1,4 +1,6 @@
 import "katex/dist/katex.min.css"
+import { useEffect } from "react"
+import { useLocation } from "react-router"
 import { Accordion, Col, Container, Row } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 
@@ -10,9 +12,17 @@ import Glossary4MetricFunctions from "./Glossary4MetricFunctions"
 import Glossary5Layers from "./Glossary5Layers"
 import N4LDivider from "@components/divider/N4LDivider"
 import GlossaryEditor from "@pages/glossary/GlossaryEditor"
+import { glossaryTarget } from "@pages/glossary/glossaryTarget"
 
 export default function Glossary() {
   const { t } = useTranslation()
+  const location = useLocation()
+  // Los enlaces de ayuda del playground llevan la sección en la URL (?action=…): se abre y se lleva la vista hasta ella
+  const target = glossaryTarget(new URLSearchParams(location.search).get("action"))
+
+  useEffect(() => {
+    if (target !== null) document.getElementById("glossary-" + target)?.scrollIntoView({ block: "start" })
+  }, [target])
 
   if (VERBOSE) console.debug("render Glossary")
   return (
@@ -32,12 +42,10 @@ export default function Glossary() {
             <Col>
               <N4LDivider i18nKey={"hr.tasks"} />
 
-              <Accordion defaultValue={"classification-tabular"}>
-                <Accordion.Item eventKey={"classification-tabular"}>
-                  <Accordion.Header>
-                    <h2>
-                      <Trans i18nKey={"pages.glossary.tabular-classification.title"} />
-                    </h2>
+              <Accordion defaultActiveKey={target ?? undefined}>
+                <Accordion.Item eventKey={"classification-tabular"} id={"glossary-classification-tabular"}>
+                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+                    <Trans i18nKey={"pages.glossary.tabular-classification.title"} />
                   </Accordion.Header>
                   <Accordion.Body>
                     <p>
@@ -54,11 +62,9 @@ export default function Glossary() {
                     </p>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey={"regression"}>
-                  <Accordion.Header>
-                    <h2>
-                      <Trans i18nKey={"pages.glossary.regression.title"} />
-                    </h2>
+                <Accordion.Item eventKey={"regression"} id={"glossary-regression"}>
+                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+                    <Trans i18nKey={"pages.glossary.regression.title"} />
                   </Accordion.Header>
                   <Accordion.Body>
                     <p>
@@ -75,11 +81,9 @@ export default function Glossary() {
                     </p>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey={"classification-imagen"}>
-                  <Accordion.Header>
-                    <h2>
-                      <Trans i18nKey={"pages.glossary.image-classification.title"} />
-                    </h2>
+                <Accordion.Item eventKey={"classification-imagen"} id={"glossary-classification-imagen"}>
+                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+                    <Trans i18nKey={"pages.glossary.image-classification.title"} />
                   </Accordion.Header>
                   <Accordion.Body>
                     <p>
@@ -100,10 +104,8 @@ export default function Glossary() {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={"objects-detection"}>
-                  <Accordion.Header>
-                    <h2>
-                      <Trans i18nKey={"pages.glossary.object-identification.title"} />
-                    </h2>
+                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+                    <Trans i18nKey={"pages.glossary.object-identification.title"} />
                   </Accordion.Header>
                   <Accordion.Body>
                     <p>
@@ -123,7 +125,7 @@ export default function Glossary() {
               </Accordion>
 
               <N4LDivider i18nKey={"hr.editor"} />
-              <GlossaryEditor />
+              <GlossaryEditor openKey={target} />
 
               {/* Funciones de optimización */}
               <N4LDivider i18nKey={"hr.optimization-function"} />
@@ -139,7 +141,7 @@ export default function Glossary() {
 
               {/* Funciones de métricas */}
               <N4LDivider i18nKey={"hr.metric-function"} />
-              <Glossary4MetricFunctions />
+              <Glossary4MetricFunctions openKey={target} />
 
               {/* Layers */}
               <Glossary5Layers />

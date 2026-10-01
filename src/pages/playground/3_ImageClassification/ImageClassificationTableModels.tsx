@@ -4,7 +4,9 @@ import { Trans } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { parseLogs } from '@core/history/utils'
+import { bestModelIndex, formatEpochs } from '@core/history/trainingSummary'
+import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
+import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
@@ -32,6 +34,10 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
   const showTable = GeneratedModels.length > 0
   const pageCount = Math.ceil(GeneratedModels.length / rowsPerPage)
 
+  // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
+  const histories = GeneratedModels.map((generated) => generated.history.history)
+  const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
   }
@@ -50,18 +56,18 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
   if (VERBOSE) console.debug('render ImageClassificationTableModels')
   return <>
     <Card>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <h3><Trans i18nKey={prefix + 'list-models-generated'} /> | {GeneratedModels.length}</h3>
-        <div className="d-flex">
+        <div className="d-flex gap-1">
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-3'}
+            className={'text-nowrap'}
             onClick={handleClick_OpenVisor}>
             <Trans i18nKey={prefix + 'open-visor'} />
           </Button>
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-1'}
+            className={'text-nowrap'}
             onClick={handleClick_CloseVisor}>
             <Trans i18nKey={prefix + 'close-visor'} />
           </Button>
@@ -97,10 +103,10 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                       .slice(activePage * rowsPerPage, (activePage * rowsPerPage) + rowsPerPage)
                       .map((value, index) => {
                         return <tr key={index}>
-                          <th>{(activePage * rowsPerPage) + index + 1}</th>
+                          <th className={'text-nowrap'}>{(activePage * rowsPerPage) + index + 1}{(activePage * rowsPerPage) + index === bestIndex && <N4LBestBadge />}</th>
                           <td>{value.params.learning_rate}</td>
                           <td>{value.params.test_size}%</td>
-                          <td>{value.params.n_epochs}</td>
+                          <td>{formatEpochs(value.history.epoch.length, value.params.n_epochs)}</td>
                           <td>
                             {value.params.layers
                               .map((value, index2) => {
@@ -119,13 +125,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                               })}
                           </td>
                           <td>
-                            {Object.entries(value.history.history)
-                              .map(([key, logs], index2) => {
-                                const logsArray = logs as Array<number | string>
-                                return <span key={index2} className={'n4l-table-cell'}>
-                                  <small>{key} {parseLogs(logsArray)}</small><br />
-                                </span>
-                              })}
+                            <N4LFinalMetrics logs={value.history.history} />
                           </td>
                           <td>
                             <Button variant={'outline-primary'}
@@ -143,6 +143,11 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
             <Row>
               <Col>
                 <N4LPagination activePage={activePage} pageCount={pageCount} onChange={handleClick_ChangePage} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <N4LTrainingCurves histories={histories} />
               </Col>
             </Row>
           </>}

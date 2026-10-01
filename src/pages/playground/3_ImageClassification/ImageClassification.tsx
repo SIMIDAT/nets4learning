@@ -12,6 +12,10 @@ import * as ImageClassificationUtils from './utils/utils'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import N4LSessionButtons from '@components/session/N4LSessionButtons'
+import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
@@ -25,7 +29,7 @@ import ImageClassificationEditorHyperparameters from '@pages/playground/3_ImageC
 import ImageClassificationTableModels from '@pages/playground/3_ImageClassification/ImageClassificationTableModels'
 
 import alertHelper from '@utils/alertHelper'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import {
   DEFAULT_NUMBER_EPOCHS,
@@ -54,6 +58,9 @@ type ImageClassificationProps_t = {
 export default function ImageClassification(props: ImageClassificationProps_t) {
   const { dataset } = props
   const { t } = useTranslation()
+  const training = useTrainingProgress()
+  // Secciones de la página en orden: numeran los separadores (N4LDivider)
+  const steps = ['hr.information', 'hr.model', 'hr.generated-models', 'hr.classify']
   const navigate = useNavigate()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
 
@@ -71,6 +78,41 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const [LearningRate, setLearningRate] = useState(DEFAULT_LEARNING_RATE)
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
+
+  // region SESIÓN: exportar e importar capas e hiperparámetros
+  // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
+  const [sessionVersion, setSessionVersion] = useState(0)
+
+  const handleClick_ExportSession = () => {
+    downloadSession({
+      app            : 'nets4learning',
+      version        : 1,
+      task           : TASKS.IMAGE_CLASSIFICATION,
+      dataset        : dataset,
+      layers         : Layers,
+      hyperparameters: { learningRate: LearningRate, epochs: NumberEpochs, testSize: TestSize, optimizer: idOptimizer, loss: idLoss, metrics: idMetricsList },
+    })
+  }
+
+  const handleImport_Session = async (text: string) => {
+    try {
+      const { layers: importedLayers, hyperparameters: h } = parseSession(text, TASKS.IMAGE_CLASSIFICATION)
+      // Las capas de imágenes tienen tipo (conv2d, maxPooling2d, flatten, dense) y sus propios parámetros
+      if (!importedLayers.every((layer) => typeof layer._class === 'string')) throw new SessionError('session.error-not-session')
+      setLayers(importedLayers as unknown as typeof Layers)
+      setLearningRate(h.learningRate)
+      setNumberEpochs(h.epochs)
+      setTestSize(h.testSize)
+      setIdOptimizer(h.optimizer as IdOptimizer_t)
+      setIdLoss(h.loss as IdLoss_t)
+      setIdMetricsList(h.metrics as IdMetric_t[])
+      setSessionVersion((version) => version + 1)
+      await alertHelper.alertSuccess(t('session.imported'))
+    } catch (error) {
+      await alertHelper.alertError(t(error instanceof SessionError ? error.i18nKey : 'session.error-not-session'))
+    }
+  }
+  // endregion
 
   const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
   /**
@@ -134,6 +176,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
       return
     }
+    training.start()
     try {
       const params = {
         learningRate : LearningRate,
@@ -144,7 +187,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         idMetricsList: idMetricsList,
         layers       : Layers,
       }
-      const tranin_model = await iModelInstance.TRAIN_MODEL(params)
+      const tranin_model = await iModelInstance.TRAIN_MODEL(params, training.callbacks)
       if (tranin_model === null) {
         await alertHelper.alertError(t('alert.model-train-error'))
         return
@@ -173,6 +216,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
+    } finally {
+      training.finish()
     }
   }
   // endregion
@@ -294,34 +339,39 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       <Container>
         <Row className={'mt-3'}>
           <Col xl={12}>
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <h1><Trans i18nKey={'modality.3'} /></h1>
-              <Button
-                size={'sm'}
-                variant={'outline-primary'}
-                onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
-              </Button>
+              <div className={'d-flex flex-wrap gap-2'}>
+                <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                <Button className={'text-nowrap'}
+                  size={'sm'}
+                  variant={'outline-primary'}
+                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
+                  <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
+                </Button>
+              </div>
             </div>
           </Col>
         </Row>
 
-        <N4LDivider i18nKey={'hr.information'} />
+        <N4LDivider i18nKey={'hr.information'} steps={steps} />
 
 
         <Row className={'mt-3'}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
             <Accordion>
               <Accordion.Item eventKey={'manual'} className={'joyride-step-1-manual'}>
-                <Accordion.Header><h2><Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} /></h2></Accordion.Header>
+                <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                  <Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} />
+                </Accordion.Header>
                 <Accordion.Body>
                   <ImageClassificationManual />
                 </Accordion.Body>
               </Accordion.Item>
 
               <Accordion.Item eventKey={'description-dataset'} className={'joyride-step-2-dataset-info'}>
-                <Accordion.Header>
-                  <h3><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} /></h3>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h3'}>
+                  <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
                 <Accordion.Body>
                   {iModelInstance.DESCRIPTION()}
@@ -331,7 +381,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           </Col>
         </Row>
 
-        <N4LDivider i18nKey={'hr.model'} />
+        <N4LDivider i18nKey={'hr.model'} steps={steps} />
 
         {/* EDITOR */}
         <Form onSubmit={handleSubmit_Play} id={'ImageClassification'}>
@@ -353,6 +403,12 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             {/* GENERAL PARAMETERS */}
             <Col xl={6} className={'mt-3'}>
               <ImageClassificationEditorHyperparameters
+                key={sessionVersion}
+                learningRate={LearningRate}
+                numberEpochs={NumberEpochs}
+                testSize={TestSize}
+                idOptimizer={idOptimizer}
+                idLoss={idLoss}
                 setIdOptimizer={setIdOptimizer}
                 setIdLoss={setIdLoss}
                 idMetricsList={idMetricsList}
@@ -367,19 +423,18 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           <Row className={'mt-3'}>
             <Col>
               {/* BLOCK  BUTTON */}
-              <div className="d-grid gap-2">
-                <Button variant={'primary'}
-                  size={'lg'}
-                  type={'submit'}>
-                  <Trans i18nKey={prefix + 'models.button-submit'} />
-                </Button>
-              </div>
+              <N4LTrainButton isTraining={training.isTraining}
+                progress={training.progress}
+                isStopping={training.isStopping}
+                onStop={training.stop}>
+                <Trans i18nKey={prefix + 'models.button-submit'} />
+              </N4LTrainButton>
             </Col>
           </Row>
 
         </Form>
 
-        <N4LDivider i18nKey={'hr.generated-models'} />
+        <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
 
         {/* GENERATED MODELS */}
         <Row className={'mt-3'}>
@@ -391,7 +446,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           </Col>
         </Row>
 
-        <N4LDivider i18nKey={'hr.classify'} />
+        <N4LDivider i18nKey={'hr.classify'} steps={steps} />
 
         {/* BLOCK 2 */}
         <Row className={'mt-3'}>
@@ -419,7 +474,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
                 <div className="mt-3">
                   <Button
                     type="button"
-                    variant={'outline-info'}
+                    variant={'outline-primary'}
                     onClick={handleRequest_ExplainPrediction}
                     disabled={isCalculo || !hasExplainInput}
                   >

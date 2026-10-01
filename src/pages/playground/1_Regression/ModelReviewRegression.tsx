@@ -349,7 +349,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                           <Trans i18nKey={"selector-model"} />
                         </option>
                         {listCustomModels.data.map((_value, index) => {
-                          const index_format = index.toString()
+                          const index_format = (index + 1).toString()
                           return (
                             <option key={index} value={index}>
                               <Trans i18nKey={"model.__index__"} values={{ index: index_format }} />

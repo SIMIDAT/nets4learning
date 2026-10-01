@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
+import { layerSummaryParts } from '@components/neural-network/layerSummary'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
 
 import { VERBOSE } from '@/CONSTANTS'
@@ -144,15 +145,17 @@ export default function ImageClassificationEditorLayers(props: Props) {
       </Card.Header>
       <Card.Body>
         <Accordion>
-          {Layers.map((_item, index: number) => {
+          {Layers.map((item, index: number) => {
             return <Accordion.Item key={index} eventKey={index.toString()}>
               <Accordion.Header>
-                <Trans i18nKey={prefix + 'layer-id'} values={{ index: index }} />
+                <span className={'text-nowrap'}><Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} /></span>
+                {/* Resumen de la capa para no tener que abrirla */}
+                <span className={'ms-2 text-body-secondary'}>· {layerSummaryParts(t, item).join(' · ')}</span>
               </Accordion.Header>
               <Accordion.Body>
                 <div className="d-grid gap-2">
                   <Button variant={'outline-danger'} onClick={() => handleClick_RemoveLayer(index)}>
-                    <Trans i18nKey={prefix + 'delete-layer'} values={{ index: index }} />
+                    <Trans i18nKey={prefix + 'delete-layer'} values={{ index: index + 1 }} />
                   </Button>
                 </div>
 

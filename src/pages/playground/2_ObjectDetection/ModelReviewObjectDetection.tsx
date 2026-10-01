@@ -621,9 +621,11 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                       <Button size={'sm'}
                         disabled={!isCameraEnable}
                         className='ms-2'
-                        variant={'outline-info'}
+                        variant={'outline-primary'}
+                        aria-label={t('ui.take-screenshot')}
+                        title={t('ui.take-screenshot')}
                         onClick={handleClick_getScreenshot}>
-                        <IconCamera color="royalblue" />
+                        <IconCamera aria-hidden={true} />
                       </Button>
                     </div>
                   </div>
@@ -804,7 +806,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                     <ShapImageControls idPrefix={'od-explain'} options={shapOptions} onChange={setShapOptions} />
                     <Button
                       type="button"
-                      variant={'outline-info'}
+                      variant={'outline-primary'}
                       onClick={handleRequest_ExplainPrediction}
                       disabled={isCalculo || !processImage.isProcessed}
                     >

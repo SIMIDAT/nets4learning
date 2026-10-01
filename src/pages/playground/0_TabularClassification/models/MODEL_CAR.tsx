@@ -174,7 +174,7 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
     const car_y = car_oneHotEncoder.transform(car_dataframe_y)
     const labelEncoder = new dfd.LabelEncoder()
     const car_labelEncoder = labelEncoder.fit(car_dataframe_y.values)
-    const car_classes = Object.keys(car_labelEncoder.classes)
+    const car_classes = DataFrameUtils.LabelEncoderClasses(car_labelEncoder)
 
     const item: _Types.DatasetProcessed_t = {
       is_dataset_upload   : false,

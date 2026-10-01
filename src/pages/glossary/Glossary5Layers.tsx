@@ -11,10 +11,8 @@ export default function Glossary5Layers() {
           <N4LDivider i18nKey={"hr.layers"} />
           <Accordion defaultValue={""} defaultActiveKey={""}>
             <Accordion.Item eventKey={"layers"}>
-              <Accordion.Header>
-                <h2>
-                  <Trans>Types of layers</Trans>
-                </h2>
+              <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+                <Trans>Types of layers</Trans>
               </Accordion.Header>
               <Accordion.Body>
                 <Markdown>{`

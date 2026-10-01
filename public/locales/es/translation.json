@@ -68,7 +68,9 @@
       },
       "waiting-for-prediction": "Haz una predicción para poder explicarla.",
       "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones."
-    }
+    },
+    "take-screenshot": "Hacer una captura",
+    "table-scroll-hint": "Desliza en horizontal para ver todas las columnas →"
   },
   "welcome": "Bienvenido a Nets4Learning",
   "welcome-2": "Para continuar selecciona una de estas disciplinas",
@@ -141,7 +143,7 @@
   "equations": {
     "title": "Fórmulas",
     "title-metrics": "Funciones de métricas | Ecuaciones",
-    "title-losses": "Funciones de perdida | Ecuaciones",
+    "title-losses": "Funciones de pérdida | Ecuaciones",
     "title-activation": "Funciones de activación | Ecuaciones",
     "title-optimization": "Funciones de optimización | Ecuaciones",
     "loss-functions": {
@@ -234,6 +236,34 @@
           "wine-white": "Conjunto de datos de vino blanco"
         }
       }
+    },
+    "dataset-info": "Datos",
+    "extra-title": "Otros conjuntos de datos",
+    "extra-text": "No los usa ningún modelo de la aplicación: sirven para practicar subiendo tu propio CSV.",
+    "dataset-details": "Información",
+    "show-info": "Ver información",
+    "variables": {
+      "title": "Variables",
+      "name": "Variable",
+      "role": "Rol",
+      "type": "Tipo",
+      "description": "Descripción",
+      "units": "Unidades",
+      "missing": "Valores ausentes",
+      "roles": {
+        "ID": "Identificador",
+        "Feature": "Característica",
+        "Target": "Objetivo",
+        "Other": "Otra"
+      },
+      "types": {
+        "Integer": "Entero",
+        "Continuous": "Continuo",
+        "Categorical": "Categórico",
+        "Binary": "Binario"
+      },
+      "note": "El rol, el tipo, la descripción (en inglés) y las unidades vienen de la ficha del conjunto de datos en su fuente. Los valores ausentes se cuentan en los ficheros que se descargan aquí.",
+      "images": "Este conjunto de datos está formado por imágenes, así que no tiene tabla de variables."
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -570,14 +600,14 @@
         }
       },
       "list-datasets": {
-        "0-option-1": "Conjunto de datos - Clasificación de coches",
-        "0-option-2": "Conjunto de datos - Clasificación de flor iris",
-        "0-option-3": "Conjunto de datos - Clasificación de linfomas"
+        "0-option-1": "Clasificación de coches",
+        "0-option-2": "Clasificación de flor iris",
+        "0-option-3": "Clasificación de linfomas"
       },
       "list-models": {
-        "0-option-1": "Modelo - Clasificación de coches",
-        "0-option-2": "Modelo - Clasificación de flor iris",
-        "0-option-3": "Modelo - Clasificación de linfomas"
+        "0-option-1": "Clasificación de coches",
+        "0-option-2": "Clasificación de flor iris",
+        "0-option-3": "Clasificación de linfomas"
       },
       "joyride": {
         "title": "Activar el tutorial",
@@ -925,20 +955,20 @@
         }
       },
       "list-datasets": {
-        "salary": "Conjunto de datos - Salary",
-        "auto-mpg": "Conjunto de datos - Auto MPG",
-        "housing-prices": "Conjunto de datos - Housing Prices",
-        "breast-cancer": "Conjunto de datos - Breast cancer",
-        "student-performance": "Conjunto de datos - Student performance",
-        "wine": "Conjunto de datos - Wine"
+        "salary": "Salary",
+        "auto-mpg": "Auto MPG",
+        "housing-prices": "Housing Prices",
+        "breast-cancer": "Breast cancer",
+        "student-performance": "Student performance",
+        "wine": "Wine"
       },
       "list-models": {
-        "salary": "Modelo - Salary",
-        "auto-mpg": "Modelo - Auto MPG",
-        "housing-prices": "Modelo - Housing prices",
-        "breast-cancer": "Modelo - Breast cancer",
-        "student-performance": "Modelo - Student performance",
-        "wine": "Modelo - Wine"
+        "salary": "Salary",
+        "auto-mpg": "Auto MPG",
+        "housing-prices": "Housing prices",
+        "breast-cancer": "Breast cancer",
+        "student-performance": "Student performance",
+        "wine": "Wine"
       },
       "joyride": {
         "title": "Activar el tutorial",
@@ -1236,12 +1266,12 @@
         }
       },
       "list-models": {
-        "2-option-1": "Modelo - FaceDetector  - Geometría facial",
-        "2-option-2": "Modelo - FaceMesh - Malla facial",
-        "2-option-3": "Modelo - MoveNet - Detector de articulaciones",
-        "2-option-4": "Modelo - COCO SSD - Detector de objetos",
-        "2-option-5": "Modelos - Face API - Gestor de caras",
-        "2-option-6": "Modelo - HandSign - Detector de signos"
+        "2-option-1": "FaceDetector - Geometría facial",
+        "2-option-2": "FaceMesh - Malla facial",
+        "2-option-3": "MoveNet - Detector de articulaciones",
+        "2-option-4": "COCO SSD - Detector de objetos",
+        "2-option-5": "Face API - Gestor de caras",
+        "2-option-6": "HandSign - Detector de signos"
       }
     },
     "3-image-classifier": {
@@ -1347,16 +1377,16 @@
         "title": "-"
       },
       "list-models": {
-        "3-option-1": "Modelo - MNIST - Clasificación de números",
-        "3-option-2": "Modelo - MobileNet - Clasificación de imágenes",
-        "3-option-3": "Modelo - ResNet - Clasificación de imágenes",
-        "3-option-4": "Modelo - KMNIST - Clasificación de caracteres japoneses"
+        "3-option-1": "MNIST - Clasificación de números",
+        "3-option-2": "MobileNet - Clasificación de imágenes",
+        "3-option-3": "ResNet - Clasificación de imágenes",
+        "3-option-4": "KMNIST - Clasificación de caracteres japoneses"
       }
     },
     "3-image-classification": {
       "list-datasets": {
-        "mnist": "Conjunto de datos - MNIST",
-        "kmnist": "Conjunto de datos - KMNIST"
+        "mnist": "MNIST",
+        "kmnist": "KMNIST"
       },
       "joyride": {
         "title": "Activar el tutorial",
@@ -1992,7 +2022,39 @@
           "line-chart": "Gráfico de líneas"
         },
         "waiting-for-models": "Entrena un modelo para poder hacer predicciones.",
-        "waiting-for-prediction": "Haz una predicción para ver aquí el resultado."
+        "waiting-for-prediction": "Haz una predicción para ver aquí el resultado.",
+        "training": {
+          "epoch": "Entrenando… época {{epoch}} de {{total}}",
+          "preparing": "Preparando los datos y el modelo…",
+          "stop": "Detener",
+          "stopping": "Deteniendo…",
+          "curves-title": "Curvas de entrenamiento",
+          "curves-model": "Modelo cuyas curvas se muestran",
+          "epoch-axis": "Época",
+          "train": "Entrenamiento",
+          "validation": "Validación",
+          "best": "Mejor",
+          "best-title": "Menor pérdida de validación en la última época",
+          "confusion-title": "Matriz de confusión (validación)",
+          "confusion-accuracy": "Aciertos: {{accuracy}} ({{correct}} de {{total}} ejemplos que el modelo no vio al entrenar).",
+          "confusion-real": "Clase real",
+          "confusion-predicted": "Clase predicha",
+          "confusion-total": "Total",
+          "confusion-recall": "Sensibilidad",
+          "confusion-precision": "Precisión",
+          "confusion-legend": "Cada celda indica cuántos ejemplos de la clase real (fila) se predijeron como la clase de la columna y qué parte de su fila son. Verde: aciertos; rojo: errores; cuanto más intenso, más ejemplos."
+        },
+        "help": {
+          "learning-rate": "Tamaño del paso con el que el optimizador corrige los pesos de la red después de cada lote de datos.",
+          "epochs": "Una época es una pasada completa por todos los datos de entrenamiento. Más épocas dan más ocasiones de aprender, pero también de sobreajustar.",
+          "test-size": "Porcentaje de los datos que se aparta para comprobar el modelo con ejemplos que no ha visto al entrenar (validación).",
+          "optimizer": "Algoritmo que decide cómo cambiar los pesos a partir del error. Adam suele funcionar bien sin ajustar nada más.",
+          "loss": "Mide cuánto se equivoca el modelo; el entrenamiento intenta que sea lo más pequeña posible.",
+          "metric": "Medida que se calcula durante el entrenamiento para saber cómo va el modelo (por ejemplo, la precisión). No se usa para corregir los pesos.",
+          "recall": "Sensibilidad (recall): de los ejemplos que son de esta clase, la parte que el modelo acierta.",
+          "precision": "Precisión: de las veces que el modelo predice esta clase, la parte en que acierta.",
+          "accuracy": "Exactitud (accuracy): ejemplos acertados sobre el total de ejemplos de validación."
+        }
       },
       "1-regression": {
         "generator": {
@@ -2495,48 +2557,47 @@
         "text": {
           "0": "En aprendizaje automático, una función de pérdida (también llamada función de costo) es una medida que cuantifica la discrepancia entre la salida predicha por un modelo y la salida real o deseada. En otras palabras, la función de pérdida mide qué tan bien el modelo se ajusta a los datos de entrenamiento.",
           "1": "El objetivo de un algoritmo de aprendizaje automático es minimizar la función de pérdida, lo que significa encontrar el conjunto de parámetros del modelo que mejor se ajuste a los datos de entrenamiento. Por lo tanto, la elección de la función de pérdida es muy importante, ya que puede afectar la capacidad del modelo para aprender correctamente los patrones en los datos y hacer predicciones precisas en nuevos datos.",
-          "2": "En tensorflow.js hay diferentes funciones de pérdida y la aplicación de cada una de ellas depende del tipo de problema que queramos afrontar. Algunos ejemplos se muestran a continuación:"
+          "2": "Estas son las funciones de pérdida que puedes elegir en Nets4Learning, agrupadas por el tipo de tarea en el que tienen sentido:"
         },
         "table": {
-          "AbsoluteDifference": {
-            "references": "Diferencia absoluta \n (Acervolima, s.f.)",
-            "description": "Calcula en valor absoluto la distancia al objetivo."
+          "categoricalCrossentropy": {
+            "description": "Mide la diferencia entre las probabilidades que predice el modelo y la clase real (codificada en one-hot). Es la pérdida habitual en clasificación con varias clases y salida softmax."
           },
-          "ComputeWeightedLoss": {
-            "references": "Media ponderada \n (Acervolima, s.f.)",
-            "description": "Calcula la pérdida ponderada entre dos tensores dados."
+          "binaryCrossentropy": {
+            "description": "Entropía cruzada para dos clases, o para varias etiquetas independientes entre sí, con salida sigmoide."
           },
-          "CosineDistance": {
-            "references": "Distancia del coseno \n (Acervolima, s.f.)",
-            "description": "Calcula la pérdida aplicando el coseno de la distancia entre dos tensores."
+          "kullbackLeiblerDivergence": {
+            "description": "Mide cuánto se aleja la distribución de probabilidades predicha de la real. Se usa cuando la salida del modelo es una distribución."
           },
-          "HingeLoss": {
-            "references": "Pérdida de bisagra \n (Rennie & Srebro, 2005)",
-            "description": "Calcula la pérdida de bisagra entre dos tensores. Se aplica en problemas de clasificación."
+          "hinge": {
+            "description": "Penaliza las predicciones que no superan un margen respecto a la clase correcta. Viene de las máquinas de vectores soporte y espera etiquetas -1 y 1."
           },
-          "HuberLoss": {
-            "references": "(Pérdida Huber)",
-            "description": "Calcula la pérdida provocada por el procedimiento de estimación."
+          "squaredHinge": {
+            "description": "Como la pérdida hinge, pero elevada al cuadrado: castiga más los errores grandes."
           },
-          "LogLoss": {
-            "references": "Pérdida logarítmica \n (Shen, 2005)",
-            "description": "<i>LogLoss</i> o <i>Logistic Loss</i> es una función convexa que crece linealmente para números negativos y la hace poco sensible a valores atípicos. Calcula la pérdida logarítmica entre dos tensores."
+          "categoricalHinge": {
+            "description": "Pérdida hinge para varias clases: compara la puntuación de la clase correcta con la de la mejor clase incorrecta."
           },
-          "MeanSquaredError": {
-            "references": "Error cuadrático medio \n (Acervolima, s.f.)",
-            "description": "Calcula de forma geométrica la distancia al cuadrado al objetivo."
+          "meanSquaredError": {
+            "description": "Media de los cuadrados de las diferencias entre el valor real y el predicho. Castiga mucho los errores grandes; es la pérdida habitual en regresión."
           },
-          "CategoricalCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "Mide la distancia entre distribuciones de probabilidad. Es aplicada en redes cuya capa de salida es una probabilidad."
+          "meanAbsoluteError": {
+            "description": "Media del valor absoluto de las diferencias entre el valor real y el predicho. Le afectan menos los valores atípicos que al error cuadrático."
           },
-          "SigmoidCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "Se trata de una variante de la función <i>CategoricalCrossEntropy</i>, en este caso calcula la pérdida en un valor entre 0 y 1."
+          "meanAbsolutePercentageError": {
+            "description": "Error absoluto medio expresado como porcentaje del valor real. Sirve para comparar errores entre magnitudes distintas, pero no admite valores reales iguales a cero."
           },
-          "SoftmaxCrossEntropy": {
-            "references": "(Bendersky, 2016)",
-            "description": "Se aplica una combinación de las funciones <i>softmax</i> y <i>CrossEntropy</i> calculando la pérdida de la red."
+          "meanSquaredLogarithmicError": {
+            "description": "Error cuadrático medio sobre el logaritmo de los valores: mide el error relativo y castiga menos los errores en valores grandes."
+          },
+          "logcosh": {
+            "description": "Logaritmo del coseno hiperbólico del error: se comporta como el error cuadrático con errores pequeños y como el absoluto con errores grandes."
+          },
+          "poisson": {
+            "description": "Pensada para predecir conteos (valores enteros no negativos), como el número de visitas o de sucesos."
+          },
+          "cosineProximity": {
+            "description": "Compara la dirección del vector real y la del predicho (el ángulo entre ellos), sin tener en cuenta su tamaño."
           }
         }
       },
@@ -2589,7 +2650,15 @@
       "select-dataset": {
         "description": "Descripción"
       },
-      "open": "Abrir"
+      "open": "Abrir",
+      "info": {
+        "rows": "{{value}} filas",
+        "rows-files": "{{files}} ficheros ({{values}} filas)",
+        "features": "{{value}} características",
+        "classes": "{{value}} clases",
+        "target": "objetivo: {{value}}",
+        "images": "{{value}} imágenes de 28×28"
+      }
     },
     "terms": {
       "title": "Políticas de privacidad y cookies",
@@ -2618,7 +2687,7 @@
       "features": "Características",
       "open-visor": "Abrir visor",
       "close-visor": "Cerrar visor",
-      "history": "Resultados"
+      "history": "Valores finales (validación)"
     }
   },
   "hr": {
@@ -2740,5 +2809,13 @@
     "filters": "{{value}} filtros",
     "pool-size": "Pool {{value}}",
     "strides": "Paso {{value}}"
+  },
+  "session": {
+    "export": "Exportar configuración",
+    "import": "Importar configuración",
+    "imported": "Configuración importada",
+    "error-not-json": "El fichero no es un JSON válido",
+    "error-not-session": "El fichero no es una configuración de Nets4Learning",
+    "error-other-task": "La configuración es de otra tarea"
   }
 }

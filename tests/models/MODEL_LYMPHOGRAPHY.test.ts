@@ -75,4 +75,11 @@ describe('MODEL_LYMPHOGRAPHY — el modelo preentrenado recibe la entrada con la
     }).length
     expect(hits / rows.length).toBeGreaterThan(0.9)
   })
+
+  test('las clases del dataset procesado siguen el orden de las columnas one-hot de y', () => {
+    // Al entrenar, la matriz de confusión y la predicción nombran cada columna de y con classes[columna]
+    const { classes, y, dataframe_y } = dataset.data_processed!
+    const decoded = (y.values as number[][]).map((row) => classes![row.indexOf(1)])
+    expect(decoded).toStrictEqual((dataframe_y.values as Array<string | number>).map(String))
+  })
 })

@@ -6,6 +6,7 @@ import {
   DataFrameEncoder,
   DataFrameFixMixedColumns,
   DataFrameReadCSV,
+  LabelEncoderClasses,
 } from '../../src/core/dataframe/DataFrameUtils'
 
 const CAR_CSV = 'public/models/00-tabular-classification/car/car.csv'
@@ -59,5 +60,18 @@ describe('DataFrameUtils — columnas con tipos mezclados', () => {
     expect(DataFrameDescribeNumeric(categorical)).toBeNull()
     const numeric = new dfd.DataFrame({ A: [1, 2, 3], B: ['x', 'y', 'z'] })
     expect(DataFrameDescribeNumeric(numeric)?.columns).toStrictEqual(['A'])
+  })
+})
+
+describe('DataFrameUtils — clases del LabelEncoder', () => {
+
+  test('siguen el orden de los índices y de las columnas del OneHotEncoder, también con clases numéricas', () => {
+    const target = new dfd.Series([3, 2, 4, 1, 3, 2])
+    const classes = LabelEncoderClasses(new dfd.LabelEncoder().fit(target.values))
+    // Object.keys(encoder.classes) daría ['1', '2', '3', '4']
+    expect(classes).toStrictEqual(['3', '2', '4', '1'])
+    const oneHot = new dfd.OneHotEncoder().fit(target).transform(target) as dfd.DataFrame
+    const decoded = (oneHot.values as number[][]).map((row) => classes[row.indexOf(1)])
+    expect(decoded).toStrictEqual(['3', '2', '4', '1', '3', '2'])
   })
 })

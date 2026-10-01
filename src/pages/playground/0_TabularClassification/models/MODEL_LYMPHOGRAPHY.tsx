@@ -307,7 +307,7 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     const lymphography_y = lymphography_oneHotEncoder.transform(lymphography_dataframe_y)
     const labelEncoder = new dfd.LabelEncoder()
     const lymphography_labelEncoder = labelEncoder.fit(lymphography_dataframe_y.values)
-    const lymphography_classes = Object.keys(lymphography_labelEncoder.classes)
+    const lymphography_classes = DataFrameUtils.LabelEncoderClasses(lymphography_labelEncoder)
 
     return [
       {

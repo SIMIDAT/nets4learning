@@ -131,8 +131,8 @@ export default function Glossary2ActivationFunctions() {
     <>
       <Accordion defaultValue={""} defaultActiveKey={""}>
         <Accordion.Item eventKey={"functions-activations"}>
-          <Accordion.Header>
-            <h2>{t("pages.glossary.activation-functions.title")}</h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            {t("pages.glossary.activation-functions.title")}
           </Accordion.Header>
           <Accordion.Body>
             <p>{t("pages.glossary.activation-functions.text-1")}</p>
@@ -187,8 +187,8 @@ export default function Glossary2ActivationFunctions() {
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey={"equations-activation"}>
-          <Accordion.Header>
-            <h2>{t("equations.title-activation")}</h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            {t("equations.title-activation")}
           </Accordion.Header>
           <Accordion.Body>
             <>

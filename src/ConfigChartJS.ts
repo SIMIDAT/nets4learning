@@ -9,6 +9,7 @@ import {
   Tooltip,
   LineController,
   BarController,
+  ScatterController,
 } from 'chart.js'
 
 ChartJS.register(
@@ -20,5 +21,6 @@ ChartJS.register(
   Legend,
   Tooltip,
   LineController,
-  BarController
+  BarController,
+  ScatterController
 )

@@ -1,248 +1,174 @@
+import { useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { Card, Col, Container, Row, Tab, Table, Tabs } from "react-bootstrap"
+import { Button, Card, Col, Container, Row, Tab, Table, Tabs } from "react-bootstrap"
+
+import { TASKS, type TASKS_TYPE_V } from "@/TASKS"
+import { taskOptions, type DatasetInfo_t } from "@/TASK_OPTIONS"
+import N4LDatasetInfo from "@components/dataset/N4LDatasetInfo"
+import N4LModal from "@components/modal/N4LModal"
+import WaitingPlaceholder from "@components/loading/WaitingPlaceholder"
+import { useMenuModel } from "@hooks/useMenuModel"
+import { EXTRA_DATASETS } from "@pages/datasets/extraDatasets"
+import DatasetVariables from "@pages/datasets/DatasetVariables"
+
+const TASK_TABS = [
+  { task: TASKS.TABULAR_CLASSIFICATION, title: "pages.index.tabular-classification.1-title" },
+  { task: TASKS.REGRESSION, title: "pages.index.regression.1-title" },
+  { task: TASKS.IMAGE_CLASSIFICATION, title: "pages.index.image-classification.1-title" },
+]
+
+const fileName = (file: string) => file.split("/").pop()
+
+/** Enlace de descarga de un fichero de public/ */
+function DownloadLink({ file, label }: { file: string, label: React.ReactNode }) {
+  return (
+    <a href={import.meta.env.VITE_PATH + "/" + file} className={"btn btn-outline-primary btn-sm me-1 mb-1"} download>
+      {label}
+    </a>
+  )
+}
+
+/** Dataset cuya información se enseña en el modal */
+type SelectedDataset_t = {
+  task  : TASKS_TYPE_V
+  title : string
+  info  : DatasetInfo_t
+  files : string[]
+  /** Clave del modelo que lo usa; sin ella es un dataset extra (sin descripción propia) */
+  value?: string
+}
 
 export default function Datasets() {
   const { t } = useTranslation()
+  const [selected, setSelected] = useState<SelectedDataset_t | null>(null)
+  // Descripción completa del dataset: la clase de su modelo, que solo se descarga al abrir el modal
+  const description = useMenuModel(selected?.task, selected?.value ?? "")
 
-  // @formatter:off
-  const tabular_classification_datasets_list = [
-    {
-      title       : "car.csv",
-      url_download: "car.csv",
-      url_original: "https://archive.ics.uci.edu/ml/datasets/Car+Evaluation",
-      size        : 1728,
-      i18n        : "datasets.download-dataset-car",
-    },
-    {
-      title       : "hepatitis-c.csv",
-      url_download: "hepatitis-c.csv",
-      url_original: "https://archive.ics.uci.edu/ml/datasets/HCV+data",
-      size        : 589,
-      i18n        : "datasets.download-dataset-hepatitis-c",
-    },
-    {
-      title       : "ecoli.csv",
-      url_download: "ecoli.csv",
-      url_original: "https://github.com/jbrownlee/Datasets/blob/master/ecoli.names",
-      size        : 336,
-      i18n        : "datasets.download-dataset-ecoli",
-    },
-    {
-      title       : "new-thyroid.csv",
-      url_download: "new-thyroid.csv",
-      url_original: "https://github.com/jbrownlee/Datasets/blob/master/new-thyroid.names",
-      size        : 215,
-      i18n        : "datasets.download-dataset-new-thyroid",
-    },
-    {
-      title       : "wine.csv",
-      url_download: "wine.csv",
-      url_original: "https://github.com/jbrownlee/Datasets/blob/master/wine.names",
-      size        : 178,
-      i18n        : "datasets.download-dataset-wine",
-    },
-    {
-      title       : "iris.csv",
-      url_download: "iris.csv",
-      url_original: "https://archive.ics.uci.edu/ml/datasets/iris",
-      size        : 150,
-      i18n        : "datasets.download-dataset-iris",
-    },
-    {
-      title       : "titanic.csv",
-      url_download: "titanic.csv",
-      url_original: "https://web.stanford.edu/class/archive/cs/cs109/cs109.1166/problem12.html",
-      size        : 887,
-      i18n        : "datasets.download-dataset-titanic",
-    },
-  ]
-  const regression_datasets_list = [
-    {
-      title       : "salary/salary.csv",
-      url_download: "salary/salary.csv",
-      url_original: "https://www.kaggle.com/code/snehapatil01/linear-regression-on-salary-dataset/notebook",
-      size        : 31,
-      i18n        : "datasets.download.dataset.1-regression.salary",
-    },
-    {
-      title       : "auto-mpg/auto-mpg.csv",
-      url_download: "auto-mpg/auto-mpg.csv",
-      url_original: "https://archive.ics.uci.edu/ml/datasets/auto+mpg",
-      size        : 396,
-      i18n        : "datasets.download.dataset.1-regression.auto-mpg",
-    },
-    {
-      title       : "housing-prices/boston-housing.csv",
-      url_download: "housing-prices/boston-housing.csv",
-      url_original: "https://archive.ics.uci.edu/ml/datasets/Housing",
-      size        : 506,
-      i18n        : "datasets.download.dataset.1-regression.housing-prices",
-    },
-    {
-      title       : "breast-cancer/breast-cancer-wisconsin.csv",
-      url_download: "breast-cancer/breast-cancer-wisconsin.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/15/breast+cancer+wisconsin+original",
-      size        : 699,
-      i18n        : "datasets.download.dataset.1-regression.breast-cancer-original",
-    },
-    {
-      title       : "breast-cancer/wpbc.csv",
-      url_download: "breast-cancer/wpbc.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/16/breast+cancer+wisconsin+prognostic",
-      size        : 198,
-      i18n        : "datasets.download.dataset.1-regression.breast-cancer-wpbc",
-    },
-    {
-      title       : "breast-cancer/wdbc.csv",
-      url_download: "breast-cancer/wdbc.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic",
-      size        : 569,
-      i18n        : "datasets.download.dataset.1-regression.breast-cancer-wdbc",
-    },
-    {
-      title       : "student-performance/student-mat.csv",
-      url_download: "student-performance/student-mat.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/320/student+performance",
-      size        : 396,
-      i18n        : "datasets.download.dataset.1-regression.student-performance-mathematics",
-    },
-    {
-      title       : "student-performance/student-por.csv",
-      url_download: "student-performance/student-por.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/320/student+performance",
-      size        : 650,
-      i18n        : "datasets.download.dataset.1-regression.student-performance-portuguese",
-    },
-    {
-      title       : "wine-quality/wine-quality-red.csv",
-      url_download: "wine-quality/wine-quality-red.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/186/wine+quality",
-      size        : 1600,
-      i18n        : "datasets.download.dataset.1-regression.wine-red",
-    },
-    {
-      title       : "wine-quality/wine-quality-white.csv",
-      url_download: "wine-quality/wine-quality-white.csv",
-      url_original: "https://archive.ics.uci.edu/dataset/186/wine+quality",
-      size        : 4899,
-      i18n        : "datasets.download.dataset.1-regression.wine-white",
-    },
-  ]
-  // @formatter:on
+  const infoButton = (dataset: SelectedDataset_t) => (
+    <Button variant={"outline-secondary"} size={"sm"} className={"text-nowrap"} onClick={() => setSelected(dataset)}
+      data-testid={"Test-DatasetInfo-" + (dataset.value ?? dataset.files[0])}>
+      <Trans i18nKey={"datasets.show-info"} />
+    </Button>
+  )
 
   return (
-    <>
-      <main className={"mb-3"} data-title={"Datasets"}>
-        <Container id={"Datasets"} className={"mt-3 mb-3"}>
-          <Row className={"mt-3"}>
-            <Col>
-              <h1>
-                <Trans i18nKey={"datasets.title"} />
-              </h1>
-            </Col>
-          </Row>
-          <Row className={"mt-3"}>
-            <Col>
-              <Card>
-                <Card.Body>
-                  <Tabs defaultActiveKey={"tabular-classification"} justify>
-                    <Tab eventKey="tabular-classification" title={t("pages.index.tabular-classification.1-title")}>
-                      <Table className={"mt-3"} responsive={true}>
+    <main className={"mb-3"} data-title={"Datasets"}>
+      <Container id={"Datasets"} className={"mt-3 mb-3"}>
+        <Row className={"mt-3"}>
+          <Col>
+            <h1>
+              <Trans i18nKey={"datasets.title"} />
+            </h1>
+          </Col>
+        </Row>
+        <Row className={"mt-3"}>
+          <Col>
+            <Card>
+              <Card.Body>
+                <Tabs defaultActiveKey={TASKS.TABULAR_CLASSIFICATION} justify>
+                  {TASK_TABS.map(({ task, title }) => (
+                    <Tab key={task} eventKey={task} title={t(title)}>
+                      {/* Los mismos datasets (y ficheros) que usan los modelos de la tarea */}
+                      <Table className={"mt-3 align-middle"} responsive={true}>
                         <thead>
                           <tr>
                             <th>{t("datasets.dataset-name")}</th>
-                            <th>{t("datasets.dataset-size")}</th>
                             <th>{t("datasets.dataset-reference")}</th>
+                            <th>{t("datasets.dataset-details")}</th>
                             <th>{t("download")}</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {tabular_classification_datasets_list.map((value, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{t(value.i18n)}</td>
-                                <td>{value.size}</td>
+                          {taskOptions(task, "dataset")
+                            .filter(({ info }) => info !== undefined)
+                            .map(({ value, i18n, info }) => (
+                              <tr key={value} data-testid={"Test-Dataset-" + value}>
+                                <td>{t(i18n)}</td>
                                 <td>
-                                  <a
-                                    className="link-secondary"
-                                    href={value.url_original}
-                                    rel="noreferrer"
-                                    target="_blank"
-                                  >
-                                    {t("Reference")}
-                                  </a>
+                                  {info!.source &&
+                                    <a className="link-secondary" href={info!.source} rel="noreferrer" target="_blank">
+                                      {t("Reference")}
+                                    </a>
+                                  }
                                 </td>
                                 <td>
-                                  <a
-                                    href={import.meta.env.VITE_PATH + "/datasets/" + value.url_download}
-                                    className={"btn btn-outline-primary btn-sm mt-2"}
-                                    download
-                                  >
-                                    {t("download")}
-                                  </a>
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </Table>
-                    </Tab>
-                    <Tab eventKey="regression" title={t("pages.index.regression.1-title")}>
-                      <Table className={"mt-3"} responsive={true}>
-                        <thead>
-                          <tr>
-                            <th>{t("datasets.dataset-name")}</th>
-                            <th>{t("datasets.dataset-size")}</th>
-                            <th>{t("datasets.dataset-reference")}</th>
-                            <th>{t("download")}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {regression_datasets_list.map((_value, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{t(_value.i18n)}</td>
-                                <td>{_value.size}</td>
-                                <td>
-                                  <a
-                                    className="link-secondary"
-                                    href={_value.url_original}
-                                    rel="noreferrer"
-                                    target="_blank"
-                                  >
-                                    {t("Reference")}
-                                  </a>
+                                  {infoButton({ task, title: i18n, info: info!, files: info!.files ?? [], value })}
                                 </td>
                                 <td>
-                                  <a
-                                    download
-                                    href={
-                                      import.meta.env.VITE_PATH + "/datasets/01-regression/" + _value.url_download
-                                    }
-                                    className={"btn btn-outline-primary btn-sm mt-2"}
-                                  >
-                                    {t("download")}
-                                  </a>
+                                  {/* Varios ficheros: cada botón lleva su nombre */}
+                                  {(info!.files ?? []).map((file) => (
+                                    <DownloadLink key={file} file={file}
+                                      label={info!.files!.length > 1 ? fileName(file) : t("download")} />
+                                  ))}
+                                  {info!.files === undefined && "—"}
                                 </td>
                               </tr>
-                            )
-                          })}
+                            ))}
                         </tbody>
                       </Table>
+
+                      {(EXTRA_DATASETS[task] ?? []).length > 0 && <>
+                        <h2 className={"h5 mt-4"}><Trans i18nKey={"datasets.extra-title"} /></h2>
+                        <p className={"small text-body-secondary"}><Trans i18nKey={"datasets.extra-text"} /></p>
+                        <Table className={"align-middle"} responsive={true}>
+                          <thead>
+                            <tr>
+                              <th>{t("datasets.dataset-name")}</th>
+                              <th>{t("datasets.dataset-reference")}</th>
+                              <th>{t("datasets.dataset-details")}</th>
+                              <th>{t("download")}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {EXTRA_DATASETS[task]!.map(({ file, source, samples, i18n }) => (
+                              <tr key={file}>
+                                <td>{t(i18n)}</td>
+                                <td>
+                                  <a className="link-secondary" href={source} rel="noreferrer" target="_blank">{t("Reference")}</a>
+                                </td>
+                                <td>
+                                  {infoButton({ task, title: i18n, info: { rows: [samples], source }, files: [file] })}
+                                </td>
+                                <td><DownloadLink file={file} label={t("download")} /></td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </>}
                     </Tab>
-                    {/*<Tab eventKey="object-detection" title={t("pages.index.object-detection.1-title")}>*/}
-                    {/*TODO*/}
-                    {/*</Tab>*/}
-                    {/*<Tab eventKey="image-classification" title={t("pages.index.image-classification.1-title")}>*/}
-                    {/*TODO*/}
-                    {/*</Tab>*/}
-                  </Tabs>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </main>
-    </>
+                  ))}
+                </Tabs>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+
+      <N4LModal showModal={selected !== null}
+        setShowModal={() => setSelected(null)}
+        size={"xl"}
+        title={selected !== null && t(selected.title)}
+        ComponentBody={selected !== null &&
+          <Tabs defaultActiveKey={"info"} className={"mb-3"}>
+            <Tab eventKey={"info"} title={t("datasets.dataset-details")}>
+              <N4LDatasetInfo info={selected.info} className={"text-body-secondary"} />
+              {selected.value !== undefined && (description !== null ? description.DESCRIPTION() : <WaitingPlaceholder />)}
+              {selected.value === undefined && <p><Trans i18nKey={"datasets.extra-text"} /></p>}
+              {selected.info.source &&
+                <p className={"mb-0"}>
+                  <a className="link-secondary" href={selected.info.source} rel="noreferrer" target="_blank">{t("Reference")}</a>
+                </p>
+              }
+            </Tab>
+            <Tab eventKey={"variables"} title={t("datasets.variables.title")}>
+              <DatasetVariables files={selected.files} />
+            </Tab>
+          </Tabs>
+        }
+        ComponentFooter={selected !== null && selected.files.map((file) => (
+          <DownloadLink key={file} file={file} label={selected.files.length > 1 ? fileName(file) : t("download")} />
+        ))}
+      />
+    </main>
   )
 }

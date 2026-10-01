@@ -68,7 +68,9 @@
       },
       "waiting-for-prediction": "Make a prediction to be able to explain it.",
       "waiting-for-model": "Train a model to be able to explain its predictions."
-    }
+    },
+    "take-screenshot": "Take a screenshot",
+    "table-scroll-hint": "Scroll horizontally to see all the columns →"
   },
   "welcome": "Welcome to Nets4Learning",
   "welcome-2": "To continue select one of these tasks",
@@ -234,6 +236,34 @@
           "wine-white": "White wine data set"
         }
       }
+    },
+    "dataset-info": "Data",
+    "extra-title": "Other datasets",
+    "extra-text": "No model in the app uses them: they are meant for practising with your own CSV upload.",
+    "dataset-details": "Information",
+    "show-info": "View information",
+    "variables": {
+      "title": "Variables",
+      "name": "Variable",
+      "role": "Role",
+      "type": "Type",
+      "description": "Description",
+      "units": "Units",
+      "missing": "Missing values",
+      "roles": {
+        "ID": "ID",
+        "Feature": "Feature",
+        "Target": "Target",
+        "Other": "Other"
+      },
+      "types": {
+        "Integer": "Integer",
+        "Continuous": "Continuous",
+        "Categorical": "Categorical",
+        "Binary": "Binary"
+      },
+      "note": "Role, type, description and units come from the dataset page at its source. Missing values are counted in the files you can download here.",
+      "images": "This dataset is made of images, so it has no variables table."
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -570,14 +600,14 @@
         }
       },
       "list-datasets": {
-        "0-option-1": "Data set - Car classification",
-        "0-option-2": "Data set - Iris classification",
-        "0-option-3": "Data set - Lymphoma classification"
+        "0-option-1": "Car classification",
+        "0-option-2": "Iris classification",
+        "0-option-3": "Lymphoma classification"
       },
       "list-models": {
-        "0-option-1": "Model - Car classification",
-        "0-option-2": "Model - Iris classification",
-        "0-option-3": "Model - Lymphomas classification"
+        "0-option-1": "Car classification",
+        "0-option-2": "Iris classification",
+        "0-option-3": "Lymphomas classification"
       },
       "joyride": {
         "title": "Activate the tutorial",
@@ -925,20 +955,20 @@
         }
       },
       "list-datasets": {
-        "salary": "Data set - Salary",
-        "auto-mpg": "Data set - Auto MPG",
-        "housing-prices": "Data set - Housing Prices",
-        "breast-cancer": "Data set - Breast cancer",
-        "student-performance": "Data set - Student performance",
-        "wine": "Data set - Wine"
+        "salary": "Salary",
+        "auto-mpg": "Auto MPG",
+        "housing-prices": "Housing Prices",
+        "breast-cancer": "Breast cancer",
+        "student-performance": "Student performance",
+        "wine": "Wine"
       },
       "list-models": {
-        "salary": "Model - Salary",
-        "auto-mpg": "Model - Auto MPG",
-        "housing-prices": "Model - Housing prices",
-        "breast-cancer": "Model - Breast cancer",
-        "student-performance": "Model - Student performance",
-        "wine": "Model - Wine"
+        "salary": "Salary",
+        "auto-mpg": "Auto MPG",
+        "housing-prices": "Housing prices",
+        "breast-cancer": "Breast cancer",
+        "student-performance": "Student performance",
+        "wine": "Wine"
       },
       "joyride": {
         "title": "Activate the tutorial",
@@ -1236,12 +1266,12 @@
         }
       },
       "list-models": {
-        "2-option-1": "Model - FaceDetector  - Facial Geometry",
-        "2-option-2": "Model - FaceMesh  - Facial Mesh",
-        "2-option-3": "Model - MoveNet - Joint detector",
-        "2-option-4": "Model - COCO SSD - Object detector",
-        "2-option-5": "Models - Face API - Face Manager",
-        "2-option-6": "Model - HandSign - Sign Detector"
+        "2-option-1": "FaceDetector - Facial Geometry",
+        "2-option-2": "FaceMesh - Facial Mesh",
+        "2-option-3": "MoveNet - Joint detector",
+        "2-option-4": "COCO SSD - Object detector",
+        "2-option-5": "Face API - Face Manager",
+        "2-option-6": "HandSign - Sign Detector"
       }
     },
     "3-image-classifier": {
@@ -1347,16 +1377,16 @@
         "title": "-"
       },
       "list-models": {
-        "3-option-1": "Model - MNIST - Number Classification",
-        "3-option-2": "Model - MobileNet - Image Classifier",
-        "3-option-3": "Model - ResNet - Image classifier",
-        "3-option-4": "Model - KMNIST - Japanese character classification"
+        "3-option-1": "MNIST - Number Classification",
+        "3-option-2": "MobileNet - Image Classifier",
+        "3-option-3": "ResNet - Image classifier",
+        "3-option-4": "KMNIST - Japanese character classification"
       }
     },
     "3-image-classification": {
       "list-datasets": {
-        "mnist": "Data set - MNIST",
-        "kmnist": "Data set - KMNIST"
+        "mnist": "MNIST",
+        "kmnist": "KMNIST"
       },
       "joyride": {
         "title": "Activate the tutorial",
@@ -1992,7 +2022,39 @@
           "line-chart": "Line chart"
         },
         "waiting-for-models": "Train a model to make predictions.",
-        "waiting-for-prediction": "Make a prediction to see the result here."
+        "waiting-for-prediction": "Make a prediction to see the result here.",
+        "training": {
+          "epoch": "Training… epoch {{epoch}} of {{total}}",
+          "preparing": "Preparing the data and the model…",
+          "stop": "Stop",
+          "stopping": "Stopping…",
+          "curves-title": "Training curves",
+          "curves-model": "Model whose curves are shown",
+          "epoch-axis": "Epoch",
+          "train": "Training",
+          "validation": "Validation",
+          "best": "Best",
+          "best-title": "Lowest validation loss in the last epoch",
+          "confusion-title": "Confusion matrix (validation)",
+          "confusion-accuracy": "Correct: {{accuracy}} ({{correct}} of {{total}} examples the model did not see during training).",
+          "confusion-real": "Actual class",
+          "confusion-predicted": "Predicted class",
+          "confusion-total": "Total",
+          "confusion-recall": "Recall",
+          "confusion-precision": "Precision",
+          "confusion-legend": "Each cell shows how many examples of the actual class (row) were predicted as the column's class, and what share of their row they are. Green: correct; red: errors; the stronger the colour, the more examples."
+        },
+        "help": {
+          "learning-rate": "Size of the step with which the optimizer corrects the network weights after each batch of data.",
+          "epochs": "An epoch is a full pass over all the training data. More epochs give more chances to learn, but also to overfit.",
+          "test-size": "Percentage of the data set aside to check the model with examples it has not seen during training (validation).",
+          "optimizer": "Algorithm that decides how to change the weights from the error. Adam usually works well without further tuning.",
+          "loss": "Measures how wrong the model is; training tries to make it as small as possible.",
+          "metric": "Measure computed during training to see how the model is doing (for example, accuracy). It is not used to correct the weights.",
+          "recall": "Recall: of the examples that belong to this class, the share the model gets right.",
+          "precision": "Precision: of the times the model predicts this class, the share that is right.",
+          "accuracy": "Accuracy: correct examples out of all the validation examples."
+        }
       },
       "1-regression": {
         "generator": {
@@ -2495,48 +2557,47 @@
         "text": {
           "0": "In machine learning, a loss function (also called cost function) is a measure that quantifies the discrepancy between the predicted exit by a model and the real or desired output. In other words, the loss function measures how well the model conforms to training data.",
           "1": "The objective of a machine learning algorithm is to minimize the loss function, which means finding the model set of the model that best suits training data. Therefore, the choice of loss function is very important, since it can affect the model ability to correctly learn patterns in the data and make precise predictions in new data.",
-          "2": "In tensorflow.js there are different loss functions and the application of each of them depends on the type of problem we want to face. Some examples are shown below:"
+          "2": "These are the loss functions you can choose in Nets4Learning, grouped by the type of task where they make sense:"
         },
         "table": {
-          "AbsoluteDifference": {
-            "references": "Absolute difference\n (Privolima, s.f.)",
-            "description": "Calculates the distance to the target in absolute value."
+          "categoricalCrossentropy": {
+            "description": "Measures the difference between the probabilities predicted by the model and the true class (one-hot encoded). It is the usual loss for multi-class classification with a softmax output."
           },
-          "ComputeWeightedLoss": {
-            "references": "Weighted average\n (Privolima, s.f.)",
-            "description": "Calculate the weighted loss between two given tensors."
+          "binaryCrossentropy": {
+            "description": "Cross-entropy for two classes, or for several independent labels, with a sigmoid output."
           },
-          "CosineDistance": {
-            "references": "Distance from Coseno\n (Privolima, s.f.)",
-            "description": "Calculate the loss by applying the cosine of the distance between two tensors."
+          "kullbackLeiblerDivergence": {
+            "description": "Measures how far the predicted probability distribution is from the true one. Used when the model output is a distribution."
           },
-          "HingeLoss": {
-            "references": "Loss of hinge\n (Rennie & Srebro, 2005)",
-            "description": "Calculate the loss of hinge between two tensors. It applies in classification problems."
+          "hinge": {
+            "description": "Penalises predictions that do not exceed a margin with respect to the correct class. It comes from support vector machines and expects -1 and 1 labels."
           },
-          "HuberLoss": {
-            "references": "(Huber loss)",
-            "description": "Calculate the loss caused by the estimation procedure."
+          "squaredHinge": {
+            "description": "Like the hinge loss, but squared: large errors are penalised more."
           },
-          "LogLoss": {
-            "references": "Logarithmic loss\n (Shen, 2005)",
-            "description": "<i> logloss </i> or <i> Logistic loss </i> is a convex function that grows linearly for negative numbers and makes it recently sensitive to atypical values. Calculate the logarithmic loss between two tensors."
+          "categoricalHinge": {
+            "description": "Hinge loss for several classes: compares the score of the correct class with that of the best wrong class."
           },
-          "MeanSquaredError": {
-            "references": "Middle quadratic error\n (Privolima, s.f.)",
-            "description": "Calculate in a geometric way the square distance to the target, this function is used in regression problems."
+          "meanSquaredError": {
+            "description": "Mean of the squared differences between the true and the predicted value. It penalises large errors heavily; it is the usual loss for regression."
           },
-          "CategoricalCrossEntropy": {
-            "references": "(Privolima, s.f.)",
-            "description": "It measures the distance between probability distributions. It is applied in networks whose output layer is a probability."
+          "meanAbsoluteError": {
+            "description": "Mean of the absolute differences between the true and the predicted value. It is less affected by outliers than the squared error."
           },
-          "SigmoidCrossEntropy": {
-            "references": "(Privolima, s.f.)",
-            "description": "It is a variant of the categorical function categorical categorical, in this case, it calculates the loss in a value between 0 and 1."
+          "meanAbsolutePercentageError": {
+            "description": "Mean absolute error expressed as a percentage of the true value. Useful to compare errors across different magnitudes, but true values cannot be zero."
           },
-          "SoftmaxCrossEntropy": {
-            "references": "(Bendersky, 2016)",
-            "description": "A combination of the functions <i> Softmax </i> and <i> crossenterpy </i> calculating the loss of the network is applied."
+          "meanSquaredLogarithmicError": {
+            "description": "Mean squared error on the logarithm of the values: it measures the relative error and penalises errors on large values less."
+          },
+          "logcosh": {
+            "description": "Logarithm of the hyperbolic cosine of the error: it behaves like the squared error for small errors and like the absolute error for large ones."
+          },
+          "poisson": {
+            "description": "Meant for predicting counts (non-negative integers), such as the number of visits or events."
+          },
+          "cosineProximity": {
+            "description": "Compares the direction of the true and the predicted vectors (the angle between them), regardless of their size."
           }
         }
       },
@@ -2589,7 +2650,15 @@
       "select-dataset": {
         "description": "Description"
       },
-      "open": "Open"
+      "open": "Open",
+      "info": {
+        "rows": "{{value}} rows",
+        "rows-files": "{{files}} files ({{values}} rows)",
+        "features": "{{value}} features",
+        "classes": "{{value}} classes",
+        "target": "target: {{value}}",
+        "images": "{{value}} 28×28 images"
+      }
     },
     "terms": {
       "title": "Privacy Policies and Cookies",
@@ -2618,7 +2687,7 @@
       "features": "Features",
       "open-visor": "Open visor",
       "close-visor": "Close visor",
-      "history": "Results"
+      "history": "Final values (validation)"
     }
   },
   "hr": {
@@ -2740,5 +2809,13 @@
     "filters": "{{value}} filters",
     "pool-size": "Pool {{value}}",
     "strides": "Stride {{value}}"
+  },
+  "session": {
+    "export": "Export settings",
+    "import": "Import settings",
+    "imported": "Settings imported",
+    "error-not-json": "The file is not valid JSON",
+    "error-not-session": "The file is not a Nets4Learning settings file",
+    "error-other-task": "The settings belong to another task"
   }
 }

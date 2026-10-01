@@ -1,17 +1,15 @@
 import { Accordion } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 
-export default function GlossaryEditor() {
+export default function GlossaryEditor({ openKey }: { openKey?: string | null }) {
   const { t } = useTranslation()
 
   return (
     <>
-      <Accordion defaultValue={""} defaultActiveKey={""}>
-        <Accordion.Item eventKey={"item-0"}>
-          <Accordion.Header>
-            <h2>
-              <Trans>pages.glossary.editor-layers.title</Trans>
-            </h2>
+      <Accordion defaultActiveKey={openKey ?? undefined}>
+        <Accordion.Item eventKey={"item-0"} id={"glossary-item-0"}>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            <Trans>pages.glossary.editor-layers.title</Trans>
           </Accordion.Header>
           <Accordion.Body>
             {Object.entries(t("pages.glossary.editor-layers.table", { returnObjects: true })).map(
@@ -28,11 +26,9 @@ export default function GlossaryEditor() {
             )}
           </Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey={"item-1"}>
-          <Accordion.Header>
-            <h2>
-              <Trans>pages.glossary.editor-hyperparameters.title</Trans>
-            </h2>
+        <Accordion.Item eventKey={"item-1"} id={"glossary-item-1"}>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            <Trans>pages.glossary.editor-hyperparameters.title</Trans>
           </Accordion.Header>
           <Accordion.Body>
             {Object.entries(t("pages.glossary.editor-hyperparameters.table", { returnObjects: true })).map(

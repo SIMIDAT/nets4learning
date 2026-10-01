@@ -4,11 +4,6 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import alertHelper from '@utils/alertHelper'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
-import {
-  DEFAULT_LEARNING_RATE,
-  DEFAULT_NUMBER_OF_EPOCHS,
-  DEFAULT_TEST_SIZE,
-} from './CONSTANTS'
 import { HyperparameterLearningRate, HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
 import { useRegressionContext } from '@context/useRegressionContext'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
@@ -111,11 +106,11 @@ export default function RegressionEditorHyperparameters() {
         </>}
         {show && <>
           <HyperparameterLearningRate controlId={'FormControl_Trainer-LearningRate'}
-            defaultValue={DEFAULT_LEARNING_RATE} onChange={handlerChange_LearningRate} />
+            defaultValue={params.params_training.learning_rate} onChange={handlerChange_LearningRate} />
           <HyperparameterNumber controlId={'FormControl_Trainer_n_of_epochs'} name="number-of-epochs" min={1} max={1000}
-            defaultValue={DEFAULT_NUMBER_OF_EPOCHS} onChange={handlerChange_NumberOfEpochs} />
+            defaultValue={params.params_training.n_of_epochs} onChange={handlerChange_NumberOfEpochs} />
           <HyperparameterNumber controlId={'FormControl_Trainer_train_rate'} name="train-rate" min={1} max={100}
-            defaultValue={DEFAULT_TEST_SIZE} onChange={handlerChange_TestSize} />
+            defaultValue={params.params_training.test_size} onChange={handlerChange_TestSize} />
           <hr />
           <HyperparameterSelect controlId={'FormControl_IdOptimizer'} label="optimizer-id" info="optimizer-id-info"
             value={params.params_training.id_optimizer} onChange={(value) => change_params_training('id_optimizer', value as IdOptimizer_t)}>

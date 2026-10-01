@@ -17,6 +17,12 @@ export type ParamsTrainImage_t = {
   layers       : Layer_t[],
 }
 
+/** Progreso del entrenamiento: aviso al acabar cada época (desde 1) y petición de parar */
+export type TrainProgress_t = {
+  onEpochEnd?: (epoch: number, totalEpochs: number) => void
+  shouldStop?: () => boolean
+}
+
 const IMAGE_WIDTH = 28
 const IMAGE_HEIGHT = 28
 const BATCH_SIZE = 512
@@ -39,7 +45,7 @@ async function showExamples(data: SpriteImageDataset) {
   }
 }
 
-async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number) {
+async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t) {
   const fitCallbacks = tfvis.show.fitCallbacks(
     { name: 'Training: Train Model', tab: TAB_03_IMAGE_CLASSIFICATION },
     ['loss', 'val_loss', 'acc', 'val_acc'],
@@ -52,12 +58,21 @@ async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfE
     const d = data.nextTestBatch(TEST_DATA_SIZE)
     return [d.xs.reshape([TEST_DATA_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH, 1]), d.labels]
   })
+  const progressCallbacks: tfjs.CustomCallbackArgs = {
+    onBatchEnd: async () => {
+      if (progress.shouldStop?.()) model.stopTraining = true
+    },
+    onEpochEnd: async (epoch) => {
+      progress.onEpochEnd?.(epoch + 1, numberOfEpoch)
+      if (progress.shouldStop?.()) model.stopTraining = true
+    },
+  }
   return await model.fit(trainXs, trainYs, {
     batchSize     : BATCH_SIZE,
     validationData: [testXs, testYs],
     epochs        : numberOfEpoch,
     shuffle       : true,
-    callbacks     : fitCallbacks,
+    callbacks     : [fitCallbacks, progressCallbacks],
   })
 }
 
@@ -136,7 +151,7 @@ function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLo
  * Entrena una red convolucional con un dataset de imágenes de 28x28 guardado como sprite (MNIST, KMNIST…)
  * y muestra en el visor ejemplos, el entrenamiento y la evaluación por clase.
  */
-export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, classNames: string[], params: ParamsTrainImage_t) {
+export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, classNames: string[], params: ParamsTrainImage_t, progress: TrainProgress_t = {}) {
   const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
 
   tfvis.visor().open()
@@ -148,7 +163,7 @@ export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, class
   await tfvis.show.modelSummary({ name: 'Model summary', tab: TAB_03_IMAGE_CLASSIFICATION }, model)
   tfvis.visor().setActiveTab(TAB_03_IMAGE_CLASSIFICATION)
 
-  const history = await train(model, data, numberEpochs)
+  const history = await train(model, data, numberEpochs, progress)
   await showEvaluation(model, data, classNames)
   return { model, history }
 }

@@ -482,6 +482,8 @@ export type TabularClassificationGeneratedModel_t = {
   idOptimizer  : IdOptimizer_t
   idLoss       : IdLoss_t
   idMetrics    : IdMetric_t
+  /** Clases del dataset y, por cada ejemplo de validación, la clase real y la predicha */
+  evaluation?  : { classes: string[], labels: number[], predictions: number[] }
 }
 
 // ================================ REGRESSION

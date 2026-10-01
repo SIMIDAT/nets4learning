@@ -163,6 +163,34 @@
           "wine-white": "白ワインデータセット"
         }
       }
+    },
+    "dataset-info": "データ",
+    "extra-title": "その他のデータセット",
+    "extra-text": "アプリのモデルでは使っていません。自分の CSV をアップロードする練習用です。",
+    "dataset-details": "情報",
+    "show-info": "情報を見る",
+    "variables": {
+      "title": "変数",
+      "name": "変数名",
+      "role": "役割",
+      "type": "型",
+      "description": "説明",
+      "units": "単位",
+      "missing": "欠損値",
+      "roles": {
+        "ID": "ID",
+        "Feature": "特徴量",
+        "Target": "目的変数",
+        "Other": "その他"
+      },
+      "types": {
+        "Integer": "整数",
+        "Continuous": "連続値",
+        "Categorical": "カテゴリ",
+        "Binary": "二値"
+      },
+      "note": "役割・型・説明（英語）・単位はデータセットの出典ページによるものです。欠損値はここでダウンロードできるファイルで数えています。",
+      "images": "このデータセットは画像で構成されているため、変数の表はありません。"
     }
   },
   "dataframe-original": "データフレーム | 元データ",
@@ -404,7 +432,9 @@
       },
       "waiting-for-prediction": "説明するには、まず予測してください。",
       "waiting-for-model": "予測を説明するには、まずモデルを学習させてください。"
-    }
+    },
+    "take-screenshot": "スクリーンショットを撮る",
+    "table-scroll-hint": "横にスクロールするとすべての列が表示されます →"
   },
   "custom-canvas-drawer": {
     "validate": "分類する",
@@ -570,14 +600,14 @@
         }
       },
       "list-datasets": {
-        "0-option-1": "データセット - 車両評価分類",
-        "0-option-2": "データセット - アヤメ分類",
-        "0-option-3": "データセット - リンパ腫分類"
+        "0-option-1": "車両評価分類",
+        "0-option-2": "アヤメ分類",
+        "0-option-3": "リンパ腫分類"
       },
       "list-models": {
-        "0-option-1": "モデル - 車両評価分類",
-        "0-option-2": "モデル - アヤメ分類",
-        "0-option-3": "モデル - リンパ腫分類"
+        "0-option-1": "車両評価分類",
+        "0-option-2": "アヤメ分類",
+        "0-option-3": "リンパ腫分類"
       },
       "joyride": {
         "title": "チュートリアルをアクティブ化",
@@ -925,20 +955,20 @@
         }
       },
       "list-datasets": {
-        "salary": "データセット - 給与",
-        "auto-mpg": "データセット - 燃費性能",
-        "housing-prices": "データセット - 住宅価格",
-        "breast-cancer": "データセット - 乳がん",
-        "student-performance": "データセット - 学生成績",
-        "wine": "データセット - ワイン"
+        "salary": "給与",
+        "auto-mpg": "燃費性能",
+        "housing-prices": "住宅価格",
+        "breast-cancer": "乳がん",
+        "student-performance": "学生成績",
+        "wine": "ワイン"
       },
       "list-models": {
-        "salary": "モデル - 給与",
-        "auto-mpg": "モデル - 燃費性能",
-        "housing-prices": "モデル - 住宅価格",
-        "breast-cancer": "モデル - 乳がん",
-        "student-performance": "モデル - 学生成績",
-        "wine": "モデル - ワイン"
+        "salary": "給与",
+        "auto-mpg": "燃費性能",
+        "housing-prices": "住宅価格",
+        "breast-cancer": "乳がん",
+        "student-performance": "学生成績",
+        "wine": "ワイン"
       },
       "joyride": {
         "title": "チュートリアルをアクティブ化",
@@ -1236,12 +1266,12 @@
         }
       },
       "list-models": {
-        "2-option-1": "モデル - FaceDetector - 顔の幾何学",
-        "2-option-2": "モデル - FaceMesh - 顔メッシュ",
-        "2-option-3": "モデル - MoveNet - 関節検出器",
-        "2-option-4": "モデル - COCO SSD - 物体検出器",
-        "2-option-5": "モデル - Face API - 顔マネージャー",
-        "2-option-6": "モデル - HandSign - サイン検出器"
+        "2-option-1": "FaceDetector - 顔の幾何学",
+        "2-option-2": "FaceMesh - 顔メッシュ",
+        "2-option-3": "MoveNet - 関節検出器",
+        "2-option-4": "COCO SSD - 物体検出器",
+        "2-option-5": "Face API - 顔マネージャー",
+        "2-option-6": "HandSign - サイン検出器"
       }
     },
     "3-image-classifier": {
@@ -1347,16 +1377,16 @@
         "title": "-"
       },
       "list-models": {
-        "3-option-1": "モデル - MNIST - 数字の分類",
-        "3-option-2": "モデル - MobileNet - 画像分類器",
-        "3-option-3": "モデル - ResNet - 画像分類器",
-        "3-option-4": "モデル - KMNIST - くずし字の分類"
+        "3-option-1": "MNIST - 数字の分類",
+        "3-option-2": "MobileNet - 画像分類器",
+        "3-option-3": "ResNet - 画像分類器",
+        "3-option-4": "KMNIST - くずし字の分類"
       }
     },
     "3-image-classification": {
       "list-datasets": {
-        "mnist": "データセット - MNIST",
-        "kmnist": "データセット - KMNIST"
+        "mnist": "MNIST",
+        "kmnist": "KMNIST"
       },
       "joyride": {
         "title": "チュートリアルをアクティブ化",
@@ -1992,7 +2022,39 @@
           "line-chart": "折れ線グラフ"
         },
         "waiting-for-models": "予測するには、まずモデルを学習させてください。",
-        "waiting-for-prediction": "予測すると、ここに結果が表示されます。"
+        "waiting-for-prediction": "予測すると、ここに結果が表示されます。",
+        "training": {
+          "epoch": "学習中… エポック {{epoch}} / {{total}}",
+          "preparing": "データとモデルを準備しています…",
+          "stop": "停止",
+          "stopping": "停止しています…",
+          "curves-title": "学習曲線",
+          "curves-model": "曲線を表示するモデル",
+          "epoch-axis": "エポック",
+          "train": "学習",
+          "validation": "検証",
+          "best": "最良",
+          "best-title": "最終エポックの検証損失が最も小さいモデル",
+          "confusion-title": "混同行列（検証）",
+          "confusion-accuracy": "正解: {{accuracy}}（学習に使っていない {{total}} 件中 {{correct}} 件）。",
+          "confusion-real": "実際のクラス",
+          "confusion-predicted": "予測クラス",
+          "confusion-total": "合計",
+          "confusion-recall": "再現率",
+          "confusion-precision": "適合率",
+          "confusion-legend": "各セルは、実際のクラス（行）の例のうち列のクラスと予測された件数と、その行に占める割合を示します。緑は正解、赤は誤りで、色が濃いほど件数が多いことを表します。"
+        },
+        "help": {
+          "learning-rate": "データのバッチごとに、オプティマイザーがネットワークの重みを修正する歩幅の大きさです。",
+          "epochs": "1 エポックは学習データ全体を 1 回通すことです。エポックを増やすと学習の機会が増えますが、過学習もしやすくなります。",
+          "test-size": "学習中に見ていない例でモデルを確認するために取り分けておくデータの割合（検証用）です。",
+          "optimizer": "誤差をもとに重みをどう変えるかを決めるアルゴリズムです。Adam は特に調整しなくてもよく機能します。",
+          "loss": "モデルがどれだけ間違えているかを測ります。学習はこの値をできるだけ小さくしようとします。",
+          "metric": "学習中にモデルの調子を知るために計算する指標（例: 正解率）です。重みの修正には使われません。",
+          "recall": "再現率（recall）: このクラスに属する例のうち、モデルが正しく予測した割合。",
+          "precision": "適合率（precision）: モデルがこのクラスと予測したうち、正しかった割合。",
+          "accuracy": "正解率（accuracy）: 検証用の全例のうち、正しく予測できた割合。"
+        }
       },
       "1-regression": {
         "generator": {
@@ -2169,7 +2231,15 @@
       "select-dataset": {
         "description": "説明"
       },
-      "open": "開く"
+      "open": "開く",
+      "info": {
+        "rows": "{{value}} 行",
+        "rows-files": "{{files}} ファイル（{{values}} 行）",
+        "features": "特徴量 {{value}}",
+        "classes": "{{value}} クラス",
+        "target": "目的変数: {{value}}",
+        "images": "28×28 の画像 {{value}} 枚"
+      }
     },
     "documentation": {
       "title": "ドキュメント"
@@ -2504,48 +2574,47 @@
         "text": {
           "0": "機械学習において、損失関数（コスト関数とも呼ばれる）は、モデルが予測した出力と実際の（期待される）出力との差を数値化する指標です。言い換えると、損失関数はモデルが学習データにどれだけよく適合しているかを測ります。",
           "1": "機械学習アルゴリズムの目的は損失関数を最小化すること、つまり学習データに最もよく適合するモデルのパラメータを見つけることです。そのため損失関数の選択は非常に重要で、モデルがデータのパターンを正しく学習し、新しいデータに対して正確に予測する能力に影響します。",
-          "2": "TensorFlow.js にはさまざまな損失関数があり、どれを使うかは扱う問題の種類によって決まります。以下にいくつかの例を示します。"
+          "2": "Nets4Learning で選べる損失関数を、それぞれが適したタスクの種類ごとに示します。"
         },
         "table": {
-          "AbsoluteDifference": {
-            "references": "絶対差\n (Acervolima, s.f.)",
-            "description": "目標値との距離を絶対値で計算します。"
+          "categoricalCrossentropy": {
+            "description": "モデルが予測した確率と正解クラス（one-hot 表現）との差を測ります。softmax 出力の多クラス分類でよく使われる損失です。"
           },
-          "ComputeWeightedLoss": {
-            "references": "加重平均\n (Acervolima, s.f.)",
-            "description": "2つのテンソル間の重み付き損失を計算します。"
+          "binaryCrossentropy": {
+            "description": "2 クラス、または互いに独立した複数ラベルのための交差エントロピーです。sigmoid 出力と組み合わせて使います。"
           },
-          "CosineDistance": {
-            "references": "コサイン距離\n (Acervolima, s.f.)",
-            "description": "2つのテンソル間の距離のコサインを使って損失を計算します。"
+          "kullbackLeiblerDivergence": {
+            "description": "予測した確率分布が正解の分布からどれだけ離れているかを測ります。モデルの出力が分布のときに使います。"
           },
-          "HingeLoss": {
-            "references": "ヒンジ損失\n (Rennie & Srebro, 2005)",
-            "description": "2つのテンソル間のヒンジ損失を計算します。分類問題で使われます。"
+          "hinge": {
+            "description": "正解クラスに対して一定のマージンを超えない予測にペナルティを与えます。サポートベクターマシン由来で、-1 と 1 のラベルを想定しています。"
           },
-          "HuberLoss": {
-            "references": "(Huber 損失)",
-            "description": "推定手法によって生じる損失を計算します。"
+          "squaredHinge": {
+            "description": "ヒンジ損失を二乗したものです。大きな誤差をより強く罰します。"
           },
-          "LogLoss": {
-            "references": "対数損失\n (Shen, 2005)",
-            "description": "<i>LogLoss</i>（<i>Logistic Loss</i>）は、負の数に対して線形に増加する凸関数で、外れ値の影響を受けにくい性質を持ちます。2つのテンソル間の対数損失を計算します。"
+          "categoricalHinge": {
+            "description": "多クラス用のヒンジ損失です。正解クラスのスコアを、最も高い不正解クラスのスコアと比べます。"
           },
-          "MeanSquaredError": {
-            "references": "平均二乗誤差\n (Acervolima, s.f.)",
-            "description": "目標値との二乗距離を幾何的に計算します。この関数は回帰問題で使われます。"
+          "meanSquaredError": {
+            "description": "正解値と予測値の差の二乗の平均です。大きな誤差を強く罰し、回帰でよく使われる損失です。"
           },
-          "CategoricalCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "確率分布間の距離を測ります。出力層が確率を表すネットワークで使われます。"
+          "meanAbsoluteError": {
+            "description": "正解値と予測値の差の絶対値の平均です。二乗誤差よりも外れ値の影響を受けにくいです。"
           },
-          "SigmoidCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "<i>CategoricalCrossEntropy</i> 関数の変種で、損失を 0 から 1 の間の値として計算します。"
+          "meanAbsolutePercentageError": {
+            "description": "平均絶対誤差を正解値に対する割合（%）で表したものです。大きさの異なる値の誤差を比べるのに便利ですが、正解値が 0 の場合は使えません。"
           },
-          "SoftmaxCrossEntropy": {
-            "references": "(Bendersky, 2016)",
-            "description": "<i>softmax</i> 関数と <i>CrossEntropy</i> 関数を組み合わせてネットワークの損失を計算します。"
+          "meanSquaredLogarithmicError": {
+            "description": "値の対数に対する平均二乗誤差です。相対的な誤差を測り、大きな値での誤差をあまり罰しません。"
+          },
+          "logcosh": {
+            "description": "誤差の双曲線余弦の対数です。小さな誤差では二乗誤差のように、大きな誤差では絶対誤差のように振る舞います。"
+          },
+          "poisson": {
+            "description": "訪問数や発生件数のような、負でない整数（カウント）を予測するための損失です。"
+          },
+          "cosineProximity": {
+            "description": "正解ベクトルと予測ベクトルの向き（なす角）を比べます。ベクトルの大きさは考慮しません。"
           }
         }
       },
@@ -2618,7 +2687,7 @@
       "features": "特徴量",
       "open-visor": "ビューアを開く",
       "close-visor": "ビューアを閉じる",
-      "history": "結果"
+      "history": "最終値（検証）"
     }
   },
   "hr": {
@@ -2740,5 +2809,13 @@
     "filters": "フィルター {{value}}",
     "pool-size": "プール {{value}}",
     "strides": "ストライド {{value}}"
+  },
+  "session": {
+    "export": "設定をエクスポート",
+    "import": "設定をインポート",
+    "imported": "設定をインポートしました",
+    "error-not-json": "ファイルが有効な JSON ではありません",
+    "error-not-session": "Nets4Learning の設定ファイルではありません",
+    "error-other-task": "別のタスクの設定です"
   }
 }

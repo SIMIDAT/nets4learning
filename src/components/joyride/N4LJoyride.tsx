@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Joyride, { type StoreHelpers } from 'react-joyride'
 
@@ -40,15 +40,29 @@ export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state, TASK = '
     return () => window.removeEventListener('scroll', eventListener_scroll, {})
   }, [updateScreenJoyride])
 
+  // El tour arranca solo la primera vez que se entra en la página; después, con el botón "Activar el tutorial"
+  const [run, setRun] = useState(JOYRIDE_state?.run ?? false)
   useEffect(() => {
-    if (localStorage.getItem(`${TASK}.joyride-` + KEY) !== null) {
-      localStorage.setItem(`${TASK}.joyride-` + KEY, JSON.stringify({ run: true }))
+    const storageKey = `${TASK}.joyride-` + KEY
+    try {
+      if (localStorage.getItem(storageKey) !== null) return
+      // Se marca como visto al empezar: aunque se cierre a medias, no vuelve a salir solo
+      localStorage.setItem(storageKey, JSON.stringify({ seen: true }))
+    } catch {
+      // Sin localStorage no se puede recordar: mejor no arrancarlo en cada visita
+      return
     }
+    // Deja que la página pinte los elementos que señala el tour
+    const timeout = setTimeout(() => setRun(true), 1000)
+    return () => clearTimeout(timeout)
   }, [TASK, KEY])
 
   useImperativeHandle(joyrideButton_ref, () => ({
     // Reinicia el tour desde el primer paso
-    handleClick_StartJoyride: () => helpers_ref.current?.reset(true)
+    handleClick_StartJoyride: () => {
+      setRun(true)
+      helpers_ref.current?.reset(true)
+    }
   }), [])
 
   if(VERBOSE) console.debug('render N4LJoyride')
@@ -57,7 +71,7 @@ export default function N4LJoyride ({ joyrideButton_ref, JOYRIDE_state, TASK = '
              locale={joyride_locale}
              callback={JOYRIDE_state?.handleJoyrideCallback}
              continuous={JOYRIDE_state?.continuous}
-             run={JOYRIDE_state?.run}
+             run={run}
              steps={JOYRIDE_state?.steps ?? []}
              showProgress={true}
              spotlightClicks={true} />

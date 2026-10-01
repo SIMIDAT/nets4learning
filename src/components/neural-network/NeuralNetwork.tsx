@@ -1,3 +1,4 @@
+import './NeuralNetwork.css'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -5,19 +6,10 @@ import { ArrowRight } from 'react-bootstrap-icons'
 import VisGraph, { type GraphData, type Network } from 'react-vis-graph-wrapper'
 import { VERBOSE } from '@/CONSTANTS'
 import { NEURAL_NETWORK_MODES, type NEURAL_NETWORK_MODES_t } from './neural_network'
+import { layerSummaryParts, type DrawableLayer_t } from './layerSummary'
+import { useTheme } from '@hooks/useTheme'
 
 
-
-/** Lo que se dibuja de una capa; vale para las dense (tabular, regresión) y las de imágenes */
-type DrawableLayer_t = {
-  _class?    : string
-  units?     : number
-  activation?: string | null
-  kernelSize?: number
-  filters?   : number
-  poolSize?  : number
-  strides?   : number
-}
 
 type NeuralNetworkProps = {
   layers     : DrawableLayer_t[]
@@ -30,6 +22,8 @@ type NeuralNetworkProps = {
 export default function NeuralNetwork(props: NeuralNetworkProps) {
   const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
   const { t } = useTranslation()
+  // vis-network pinta en un canvas: el color de las aristas no sale del CSS
+  const theme = useTheme()
 
   const [options, setOptions] = useState({ height: 250, width: 300 })
 
@@ -53,32 +47,12 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
     }
   }
 
-  // Texto de cada nodo (y de su tooltip). Las capas se numeran desde 1, como en el editor de capas; los tipos
-  // de capa y las activaciones se dejan con su nombre técnico
+  // Texto de cada nodo (y de su tooltip). Las capas se numeran desde 1, como en los editores de capas
   const getElementText = useCallback((index: number, element: DrawableLayer_t) => {
     const layer = t('neural-network.layer', { index: index + 1 })
-    const units = t('neural-network.units', { units: element.units })
-    let lines: string[]
-    switch (element?._class) {
-      case 'flatten':
-        lines = [layer, '', 'Flatten']
-        break
-      case 'dense':
-        lines = [layer, '', 'Dense', units, String(element.activation)]
-        break
-      case 'conv2d':
-        lines = [layer, '', 'Conv 2D', t('neural-network.kernel-size', { value: element.kernelSize }),
-          t('neural-network.filters', { value: element.filters }), String(element.activation)]
-        break
-      case 'maxPooling2d':
-        lines = [layer, '', 'Max Pooling 2D', t('neural-network.pool-size', { value: element.poolSize }),
-          t('neural-network.strides', { value: element.strides })]
-        break
-      default:
-        lines = [layer, units, String(element.activation)]
-    }
-    const label = lines.join('\n')
-    return { label, title: lines.filter(Boolean).join('\n') }
+    const parts = layerSummaryParts(t, element)
+    const lines = element?._class ? [layer, '', ...parts] : [layer, ...parts]
+    return { label: lines.join('\n'), title: [layer, ...parts].join('\n') }
   }, [t])
 
   // Ajusta el grafo al tamaño del contenedor, también cuando este cambia (p. ej. al redimensionar la ventana)
@@ -136,7 +110,10 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
     const nodes = [], edges = []
     for (let index = 0; index < layers.length; index++) {
       const element = layers[index]
-      const { label, title } = getElementText(index, element)
+      // Cada neurona es un nodo: solo lleva el nombre de su capa (con todo el texto los nodos se pisan); el
+      // detalle de la capa sale al pasar el ratón
+      const { title } = getElementText(index, element)
+      const label = t('neural-network.layer', { index: index + 1 })
       for (let unit = 0; unit < (layers[index].units ?? 0); unit++) {
         const key_id = index + ' - ' + unit
         nodes.push({
@@ -153,7 +130,7 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       }
     }
     return { nodes, edges }
-  }, [layers, getElementText])
+  }, [layers, getElementText, t])
 
   const graphState = useMemo<GraphData>(() => {
     switch (mode) {
@@ -169,20 +146,9 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
 
   return <>
     <Row className={'mt-3'}>
-      <Col xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}
-        style={{
-          display     : 'flex',
-          alignItems  : 'center',
-          marginBottom: '2rem'
-        }}>
-        <div className="col-md-6"
-          style={{ writingMode: 'vertical-rl' }}>
-          <Trans i18nKey={'graphic-red.input'} />
-        </div>
-        <div className="col-md-6"
-          style={{ textAlign: 'center' }}>
-          <ArrowRight style={{ 'fontSize': 'xxx-large' }} />
-        </div>
+      <Col xs={2} className={'n4l-nn-side'}>
+        <span className={'n4l-nn-side-label'}><Trans i18nKey={'graphic-red.input'} /></span>
+        <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
       </Col>
       <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
         <div style={{ 'position': 'relative', height: '100%', width: '100%' }}>
@@ -212,7 +178,7 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
                 }
               },
               edges: {
-                color: '#000000',
+                color: theme === 'dark' ? '#dee2e6' : '#000000',
               },
               height: `${options.height}px`,
               // width : `${options.width}px`
@@ -221,21 +187,9 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
             ref={networkRef} />
         </div>
       </Col>
-      <Col 
-        xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}
-        style={{
-          display     : 'flex',
-          alignItems  : 'center',
-          marginBottom: '2rem'
-        }}>
-        <div className="col-md-6"
-          style={{ textAlign: 'center' }}>
-          <ArrowRight style={{ 'fontSize': 'xxx-large' }} />
-        </div>
-        <div className="col-md-6"
-          style={{ writingMode: 'vertical-lr', textAlign: 'left' }}>
-          <Trans i18nKey={'graphic-red.output'} />
-        </div>
+      <Col xs={2} className={'n4l-nn-side'}>
+        <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
+        <span className={'n4l-nn-side-label n4l-nn-side-label-output'}><Trans i18nKey={'graphic-red.output'} /></span>
       </Col>
     </Row>
   </>

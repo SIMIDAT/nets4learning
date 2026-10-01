@@ -1,7 +1,7 @@
 import * as tfjs from '@tensorflow/tfjs'
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import type { SpriteDatasetConfig_t } from './SpriteImageDataset'
-import { trainImageClassifier, type ParamsTrainImage_t } from '@pages/playground/3_ImageClassification/custom/trainImageClassifier'
+import { trainImageClassifier, type ParamsTrainImage_t, type TrainProgress_t } from '@pages/playground/3_ImageClassification/custom/trainImageClassifier'
 import { DEFAULT_BAR_DATA, type BarChartData_t } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import { imageDataToMnistTensor4d, toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
 import type { Layer_t } from '@/types/types'
@@ -137,8 +137,8 @@ export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFI
     })
   }
 
-  async TRAIN_MODEL(params: ParamsTrainImage_t): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {
-    return trainImageClassifier(this.DATASET, this.CLASS_LABELS, params)
+  async TRAIN_MODEL(params: ParamsTrainImage_t, progress: TrainProgress_t = {}): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {
+    return trainImageClassifier(this.DATASET, this.CLASS_LABELS, params, progress)
   }
 
   DEFAULT_LAYERS(): Layer_t[] {

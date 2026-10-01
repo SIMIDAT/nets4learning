@@ -138,7 +138,7 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
     const iris_y = iris_oneHotEncoder.transform(iris_dataframe_y)
     const labelEncoder = new dfd.LabelEncoder()
     const iris_labelEncoder = labelEncoder.fit(iris_dataframe_y.values)
-    const iris_classes = Object.keys(iris_labelEncoder.classes)
+    const iris_classes = DataFrameUtils.LabelEncoderClasses(iris_labelEncoder)
     const item: _Types.DatasetProcessed_t = {
       is_dataset_upload   : false,
       is_dataset_processed: true,

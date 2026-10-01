@@ -6,7 +6,10 @@ import * as tfvis from '@tensorflow/tfjs-vis'
 import { VERBOSE } from '@/CONSTANTS'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
-import { parseLogs } from '@core/history/utils'
+import { bestModelIndex, formatEpochs } from '@core/history/trainingSummary'
+import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
+import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
+import N4LConfusionMatrix from '@components/neural-network/N4LConfusionMatrix'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import type { TabularClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
@@ -35,6 +38,10 @@ export default function TabularClassificationTableModels(props: TabularClassific
     [listModels.length, rowsPerPage]
   );
 
+  // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
+  const histories = listModels.map((generated) => generated.history.history)
+  const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
   }
@@ -54,18 +61,18 @@ export default function TabularClassificationTableModels(props: TabularClassific
   if (VERBOSE) console.debug('render TabularClassificationTableModels')
   return <>
     <Card>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <h3><Trans i18nKey={prefix + 'list-models-generated'} /> | {listModels.length}</h3>
-        <div className="d-flex">
+        <div className="d-flex gap-1">
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-3'}
+            className={'text-nowrap'}
             onClick={handleClick_OpenVisor}>
             <Trans i18nKey={prefix + 'open-visor'} />
           </Button>
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-1'}
+            className={'text-nowrap'}
             onClick={handleClick_CloseVisor}>
             <Trans i18nKey={prefix + 'close-visor'} />
           </Button>
@@ -101,9 +108,9 @@ export default function TabularClassificationTableModels(props: TabularClassific
                       .slice(activePage * rowsPerPage, (activePage * rowsPerPage) + rowsPerPage)
                       .map((value, index) => {
                         return <tr key={index}>
-                          <th>{(activePage * rowsPerPage) + index + 1}</th>
+                          <th className={'text-nowrap'}>{(activePage * rowsPerPage) + index + 1}{(activePage * rowsPerPage) + index === bestIndex && <N4LBestBadge />}</th>
                           <td><span className={'n4l-table-cell'}>{value.learningRate}</span></td>
-                          <td><span className={'n4l-table-cell'}>{value.numberOfEpoch}</span></td>
+                          <td><span className={'n4l-table-cell'}>{formatEpochs(value.history.epoch.length, value.numberOfEpoch)}</span></td>
                           <td><span className={'n4l-table-cell'}>{value.testSize * 100}%</span></td>
                           <td>
                             {value.layerList
@@ -119,13 +126,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
                           <td><span className={'n4l-table-cell'}>{nnLabel(value.idLoss)}</span></td>
                           <td><span className={'n4l-table-cell'}>{nnLabel(value.idMetrics)}</span></td>
                           <td>
-                            {Object.entries(value.history.history)
-                              .map(([key, logs], index2) => {
-                                const logsArray = logs as Array<number | string>
-                                return <span key={index2} className={'n4l-table-cell'}>
-                                  <small>{key} {parseLogs(logsArray)}</small><br />
-                                </span>
-                              })}
+                            <N4LFinalMetrics logs={value.history.history} />
                           </td>
                           <td>
                             <Button variant={'outline-primary'}
@@ -147,6 +148,12 @@ export default function TabularClassificationTableModels(props: TabularClassific
             <Row>
               <Col>
                 <N4LPagination activePage={activePage} pageCount={pageCount} onChange={handleClick_ChangePage} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <N4LTrainingCurves histories={histories}
+                  renderDetails={(index) => listModels[index].evaluation !== undefined && <N4LConfusionMatrix {...listModels[index].evaluation} />} />
               </Col>
             </Row>
           </Container>

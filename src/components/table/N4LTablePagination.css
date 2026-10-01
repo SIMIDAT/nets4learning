@@ -1,6 +1,6 @@
 .n4l-table-paginator-table-wrapper-scroll-x {
   display: block;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 .n4l-table-paginator-table-wrapper-scroll-x::-webkit-scrollbar-track {
   background-color: transparent;

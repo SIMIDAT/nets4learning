@@ -1,6 +1,12 @@
 import N4LLatex from "@components/latex/N4LLatex"
 import { Accordion, Col, Row, Table } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
+import { TYPE_LOSSES_CLASSIFICATION, TYPE_LOSSES_REGRESSION } from "@core/nn-utils/ArchitectureTypesHelper"
+
+const LOSS_GROUPS = [
+  { group: "classification", losses: TYPE_LOSSES_CLASSIFICATION },
+  { group: "regression", losses: TYPE_LOSSES_REGRESSION },
+]
 
 export default function Glossary3LossFunctions() {
   const { t } = useTranslation()
@@ -9,10 +15,8 @@ export default function Glossary3LossFunctions() {
     <>
       <Accordion defaultValue={""} defaultActiveKey={""}>
         <Accordion.Item eventKey={"functions-losses"}>
-          <Accordion.Header>
-            <h2>
-              <Trans i18nKey={"pages.glossary.loss-functions.title"} />
-            </h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            <Trans i18nKey={"pages.glossary.loss-functions.title"} />
           </Accordion.Header>
           <Accordion.Body>
             <p>
@@ -24,86 +28,31 @@ export default function Glossary3LossFunctions() {
             <p>
               <Trans i18nKey={"pages.glossary.loss-functions.text.2"} />
             </p>
+            {/* Las mismas pérdidas que ofrece el selector del editor de hiperparámetros */}
             <Table striped bordered hover responsive={true}>
               <thead>
                 <tr>
                   <th>{t("pages.glossary.table-head.function")}</th>
                   <th>{t("pages.glossary.table-head.description")}</th>
-                  {/*<th>{t("pages.glossary.table-head.references")}</th>*/}
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th>AbsoluteDifference</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.AbsoluteDifference.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.AbsoluteDifference.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>ComputeWeightedLoss</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.ComputeWeightedLoss.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.ComputeWeightedLoss.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>CosineDistance</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.CosineDistance.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.CosineDistance.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>HingeLoss</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.HingeLoss.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.HingeLoss.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>HuberLoss</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.HuberLoss.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.HuberLoss.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>LogLoss</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.LogLoss.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.LogLoss.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>MeanSquaredError</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.MeanSquaredError.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.MeanSquaredError.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>CategoricalCrossEntropy</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.CategoricalCrossEntropy.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.CategoricalCrossEntropy.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>SigmoidCrossEntropy</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.SigmoidCrossEntropy.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.SigmoidCrossEntropy.references"} /></td>*/}
-                </tr>
-                <tr>
-                  <th>SoftmaxCrossEntropy</th>
-                  <td>
-                    <Trans i18nKey={"pages.glossary.loss-functions.table.SoftmaxCrossEntropy.description"} />
-                  </td>
-                  {/*<td><Trans i18nKey={"pages.glossary.loss-functions.table.SoftmaxCrossEntropy.references"} /></td>*/}
-                </tr>
-              </tbody>
+              {LOSS_GROUPS.map(({ group, losses }) => (
+                <tbody key={group}>
+                  <tr>
+                    <th colSpan={2} className={"table-active"}>
+                      {t("pages.playground.generator.general-parameters.loss-group-" + group)}
+                    </th>
+                  </tr>
+                  {losses.map(({ key, label }) => (
+                    <tr key={key}>
+                      <th>{label}</th>
+                      <td>
+                        <Trans i18nKey={"pages.glossary.loss-functions.table." + key + ".description"} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              ))}
             </Table>
 
             <Trans i18nKey={"references"} />
@@ -113,17 +62,17 @@ export default function Glossary3LossFunctions() {
                   target="_blank"
                   rel="noreferrer"
                   className="link-secondary"
-                  href="https://js.tensorflow.org/api/3.14.0/#Training-Losses"
+                  href="https://js.tensorflow.org/api/latest/#tf.LayersModel.compile"
                 >
-                  TensorFlow JS. Training / Losses
+                  TensorFlow.js. tf.LayersModel.compile (loss)
                 </a>
               </li>
             </ol>
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey={"equations-losses"}>
-          <Accordion.Header>
-            <h2>{t("equations.title-losses")}</h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            {t("equations.title-losses")}
           </Accordion.Header>
           <Accordion.Body>
             <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>

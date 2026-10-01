@@ -39,7 +39,7 @@ export default function RegressionDatasetProcess() {
         <p className="text-muted mb-0 pb-0">
           <Trans i18nKey="more-information-in-link"
             components={{
-              link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS} />
+              link1: <N4LHelpLink page={'glossary'} action={GLOSSARY_ACTIONS.REGRESSION.STEP_1_UPLOAD_AND_PROCESS} />
             }}
           />
         </p>

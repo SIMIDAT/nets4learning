@@ -42,13 +42,13 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
 
   return <>
     <Card>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <Title><Trans i18nKey={prefix + 'title'} /></Title>
-        <div className={'d-flex'}>
-          <Button disabled={waiting} variant={'outline-primary'} size={'sm'} onClick={onAddStart}>
+        <div className={'d-flex gap-2'}>
+          <Button disabled={waiting} variant={'outline-primary'} size={'sm'} className={'text-nowrap'} onClick={onAddStart}>
             <Trans i18nKey={prefix + 'add-layer-start'} />
           </Button>
-          <Button disabled={waiting} variant={'outline-primary'} size={'sm'} className={'ms-3'} onClick={onAddEnd}>
+          <Button disabled={waiting} variant={'outline-primary'} size={'sm'} className={'text-nowrap'} onClick={onAddEnd}>
             <Trans i18nKey={prefix + 'add-layer-end'} />
           </Button>
         </div>
@@ -60,7 +60,7 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
             {layers.map((item, index) => (
               <Accordion.Item key={index} eventKey={index.toString()}>
                 <Accordion.Header>
-                  <Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} />
+                  <span className={'text-nowrap'}><Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} /></span>
                   {/* Resumen de la capa para no tener que abrirla */}
                   <span className={'ms-2 text-body-secondary'}>
                     · {t('neural-network.units', { units: item.units })} · {activationLabel(item.activation)}

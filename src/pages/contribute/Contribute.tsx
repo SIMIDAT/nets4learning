@@ -74,8 +74,8 @@ SOFTWARE.`}</pre>
               <N4LDivider i18nKey={"hr.project"} />
               <Accordion className={"mt-3"}>
                 <Accordion.Item eventKey={"i18n"}>
-                  <Accordion.Header>
-                    <h3>Localization (i18n)</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    Localization (i18n)
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"i18n.md"} />
@@ -86,32 +86,32 @@ SOFTWARE.`}</pre>
               <N4LDivider i18nKey={"hr.add-model-dataset"} />
               <Accordion className={"mt-3"}>
                 <Accordion.Item eventKey={"directory-structure"}>
-                  <Accordion.Header>
-                    <h3>Directory structure</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    Directory structure
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"directory-structure.md"} />
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={"Example Pre-processing"}>
-                  <Accordion.Header>
-                    <h3>Introduction</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    Introduction
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"00. Tabular Classification - Introduction.md"} />
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={"Example Add Entry"}>
-                  <Accordion.Header>
-                    <h3>Add Entry</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    Add Entry
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"00. Tabular Classification - Add Entry.md"} />
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={"Create Model"}>
-                  <Accordion.Header>
-                    <h3>Create model</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    Create model
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"00. Tabular Classification - CreateModel.md"} />
@@ -122,16 +122,16 @@ SOFTWARE.`}</pre>
               <N4LDivider i18nKey={"hr.dataframe"} />
               <Accordion className={"mt-3"}>
                 <Accordion.Item eventKey={"DataFrame"}>
-                  <Accordion.Header>
-                    <h3>DataFrame</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    DataFrame
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"_0. DataFrame.md"} />
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={"DataFrameUtils"}>
-                  <Accordion.Header>
-                    <h3>DataFrame Utils</h3>
+                  <Accordion.Header as={"h3"} className={"n4l-accordion-h3"}>
+                    DataFrame Utils
                   </Accordion.Header>
                   <Accordion.Body>
                     <N4LMarkdownDownloader file_name={"DataFrameUtils.md"} />

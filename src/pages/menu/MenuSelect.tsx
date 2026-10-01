@@ -8,6 +8,7 @@ import N4LBreadcrumb from '@components/breadcrumb/N4LBreadcrumb'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import { isTask, TASK_INFO } from '@components/task/taskInfo'
 import { taskOptions, type TaskKind_t } from '@/TASK_OPTIONS'
+import N4LDatasetInfo from '@components/dataset/N4LDatasetInfo'
 import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import { useMenuModel } from '@hooks/useMenuModel'
@@ -33,6 +34,8 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
   const { i18nTitle } = TASK_INFO[id]
   const descriptionOption = options.find(({ value }) => value === descriptionKey)
   const uploadOption = options.find(({ value }) => value === UPLOAD)
+  // Los modelos preentrenados se entrenaron con el dataset de su misma clave
+  const datasetInfo = (value: string) => taskOptions(id, 'dataset').find((option) => option.value === value)?.info
   const listOptions = options.filter(({ value }) => value !== UPLOAD)
 
   if (VERBOSE) console.debug(`render MenuSelect ${kind}`)
@@ -71,6 +74,7 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
               <Card className={'n4l-task-card h-100'} data-task={id} data-testid={`${testId}-Option-${value}`}>
                 <Card.Body>
                   <Card.Title as={'h3'} className={'h5'}>{t(i18n)}</Card.Title>
+                  {datasetInfo(value) !== undefined && <N4LDatasetInfo info={datasetInfo(value)!} />}
                 </Card.Body>
                 <Card.Footer className={'bg-transparent border-0 d-flex gap-2 pb-3'}>
                   <Link className={'btn btn-primary flex-grow-1'}

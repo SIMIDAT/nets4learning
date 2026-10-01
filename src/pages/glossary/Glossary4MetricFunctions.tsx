@@ -3,15 +3,15 @@ import { Trans, useTranslation } from "react-i18next"
 import N4LLatex from "@components/latex/N4LLatex"
 
 
-export default function Glossary4MetricFunctions() {
+export default function Glossary4MetricFunctions({ openKey }: { openKey?: string | null }) {
   const { t } = useTranslation()
 
   return (
     <>
-      <Accordion defaultValue={""} defaultActiveKey={""}>
-        <Accordion.Item eventKey={"functions-metrics"}>
-          <Accordion.Header>
-            <h2>{t("pages.glossary.metric-functions.title")}</h2>
+      <Accordion defaultActiveKey={openKey ?? undefined}>
+        <Accordion.Item eventKey={"functions-metrics"} id={"glossary-functions-metrics"}>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            {t("pages.glossary.metric-functions.title")}
           </Accordion.Header>
           <Accordion.Body>
             <Row>
@@ -50,8 +50,8 @@ export default function Glossary4MetricFunctions() {
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey={"equation-metric"}>
-          <Accordion.Header>
-            <h2>{t("equations.title-metrics")}</h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            {t("equations.title-metrics")}
           </Accordion.Header>
           <Accordion.Body>
             <Row xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}>

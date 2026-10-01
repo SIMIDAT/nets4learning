@@ -2,13 +2,6 @@ import { Card } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { HyperparameterLearningRate, HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
 import { VERBOSE } from '@/CONSTANTS'
-import {
-  DEFAULT_NUMBER_EPOCHS,
-  DEFAULT_LEARNING_RATE,
-  DEFAULT_ID_OPTIMIZATION,
-  DEFAULT_ID_LOSS,
-  DEFAULT_TEST_SIZE,
-} from './CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 import alertHelper from '@utils/alertHelper'
@@ -16,6 +9,12 @@ import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import N4LHelpLink from '@components/helpLink/N4LHelpLink'
 
 type ImageClassificationEditorHyperparametersProps_t = {
+  // Valores iniciales de los campos (al importar una sesión el editor se vuelve a montar con los nuevos)
+  learningRate    : number
+  numberEpochs    : number
+  testSize        : number
+  idOptimizer     : IdOptimizer_t
+  idLoss          : IdLoss_t | IdMetric_t
   setLearningRate : React.Dispatch<React.SetStateAction<number>>
   setNumberEpochs : React.Dispatch<React.SetStateAction<number>>
   setTestSize     : React.Dispatch<React.SetStateAction<number>>
@@ -27,6 +26,11 @@ type ImageClassificationEditorHyperparametersProps_t = {
 
 export default function ImageClassificationEditorHyperparameters(props: ImageClassificationEditorHyperparametersProps_t) {
   const {
+    learningRate,
+    numberEpochs,
+    testSize,
+    idOptimizer,
+    idLoss,
     setLearningRate,
     setNumberEpochs,
     setTestSize,
@@ -66,19 +70,19 @@ export default function ImageClassificationEditorHyperparameters(props: ImageCla
       <Card.Header><h3><Trans i18nKey={prefix + 'title'} /></h3></Card.Header>
       <Card.Body>
         <HyperparameterLearningRate controlId="formLearningRate"
-          defaultValue={DEFAULT_LEARNING_RATE} onChange={setLearningRate} />
+          defaultValue={learningRate} onChange={setLearningRate} />
         <HyperparameterNumber controlId="FormNumberOfEpochs" name="number-of-epochs" min={1} max={100}
-          defaultValue={DEFAULT_NUMBER_EPOCHS} onChange={setNumberEpochs} />
+          defaultValue={numberEpochs} onChange={setNumberEpochs} />
         <HyperparameterNumber controlId="FormTestSize" name="test-size" min={1} max={100}
-          defaultValue={DEFAULT_TEST_SIZE} onChange={setTestSize} />
+          defaultValue={testSize} onChange={setTestSize} />
         <hr />
         <HyperparameterSelect controlId="FormOptimizer" label="optimizer-id" info="optimizer-id-info"
-          defaultValue={DEFAULT_ID_OPTIMIZATION} onChange={(value) => setIdOptimizer(value as IdOptimizer_t)}>
+          defaultValue={idOptimizer} onChange={(value) => setIdOptimizer(value as IdOptimizer_t)}>
           <OptimizerOptions />
         </HyperparameterSelect>
         <hr />
         <HyperparameterSelect controlId="FormLoss" label="loss-id" info="loss-id-info"
-          defaultValue={DEFAULT_ID_LOSS} onChange={(value) => setIdLoss(value as IdLoss_t)}>
+          defaultValue={idLoss} onChange={(value) => setIdLoss(value as IdLoss_t)}>
           <LossOptions task={'classification'} />
         </HyperparameterSelect>
         <hr />

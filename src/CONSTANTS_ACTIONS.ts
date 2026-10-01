@@ -7,6 +7,14 @@ export const GLOSSARY_ACTIONS = {
     STEP_4_HYPERPARAMETERS   : 'task-00-editor-hyperparameters-open',
     STEP_5_TABLE_OF_MODELS   : 'task-00-table-of-models-open'
   },
+  REGRESSION: {
+    STEP_1_UPLOAD_AND_PROCESS: 'task-01-upload-and-process-open',
+    STEP_2_DATASET           : 'task-01-dataset-open',
+    STEP_3_0_LAYER_DESIGN    : 'task-01-layer-design-open',
+    STEP_3_LAYERS            : 'task-01-editor-layers-open',
+    STEP_4_HYPERPARAMETERS   : 'task-01-editor-hyperparameters-open',
+    STEP_5_TABLE_OF_MODELS   : 'task-01-table-of-models-open'
+  },
   IMAGE_CLASSIFICATION: {
     STEP_1_UPLOAD_AND_PROCESS: 'task-03-upload-and-process-open',
     STEP_2_DATASET           : 'task-03-dataset-open',

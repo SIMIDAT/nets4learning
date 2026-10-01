@@ -1,0 +1,29 @@
+/* Columnas de "Entrada" y "Salida" a los lados del diagrama */
+.n4l-nn-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+.n4l-nn-side-label {
+  writing-mode: vertical-rl;
+}
+
+.n4l-nn-side-label-output {
+  writing-mode: vertical-lr;
+}
+
+.n4l-nn-arrow {
+  flex-shrink: 0;
+  font-size: 3rem;
+}
+
+/* En móvil la columna lateral es estrecha: flecha más pequeña para que quepa el texto */
+@media (max-width: 575.98px) {
+  .n4l-nn-arrow {
+    font-size: 1.5rem;
+  }
+}

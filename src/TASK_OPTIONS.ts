@@ -38,30 +38,88 @@ export type MODEL_OPTIONS_TYPE = TASK_MODEL_OPTIONS_TYPE[keyof TASK_MODEL_OPTION
 const TASK_DATASET_OPTIONS = {
   [TASKS.TABULAR_CLASSIFICATION]: [
     { i18n: 'pages.menu-selection-dataset.0-tabular-classification.csv', value: UPLOAD },
-    { i18n: 'datasets-models.0-tabular-classification.list-datasets.0-option-1', value: TC_MODEL_KEYS.CAR },
-    { i18n: 'datasets-models.0-tabular-classification.list-datasets.0-option-2', value: TC_MODEL_KEYS.IRIS },
-    { i18n: 'datasets-models.0-tabular-classification.list-datasets.0-option-3', value: TC_MODEL_KEYS.LYMPHOGRAPHY },
+    {
+      i18n : 'datasets-models.0-tabular-classification.list-datasets.0-option-1',
+      value: TC_MODEL_KEYS.CAR,
+      info : { source: 'https://archive.ics.uci.edu/dataset/19/car+evaluation', files: ['models/00-tabular-classification/car/car.csv'], rows: [1728], features: 6, classes: 4 },
+    },
+    {
+      i18n : 'datasets-models.0-tabular-classification.list-datasets.0-option-2',
+      value: TC_MODEL_KEYS.IRIS,
+      info : { source: 'https://archive.ics.uci.edu/dataset/53/iris', files: ['models/00-tabular-classification/iris/iris.csv'], rows: [150], features: 4, classes: 3 },
+    },
+    {
+      i18n : 'datasets-models.0-tabular-classification.list-datasets.0-option-3',
+      value: TC_MODEL_KEYS.LYMPHOGRAPHY,
+      info : { source: 'https://archive.ics.uci.edu/dataset/63/lymphography', files: ['models/00-tabular-classification/lymphography/lymphography.csv'], rows: [148], features: 18, classes: 4 },
+    },
   ],
   [TASKS.REGRESSION]: [
     // TODO
     { i18n: 'pages.menu-selection-dataset.1-regression.csv', value: UPLOAD },
-    { i18n: 'datasets-models.1-regression.list-datasets.salary', value: LR_MODEL_KEYS.SALARY },
-    { i18n: 'datasets-models.1-regression.list-datasets.auto-mpg', value: LR_MODEL_KEYS.AUTO_MPG },
-    { i18n: 'datasets-models.1-regression.list-datasets.housing-prices', value: LR_MODEL_KEYS.HOUSING_PRICES },
+    {
+      i18n : 'datasets-models.1-regression.list-datasets.salary',
+      value: LR_MODEL_KEYS.SALARY,
+      info : { source: 'https://www.kaggle.com/datasets/saquib7hussain/experience-salary-dataset', files: ['datasets/01-regression/salary/salary.csv', 'datasets/01-regression/salary/salary-extra.csv'], rows: [1000, 373], target: 'Salary' },
+    },
+    {
+      i18n : 'datasets-models.1-regression.list-datasets.auto-mpg',
+      value: LR_MODEL_KEYS.AUTO_MPG,
+      info : { source: 'https://archive.ics.uci.edu/dataset/9/auto+mpg', files: ['datasets/01-regression/auto-mpg/auto-mpg.csv'], rows: [396], features: 6, target: 'mpg' },
+    },
+    {
+      i18n : 'datasets-models.1-regression.list-datasets.housing-prices',
+      value: LR_MODEL_KEYS.HOUSING_PRICES,
+      info : { source: 'https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html', files: ['datasets/01-regression/housing-prices/boston-housing-2020.csv'], rows: [506], features: 12, target: 'MEDV' },
+    },
     // { i18n: 'datasets-models.1-regression.list-datasets.breast-cancer', value: LR_MODEL_KEYS.BREAST_CANCER },
-    { i18n: 'datasets-models.1-regression.list-datasets.student-performance', value: LR_MODEL_KEYS.STUDENT_PERFORMANCE },
-    { i18n: 'datasets-models.1-regression.list-datasets.wine', value: LR_MODEL_KEYS.WINE },
+    {
+      i18n : 'datasets-models.1-regression.list-datasets.student-performance',
+      value: LR_MODEL_KEYS.STUDENT_PERFORMANCE,
+      info : { source: 'https://archive.ics.uci.edu/dataset/320/student+performance', files: ['datasets/01-regression/student-performance/student-mat-2024.csv', 'datasets/01-regression/student-performance/student-por-2024.csv'], rows: [395, 649], features: 30, target: 'G3' },
+    },
+    {
+      i18n : 'datasets-models.1-regression.list-datasets.wine',
+      value: LR_MODEL_KEYS.WINE,
+      info : { source: 'https://archive.ics.uci.edu/dataset/186/wine+quality', files: ['datasets/01-regression/wine-quality/wine-quality-red.csv', 'datasets/01-regression/wine-quality/wine-quality-white.csv'], rows: [1599, 4898], features: 11, target: 'quality' },
+    },
   ],
   [TASKS.OBJECT_DETECTION]    : [],
   [TASKS.IMAGE_CLASSIFICATION]: [
-    { i18n: 'datasets-models.3-image-classification.list-datasets.mnist', value: IC_MODEL_KEYS.MNIST },
-    { i18n: 'datasets-models.3-image-classification.list-datasets.kmnist', value: IC_MODEL_KEYS.KMNIST },
+    {
+      i18n : 'datasets-models.3-image-classification.list-datasets.mnist',
+      value: IC_MODEL_KEYS.MNIST,
+      info : { source: 'https://yann.lecun.com/exdb/mnist/', rows: [65000], classes: 10, images: true },
+    },
+    {
+      i18n : 'datasets-models.3-image-classification.list-datasets.kmnist',
+      value: IC_MODEL_KEYS.KMNIST,
+      info : { source: 'https://github.com/rois-codh/kmnist', rows: [25000], classes: 10, images: true },
+    },
   ],
 }
 export type TASK_DATASET_OPTIONS_TYPE = typeof TASK_DATASET_OPTIONS
 export type DATASET_OPTIONS_TYPE = TASK_DATASET_OPTIONS_TYPE[keyof TASK_DATASET_OPTIONS_TYPE]
 
-export type TaskOption_t = { i18n: string, value: string }
+/** Lo que se cuenta de un dataset en su tarjeta (los números salen de sus CSV; un test lo comprueba) */
+export type DatasetInfo_t = {
+  /** CSV del dataset, relativos a public/ (los mismos que carga la clase del modelo) */
+  files?   : string[]
+  /** Filas de cada CSV, o imágenes del dataset */
+  rows     : number[]
+  /** Columnas de entrada (sin la variable objetivo); solo si todos los CSV tienen las mismas */
+  features?: number
+  /** Clasificación: número de clases */
+  classes? : number
+  /** Regresión: variable que se predice */
+  target?  : string
+  /** Imágenes de 28×28 en lugar de filas de un CSV */
+  images?  : boolean
+  /** Página original del dataset (UCI, Kaggle…) */
+  source?  : string
+}
+
+export type TaskOption_t = { i18n: string, value: string, info?: DatasetInfo_t }
 export type TaskKind_t = 'model' | 'dataset'
 
 /** Modelos preentrenados (`model`) o datasets con los que entrenar (`dataset`) de una tarea */

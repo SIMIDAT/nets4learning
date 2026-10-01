@@ -7,10 +7,8 @@ export default function Glossary1Optimizers() {
     <>
       <Accordion defaultValue={"equations"} defaultActiveKey={"equations"}>
         <Accordion.Item eventKey={"functions-optimizers"}>
-          <Accordion.Header>
-            <h2>
-              <Trans i18nKey={"pages.glossary.optimization-functions.title"} />
-            </h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            <Trans i18nKey={"pages.glossary.optimization-functions.title"} />
           </Accordion.Header>
           <Accordion.Body>
             <p>
@@ -99,10 +97,8 @@ export default function Glossary1Optimizers() {
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey={"equations-optimization"}>
-          <Accordion.Header>
-            <h2>
-              <Trans i18nKey={"equations.title-optimization"} />
-            </h2>
+          <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+            <Trans i18nKey={"equations.title-optimization"} />
           </Accordion.Header>
           <Accordion.Body>
             <Tabs

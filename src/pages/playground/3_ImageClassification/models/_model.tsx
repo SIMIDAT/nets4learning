@@ -7,6 +7,7 @@ import type { Layer_t } from '@/types/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import type { BarChartData_t } from '../CONSTANTS'
 import type { TFunction } from 'i18next'
+import type { TrainProgress_t } from '@pages/playground/3_ImageClassification/custom/trainImageClassifier'
 
 /** Modelo que clasifica las imágenes: uno entrenado con tfjs o MobileNet */
 export type ImageClassifierModel_t = _tfjs.LayersModel | MobileNet
@@ -74,7 +75,7 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
    * 
    * @returns {Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null>}
    */
-  async TRAIN_MODEL (_params: ImageTrainParams_t): Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null> {
+  async TRAIN_MODEL (_params: ImageTrainParams_t, _progress?: TrainProgress_t): Promise<{model: _tfjs.Sequential, history: _tfjs.History} | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(null)

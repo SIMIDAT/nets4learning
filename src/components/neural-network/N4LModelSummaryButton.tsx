@@ -43,7 +43,7 @@ export default function N4LModelSummaryButton({ model, title }: N4LModelSummaryB
 
   return (
     <div className={'d-grid mb-3'}>
-      <Button size={'sm'} variant={'outline-info'} onClick={handleClick_ToggleSummary}>
+      <Button size={'sm'} variant={'outline-primary'} onClick={handleClick_ToggleSummary}>
         <Trans i18nKey={'model-summary'} />
       </Button>
     </div>

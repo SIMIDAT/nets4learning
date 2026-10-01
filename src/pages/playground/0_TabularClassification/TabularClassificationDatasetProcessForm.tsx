@@ -133,7 +133,7 @@ export default function TabularClassificationDatasetProcessForm() {
 
     const labelEncoder = new dfd.LabelEncoder()
     const dataset_labelEncoder = labelEncoder.fit(dataframe_y.values)
-    const classes = Object.keys(dataset_labelEncoder.classes)
+    const classes = DataFrameUtils.LabelEncoderClasses(dataset_labelEncoder)
 
     let attributes = listColumnNameTransformations.map(({ column_name, column_transform }) => {
       if (column_transform === 'label-encoder') {

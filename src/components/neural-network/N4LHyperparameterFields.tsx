@@ -1,11 +1,38 @@
 import React from 'react'
-import { Accordion, Button, Form } from 'react-bootstrap'
+import { Accordion, Button, Form, OverlayTrigger, Popover } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
 import { TYPE_LOSSES_CLASSIFICATION, TYPE_LOSSES_REGRESSION, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
 
 // Campos comunes de los editores de hiperparámetros de las tareas que entrenan modelos
 const prefix = 'pages.playground.generator.general-parameters.'
+
+// Definición breve de cada campo (pages.playground.generator.help.*), según la clave de su etiqueta
+const HELP_KEYS: Record<string, string> = {
+  'learning-rate'   : 'learning-rate',
+  'number-of-epochs': 'epochs',
+  'train-rate'      : 'test-size',
+  'test-size'       : 'test-size',
+  'optimizer-id'    : 'optimizer',
+  'loss-id'         : 'loss',
+  'metrics-id'      : 'metric',
+  'metric-id-select': 'metric',
+}
+
+/** Etiqueta de un campo; si el término tiene definición, se ve al pasar el ratón o al llegar con el teclado */
+function FieldLabel({ name }: { name: string }) {
+  const { t } = useTranslation()
+  const help = HELP_KEYS[name]
+  if (help === undefined) return <Form.Label><Trans i18nKey={prefix + name} /></Form.Label>
+  return (
+    <Form.Label>
+      <OverlayTrigger trigger={['hover', 'focus']} placement={'top'}
+        overlay={<Popover><Popover.Body>{t('pages.playground.generator.help.' + help)}</Popover.Body></Popover>}>
+        <span className={'n4l-help-term'} tabIndex={0}><Trans i18nKey={prefix + name} /></span>
+      </OverlayTrigger>
+    </Form.Label>
+  )
+}
 
 type HyperparameterNumberProps = {
   controlId   : string
@@ -22,7 +49,7 @@ export function HyperparameterNumber({ controlId, name, min, max, defaultValue, 
   const { t } = useTranslation()
   return (
     <Form.Group className="mb-3" controlId={controlId}>
-      <Form.Label><Trans i18nKey={prefix + name} /></Form.Label>
+      <FieldLabel name={name} />
       <Form.Control
         type="number"
         inputMode={'numeric'}
@@ -54,7 +81,7 @@ type HyperparameterLearningRateProps = {
 export function HyperparameterLearningRate({ controlId, defaultValue, onChange }: HyperparameterLearningRateProps) {
   return (
     <Form.Group className="mb-3" controlId={controlId}>
-      <Form.Label><Trans i18nKey={prefix + 'learning-rate'} /></Form.Label>
+      <FieldLabel name={'learning-rate'} />
       <Form.Select
         aria-describedby={controlId + '-info'}
         defaultValue={defaultValue}
@@ -82,7 +109,7 @@ export function HyperparameterSelect({ controlId, label, info, value, defaultVal
   const { t } = useTranslation()
   return (
     <Form.Group className="mb-3" controlId={controlId}>
-      <Form.Label><Trans i18nKey={prefix + label} /></Form.Label>
+      <FieldLabel name={label} />
       <Form.Select
         aria-label={t(prefix + info)}
         value={value}
