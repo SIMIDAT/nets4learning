@@ -367,7 +367,8 @@
     "model-not-valid": "El modelo no es válido para estos datos",
     "model-compile": "No se ha podido compilar el modelo. Revisa la consola para ver los detalles.",
     "option-not-valid": "Opción no válida",
-    "prediction": "No se ha podido hacer la predicción"
+    "prediction": "No se ha podido hacer la predicción",
+    "load-dataset": "No se ha podido cargar el conjunto de datos."
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "Advertencia, la primera capa debe ser de tipo {{value}}",
@@ -413,7 +414,13 @@
     "analyze": "AED",
     "theme": "Tema",
     "theme-light": "Claro",
-    "theme-dark": "Oscuro"
+    "theme-dark": "Oscuro",
+    "backend": "Backend",
+    "backend-default": "por defecto",
+    "backend-unavailable": "no disponible",
+    "backend-software": "por software, lento",
+    "backend-error": "No se ha podido cambiar a {{backend}}",
+    "backend-error-fallback": "Este navegador no puede usarlo. TensorFlow.js sigue usando {{backend}}."
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -425,7 +432,9 @@
     "contribute": "Contribuye",
     "documentation": "Documentación",
     "version": "Versión",
-    "cookies": "Preferencias de cookies"
+    "cookies": "Preferencias de cookies",
+    "links": "Enlaces",
+    "institutions": "Instituciones"
   },
   "drag-and-drop": {
     "label-files-one": "Fichero:",
@@ -1281,13 +1290,15 @@
           "sub-title": "Primero el archivo .json y después el fichero .bin"
         },
         "process-examples": {
-          "title": "Procesamiento con ejemplos"
+          "title": "Imágenes de ejemplo",
+          "help": "Pulsa una imagen para clasificarla.",
+          "classify-example": "Clasificar el ejemplo {{index}}"
         },
         "process-draw": {
           "title": "Dibujo"
         },
         "process-image": {
-          "title": "Procesamiento de imágenes",
+          "title": "Sube una imagen",
           "sub-title": "-",
           "validate": "Clasificar"
         },
@@ -1295,6 +1306,10 @@
         "button-accept": "Aceptar",
         "modal": {
           "title": "Predicción"
+        },
+        "test-images": {
+          "load": "Cargar imágenes de test",
+          "loading": "Cargando imágenes…"
         }
       },
       "mnist": {
@@ -1778,12 +1793,17 @@
         "parameter-categorical": "Parámetro categórico",
         "data-to-check": "Datos a probar",
         "vector-to-check": "Vector a probar",
-        "button-check-result": "Predecir"
+        "button-check-result": "Predecir",
+        "type-categorical": "Categórica · {{count}} valores",
+        "type-integer": "Número entero",
+        "type-decimal": "Número decimal",
+        "range": "{{min}} – {{max}} en los datos"
       },
       "0-tabular-classification": {
         "general": {
           "model": "Modelo",
           "description-input": "Descripción de la entrada de datos",
+          "dataframe-processed-help": "Los mismos datos con cada valor categórico convertido en un número (LabelEncoder; la correspondencia está en «Atributos» y «Clases»). Así es como los recibe el modelo: la última columna es la clase que tiene que predecir.",
           "description-features": "Formulario de edición de las características",
           "description-data": "Datos del formulario",
           "description-vector": "Vector de los datos",
@@ -1867,9 +1887,9 @@
               "text-0": "Si hemos creado el modelo correctamente se añadirá una entrada en la tabla de modelos generados. La aplicación permite exportar los modelos generados y guardarlos localmente."
             },
             "details-prediction": {
-              "title": "Predicción",
+              "title": "Clasificación",
               "text-0": "El formulario final nos permite seleccionar las características principales que se usan para determinar la clase.",
-              "text-1": "Al pulsar el botón \"Ver resultado\",  a partir de las características de entrada del elemento se obtiene la predicción de su clase de salida."
+              "text-1": "Al pulsar el botón \"Clasificar\", el modelo predice la clase del ejemplo a partir de sus características de entrada y muestra la probabilidad de cada clase."
             }
           }
         }
@@ -1989,8 +2009,8 @@
           "download": "Descargar"
         },
         "dynamic-form-dataset": {
-          "title": "Predicción",
-          "text-0-__column_name_target__": "Introduce los valores de cada característica de entrada del ejemplo a predecir <b>{{column_name_target}}</b>",
+          "title": "Clasificación",
+          "text-0-__column_name_target__": "Introduce el valor de cada característica de entrada del ejemplo que quieres clasificar (<b>{{column_name_target}}</b>) o elige una entidad del conjunto de datos en el selector de arriba.",
           "select-option": "Selecciona una opción",
           "input-data": "Introduce los datos a probar",
           "input-vector": "Introduce el vector a probar",
@@ -1998,7 +2018,11 @@
           "test-input-data": "Datos del formulario",
           "test-input-vector": "Vector de los datos",
           "selector-entity": "Selecciona la entidad",
-          "selector-model": "Selecciona el modelo"
+          "search-entity": "Buscar por número o clase…",
+          "entity-count": "{{shown}} de {{total}}",
+          "no-entity": "Ninguna coincide con la búsqueda",
+          "selector-model": "Selecciona el modelo",
+          "classify-button": "Clasificar"
         },
         "list-models-generated": "Lista modelos generados",
         "visor": {
@@ -2022,6 +2046,22 @@
           "line-chart": "Gráfico de líneas"
         },
         "waiting-for-models": "Entrena un modelo para poder hacer predicciones.",
+        "classify": {
+          "waiting": "Clasifica un ejemplo para ver aquí el resultado.",
+          "predicted-class": "Clase predicha",
+          "confidence": "con una probabilidad del {{value}}",
+          "chart-title": "Probabilidad de cada clase",
+          "chart-title-output": "Salida de la red para cada clase",
+          "chart-help": "La barra resaltada es la clase que elige el modelo: la más probable. Cuando el modelo duda, varias barras tienen alturas parecidas.",
+          "chart-help-output": "La última capa no usa softmax, así que estos valores no son probabilidades. El modelo elige la clase con el valor más alto (barra resaltada).",
+          "axis-class": "Clase",
+          "axis-probability": "Probabilidad (%)",
+          "axis-output": "Salida",
+          "select-image": "Selecciona una imagen del conjunto de datos",
+          "actual-class": "Clase real: {{label}}",
+          "chart-title-top": "Las {{count}} clases más probables",
+          "chart-help-top": "El modelo distingue muchas más clases; aquí solo se muestran las más probables, con su probabilidad."
+        },
         "waiting-for-prediction": "Haz una predicción para ver aquí el resultado.",
         "training": {
           "epoch": "Entrenando… época {{epoch}} de {{total}}",
@@ -2121,7 +2161,8 @@
           "multiple-regression": "Regresión multiple"
         },
         "dataframe": {
-          "title": "Dataframe procesado"
+          "title": "Dataframe procesado",
+          "help": "Los mismos datos con cada valor categórico convertido en un número (LabelEncoder). Antes de entrar en el modelo, los atributos se escalan; la columna <code>{{target}}</code> es el valor que tiene que predecir."
         },
         "selector-instance": {
           "option": "Selector de instancia"
@@ -2146,7 +2187,11 @@
           "button-submit": "Predecir",
           "list-models-generated": "Lista de modelos generados",
           "list-models": "Lista de modelos generados",
-          "list-instances": "Lista de instancias"
+          "list-instances": "Lista de instancias",
+          "predicted-value": "Valor predicho de {{target}}",
+          "actual-value": "Valor real: {{value}}",
+          "error": "Error: {{value}} ({{percent}})",
+          "input-details": "Entrada del modelo paso a paso"
         },
         "model-selector": {
           "title": "Selector de modelos",
@@ -2249,7 +2294,7 @@
           "title": "Paso 6: Entrenamiento y tabla de modelos"
         },
         "prediction": {
-          "title": "Paso 7: Predicción"
+          "title": "Paso 7: Clasificación"
         }
       },
       "app": {
@@ -2698,6 +2743,8 @@
     "generated-models": "Modelos generados",
     "predict": "Predecir",
     "classify": "Clasificar",
+    "explainability": "Explicabilidad",
+    "on-this-page": "En esta página",
     "tasks": "Tareas",
     "00-tabular-classification": "Clasificación Tabular",
     "tutorial-00-tabular-classification": "Entrenar un modelo para clasificación tabular",

@@ -6,7 +6,6 @@ import { trackPageView } from '@core/analytics'
 import Webcam from 'react-webcam'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import * as tfjs from '@tensorflow/tfjs'
 
 import { VERBOSE } from '@/CONSTANTS'
 import { UPLOAD } from '@/TASKS'
@@ -14,6 +13,7 @@ import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import FakeProgressBar from '@components/loading/FakeProgressBar'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
+import { restoreTFBackend } from '@core/tfBackend'
 import alertHelper from '@utils/alertHelper'
 import type I_MODEL_OBJECT_DETECTION from './models/_model'
 import { delay } from '@utils/utils'
@@ -27,10 +27,6 @@ import { explainErrorKey } from '@core/explainability/explainError'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
-
-tfjs.setBackend('webgl').then(() => {
-  if (VERBOSE) console.debug('setBackend: WebGL')
-})
 
 /**
  * @typedef {'ratio-9x16'|'ratio-2x3'|'ratio-3x4'|'ratio-1x1'|'ratio-4x3'|'ratio-3x2'|'ratio-16x9'} Ratio_t
@@ -171,11 +167,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     async function init() {
-      await tfjs.ready()
-      if (tfjs.getBackend() !== 'webgl') {
-        console.error('Error tensorflow backend webgl not installed in your browser')
-        return
-      }
+      // Los modelos de pose (pose-detection) registran WebGPU con más prioridad: se vuelve al backend elegido en el menú
+      await restoreTFBackend()
       const _iModelInstance = await createReviewModelInstance(MAP_OD_CLASSES, dataset, (ModelClass) => new ModelClass(t), navigate)
       if (_iModelInstance === null) return
       try {
@@ -212,9 +205,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // Get Video Properties
     const video = WebCam_ref.current.video
 
-    // Set canvas width
-    canvas_ref.current.width = WebCam_ref.current.video.videoWidth
-    canvas_ref.current.height = WebCam_ref.current.video.videoHeight
+    // Set canvas width (solo si cambia: asignarlo, aunque sea el mismo valor, vuelve a crear el lienzo)
+    if (canvas_ref.current.width !== video.videoWidth) canvas_ref.current.width = video.videoWidth
+    if (canvas_ref.current.height !== video.videoHeight) canvas_ref.current.height = video.videoHeight
 
     const ctx = canvas_ref.current.getContext('2d') as CanvasRenderingContext2D
     ctx.clearRect(0, 0, canvas_ref.current.width, canvas_ref.current.height)
@@ -248,21 +241,33 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       }
     }
 
+    // La predicción puede acabar después de apagar la cámara o cambiar de modelo: entonces no se pinta
+    let isCancelled = false
     try {
       const fps = 20
       let fpsInterval: number, now: number, then: number, elapsed: number
+      // Una predicción cada vez: si la anterior no ha terminado se salta el fotograma. Si no, mientras el modelo
+      // espera a la GPU (lecturas asíncronas) empezaban predicciones nuevas que se pisaban y el vídeo iba a saltos.
+      let isPredicting = false
       const animate = async () => {
         if (isCameraEnable) {
           requestAnimation_ref.current = requestAnimationFrame(animate)
           now = Date.now()
           elapsed = now - then
-          if (elapsed > fpsInterval) {
+          const video = WebCam_ref.current?.video
+          if (elapsed > fpsInterval && !isPredicting && iModelInstance !== null && video?.readyState === 4) {
             then = now - (elapsed % fpsInterval)
-            const _processWebcam = processWebcam()
-            if (_processWebcam !== null) {
-              if (_processWebcam.ctx !== null && _processWebcam.video !== null) {
-                await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: iModelInstance?.mirror ?? false })
-              }
+            isPredicting = true
+            try {
+              const predictions = await iModelInstance.PREDICTION(video, { flipHorizontal: iModelInstance.mirror ?? false })
+              if (isCancelled) return
+              // El canvas se limpia justo antes de pintar: limpiarlo antes de predecir lo dejaba vacío mientras tanto
+              const _processWebcam = processWebcam()
+              if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, predictions)
+            } catch (error) {
+              console.error(error)
+            } finally {
+              isPredicting = false
             }
           }
         }
@@ -285,11 +290,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // Limpia la animación cuando el componente se desmonta
     return () => {
       if (VERBOSE) console.debug(`delete AnimationFrame(${requestAnimation_ref.current});`)
+      isCancelled = true
       if (requestAnimation_ref.current !== null) {
         cancelAnimationFrame(requestAnimation_ref.current)
       }
     }
-  }, [isCameraEnable, iModelInstance, processWebcam, processData])
+  }, [isCameraEnable, iModelInstance, processWebcam])
 
   const handleChange_Camera = (e: React.ChangeEvent<HTMLInputElement>) => {
     const webcamChecked = e.target.checked
@@ -500,7 +506,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   if (VERBOSE) console.debug('render ModelReviewObjectDetection')
   return (
     <>
-      <Container id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
+      <Container className={'n4l-container-wide'} id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
         <Row className={'mt-2'}>
           <Col>
             <h1>

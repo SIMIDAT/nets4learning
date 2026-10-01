@@ -1,17 +1,16 @@
+import { useMemo, useState } from 'react'
 import { Button, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import { Bar } from 'react-chartjs-2'
 import * as _tfjs from '@tensorflow/tfjs'
 
 import * as _Types from '@core/types'
 import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
-import { CHARTJS_CONFIG_DEFAULT } from '@/CONSTANTS_ChartsJs'
 import TabularClassificationPredictionForm from '@pages/playground/0_TabularClassification/TabularClassificationPredictionForm'
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
-import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
-import type { BarOptions_t } from '@/types/types'
+import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
+import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 
 type TabularClassificationPredictionProps_t = {
@@ -35,50 +34,52 @@ export default function TabularClassificationPrediction(props: TabularClassifica
     setModel,
     setInputDataToPredict,
     predictionBar,
+    setPredictionBar,
   } = useTabularClassificationContext()
 
   const prefix = 'pages.playground.generator.dynamic-form-dataset.'
   const { t } = useTranslation()
-  const bar_options: BarOptions_t = {
-    responsive: true,
-    plugins   : {
-      legend: {
-        position: 'top',
-        display : false,
-      },
-      title: {
-        display: true,
-        text   : t('prediction'),
-      },
-    },
+  // Fila del conjunto de datos cuyos valores se han copiado al formulario (null hasta elegir una)
+  const [selectedRow, setSelectedRow] = useState<number | null>(null)
+  const [selectedRowDataset, setSelectedRowDataset] = useState(datasets.index)
+  // Otro conjunto de datos (al subir uno nuevo): la fila elegida era del anterior
+  if (selectedRowDataset !== datasets.index) {
+    setSelectedRowDataset(datasets.index)
+    setSelectedRow(null)
   }
 
-  const handleChange_ROW = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const dataset_selected = datasets.datasets[datasets.index]
+
+  // Una opción por fila: su número y su clase. Puede haber miles: el desplegable solo pinta las que se ven
+  const rowOptions = useMemo<VirtualSelectOption_t[]>(() => {
+    const data_processed = dataset_selected?.data_processed
+    if (data_processed === undefined) return []
+    const targets = dataset_selected.dataframe_original[data_processed.column_name_target].$data as Array<unknown>
+    return targets.map((target, index) => ({ value: index, label: `#${index} · ${String(target)}` }))
+  }, [dataset_selected])
+
+  const handleChange_Row = (row_index: number) => {
+    setSelectedRow(row_index)
     const dataset_processed = datasets.datasets[datasets.index]
     const { data_processed, dataframe_original, dataset_transforms } = dataset_processed
     if (data_processed === undefined) {
       console.error('Error, data_processed is undefined')
       return
     }
-    const { column_name_target } = data_processed
-    const dataframe = DataFrameUtils.DataFrameDeepCopy(dataframe_original)
-    dataframe.drop({ columns: [column_name_target], inplace: true })
-    for (const { column_name, column_transform } of dataset_transforms) {
-      if (column_transform === 'drop') {
-        dataframe.drop({ columns: [column_name], inplace: true })
-      }
-    }
-    const row_index = parseInt(e.target.value)
-
-    const df = dataframe.iloc({ rows: [row_index] })
-    const dataframe_row_default_data = df.values[0] as _Types.N4LDataFrameType[]
-    setInputDataToPredict(dataframe_row_default_data)
+    // Solo esa fila y las columnas de entrada (sin la clase ni las descartadas): copiar el conjunto entero para leer una
+    // fila era lento con miles de ejemplos
+    const dropped = [data_processed.column_name_target, ...dataset_transforms.filter(({ column_transform }) => column_transform === 'drop').map(({ column_name }) => column_name)]
+    const row = dataframe_original.iloc({ rows: [row_index] })
+    const columns = row.columns.filter((column) => !dropped.includes(column))
+    setInputDataToPredict(row.loc({ columns }).values[0] as _Types.N4LDataFrameType[])
   }
 
   const handleChange_Model = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const index: number = parseInt(e.target.value)
     setModel(generatedModels[index].model)
     setGeneratedModelsIndex(index)
+    // El resultado anterior era de otro modelo
+    setPredictionBar({ classes: [], labels: [], data: [] })
   }
 
   const canRender_PredictDynamicForm = () => {
@@ -94,9 +95,6 @@ export default function TabularClassificationPrediction(props: TabularClassifica
     }
   }
 
-  const dataset_selected = datasets.datasets[datasets.index]
-
-
   if (VERBOSE) console.debug('render TabularClassificationPrediction')
   return <>
     <Card>
@@ -106,35 +104,25 @@ export default function TabularClassificationPrediction(props: TabularClassifica
           {generatedModelsIndex !== -1 &&
             <>{' '}| <Trans i18nKey={'model.__index__'} values={{ index: generatedModelsIndex + 1 }} /></>}
         </h3>
-        <div className={'d-flex'}>
+        <div className={'d-flex flex-wrap gap-2'}>
           {(generatedModels.length !== 0 && dataset_selected && dataset_selected.is_dataset_processed) && <>
-            <Form.Group controlId={'DATA'} className={'joyride-step-select-instance'}>
-              <Form.Select
-                aria-label={t(prefix + 'selector-entity')}
+            <div className={'joyride-step-select-instance'} style={{ minWidth: '16rem' }}>
+              <N4LVirtualSelect options={rowOptions}
+                value={selectedRow}
+                onChange={handleChange_Row}
                 size={'sm'}
-                onChange={(e) => handleChange_ROW(e)}>
-                {((() => {
-                  const { dataframe_original, data_processed } = dataset_selected
-                  if (data_processed === undefined) {
-                    console.error('Error, data_processed is undefined')
-                    return []
-                  }
-                  const { column_name_target } = data_processed
-                  return dataframe_original[column_name_target].$data as Array<any>
-                })())
-                  .map((target, index) => {
-                    return <option key={'option_' + index} value={index}>
-                      Id: {index.toString().padStart(3, '0')} - Target: {target}
-                    </option>
-                  })}
-              </Form.Select>
-            </Form.Group>
+                placeholder={t(prefix + 'selector-entity')}
+                searchPlaceholder={t(prefix + 'search-entity')}
+                noResultsText={t(prefix + 'no-entity')}
+                countText={(shown, total) => t(prefix + 'entity-count', { shown, total })} />
+            </div>
           </>}
           {generatedModels.length !== 0 && <>
-            <Form.Group controlId={'MODEL'} className={'ms-3 joyride-step-select-model'}>
+            <Form.Group controlId={'MODEL'} className={'joyride-step-select-model'}>
               <Form.Select
                 aria-label={t('selector-model')}
                 size={'sm'}
+                value={generatedModelsIndex === -1 ? generatedModels.length - 1 : generatedModelsIndex}
                 onChange={(e) => handleChange_Model(e)}>
                 {generatedModels.map((_row, index) => {
                   return <option key={'option_' + index} value={index}>
@@ -170,7 +158,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
                 variant={'primary'}
                 size={'lg'}
                 type={'submit'}>
-                <Trans i18nKey={'Predict'} />
+                <Trans i18nKey={prefix + 'classify-button'} />
               </Button>
             </div>
             <hr />
@@ -179,21 +167,8 @@ export default function TabularClassificationPrediction(props: TabularClassifica
               datasets={datasets}
             />
             <hr />
-            {predictionBar.data.length === 0 && <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-prediction'} />}
-            {predictionBar.data.length > 0 && <Bar
-              options={bar_options}
-              data={{
-                labels  : predictionBar.labels,
-                datasets: [
-                  {
-                    data           : predictionBar.data,
-                    label          : t('prediction'),
-                    backgroundColor: CHARTJS_CONFIG_DEFAULT.BACKGROUND_COLOR,
-                    borderColor    : CHARTJS_CONFIG_DEFAULT.BORDER_COLOR,
-                    borderWidth    : 1,
-                  },
-                ],
-              }} />}
+            {predictionBar.data.length === 0 && <N4LEmptyState i18nKey={'pages.playground.generator.classify.waiting'} />}
+            {predictionBar.data.length > 0 && <N4LClassificationChart values={predictionBar.data} classLabels={predictionBar.labels} />}
           </Form>
         </>}
       </Card.Body>

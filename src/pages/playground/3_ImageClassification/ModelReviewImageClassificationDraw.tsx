@@ -2,58 +2,35 @@ import { Trans } from 'react-i18next'
 import { Card, Col } from 'react-bootstrap'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
 import { toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
-import type * as tfjs from '@tensorflow/tfjs'
-import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 
 type Props = {
-  iModelInstance   : I_MODEL_IMAGE_CLASSIFICATION | null,
-  model            : tfjs.LayersModel | null,
-  iChartRef_image  : React.RefObject<any>,
-  setBarDataImage  : React.Dispatch<React.SetStateAction<any>>,
-  /** Canvas de resultado donde se muestra el dibujo. */
-  canvasResultRef  : React.RefObject<HTMLCanvasElement | null>,
-  onImageDataReady?: (imageData: ImageData) => void,
-  onResetExplain?  : () => void,
+  /** Canvas del resultado, donde se muestra el dibujo clasificado (y la base del mapa de calor) */
+  canvasResultRef: React.RefObject<HTMLCanvasElement | null>,
+  /** Recibe la entrada del modelo (28×28) para clasificarla */
+  onClassify     : (imageData: ImageData) => void | Promise<void>,
+  onResetExplain?: () => void,
 }
+
 /** Lienzo para dibujar la entrada de los modelos de 28x28 en escala de grises (MNIST, KMNIST). */
-export default function ModelReviewImageClassificationDraw (props: Props) {
-  const {
-    iModelInstance,
-    model,
-    iChartRef_image,
-    setBarDataImage,
-    canvasResultRef,
-    onImageDataReady,
-    onResetExplain
-  } = props
+export default function ModelReviewImageClassificationDraw ({ canvasResultRef, onClassify, onResetExplain }: Props) {
 
-  const handleCanvasDraw_Clear = async () => {
+  const handleCanvasDraw_Submit = async (draw_canvas: HTMLCanvasElement, canvas_small: HTMLCanvasElement | null) => {
+    // El dibujo se muestra en el canvas del resultado (cuadrado, como el lienzo) y se reduce a 28×28 en un canvas
+    // aparte: antes la miniatura se pintaba encima del dibujo grande y se leían los dos mezclados.
     const canvas = canvasResultRef.current
-    canvas?.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height)
-  }
-
-  const handleCanvasDraw_Submit = async (draw_canvas: HTMLCanvasElement, _draw_canvas_ctx: CanvasRenderingContext2D, canvas_small?: HTMLCanvasElement) => {
-    // Mostramos el dibujo en el canvas de resultado y reducimos a 28×28 en un canvas aparte:
-    // antes la miniatura se pintaba encima del dibujo grande y se leían los dos mezclados.
-    const canvas = canvasResultRef.current
-    canvas?.getContext('2d')?.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
+    if (canvas !== null) {
+      canvas.width = 200
+      canvas.height = 200
+      canvas.getContext('2d')?.drawImage(draw_canvas, 0, 0, canvas.width, canvas.height)
+    }
     const imageData = toImageData(draw_canvas, 28, 28)
     // Miniatura 28×28: lo que realmente recibe el modelo (CustomCanvasDrawer la deja vacía si no se pinta aquí).
     canvas_small?.getContext('2d')?.putImageData(imageData, 0, 0)
-    if (iModelInstance === null || model === null) return
-    const { predictions } = await iModelInstance.CLASSIFY(model, imageData)
-    setBarDataImage(await iModelInstance.PREDICTION_FORMAT(predictions))
-    iChartRef_image.current.update()
-
-    // Notificamos la imagen dibujada al padre para la explicabilidad
-    if (typeof onImageDataReady === 'function') {
-      onImageDataReady(imageData)
-    }
+    await onClassify(imageData)
   }
 
   return <>
-    <Col className={'d-grid'}
-         xs={12} sm={12} md={6} xl={6} xxl={6}>
+    <Col className={'d-grid'} xs={12} md={6}>
       <Card className={'mt-3'}>
         <Card.Header>
           <h3><Trans i18nKey={'datasets-models.3-image-classifier.interface.process-draw.title'}/></h3>
@@ -62,16 +39,12 @@ export default function ModelReviewImageClassificationDraw (props: Props) {
           <CustomCanvasDrawer
             submitFunction={async (canvas: HTMLCanvasElement | null, canvas_ctx: CanvasRenderingContext2D | null, canvas_small: HTMLCanvasElement | null) => {
               if (canvas === null || canvas_ctx === null) {
-                console.error("canvas or canvas_ctx is null")
+                console.error('canvas or canvas_ctx is null')
                 return
               }
-              await handleCanvasDraw_Clear()
-              await handleCanvasDraw_Submit(canvas, canvas_ctx, canvas_small ?? undefined)
+              await handleCanvasDraw_Submit(canvas, canvas_small)
             }}
-            clearFunction={async () => {
-              await handleCanvasDraw_Clear()
-              onResetExplain?.()
-            }}
+            clearFunction={() => onResetExplain?.()}
             onDrawStart={() => onResetExplain?.()}/>
         </Card.Body>
       </Card>

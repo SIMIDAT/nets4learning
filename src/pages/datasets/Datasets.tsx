@@ -53,7 +53,7 @@ export default function Datasets() {
 
   return (
     <main className={"mb-3"} data-title={"Datasets"}>
-      <Container id={"Datasets"} className={"mt-3 mb-3"}>
+      <Container id={"Datasets"} className={"mt-3 mb-3 n4l-container-wide"}>
         <Row className={"mt-3"}>
           <Col>
             <h1>

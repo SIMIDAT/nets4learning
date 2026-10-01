@@ -1,4 +1,4 @@
-import { useEffect, useState, useId } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParams, useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
@@ -7,19 +7,20 @@ import * as dfd from "danfojs"
 import * as tfjs from "@tensorflow/tfjs"
 
 import * as _Types from "@core/types"
-import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, DEFAULT_SELECTOR_INSTANCE_INDEX } from "@/CONSTANTS"
-import { TABLE_PLOT_STYLE_CONFIG } from "@/CONSTANTS_DanfoJS"
-import N4LSummary from "@components/summary/N4LSummary"
+import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, DEFAULT_SELECTOR_INSTANCE_INDEX } from "@/CONSTANTS"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
-import DataFrameDatasetCard from "@components/dataframe/DataFrameDatasetCard"
+import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
 import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
 import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
 import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
+import ModelReviewRegressionDataset from "./ModelReviewRegressionDataset"
 import ModelReviewRegressionPredict from "./ModelReviewRegressionPredict"
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from "./utils"
-import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from "@core/explainability/shapSampling"
+
+// Valor de la variable objetivo para la lista de instancias: sin decimales de más
+const formatTarget = (value: unknown) => (typeof value === "number" && !Number.isInteger(value) ? String(Number(value.toFixed(4))) : String(value))
 
 type ModelReviewRegressionProps_t = {
   dataset: string
@@ -34,8 +35,6 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
 
   const prefix = "pages.playground.1-regression."
   const { t } = useTranslation()
-  const dataframe_processed_dataset_plotID = useId()
-  const dataframe_processed_describe_plotID = useId()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_REGRESSION | null>(null)
 
   const [dataframe_X, setDataFrame_X] = useState(new dfd.DataFrame())
@@ -136,12 +135,13 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
         const dataset_processed: _Types.DatasetProcessed_t = listDatasets.data[listDatasets.index]
         const { dataframe_original /* data_processed */ } = dataset_processed
         setDataFrame_X(dataframe_original)
+        // El formulario empieza con la primera instancia, y el selector lo dice
         setInstances((_prevState) => ({
           data    : dataframe_original.values as Array<Array<string | number | boolean>>,
-          index   : DEFAULT_SELECTOR_INSTANCE_INDEX,
+          index   : 0,
           instance: "select-instance",
         }))
-        const state = TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION(dataset_processed)
+        const state = TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION(dataset_processed, 0)
         setPrediction((prevState) => {
           return {
             ...prevState,
@@ -166,29 +166,6 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     listCustomModels.index,
   ])
 
-  useEffect(() => {
-    if (VERBOSE)
-      console.debug(
-        "useEffect[ datasets, datasets.data, datasets.index, dataframe_processed_dataset_plotID, dataframe_processed_describe_plotID ]"
-      )
-    if (listDatasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && listDatasets.data.length > 0) {
-      const { dataframe_processed } = listDatasets.data[listDatasets.index]
-      dataframe_processed.plot(dataframe_processed_dataset_plotID).table({ config: TABLE_PLOT_STYLE_CONFIG })
-      DataFrameUtils.DataFrameDescribePlot(dataframe_processed, dataframe_processed_describe_plotID, {
-        config   : TABLE_PLOT_STYLE_CONFIG,
-        emptyText: t("dataframe.describe.no-numeric"),
-        transpose: true,
-      })
-    }
-  }, [
-    listDatasets,
-    listDatasets.data,
-    listDatasets.index,
-    dataframe_processed_dataset_plotID,
-    dataframe_processed_describe_plotID,
-    t,
-  ])
-
   const handleChange_Datasets_Index = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setDatasets((prevState) => ({
       ...prevState,
@@ -203,8 +180,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     }))
   }
 
-  const handleChange_Instance_Index = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newInstanceIndex = parseInt(event.target.value)
+  const handleChange_Instance_Index = (newInstanceIndex: number) => {
 
     /**@type {_Types.DatasetProcessed_t}*/
     const dataset_processed: _Types.DatasetProcessed_t = listDatasets.data[listDatasets.index]
@@ -231,10 +207,26 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   const explainDataProcessed = listDatasets.data[listDatasets.index]?.data_processed
   const explainModel = listCustomModels.data[listCustomModels.index]?.model ?? null
 
+  // Selector de instancias: su número y el valor real de la variable objetivo. Puede haber miles: el desplegable solo
+  // pinta las que se ven
+  const datasetSelected = listDatasets.data[listDatasets.index]
+  const targetIndex = datasetSelected?.data_processed
+    ? datasetSelected.dataframe_original.columns.indexOf(datasetSelected.data_processed.column_name_target)
+    : -1
+  const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => (
+    instances.data.map((row, index) => ({ value: index, label: `#${index} · ${targetIndex >= 0 ? formatTarget(row[targetIndex]) : ""}` }))
+  ), [instances.data, targetIndex])
+  // El selector solo muestra la instancia mientras el formulario no se cambie: si no, ya no es esa
+  const selectedRow = instances.index >= 0 ? instances.data[instances.index] : undefined
+  const formRow = prediction.input_1_dataframe_original.values[0] as unknown[] | undefined
+  const instanceMatches = selectedRow !== undefined && formRow !== undefined &&
+    selectedRow.every((value, column) => String(value) === String(formRow[column]))
+  const actualValue = instanceMatches && targetIndex >= 0 ? Number(selectedRow[targetIndex]) : null
+
   if (VERBOSE) console.debug("render ModelReviewRegression")
   return (
     <>
-      <Container id={"ModelReviewRegression"} data-testid="Test-ModelReviewRegression">
+      <Container className={'n4l-container-wide'} id={"ModelReviewRegression"} data-testid="Test-ModelReviewRegression">
         <Row className={"mt-3"}>
           <Col>
             <div className={"d-flex justify-content-between"}>
@@ -287,60 +279,32 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
               </Card>
             </Col>
             <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
-              <DataFrameDatasetCard dataframe={dataframe_X} />
-
-              {/* DataFrame INFO */}
-              <Card className={"mt-3"}>
-                <Card.Header className={"d-flex justify-content-between"}>
-                  <h2>
-                    <Trans i18nKey={prefix + "dataframe.title"} />
-                  </h2>
-                </Card.Header>
-                <Card.Body>
-                  <N4LSummary
-                    title={<Trans i18nKey={prefix + "details.description-processed.dataset"} />}
-                    info={<div id={dataframe_processed_dataset_plotID}></div>}
-                  />
-                  <N4LSummary
-                    title={<Trans i18nKey={prefix + "details.description-processed.describe"} />}
-                    info={<div id={dataframe_processed_describe_plotID}></div>}
-                  />
-                </Card.Body>
-              </Card>
+              <ModelReviewRegressionDataset dataset={datasetSelected} />
 
               {/* DataFrame PLOT */}
               <DataFrameScatterPlotCard dataframe={dataframe_X} />
 
               {/* Model PREDICT */}
               <Card className={"mt-3"}>
-                <Card.Header className={"d-flex justify-content-between"}>
+                <Card.Header className={"d-flex flex-wrap align-items-center justify-content-between gap-2"}>
                   <h2>
-                    <Trans i18nKey={prefix + "model-selector.title"} />
+                    <Trans i18nKey={prefix + "predict.title"} />
                   </h2>
-                  <div className={"d-flex gap-2"}>
-                    <Form.Group controlId={"FormSelector_Instances"}>
-                      <Form.Select
-                        aria-label={"plot"}
-                        size={"sm"}
-                        value={instances.index}
+                  <div className={"d-flex flex-wrap gap-2"}>
+                    <div style={{ minWidth: "16rem" }}>
+                      <N4LVirtualSelect options={instanceOptions}
+                        value={instanceMatches ? instances.index : null}
                         onChange={handleChange_Instance_Index}
-                      >
-                        <option value={DEFAULT_SELECTOR_INSTANCE} disabled={true}>
-                          <Trans i18nKey={"selector-instance"} />
-                        </option>
-                        {instances.data.map((_value, index) => {
-                          const index_format = index.toString().padStart(3, "0")
-                          return (
-                            <option key={index} value={index}>
-                              <Trans i18nKey={"instance.__index__"} values={{ index: index_format }} />
-                            </option>
-                          )
-                        })}
-                      </Form.Select>
-                    </Form.Group>
+                        disabled={instances.data.length === 0}
+                        size={"sm"}
+                        placeholder={t(instances.index >= 0 ? "example-custom" : prefix + "predict.list-instances")}
+                        searchPlaceholder={t("pages.playground.generator.dynamic-form-dataset.search-entity")}
+                        noResultsText={t("pages.playground.generator.dynamic-form-dataset.no-entity")}
+                        countText={(shown, total) => t("pages.playground.generator.dynamic-form-dataset.entity-count", { shown, total })} />
+                    </div>
                     <Form.Group controlId={"FormSelector_Models"}>
                       <Form.Select
-                        aria-label={"plot"}
+                        aria-label={t(prefix + "predict.list-models")}
                         size={"sm"}
                         value={listCustomModels.index}
                         onChange={handleChange_Models_Index}
@@ -366,6 +330,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                     dataset={listDatasets.data[listDatasets.index]}
                     prediction={prediction}
                     setPrediction={setPrediction}
+                    actualValue={actualValue}
                   />
                 </Card.Body>
               </Card>

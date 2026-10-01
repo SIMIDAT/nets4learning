@@ -121,6 +121,30 @@ export class SpriteImageDataset {
     })
   }
 
+  /** Imágenes de test: las que nunca se usan para entrenar (de ellas sale la validación) */
+  get numTest() {
+    return this.testLabels.length / NUM_CLASSES
+  }
+
+  /** Clase de cada imagen de test */
+  testClasses(): number[] {
+    return Array.from({ length: this.numTest }, (_, index) => this.classOf(this.testLabels, index))
+  }
+
+  /** Una imagen de test: sus 784 píxeles (0 fondo, 1 trazo) y su clase */
+  testExample(index: number): { pixels: Float32Array, label: number } {
+    return {
+      pixels: this.testImages.slice(index * IMAGE_SIZE, (index + 1) * IMAGE_SIZE),
+      label : this.classOf(this.testLabels, index),
+    }
+  }
+
+  // Las etiquetas están en one-hot
+  private classOf(labels: Uint8Array, index: number) {
+    const oneHot = labels.subarray(index * NUM_CLASSES, (index + 1) * NUM_CLASSES)
+    return oneHot.indexOf(Math.max(...oneHot))
+  }
+
   private nextBatch(batchSize: number, images: Float32Array, labels: Uint8Array, index: () => number) {
     const batchImages = new Float32Array(batchSize * IMAGE_SIZE)
     const batchLabels = new Uint8Array(batchSize * NUM_CLASSES)
@@ -134,4 +158,19 @@ export class SpriteImageDataset {
       labels: tf.tensor2d(batchLabels, [batchSize, NUM_CLASSES]),
     }
   }
+}
+
+// Un sprite por dataset y visita: el entrenamiento y el selector de imágenes de test comparten la descarga
+const loadedDatasets = new Map<string, Promise<SpriteImageDataset>>()
+
+/** El dataset ya cargado (lo descarga la primera vez). Si la descarga falla, la siguiente llamada lo vuelve a intentar */
+export function loadSpriteDataset(config: SpriteDatasetConfig_t): Promise<SpriteImageDataset> {
+  let loading = loadedDatasets.get(config.imagesUrl)
+  if (loading === undefined) {
+    const dataset = new SpriteImageDataset(config)
+    loading = dataset.load().then(() => dataset)
+    loading.catch(() => loadedDatasets.delete(config.imagesUrl))
+    loadedDatasets.set(config.imagesUrl, loading)
+  }
+  return loading
 }

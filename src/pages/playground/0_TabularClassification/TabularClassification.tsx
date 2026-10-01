@@ -2,7 +2,7 @@ import './TabularClassification.css'
 import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { trackPageView } from '@core/analytics'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
@@ -18,6 +18,8 @@ import alertHelper from '@utils/alertHelper'
 
 import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LSectionLayout from '@components/divider/N4LSectionLayout'
+import { argMax } from '@core/nn-utils/classificationOutput'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
@@ -110,7 +112,8 @@ export default function TabularClassification(props: Props) {
     idLoss, setIdLoss,
     idMetrics, setIdMetrics,
     isTraining, setIsTraining,
-    setGeneratedModels,
+    generatedModels, setGeneratedModels,
+    setGeneratedModelsIndex,
     model, setModel,
     inputDataToPredict,
     inputVectorToPredict,
@@ -158,7 +161,7 @@ export default function TabularClassification(props: Props) {
   }
   // endregion
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
-  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.generated-models', 'hr.predict']
+  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
 
   useEffect(() => {
     trackPageView(`/TabularClassification/${dataset}`, dataset)
@@ -261,7 +264,9 @@ export default function TabularClassification(props: Props) {
       ]))
       setIsTraining(false)
 
+      // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
       setModel(model)
+      setGeneratedModelsIndex(generatedModels.length)
       await alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
@@ -299,25 +304,15 @@ export default function TabularClassification(props: Props) {
         return
       }
       const input_vector_to_predict_scaled = scaler.transform(inputVectorToPredict)
-      const tensor = tfjs.tensor([input_vector_to_predict_scaled])
-      // FIX 
-      // TypeScript error
-      const prediction = model.predict(tensor) as tfjs.Tensor
-      const predictionDataSync = prediction.dataSync()
-      const predictionWithArgMaxDataSync = prediction.argMax(-1).dataSync()
-      if (VERBOSE) {
-        console.debug({ prediction, predictionDataSync, predictionWithArgMaxDataSync })
-      }
+      const prediction = tfjs.tidy(() => model.predict(tfjs.tensor([input_vector_to_predict_scaled])) as tfjs.Tensor)
+      // Lectura asíncrona: con WebGPU las síncronas detienen la GPU
+      const predictionValues = Array.from(await prediction.data<'float32'>())
+      prediction.dispose()
+      if (VERBOSE) console.debug({ predictionValues })
       predictedVector_ref.current = input_vector_to_predict_scaled as number[]
       predictedDisplay_ref.current = inputDataToPredict.map((value) => (Array.isArray(value) ? value.join(', ') : String(value)))
-      setPredictedClassIndex(predictionWithArgMaxDataSync[0])
-      setPredictionBar((_prevState) => {
-        return {
-          classes: classes,
-          labels : classes,
-          data   : [...predictionDataSync],
-        }
-      })
+      setPredictedClassIndex(argMax(predictionValues))
+      setPredictionBar({ classes: classes, labels: classes, data: predictionValues })
     } catch (error) {
       console.error(error)
       await alertHelper.alertError(t('error.model-not-valid'))
@@ -338,7 +333,7 @@ export default function TabularClassification(props: Props) {
         KEY={'TabularClassification'}
       />
 
-      <Container className={'mb-3'}>
+      <N4LSectionLayout steps={steps} className={'mb-3'}>
         <Row className={'mt-3 mb-3'}>
           <Col xl={12}>
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -458,8 +453,8 @@ export default function TabularClassification(props: Props) {
           </Col>
         </Row>
 
-        {/* PREDICTION */}
-        <N4LDivider i18nKey={'hr.predict'} steps={steps} />
+        {/* CLASSIFICATION */}
+        <N4LDivider i18nKey={'hr.classify'} steps={steps} />
 
         <Row className={'mt-3 joyride-step-classify-visualization'}>
           <Col xl={12}>
@@ -468,6 +463,8 @@ export default function TabularClassification(props: Props) {
         </Row>
 
         {/* EXPLAINABILITY */}
+        <N4LDivider i18nKey={'hr.explainability'} steps={steps} />
+
         <Row>
           <Col xl={12}>
             <TabularShapPanel
@@ -485,7 +482,7 @@ export default function TabularClassification(props: Props) {
             />
           </Col>
         </Row>
-      </Container>
+      </N4LSectionLayout>
     </>
   )
 }

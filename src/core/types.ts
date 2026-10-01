@@ -490,9 +490,11 @@ export type TabularClassificationGeneratedModel_t = {
 
 // =============================== IMAGE CLASSIFICATION
 export type ImageClassificationGeneratedModel_t = {
-  idMODEL?: number
-  model   : _tfjs.Sequential
-  history : _tfjs.History
+  idMODEL?   : number
+  model      : _tfjs.Sequential
+  history    : _tfjs.History
+  /** Clases del dataset y, por cada imagen de validación, la clase real y la predicha */
+  evaluation?: { classes: string[], labels: number[], predictions: number[] }
   params: {
     learning_rate  : number
     test_size      : number

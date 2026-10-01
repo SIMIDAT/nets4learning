@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, use, useEffect, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 
 import Loading from './pages/Loading'
@@ -6,6 +6,7 @@ import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
 import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
 import { readConsent, startAnalytics } from '@core/analytics'
+import { startupTFBackend } from '@core/tfBackend'
 
 import './ConfigChartJS'
 
@@ -31,6 +32,13 @@ const TestPageAdvanced_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageA
 
 const VITE_PATH = import.meta.env.VITE_PATH
 
+// Las páginas usan TF.js en cuanto se montan: esperan a que esté activo el backend elegido en el menú
+function TFBackendReady({ children }: { children: ReactNode }) {
+  const startup = startupTFBackend()
+  if (startup !== null) use(startup)
+  return children
+}
+
 function App() {
   
   // Google Analytics solo se carga si el usuario lo ha aceptado (N4LCookiesBanner)
@@ -45,30 +53,32 @@ function App() {
           <N4LNavbar />
         </Suspense>
         <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route index path={'/'} element={<PageHome />}></Route>
-            <Route path={'/home'} element={<PageHome />}></Route>
-            <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
-            <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
-            <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>
-            <Route path={'/playground/description-regression'} element={<PageDescriptionRegression />}></Route>
-            <Route path={'/manual/'} element={<PageManual />}></Route>
-            <Route path={'/glossary'} element={<PageGlossary />}></Route>
-            <Route path={'/datasets'} element={<PageDatasets />}></Route>
-            <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
-            <Route path={'/contribute/'} element={<PageContribute />}></Route>
-            <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
-            <Route path={'/version'} element={<PageVersion />}></Route>
+          <TFBackendReady>
+            <Routes>
+              <Route index path={'/'} element={<PageHome />}></Route>
+              <Route path={'/home'} element={<PageHome />}></Route>
+              <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
+              <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
+              <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>
+              <Route path={'/playground/description-regression'} element={<PageDescriptionRegression />}></Route>
+              <Route path={'/manual/'} element={<PageManual />}></Route>
+              <Route path={'/glossary'} element={<PageGlossary />}></Route>
+              <Route path={'/datasets'} element={<PageDatasets />}></Route>
+              <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
+              <Route path={'/contribute/'} element={<PageContribute />}></Route>
+              <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
+              <Route path={'/version'} element={<PageVersion />}></Route>
 
-            {SHOW_DEV_PAGES && <>
-              <Route path={'/debug'} element={<PageDebug />}></Route>
-              <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
-              <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
-            </>}
+              {SHOW_DEV_PAGES && <>
+                <Route path={'/debug'} element={<PageDebug />}></Route>
+                <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
+                <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
+              </>}
 
-            <Route path="/404" element={<PageNotFoundPage />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
+              <Route path="/404" element={<PageNotFoundPage />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+          </TFBackendReady>
         </Suspense>
         <Suspense fallback={''}>
           <N4LFooter />

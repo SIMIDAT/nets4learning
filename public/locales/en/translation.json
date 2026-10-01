@@ -367,7 +367,8 @@
     "model-not-valid": "The model is not valid for this data",
     "model-compile": "The model could not be compiled. See the console for details.",
     "option-not-valid": "Option not valid",
-    "prediction": "The prediction could not be made"
+    "prediction": "The prediction could not be made",
+    "load-dataset": "The dataset could not be loaded."
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "Warning, the first layer must be of type {{value}}",
@@ -413,7 +414,13 @@
     "analyze": "EDA",
     "theme": "Theme",
     "theme-light": "Light",
-    "theme-dark": "Dark"
+    "theme-dark": "Dark",
+    "backend": "Backend",
+    "backend-default": "default",
+    "backend-unavailable": "not available",
+    "backend-software": "software, slow",
+    "backend-error": "Could not switch to {{backend}}",
+    "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}."
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -425,7 +432,9 @@
     "contribute": "Contribute",
     "documentation": "Documentation",
     "version": "Version",
-    "cookies": "Cookie preferences"
+    "cookies": "Cookie preferences",
+    "links": "Links",
+    "institutions": "Institutions"
   },
   "drag-and-drop": {
     "label-files-one": "File:",
@@ -1281,13 +1290,15 @@
           "sub-title": "First the .json file and then the .bin file"
         },
         "process-examples": {
-          "title": "Processing with examples"
+          "title": "Example images",
+          "help": "Click an image to classify it.",
+          "classify-example": "Classify example {{index}}"
         },
         "process-draw": {
           "title": "Drawing"
         },
         "process-image": {
-          "title": "Image processing",
+          "title": "Upload an image",
           "sub-title": "-",
           "validate": "Classify"
         },
@@ -1295,6 +1306,10 @@
         "button-accept": "Accept",
         "modal": {
           "title": "Prediction"
+        },
+        "test-images": {
+          "load": "Load test images",
+          "loading": "Loading images…"
         }
       },
       "mnist": {
@@ -1778,12 +1793,17 @@
         "parameter-categorical": "Categorical parameter",
         "data-to-check": "Data to test",
         "vector-to-check": "Vector to test",
-        "button-check-result": "Predict"
+        "button-check-result": "Predict",
+        "type-categorical": "Categorical · {{count}} values",
+        "type-integer": "Whole number",
+        "type-decimal": "Decimal number",
+        "range": "{{min}} – {{max}} in the data"
       },
       "0-tabular-classification": {
         "general": {
           "model": "Model",
           "description-input": "Data entry description",
+          "dataframe-processed-help": "The same data with each categorical value turned into a number (LabelEncoder; the mapping is under “Attributes” and “Classes”). This is how the model receives it: the last column is the class it has to predict.",
           "description-features": "Features edit form",
           "description-data": "Form data",
           "description-vector": "Data vector",
@@ -1867,9 +1887,9 @@
               "text-0": "If we have created the model correctly an entry will be added to the table of models generated, we are allowed to export the models generated and save them locally."
             },
             "details-prediction": {
-              "title": "Prediction",
+              "title": "Classification",
               "text-0": "The final form allows us to select the main characteristics used to determine the class.",
-              "text-1": "By pressing the \"See result\" button, the prediction of its output class is obtained from the input characteristics of the element."
+              "text-1": "When you press the \"Classify\" button, the model predicts the class of the example from its input features and shows the probability of each class."
             }
           }
         }
@@ -1989,8 +2009,8 @@
           "download": "Download"
         },
         "dynamic-form-dataset": {
-          "title": "Prediction",
-          "text-0-__column_name_target__": "Enter the values of each entry feature of the example to predict <b>{{column_name_target}}</b>",
+          "title": "Classification",
+          "text-0-__column_name_target__": "Enter the value of each input feature of the example you want to classify (<b>{{column_name_target}}</b>), or pick an entity of the dataset in the selector above.",
           "select-option": "Select an option",
           "input-data": "Enter the data to test",
           "input-vector": "Enter the vector to test",
@@ -1998,7 +2018,11 @@
           "test-input-data": "Form data",
           "test-input-vector": "Vector to test",
           "selector-entity": "Select the entity",
-          "selector-model": "Select the model"
+          "search-entity": "Search by number or class…",
+          "entity-count": "{{shown}} of {{total}}",
+          "no-entity": "Nothing matches the search",
+          "selector-model": "Select the model",
+          "classify-button": "Classify"
         },
         "list-models-generated": "List generated models",
         "visor": {
@@ -2022,6 +2046,22 @@
           "line-chart": "Line chart"
         },
         "waiting-for-models": "Train a model to make predictions.",
+        "classify": {
+          "waiting": "Classify an example to see the result here.",
+          "predicted-class": "Predicted class",
+          "confidence": "with a probability of {{value}}",
+          "chart-title": "Probability of each class",
+          "chart-title-output": "Network output for each class",
+          "chart-help": "The highlighted bar is the class the model picks: the most likely one. When the model hesitates, several bars have similar heights.",
+          "chart-help-output": "The last layer does not use softmax, so these values are not probabilities. The model picks the class with the highest value (highlighted bar).",
+          "axis-class": "Class",
+          "axis-probability": "Probability (%)",
+          "axis-output": "Output",
+          "select-image": "Select an image from the dataset",
+          "actual-class": "Actual class: {{label}}",
+          "chart-title-top": "The {{count}} most likely classes",
+          "chart-help-top": "The model tells apart many more classes; only the most likely ones are shown here, with their probability."
+        },
         "waiting-for-prediction": "Make a prediction to see the result here.",
         "training": {
           "epoch": "Training… epoch {{epoch}} of {{total}}",
@@ -2121,7 +2161,8 @@
           "multiple-regression": "Multiple linear regression"
         },
         "dataframe": {
-          "title": "Processed dataframe"
+          "title": "Processed dataframe",
+          "help": "The same data with each categorical value turned into a number (LabelEncoder). Before entering the model the attributes are scaled; the <code>{{target}}</code> column is the value it has to predict."
         },
         "selector-instance": {
           "option": "Instance selector"
@@ -2146,7 +2187,11 @@
           "button-submit": "Predict",
           "list-models-generated": "List of generated models",
           "list-models": "List of generated models",
-          "list-instances": "List of instancies"
+          "list-instances": "List of instancies",
+          "predicted-value": "Predicted {{target}}",
+          "actual-value": "Actual value: {{value}}",
+          "error": "Error: {{value}} ({{percent}})",
+          "input-details": "Model input step by step"
         },
         "model-selector": {
           "title": "Model selector",
@@ -2249,7 +2294,7 @@
           "title": "Step 6: Training and table of models"
         },
         "prediction": {
-          "title": "Step 7: Prediction"
+          "title": "Step 7: Classification"
         }
       },
       "app": {
@@ -2698,6 +2743,8 @@
     "generated-models": "Models generated",
     "predict": "Predict",
     "classify": "Classify",
+    "explainability": "Explainability",
+    "on-this-page": "On this page",
     "tasks": "Tasks",
     "00-tabular-classification": "Tabular Classification",
     "tutorial-00-tabular-classification": "Train a model for Tabular classification",

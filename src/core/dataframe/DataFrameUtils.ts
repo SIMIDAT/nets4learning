@@ -337,7 +337,10 @@ export function DataFrameDescribePlot(
     element.textContent = options.emptyText;
     return;
   }
-  (options.transpose ? describe.T : describe).plot(plotID).table({ config: options.config });
+  const table = (options.transpose ? describe.T : describe).round(3);
+  // La tabla de danfo no pinta el índice: sin él no se sabe de qué columna (o de qué estadístico) es cada fila
+  const labelled = table.addColumn(" ", table.index.map(String), { inplace: false, atIndex: 0 });
+  labelled.plot(plotID).table({ config: options.config });
 }
 
 /**

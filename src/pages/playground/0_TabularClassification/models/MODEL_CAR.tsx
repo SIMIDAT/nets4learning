@@ -13,11 +13,15 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
   static URL = 'https://archive.ics.uci.edu/ml/datasets/Car+Evaluation'
   TITLE = 'datasets-models.0-tabular-classification.car.title'
   i18n_TITLE = 'datasets-models.0-tabular-classification.car.title'
+  // En el orden de las salidas del modelo: el OneHotEncoder de danfo numera las clases por orden de aparición en
+  // car.csv (unacc, acc, vgood, good). Con good antes que vgood, la página llamaba «good» a lo que el modelo
+  // predice como vgood (comprobado con las 1728 filas: 63 de los 65 vgood van a la salida 2). El modelo solo tiene
+  // 3 salidas: «good» no tiene ninguna y nunca se predice
   CLASSES: string[] = [
     '00-tc.car.unacc',
     '00-tc.car.acc',
+    '00-tc.car.vgood',
     '00-tc.car.good',
-    '00-tc.car.vgood'
   ]
   TABLE_HEADER: string[] = [
     '00-tc.car.buying',
@@ -38,10 +42,11 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
     Lug_boot: 'small',
     Safety  : 'low'
   }
+  // La clase de cada ejemplo en car.csv (el tercero es la última fila, vgood)
   LIST_EXAMPLES_RESULTS = [
     'unacc',
     'acc',
-    'good',
+    'vgood',
   ]
   LIST_EXAMPLES = [
     { Buying: 'low', Maint: 'vhigh', Doors: '4', Persons: '2', Lug_boot: 'small', Safety: 'low' },

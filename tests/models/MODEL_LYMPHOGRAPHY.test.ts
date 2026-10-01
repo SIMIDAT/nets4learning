@@ -76,6 +76,20 @@ describe('MODEL_LYMPHOGRAPHY — el modelo preentrenado recibe la entrada con la
     expect(hits / rows.length).toBeGreaterThan(0.9)
   })
 
+  test('CLASS_INDEX lleva el código del CSV y el nombre de cada ejemplo a la salida del modelo', () => {
+    const { dataframe_original, data_processed } = dataset
+    const keyOf = (target: unknown) => iModelInstance.CLASSES[iModelInstance.CLASS_INDEX(target)]
+    expect(['1', '2', '3', '4'].map(keyOf)).toStrictEqual([
+      '00-tc.lymphography.normal find',
+      '00-tc.lymphography.metastases',
+      '00-tc.lymphography.malign lymph',
+      '00-tc.lymphography.fibrosis',
+    ])
+    expect(iModelInstance.LIST_EXAMPLES_RESULTS.map(keyOf)).toStrictEqual(iModelInstance.LIST_EXAMPLES.map(predictClass))
+    const targets = dataframe_original[data_processed!.column_name_target].values as unknown[]
+    expect(targets.every((target) => iModelInstance.CLASS_INDEX(target) >= 0)).toBe(true)
+  })
+
   test('las clases del dataset procesado siguen el orden de las columnas one-hot de y', () => {
     // Al entrenar, la matriz de confusión y la predicción nombran cada columna de y con classes[columna]
     const { classes, y, dataframe_y } = dataset.data_processed!

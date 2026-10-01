@@ -1,20 +1,12 @@
-import styles from '@pages/playground/1_Regression/Regression.module.css'
+import { useId, useMemo } from 'react'
 import { Row, Col, Form } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import * as dfd from 'danfojs'
 
 import * as _Types from '@core/types'
 import { VERBOSE } from '@/CONSTANTS'
 import { DataFrameSetCellValue } from '@core/dataframe/DataFrameUtils'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
-/**
- * @typedef ModelReviewRegressionPredictFormProps_t
- * @property {_Types.CustomModel_t} customModel
- * @property {_Types.DatasetProcessed_t} dataset
- * @property {_Types.StatePrediction_t} prediction
- * @property {React.Dispatch<React.SetStateAction<_Types.StatePrediction_t>>} setPrediction 
- */
 type ModelReviewRegressionPredictFormProps_t = {
   customModel  : _Types.CustomModel_t,
   dataset      : _Types.DatasetProcessed_t,
@@ -22,208 +14,99 @@ type ModelReviewRegressionPredictFormProps_t = {
   setPrediction: React.Dispatch<React.SetStateAction<_Types.StatePrediction_t>>
 }
 
-/**
- * 
- * @param {ModelReviewRegressionPredictFormProps_t} props 
- * @returns 
- */
+type Field_t =
+  | { name: string, type: 'int32' | 'float32', min: number, max: number }
+  | { name: string, type: 'string', options: string[] }
+
+/** Un campo por atributo que recibe el modelo, con su tipo y los valores que toma en el conjunto de datos */
 export default function ModelReviewRegressionPredictForm(props: ModelReviewRegressionPredictFormProps_t) {
   const { customModel, dataset, prediction, setPrediction } = props
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const formId = useId()
 
-  // const [ready, setReady] = useState(false)
-
-  // useEffect(() => {
-  //   setReady(!!(
-  //     dataset
-  //     && dataset.dataframe_processed
-  //     && prediction
-  //     && prediction.input_1_dataframe_original.values.length > 0
-  //     && customModel
-  //     && customModel.model
-  //   ))
-  // }, [dataset, prediction, customModel, setReady])
   const ready = !!(
-    dataset &&
-    dataset.dataframe_processed &&
-    prediction &&
-    prediction.input_1_dataframe_original &&
-    prediction.input_1_dataframe_original.values &&
-    prediction.input_1_dataframe_original.values.length > 0 &&
-    customModel &&
-    customModel.model
+    dataset?.dataframe_processed &&
+    prediction?.input_1_dataframe_original?.values?.length > 0 &&
+    customModel?.model
   )
 
+  // Los atributos del modelo: los del conjunto de datos sin la variable objetivo (que es lo que se predice)
+  const fields = useMemo<Field_t[]>(() => {
+    if (!dataset?.data_processed) return []
+    const target = dataset.data_processed.column_name_target
+    return dataset.dataframe_processed.columns
+      .filter((name) => name !== target && dataset.dataset.some((column) => column.column_name === name))
+      .map((name): Field_t => {
+        const column = dataset.dataframe_original[name]
+        if (column.dtype === 'string') {
+          return { name, type: 'string', options: [...new Set((column.values as unknown[]).map((value) => String(value)))].sort() }
+        }
+        return { name, type: column.dtype === 'int32' ? 'int32' : 'float32', min: column.min(), max: column.max() }
+      })
+  }, [dataset])
 
-
-
-  /**
-   * 
-   * @param {_Types.DatasetProcessed_t} dataset
-   * @param {string} column_name 
-   * @returns 
-   */
-  const isDisabled = (dataset: _Types.DatasetProcessed_t, column_name: string) => {
-    if (dataset === undefined || dataset.data_processed === undefined) {
-      return true
-    }
-    if (dataset.data_processed.column_name_target === column_name) {
-      return true
-    }
-    if (dataset.dataset.some(v => v.column_name === column_name)) {
-      return false
-    }
-    return true
-  }
-
-  /**
-   * 
-   * @param {_Types.DatasetProcessed_t} dataset
-   * @param {string} column_name 
-   * @returns 
-   */
-  const getColor = (dataset: _Types.DatasetProcessed_t, column_name: string) => {
-    if (dataset === undefined || dataset.data_processed === undefined) {
-      console.error('Error: dataset or dataset.data_processed is undefined')
-      return
-    }
-    if (dataset.data_processed.column_name_target === column_name) {
-      return styles.border_green
-    }
-    if (dataset.dataset.some(v => v.column_name === column_name)) {
-      return styles.border_blue
-    }
-    return styles.border_red
-  }
-
-  const handleChange_Parameter_int32_float32 = (column_name: string, new_value: number | string) => {
+  const updateInput = (column_name: string, new_value: number | string, new_value_encoding: number | string) => {
     setPrediction((prevState) => {
       if (dataset.data_processed === undefined) {
         console.error('Error: dataset.data_processed is undefined')
         return prevState
       }
-      const newInputDataFrameOriginal = DataFrameSetCellValue(prediction.input_1_dataframe_original, 0, column_name, new_value)
-      const newInputDataFrameProcessed = DataFrameSetCellValue(prediction.input_1_dataframe_processed, 0, column_name, new_value)
-      const newInputDataFrameEncoding = DataFrameSetCellValue(prediction.input_2_dataframe_encoding, 0, column_name, new_value)
-      // const newInputDataFrameScaling = DataFrameSetCellValue(prediction.input_2_dataframe_encoding, 0, column_name, new_value)
-      const newInputDataFrameScaling = dataset.data_processed.scaler.transform(newInputDataFrameEncoding)
-
+      const newInputDataFrameEncoding = DataFrameSetCellValue(prevState.input_2_dataframe_encoding, 0, column_name, new_value_encoding)
       return {
         ...prevState,
-        input_1_dataframe_original : newInputDataFrameOriginal,
-        input_1_dataframe_processed: newInputDataFrameProcessed,
+        input_1_dataframe_original : DataFrameSetCellValue(prevState.input_1_dataframe_original, 0, column_name, new_value),
+        input_1_dataframe_processed: DataFrameSetCellValue(prevState.input_1_dataframe_processed, 0, column_name, new_value),
         input_2_dataframe_encoding : newInputDataFrameEncoding,
-        input_3_dataframe_scaling  : newInputDataFrameScaling
+        input_3_dataframe_scaling  : dataset.data_processed.scaler.transform(newInputDataFrameEncoding),
       }
     })
   }
 
-  const handleChange_Parameter_string = (column_name: string, new_value: string) => {
-        setPrediction((prevState) => {
-      if (dataset.data_processed === undefined) {
-        console.error('Error: dataset.data_processed is undefined')
-        return prevState
-      }
-      const [new_value_encoding] = dataset.data_processed.encoders[column_name].encoder.transform([new_value])
-      const newInputDataFrameOriginal = DataFrameSetCellValue(prediction.input_1_dataframe_original, 0, column_name, new_value)
-      const newInputDataFrameProcessed = DataFrameSetCellValue(prediction.input_1_dataframe_processed, 0, column_name, new_value)
-      const newInputDataFrameEncoding = DataFrameSetCellValue(prediction.input_2_dataframe_encoding, 0, column_name, new_value_encoding)
-      const newInputDataFrameScaling = dataset.data_processed.scaler.transform(newInputDataFrameEncoding)
-      return {
-        ...prevState,
-        input_1_dataframe_original : newInputDataFrameOriginal,
-        input_1_dataframe_processed: newInputDataFrameProcessed,
-        input_2_dataframe_encoding : newInputDataFrameEncoding,
-        input_3_dataframe_scaling  : newInputDataFrameScaling
-      }
-    })
+  const handleChange_Number = (column_name: string, value: string) => {
+    const number = value === '' ? NaN : Number(value)
+    updateInput(column_name, number, number)
   }
 
+  const handleChange_String = (column_name: string, value: string) => {
+    if (dataset.data_processed === undefined) return
+    const [value_encoding] = dataset.data_processed.encoders[column_name].encoder.transform([value])
+    updateInput(column_name, value, value_encoding)
+  }
 
+  const numberFormat = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 3 })
+  const helpText = (field: Field_t) => {
+    if (field.type === 'string') return t('pages.playground.form.type-categorical', { count: field.options.length })
+    const type = t(field.type === 'int32' ? 'pages.playground.form.type-integer' : 'pages.playground.form.type-decimal')
+    return `${type} · ${t('pages.playground.form.range', { min: numberFormat.format(field.min), max: numberFormat.format(field.max) })}`
+  }
 
-  if (VERBOSE) console.debug('render ModelReviewLinearRegressionPredictForm')
-  return <>
-    <Row>
-      {!ready && <>
-        <WaitingPlaceholder i18nKey_title={'Waiting'} />
-      </>}
+  if (VERBOSE) console.debug('render ModelReviewRegressionPredictForm')
+  if (!ready) return <WaitingPlaceholder i18nKey_title={'Waiting'} />
+  return (
+    <Row xs={1} sm={2} lg={3} xxl={4}>
+      {fields.map((field, index) => {
+        const controlId = `${formId}-${index}`
+        const value = prediction.input_1_dataframe_original[field.name].values[0]
+        // NaN mientras se borra un número: el campo se queda vacío en vez de mostrar "NaN"
+        const inputValue = typeof value === 'number' && Number.isNaN(value) ? '' : value ?? ''
+        return (
+          <Col key={controlId} className={'mb-3'}>
+            <Form.Group controlId={controlId}>
+              <Form.Label className={'fw-semibold mb-1'}>{field.name}</Form.Label>
+              {field.type === 'string'
+                ? <Form.Select size={'sm'} value={inputValue} onChange={(e) => handleChange_String(field.name, e.target.value)}>
+                  {field.options.map((option) => <option key={option} value={option}>{option}</option>)}
+                </Form.Select>
+                : <Form.Control type={'number'} size={'sm'}
+                  step={field.type === 'int32' ? 1 : 'any'}
+                  value={inputValue}
+                  onChange={(e) => handleChange_Number(field.name, e.target.value)} />}
+              <Form.Text className={'text-body-secondary'}>{helpText(field)}</Form.Text>
+            </Form.Group>
+          </Col>
+        )
+      })}
     </Row>
-    <Row xs={2} sm={2} md={3} lg={4} xl={4} xxl={4}>
-      {ready && <>
-        {dataset
-          .dataframe_processed
-          .columns
-          .map((column_name: string, index: number) => {
-            const column_type = (/** @type {_Types.DataFrameColumnType_t} */(dataset.dataframe_original[column_name].dtype))
-            const column_value = prediction.input_1_dataframe_original[column_name].values[0]
-
-            switch (column_type) {
-              case 'int32': {
-                return <Col key={'form' + index} className={'mb-md-3'}>
-                  <Form.Group controlId={'regression-form-' + column_name}>
-                    <Form.Label><small>{t('pages.playground.form.parameter')}: <b>{column_name}</b></small></Form.Label>
-                    <Form.Control type="number"
-                      size={'sm'}
-                      placeholder={t('pages.playground.form.parameter-integer')}
-                      min={0}
-                      value={column_value}
-                      className={getColor(dataset, column_name)}
-                      disabled={isDisabled(dataset, column_name)}
-                      onChange={($event) => handleChange_Parameter_int32_float32(column_name, $event.target.value)} />
-                    <Form.Text className="text-muted"><small>Dtype: {column_type}</small></Form.Text>
-                  </Form.Group>
-                </Col>
-              }
-              case 'float32': {
-                return <Col key={'form' + index} className={'mb-md-3'}>
-                  <Form.Group controlId={'regression-form-' + column_name}>
-                    <Form.Label><small>{t('pages.playground.form.parameter')}: <b>{column_name}</b></small></Form.Label>
-                    <Form.Control type="number"
-                      size={'sm'}
-                      placeholder={t('pages.playground.form.parameter-decimal')}
-                      min={0}
-                      value={column_value}
-                      className={getColor(dataset, column_name)}
-                      disabled={isDisabled(dataset, column_name)}
-                      onChange={($event) => handleChange_Parameter_int32_float32(column_name, $event.target.value)} />
-                    <Form.Text className="text-muted"><small>Dtype: {column_type}</small></Form.Text>
-                  </Form.Group>
-                </Col>
-              }
-              case 'string': {
-                const labelEncoder = new dfd.LabelEncoder()
-                labelEncoder.fit(dataset.dataframe_original[column_name])
-                return <Col key={'form' + index} className={'mb-md-3'}>
-                  <Form.Group controlId={'regression-form-' + column_name}>
-                    <Form.Label><small>{t('pages.playground.form.parameter')}: <b>{column_name}</b></small></Form.Label>
-                    <Form.Select aria-label={'regression-form-' + column_name}
-                      size={'sm'}
-                      value={column_value}
-                      className={getColor(dataset, column_name)}
-                      disabled={isDisabled(dataset, column_name)}
-                      onChange={e => handleChange_Parameter_string(column_name, e.target.value)}>
-                      <>
-                        {Object.entries(labelEncoder.classes)
-                          .map(([text, _value]: [string, unknown], index_options: number) => {
-                            return <option key={index_options} value={text}>{text}</option>
-                          })
-                        }
-                      </>
-                    </Form.Select>
-                    <Form.Text className="text-muted"><small>Dtype: {column_type}</small></Form.Text>
-                  </Form.Group>
-                </Col>
-              }
-              default:
-                return <>default</>
-            }
-
-          }
-
-          )}
-      </>}
-    </Row>
-  </>
-
+  )
 }

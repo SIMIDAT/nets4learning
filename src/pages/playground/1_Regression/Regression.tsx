@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { trackPageView } from '@core/analytics'
 import * as tfjs from '@tensorflow/tfjs'
 
@@ -9,6 +9,7 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
@@ -59,7 +60,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
   const { t } = useTranslation()
   const training = useTrainingProgress()
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
-  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.predict']
+  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.predict', 'hr.explainability']
 
   const {
     // prediction,
@@ -285,7 +286,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         KEY={'LinearRegression'}
       />
 
-      <Container>
+      <N4LSectionLayout steps={steps}>
         <Row className={'mt-2 mb-3'}>
           <Col xl={12}>
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -409,7 +410,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         <Row className={'mt-3'}>
           <Col className={'joyride-step-9-predict-visualization'}>
             <Suspense fallback={<></>}>
-              <RegressionPrediction />
+              <RegressionPrediction steps={steps} />
             </Suspense>
           </Col>
         </Row>
@@ -447,7 +448,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
           </Row>
         }
 
-      </Container>
+      </N4LSectionLayout>
     </>
   )
 }

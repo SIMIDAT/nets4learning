@@ -24,6 +24,15 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     '00-tc.lymphography.fibrosis',
     '00-tc.lymphography.normal find',
   ]
+  // Códigos de la clase en lymphography.csv (UCI): 1 normal find, 2 metastases, 3 malign lymph, 4 fibrosis; y los
+  // nombres de LIST_EXAMPLES_RESULTS
+  CLASS_INDEX(target: unknown): number {
+    const index: Record<string, number> = {
+      '3': 0, '2': 1, '4': 2, '1': 3, 'malign lymph': 0, 'metastasis': 1, 'fibrosis': 2, 'normal': 3,
+    }
+    return index[String(target)] ?? -1
+  }
+
   TABLE_HEADER: string[] = [
     '00-tc.lymphography.lymphatics',
     '00-tc.lymphography.block of affere',

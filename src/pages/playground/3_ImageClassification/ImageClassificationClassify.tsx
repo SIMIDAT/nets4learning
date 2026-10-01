@@ -1,10 +1,13 @@
 import React from 'react'
-import { Button, Card, Col, Row } from 'react-bootstrap'
+import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import CustomCanvasDrawer from '@pages/playground/3_ImageClassification/components/customCanvasDrawer'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import type { DropEvent, FileRejection } from 'react-dropzone'
+import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
+import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
+import type { ImagePrediction_t } from './utils/imagePrediction'
 
 /**
  * @typedef ImageClassificationClassifyProps_t
@@ -17,6 +20,24 @@ type ImageClassificationClassifyProps_t = {
   handleSubmit_VectorTest           : (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
   handleSubmit_VectorTestImageUpload: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
   onResetExplain?                   : () => void,
+  /** Al borrar el lienzo */
+  onClear?                          : () => void,
+  /** Última clasificación (null hasta clasificar un dibujo) */
+  prediction?                       : ImagePrediction_t | null,
+  classLabels?                      : string[],
+  /** Modelo de la tabla con el que se clasifica (desde 0) */
+  selectedModelIndex?               : number,
+  onChangeModel?                    : (index: number) => void,
+  /** Al empezar a dibujar */
+  onDrawStart?                      : () => void,
+  /** Imágenes de test del dataset que se pueden clasificar (vacío mientras no se ha descargado) */
+  instanceOptions?                  : VirtualSelectOption_t[],
+  selectedInstance?                 : number | null,
+  onChangeInstance?                 : (index: number) => void,
+  /** Imagen elegida, que se pinta en el lienzo */
+  instanceImage?                    : ImageData | null,
+  /** Clase real de la imagen clasificada, si es del dataset */
+  actualClassIndex?                 : number | null,
 }
 
 /**
@@ -30,7 +51,20 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
     handleSubmit_VectorTestImageUpload,
     GeneratedModels = [],
     onResetExplain,
+    onClear,
+    prediction = null,
+    classLabels = [],
+    selectedModelIndex = GeneratedModels.length - 1,
+    onChangeModel,
+    onDrawStart,
+    instanceOptions = [],
+    selectedInstance = null,
+    onChangeInstance,
+    instanceImage = null,
+    actualClassIndex = null,
   } = props
+  const prefixForm = 'pages.playground.generator.dynamic-form-dataset.'
+  const { t } = useTranslation()
 
   const canvas_image_ref = React.useRef<HTMLCanvasElement | null>(null)
   const canvas_image_28x28_ref = React.useRef<HTMLCanvasElement | null>(null)
@@ -39,21 +73,61 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
 
   return <>
     <Card className="mt-3">
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
-        <Trans i18nKey={'Classify'} />
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
+        <h3>
+          <Trans i18nKey={'Classify'} />
+          {showComponent && selectedModelIndex >= 0 &&
+            <>{' '}| <Trans i18nKey={'model.__index__'} values={{ index: selectedModelIndex + 1 }} /></>}
+        </h3>
+        <div className={'d-flex flex-wrap gap-2'}>
+          {showComponent && onChangeInstance !== undefined && instanceOptions.length > 0 &&
+            <div style={{ minWidth: '16rem' }}>
+              <N4LVirtualSelect options={instanceOptions}
+                value={selectedInstance}
+                onChange={onChangeInstance}
+                size={'sm'}
+                placeholder={t('pages.playground.generator.classify.select-image')}
+                searchPlaceholder={t(prefixForm + 'search-entity')}
+                noResultsText={t(prefixForm + 'no-entity')}
+                countText={(shown, total) => t(prefixForm + 'entity-count', { shown, total })} />
+            </div>}
+          {showComponent && onChangeModel !== undefined &&
+          <Form.Group controlId={'image-classification-model'}>
+            <Form.Select aria-label={t('selector-model')}
+              size={'sm'}
+              value={selectedModelIndex}
+              onChange={(e) => onChangeModel(Number(e.target.value))}>
+              {GeneratedModels.map((_model, index) => (
+                <option key={index} value={index}>{t('model.__index__', { index: index + 1 })}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>}
+        </div>
       </Card.Header>
       <Card.Body>
         {!showComponent && <>
           <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
         </>}
         {showComponent && <>
-          <Row>
-            <Col>
+          <Row className={'g-4'}>
+            <Col lg={5}>
               <CustomCanvasDrawer
                 submitFunction={handleSubmit_VectorTest}
-                clearFunction={() => onResetExplain?.()}
-                onDrawStart={() => onResetExplain?.()}
+                clearFunction={() => {
+                  onResetExplain?.()
+                  onClear?.()
+                }}
+                onDrawStart={() => {
+                  onResetExplain?.()
+                  onDrawStart?.()
+                }}
+                image={instanceImage}
               />
+            </Col>
+            <Col lg={7}>
+              {prediction === null
+                ? <N4LEmptyState i18nKey={'pages.playground.generator.classify.waiting'} />
+                : <N4LClassificationChart values={prediction.values} index={prediction.index} classLabels={classLabels} actualIndex={actualClassIndex} />}
             </Col>
           </Row>
           <Row className="mt-4" style={{display: 'none'}}>

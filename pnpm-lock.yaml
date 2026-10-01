@@ -164,7 +164,10 @@ settings:
 
 overrides:
   danfojs>@tensorflow/tfjs: ^4.22.0
-  danfojs>mathjs: ^11.12.0
+  danfojs>mathjs: ^12.4.3
+
+patchedDependencies:
+  '@vladmandic/face-api@1.7.15': 1ec24e4d9002c522523e5c010aaad4a200d243a86622f7d9aa620936e6634c85
 
 importers:
 
@@ -203,6 +206,9 @@ importers:
       '@tensorflow/tfjs-backend-webgl':
         specifier: ^4.22.0
         version: 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
+      '@tensorflow/tfjs-backend-webgpu':
+        specifier: ^4.22.0
+        version: 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
       '@tensorflow/tfjs-converter':
         specifier: ^4.22.0
         version: 4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))
@@ -217,7 +223,7 @@ importers:
         version: 2.6.4
       '@vladmandic/face-api':
         specifier: ^1.7.15
-        version: 1.7.15
+        version: 1.7.15(patch_hash=1ec24e4d9002c522523e5c010aaad4a200d243a86622f7d9aa620936e6634c85)
       bootstrap:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
@@ -252,8 +258,8 @@ importers:
         specifier: ^0.16.27
         version: 0.16.47
       mathjs:
-        specifier: ^11.12.0
-        version: 11.12.0
+        specifier: ^12.4.3
+        version: 12.4.3
       ml-regression-multivariate-linear:
         specifier: ^2.0.4
         version: 2.0.4
@@ -3400,9 +3406,9 @@ packages:
     resolution: {integrity: sha512-9W0yGtkaMAkf74XGYVy4Dqw3YUMnTNB2eeiw9aQbUl4A3KmuCEHTt2DgAB07ENzOYAjsYSAYufkAq0Zd+jU7zA==}
     engines: {node: '>=0.10.0'}
 
-  mathjs@11.12.0:
-    resolution: {integrity: sha512-UGhVw8rS1AyedyI55DGz9q1qZ0p98kyKPyc9vherBkoueLntPfKtPBh14x+V4cdUWK0NZV2TBwqRFlvadscSuw==}
-    engines: {node: '>= 14'}
+  mathjs@12.4.3:
+    resolution: {integrity: sha512-oHdGPDbp7gO873xxG90RLq36IuicuKvbpr/bBG5g9c8Obm/VsKVrK9uoRZZHUodohzlnmCEqfDzbR3LH6m+aAQ==}
+    engines: {node: '>= 18'}
     hasBin: true
 
   mdast-util-find-and-replace@3.0.2:
@@ -6339,7 +6345,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@vladmandic/face-api@1.7.15': {}
+  '@vladmandic/face-api@1.7.15(patch_hash=1ec24e4d9002c522523e5c010aaad4a200d243a86622f7d9aa620936e6634c85)': {}
 
   '@webgpu/types@0.1.38': {}
 
@@ -6981,7 +6987,7 @@ snapshots:
   danfojs@1.2.0(encoding@0.1.13)(seedrandom@3.0.5):
     dependencies:
       '@tensorflow/tfjs': 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
-      mathjs: 11.12.0
+      mathjs: 12.4.3
       papaparse: 5.5.3
       plotly.js-dist-min: 2.8.0
       table: 6.7.1
@@ -8246,7 +8252,7 @@ snapshots:
 
   math-log2@1.0.1: {}
 
-  mathjs@11.12.0:
+  mathjs@12.4.3:
     dependencies:
       '@babel/runtime': 7.29.7
       complex.js: 2.4.3

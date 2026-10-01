@@ -13,6 +13,8 @@ type CustomCanvasDrawerProps = {
   submitFunction: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => void | Promise<void>,
   clearFunction : () => void,
   onDrawStart  ?: () => void,
+  /** Imagen de 28×28 que se pinta en el lienzo (p. ej. una del dataset); se puede seguir dibujando encima */
+  image        ?: ImageData | null,
 }
 
 /**
@@ -25,6 +27,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     submitFunction,
     clearFunction,
     onDrawStart,
+    image,
   } = props
   const [isDrawing, setIsDrawing] = useState(false)
   /**
@@ -80,6 +83,20 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     }
   }, [])
 
+  // Imagen nueva: ampliada (sin suavizar, se ven los píxeles) en el lienzo y tal cual en la miniatura
+  useEffect(() => {
+    const context = context_ref.current
+    const canvas_small = canvas_small_ref.current
+    if (image === null || image === undefined || context === null || canvas_small === null) return
+    canvas_small.getContext('2d')?.putImageData(image, 0, 0)
+    context.save()
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.imageSmoothingEnabled = false
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+    context.drawImage(canvas_small, 0, 0, context.canvas.width, context.canvas.height)
+    context.restore()
+  }, [image])
+
   const startDrawing = (_event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (context_ref.current === null) {
       console.error("Context is null")
@@ -122,6 +139,8 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
       return
     }
     context_ref.current.clearRect(0, 0, 200, 200)
+    const canvas_small = canvas_small_ref.current
+    canvas_small?.getContext('2d')?.clearRect(0, 0, canvas_small.width, canvas_small.height)
   }
 
   const onChange = (event: FormEvent<HTMLCanvasElement>) => {

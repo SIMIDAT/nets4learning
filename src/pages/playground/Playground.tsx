@@ -87,7 +87,7 @@ export default function Playground() {
     <>
       <main className={'mb-3'} data-title={'Playground'} data-testid={'Test-Playground'}>
         {isTask(id) && kind !== undefined &&
-          <Container className={'mt-3'}>
+          <Container className={'mt-3 n4l-container-wide'}>
             <N4LBreadcrumb task={id} kind={kind} example={example} />
           </Container>
         }

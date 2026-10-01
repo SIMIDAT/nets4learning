@@ -41,7 +41,7 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
   if (VERBOSE) console.debug(`render MenuSelect ${kind}`)
   return (
     <main className={'mb-4'} data-testid={testId}>
-      <Container className={'mt-3'}>
+      <Container className={'mt-3 n4l-container-wide'}>
         <N4LBreadcrumb task={id} kind={kind} />
 
         <header className={'py-3'} data-task={id}>

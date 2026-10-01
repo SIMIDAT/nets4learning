@@ -1,4 +1,4 @@
-import I_MODEL_IMAGE_CLASSIFICATION from './_model'
+import I_MODEL_IMAGE_CLASSIFICATION, { type ImageClassificationResult_t } from './_model'
 import { Trans } from 'react-i18next'
 import * as tf_mobilenet from '@tensorflow-models/mobilenet'
 import { DEFAULT_BAR_DATA, type BarChartData_t } from '@pages/playground/3_ImageClassification/CONSTANTS'
@@ -73,6 +73,10 @@ export default class MODEL_IMAGE_MOBILENET extends I_MODEL_IMAGE_CLASSIFICATION 
   async CLASSIFY_IMAGE(model: tf_mobilenet.MobileNet, imageData: ImageData): Promise<{predictions: MobileNetPrediction_t[], index: number}> {
     const predictions = await model.classify(imageData)
     return { predictions, index: 0 }
+  }
+
+  PREDICTION_RESULT(predictions: MobileNetPrediction_t[]): ImageClassificationResult_t {
+    return { values: predictions.map((p) => p.probability), labels: predictions.map((p) => p.className), topK: true }
   }
 
   async PREDICTION_FORMAT(predictions: MobileNetPrediction_t[]): Promise<BarChartData_t> {

@@ -1,7 +1,9 @@
  
-// Versión sin TensorFlow.js empaquetado: usa el @tensorflow/tfjs del proyecto (con el paquete
-// por defecto se cargaba una segunda copia de TF.js y se registraban de nuevo todos los kernels).
-import * as faceapi from "@vladmandic/face-api/dist/face-api.esm-nobundle.js"
+// Se compila desde su código fuente con el @tensorflow/tfjs del proyecto (alias en vite.config.ts): con el paquete
+// por defecto se cargaba una segunda copia de TF.js y se registraban de nuevo todos los kernels. El código está
+// parcheado (patches/, ver pnpm-workspace.yaml) para leer los resultados de forma asíncrona: con WebGPU las
+// lecturas síncronas lo hacían muy lento.
+import * as faceapi from "@vladmandic/face-api"
 import { Trans } from "react-i18next"
 import I_MODEL_OBJECT_DETECTION from "./_model"
 import {

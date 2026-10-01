@@ -38,6 +38,18 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   }
 
   /**
+   * Salida del modelo (posición en CLASSES) de una clase tal como aparece en el conjunto de datos; -1 si no se
+   * reconoce. Por defecto, la de CLASSES con ese nombre (lo que sigue al último punto de la clave) o, si no hay, la
+   * que termina igual ("Setosa" o "0 Iris-setosa" → "00-tc.iris.Iris-setosa").
+   */
+  CLASS_INDEX(target: unknown): number {
+    const name = String(target).toLowerCase()
+    const names = this.CLASSES.map((key) => key.slice(key.lastIndexOf('.') + 1).toLowerCase())
+    const exact = names.indexOf(name)
+    return exact !== -1 ? exact : names.findIndex((className) => className.endsWith(name) || name.endsWith(className))
+  }
+
+  /**
    * @returns {Promise<_Types.DatasetProcessed_t[]>}
    */
   async DATASETS(): Promise<_Types.DatasetProcessed_t[]> {

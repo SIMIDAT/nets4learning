@@ -15,7 +15,15 @@ allowBuilds:
 blockExoticSubdeps: false
 # danfojs 1.2 declara @tensorflow/tfjs ^3 y mathjs 9.4.4; los forzamos a las versiones del proyecto
 # para que solo haya una copia de cada una (ver el alias de "danfojs" en vite.config.ts).
-# De mathjs, danfojs solo usa mean, median, mode, std y variance, que no cambian entre la 9 y la 11.
+# De mathjs, danfojs solo usa mean, median, mode, std y variance, que no cambian entre la 9 y la 12.
+# mathjs 12 ya no trae las anotaciones /* #__PURE__ */ mal colocadas de la 11, por las que Rollup avisaba al construir.
 overrides:
   'danfojs>@tensorflow/tfjs': ^4.22.0
-  'danfojs>mathjs': ^11.12.0
+  'danfojs>mathjs': ^12.4.3
+# face-api lee los resultados de cada detección con dataSync()/arraySync() (el NMS de SSD MobileNet hacía un
+# arraySync() por cada pareja de cajas). Con WebGPU cada lectura síncrona detiene la GPU y se hace copiando a
+# canvas: la página de FACE-API iba muy lenta. El parche cambia su código fuente (src/) para usar data()/array();
+# la app compila face-api desde ese código (alias en vite.config.ts), no usa dist/. Las detecciones no cambian.
+# Al actualizar face-api hay que rehacer el parche.
+patchedDependencies:
+  '@vladmandic/face-api@1.7.15': patches/@vladmandic__face-api@1.7.15.patch

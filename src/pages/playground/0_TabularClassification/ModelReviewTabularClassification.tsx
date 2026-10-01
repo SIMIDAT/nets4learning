@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Button, Card, Col, Container, Form, ProgressBar, Row } from "react-bootstrap"
@@ -9,16 +9,17 @@ import alertHelper from "@utils/alertHelper"
 import type I_MODEL_TABULAR_CLASSIFICATION from "./models/_model"
 import type { TabularInstance_t } from "./models/_model"
 import { VERBOSE } from "@/CONSTANTS"
+import { UPLOAD } from "@/TASKS"
 import { MAP_TC_CLASSES } from "@pages/playground/0_TabularClassification/models"
 import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
-import ModelReviewTabularClassificationDatasetTable from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDatasetTable"
-import ModelReviewTabularClassificationDatasetInfo from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDatasetInfo"
+import ModelReviewTabularClassificationDataset from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDataset"
 import ModelReviewTabularClassificationPredict from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredict"
 import ModelReviewTabularClassificationPredictForm from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm"
 import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
 import type { BasicPrediction_t, DatasetProcessed_t } from "@core/types"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
+import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
 import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
 type Props = {
   dataset: string
@@ -44,6 +45,13 @@ export default function ModelReviewTabularClassification(props: Props) {
   const [vectorToPredict, setVectorToPredict] = useState<number[]>([])
 
   const [prediction, setPrediction] = useState<BasicPrediction_t>({ labels: [], data: [] })
+  // Clase real de lo clasificado, si era un ejemplo o una fila del conjunto de datos sin cambios
+  const [predictionActual, setPredictionActual] = useState<number | null>(null)
+
+  // Conjunto de datos del modelo: sus filas se pueden copiar al formulario
+  const [datasetProcessed, setDatasetProcessed] = useState<DatasetProcessed_t | null>(null)
+  // Ejemplo (valores negativos: -1 el primero) o fila del conjunto de datos elegida en el selector
+  const [selectedInstance, setSelectedInstance] = useState<number | null>(null)
 
   // === Explicabilidad (SHAP) ===
   // Filas del dataset (codificadas, sin escalar: el mismo espacio que recibe el modelo) y la
@@ -107,6 +115,7 @@ export default function ModelReviewTabularClassification(props: Props) {
         )
         setVectorToPredict(_applyEncoders)
         backgroundPool_ref.current = dataframeRowsToNumbers(_datasets[0].data_processed.dataframe_X.values)
+        setDatasetProcessed(_datasets[0])
         setExplainMeta({
           features: _iModelInstance.FORM.map((field) => formatFeatureName(field.name)),
           classes : _iModelInstance.CLASSES,
@@ -143,20 +152,15 @@ export default function ModelReviewTabularClassification(props: Props) {
 
     try {
       const parse_vectorToPredict = vectorToPredict.map((item) => parseFloat(item.toString()))
-      const tensor = tfjs.tensor2d(parse_vectorToPredict, [1, parse_vectorToPredict.length])
-      // FIX
-      // TypeScript error
-      const model_prediction = model.predict(tensor) as tfjs.Tensor
-      const model_prediction_data = model_prediction.dataSync()
-      const _prediction: BasicPrediction_t = {
-        labels: iModelInstance.CLASSES,
-        data  : Array.from(model_prediction_data).map((item) => Number(item.toFixed(4))),
-      }
+      const model_prediction = tfjs.tidy(() => model.predict(tfjs.tensor2d(parse_vectorToPredict, [1, parse_vectorToPredict.length])) as tfjs.Tensor)
+      // Lectura asíncrona: con WebGPU las síncronas detienen la GPU
+      const probabilities = Array.from(await model_prediction.data<'float32'>())
+      model_prediction.dispose()
       predictedVector_ref.current = parse_vectorToPredict
       predictedDisplay_ref.current = iModelInstance.DATA_DEFAULT_KEYS.map((key) => dataToPredict[key])
-      const probabilities = Array.from(model_prediction_data)
       setPredictedClassIndex(probabilities.indexOf(Math.max(...probabilities)))
-      setPrediction(_prediction)
+      setPredictionActual(instanceMatches && selectedInstance !== null ? actualClassOf(selectedInstance) : null)
+      setPrediction({ labels: iModelInstance.CLASSES, data: probabilities })
     } catch (error) {
       console.error(error)
       await alertHelper.alertError(t("error.prediction"))
@@ -165,25 +169,63 @@ export default function ModelReviewTabularClassification(props: Props) {
     setIsButtonToPredictDisabled(false)
   }
 
-  const setExample = (example: TabularInstance_t) => {
-    setDataToPredict(example)
+  // region SELECTOR DE INSTANCIAS: ejemplos de cada clase y filas del conjunto de datos
+  const targetColumn = datasetProcessed?.data_processed?.column_name_target
+
+  /** Valores de un ejemplo (valor negativo) o de una fila del conjunto de datos */
+  const instanceFor = (value: number): TabularInstance_t | null => {
+    if (iModelInstance === null) return null
+    if (value < 0) return iModelInstance.LIST_EXAMPLES[-value - 1] ?? null
+    const original = datasetProcessed?.dataframe_original
+    if (!original) return null
+    const row = original.values[value] as Array<string | number> | undefined
+    if (row === undefined) return null
+    return Object.fromEntries(iModelInstance.DATA_DEFAULT_KEYS.map((key) => [key, row[original.columns.indexOf(key)]]))
   }
 
-  const handleChange_Example = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const example = iModelInstance?.LIST_EXAMPLES[parseInt(e.target.value)]
-    if (example) setExample(example)
+  /** Clase real (posición en CLASSES) de un ejemplo o una fila; null si no se sabe */
+  const actualClassOf = (value: number): number | null => {
+    if (iModelInstance === null) return null
+    const target = value < 0
+      ? iModelInstance.LIST_EXAMPLES_RESULTS[-value - 1]
+      : targetColumn ? datasetProcessed?.dataframe_original[targetColumn].values[value] : undefined
+    const index = target === undefined ? -1 : iModelInstance.CLASS_INDEX(target)
+    return index >= 0 ? index : null
   }
 
-  // Ejemplo que coincide con los datos del formulario; -1 si no es ninguno (datos por defecto o editados a mano).
-  // Así el selector nunca anuncia un ejemplo distinto del que se va a predecir, y se puede volver a elegir.
-  const exampleIndex = iModelInstance?.LIST_EXAMPLES.findIndex((example) =>
-    iModelInstance.DATA_DEFAULT_KEYS.every((key) => String(example[key]) === String(dataToPredict[key]))
-  ) ?? -1
+  // Primero los ejemplos de cada clase y después todas las filas (puede haber miles: el desplegable solo pinta las que se ven)
+  const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => {
+    if (iModelInstance === null) return []
+    const classText = (target: unknown) => {
+      const classIndex = iModelInstance.CLASS_INDEX(target)
+      return classIndex >= 0 ? t(iModelInstance.CLASSES[classIndex]) : String(target)
+    }
+    const examples = iModelInstance.LIST_EXAMPLES.map((_example, index) => ({
+      value: -(index + 1),
+      label: `★ ${t("example-i", { i: classText(iModelInstance.LIST_EXAMPLES_RESULTS[index]) })}`,
+    }))
+    const targets = targetColumn ? datasetProcessed?.dataframe_original[targetColumn].values as unknown[] : []
+    const rows = (targets ?? []).map((target, index) => ({ value: index, label: `#${index} · ${classText(target)}` }))
+    return [...examples, ...rows]
+  }, [iModelInstance, datasetProcessed, targetColumn, t])
+
+  // El selector solo muestra lo elegido mientras el formulario no se cambie: si no, ya no es ese ejemplo ni esa fila
+  const selectedValues = selectedInstance === null ? null : instanceFor(selectedInstance)
+  const instanceMatches = selectedValues !== null && iModelInstance !== null &&
+    iModelInstance.DATA_DEFAULT_KEYS.every((key) => String(selectedValues[key]) === String(dataToPredict[key]))
+
+  const handleChange_Instance = (value: number) => {
+    const values = instanceFor(value)
+    if (values === null) return
+    setSelectedInstance(value)
+    setDataToPredict(values)
+  }
+  // endregion
 
   if (VERBOSE) console.debug("render ModelReviewTabularClassification")
   return (
     <>
-      <Container>
+      <Container className={'n4l-container-wide'}>
         <Row className={"mt-2"}>
           <Col xl={12}>
             <div className="d-flex justify-content-between">
@@ -195,7 +237,7 @@ export default function ModelReviewTabularClassification(props: Props) {
         </Row>
       </Container>
 
-      <Container id={"ModelReviewTabularClassification"} data-testid={"Test-ModelReviewTabularClassification"}>
+      <Container className={'n4l-container-wide'} id={"ModelReviewTabularClassification"} data-testid={"Test-ModelReviewTabularClassification"}>
         <Row>
           <Col>
             {isLoading && (
@@ -227,39 +269,32 @@ export default function ModelReviewTabularClassification(props: Props) {
           </Col>
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
-            <ModelReviewTabularClassificationDatasetTable
-              iModelInstance={iModelInstance}
-            />
-
-            <ModelReviewTabularClassificationDatasetInfo
-              dataset={dataset}
-              iModelInstance={iModelInstance}
-            />
+            <ModelReviewTabularClassificationDataset iModelInstance={iModelInstance} />
 
             <Card className={"mt-3"}>
               <Card.Header className={"d-flex align-items-center justify-content-between"}>
                 <h3>
                   <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-features"} />
                 </h3>
-                <div className="d-flex">
-                  <Form.Group controlId={"plot"}>
-                    <Form.Select aria-label={"example"} size={"sm"} value={exampleIndex} onChange={(e) => handleChange_Example(e)}>
-                      {exampleIndex === -1 && (
-                        <option value={-1} disabled>{t("example-custom")}</option>
-                      )}
-                      {iModelInstance.LIST_EXAMPLES.map((_value, index) => {
-                        const LIST = iModelInstance.LIST_EXAMPLES_RESULTS
-                        return (
-                          <option key={"option_" + index} value={index}>
-                            <Trans i18nKey={"example-i"} values={{ i: LIST[index] }} />
-                          </option>
-                        )
-                      })}
-                    </Form.Select>
-                  </Form.Group>
+                <div style={{ minWidth: "16rem" }}>
+                  <N4LVirtualSelect options={instanceOptions}
+                    value={instanceMatches ? selectedInstance : null}
+                    onChange={handleChange_Instance}
+                    size={"sm"}
+                    placeholder={t("example-custom")}
+                    searchPlaceholder={t("pages.playground.generator.dynamic-form-dataset.search-entity")}
+                    noResultsText={t("pages.playground.generator.dynamic-form-dataset.no-entity")}
+                    countText={(shown, total) => t("pages.playground.generator.dynamic-form-dataset.entity-count", { shown, total })} />
                 </div>
               </Card.Header>
               <Card.Body>
+                {/* Qué valores pide el formulario (antes iba en una tarjeta aparte, "Descripción de la entrada de datos") */}
+                {dataset === UPLOAD
+                  ? <p>
+                    <Trans i18nKey={"datasets-models.0-tabular-classification.upload.html-example.text"} /><br />
+                    <b><Trans i18nKey={"datasets-models.0-tabular-classification.upload.html-example.items"} /></b>
+                  </p>
+                  : iModelInstance.HTML_EXAMPLE()}
                 <Form onSubmit={handleSubmit_PredictVector}>
                   <ModelReviewTabularClassificationPredictForm
                     iModelInstance={iModelInstance}
@@ -295,7 +330,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                     <Col>
                       <div className="d-grid gap-2">
                         <Button variant={"primary"} size={"lg"} type={"submit"} disabled={isButtonToPredictDisabled}>
-                          <Trans i18nKey={"pages.playground.form.button-check-result"} />
+                          <Trans i18nKey={"pages.playground.generator.dynamic-form-dataset.classify-button"} />
                         </Button>
                       </div>
                     </Col>
@@ -304,7 +339,7 @@ export default function ModelReviewTabularClassification(props: Props) {
               </Card.Body>
             </Card>
 
-            <ModelReviewTabularClassificationPredict prediction={prediction} />
+            <ModelReviewTabularClassificationPredict prediction={prediction} actualIndex={predictionActual} />
 
             <TabularShapPanel
               features={explainMeta.features}

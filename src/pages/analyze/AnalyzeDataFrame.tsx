@@ -51,7 +51,7 @@ export default function AnalyzeDataFrame() {
   return (
     <>
       <main className={"mb-3"} data-title={"DataFrame"}>
-        <Container>
+        <Container className={'n4l-container-wide'}>
           <Row className={"mt-3"}>
             <Col>
               <h1>

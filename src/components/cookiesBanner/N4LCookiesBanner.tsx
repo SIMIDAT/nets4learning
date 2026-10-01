@@ -31,7 +31,7 @@ export default function N4LCookiesBanner() {
     <section className={'n4l-cookies-banner fixed-bottom bg-body-tertiary border-top shadow py-3'}
       aria-label={t('cookies-policies.title')}
       data-testid={'Test-CookiesBanner'}>
-      <Container className={'d-flex flex-column flex-md-row align-items-md-center gap-3'}>
+      <Container className={'d-flex flex-column flex-md-row align-items-md-center gap-3 n4l-container-wide'}>
         <p className={'mb-0 flex-grow-1'}>
           <Trans i18nKey={'cookies-policies.banner'} />{' '}
           <Link to={'/terms-and-conditions'}><Trans i18nKey={'cookies-policies.more-info'} /></Link>

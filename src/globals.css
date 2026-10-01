@@ -37,6 +37,115 @@ body {
   padding: 0 10px;
 }
 
+/*
+ * Contenedor de las páginas de trabajo (entrenadores, revisión de modelos, menús, datos) y de la cabecera y el pie:
+ * en escritorio aprovecha la pantalla (el .container de Bootstrap se queda en 1140/1320 px) con un margen de 1,5 rem a
+ * cada lado, sin pasar de 1760 px para que formularios y tablas no se estiren de más. Las páginas de lectura (inicio,
+ * manual, glosario…) siguen con el ancho de Bootstrap: con líneas más largas se leen peor.
+ */
+@media (min-width: 1200px) {
+  .n4l-container-wide {
+    max-width: min(calc(100% - 3rem), 1760px);
+  }
+}
+
+/* Entrenadores en escritorio: índice en una columna de ancho fijo y el contenido con todo lo demás */
+@media (min-width: 1200px) {
+  .n4l-section-layout {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+}
+
+/* Imágenes de ejemplo de la clasificación de imágenes: cada una es un botón que la clasifica */
+.n4l-example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: .5rem;
+}
+
+.n4l-example-grid-small {
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+}
+
+.n4l-example-image {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.n4l-example-image:hover:not(:disabled) {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb), .25);
+}
+
+.n4l-example-image:disabled {
+  cursor: progress;
+  opacity: .6;
+}
+
+/* Índice de las secciones en los entrenadores (escritorio): fijo en su columna mientras se baja por la página */
+.n4l-section-nav {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+.n4l-section-nav-title {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: .5rem;
+}
+
+.n4l-section-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid var(--bs-border-color);
+}
+
+.n4l-section-nav-link {
+  display: block;
+  margin-left: -2px;
+  padding: .3rem .75rem;
+  border-left: 2px solid transparent;
+  color: var(--bs-secondary-color);
+  font-size: .9rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.n4l-section-nav-link:hover {
+  color: var(--bs-body-color);
+  border-left-color: var(--bs-secondary-color);
+}
+
+.n4l-section-nav-link.active {
+  color: var(--bs-primary);
+  border-left-color: var(--bs-primary);
+  font-weight: 600;
+}
+
+/* Al saltar desde el índice, el título no queda pegado al borde; el foco del salto con ratón no se dibuja */
+.n4l-hr-row {
+  scroll-margin-top: 1rem;
+}
+
+.n4l-hr-row:focus:not(:focus-visible) {
+  outline: none;
+}
+
 :root {
   --bc-drag-and-drop: #e5e5e5
 }
@@ -68,11 +177,87 @@ body {
   line-height: 1.2;
 }
 
-/* Logos del pie: en tema oscuro llevan fondo claro, porque SIMIDAT y DaSCI son oscuros sobre transparente */
-html[data-theme="dark"] .n4l-footer-logo {
-  background-color: #f8f9fa;
+/* Pie de página (N4LFooter) */
+.n4l-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: .75rem;
+}
+
+.n4l-footer-heading {
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: .75rem;
+}
+
+.n4l-footer-label {
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.n4l-footer dd {
+  margin-bottom: .5rem;
+}
+
+.n4l-footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.n4l-footer-links li + li {
+  margin-top: .35rem;
+}
+
+/* Logos de las instituciones: todos a la misma altura, en una fila centrada bajo el resto */
+.n4l-footer-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 2.5rem;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+.n4l-footer-logo-link {
+  display: block;
+  padding: .5rem .75rem;
   border-radius: var(--bs-border-radius);
-  padding: 0.25rem 0.5rem;
+}
+
+.n4l-footer-logo {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+@media (max-width: 575.98px) {
+  .n4l-footer-logos {
+    gap: .75rem 1.5rem;
+  }
+
+  .n4l-footer-logo {
+    height: 32px;
+  }
+}
+
+/* En tema oscuro, SIMIDAT y DaSCI (oscuros sobre transparente) no se verían: todos sobre el mismo fondo claro */
+html[data-theme="dark"] .n4l-footer-logo-link {
+  background-color: #f8f9fa;
+}
+
+/* El gris de link-secondary apenas contrasta con el fondo oscuro del pie: se usa uno más claro (gray-500) */
+html[data-theme="dark"] .n4l-footer {
+  --bs-secondary-rgb: 173, 181, 189;
 }
 
 /* Recuadro de cada gráfica de las curvas de entrenamiento (N4LTrainingCurves) */

@@ -7,6 +7,7 @@ import { VERBOSE } from '@/CONSTANTS'
 import { bestModelIndex, formatEpochs } from '@core/history/trainingSummary'
 import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
 import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
+import N4LConfusionMatrix from '@components/neural-network/N4LConfusionMatrix'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
@@ -147,7 +148,8 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
             </Row>
             <Row>
               <Col>
-                <N4LTrainingCurves histories={histories} />
+                <N4LTrainingCurves histories={histories}
+                  renderDetails={(index) => GeneratedModels[index].evaluation !== undefined && <N4LConfusionMatrix {...GeneratedModels[index].evaluation} />} />
               </Col>
             </Row>
           </>}

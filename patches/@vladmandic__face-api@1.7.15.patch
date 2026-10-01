@@ -1,0 +1,102 @@
+diff --git a/src/ageGenderNet/AgeGenderNet.ts b/src/ageGenderNet/AgeGenderNet.ts
+index 6a7370c7830976099c840fdf3426bf897fee8802..b0537079f51c33b15b3b1f7349a9b641ef7858de 100644
+--- a/src/ageGenderNet/AgeGenderNet.ts
++++ b/src/ageGenderNet/AgeGenderNet.ts
+@@ -63,8 +63,7 @@ export class AgeGenderNet extends NeuralNetwork<NetParams> {
+ 
+     const predictionsByBatch = await Promise.all(
+       ageAndGenderTensors.map(async ({ ageTensor, genderTensor }) => {
+-        const age = (ageTensor.dataSync())[0];
+-        const probMale = (genderTensor.dataSync())[0];
++        const [age, probMale] = (await Promise.all([ageTensor.data(), genderTensor.data()])).map((data) => data[0]);
+         const isMale = probMale > 0.5;
+         const gender = isMale ? Gender.MALE : Gender.FEMALE;
+         const genderProbability = isMale ? probMale : (1 - probMale);
+diff --git a/src/faceExpressionNet/FaceExpressionNet.ts b/src/faceExpressionNet/FaceExpressionNet.ts
+index 44d7ab51b6c2d2a9e1659fc1eaef9ec1aa2ccd74..cd44039fc38e31d66a2408bafb4b28f226a124a4 100644
+--- a/src/faceExpressionNet/FaceExpressionNet.ts
++++ b/src/faceExpressionNet/FaceExpressionNet.ts
+@@ -23,7 +23,7 @@ export class FaceExpressionNet extends FaceProcessor<FaceFeatureExtractorParams>
+     const netInput = await toNetInput(input);
+     const out = await this.forwardInput(netInput);
+     const probabilitesByBatch = await Promise.all(tf.unstack(out).map(async (t) => {
+-      const data = t.dataSync();
++      const data = await t.data();
+       t.dispose();
+       return data;
+     }));
+diff --git a/src/faceLandmarkNet/FaceLandmark68NetBase.ts b/src/faceLandmarkNet/FaceLandmark68NetBase.ts
+index d670b7aaa3edbcf50e654a5d413d092df67c46a2..fd2ac67d9038855e10c43411831b1697830d480a 100644
+--- a/src/faceLandmarkNet/FaceLandmark68NetBase.ts
++++ b/src/faceLandmarkNet/FaceLandmark68NetBase.ts
+@@ -72,7 +72,7 @@ export abstract class FaceLandmark68NetBase<
+ 
+     const landmarksForBatch = await Promise.all(landmarkTensors.map(
+       async (landmarkTensor, batchIdx) => {
+-        const landmarksArray = Array.from(landmarkTensor.dataSync());
++        const landmarksArray = Array.from(await landmarkTensor.data());
+         const xCoords = landmarksArray.filter((_, i) => isEven(i));
+         const yCoords = landmarksArray.filter((_, i) => !isEven(i));
+ 
+diff --git a/src/ssdMobilenetv1/SsdMobilenetv1.ts b/src/ssdMobilenetv1/SsdMobilenetv1.ts
+index 6bade3a9fcab8cab875cbb9ed044466d083b49ad..8d9cdf4570267d376079dcacd025a81e9bc1ecad 100644
+--- a/src/ssdMobilenetv1/SsdMobilenetv1.ts
++++ b/src/ssdMobilenetv1/SsdMobilenetv1.ts
+@@ -44,14 +44,16 @@ export class SsdMobilenetv1 extends NeuralNetwork<NetParams> {
+       _boxes[i].dispose();
+       _scores[i].dispose();
+     }
+-    const scoresData = Array.from(scores.dataSync());
++    const [scoresData, boxesData] = await Promise.all([
++      scores.data().then((data) => Array.from(data)),
++      boxes.array(),
++    ]);
+     const iouThreshold = 0.5;
+-    const indices = nonMaxSuppression(boxes, scoresData as number[], maxResults, iouThreshold, minConfidence);
++    const indices = nonMaxSuppression(boxesData, scoresData, maxResults, iouThreshold, minConfidence);
+     const reshapedDims = netInput.getReshapedInputDimensions(0);
+     const inputSize = netInput.inputSize as number;
+     const padX = inputSize / reshapedDims.width;
+     const padY = inputSize / reshapedDims.height;
+-    const boxesData = boxes.arraySync();
+     const results = indices
+       .map((idx) => {
+         const [top, bottom] = [
+diff --git a/src/ssdMobilenetv1/nonMaxSuppression.ts b/src/ssdMobilenetv1/nonMaxSuppression.ts
+index 8c3813dd16e90e5f2492cbfcf708d20ea9475fea..02d9e59817771015c049f9f612ffc8f6cfa6f4e8 100644
+--- a/src/ssdMobilenetv1/nonMaxSuppression.ts
++++ b/src/ssdMobilenetv1/nonMaxSuppression.ts
+@@ -1,7 +1,4 @@
+-import * as tf from '../../dist/tfjs.esm';
+-
+-function IOU(boxes: tf.Tensor2D, i: number, j: number) {
+-  const boxesData = boxes.arraySync();
++function IOU(boxesData: number[][], i: number, j: number) {
+   const yminI = Math.min(boxesData[i][0], boxesData[i][2]);
+   const xminI = Math.min(boxesData[i][1], boxesData[i][3]);
+   const ymaxI = Math.max(boxesData[i][0], boxesData[i][2]);
+@@ -22,13 +19,13 @@ function IOU(boxes: tf.Tensor2D, i: number, j: number) {
+ }
+ 
+ export function nonMaxSuppression(
+-  boxes: tf.Tensor2D,
++  boxesData: number[][],
+   scores: number[],
+   maxOutputSize: number,
+   iouThreshold: number,
+   scoreThreshold: number,
+ ): number[] {
+-  const numBoxes = boxes.shape[0];
++  const numBoxes = boxesData.length;
+   const outputSize = Math.min(maxOutputSize, numBoxes);
+ 
+   const candidates = scores
+@@ -43,7 +40,7 @@ export function nonMaxSuppression(
+     if (selected.length >= outputSize) return;
+     const originalScore = c.score;
+     for (let j = selected.length - 1; j >= 0; --j) {
+-      const iou = IOU(boxes, c.boxIndex, selected[j]);
++      const iou = IOU(boxesData, c.boxIndex, selected[j]);
+       if (iou === 0.0) continue;
+       c.score *= suppressFunc(iou);
+       if (c.score <= scoreThreshold) break;

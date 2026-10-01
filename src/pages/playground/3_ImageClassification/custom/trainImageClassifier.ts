@@ -4,8 +4,9 @@ import { createOptimizer, createLoss, createMetricsList } from '@core/nn-utils/A
 import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 import { TAB_03_IMAGE_CLASSIFICATION } from '@/CONSTANTS'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
 import type { Layer_t } from '@/types/types'
-import { SpriteImageDataset, type SpriteDatasetConfig_t } from '../models/SpriteImageDataset'
+import { loadSpriteDataset, type SpriteImageDataset, type SpriteDatasetConfig_t } from '../models/SpriteImageDataset'
 
 export type ParamsTrainImage_t = {
   learningRate : number,
@@ -45,7 +46,11 @@ async function showExamples(data: SpriteImageDataset) {
   }
 }
 
-async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t) {
+/**
+ * Entrena y devuelve, además del historial, la clase real y la predicha de cada imagen de validación (las mismas con las
+ * que se calcula val_loss): son la matriz de confusión de la tabla de modelos.
+ */
+async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t): Promise<{ history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
   const fitCallbacks = tfvis.show.fitCallbacks(
     { name: 'Training: Train Model', tab: TAB_03_IMAGE_CLASSIFICATION },
     ['loss', 'val_loss', 'acc', 'val_acc'],
@@ -67,35 +72,43 @@ async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfE
       if (progress.shouldStop?.()) model.stopTraining = true
     },
   }
-  return await model.fit(trainXs, trainYs, {
-    batchSize     : BATCH_SIZE,
-    validationData: [testXs, testYs],
-    epochs        : numberOfEpoch,
-    shuffle       : true,
-    callbacks     : [fitCallbacks, progressCallbacks],
-  })
+  try {
+    const history = await model.fit(trainXs, trainYs, {
+      batchSize     : BATCH_SIZE,
+      validationData: [testXs, testYs],
+      epochs        : numberOfEpoch,
+      shuffle       : true,
+      callbacks     : [fitCallbacks, progressCallbacks],
+    })
+    const [labels, predictions] = tfjs.tidy((): [tfjs.Tensor, tfjs.Tensor] => [
+      testYs.argMax(-1),
+      (model.predict(testXs, { batchSize: BATCH_SIZE }) as tfjs.Tensor).argMax(-1),
+    ])
+    // Lecturas asíncronas: con WebGPU las síncronas detienen la GPU
+    const evaluation = { labels: Array.from(await labels.data<'int32'>()), predictions: Array.from(await predictions.data<'int32'>()) }
+    tfjs.dispose([labels, predictions])
+    return { history, evaluation }
+  } finally {
+    // Las imágenes ya no hacen falta: el modelo guarda sus pesos y el historial guarda números
+    tfjs.dispose([trainXs, trainYs, testXs, testYs])
+  }
 }
 
-function doPrediction(model: tfjs.Sequential, data: SpriteImageDataset, testDataSize = 500): [tfjs.Tensor1D, tfjs.Tensor1D] {
-  const testData = data.nextTestBatch(testDataSize)
-  const testXs = testData.xs.reshape([testDataSize, IMAGE_HEIGHT, IMAGE_WIDTH, 1])
-  const labels = testData.labels.argMax(-1) as tfjs.Tensor1D
-  const prediction = (model.predict(testXs) as tfjs.Tensor).argMax(-1) as tfjs.Tensor1D
-  testXs.dispose()
-  return [prediction, labels]
-}
-
-async function showEvaluation(model: tfjs.Sequential, data: SpriteImageDataset, classNames: string[]) {
-  const [preds, labels] = doPrediction(model, data)
-  const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds)
-  await tfvis.show.perClassAccuracy({ name: 'Evaluation: Accuracy', tab: TAB_03_IMAGE_CLASSIFICATION }, classAccuracy, classNames)
-  const confusionMatrix = await tfvis.metrics.confusionMatrix(labels, preds)
-  await tfvis.render.confusionMatrix({ name: 'Evaluation: Confusion Matrix', tab: TAB_03_IMAGE_CLASSIFICATION }, {
-    values    : confusionMatrix,
-    tickLabels: classNames,
-  })
-  labels.dispose()
-  preds.dispose()
+/** Precisión por clase y matriz de confusión en el visor, con las mismas imágenes de validación */
+async function showEvaluation({ labels, predictions }: ClassificationEvaluation_t, classNames: string[]) {
+  const labelsTensor = tfjs.tensor1d(labels, 'int32')
+  const predictionsTensor = tfjs.tensor1d(predictions, 'int32')
+  try {
+    const classAccuracy = await tfvis.metrics.perClassAccuracy(labelsTensor, predictionsTensor, classNames.length)
+    await tfvis.show.perClassAccuracy({ name: 'Evaluation: Accuracy', tab: TAB_03_IMAGE_CLASSIFICATION }, classAccuracy, classNames)
+    const confusionMatrix = await tfvis.metrics.confusionMatrix(labelsTensor, predictionsTensor, classNames.length)
+    await tfvis.render.confusionMatrix({ name: 'Evaluation: Confusion Matrix', tab: TAB_03_IMAGE_CLASSIFICATION }, {
+      values    : confusionMatrix,
+      tickLabels: classNames,
+    })
+  } finally {
+    tfjs.dispose([labelsTensor, predictionsTensor])
+  }
 }
 
 function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
@@ -149,21 +162,21 @@ function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLo
 
 /**
  * Entrena una red convolucional con un dataset de imágenes de 28x28 guardado como sprite (MNIST, KMNIST…)
- * y muestra en el visor ejemplos, el entrenamiento y la evaluación por clase.
+ * y muestra en el visor ejemplos, el entrenamiento y la evaluación por clase. Devuelve también la clase real y la
+ * predicha de cada imagen de validación.
  */
 export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, classNames: string[], params: ParamsTrainImage_t, progress: TrainProgress_t = {}) {
   const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
 
   tfvis.visor().open()
-  const data = new SpriteImageDataset(dataset)
-  await data.load()
+  const data = await loadSpriteDataset(dataset)
   await showExamples(data)
 
   const model = getModel(layers, idOptimizer, idLoss, idMetricsList, learningRate)
   await tfvis.show.modelSummary({ name: 'Model summary', tab: TAB_03_IMAGE_CLASSIFICATION }, model)
   tfvis.visor().setActiveTab(TAB_03_IMAGE_CLASSIFICATION)
 
-  const history = await train(model, data, numberEpochs, progress)
-  await showEvaluation(model, data, classNames)
-  return { model, history }
+  const { history, evaluation } = await train(model, data, numberEpochs, progress)
+  await showEvaluation(evaluation, classNames)
+  return { model, history, evaluation }
 }

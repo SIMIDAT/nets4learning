@@ -1,5 +1,6 @@
 import { Trans } from 'react-i18next'
 import { VERBOSE } from '@/CONSTANTS'
+import { sectionId } from './sectionId'
 
 type N4LDividerProps = {
   i18nKey: string
@@ -12,10 +13,11 @@ export default function N4LDivider({ i18nKey, steps }: N4LDividerProps) {
 
   if (VERBOSE) console.debug('render N4LDivider')
   return <>
-    <div className={'mt-3 mb-4 n4l-hr-row'}>
+    {/* tabIndex -1: el índice lateral lleva el foco aquí al saltar a la sección */}
+    <div className={'mt-3 mb-4 n4l-hr-row'} id={sectionId(i18nKey)} tabIndex={-1}>
       <p>
         <span className={'n4l-hr-title'}>
-          {step > 0 && `${step} · `}
+          {step > 0 && `${step}. `}
           <Trans i18nKey={i18nKey} />
         </span>
       </p>

@@ -294,7 +294,8 @@
     "model-not-valid": "このデータには使えないモデルです",
     "model-compile": "モデルをコンパイルできませんでした。詳細はコンソールを確認してください。",
     "option-not-valid": "無効なオプションです",
-    "prediction": "予測できませんでした"
+    "prediction": "予測できませんでした",
+    "load-dataset": "データセットを読み込めませんでした。"
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "警告：最初のレイヤーはタイプ {{value}} である必要があります",
@@ -340,7 +341,13 @@
     "analyze": "AED (探索的データ分析)",
     "theme": "テーマ",
     "theme-light": "ライト",
-    "theme-dark": "ダーク"
+    "theme-dark": "ダーク",
+    "backend": "バックエンド",
+    "backend-default": "既定",
+    "backend-unavailable": "利用不可",
+    "backend-software": "ソフトウェア・低速",
+    "backend-error": "{{backend}} に切り替えられませんでした",
+    "backend-error-fallback": "このブラウザでは使用できません。TensorFlow.js は引き続き {{backend}} を使用します。"
   },
   "footer": {
     "description-app": "深層学習モデルの設計と実行のためのウェブプラットフォーム。",
@@ -352,7 +359,9 @@
     "contribute": "貢献する",
     "documentation": "ドキュメント",
     "version": "バージョン",
-    "cookies": "Cookie の設定"
+    "cookies": "Cookie の設定",
+    "links": "リンク",
+    "institutions": "機関"
   },
   "drag-and-drop": {
     "label-files-one": "ファイル:",
@@ -1281,13 +1290,15 @@
           "sub-title": "最初に.jsonファイル、次に.binファイル"
         },
         "process-examples": {
-          "title": "サンプルを使用した処理"
+          "title": "サンプル画像",
+          "help": "画像をクリックすると分類します。",
+          "classify-example": "例 {{index}} を分類"
         },
         "process-draw": {
           "title": "描画"
         },
         "process-image": {
-          "title": "画像処理",
+          "title": "画像をアップロード",
           "sub-title": "-",
           "validate": "分類する"
         },
@@ -1295,6 +1306,10 @@
         "button-accept": "受け入れる",
         "modal": {
           "title": "予測"
+        },
+        "test-images": {
+          "load": "テスト画像を読み込む",
+          "loading": "画像を読み込み中…"
         }
       },
       "mnist": {
@@ -1778,12 +1793,17 @@
         "parameter-categorical": "カテゴリパラメータ",
         "data-to-check": "テストするデータ",
         "vector-to-check": "テストするベクトル",
-        "button-check-result": "予測"
+        "button-check-result": "予測",
+        "type-categorical": "カテゴリ · {{count}} 個の値",
+        "type-integer": "整数",
+        "type-decimal": "小数",
+        "range": "データ内: {{min}} – {{max}}"
       },
       "0-tabular-classification": {
         "general": {
           "model": "モデル",
           "description-input": "データエントリの説明",
+          "dataframe-processed-help": "カテゴリ値をそれぞれ数値に変換した同じデータです(LabelEncoder。対応は「属性」と「クラス」にあります)。モデルはこの形でデータを受け取ります。最後の列が予測すべきクラスです。",
           "description-features": "特徴量編集フォーム",
           "description-data": "フォームデータ",
           "description-vector": "データベクトル",
@@ -1867,9 +1887,9 @@
               "text-0": "モデルを正しく作成した場合、生成されたモデルのテーブルにエントリが追加されます。生成されたモデルをエクスポートしてローカルに保存できます。"
             },
             "details-prediction": {
-              "title": "予測",
+              "title": "分類",
               "text-0": "最終フォームでは、クラスを決定するために使用される主要な特徴量を選択できます。",
-              "text-1": "「結果を表示」ボタンを押すと、要素の入力特徴量から出力クラスの予測が取得されます。"
+              "text-1": "「分類する」ボタンを押すと、モデルは入力特徴量から例のクラスを予測し、各クラスの確率を表示します。"
             }
           }
         }
@@ -1989,8 +2009,8 @@
           "download": "ダウンロード"
         },
         "dynamic-form-dataset": {
-          "title": "予測",
-          "text-0-__column_name_target__": "予測する例の各入力特徴量の値を入力してください <b>{{column_name_target}}</b>",
+          "title": "分類",
+          "text-0-__column_name_target__": "分類したい例(<b>{{column_name_target}}</b>)の各入力特徴量の値を入力するか、上のセレクターでデータセットのエンティティを選んでください。",
           "select-option": "オプションを選択",
           "input-data": "テストするデータを入力",
           "input-vector": "テストするベクトルを入力",
@@ -1998,7 +2018,11 @@
           "test-input-data": "フォームデータ",
           "test-input-vector": "テストするベクトル",
           "selector-entity": "エンティティを選択",
-          "selector-model": "モデルを選択"
+          "search-entity": "番号またはクラスで検索…",
+          "entity-count": "{{total}} 件中 {{shown}} 件",
+          "no-entity": "検索に一致するものはありません",
+          "selector-model": "モデルを選択",
+          "classify-button": "分類する"
         },
         "list-models-generated": "生成されたモデルのリスト",
         "visor": {
@@ -2022,6 +2046,22 @@
           "line-chart": "折れ線グラフ"
         },
         "waiting-for-models": "予測するには、まずモデルを学習させてください。",
+        "classify": {
+          "waiting": "例を分類すると、ここに結果が表示されます。",
+          "predicted-class": "予測されたクラス",
+          "confidence": "確率 {{value}}",
+          "chart-title": "各クラスの確率",
+          "chart-title-output": "各クラスに対するネットワークの出力",
+          "chart-help": "強調表示されたバーがモデルの選んだクラス(最も確率の高いもの)です。モデルが迷っているときは、いくつかのバーが同じくらいの高さになります。",
+          "chart-help-output": "最後の層がソフトマックスを使っていないため、これらの値は確率ではありません。モデルは値が最も高いクラス(強調表示されたバー)を選びます。",
+          "axis-class": "クラス",
+          "axis-probability": "確率 (%)",
+          "axis-output": "出力",
+          "select-image": "データセットから画像を選択",
+          "actual-class": "実際のクラス: {{label}}",
+          "chart-title-top": "最も確率の高い {{count}} クラス",
+          "chart-help-top": "モデルはさらに多くのクラスを区別します。ここでは確率の高いクラスだけをその確率とともに表示しています。"
+        },
         "waiting-for-prediction": "予測すると、ここに結果が表示されます。",
         "training": {
           "epoch": "学習中… エポック {{epoch}} / {{total}}",
@@ -2121,7 +2161,8 @@
           "multiple-regression": "重回帰"
         },
         "dataframe": {
-          "title": "処理済みデータフレーム"
+          "title": "処理済みデータフレーム",
+          "help": "カテゴリ値をそれぞれ数値に変換した同じデータです(LabelEncoder)。モデルに入る前に属性はスケーリングされます。<code>{{target}}</code> 列が予測すべき値です。"
         },
         "selector-instance": {
           "option": "インスタンスセレクター"
@@ -2146,7 +2187,11 @@
           "button-submit": "予測",
           "list-models-generated": "生成されたモデルのリスト",
           "list-models": "生成されたモデルのリスト",
-          "list-instances": "インスタンスのリスト"
+          "list-instances": "インスタンスのリスト",
+          "predicted-value": "{{target}} の予測値",
+          "actual-value": "実際の値: {{value}}",
+          "error": "誤差: {{value}} ({{percent}})",
+          "input-details": "モデルへの入力(各段階)"
         },
         "model-selector": {
           "title": "モデルセレクター",
@@ -2266,7 +2311,7 @@
           "title": "ステップ 6: 学習とモデル一覧"
         },
         "prediction": {
-          "title": "ステップ 7: 予測"
+          "title": "ステップ 7: 分類"
         }
       },
       "app": {
@@ -2698,6 +2743,8 @@
     "generated-models": "生成されたモデル",
     "predict": "予測",
     "classify": "分類",
+    "explainability": "説明可能性",
+    "on-this-page": "このページの内容",
     "tasks": "タスク",
     "00-tabular-classification": "表形式データの分類",
     "tutorial-00-tabular-classification": "表形式データ分類のモデルを学習",

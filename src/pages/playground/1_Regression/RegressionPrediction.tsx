@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Button, Card, Col, Row, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 
-import { DEFAULT_SELECTOR_INSTANCE, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_MODEL_INDEX, VERBOSE } from '@/CONSTANTS'
+import { DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_MODEL_INDEX, VERBOSE } from '@/CONSTANTS'
 import N4LSummary from '@components/summary/N4LSummary'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
+import N4LDivider from '@components/divider/N4LDivider'
+import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 import { useRegressionContext } from '@context/useRegressionContext'
 import RegressionPredictionForm from '@pages/playground/1_Regression/RegressionPredictionForm'
 import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionPredictionInfo'
@@ -13,8 +15,17 @@ import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from '@core/explainability/shapSampling'
 
-export default function RegressionPrediction() {
+type RegressionPredictionProps = {
+  /** Secciones de la página (numeran el separador de la explicabilidad) */
+  steps?: string[]
+}
+
+// Valor de la variable objetivo para la lista de instancias: sin decimales de más
+const formatTarget = (value: unknown) => (typeof value === 'number' && !Number.isInteger(value) ? String(Number(value.toFixed(4))) : String(value))
+
+export default function RegressionPrediction({ steps }: RegressionPredictionProps) {
   const prefix = 'pages.playground.1-regression.predict.'
+  const prefixForm = 'pages.playground.generator.dynamic-form-dataset.'
   const { t } = useTranslation()
 
   const {
@@ -26,21 +37,19 @@ export default function RegressionPrediction() {
   } = useRegressionContext()
 
 
-  /**
-   * @type {ReturnType<typeof useState<string|number>>}
-   */
-  const [indexInstance, setIndexInstance] = useState<string | number>(DEFAULT_SELECTOR_INSTANCE)
+  // Instancia del conjunto de datos copiada al formulario (null hasta elegir una)
+  const [indexInstance, setIndexInstance] = useState<number | null>(null)
 
   const handleSubmit_Predict = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const vector = prediction.input_3_dataframe_scaling.values[0] as number[]
-    const tensor = tfjs.tensor2d([vector])
     const _indexModel: number = listModels.index as number
-    const model = (/**@type {tfjs.LayersModel}*/(listModels.data[_indexModel].model))
-    const predictTensor = (/**@type {tfjs.Tensor}*/(model.predict(tensor)) as tfjs.Tensor)
-
-    const result = Array.from(predictTensor.dataSync())
+    const model = listModels.data[_indexModel].model
+    const predictTensor = tfjs.tidy(() => model.predict(tfjs.tensor2d([vector])) as tfjs.Tensor)
+    // Lectura asíncrona: con WebGPU las síncronas detienen la GPU
+    const result = Array.from(await predictTensor.data<'float32'>())
+    predictTensor.dispose()
 
     setPrediction((prevState) => ({
       ...prevState,
@@ -56,9 +65,7 @@ export default function RegressionPrediction() {
     }))
   }
 
-  const handleChange_Instance_Index = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault()
-    const _indexInstance: number = parseInt(e.target.value)
+  const handleChange_Instance_Index = (_indexInstance: number) => {
     setIndexInstance(_indexInstance)
     const _indexModel: number = listModels.index as number
     const dataset_processed = listModels.data[_indexModel].dataset_processed
@@ -80,6 +87,16 @@ export default function RegressionPrediction() {
     && listModels.index >= 0
 
   const _indexModel: number = listModels.index as number
+  const dataProcessed = showPrediction ? listModels.data[_indexModel]?.dataset_processed?.data_processed : undefined
+
+  // Una opción por instancia: su número y el valor real de la variable objetivo. Puede haber miles: el desplegable
+  // solo pinta las que se ven
+  const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => {
+    if (dataProcessed === undefined) return []
+    const targets = dataProcessed.dataframe_y.values as unknown[]
+    return targets.map((target, index) => ({ value: index, label: `#${index} · ${formatTarget(target)}` }))
+  }, [dataProcessed])
+
   // Explicabilidad: el modelo recibe la instancia ESCALADA (input_3_dataframe_scaling), así que el
   // background sale de la X escalada del dataset del modelo seleccionado.
   const explainModel = listModels.data[_indexModel]?.model ?? null
@@ -90,31 +107,21 @@ export default function RegressionPrediction() {
     <Card>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h2><Trans i18nKey={prefix + 'title'} /></h2>
-        <div className="d-flex">
+        <div className="d-flex flex-wrap gap-2">
           <div>
-            <Form.Group controlId={'instance-selector'}>
-              <Form.Select aria-label={'instance-selector'}
-                size={'sm'}
-                defaultValue={indexInstance}
+            <div style={{ minWidth: '16rem' }}>
+              <N4LVirtualSelect options={instanceOptions}
+                value={indexInstance}
+                onChange={handleChange_Instance_Index}
                 disabled={!showPrediction}
-                onChange={(e) => handleChange_Instance_Index(e)}>
-                <option disabled={true} value={DEFAULT_SELECTOR_INSTANCE}><Trans i18nKey={prefix + 'list-instances'} /></option>
-                <>
-                  {showPrediction && <>
-                    {Array(listModels.data[_indexModel].dataset_processed?.data_processed?.dataframe_X.values.length)
-                      .fill(0)
-                      .map((_value, index) => {
-                        const index_format = index.toString().padStart(3, '0')
-                        return <option key={index} value={index}>
-                          <Trans i18nKey={prefix + 'instance.__index__'} values={{ index: index_format }} />
-                        </option>
-                      })}
-                  </>}
-                </>
-              </Form.Select>
-            </Form.Group>
+                size={'sm'}
+                placeholder={t(prefix + 'list-instances')}
+                searchPlaceholder={t(prefixForm + 'search-entity')}
+                noResultsText={t(prefixForm + 'no-entity')}
+                countText={(shown, total) => t(prefixForm + 'entity-count', { shown, total })} />
+            </div>
           </div>
-          <div className={'ms-3'}>
+          <div>
             <Form.Group controlId={'model-selector'}>
               <Form.Select
                 aria-label={'model-selector'}
@@ -190,25 +197,25 @@ export default function RegressionPrediction() {
 
             <hr />
 
-            <RegressionPredictionInfo prediction={prediction} />
+            <RegressionPredictionInfo prediction={prediction} targetName={listModels.data[_indexModel]?.params_features.Y_target} />
 
           </Form>
         </>}
       </Card.Body>
     </Card>
 
-    {showPrediction && (
-      <TabularShapPanel
-        features={explainDataProcessed?.X.columns ?? []}
-        inputKey={prediction.input_3_dataframe_scaling}
-        getModel={() => explainModel}
-        getInstance={() => (prediction.input_3_dataframe_scaling.values[0] as number[] | undefined) ?? null}
-        getPool={() => dataframeRowsToNumbers(explainDataProcessed?.X.values)}
-        getPoolDisplay={() => dataframeRowsWithDisplay(explainDataProcessed?.X.values, explainDataProcessed?.dataframe_X?.values).display}
-        targetName={explainDataProcessed?.column_name_target}
-        getInstanceDisplay={() => (prediction.input_2_dataframe_encoding.values[0] as Array<string | number> | undefined) ?? null}
-        valuesAreScaled
-      />
-    )}
+    <N4LDivider i18nKey={'hr.explainability'} steps={steps} />
+    <TabularShapPanel
+      features={explainDataProcessed?.X.columns ?? []}
+      inputKey={prediction.input_3_dataframe_scaling}
+      getModel={() => explainModel}
+      getInstance={() => (prediction.input_3_dataframe_scaling.values[0] as number[] | undefined) ?? null}
+      getPool={() => dataframeRowsToNumbers(explainDataProcessed?.X.values)}
+      getPoolDisplay={() => dataframeRowsWithDisplay(explainDataProcessed?.X.values, explainDataProcessed?.dataframe_X?.values).display}
+      targetName={explainDataProcessed?.column_name_target}
+      getInstanceDisplay={() => (prediction.input_2_dataframe_encoding.values[0] as Array<string | number> | undefined) ?? null}
+      valuesAreScaled
+      modelReady={showPrediction}
+    />
   </>
 }

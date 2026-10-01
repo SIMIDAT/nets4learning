@@ -23,7 +23,8 @@ export default function TermsAndConditions () {
               </Card.Body>
             </Card>
 
-            <Card className={'mt-3'}>
+            {/* El enlace "Preferencias de cookies" del pie apunta aquí */}
+            <Card className={'mt-3'} id={'cookies'}>
               <Card.Header><h2><Trans i18nKey={'pages.terms.cookies-title'} /></h2></Card.Header>
               <Card.Body>
                 <Card.Text>

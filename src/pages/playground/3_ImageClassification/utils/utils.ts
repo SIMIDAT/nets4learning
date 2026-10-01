@@ -114,6 +114,34 @@ export function thresholdImageData(image: ImageData, threshold = 100): ImageData
 }
 
 /**
+ * Imagen de un dataset de 28×28 (valores 0 fondo, 1 trazo) como ImageData opaca con el trazo oscuro sobre fondo
+ * claro, como los dibujos: `imageDataToMnistTensor4d` la vuelve a dar exactamente con esos valores.
+ */
+export function grayscaleToImageData(pixels: Float32Array, width: number, height: number): ImageData {
+  const result = createImageData(width, height)
+  for (let i = 0; i < pixels.length; i++) {
+    const value = Math.round(255 * (1 - pixels[i]))
+    result.data.set([value, value, value, 255], i * 4)
+  }
+  return result
+}
+
+/** ImageData ampliada (sin suavizar) como data URL, p. ej. para la imagen base de la explicación */
+export function imageDataToDataUrl(imageData: ImageData, size: number): string {
+  const source = document.createElement('canvas')
+  source.width = imageData.width
+  source.height = imageData.height
+  source.getContext('2d')?.putImageData(imageData, 0, 0)
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+  ctx.imageSmoothingEnabled = false
+  ctx.drawImage(source, 0, 0, size, size)
+  return canvas.toDataURL()
+}
+
+/**
  * Entrada de los modelos MNIST/KMNIST (1×28×28×1), sin modificar `imageData`.
  * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) · alfa.
  * - Imagen opaca con dígito oscuro sobre fondo claro → 1 − rojo.

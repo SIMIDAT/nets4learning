@@ -1,10 +1,11 @@
 import * as tfjs from '@tensorflow/tfjs'
-import I_MODEL_IMAGE_CLASSIFICATION from './_model'
-import type { SpriteDatasetConfig_t } from './SpriteImageDataset'
+import I_MODEL_IMAGE_CLASSIFICATION, { type ImageClassificationResult_t } from './_model'
+import { loadSpriteDataset, type SpriteDatasetConfig_t, type SpriteImageDataset } from './SpriteImageDataset'
 import { trainImageClassifier, type ParamsTrainImage_t, type TrainProgress_t } from '@pages/playground/3_ImageClassification/custom/trainImageClassifier'
 import { DEFAULT_BAR_DATA, type BarChartData_t } from '@pages/playground/3_ImageClassification/CONSTANTS'
 import { imageDataToMnistTensor4d, toImageData } from '@pages/playground/3_ImageClassification/utils/utils'
 import type { Layer_t } from '@/types/types'
+import type { ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
 import {
   createActivationsHelpers,
   applyLRP,
@@ -22,6 +23,10 @@ const _activationsHelpers = createActivationsHelpers({
 export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFICATION {
   abstract DATASET: SpriteDatasetConfig_t
   DRAWABLE = true
+
+  PREDICTION_RESULT(predictions: number[]): ImageClassificationResult_t {
+    return { values: predictions, labels: this.CLASS_LABELS, topK: false }
+  }
 
   async PREDICTION_FORMAT(predictions: number[]): Promise<BarChartData_t> {
     return {
@@ -137,7 +142,12 @@ export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFI
     })
   }
 
-  async TRAIN_MODEL(params: ParamsTrainImage_t, progress: TrainProgress_t = {}): Promise<{ model: tfjs.Sequential, history: tfjs.History }> {
+  /** Dataset (ya descargado si se ha entrenado): sus imágenes de test se pueden clasificar desde el selector */
+  async LOAD_DATASET(): Promise<SpriteImageDataset> {
+    return loadSpriteDataset(this.DATASET)
+  }
+
+  async TRAIN_MODEL(params: ParamsTrainImage_t, progress: TrainProgress_t = {}): Promise<{ model: tfjs.Sequential, history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
     return trainImageClassifier(this.DATASET, this.CLASS_LABELS, params, progress)
   }
 
