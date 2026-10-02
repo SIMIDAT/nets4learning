@@ -264,11 +264,26 @@
       },
       "note": "Role, type, description and units come from the dataset page at its source. Missing values are counted in the files you can download here.",
       "images": "This dataset is made of images, so it has no variables table."
+    },
+    "analyze-action": "Analyze",
+    "analyze-title": "Open “{{name}}” in the exploratory data analysis (EDA)",
+    "data": {
+      "title": "Data",
+      "describe": "Statistics",
+      "file": "File",
+      "error": "The CSV could not be read.",
+      "describe-help": "One row per numeric column: how many values it has (count), its mean, its standard deviation (std), the minimum, the quartiles and the maximum."
     }
   },
   "dataframe-original": "DataFrame | Original",
   "dataframe-form": "DataFrame | Pre-processing data set form",
   "dataframe": {
+    "table": {
+      "target": "<code>{{column}}</code>: target column, the one to predict or classify",
+      "shape": "{{rows}} rows × {{columns}} columns",
+      "scroll-rows": "scroll inside the table to see the rest",
+      "column": "Column"
+    },
     "dataframe": {
       "title": "DataFrame | Data set"
     },
@@ -304,6 +319,8 @@
       "no-numeric": "There are no numeric columns to describe: all the columns are categorical."
     },
     "query": {
+      "error": "The query is not valid: {{message}}",
+      "no-rows": "No row matches the query.",
       "title": "DataFrame | Query",
       "description": {
         "0": "Query the DataFrame by the result of a logical comparison or boolean mask.",
@@ -420,7 +437,8 @@
     "backend-unavailable": "not available",
     "backend-software": "software, slow",
     "backend-error": "Could not switch to {{backend}}",
-    "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}."
+    "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}.",
+    "menu": "Menu"
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -443,7 +461,8 @@
     "binary": "Add the binary file",
     "json": "Add the JSON file",
     "csv": "Add the CSV file",
-    "csv-json": "Enter the template data file.json"
+    "csv-json": "Enter the template data file.json",
+    "dataset": "Add the data file (CSV, ARFF, JSON, JSONL or Parquet)"
   },
   "custom-canvas-drawer": {
     "validate": "Classify",
@@ -1759,8 +1778,8 @@
     },
     "menu-selection-dataset": {
       "0-tabular-classification": {
-        "csv": "Upload dataset - CSV",
-        "csv-text": "Upload a file with a dataset treated in <Oce> .CSV format </code>"
+        "csv": "Upload dataset",
+        "csv-text": "Upload a file with a dataset in <code>.csv</code>, <code>.arff</code>, <code>.json</code>, <code>.jsonl</code> or <code>.parquet</code> format"
       },
       "form-description-1": "Choose the dataset you are going to train with, or upload your own.",
       "form-label": "Select a dataset",
@@ -1768,10 +1787,10 @@
       "form-upload-description": "Now if you wish you can load your own architecture, otherwise click on continuing and an architecture will be loaded by example default.",
       "form-submit": "Continue",
       "1-regression": {
-        "csv": "Upload dataset - CSV",
-        "csv-text": "Upload a file with a dataset treated in <code> .CSV format </code>"
+        "csv": "Upload dataset",
+        "csv-text": "Upload a file with a dataset in <code>.csv</code>, <code>.arff</code>, <code>.json</code>, <code>.jsonl</code> or <code>.parquet</code> format"
       },
-      "upload-text": "Upload your own dataset as a CSV file and prepare it before training.",
+      "upload-text": "Upload your own dataset (CSV, ARFF, JSON, JSONL or Parquet) and prepare it before training.",
       "own-dataset": "Your own dataset",
       "example-datasets": "Example datasets"
     },
@@ -1984,7 +2003,7 @@
         },
         "loaded": "Loaded",
         "load": "Load",
-        "waiting-for-file": "Upload a CSV file to get started.",
+        "waiting-for-file": "Upload a data file (CSV, ARFF, JSON, JSONL or Parquet) to get started.",
         "waiting-for-process": "Process the dataset to continue.",
         "waiting-for-training": "No trained models yet. Set up the network and train one to see it here.",
         "models": {
@@ -2191,7 +2210,9 @@
           "predicted-value": "Predicted {{target}}",
           "actual-value": "Actual value: {{value}}",
           "error": "Error: {{value}} ({{percent}})",
-          "input-details": "Model input step by step"
+          "input-details": "Model input step by step",
+          "choose-instance": "Choose an instance of the data set to fill in the form; then you can change its values.",
+          "no-models": "This data set has no pre-trained model. Choose another data set or train your own model in the regression playground."
         },
         "model-selector": {
           "title": "Model selector",
@@ -2267,7 +2288,145 @@
     },
     "dataframe": {
       "title": "Analyze data set",
-      "upload-csv": "Upload data set"
+      "upload-csv": "Upload data set",
+      "intro": "Explore a data set before training a model: its size, the type and shape of each variable, missing values, how the variables relate to each other and to the target variable, and how to prepare it.",
+      "waiting": "Choose one of the project data sets or upload your own file (CSV, ARFF, JSON, JSONL or Parquet) to start the analysis.",
+      "sections": {
+        "data": "Data set",
+        "summary": "Summary",
+        "variables": "Variables",
+        "distributions": "Distributions",
+        "relations": "Relationships",
+        "table": "Data and queries",
+        "preprocess": "Preprocessing",
+        "charts": "More charts"
+      },
+      "picker": {
+        "project": "Project data sets",
+        "project-help": "The CSV files of the Nets4Learning models and others for practice, with a description of their variables.",
+        "placeholder": "Choose a data set",
+        "upload": "Your own file",
+        "upload-help": "CSV (with “,” or “;”), ARFF, JSON, JSONL or Parquet. It is read in your browser: the file is not sent to any server.",
+        "loading": "Loading…"
+      },
+      "info": {
+        "shape": "{{rows}} rows × {{columns}} columns",
+        "source": "Source",
+        "variables-sheet": "with variable sheet",
+        "target": "Target variable",
+        "target-none": "None",
+        "target-help": "The one to predict or classify: it is highlighted throughout the analysis and splits the charts by class.",
+        "problem-classification": "Classification · {{count}} classes",
+        "problem-regression": "Regression",
+        "problem-none": "No target variable"
+      },
+      "summary": {
+        "rows": "Rows",
+        "columns": "Columns",
+        "columns-detail": "Numeric: {{numeric}} · categorical: {{categorical}}",
+        "missing": "Missing values",
+        "missing-detail": "{{percent}} of the cells",
+        "duplicates": "Duplicate rows",
+        "duplicates-detail": "{{percent}} of the rows",
+        "target-distribution": "Distribution of <code>{{target}}</code>",
+        "target-distribution-none": "Distribution of the target variable",
+        "no-target": "Choose a target variable to see how its values are distributed.",
+        "warnings": "Data warnings",
+        "no-warnings": "No problem found: no missing values, duplicate rows, constant columns, identifiers or imbalanced classes."
+      },
+      "warnings": {
+        "missing": "<code>{{column}}</code> has {{count}} missing values ({{percent}}).",
+        "constant": "<code>{{column}}</code> always has the same value: it carries no information.",
+        "identifier": "<code>{{column}}</code> looks like an identifier (a code per record), not an attribute: it should not be used for training.",
+        "outliers": "<code>{{column}}</code> has {{count}} outliers ({{percent}}) according to the interquartile range rule.",
+        "imbalance": "The classes of <code>{{column}}</code> are imbalanced: “{{minority}}” has {{percent}} of the rows of the most frequent class.",
+        "correlation": "<code>{{column}}</code> and <code>{{other}}</code> are highly correlated (r = {{value}}): they carry almost the same information.",
+        "duplicates": "There are {{count}} duplicate rows."
+      },
+      "variables": {
+        "title": "Profile of each variable",
+        "search": "Search variable",
+        "type": "Type",
+        "all": "All",
+        "numeric": "Numeric",
+        "categorical": "Categorical",
+        "view-cards": "Cards",
+        "view-table": "Table",
+        "kind-numeric": "Numeric",
+        "kind-categorical": "Categorical",
+        "target": "Target",
+        "missing": "Missing",
+        "distinct": "Distinct",
+        "mean": "Mean",
+        "std": "Std. dev.",
+        "min": "Min.",
+        "median": "Median",
+        "max": "Max.",
+        "top": "Most frequent values",
+        "more": "and {{count}} more",
+        "show-distribution": "See its distribution →",
+        "no-results": "No variable matches the search.",
+        "units": "Units: {{units}}",
+        "column": "Variable",
+        "histogram-of": "Histogram of {{column}}"
+      },
+      "distributions": {
+        "title": "Distribution of a variable",
+        "variable": "Variable",
+        "bins": "Bins",
+        "bins-auto": "Automatic",
+        "by-class": "Split by class of <code>{{target}}</code>",
+        "histogram": "Histogram",
+        "frequencies": "Frequency of each value",
+        "boxplot": "Box plot",
+        "count": "Rows",
+        "class": "Class",
+        "by-class-table": "<code>{{column}}</code> in each class of <code>{{target}}</code>",
+        "help-histogram": "How many rows have a value in each bin. If the classes overlap little, the variable helps to tell them apart.",
+        "help-frequencies": "How many rows have each value (the 30 most frequent).",
+        "help-boxplot": "The box goes from the first to the third quartile and the middle line is the median; isolated points are outliers."
+      },
+      "relations": {
+        "title": "Correlation and scatter",
+        "correlation": "Correlation matrix",
+        "correlation-help": "Pearson correlation between each pair of numeric variables: 1 is a direct linear relationship, −1 an inverse one and 0 none.",
+        "target-correlation": "Correlation with <code>{{target}}</code>",
+        "target-correlation-help": "The variables most correlated with the target are usually the most useful to predict it.",
+        "scatter": "Scatter plot",
+        "x": "X axis",
+        "y": "Y axis",
+        "color-help": "Each point is a row, coloured by <code>{{target}}</code>.",
+        "not-enough": "At least two numeric variables are needed."
+      },
+      "table": {
+        "title": "Data table"
+      },
+      "preprocess": {
+        "title": "Prepare the data for a model",
+        "help": "A model only takes numbers: text is encoded (label encoder) and what is not useful is dropped. The result updates with every change and can be downloaded as CSV.",
+        "missing": "Missing values",
+        "missing-keep": "Keep them",
+        "missing-drop-rows": "Remove rows with any",
+        "missing-impute": "Fill in (mean or most frequent value)",
+        "scaler": "Scaling of numeric attributes",
+        "scaler-none": "None",
+        "scaler-min-max": "Min-max (0 to 1)",
+        "scaler-standard": "Standardize (mean 0, deviation 1)",
+        "scaler-help": "The target variable is not scaled.",
+        "duplicates": "Remove duplicate rows",
+        "action": "Transformation",
+        "action-keep": "No change",
+        "action-label-encoder": "Encode (label encoder)",
+        "action-drop": "Drop",
+        "result": "Result",
+        "download": "Download CSV",
+        "removed-rows": "Rows removed: {{duplicates}} duplicates and {{missing}} with missing values.",
+        "encodings": "Encoding of the text columns",
+        "imputed": "Values used to fill in",
+        "imputed-value": "<code>{{column}}</code>: {{value}}"
+      },
+      "analyzing": "Analysing the data set…",
+      "charts-sample": "With so many rows, these charts use a random sample of {{sample}} of the {{rows}}."
     },
     "documentation": {
       "title": "Documentation"
@@ -2382,6 +2541,33 @@
     },
     "glossary": {
       "title": "Glossary",
+      "intro": "The terms that appear in Nets4Learning: the tasks, the network editors, the optimizers and the activation, loss and metric functions.",
+      "search": "Search the glossary",
+      "search-placeholder": "For example: ReLU, Adam, epochs…",
+      "results_one": "{{count}} term",
+      "results_other": "{{count}} terms",
+      "no-results": "No term matches “{{query}}”.",
+      "anchor": "Link to “{{term}}”",
+      "plot": "Plot of {{term}}",
+      "plot-tabs": {
+        "image": "Image",
+        "animation": "Animation"
+      },
+      "animation": {
+        "slider": "Position of x in {{name}}",
+        "play": "Play",
+        "pause": "Pause"
+      },
+      "references-title": "References",
+      "confusion-legend": {
+        "abbreviation": "Abbreviation",
+        "english": "In English",
+        "meaning": "Meaning",
+        "tp": "True positives",
+        "tn": "True negatives",
+        "fp": "False positives",
+        "fn": "False negatives"
+      },
       "table-head": {
         "name": "Name",
         "description": "Description",
@@ -2427,6 +2613,14 @@
         "sub-title-3": "Non-linear Activations (other)",
         "text-1": "An activation function is a mathematical function used in an artificial neural network to determine the output of a neuron or a set of neurons based on the entry received. The activation function introduces non -linearity in the neural network, allowing the network to learn more complex patterns in the input data. Common examples of activation functions are:",
         "table": {
+          "linear": {
+            "title": "Linear",
+            "description": "Returns the input unchanged (the identity). It is the activation of the output layer in regression, where the network must be able to output any number.",
+            "characteristics": {
+              "0": "It does not limit the output range.",
+              "1": "A network with only linear layers is equivalent to a single linear layer: it cannot learn non-linear relationships."
+            }
+          },
           "softmax": {
             "title": "Softmax",
             "description": "Transforms outputs to a representation in the form of probabilities, so that the sum of all probabilities gives 1",
@@ -2524,11 +2718,11 @@
       "editor-layers": {
         "title": "Layers editor",
         "table": {
-          "activation-function": {
+          "units": {
             "title": "Layer Neurons",
             "description": "These are the individual units or nodes in a specific layer of the network. Each neuron receives inputs, performs computations and produces an output that is transmitted to the next layer. The number of neurons in a layer can vary and is usually a hyperparameter of the model. The choice of the number of neurons in a layer affects the model's ability to learn representations of the data."
           },
-          "units": {
+          "activation-function": {
             "title": "Layer Activation Function",
             "description": "At each neuron in a layer of a neural network, an activation function is applied to introduce non-linearity into the model. The activation function determines the output of the neuron as a function of its input and associated weights."
           }
@@ -2644,7 +2838,8 @@
           "cosineProximity": {
             "description": "Compares the direction of the true and the predicted vectors (the angle between them), regardless of their size."
           }
-        }
+        },
+        "related": "Other related formulas"
       },
       "metric-functions": {
         "title": "Metric functions",
@@ -2685,6 +2880,10 @@
             "references": "Middle quadratic error",
             "description": "Determine the average quadratic error between labels and predictions."
           }
+        },
+        "confusion": {
+          "title": "Confusion matrix metrics",
+          "description": "They are computed from the hits and misses of each class in the confusion matrix: how many positive predictions are correct (precision), how many real positives are found (recall or sensitivity), the harmonic mean of both (F1) and how many real negatives are recognised (specificity)."
         }
       }
     },
@@ -2847,7 +3046,9 @@
     "label": "Breadcrumb",
     "models": "Pre-trained models",
     "datasets": "Train a model",
-    "change": "Switch to another one in the list"
+    "change": "Switch to another one in the list",
+    "train-with-dataset": "Train with this dataset",
+    "try-pretrained": "Try the pre-trained model"
   },
   "neural-network": {
     "layer": "Layer {{index}}",

@@ -31,12 +31,11 @@ export default function ModelReviewRegressionPredictForm(props: ModelReviewRegre
     customModel?.model
   )
 
-  // Los atributos del modelo: los del conjunto de datos sin la variable objetivo (que es lo que se predice)
+  // Los atributos que recibe el modelo (las columnas de X): sin la variable objetivo, que es lo que se predice, ni
+  // las columnas descartadas al procesar
   const fields = useMemo<Field_t[]>(() => {
     if (!dataset?.data_processed) return []
-    const target = dataset.data_processed.column_name_target
-    return dataset.dataframe_processed.columns
-      .filter((name) => name !== target && dataset.dataset.some((column) => column.column_name === name))
+    return dataset.data_processed.dataframe_X.columns
       .map((name): Field_t => {
         const column = dataset.dataframe_original[name]
         if (column.dtype === 'string') {
@@ -82,7 +81,9 @@ export default function ModelReviewRegressionPredictForm(props: ModelReviewRegre
   }
 
   if (VERBOSE) console.debug('render ModelReviewRegressionPredictForm')
-  if (!ready) return <WaitingPlaceholder i18nKey_title={'Waiting'} />
+  // La instancia tiene que ser de este conjunto de datos (al cambiar de conjunto, llega un momento después)
+  const instanceColumns = ready ? prediction.input_1_dataframe_original.columns : []
+  if (!ready || !fields.every((field) => instanceColumns.includes(field.name))) return <WaitingPlaceholder i18nKey_title={'Waiting'} />
   return (
     <Row xs={1} sm={2} lg={3} xxl={4}>
       {fields.map((field, index) => {

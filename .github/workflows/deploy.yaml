@@ -16,8 +16,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Lint, tipos, tests unitarios y pruebas en el navegador (checks.yaml): si fallan, no se publica
+  checks:
+    name: 'Checks'
+    uses: ./.github/workflows/checks.yaml
+
   deploy-stable:
     name: 'Deploy to netlify stable'
+    needs: checks
     runs-on: ubuntu-24.04
     steps:
       - name: 'Create env file'

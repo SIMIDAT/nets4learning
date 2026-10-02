@@ -1,8 +1,12 @@
 import "./customCanvasDrawer.css"
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useEffect, useRef, type PointerEvent } from "react"
 import { Button } from "react-bootstrap"
 import { Trans } from "react-i18next"
-import { VERBOSE } from '@/CONSTANTS'
+
+// El dibujo va en coordenadas de 0 a 200 (el grosor del trazo, 20, es una décima parte del lienzo) sobre un lienzo de
+// 600×600 píxeles, que se muestra con el tamaño que quepa en la pantalla
+const DRAW_SIZE = 200
+const CANVAS_PIXELS = 600
 
 /**
  * @typedef {Object} CustomCanvasDrawerProps
@@ -29,7 +33,6 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     onDrawStart,
     image,
   } = props
-  const [isDrawing, setIsDrawing] = useState(false)
   /**
    *
    * @type {React.MutableRefObject<null| HTMLCanvasElement>}
@@ -38,49 +41,25 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
   const context_ref = useRef<CanvasRenderingContext2D | null>(null)
 
   const canvas_small_ref = useRef<HTMLCanvasElement | null>(null)
-
-  function handleTouchStart(e: TouchEvent) {
-    e.preventDefault()
-  }
-
-  function handleTouchMove(e: TouchEvent) {
-    if (canvas_ref.current === null || context_ref.current === null) {
-      console.error("canvasRef or contextRef is null")
-      return
-    }
-
-    const rect = canvas_ref.current.getBoundingClientRect()
-    const cssX = e.touches[0].clientX - rect.left
-    const cssY = e.touches[0].clientY - rect.top
-    //* canvasRef.current.width  / rect.width
-    //* canvasRef.current.height / rect.height
-    // contextRef.current.fillStyle = `hsl(${performance.now() % 360 | 0},100%,50%)`
-    context_ref.current.fillRect(cssX - 20, cssY - 20, 20, 20)
-  }
+  // Último punto del trazo que se está dibujando (null: no se está dibujando)
+  const last_point_ref = useRef<[number, number] | null>(null)
 
   useEffect(() => {
-    if (canvas_ref !== null) {
-      const canvas = canvas_ref.current as HTMLCanvasElement
-      canvas.width = 600
-      canvas.height = 600
-      canvas.style.width = "200px"
-      canvas.style.height = "200px"
+    if (canvas_ref.current === null) return
+    const canvas = canvas_ref.current
+    canvas.width = CANVAS_PIXELS
+    canvas.height = CANVAS_PIXELS
 
-      const context = canvas.getContext("2d") as CanvasRenderingContext2D
-      context.scale(3, 3)
-      context.lineCap = "round"
-      context.strokeStyle = "black"
-      context.lineWidth = 20
-      context_ref.current = context
-
-      // React to touch events on the canvas
-      canvas.addEventListener("touchstart", handleTouchStart, { passive: false })
-      canvas.addEventListener("touchmove", handleTouchMove)
-      return () => {
-        canvas.removeEventListener("touchstart", handleTouchStart)
-        canvas.removeEventListener("touchmove", handleTouchMove)
-      }
-    }
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D
+    // Se dibuja en coordenadas de 0 a DRAW_SIZE sea cual sea el tamaño en pantalla (setTransform y no scale: el
+    // efecto puede repetirse, en StrictMode, y scale se acumularía)
+    const scale = CANVAS_PIXELS / DRAW_SIZE
+    context.setTransform(scale, 0, 0, scale, 0, 0)
+    context.lineCap = "round"
+    context.lineJoin = "round"
+    context.strokeStyle = "black"
+    context.lineWidth = 20
+    context_ref.current = context
   }, [])
 
   // Imagen nueva: ampliada (sin suavizar, se ven los píxeles) en el lienzo y tal cual en la miniatura
@@ -97,40 +76,50 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     context.restore()
   }, [image])
 
-  const startDrawing = (_event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    if (context_ref.current === null) {
+  /** Punto del puntero en las coordenadas del dibujo (el lienzo se muestra más o menos grande según la pantalla) */
+  const drawPoint = (event: PointerEvent<HTMLCanvasElement>): [number, number] => {
+    const canvas = event.currentTarget
+    const { offsetX, offsetY } = event.nativeEvent
+    return [offsetX * DRAW_SIZE / canvas.clientWidth, offsetY * DRAW_SIZE / canvas.clientHeight]
+  }
+
+  // Ratón, dedo o lápiz: los eventos de puntero sirven para los tres
+  const startDrawing = (event: PointerEvent<HTMLCanvasElement>) => {
+    const context = context_ref.current
+    if (context === null) {
       console.error("Context is null")
       return
     }
-    const { nativeEvent } = _event
-    const { offsetX, offsetY } = nativeEvent
-    context_ref.current.beginPath()
-    context_ref.current.moveTo(offsetX, offsetY)
-    setIsDrawing(true)
+    if (event.pointerType === "mouse" && event.button !== 0) return
+    event.preventDefault()
+    // El trazo sigue aunque el dedo o el ratón salgan del lienzo
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+    const point = drawPoint(event)
+    // Un toque sin moverse también deja un punto
+    context.beginPath()
+    context.moveTo(...point)
+    context.lineTo(...point)
+    context.stroke()
+    last_point_ref.current = point
     // Al empezar a escribir un número nuevo, limpiamos el heatmap anterior.
     onDrawStart?.()
   }
 
-  const finishDrawing = (_event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    if (context_ref.current === null) {
-      console.error("Context is null")
-      return
-    }
-    context_ref.current.closePath()
-    setIsDrawing(false)
+  const draw = (event: PointerEvent<HTMLCanvasElement>) => {
+    const context = context_ref.current
+    const last_point = last_point_ref.current
+    if (context === null || last_point === null) return
+    const point = drawPoint(event)
+    // Solo el tramo nuevo: volver a pintar todo el trazo en cada movimiento va cada vez más lento
+    context.beginPath()
+    context.moveTo(...last_point)
+    context.lineTo(...point)
+    context.stroke()
+    last_point_ref.current = point
   }
 
-  const draw = ($event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    if (context_ref.current === null) {
-      console.error("Context is null")
-      return
-    }
-    const { nativeEvent } = $event
-    if (isDrawing) {
-      const { offsetX, offsetY } = nativeEvent
-      context_ref.current.lineTo(offsetX, offsetY)
-      context_ref.current.stroke()
-    }
+  const finishDrawing = () => {
+    last_point_ref.current = null
   }
 
   const clear = () => {
@@ -138,30 +127,22 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
       console.error("Context is null")
       return
     }
-    context_ref.current.clearRect(0, 0, 200, 200)
+    context_ref.current.clearRect(0, 0, DRAW_SIZE, DRAW_SIZE)
     const canvas_small = canvas_small_ref.current
     canvas_small?.getContext('2d')?.clearRect(0, 0, canvas_small.width, canvas_small.height)
   }
 
-  const onChange = (event: FormEvent<HTMLCanvasElement>) => {
-    if (VERBOSE) console.debug("onChange event:", event)
-    event.preventDefault()
-  }
-
   return (
     <>
-      <div className={"d-flex justify-content-center mt-3"}>
+      <div className={"d-flex justify-content-center align-items-start gap-2 mt-3"}>
         <canvas
           id="canvas"
           ref={canvas_ref}
-          style={{
-            border    : "1px solid black",
-            background: "white",
-          }}
-          onMouseDown={(event) => startDrawing(event)}
-          onMouseUp={(event) => finishDrawing(event)}
-          onMouseMove={(event) => draw(event)}
-          onChange={(event) => onChange(event)}
+          className={"n4l-draw-canvas"}
+          onPointerDown={startDrawing}
+          onPointerMove={draw}
+          onPointerUp={finishDrawing}
+          onPointerCancel={finishDrawing}
         ></canvas>
         <canvas
           id="canvas_small"
@@ -169,10 +150,11 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
           style={{
             border        : "1px solid black",
             background    : "white",
-            width         : "28px", 
-            height        : "28px", 
+            width         : "28px",
+            height        : "28px",
+            flex          : "none",
             imageRendering: "pixelated",
-            boxSizing     : "border-box"
+            boxSizing     : "border-box",
           }}
           width={28}
           height={28}

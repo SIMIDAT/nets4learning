@@ -1,15 +1,18 @@
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 import { trainTestSplit } from '@utils/trainTestSplit'
-import { createLoss, createMetrics, createOptimizer, FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
+import { FIT_CALLBACKS_METRICS_LABELS } from '@core/nn-utils/ArchitectureHelper'
 import * as _Types from '@core/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import i18next from 'i18next'
 import AlertHelper from '@utils/alertHelper'
-import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
+import { getActiveTFBackend } from '@core/tfBackend'
+import { showTrainingVisor } from '@core/nn-utils/trainingVisor'
+import { ModelDefinitionError, buildDenseModel, compileModel, modelFromArtifacts, type DenseLayer_t } from '@core/training/buildModels'
+import { TrainingWorkerUnavailableError, trainInWorker } from '@core/training/trainingClient'
+import type { ClassificationEvaluation_t, TrainingProgress_t } from '@core/training/trainingTypes'
 
-type DenseLayer_t = Pick<_Types.Layer_t, 'units' | 'activation'>
-
+export type { ClassificationEvaluation_t } from '@core/training/trainingTypes'
 
 export type TrainDenseModelParams_t = {
   dataset_processed: _Types.DatasetProcessed_t
@@ -33,40 +36,111 @@ export type TrainDenseModelParams_t = {
   shouldStop?      : () => boolean
 }
 
+type DenseTrainingResult_t = { model: tfjs.Sequential, history: tfjs.History, evaluation?: ClassificationEvaluation_t }
+type VisCallbacks_t = ReturnType<typeof tfvis.show.fitCallbacks>
+
+/** Avisa al usuario de un error en la arquitectura (activación sin elegir, pérdida o métrica que no compila) */
+function alertDefinitionError(error: ModelDefinitionError) {
+  void AlertHelper.alertError(error.kind === 'compile' ? i18next.t('error.model-compile') : error.message)
+}
+
 /**
  * Entrena una red de capas dense sobre `dataset_processed.data_processed` (X numérica, y ya preparada:
- * one-hot en clasificación, un número por fila en regresión) mostrando el progreso en el visor.
+ * one-hot en clasificación, un número por fila en regresión) mostrando el progreso en el visor (en el móvil se dibuja
+ * cerrado: showTrainingVisor).
+ *
+ * Entrena en un worker (TODO-worker.md), así la página no se bloquea; si no se puede (sin workers o sin el backend
+ * elegido en el worker), aquí mismo.
  *
  * @throws {Error} si el dataset no está procesado, alguna capa no tiene activación o el modelo no compila
  */
-/** Clase real y predicha de cada ejemplo de validación (índices de clase); solo en clasificación */
-export type ClassificationEvaluation_t = { labels: number[], predictions: number[] }
-
-export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<{ model: tfjs.Sequential, history: tfjs.History, evaluation?: ClassificationEvaluation_t }> {
-  const {
-    dataset_processed,
-    name_model,
-    layerList,
-    learningRate,
-    momentum = 0,
-    testSize,
-    numberOfEpoch,
-    idOptimizer,
-    idLoss,
-    idMetrics,
-    seed,
-    fitCallbacks,
-    onEpochEnd,
-    shouldStop,
-  } = params
-  tfvis.visor().open()
+export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<DenseTrainingResult_t> {
+  const { dataset_processed, name_model, layerList, fitCallbacks } = params
+  showTrainingVisor()
 
   const { data_processed } = dataset_processed
   if (!data_processed) {
     console.error('data_processed is undefined', { dataset_processed })
     throw new Error('Data processed is undefined')
   }
-  const { X, y } = data_processed
+  const { X } = data_processed
+
+  // El resumen del visor con la misma red (sin entrenar) antes de empezar
+  let summaryModel: tfjs.Sequential
+  try {
+    summaryModel = buildDenseModel(layerList, X.shape[1])
+  } catch (error) {
+    if (error instanceof ModelDefinitionError) alertDefinitionError(error)
+    throw error
+  }
+  await tfvis.show.modelSummary({ name: 'Model Summary', tab: name_model }, summaryModel)
+  summaryModel.dispose()
+  tfvis.visor().setActiveTab(name_model)
+  const visCallbacks = tfvis.show.fitCallbacks({ name: 'Training', tab: name_model }, FIT_CALLBACKS_METRICS_LABELS, fitCallbacks)
+
+  try {
+    return await trainDenseInWorker(params, visCallbacks)
+  } catch (error) {
+    if (error instanceof ModelDefinitionError) {
+      alertDefinitionError(error)
+      throw error
+    }
+    if (!(error instanceof TrainingWorkerUnavailableError)) throw error
+    console.warn('Training in the main thread:', error.message)
+  }
+  return trainDenseModelInMainThread(params, visCallbacks)
+}
+
+/** Lo que el visor y la página enseñan con cada aviso del worker */
+export function forwardProgress(visCallbacks: VisCallbacks_t, onEpochEnd?: (epoch: number, totalEpochs: number) => void) {
+  return (progress: TrainingProgress_t) => {
+    if (progress.kind === 'batch') {
+      void visCallbacks.onBatchEnd?.(progress.batch, progress.logs)
+    } else {
+      void visCallbacks.onEpochEnd?.(progress.epoch, progress.logs)
+      onEpochEnd?.(progress.epoch + 1, progress.totalEpochs)
+    }
+  }
+}
+
+async function trainDenseInWorker(params: TrainDenseModelParams_t, visCallbacks: VisCallbacks_t): Promise<DenseTrainingResult_t> {
+  const { dataset_processed, layerList, learningRate, momentum, testSize, numberOfEpoch, idOptimizer, idLoss, idMetrics, seed, onEpochEnd, shouldStop } = params
+  const { X, y } = dataset_processed.data_processed!
+  const [rows, features] = X.shape as [number, number]
+  const XValues = new Float32Array((X.values as number[][]).flat())
+  const yRows = y.values as Array<number | number[]>
+  const yShape = Array.isArray(yRows[0]) ? [rows, (yRows[0] as number[]).length] : [rows]
+  const yValues = new Float32Array((yRows as Array<number | number[]>).flat() as number[])
+
+  const result = await trainInWorker('trainDense', {
+    backend  : getActiveTFBackend(),
+    X        : XValues,
+    rows,
+    features,
+    y        : yValues,
+    yShape,
+    // Solo lo que necesita la red (las capas del editor llevan más campos)
+    layerList: layerList.map(({ units, activation }) => ({ units, activation })),
+    compile  : { idOptimizer, idLoss, idMetrics, learningRate, momentum },
+    testSize,
+    seed,
+    numberOfEpoch,
+  }, {
+    transfer  : [XValues.buffer, yValues.buffer],
+    shouldStop,
+    onProgress: forwardProgress(visCallbacks, onEpochEnd),
+  })
+  return {
+    model     : await modelFromArtifacts(result.artifacts),
+    // Los valores del historial ya son números (lo que la página lee de History)
+    history   : result.history as unknown as tfjs.History,
+    evaluation: result.evaluation,
+  }
+}
+
+async function trainDenseModelInMainThread(params: TrainDenseModelParams_t, visCallbacks: VisCallbacks_t): Promise<DenseTrainingResult_t> {
+  const { dataset_processed, layerList, learningRate, momentum = 0, testSize, numberOfEpoch, idOptimizer, idLoss, idMetrics, seed, onEpochEnd, shouldStop } = params
+  const { X, y } = dataset_processed.data_processed!
   // Cada fila de y es un número (regresión) o un vector one-hot (clasificación)
   const [XTrain, XTest, yTrain, yTest] = trainTestSplit(X.values as number[][], y.values as Array<number | number[]>, testSize, seed)
   const XTrain_tensor = tfjs.tensor(XTrain)
@@ -74,39 +148,15 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
   const yTrain_tensor = tfjs.tensor(yTrain as number[] | number[][])
   const yTest_tensor = tfjs.tensor(yTest as number[] | number[][])
 
-  const model = tfjs.sequential()
-  for (const [index, layer] of layerList.entries()) {
-    if (layer.activation === null || !isActivation(layer.activation)) {
-      const message = `Layer ${index + 1} activation is not valid (${layer.activation}). Please select an activation function.`
-      AlertHelper.alertError(message)
-      throw new Error(message)
-    }
-    model.add(tfjs.layers.dense({
-      units     : layer.units,
-      activation: layer.activation,
-      ...(index === 0) && {
-        inputShape: [X.shape[1]],
-      },
-    }))
-  }
-
-  const optimizer = createOptimizer(idOptimizer, { learningRate, momentum })
-  const loss = createLoss(idLoss, {})
-  const metrics = createMetrics(idMetrics, {})
-
+  const model = buildDenseModel(layerList, X.shape[1])
   try {
-    model.summary()
-    model.compile({ optimizer, loss, metrics })
+    compileModel(model, { idOptimizer, idLoss, idMetrics, learningRate, momentum })
   } catch (error) {
     console.error('model.compile()', { error, idOptimizer, idLoss, idMetrics })
-    AlertHelper.alertError(i18next.t('error.model-compile'))
+    if (error instanceof ModelDefinitionError) alertDefinitionError(error)
     throw error
   }
 
-  await tfvis.show.modelSummary({ name: 'Model Summary', tab: name_model }, model)
-  tfvis.visor().setActiveTab(name_model)
-
-  const fitCallbackHandlers = tfvis.show.fitCallbacks({ name: 'Training', tab: name_model }, FIT_CALLBACKS_METRICS_LABELS, fitCallbacks)
   const progressCallbacks: tfjs.CustomCallbackArgs = {
     onBatchEnd: async () => {
       if (shouldStop?.()) model.stopTraining = true
@@ -121,7 +171,7 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
     shuffle       : true,
     validationData: [XTest_tensor, yTest_tensor],
     epochs        : numberOfEpoch,
-    callbacks     : [fitCallbackHandlers, progressCallbacks],
+    callbacks     : [visCallbacks, progressCallbacks],
   })
 
   // En clasificación (y en one-hot) se guarda la predicción de cada ejemplo de validación para la matriz de confusión
@@ -131,7 +181,9 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
       yTest_tensor.argMax(-1),
       (model.predict(XTest_tensor) as tfjs.Tensor).argMax(-1),
     ])
-    evaluation = { labels: Array.from(labels.dataSync()), predictions: Array.from(predictions.dataSync()) }
+    // Lectura asíncrona: dataSync detiene el hilo principal hasta que la GPU termina
+    const [labelValues, predictionValues] = await Promise.all([labels.data(), predictions.data()])
+    evaluation = { labels: Array.from(labelValues), predictions: Array.from(predictionValues) }
     labels.dispose()
     predictions.dispose()
   }

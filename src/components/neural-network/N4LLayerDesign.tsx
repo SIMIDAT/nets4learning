@@ -56,7 +56,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
     <Card>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h3><Trans i18nKey={prefix + 'layer-design'} /></h3>
-        <div className={'ms-3'}>
+        <div>
           <Form.Group controlId={'mode'}>
             <Form.Select
               disabled={show === false}

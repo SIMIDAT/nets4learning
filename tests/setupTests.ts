@@ -3,7 +3,12 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+import { configure } from '@testing-library/react'
 import { vi } from 'vitest';
+
+// Las páginas perezosas (lazy) importan TF.js y tardan en cargar, más con todos los ficheros de tests en paralelo: el
+// segundo que esperan por defecto waitFor y findBy se quedaba justo (TestPage tardaba 1045 ms) y fallaban al azar
+configure({ asyncUtilTimeout: 5000 })
 
 vi.mock('react-i18next', async () => {
   const actual = await vi.importActual<any>('react-i18next');

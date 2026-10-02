@@ -1,4 +1,5 @@
 import * as dfd from "danfojs";
+import { readDatasetInWorker } from "@core/dataframe/datasetReaderClient";
 import { E_PLOTS, LIST_PLOTS } from "@components/_context/CONSTANTS";
 import { VERBOSE } from "@/CONSTANTS";
 import * as _Types from "@core/types";
@@ -302,10 +303,20 @@ export function DataFrameFixMixedColumns(dataframe: dfd.DataFrame): dfd.DataFram
   return fixed;
 }
 
-/** `dfd.readCSV` + {@link DataFrameFixMixedColumns}: usar siempre esta función para leer CSV. */
+/**
+ * `dfd.readCSV` + {@link DataFrameFixMixedColumns}: usar siempre esta función para leer CSV. Lo que sube el usuario (un
+ * File) se lee en un worker ({@link readDatasetInWorker}): puede venir con otro separador (",", ";" con coma decimal o
+ * comas con espacios) o en otro formato (ARFF, JSON, JSONL o Parquet, que se pasan a CSV); aquí solo se crea el
+ * DataFrame. Los del proyecto (una URL) son siempre CSV con comas y los lee danfo.
+ */
 export async function DataFrameReadCSV(
   ...args: Parameters<typeof dfd.readCSV>
 ): Promise<dfd.DataFrame> {
+  const [source] = args;
+  if (typeof File !== "undefined" && source instanceof File) {
+    const { columns, rows, dtypes } = await readDatasetInWorker(source);
+    return new dfd.DataFrame(rows, { columns, dtypes });
+  }
   return DataFrameFixMixedColumns(await dfd.readCSV(...args));
 }
 
@@ -316,31 +327,6 @@ export async function DataFrameReadCSV(
 export function DataFrameDescribeNumeric(dataframe: dfd.DataFrame): dfd.DataFrame | null {
   const hasNumericColumns = dataframe.dtypes.some((dtype) => NUMERIC_DTYPES.includes(dtype));
   return hasNumericColumns ? dataframe.describe() : null;
-}
-
-type TablePlotConfig = NonNullable<Parameters<ReturnType<dfd.DataFrame["plot"]>["table"]>[0]>["config"];
-
-/**
- * Pinta en el elemento `plotID` la tabla de `describe()` de las columnas numéricas o, si no
- * hay ninguna, el texto `emptyText`.
- */
-export function DataFrameDescribePlot(
-  dataframe: dfd.DataFrame,
-  plotID: string,
-  options: { config: TablePlotConfig; emptyText: string; transpose?: boolean }
-): void {
-  const element = document.getElementById(plotID);
-  if (!element) return;
-  element.textContent = "";
-  const describe = DataFrameDescribeNumeric(dataframe);
-  if (describe === null) {
-    element.textContent = options.emptyText;
-    return;
-  }
-  const table = (options.transpose ? describe.T : describe).round(3);
-  // La tabla de danfo no pinta el índice: sin él no se sabe de qué columna (o de qué estadístico) es cada fila
-  const labelled = table.addColumn(" ", table.index.map(String), { inplace: false, atIndex: 0 });
-  labelled.plot(plotID).table({ config: options.config });
 }
 
 /**

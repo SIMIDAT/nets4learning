@@ -68,8 +68,11 @@ export default function RegressionEditorFeaturesSelector() {
     if (datasets && datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0 && datasets.data[datasets.index].is_dataset_processed) {
       setParams((prevState) => {
         const _index: number = datasets.index as number
-        const Y_target = datasets.data[_index].dataframe_processed.columns[datasets.data[_index].dataframe_processed.columns.length - 1]
-        const X_features = new Set(datasets.data[_index].dataframe_processed.columns)
+        const { dataframe_processed, data_processed } = datasets.data[_index]
+        // Lo que de verdad usa el entrenamiento (data_processed): el objetivo no siempre es la última columna
+        // (California housing lo tiene en la primera)
+        const Y_target = data_processed?.column_name_target ?? dataframe_processed.columns[dataframe_processed.columns.length - 1]
+        const X_features = new Set(data_processed?.dataframe_X.columns ?? dataframe_processed.columns)
         X_features.delete(Y_target)
 
         return Object.assign({}, prevState, {

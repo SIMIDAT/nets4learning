@@ -216,6 +216,41 @@ Leyenda: `[x]` hecho · `[ ]` pendiente · `[~]` en curso o hecho a medias (ver 
       detección de objetos, que solo tenía un icono: ahora tiene `aria-label`.
 - [x] **Contraste.** Botones `outline-info` ("Descripción") y botones amarillos. Los cinco `outline-info` pasan a
       `outline-primary`; los amarillos de la home llevan texto negro y tienen buen contraste.
+- [x] **Índice de secciones en móvil.** Los entrenadores miden 5000–7000 px en un móvil y el índice lateral solo
+      está en escritorio. Hecho: por debajo de xl, barra fija arriba (`N4LSectionBar`) que aparece al bajar de la
+      cabecera, con una pestaña por sección que se desliza en horizontal y la actual siempre a la vista. Un solo
+      cálculo de la sección actual (`useActiveSection`) para la barra y el índice lateral.
+- [x] **Selectores que se salen de la tarjeta.** El selector de instancias (`minWidth: 16rem`) estrujaba el título
+      o se salía por la derecha (formulario de Iris, predicción de regresión, webcam de detección, dispersión).
+      Hecho: todas las cabeceras `.card-header.d-flex` pasan a varias filas si no caben, y en el móvil los controles
+      (`n4l-card-header-controls`, `n4l-instance-select`) bajan bajo el título y ocupan todo el ancho.
+- [x] **Dibujar con el dedo.** El lienzo de MNIST pintaba cuadrados de 20 px desplazados arriba a la izquierda del
+      dedo, sin trazo continuo, y no limpiaba el mapa de calor. Hecho con eventos de puntero (ratón, dedo y lápiz),
+      `touch-action: none` (la página no se mueve al dibujar) y lienzo de hasta 260 px que se adapta al ancho.
+- [x] **Migas de pan en móvil.** En el móvil se quita la tarea (ya es el título de la página) y el desplegable del
+      modelo o dataset tiene más alto en pantallas táctiles.
+- [x] **Barra de navegación (escritorio, tablet y móvil).** En el móvil el menú se quedaba abierto al cambiar de página
+      y tapaba la nueva; ahora se cierra (también al pulsar la página en la que ya se está). La página actual se marca
+      (subrayada en escritorio, resaltada en el menú desplegado; `aria-current`). Idioma, Tema y Backend siguen siendo
+      desplegables con su nombre; en el menú del móvil y la tablet enseñan además su valor actual (en escritorio
+      no, a petición).
+      Los desplegables de la derecha se alinean a la derecha (el de Backend se salía de la pantalla). Menú del móvil:
+      filas más altas, ajustes aparte con el valor a la derecha, "GitHub" con su nombre, el botón pasa a ser una X al
+      abrirlo, sin borde negro tras pulsarlo y con nombre accesible ("Menú"). Tablet: el menú en dos columnas. Fuera
+      la sombra roja sin usar de `N4LNavbar.css`.
+- [x] **Migas de pan mejoradas.** Separador ›, enlaces en gris sin subrayar (se subrayan al pasar por encima) y el
+      modelo o dataset abierto como un selector con borde (del color de la tarea al pasar por encima). Siempre en una
+      línea: si no cabe, se recorta antes "Modelos pre-entrenados"/"Entrenar un modelo" que el nombre abierto. La
+      tarea enlaza a su tarjeta en la home (`/?task=…`, que la home lee y recuerda). En el desplegable: enlaces de
+      verdad (se pueden abrir en otra pestaña), "Subir conjunto de datos" aparte de los de ejemplo, menú tan ancho
+      como el nombre más largo y un enlace al otro lado: del modelo preentrenado a entrenar con su dataset y al revés.
+- [x] **Tabla de `/datasets` en móvil.** Cada fila es un bloque (nombre arriba; referencia, información y descarga
+      debajo) en vez de una tabla con la descarga fuera de la pantalla (`n4l-stack-table`).
+- [x] **Home en móvil.** Los cuatro botones de disciplina con el mismo alto y las listas de dos columnas de las
+      tarjetas en una sola.
+- [x] **Visor de entrenamiento en móvil.** El visor de tfjs-vis (550 px fijo a la derecha) se abría al entrenar y
+      tapaba la página entera. Hecho (`showTrainingVisor`): en pantallas estrechas (< 768 px) o bajas (< 500 px,
+      móvil en horizontal) se dibuja cerrado en las tres tareas; las gráficas siguen ahí y se ven con "Abrir visor".
 
 ## Hito 6 — Funciones nuevas
 
@@ -261,10 +296,97 @@ Leyenda: `[x]` hecho · `[ ]` pendiente · `[~]` en curso o hecho a medias (ver 
       pestaña. Tests: cada CSV tabular tiene tabla y coincide con sus columnas y ausentes.
 
 ---
+- [x] **Glosario renovado.** Antes: acordeones cerrados y, para cada término, la descripción en una tabla y la fórmula
+      en otro acordeón; las métricas no salían (sus textos estaban en las traducciones sin usar). Ahora: índice de
+      apartados (lateral en escritorio, barra arriba en el móvil), buscador (sin tildes ni mayúsculas, todas las
+      palabras), una tarjeta por término con descripción, características, fórmulas, gráfica y referencia, y enlace a
+      cada término (`/glossary#glossary-activation-relu`). Las ayudas del playground (`?action=`) llevan al término o
+      grupo. Datos en `glossaryTerms.ts`. Corregidas fórmulas: Adam (β₂ en la corrección de s), RMSProp (sin
+      corrección), Hard Sigmoid (`x ≥ +3`) y Linear (la identidad); nuevas las de SGD, hinge al cuadrado, hinge
+      categórica, MAPE, MSLE, logcosh y Poisson. Arreglado: las claves del editor de capas iban cruzadas en las
+      traducciones y la leyenda TP/TN/FP/FN estaba escrita en español en el código.
+- [x] **Activaciones animadas en el glosario.** La gráfica de cada activación va en dos pestañas: "Imagen" (la de
+      PyTorch, primero) y "Animación": la curva se dibuja con Chart.js hasta la x que marca un deslizador de 0 a 1 (paso
+      0,01; x de -6 a 6), con el punto (x, f(x)) y sus valores debajo. Al abrir la pestaña se dibuja sola en 3 s
+      ("Reproducir"/"Pausa"; sin animación si el sistema pide movimiento reducido). Funciones en
+      `activationFunctions.ts`, con los parámetros de PyTorch (α = 1, β = 1, negative_slope = 0,01).
+- [x] **Barra de navegación fija.** Va arriba siempre (`sticky-top`) y deja su alto en `--n4l-navbar-height`: la barra
+      del índice del móvil aparece justo debajo, el índice lateral, las tarjetas fijas (`sticky-top`) y los saltos a
+      una sección o un término quedan por debajo de ella, y el visor de tfjs-vis va por encima. En el móvil, si el
+      menú no cabe en la pantalla, se desliza dentro.
+- [x] **AED: distribución del objetivo y avisos en tarjetas**, como el resto de apartados (con el número de avisos).
+- [x] **De /datasets al AED.** La columna "Referencia" pasa a ser "AED": cada CSV se abre en `/analyze?dataset=<clave>`
+      (la clave es el nombre del fichero sin extensión: `iris`, `wine-quality-red`…), que lo carga solo; al elegir otro
+      en el AED la dirección cambia. La referencia sigue en el modal de información, que también enlaza al AED.
+- [x] **Tablas de /datasets.** El nombre (con filas, características y clases) a la izquierda y las acciones a la
+      derecha ajustadas a su contenido; cabeceras discretas; con varios ficheros, un enlace por fichero. En el móvil,
+      un bloque por conjunto y, si hay varios ficheros, cada grupo de enlaces dice de qué es.
+- [x] **Datos y estadísticas en el modal de /datasets.** Además de "Información" y "Variables", los conjuntos con CSV
+      tienen "Datos" (el CSV entero como tabla, con el tipo de cada columna y la variable objetivo resaltada) y
+      "Estadísticas" (el describe() de las columnas numéricas, con qué significa cada fila). Con varios ficheros se elige
+      cuál. El CSV se lee al abrir la pestaña (danfo.js va aparte, `DatasetDataFrame`) y una sola vez para las dos. Las
+      de imágenes (MNIST, KMNIST) solo tienen "Información". En el móvil las pestañas van en una línea que se desliza.
+- [x] **CSV con ";" al subir un fichero.** Fallaban los CSV de Excel en español (";" y coma decimal, como
+      AirQualityUCI.csv) y los "alineados" por un editor (", " como separador y "2,6" como número). Ahora el separador
+      (",", ";", tabulador o "|") sale de las primeras líneas (`csvFormat.ts`); con ";", o con comas y espacios, las
+      columnas de coma decimal pasan a ser numéricas, y se quitan los espacios de relleno y las columnas vacías sin
+      nombre (los ";;" del final). Solo lo que sube el usuario: los CSV del proyecto se leen como siempre.
+- [x] **ARFF, JSON, JSONL y Parquet.** Al subir un fichero (AED y los dos entrenadores) se pasa a CSV y sigue el mismo
+      camino (`datasetFormats.ts`): ARFF de Weka (numéricos, nominales, texto, fechas, "?" y filas dispersas), JSON
+      (registros o las formas de `pandas.to_json`), JSON Lines y Parquet con cualquier compresión (hyparquet y
+      hyparquet-compressors, en un trozo aparte: 20 kB comprimidos que solo se descargan con un Parquet).
 
 ## Registro
 
 - 30/09/2026 — Plan creado. Empiezo por el hito 1.
+- 02/10/2026 — Ficheros propios con ";" (y coma decimal) o alineados, y en ARFF, JSON, JSONL y Parquet. Verificado:
+  `pnpm lint`, `tsc -b`, 56 ficheros de tests (337 tests: cada formato de Iris da el mismo CSV que iris.csv), Playwright
+  (los 8 ficheros de `e2e/files` en el AED) y AirQualityUCI.csv (9357 filas × 15 columnas, 13 numéricas) en sus tres
+  formas en el AED y en los entrenadores.
+- 02/10/2026 — Pestañas "Datos" y "Estadísticas" en el modal de /datasets. Verificado: `pnpm lint`, `tsc -b`, 54
+  ficheros de tests (311 tests), Playwright (Iris y los dos ficheros del vino) y Chrome a 390 y 1440 px, claro y oscuro.
+- 02/10/2026 — Barra de navegación fija, AED con tarjetas para la distribución del objetivo y los avisos, enlaces de
+  /datasets al AED (`?dataset=`) y tablas de /datasets nuevas. Verificado: `pnpm lint`, `tsc -b`, 54 ficheros de tests
+  (310 tests), 15 pruebas de Playwright y Chrome a 390 y 1440 px, claro y oscuro.
+- 02/10/2026 — Activaciones animadas en el glosario (pestañas Imagen / Animación, deslizador y Chart.js). Verificado:
+  `tsc -b`, `pnpm lint`, 54 ficheros de tests (308 tests) y Chrome a 390 y 1440 px, claro y oscuro.
+- 02/10/2026 — Glosario renovado (índice, buscador, una tarjeta por término con su fórmula y su gráfica, enlaces a cada
+  término y las métricas que faltaban). Verificado: `tsc -b`, `pnpm lint`, 54 ficheros de tests (304 tests; uno
+  comprueba que todos los textos del glosario están en los tres idiomas) y Chrome a 390 y 1440 px, claro y oscuro.
+- 02/10/2026 — Arreglos de base: `vite build` ya no empaqueta React de desarrollo (fuera `NODE_ENV` de los `.env`:
+  el bundle principal pasa de 818 a 578 kB), el despliegue de Netlify pasa antes lint, tipos, tests y pruebas en el
+  navegador (`checks.yaml`, también en cada pull request) y hay pruebas de Playwright (`e2e/`, `pnpm test:e2e`). Las
+  pruebas encontraron un fallo: al cambiar de modelo desde las migas de pan (Iris → Car) la página reutilizaba el
+  estado del anterior y danfo lanzaba "data must be a 1D array"; ahora el playground se monta de nuevo al cambiar de
+  ejemplo.
+- 02/10/2026 — Móvil: índice de secciones como barra fija en pantallas estrechas, cabeceras de tarjeta que bajan
+  los controles bajo el título, dibujo con el dedo en el lienzo de MNIST, migas de pan más cortas, tabla de
+  `/datasets` por bloques y botones de la home del mismo alto. Verificado: `tsc`, `pnpm lint`, 51 ficheros de
+  tests (289 tests) y Chrome a 390 px (15 páginas sin desbordes ni controles fuera de su tarjeta; un 7 dibujado
+  con el dedo y con el ratón sale 7 al 99 %), 820 px y 1440 px.
+- 02/10/2026 — En el móvil el visor ya no se abre al entrenar (tabular, regresión e imágenes). Verificado: `tsc`,
+  `pnpm lint`, 52 ficheros de tests (292 tests) y entrenamientos en Chrome a 390×844 y 844×390 (visor cerrado
+  durante y después; "Abrir visor" lo abre) y a 1440 px (se abre como antes).
+- 02/10/2026 — Barra de navegación mejorada en escritorio, tablet y móvil. Verificado: `tsc`, `pnpm lint`, 53
+  ficheros de tests (300 tests) y Chrome a 390, 820, 992, 1180, 1200, 1400 y 1440 px en español, inglés y japonés,
+  claro y oscuro (sin desbordes; en japonés entre 992 y 1199 px los enlaces se parten en dos líneas, como antes).
+- 02/10/2026 — Migas de pan mejoradas (estilo, una sola línea, tarea enlazada a la home con `?task=`, enlaces en el
+  desplegable y paso entre modelo preentrenado y entrenamiento). Verificado: `tsc`, `pnpm lint`, 52 ficheros de
+  tests (296 tests) y Chrome a 390 y 1440 px en tema claro y oscuro (los enlaces de la tarea, del otro lado y del
+  desplegable llevan donde deben).
+- 01/10/2026 — /analyze pasa a ser una interfaz de AED con índice lateral: elegir un CSV del proyecto (los 19, con su
+  ficha de variables) o uno propio y la variable objetivo; resumen (filas, columnas, ausentes, repetidas, distribución
+  del objetivo y avisos de calidad), ficha de cada variable (o tabla), distribuciones por clase con diagrama de caja,
+  matriz de correlación, correlación con el objetivo y dispersión, datos y consultas, y preprocesado en directo con
+  descarga del CSV. Cálculos en `eda.ts` y `preprocess.ts`, con tests. Verificado: `tsc -b`, `pnpm lint`, 47 ficheros
+  de tests y Chrome (Iris, Car, Lymphography, Auto MPG, vino, Titanic, breast cancer, CSV propio, oscuro y móvil).
+- 01/10/2026 — Tablas de dataframes (Plotly) con un solo componente (`N4LDataFrameTable`, `DataFrameTable.ts`):
+  colores del tema, columna objetivo resaltada, índice, tipo de cada columna y altura justa; `describe()` con una
+  fila por columna. /analyze sin `<details>` y con Iris de ejemplo. Entrenador de regresión: el procesado ya aplica
+  lo elegido en el formulario (columnas descartadas, objetivo), la predicción usa el formulario de los modelos
+  preentrenados con valor real y error, y la revisión de regresión avisa de los conjuntos sin modelo (SALARY
+  `salary-extra.csv` fallaba; el modelo de wdbc no encajaba). Verificado: `tsc -b`, `pnpm lint`, 45 ficheros de
+  tests y pruebas en Chrome (Iris en /analyze, AUTO_MPG, todos los modelos de regresión y subida de CSV).
 - 01/10/2026 — Avisos de Rollup de mathjs ("/* #__PURE__ */ … cannot interpret") en la build: mathjs 11 → 12.4.3
   (también el override de danfojs), que ya no trae esas anotaciones. Además, en la build el require("mathjs") de
   danfojs recibe la versión ESM (alias en `vite.config.ts`): antes iban dos copias (CJS entera y ESM) y ahora una,

@@ -24,7 +24,7 @@ export default function N4LTrainButton({ isTraining, progress, isStopping, onSto
   if (!isTraining) {
     return (
       <div className={'d-grid gap-2'}>
-        <Button variant={'primary'} size={'lg'} type={'submit'} disabled={disabled}>
+        <Button variant={'primary'} size={'lg'} type={'submit'} disabled={disabled} data-testid={'Test-TrainButton'}>
           {children}
         </Button>
       </div>

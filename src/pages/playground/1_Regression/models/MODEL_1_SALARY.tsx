@@ -181,8 +181,9 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
     const path = import.meta.env.VITE_PATH + '/models/01-regression/salary'
     const model_salary = await tfjs.loadLayersModel(path + '/2/lr-model-2.json')
     const models: { [key: string]: _Types.CustomModel_t[] } = {
-      'salary-extras.csv': [],
-      'salary.csv'       : [
+      // Sin modelo preentrenado (antes la clave decía 'salary-extras.csv' y la página fallaba al elegirlo)
+      'salary-extra.csv': [],
+      'salary.csv'      : [
         { 
           model     : model_salary,
           model_path: path + '/0/lr-model-0.json', 

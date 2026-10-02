@@ -79,9 +79,9 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
           {showComponent && selectedModelIndex >= 0 &&
             <>{' '}| <Trans i18nKey={'model.__index__'} values={{ index: selectedModelIndex + 1 }} /></>}
         </h3>
-        <div className={'d-flex flex-wrap gap-2'}>
+        <div className={'d-flex flex-wrap gap-2 n4l-card-header-controls'}>
           {showComponent && onChangeInstance !== undefined && instanceOptions.length > 0 &&
-            <div style={{ minWidth: '16rem' }}>
+            <div className={'n4l-instance-select'}>
               <N4LVirtualSelect options={instanceOptions}
                 value={selectedInstance}
                 onChange={onChangeInstance}

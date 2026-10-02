@@ -24,7 +24,8 @@ import ImageClassificationClassify from '@pages/playground/3_ImageClassification
 import { makeImagePrediction, type ImagePrediction_t } from '@pages/playground/3_ImageClassification/utils/imagePrediction'
 import { ImageExplainResults, type ImageExplainResult_t } from '@core/explainability/ImageExplainPanel'
 import { explainErrorKey } from '@core/explainability/explainError'
-import { runImageClassificationExplainLrp, supportsLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
+import { runImageClassificationExplainLrp, supportsLrp, warmUpLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
+import { warmUpModel } from '@core/nn-utils/warmUpModel'
 import ImageClassificationManual from '@pages/playground/3_ImageClassification/ImageClassificationManual'
 import ImageClassificationEditorLayers from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayers'
 import ImageClassificationEditorHyperparameters from '@pages/playground/3_ImageClassification/ImageClassificationEditorHyperparameters'
@@ -136,6 +137,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   // === Explicabilidad (LRP) — en el train solo se ofrece LRP ===
   // Entrada exacta que recibió el modelo (28×28) y la imagen base del mapa de calor.
   const explainInput_ref = useRef<{ imageData: ImageData, imageSrc: string } | null>(null)
+  // Compilar los shaders de LRP del último modelo entrenado (warmUpLrp)
+  const lrpWarmUp_ref = useRef<Promise<void>>(Promise.resolve())
   const [hasExplainInput, setHasExplainInput] = useState(false)
   const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
@@ -226,6 +229,9 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           newModel
         ]
       })
+      // Shaders del modelo nuevo compilados antes de clasificar con él, y los de LRP mientras tanto ("Explicar" espera)
+      await warmUpModel(model)
+      lrpWarmUp_ref.current = warmUpLrp(iModelInstance, model)
       // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
       await selectModel(GeneratedModels.length, model)
       // El entrenamiento ya lo ha descargado: sus imágenes de test pasan al selector
@@ -365,6 +371,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
     setIsCalculo(true)
     try {
+      // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar
+      await lrpWarmUp_ref.current
       const result = await runImageClassificationExplainLrp({
         iModel       : iModelInstance,
         modelInstance: Model,

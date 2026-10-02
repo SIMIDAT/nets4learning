@@ -93,8 +93,8 @@ body {
 /* Índice de las secciones en los entrenadores (escritorio): fijo en su columna mientras se baja por la página */
 .n4l-section-nav {
   position: sticky;
-  top: 1rem;
-  max-height: calc(100vh - 2rem);
+  top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  max-height: calc(100vh - var(--n4l-navbar-height, 0px) - 2rem);
   overflow-y: auto;
   padding-top: 1rem;
 }
@@ -137,9 +137,89 @@ body {
   font-weight: 600;
 }
 
-/* Al saltar desde el índice, el título no queda pegado al borde; el foco del salto con ratón no se dibuja */
+/*
+ * Índice en pantallas estrechas (N4LSectionBar): fijo arriba, aparece al bajar de la cabecera de la página. Una
+ * pestaña por sección que se desliza en horizontal.
+ */
+.n4l-section-bar-wrapper {
+  position: fixed;
+  /* Debajo de la barra de navegación (fija); al esconderse sube por detrás de ella */
+  top: var(--n4l-navbar-height, 0px);
+  left: 0;
+  right: 0;
+  z-index: 1015;
+  background-color: var(--bs-tertiary-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .08);
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform .2s ease, visibility .2s;
+}
+
+.n4l-section-bar-wrapper.is-visible {
+  transform: none;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n4l-section-bar-wrapper {
+    transition: none;
+  }
+}
+
+.n4l-section-bar ol {
+  display: flex;
+  gap: .25rem;
+  margin: 0;
+  padding: .375rem .75rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.n4l-section-bar ol::-webkit-scrollbar {
+  display: none;
+}
+
+.n4l-section-bar-link {
+  display: flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0 .75rem;
+  border-radius: 999px;
+  color: var(--bs-secondary-color);
+  font-size: .9rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.n4l-section-bar-link.active {
+  background-color: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary-text-emphasis);
+  font-weight: 600;
+}
+
+/* Lo que va fijo arriba en las páginas (sticky-top: tarjeta del modelo, editor de hiperparámetros…) se queda debajo
+   de la barra de navegación, que también es fija */
+.sticky-top:not(.navbar) {
+  top: var(--n4l-navbar-height, 0px);
+}
+
+/* El visor de tfjs-vis (panel a la derecha) va por encima de la barra de navegación: si no, ella taparía sus botones */
+#tfjs-visor-container .visor {
+  z-index: 1035;
+}
+
+/* Al saltar desde el índice, el título no queda pegado al borde (ni debajo de la barra del índice en pantallas
+   estrechas); el foco del salto con ratón no se dibuja */
 .n4l-hr-row {
-  scroll-margin-top: 1rem;
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 3.75rem);
+}
+
+@media (min-width: 1200px) {
+  .n4l-hr-row {
+    scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  }
 }
 
 .n4l-hr-row:focus:not(:focus-visible) {
@@ -147,7 +227,9 @@ body {
 }
 
 :root {
-  --bc-drag-and-drop: #e5e5e5
+  --bc-drag-and-drop: #e5e5e5;
+  /* Columna objetivo (la que se predice o clasifica) en las tablas: el mismo que TARGET_COLOR en DataFrameTable.ts */
+  --n4l-target-color: #d63384;
 }
 
 :root[data-theme="dark"] {
@@ -324,11 +406,176 @@ html[data-theme="dark"] .n4l-footer {
   text-align: center;
 }
 
-/* Desplegable de la última miga de pan: mismo tamaño y alineación que el resto de migas */
-.n4l-breadcrumb-toggle {
-  padding: 0;
-  font-size: inherit;
-  vertical-align: baseline;
+/*
+ * Migas de pan (N4LBreadcrumb): enlaces en gris sin subrayar (se subrayan al pasar por encima), separador ›, la miga
+ * actual en el color del texto y siempre en una línea: si no cabe, los nombres se recortan con puntos suspensivos
+ */
+.n4l-breadcrumb {
+  font-size: .9375rem;
+}
+
+.n4l-breadcrumb .breadcrumb {
+  --bs-breadcrumb-divider: "›";
+  --bs-breadcrumb-item-padding-x: .5rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.n4l-breadcrumb .breadcrumb-item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.n4l-breadcrumb .breadcrumb-item > * {
+  min-width: 0;
+}
+
+.n4l-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+/* Si no caben, se recorta antes la lista (modelos preentrenados o entrenar) que el modelo o dataset abierto */
+.n4l-breadcrumb .n4l-breadcrumb-kind {
+  flex-shrink: 4;
+  min-width: 3rem;
+}
+
+.n4l-breadcrumb .n4l-breadcrumb-current {
+  flex-shrink: 1;
+}
+
+.n4l-breadcrumb a:not(.dropdown-item) {
+  color: var(--bs-secondary-color);
+  text-decoration: none;
+}
+
+.n4l-breadcrumb a:not(.dropdown-item):hover,
+.n4l-breadcrumb a:not(.dropdown-item):focus-visible {
+  color: var(--bs-body-color);
+  text-decoration: underline;
+}
+
+.n4l-breadcrumb .breadcrumb-item.active {
+  color: var(--bs-body-color);
+  font-weight: 600;
+}
+
+/* La última miga: el modelo o dataset abierto, como un selector (borde del color de la tarea al pasar por encima) */
+.n4l-breadcrumb-toggle.btn {
+  --bs-btn-padding-y: .125rem;
+  --bs-btn-padding-x: .75rem;
+  --bs-btn-font-size: inherit;
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-bg: var(--bs-body-bg);
+  --bs-btn-border-color: var(--bs-border-color);
+  --bs-btn-border-radius: 999px;
+  --bs-btn-hover-color: var(--bs-body-color);
+  --bs-btn-hover-bg: var(--bs-tertiary-bg);
+  --bs-btn-hover-border-color: var(--n4l-task-color, var(--bs-primary));
+  --bs-btn-active-color: var(--bs-body-color);
+  --bs-btn-active-bg: var(--bs-tertiary-bg);
+  --bs-btn-active-border-color: var(--n4l-task-color, var(--bs-primary));
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  max-width: 100%;
+  text-decoration: none;
+}
+
+.n4l-breadcrumb-toggle.btn::after {
+  flex: none;
+  margin-left: 0;
+}
+
+.n4l-breadcrumb-menu {
+  /* Tan ancho como el nombre más largo (no como el botón), sin salirse de la pantalla */
+  width: max-content;
+  max-width: min(calc(100vw - 2rem), 28rem);
+}
+
+.n4l-breadcrumb-menu .dropdown-item {
+  white-space: normal;
+}
+
+/*
+ * Cabeceras de tarjeta con título y controles (selectores, interruptores, botones): si no caben en una línea, los
+ * controles bajan bajo el título en vez de estrujarlo o salirse de la tarjeta
+ */
+.card-header.d-flex {
+  flex-wrap: wrap;
+  column-gap: .75rem;
+}
+
+/* Selector de instancias de ejemplo (N4LVirtualSelect) en la cabecera de una tarjeta */
+.n4l-instance-select {
+  min-width: 16rem;
+}
+
+@media (max-width: 575.98px) {
+  /* En el móvil los controles de la cabecera bajan a su propia línea y la ocupan entera */
+  .n4l-card-header-controls {
+    flex-basis: 100%;
+  }
+
+  .n4l-instance-select {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  /* La tarea ya es el título de la página: la miga de pan se queda en inicio › lista › modelo o dataset */
+  .n4l-breadcrumb .n4l-breadcrumb-task {
+    display: none;
+  }
+}
+
+/*
+ * Tablas de pocas columnas con acciones (lista de conjuntos de datos): en el móvil cada fila es un bloque, con el
+ * nombre arriba y las acciones debajo, en vez de una tabla que hay que deslizar en horizontal
+ */
+@media (max-width: 575.98px) {
+  .table.n4l-stack-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table.n4l-stack-table tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .75rem;
+    padding: .75rem .25rem;
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+  }
+
+  .table.n4l-stack-table td {
+    padding: 0;
+    border-bottom: 0;
+    box-shadow: none;
+  }
+
+  .table.n4l-stack-table td:first-child {
+    flex-basis: 100%;
+  }
+
+  .table.n4l-stack-table td:empty {
+    display: none;
+  }
+}
+
+/* Pantallas táctiles: el desplegable de la miga de pan, más fácil de pulsar */
+@media (pointer: coarse) {
+  .n4l-breadcrumb-toggle.btn {
+    --bs-btn-padding-y: .375rem;
+  }
 }
 
 html[data-theme="dark"] .body {
@@ -532,4 +779,138 @@ h6 {
 
 .cursor-pointer {
   cursor: pointer;
+}
+/* Tablas de dataframes (Plotly): si las columnas no caben, se desplazan en horizontal */
+.n4l-dataframe-table {
+  overflow-x: auto;
+}
+
+.n4l-dataframe-table-caption {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.25rem;
+  row-gap: 0.25rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-target-swatch {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 0.4em;
+  border-radius: 0.2em;
+  background-color: var(--n4l-target-color);
+  vertical-align: -0.05em;
+}
+
+/* La columna objetivo en las tablas de Bootstrap (N4LTablePagination): cabecera del color y celdas teñidas */
+.n4l-table-paginator-table th.n4l-table-target {
+  --bs-table-bg: var(--n4l-target-color);
+  --bs-table-color: #fff;
+}
+
+.n4l-table-paginator-table td.n4l-table-target {
+  --bs-table-bg: color-mix(in srgb, var(--n4l-target-color) 12%, var(--bs-body-bg));
+  --bs-table-striped-bg: color-mix(in srgb, var(--n4l-target-color) 18%, var(--bs-body-bg));
+}
+
+/* Análisis exploratorio (/analyze) */
+.n4l-target-badge {
+  background-color: var(--n4l-target-color);
+  color: #fff;
+}
+
+.n4l-eda-tile {
+  border-left: 4px solid var(--bs-primary);
+}
+
+.n4l-eda-variable-target {
+  border-color: var(--n4l-target-color);
+  box-shadow: inset 0 3px 0 var(--n4l-target-color);
+}
+
+.n4l-eda-histogram {
+  display: block;
+  width: 100%;
+  height: 56px;
+  fill: var(--bs-primary);
+  opacity: 0.8;
+}
+
+.n4l-eda-histogram-target {
+  fill: var(--n4l-target-color);
+}
+
+.n4l-eda-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+  gap: 0.25rem 0.5rem;
+}
+
+.n4l-eda-stats dt {
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-eda-stats dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.n4l-eda-top {
+  display: grid;
+  grid-template-columns: minmax(0, 8rem) minmax(2rem, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.n4l-eda-top-bar {
+  display: block;
+  height: 0.5rem;
+  min-width: 2px;
+  border-radius: 0.25rem;
+  background-color: var(--bs-secondary);
+  opacity: 0.6;
+}
+
+.n4l-eda-top-bar-target {
+  background-color: var(--n4l-target-color);
+  opacity: 0.85;
+}
+
+.n4l-eda-table .n4l-eda-target-row > * {
+  --bs-table-bg: color-mix(in srgb, var(--n4l-target-color) 10%, var(--bs-body-bg));
+}
+
+.n4l-eda-swatch {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.4em;
+  border-radius: 0.2em;
+  vertical-align: -0.05em;
+}
+
+.n4l-eda-chip {
+  display: inline-block;
+  margin: 0 0.25rem 0.25rem 0;
+  padding: 0.05rem 0.5rem;
+  border-radius: 1rem;
+  background-color: var(--bs-secondary-bg);
+  white-space: nowrap;
+}
+
+.n4l-eda-encodings > div {
+  display: grid;
+  grid-template-columns: minmax(6rem, max-content) 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.n4l-eda-encodings dd {
+  margin: 0;
 }

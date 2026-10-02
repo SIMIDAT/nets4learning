@@ -30,7 +30,8 @@ export function TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION (dataset_process
   const prediction_input_X = _X.values[index_row]
 
   const df_void_input_original = new dfd.DataFrame([], { columns: _dataframe_original.columns, dtypes: _dataframe_original.dtypes })
-  const df_void_input_processed = new dfd.DataFrame([], { columns: _dataframe_processed.columns, dtypes: _dataframe_original.dtypes })
+  // Con sus propios tipos: si se descartaron columnas al procesar, el procesado tiene menos que el original
+  const df_void_input_processed = new dfd.DataFrame([], { columns: _dataframe_processed.columns, dtypes: _dataframe_processed.dtypes })
   const df_void_dataframe_X = new dfd.DataFrame([], { columns: _dataframe_X.columns, dtypes: _dataframe_X.dtypes })
   const df_void_X = new dfd.DataFrame([], { columns: _X.columns, dtypes: _X.dtypes })
 

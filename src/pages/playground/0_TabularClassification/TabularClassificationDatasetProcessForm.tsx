@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as dfd from 'danfojs'
 
 import AlertHelper from '@utils/alertHelper'
 import { VERBOSE } from '@/CONSTANTS'
-import { TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1, TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2 } from '@/CONSTANTS_DanfoJS'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import * as _Types from '@core/types'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import N4LDataFrameTable from '@components/dataframe/N4LDataFrameTable'
 
 // @formatter:off
 const DEFAULT_OPTIONS = [
@@ -86,17 +86,11 @@ export default function TabularClassificationDatasetProcessForm() {
   const prefix = 'form-dataframe.'
 
 
-  useEffect(() => {
-    datasets.datasets[datasets.index]
-      .dataframe_original
-      .plot('plot_original')
-      .table({
-        config: TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1,
-        layout: {
-          title: t('dataframe-original'),
-        },
-      })
-  }, [datasets, t])
+  // Lo procesado: cada columna con la transformación que se le aplicó
+  const datasetSelected = datasets.datasets[datasets.index]
+  const processedSubtitles = useMemo(() => Object.fromEntries(
+    (datasetSelected.dataset_transforms ?? []).map(({ column_name, column_transform }) => [column_name, column_transform]),
+  ), [datasetSelected.dataset_transforms])
 
   const handleChange_ColumnTransform = (e: React.ChangeEvent<HTMLSelectElement>, columnName: string) => {
     setListColumnNameTransformations((prevState) =>
@@ -107,11 +101,17 @@ export default function TabularClassificationDatasetProcessForm() {
   }
 
   const handleChange_ColumnNameTarget = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const previousTarget = columnNameTarget
     setColumnNameTarget(e.target.value)
+    // El nuevo objetivo se codifica con label encoder; el anterior vuelve a la transformación de su tipo
     setListColumnNameTransformations((prevState) =>
-      prevState.map((oldColumn) =>
-        (oldColumn.column_name === e.target.value) ? { ...oldColumn, column_transform: 'label-encoder' } : oldColumn,
-      ),
+      prevState.map((oldColumn) => {
+        if (oldColumn.column_name === e.target.value) return { ...oldColumn, column_transform: 'label-encoder' }
+        if (oldColumn.column_name === previousTarget) {
+          return { ...oldColumn, column_transform: (oldColumn.column_type === 'string' ? 'label-encoder' : oldColumn.column_type) as _Types.ColumnTransform_t }
+        }
+        return oldColumn
+      }),
     )
   }
 
@@ -169,15 +169,6 @@ export default function TabularClassificationDatasetProcessForm() {
       y                 : y,
     }
 
-    dataframe_processed
-      .plot('plot_processed')
-      .table({
-        config: TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2,
-        layout: {
-          title: t('dataframe-processed'),
-        },
-      })
-
     setDatasets((prevDatasets) => {
       return {
         ...prevDatasets,
@@ -219,7 +210,7 @@ export default function TabularClassificationDatasetProcessForm() {
             <main>
               <Row>
                 <Col>
-                  <div id="plot_original" />
+                  <N4LDataFrameTable dataframe={datasetSelected.dataframe_original} target={columnNameTarget} subtitles={'dtype'} />
                 </Col>
               </Row>
             </main>
@@ -320,7 +311,10 @@ export default function TabularClassificationDatasetProcessForm() {
             <main>
               <Row>
                 <Col>
-                  <div id="plot_processed" />
+                  {datasetSelected.is_dataset_processed &&
+                    <N4LDataFrameTable dataframe={datasetSelected.dataframe_processed}
+                      target={datasetSelected.data_processed?.column_name_target ?? null}
+                      subtitles={processedSubtitles} />}
                 </Col>
               </Row>
             </main>

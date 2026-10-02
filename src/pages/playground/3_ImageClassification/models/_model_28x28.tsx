@@ -42,10 +42,10 @@ export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFI
   }
 
   async CLASSIFY(model: tfjs.LayersModel, imageData: ImageData): Promise<{ predictions: number[]; index: number }> {
-    const predictions = Array.from(tfjs.tidy(() => {
-      const predTensor = model.predict(imageDataToMnistTensor4d(imageData)) as tfjs.Tensor
-      return predTensor.dataSync()
-    }))
+    const predTensor = tfjs.tidy(() => model.predict(imageDataToMnistTensor4d(imageData)) as tfjs.Tensor)
+    // Lectura asíncrona: dataSync detiene el hilo principal hasta que la GPU termina
+    const predictions = Array.from(await predTensor.data())
+    predTensor.dispose()
     const index = predictions.indexOf(Math.max(...predictions))
     return { predictions, index }
   }
@@ -144,7 +144,8 @@ export default abstract class I_MODEL_IMAGE_28X28 extends I_MODEL_IMAGE_CLASSIFI
 
   /** Dataset (ya descargado si se ha entrenado): sus imágenes de test se pueden clasificar desde el selector */
   async LOAD_DATASET(): Promise<SpriteImageDataset> {
-    return loadSpriteDataset(this.DATASET)
+    // Solo las imágenes de test: es lo que enseña el selector (si el entero ya se cargó al entrenar, se usa ese)
+    return loadSpriteDataset(this.DATASET, { testOnly: true })
   }
 
   async TRAIN_MODEL(params: ParamsTrainImage_t, progress: TrainProgress_t = {}): Promise<{ model: tfjs.Sequential, history: tfjs.History, evaluation: ClassificationEvaluation_t }> {

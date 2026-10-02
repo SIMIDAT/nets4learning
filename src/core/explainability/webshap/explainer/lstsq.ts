@@ -4,7 +4,6 @@
  */
 
 import math from '../utils/math-import';
-import { tensor2d } from '@tensorflow/tfjs';
 
 /**
  * Solves linear least squares problems for given input matrix `x`,
@@ -41,33 +40,51 @@ export const lstsq = (
     throw Error('The size of w is neither (m ,1) nor (m, m).');
   }
 
-  // If w is a vector, we first transform it into a diagonal matrix
-  let wMat = w;
-  if (w.size()[1] === 1) {
-    const values = math.squeeze(w).toArray();
-    wMat = math.matrix(math.diag(values));
+  // Nets4Learning: X'WX y X'WY en JavaScript, sin pasar por tensores. Antes se construía W como matriz diagonal m×m
+  // (con 500 muestras, 250 000 elementos), se multiplicaba con TF.js, se leía con arraySync (que detiene el hilo
+  // principal hasta que la GPU termina) y no se liberaba ningún tensor. Con W diagonal basta O(m·n²).
+  const X = x.toArray() as number[][];
+  const Y = y.toArray() as number[][];
+  const W = w.toArray() as number[][];
+  const m = X.length;
+  const n = m > 0 ? X[0].length : 0;
+  // Un peso por muestra (W diagonal) o W completa (m×m); con una sola muestra son lo mismo
+  const isVector = w.size()[1] === 1;
+
+  const left: number[][] = Array.from({ length: n }, () => new Array<number>(n).fill(0));
+  const right: number[] = new Array<number>(n).fill(0);
+  if (isVector) {
+    for (let k = 0; k < m; k++) {
+      const wk = W[k][0];
+      if (wk === 0) continue;
+      const row = X[k];
+      const wy = wk * Y[k][0];
+      for (let i = 0; i < n; i++) {
+        const wxi = wk * row[i];
+        if (wxi === 0) continue;
+        right[i] += row[i] * wy;
+        for (let j = i; j < n; j++) left[i][j] += wxi * row[j];
+      }
+    }
+    for (let i = 0; i < n; i++) for (let j = 0; j < i; j++) left[i][j] = left[j][i];
+  } else {
+    // W completa (m×m): primero X'W (n×m)
+    const xtw: number[][] = Array.from({ length: n }, (_, i) =>
+      Array.from({ length: m }, (_, k) => {
+        let sum = 0;
+        for (let l = 0; l < m; l++) sum += X[l][i] * W[l][k];
+        return sum;
+      })
+    );
+    for (let i = 0; i < n; i++) {
+      for (let k = 0; k < m; k++) {
+        right[i] += xtw[i][k] * Y[k][0];
+        for (let j = 0; j < n; j++) left[i][j] += xtw[i][k] * X[k][j];
+      }
+    }
   }
 
-  // Matrix multiplication is too slow in math.js, we use ml-matrix instead
-  const xTensor = tensor2d(
-    x.toArray() as number[][],
-    x.size() as [number, number]
-  );
-  const wTensor = tensor2d(
-    wMat.toArray() as number[][],
-    wMat.size() as [number, number]
-  );
-  const yTensor = tensor2d(
-    y.toArray() as number[][],
-    y.size() as [number, number]
-  );
-
-  const left = xTensor.transpose().matMul(wTensor).matMul(xTensor);
-  const right = xTensor.transpose().matMul(wTensor).matMul(yTensor);
-
-  // Convert `left` back to math.js for inversion
-  const left2D = left.arraySync() as number[][];
-  const leftMat = math.matrix(left2D);
+  const leftMat = math.matrix(left);
   const leftDet = math.det(leftMat);
 
   // Invertible matrix
@@ -80,13 +97,7 @@ export const lstsq = (
     leftInverse = math.pinv(leftMat);
   }
 
-  const leftInverseTensor = tensor2d(
-    leftInverse.toArray() as number[][],
-    leftInverse.size() as [number, number]
-  );
-  const result = leftInverseTensor.matMul(right);
-
-  // Convert the result Matrix to math.Matrix
-  const result2D = result.arraySync() as number[][];
-  return math.matrix(result2D);
+  const inverse = leftInverse.toArray() as number[][];
+  const result = inverse.map((row) => [row.reduce((sum, value, j) => sum + value * right[j], 0)]);
+  return math.matrix(result);
 };

@@ -24,4 +24,21 @@ describe('Page Home', () => {
     const { findByTestId } = render(<MemoryRouter><Home /></MemoryRouter>)
     expect(await findByTestId('Test-GoTo-SelectModel-LinearRegression')).toBeInTheDocument()
   })
+
+  test('?task= (la miga de pan de la tarea) abre esa tarea y la recuerda', async () => {
+    localStorage.setItem('selected-task', 'tabular-classification')
+    const first = render(<MemoryRouter initialEntries={['/?task=regression']}><Home /></MemoryRouter>)
+    expect(await first.findByTestId('Test-GoTo-SelectModel-LinearRegression')).toBeInTheDocument()
+    first.unmount()
+
+    const { findByTestId } = render(<MemoryRouter><Home /></MemoryRouter>)
+    expect(await findByTestId('Test-GoTo-SelectModel-LinearRegression')).toBeInTheDocument()
+  })
+
+  test('con ?task= se puede elegir otra tarea', async () => {
+    const { getByTestId, queryByTestId } = render(<MemoryRouter initialEntries={['/?task=regression']}><Home /></MemoryRouter>)
+    fireEvent.click(getByTestId('Test-InitialMenu-TabularClassification'))
+    expect(queryByTestId('Test-GoTo-SelectModel-LinearRegression')).not.toBeInTheDocument()
+    expect(localStorage.getItem('selected-task')).toBe('tabular-classification')
+  })
 })

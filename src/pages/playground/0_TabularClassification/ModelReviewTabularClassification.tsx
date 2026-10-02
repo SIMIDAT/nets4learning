@@ -276,7 +276,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                 <h3>
                   <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-features"} />
                 </h3>
-                <div style={{ minWidth: "16rem" }}>
+                <div className={"n4l-card-header-controls n4l-instance-select"}>
                   <N4LVirtualSelect options={instanceOptions}
                     value={instanceMatches ? selectedInstance : null}
                     onChange={handleChange_Instance}

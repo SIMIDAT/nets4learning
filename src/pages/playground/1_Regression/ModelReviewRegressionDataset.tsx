@@ -1,14 +1,13 @@
-import { useEffect, useId, useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useMemo, useState } from 'react'
+import { Trans } from 'react-i18next'
 import { Card, Nav, Tab } from 'react-bootstrap'
 
 import type * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
-import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
 import { VERBOSE } from '@/CONSTANTS'
-import N4LSummary from '@components/summary/N4LSummary'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 
 type ModelReviewRegressionDatasetProps = {
   /** undefined mientras se carga */
@@ -23,22 +22,14 @@ type Tab_t = 'original' | 'processed'
  */
 export default function ModelReviewRegressionDataset({ dataset }: ModelReviewRegressionDatasetProps) {
   const prefix = 'pages.playground.1-regression.'
-  const { t } = useTranslation()
-  const describePlotID = useId()
   const [activeTab, setActiveTab] = useState<Tab_t>('original')
 
   const originalRows = useMemo(() => (dataset ? DataFrameUtils.DataFrameIterRows(dataset.dataframe_original) : []), [dataset])
   const processedRows = useMemo(() => (dataset ? DataFrameUtils.DataFrameIterRows(dataset.dataframe_processed) : []), [dataset])
 
-  // La descripción la dibuja danfo en su div, que solo existe con la pestaña abierta
-  useEffect(() => {
-    if (activeTab !== 'processed' || !dataset || document.getElementById(describePlotID) === null) return
-    DataFrameUtils.DataFrameDescribePlot(dataset.dataframe_processed, describePlotID, {
-      config   : TABLE_PLOT_STYLE_CONFIG,
-      emptyText: t('dataframe.describe.no-numeric'),
-      transpose: true,
-    })
-  }, [activeTab, dataset, describePlotID, t])
+  // La variable que se predice: se resalta en las tablas y en las estadísticas
+  const target = dataset?.data_processed?.column_name_target ?? null
+  const targetIndexIn = (columns: string[]) => (target === null ? -1 : columns.indexOf(target))
 
   if (VERBOSE) console.debug('render ModelReviewRegressionDataset')
   return (
@@ -59,7 +50,8 @@ export default function ModelReviewRegressionDataset({ dataset }: ModelReviewReg
           {dataset && <Tab.Content>
             <Tab.Pane eventKey={'original'}>
               <div className={'overflow-x-auto'}>
-                <N4LTablePagination data_head={dataset.dataframe_original.columns} data_body={originalRows} />
+                <N4LTablePagination data_head={dataset.dataframe_original.columns} data_body={originalRows}
+                  highlight_column={targetIndexIn(dataset.dataframe_original.columns)} />
               </div>
             </Tab.Pane>
             <Tab.Pane eventKey={'processed'} mountOnEnter={true}>
@@ -69,11 +61,12 @@ export default function ModelReviewRegressionDataset({ dataset }: ModelReviewReg
                   components={{ code: <code /> }} />
               </p>
               <div className={'overflow-x-auto'}>
-                <N4LTablePagination data_head={dataset.dataframe_processed.columns} data_body={processedRows} />
+                <N4LTablePagination data_head={dataset.dataframe_processed.columns} data_body={processedRows}
+                  highlight_column={targetIndexIn(dataset.dataframe_processed.columns)} />
               </div>
               <hr />
-              <N4LSummary title={<Trans i18nKey={prefix + 'details.description-processed.describe'} />}
-                info={<div id={describePlotID}></div>} />
+              <h4 className={'h5'}><Trans i18nKey={prefix + 'details.description-processed.describe'} /></h4>
+              <N4LDataFrameDescribe dataframe={dataset.dataframe_processed} target={target} />
             </Tab.Pane>
           </Tab.Content>}
         </Card.Body>

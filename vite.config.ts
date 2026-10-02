@@ -1,7 +1,7 @@
-/// <reference types="vitest/config" />
 /// <reference types="vite/client" />
 /// <reference types="vite-plugin-svgr/client" />
 import { defineConfig, loadEnv, type Plugin } from "vite"
+import { configDefaults } from "vitest/config"
 import react from "@vitejs/plugin-react"
 import fs from "fs"
 import path from "path"
@@ -70,6 +70,10 @@ export default defineConfig(({ mode, command }) => {
         }],
       },
     },
+    // Workers de módulo (new Worker(new URL(…, import.meta.url), { type: 'module' })): mismo formato que la app
+    worker: {
+      format: "es" as const,
+    },
     resolve: {
       alias: {
         "@"                   : path.resolve(__dirname, "src"),
@@ -109,6 +113,8 @@ export default defineConfig(({ mode, command }) => {
       globals    : true,
       environment: "jsdom",
       setupFiles : "./tests/setupTests.ts",
+      // e2e/ son las pruebas de Playwright (pnpm test:e2e), que van en un navegador de verdad
+      exclude    : [...configDefaults.exclude, "e2e/**"],
     },
     build: {
       // Sin manualChunks: Rollup divide el código según las rutas cargadas con lazy(), así

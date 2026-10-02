@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useId } from 'react'
+import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -6,12 +6,12 @@ import { DataFrame } from 'danfojs'
 
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
-import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LSummary from '@components/summary/N4LSummary'
+import N4LDataFrameTable from '@components/dataframe/N4LDataFrameTable'
+import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 import { useRegressionContext } from '@context/useRegressionContext'
-import type { DatasetProcessed_t } from '@core/types'
 
 const EMPTY_DATAFRAME = new DataFrame()
 
@@ -20,9 +20,6 @@ export default function RegressionDatasetShow() {
     datasets,
     setDatasets,
   } = useRegressionContext()
-
-  const dataframe_processed_plotID = useId()
-  const dataframe_processed_describe_plotID = useId()
 
   const { t } = useTranslation()
 
@@ -59,32 +56,8 @@ export default function RegressionDatasetShow() {
   }
 
 
-  const updateDataFrameLocal = useCallback(async (_datasetSelected: DatasetProcessed_t) => {
-    if (!showDataset) {
-      if (VERBOSE) console.debug('!showDataset')
-      return
-    }
-    const dataframe_processed = _datasetSelected.dataframe_processed
-
-    dataframe_processed
-      .plot(dataframe_processed_plotID)
-      .table({ config: TABLE_PLOT_STYLE_CONFIG })
-    DataFrameUtils.DataFrameDescribePlot(dataframe_processed, dataframe_processed_describe_plotID, {
-      config   : TABLE_PLOT_STYLE_CONFIG,
-      emptyText: t('dataframe.describe.no-numeric'),
-      transpose: true,
-    })
-  }, [showDataset, dataframe_processed_plotID, dataframe_processed_describe_plotID, t])
-
-  useEffect(() => {
-    if (VERBOSE) console.debug('useEffect [datasets, updateDataFrameLocal]')
-    const init = async () => {
-      if (datasets.data.length >= 1 && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0) {
-        await updateDataFrameLocal(datasets.data[datasets.index])
-      }
-    }
-    init().then(() => undefined)
-  }, [datasets, updateDataFrameLocal])
+  // Columna que se predice: se resalta en las tablas y en las estadísticas
+  const target = datasetSelected?.data_processed?.column_name_target ?? null
 
   if (VERBOSE) console.debug('render RegressionDatasetShow')
   return <>
@@ -128,7 +101,8 @@ export default function RegressionDatasetShow() {
             <Col className={'overflow-x-auto'}>
               <N4LTablePagination
                 data_head={dataframe.columns}
-                data_body={DataFrameUtils.DataFrameIterRows(dataframe)} />
+                data_body={DataFrameUtils.DataFrameIterRows(dataframe)}
+                highlight_column={target === null ? -1 : dataframe.columns.indexOf(target)} />
             </Col>
           </Row>
           <hr />
@@ -142,9 +116,9 @@ export default function RegressionDatasetShow() {
               </>}
               <N4LSummary
                 title={<Trans i18nKey={prefix + 'details.dataframe-processed'} />}
-                info={<div id={dataframe_processed_plotID}></div>} />
+                info={datasetSelected && <N4LDataFrameTable dataframe={datasetSelected.dataframe_processed} target={target} subtitles={'dtype'} />} />
               <N4LSummary title={<Trans i18nKey={prefix + 'details.description-processed'} />}
-                info={<div id={dataframe_processed_describe_plotID}></div>} />
+                info={datasetSelected && <N4LDataFrameDescribe dataframe={datasetSelected.dataframe_processed} target={target} />} />
             </Col>
           </Row>
         </>}

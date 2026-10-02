@@ -554,86 +554,83 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
               <Card className={'mt-3'}>
-                <Card.Header>
-                  <div className='d-flex align-items-center justify-content-between'>
-                    <h3>
-                      <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
-                    </h3>
-                    <div className='d-flex align-items-center justify-content-end'>
+                <Card.Header className={'d-flex align-items-center justify-content-between'}>
+                  <h3>
+                    <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
+                  </h3>
+                  <div className={'d-flex align-items-center gap-2 n4l-card-header-controls'}>
 
-                      <div key={'default-switch'}>
-                        <Form.Check
-                          type="switch"
-                          id={'default-switch'}
-                          reverse={true}
-                          name={'switch-webcam'}
-                          label={t(
-                            'datasets-models.2-object-detection.interface.process-webcam.button'
-                          )}
-                          checked={isCameraEnable}
-                          disabled={isLoading || cameraPermission === 'denied'}
-                          onChange={handleChange_Camera}
-                        />
-                      </div>
-                      <Form.Group
-                        controlId={'select-device'}
-                        className={'ms-3 w-50'}
+                    <div key={'default-switch'}>
+                      <Form.Check
+                        type="switch"
+                        id={'default-switch'}
+                        reverse={true}
+                        name={'switch-webcam'}
+                        label={t(
+                          'datasets-models.2-object-detection.interface.process-webcam.button'
+                        )}
+                        checked={isCameraEnable}
+                        disabled={isLoading || cameraPermission === 'denied'}
+                        onChange={handleChange_Camera}
+                      />
+                    </div>
+                    <Form.Group
+                      controlId={'select-device'}
+                      className={'flex-grow-1'}
+                    >
+                      <Form.Select
+                        aria-label={'select-device'}
+                        size={'sm'}
+                        value={deviceId}
+                        disabled={disabledPermissionsCamera()}
+                        onChange={handleChange_Device}
                       >
-                        <Form.Select
-                          aria-label={'select-device'}
-                          size={'sm'}
-                          value={deviceId}
-                          disabled={disabledPermissionsCamera()}
-                          onChange={handleChange_Device}
-                        >
-                          {isWebView && (
-                            <>
+                        {isWebView && (
+                          <>
+                            <option value={'default'} disabled>
+                              <Trans
+                                i18nKey={'Default Android permissions'}
+                              />
+                            </option>
+                          </>
+                        )}
+                        {!isWebView && (
+                          <>
+                            {cameraPermission === 'granted' && (
                               <option value={'default'} disabled>
-                                <Trans
-                                  i18nKey={'Default Android permissions'}
-                                />
+                                <Trans i18nKey={'Default'} />
                               </option>
-                            </>
-                          )}
-                          {!isWebView && (
-                            <>
-                              {cameraPermission === 'granted' && (
+                            )}
+                            {(cameraPermission === 'prompt' ||
+                              cameraPermission === 'denied') && (
                                 <option value={'default'} disabled>
-                                  <Trans i18nKey={'Default'} />
+                                  <Trans i18nKey={'Need permissions'} />
                                 </option>
                               )}
-                              {(cameraPermission === 'prompt' ||
-                                cameraPermission === 'denied') && (
-                                  <option value={'default'} disabled>
-                                    <Trans i18nKey={'Need permissions'} />
-                                  </option>
-                                )}
-                            </>
-                          )}
-                          {devices.map((device, index) => {
-                            return (
-                              <option
-                                key={'device-id-' + index}
-                                value={device.deviceId}
-                              >
-                                {device.label !== ''
-                                  ? device.label
-                                  : 'Camera ' + index}
-                              </option>
-                            )
-                          })}
-                        </Form.Select>
-                      </Form.Group>
-                      <Button size={'sm'}
-                        disabled={!isCameraEnable}
-                        className='ms-2'
-                        variant={'outline-primary'}
-                        aria-label={t('ui.take-screenshot')}
-                        title={t('ui.take-screenshot')}
-                        onClick={handleClick_getScreenshot}>
-                        <IconCamera aria-hidden={true} />
-                      </Button>
-                    </div>
+                          </>
+                        )}
+                        {devices.map((device, index) => {
+                          return (
+                            <option
+                              key={'device-id-' + index}
+                              value={device.deviceId}
+                            >
+                              {device.label !== ''
+                                ? device.label
+                                : 'Camera ' + index}
+                            </option>
+                          )
+                        })}
+                      </Form.Select>
+                    </Form.Group>
+                    <Button size={'sm'}
+                      disabled={!isCameraEnable}
+                      variant={'outline-primary'}
+                      aria-label={t('ui.take-screenshot')}
+                      title={t('ui.take-screenshot')}
+                      onClick={handleClick_getScreenshot}>
+                      <IconCamera aria-hidden={true} />
+                    </Button>
                   </div>
                 </Card.Header>
                 <Card.Body>

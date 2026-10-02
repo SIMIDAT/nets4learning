@@ -1,11 +1,13 @@
 import * as tfvis from '@tensorflow/tfjs-vis'
 import * as tfjs from '@tensorflow/tfjs'
-import { createOptimizer, createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
-import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 import { TAB_03_IMAGE_CLASSIFICATION } from '@/CONSTANTS'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-import type { ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
+import { forwardProgress, type ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
 import type { Layer_t } from '@/types/types'
+import { getActiveTFBackend } from '@core/tfBackend'
+import { showTrainingVisor } from '@core/nn-utils/trainingVisor'
+import { ModelDefinitionError, buildImageModel, compileModel, modelFromArtifacts } from '@core/training/buildModels'
+import { TrainingWorkerUnavailableError, trainInWorker } from '@core/training/trainingClient'
 import { loadSpriteDataset, type SpriteImageDataset, type SpriteDatasetConfig_t } from '../models/SpriteImageDataset'
 
 export type ParamsTrainImage_t = {
@@ -50,11 +52,7 @@ async function showExamples(data: SpriteImageDataset) {
  * Entrena y devuelve, además del historial, la clase real y la predicha de cada imagen de validación (las mismas con las
  * que se calcula val_loss): son la matriz de confusión de la tabla de modelos.
  */
-async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t): Promise<{ history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
-  const fitCallbacks = tfvis.show.fitCallbacks(
-    { name: 'Training: Train Model', tab: TAB_03_IMAGE_CLASSIFICATION },
-    ['loss', 'val_loss', 'acc', 'val_acc'],
-  )
+async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t, fitCallbacks: VisCallbacks_t): Promise<{ history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
   const [trainXs, trainYs] = tfjs.tidy(() => {
     const d = data.nextTrainBatch(TRAIN_DATA_SIZE)
     return [d.xs.reshape([TRAIN_DATA_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH, 1]), d.labels]
@@ -111,52 +109,12 @@ async function showEvaluation({ labels, predictions }: ClassificationEvaluation_
   }
 }
 
-function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
-  const model = tfjs.sequential()
-  const optimizer = createOptimizer(idOptimizer, { learningRate, momentum: 0.99 })
-  const loss = createLoss(idLoss, {})
-  const metrics = createMetricsList(idMetrics_list, {})
+type VisCallbacks_t = ReturnType<typeof tfvis.show.fitCallbacks>
 
-  for (const [index, layer] of layerList.entries()) {
-    const activation = layer.activation ?? undefined
-    if (activation !== undefined && !isActivation(activation)) {
-      throw new Error(`Layer ${index + 1} activation is not valid (${activation})`)
-    }
-    switch (layer._class) {
-      case 'conv2d': {
-        if (layer.kernelSize === undefined || layer.filters === undefined) {
-          throw new Error(`Layer ${index + 1}: conv2d needs kernelSize and filters`)
-        }
-        model.add(tfjs.layers.conv2d({
-          ...(layer._protected ? { inputShape: layer.inputShape } : {}),
-          kernelSize: layer.kernelSize,
-          filters   : layer.filters,
-          activation,
-        }))
-        break
-      }
-      case 'maxPooling2d': {
-        model.add(tfjs.layers.maxPooling2d({ poolSize: layer.poolSize, strides: layer.strides }))
-        break
-      }
-      case 'flatten': {
-        model.add(tfjs.layers.flatten({}))
-        break
-      }
-      case 'dense': {
-        if (layer.units === undefined) {
-          throw new Error(`Layer ${index + 1}: dense needs units`)
-        }
-        model.add(tfjs.layers.dense({ units: layer.units, activation }))
-        break
-      }
-      default: {
-        console.error('Error, layer not valid', { layer })
-        break
-      }
-    }
-  }
-  model.compile({ optimizer, loss, metrics })
+/** La red de las capas del editor, compilada (momento de 0,99 en el optimizador, como siempre en imágenes) */
+function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
+  const model = buildImageModel(layerList)
+  compileModel(model, { idOptimizer, idLoss, idMetrics: idMetrics_list, learningRate, momentum: 0.99 })
   return model
 }
 
@@ -166,17 +124,70 @@ function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLo
  * predicha de cada imagen de validación.
  */
 export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, classNames: string[], params: ParamsTrainImage_t, progress: TrainProgress_t = {}) {
-  const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
+  const { layers } = params
 
-  tfvis.visor().open()
-  const data = await loadSpriteDataset(dataset)
-  await showExamples(data)
+  // Abierto en escritorio; en el móvil se dibuja cerrado (se abre con "Abrir visor")
+  showTrainingVisor()
+  // Los ejemplos del visor salen de las imágenes de test (el conjunto entero lo decodifica quien entrena)
+  await showExamples(await loadSpriteDataset(dataset, { testOnly: true }))
 
-  const model = getModel(layers, idOptimizer, idLoss, idMetricsList, learningRate)
-  await tfvis.show.modelSummary({ name: 'Model summary', tab: TAB_03_IMAGE_CLASSIFICATION }, model)
+  // El resumen del visor con la misma red (sin entrenar) antes de empezar
+  const summaryModel = buildImageModel(layers)
+  await tfvis.show.modelSummary({ name: 'Model summary', tab: TAB_03_IMAGE_CLASSIFICATION }, summaryModel)
+  summaryModel.dispose()
   tfvis.visor().setActiveTab(TAB_03_IMAGE_CLASSIFICATION)
+  const fitCallbacks = tfvis.show.fitCallbacks(
+    { name: 'Training: Train Model', tab: TAB_03_IMAGE_CLASSIFICATION },
+    ['loss', 'val_loss', 'acc', 'val_acc'],
+  )
 
-  const { history, evaluation } = await train(model, data, numberEpochs, progress)
-  await showEvaluation(evaluation, classNames)
+  let result: { model: tfjs.Sequential, history: tfjs.History, evaluation: ClassificationEvaluation_t } | null = null
+  try {
+    result = await trainImageClassifierInWorker(dataset, params, progress, fitCallbacks)
+  } catch (error) {
+    if (error instanceof ModelDefinitionError || !(error instanceof TrainingWorkerUnavailableError)) throw error
+    console.warn('Training in the main thread:', error.message)
+  }
+  result ??= await trainImageClassifierInMainThread(dataset, params, progress, fitCallbacks)
+  await showEvaluation(result.evaluation, classNames)
+  return result
+}
+
+/**
+ * En un worker (TODO-worker.md): descarga y decodifica el sprite y entrena allí, así la página no se bloquea. El
+ * progreso llega por mensajes al visor y a la página
+ */
+async function trainImageClassifierInWorker(dataset: SpriteDatasetConfig_t, params: ParamsTrainImage_t, progress: TrainProgress_t, fitCallbacks: VisCallbacks_t) {
+  const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
+  const result = await trainInWorker('trainImages', {
+    backend      : getActiveTFBackend(),
+    imagesUrl    : new URL(dataset.imagesUrl, document.baseURI).href,
+    labelsUrl    : new URL(dataset.labelsUrl, document.baseURI).href,
+    numElements  : dataset.numElements,
+    numTrain     : dataset.numTrain,
+    layers,
+    compile      : { idOptimizer, idLoss, idMetrics: idMetricsList, learningRate, momentum: 0.99 },
+    numberOfEpoch: numberEpochs,
+    trainSize    : TRAIN_DATA_SIZE,
+    testSize     : TEST_DATA_SIZE,
+    batchSize    : BATCH_SIZE,
+  }, {
+    shouldStop: progress.shouldStop,
+    onProgress: forwardProgress(fitCallbacks, progress.onEpochEnd),
+  })
+  if (result.evaluation === undefined) throw new Error('The worker did not return the evaluation')
+  return {
+    model     : await modelFromArtifacts(result.artifacts),
+    history   : result.history as unknown as tfjs.History,
+    evaluation: result.evaluation,
+  }
+}
+
+/** Sin worker: todo aquí, como antes */
+async function trainImageClassifierInMainThread(dataset: SpriteDatasetConfig_t, params: ParamsTrainImage_t, progress: TrainProgress_t, fitCallbacks: VisCallbacks_t) {
+  const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
+  const data = await loadSpriteDataset(dataset)
+  const model = getModel(layers, idOptimizer, idLoss, idMetricsList, learningRate)
+  const { history, evaluation } = await train(model, data, numberEpochs, progress, fitCallbacks)
   return { model, history, evaluation }
 }

@@ -29,10 +29,12 @@ import { explainErrorKey } from "@core/explainability/explainError"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
 import N4LClassificationChart from "@components/neural-network/N4LClassificationChart"
 import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
+import { warmUpModel } from "@core/nn-utils/warmUpModel"
 import N4LEmptyState from "@components/loading/N4LEmptyState"
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
+  warmUpLrp,
   supportsLrp,
 } from "@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain"
 
@@ -53,6 +55,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const [isLoading, setIsLoading] = useState(true)
 
   // Imagen clasificada (también es la base del mapa de calor de la explicación)
+  // Compilar los shaders de LRP tras cargar el modelo (warmUpLrp)
+  const lrpWarmUp_ref = useRef<Promise<void>>(Promise.resolve())
   const canvas_original_image_ref = useRef<HTMLCanvasElement>(null)
   const result_ref = useRef<HTMLDivElement>(null)
   const [result, setResult] = useState<Result_t | null>(null)
@@ -87,9 +91,14 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        setModel(await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel)
+        const _model = await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel
+        // Shaders compilados antes de poder clasificar: la primera clasificación ya no bloquea la página
+        if (_model instanceof tfjs.LayersModel) await warmUpModel(_model)
+        setModel(_model)
         setLrpAvailable(supportsLrp(_iModelInstance))
         setIsLoading(false)
+        // Los de LRP, mientras tanto (ya se puede clasificar); "Explicar" espera a que acaben
+        if (_model instanceof tfjs.LayersModel) lrpWarmUp_ref.current = warmUpLrp(_iModelInstance, _model)
         await alertHelper.alertSuccess(t("model-loaded-successfully"))
       } catch (error) {
         console.error("Error", error)
@@ -238,6 +247,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
     setIsCalculo(true)
     try {
+      // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar
+      if (useLrp) await lrpWarmUp_ref.current
       const result = useLrp
         ? await runImageClassificationExplainLrp({ iModel: iModelInstance, modelInstance, imageData })
         : await runImageClassificationExplain({ iModel: iModelInstance, modelInstance, imageData, ...shapOptions })
@@ -322,12 +333,12 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   <Trans i18nKey={prefix + "process-examples.title"} />
                 </h2>
                 {isDrawable && testDataset === null &&
-                  <Button size={"sm"} variant={"outline-primary"} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null}>
+                  <Button size={"sm"} variant={"outline-primary"} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={"Test-LoadTestDataset"}>
                     {isLoadingTestDataset && <Spinner size={"sm"} className={"me-2"} />}
                     <Trans i18nKey={prefix + (isLoadingTestDataset ? "test-images.loading" : "test-images.load")} />
                   </Button>}
                 {isDrawable && testDataset !== null &&
-                  <div style={{ minWidth: "16rem" }}>
+                  <div className={"n4l-card-header-controls n4l-instance-select"}>
                     <N4LVirtualSelect options={testOptions}
                       value={selectedInstance}
                       onChange={handleChange_TestImage}
@@ -459,6 +470,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                     variant={"outline-primary"}
                     onClick={handleRequest_ExplainPrediction}
                     disabled={isCalculo || !hasExplainInput}
+                    data-testid={"Test-ExplainButton"}
+                    data-calculating={isCalculo}
                   >
                     {isCalculo
                       ? t("ui.explain.calculating")

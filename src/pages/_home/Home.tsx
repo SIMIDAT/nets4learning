@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useTranslation, Trans } from 'react-i18next'
 import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 
@@ -19,6 +19,14 @@ const readSelectedTask = (): TASKS_TYPE_V => {
     // Sin localStorage (modo privado, almacenamiento bloqueado…)
   }
   return TASKS.TABULAR_CLASSIFICATION
+}
+
+const saveSelectedTask = (task: TASKS_TYPE_V) => {
+  try {
+    localStorage.setItem(SELECTED_TASK_STORAGE_KEY, task)
+  } catch {
+    // Sin almacenamiento: la tarea solo dura esta visita
+  }
 }
 
 const SELECTOR: Record<string, string> = {
@@ -68,14 +76,14 @@ const MenuSelection = ({ activeTask }: { activeTask: TASKS_TYPE_V }) => {
               <Card.Text><Trans i18nKey={'pages.index.tabular-classification.2-description-1'} /></Card.Text>
               <Card.Text><Trans i18nKey={'pages.index.tabular-classification.2-description-2'} /></Card.Text>
               <Row>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.tabular-classification.2-description-list.1'} /></li>
                     <li><Trans i18nKey={'pages.index.tabular-classification.2-description-list.2'} /></li>
                     <li><Trans i18nKey={'pages.index.tabular-classification.2-description-list.3'} /></li>
                   </ul>
                 </Col>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.tabular-classification.2-description-list.4'} /></li>
                     <li><Trans i18nKey={'pages.index.tabular-classification.2-description-list.5'} /></li>
@@ -124,14 +132,14 @@ const MenuSelection = ({ activeTask }: { activeTask: TASKS_TYPE_V }) => {
               <Card.Text><Trans i18nKey={'pages.index.regression.2-description-2'} /></Card.Text>
               <Card.Text><Trans i18nKey={'pages.index.regression.2-description-list.title'} /></Card.Text>
               <Row>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.regression.2-description-list.1'} /></li>
                     <li><Trans i18nKey={'pages.index.regression.2-description-list.2'} /></li>
                     <li><Trans i18nKey={'pages.index.regression.2-description-list.3'} /></li>
                   </ul>
                 </Col>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.regression.2-description-list.4'} /></li>
                     <li><Trans i18nKey={'pages.index.regression.2-description-list.5'} /></li>
@@ -190,14 +198,14 @@ const MenuSelection = ({ activeTask }: { activeTask: TASKS_TYPE_V }) => {
             <Card.Body>
               <Card.Text><Trans i18nKey={'pages.index.image-classification.2-description-1'} /></Card.Text>
               <Row>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.image-classification.2-description-list.1'} /></li>
                     <li><Trans i18nKey={'pages.index.image-classification.2-description-list.2'} /></li>
                     <li><Trans i18nKey={'pages.index.image-classification.2-description-list.3'} /></li>
                   </ul>
                 </Col>
-                <Col>
+                <Col sm>
                   <ul>
                     <li><Trans i18nKey={'pages.index.image-classification.2-description-list.4'} /></li>
                     <li><Trans i18nKey={'pages.index.image-classification.2-description-list.5'} /></li>
@@ -226,17 +234,21 @@ export default function Home() {
   // botones de disciplina (que usan <Trans>) se actualizan al momento, no solo las tarjetas.
   const { i18n } = useTranslation()
 
-  const [activeTask, setActiveTask] = useState<TASKS_TYPE_V>(readSelectedTask)
+  // ?task=… (la miga de pan de la tarea en el playground): esa tarea manda mientras esté en la dirección
+  const [searchParams, setSearchParams] = useSearchParams()
+  const urlTask = Object.values(TASKS).find((value) => value === searchParams.get('task'))
+  const [selectedTask, setSelectedTask] = useState<TASKS_TYPE_V>(() => urlTask ?? readSelectedTask())
+  const activeTask = urlTask ?? selectedTask
 
-
+  // La que llega por la dirección también se recuerda para la próxima visita
+  useEffect(() => {
+    if (urlTask !== undefined) saveSelectedTask(urlTask)
+  }, [urlTask])
 
   const handleClick_OpenCardModel = (task: TASKS_TYPE_V) => {
-    setActiveTask(task)
-    try {
-      localStorage.setItem(SELECTED_TASK_STORAGE_KEY, task)
-    } catch {
-      // Sin almacenamiento: la tarea solo dura esta visita
-    }
+    setSelectedTask(task)
+    saveSelectedTask(task)
+    if (searchParams.has('task')) setSearchParams({}, { replace: true })
   }
 
 
@@ -257,7 +269,7 @@ export default function Home() {
         <Container>
           <Row>
             <Col className={'mt-3'}>
-              <div className="d-grid gap-2">
+              <div className="d-grid gap-2 h-100">
                 <Button variant={'primary'}
                   size={'lg'}
                   data-testid={'Test-InitialMenu-TabularClassification'}
@@ -267,7 +279,7 @@ export default function Home() {
               </div>
             </Col>
             <Col className={'mt-3'}>
-              <div className="d-grid gap-2">
+              <div className="d-grid gap-2 h-100">
                 <Button variant={'danger'}
                   size={'lg'}
                   data-testid={'Test-InitialMenu-LinearRegression'}
@@ -277,7 +289,7 @@ export default function Home() {
               </div>
             </Col>
             <Col className={'mt-3'}>
-              <div className="d-grid gap-2">
+              <div className="d-grid gap-2 h-100">
                 <Button variant={'info'}
                   size={'lg'}
                   data-testid={'Test-InitialMenu-ImageClassification'}
@@ -287,7 +299,7 @@ export default function Home() {
               </div>
             </Col>
             <Col className={'mt-3'}>
-              <div className="d-grid gap-2">
+              <div className="d-grid gap-2 h-100">
                 <Button variant={'warning'}
                   size={'lg'}
                   data-testid={'Test-InitialMenu-ObjectDetection'}

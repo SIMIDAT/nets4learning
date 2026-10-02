@@ -92,7 +92,10 @@ export default function Playground() {
           </Container>
         }
         <Suspense fallback={<Loading />}>
+          {/* Otra tarea, opción o ejemplo (p. ej. desde el desplegable de las migas de pan) es otra página: se monta de
+              nuevo en vez de reutilizar el estado del anterior (el modelo de Car con los datos del formulario de Iris) */}
           <PrintHTMLPlaygroundView
+            key={`${id}/${option}/${example}`}
             id={id}
             option={option}
             example={example}

@@ -1,154 +1,115 @@
-import "katex/dist/katex.min.css"
-import { useEffect } from "react"
+import "./Glossary.css"
+import { useDeferredValue, useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router"
-import { Accordion, Col, Container, Row } from "react-bootstrap"
+import { Col, Form, Row } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 
 import { VERBOSE } from "@/CONSTANTS"
-import Glossary1Optimizers from "./Glossary1Optimizers"
-import Glossary2ActivationFunctions from "./Glossary2ActivationFunctions"
-import Glossary3LossFunctions from "./Glossary3LossFunctions"
-import Glossary4MetricFunctions from "./Glossary4MetricFunctions"
-import Glossary5Layers from "./Glossary5Layers"
 import N4LDivider from "@components/divider/N4LDivider"
-import GlossaryEditor from "@pages/glossary/GlossaryEditor"
-import { glossaryTarget } from "@pages/glossary/glossaryTarget"
+import N4LSectionLayout from "@components/divider/N4LSectionLayout"
+import Glossary5Layers from "./Glossary5Layers"
+import GlossaryTerm from "./GlossaryTerm"
+import { GLOSSARY_SECTIONS, matchesSearch, termSearchText, type GlossarySection_t } from "./glossaryTerms"
+import { glossaryTarget } from "./glossaryTarget"
 
+/**
+ * Glosario: un apartado por tema (tareas, editores, optimizadores, activaciones, pérdidas y métricas) con su índice al
+ * lado (en el móvil, arriba) y un buscador que filtra los términos. Cada término tiene su enlace (#glossary-<id>).
+ */
 export default function Glossary() {
   const { t } = useTranslation()
   const location = useLocation()
-  // Los enlaces de ayuda del playground llevan la sección en la URL (?action=…): se abre y se lleva la vista hasta ella
+  // Los enlaces de ayuda del playground llevan el apartado en la URL (?action=…): se lleva la vista hasta él
   const target = glossaryTarget(new URLSearchParams(location.search).get("action"))
+  const [query, setQuery] = useState("")
+  const deferredQuery = useDeferredValue(query)
+  const isSearching = deferredQuery.trim() !== ""
 
+  // Texto de cada término en el idioma actual (t cambia con el idioma), para buscar sin volver a traducir en cada tecla
+  const searchTexts = useMemo(() => {
+    const texts = new Map<string, string>()
+    for (const section of GLOSSARY_SECTIONS) {
+      for (const group of section.groups) {
+        for (const term of group.terms) texts.set(term.id, termSearchText(term, t))
+      }
+    }
+    return texts
+  }, [t])
+
+  // Sin búsqueda, todo; con búsqueda, solo los términos que la cumplen (y los apartados que tienen alguno)
+  const sections = useMemo((): GlossarySection_t[] => {
+    if (!isSearching) return GLOSSARY_SECTIONS
+    return GLOSSARY_SECTIONS
+      .map((section) => ({
+        ...section,
+        groups: section.groups.map((group) => ({ ...group, terms: group.terms.filter((term) => matchesSearch(searchTexts.get(term.id) ?? "", deferredQuery)) })),
+      }))
+      .filter((section) => section.groups.some((group) => group.terms.length > 0))
+  }, [isSearching, deferredQuery, searchTexts])
+  const matches = sections.reduce((total, section) => total + section.groups.reduce((sum, group) => sum + group.terms.length, 0), 0)
+  const steps = sections.map(({ step }) => step)
+
+  // Al llegar con #glossary-… o desde una ayuda del playground, la vista va al término o grupo
   useEffect(() => {
-    if (target !== null) document.getElementById("glossary-" + target)?.scrollIntoView({ block: "start" })
-  }, [target])
+    const id = location.hash !== "" ? decodeURIComponent(location.hash.slice(1)) : target !== null ? "glossary-" + target : null
+    if (id !== null) document.getElementById(id)?.scrollIntoView({ block: "start" })
+  }, [location.hash, target])
 
   if (VERBOSE) console.debug("render Glossary")
   return (
-    <>
-      <main className={"mb-3"} data-title={"Glossary"}>
-        <Container>
-          <Row className={"mt-3"}>
-            <Col>
-              <h1>
-                <Trans i18nKey={"pages.glossary.title"} t={t} />
-              </h1>
-            </Col>
-          </Row>
+    <main className={"mb-3"} data-title={"Glossary"} data-testid={"Test-Glossary"}>
+      <N4LSectionLayout steps={steps} wide={true}>
+        <h1 className={"mt-3"}><Trans i18nKey={"pages.glossary.title"} /></h1>
+        <p className={"lead"}>{t("pages.glossary.intro")}</p>
 
-          {/* INFORMACIÓN */}
-          <Row>
-            <Col>
-              <N4LDivider i18nKey={"hr.tasks"} />
+        <Form.Group controlId={"glossary-search"} className={"n4l-glossary-search"} role={"search"}>
+          <Form.Label className={"visually-hidden"}>{t("pages.glossary.search")}</Form.Label>
+          <Form.Control type={"search"}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("pages.glossary.search-placeholder")}
+            autoComplete={"off"} />
+        </Form.Group>
+        <p className={"small text-body-secondary mt-2 mb-0"} aria-live={"polite"} data-testid={"Test-GlossaryResults"}>
+          {isSearching && (matches > 0
+            ? t("pages.glossary.results", { count: matches })
+            : t("pages.glossary.no-results", { query: deferredQuery.trim() }))}
+        </p>
 
-              <Accordion defaultActiveKey={target ?? undefined}>
-                <Accordion.Item eventKey={"classification-tabular"} id={"glossary-classification-tabular"}>
-                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
-                    <Trans i18nKey={"pages.glossary.tabular-classification.title"} />
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.tabular-classification.text-1"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.tabular-classification.text-2"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.tabular-classification.text-3"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.tabular-classification.text-4"} />
-                    </p>
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey={"regression"} id={"glossary-regression"}>
-                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
-                    <Trans i18nKey={"pages.glossary.regression.title"} />
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.regression.text.0"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.regression.text.1"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.regression.text.2"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.regression.text.3"} />
-                    </p>
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey={"classification-imagen"} id={"glossary-classification-imagen"}>
-                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
-                    <Trans i18nKey={"pages.glossary.image-classification.title"} />
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.image-classification.text-1"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.image-classification.text-2"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.image-classification.text-3"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.image-classification.text-4"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.image-classification.text-5"} />
-                    </p>
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey={"objects-detection"}>
-                  <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
-                    <Trans i18nKey={"pages.glossary.object-identification.title"} />
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.object-identification.text-1"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.object-identification.text-2"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.object-identification.text-3"} />
-                    </p>
-                    <p>
-                      <Trans i18nKey={"pages.glossary.object-identification.text-4"} />
-                    </p>
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
+        {sections.map((section) => (
+          <section key={section.step} aria-label={t(section.step)}>
+            <N4LDivider i18nKey={section.step} steps={steps} />
+            {!isSearching && section.introKeys.map((key) => <p key={key}><Trans i18nKey={key} /></p>)}
 
-              <N4LDivider i18nKey={"hr.editor"} />
-              <GlossaryEditor openKey={target} />
+            {section.groups.filter((group) => group.terms.length > 0).map((group, index) => (
+              <div key={group.id ?? index} id={group.id === undefined ? undefined : "glossary-" + group.id} className={"n4l-glossary-group"}>
+                {group.titleKey !== undefined && <h2 className={"h5 n4l-glossary-group-title"}>{t(group.titleKey)}</h2>}
+                <Row xs={1} lg={2} className={"g-3"}>
+                  {group.terms.map((term) => (
+                    <Col key={term.id}>
+                      <GlossaryTerm term={term} headingLevel={group.titleKey === undefined ? 3 : 4} />
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+            ))}
 
-              {/* Funciones de optimización */}
-              <N4LDivider i18nKey={"hr.optimization-function"} />
-              <Glossary1Optimizers />
+            {!isSearching && section.references !== undefined &&
+              <div className={"small mt-3"}>
+                <span className={"text-body-secondary"}>{t("pages.glossary.references-title")}:</span>{" "}
+                {section.references.map((reference, index) => (
+                  <span key={reference.href}>
+                    {index > 0 && " · "}
+                    <a href={reference.href} target={"_blank"} rel={"noreferrer"} className={"link-secondary"}>{reference.label}</a>
+                  </span>
+                ))}
+              </div>}
+          </section>
+        ))}
 
-              {/* Funciones de activación */}
-              <N4LDivider i18nKey={"hr.activation-functions"} />
-              <Glossary2ActivationFunctions />
-
-              {/* Funciones de perdida */}
-              <N4LDivider i18nKey={"hr.loss-functions"} />
-              <Glossary3LossFunctions />
-
-              {/* Funciones de métricas */}
-              <N4LDivider i18nKey={"hr.metric-function"} />
-              <Glossary4MetricFunctions openKey={target} />
-
-              {/* Layers */}
-              <Glossary5Layers />
-            </Col>
-          </Row>
-        </Container>
-      </main>
-    </>
+        {/* Tipos de capas de TF.js: solo en desarrollo */}
+        {!isSearching && <Glossary5Layers />}
+      </N4LSectionLayout>
+    </main>
   )
 }

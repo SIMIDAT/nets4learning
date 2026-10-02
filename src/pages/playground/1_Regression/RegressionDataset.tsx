@@ -11,6 +11,7 @@ import alertHelper from '@utils/alertHelper'
 import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import type { DropEvent, FileRejection } from 'react-dropzone'
+import { DATASET_ACCEPT } from '@core/dataframe/datasetFormats'
 
 type RegressionDatasetProps_t = {
   dataset: string
@@ -101,8 +102,8 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
       <DragAndDrop
         id={'drop-zone-regression-dataset'}
         name={'csv'}
-        accept={{ 'text/csv': ['.csv'] }}
-        text={t('drag-and-drop.csv')}
+        accept={DATASET_ACCEPT}
+        text={t('drag-and-drop.dataset')}
         labelFiles={t('drag-and-drop.label-files-one')}
         function_DropAccepted={handleChange_FileUpload_CSV}
         function_DropRejected={handleChange_FileUpload_CSV_reject} />

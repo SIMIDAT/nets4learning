@@ -264,11 +264,26 @@
       },
       "note": "El rol, el tipo, la descripción (en inglés) y las unidades vienen de la ficha del conjunto de datos en su fuente. Los valores ausentes se cuentan en los ficheros que se descargan aquí.",
       "images": "Este conjunto de datos está formado por imágenes, así que no tiene tabla de variables."
+    },
+    "analyze-action": "Analizar",
+    "analyze-title": "Abrir «{{name}}» en el análisis exploratorio de datos (AED)",
+    "data": {
+      "title": "Datos",
+      "describe": "Estadísticas",
+      "file": "Fichero",
+      "error": "No se ha podido leer el CSV.",
+      "describe-help": "Una fila por cada columna numérica: cuántos valores tiene (count), su media (mean), su desviación típica (std), el mínimo, los cuartiles y el máximo."
     }
   },
   "dataframe-original": "DataFrame | Original",
   "dataframe-form": "DataFrame | Formulario de procesamiento",
   "dataframe": {
+    "table": {
+      "target": "<code>{{column}}</code>: columna objetivo, la que se predice o clasifica",
+      "shape": "{{rows}} filas × {{columns}} columnas",
+      "scroll-rows": "desplázate dentro de la tabla para ver el resto",
+      "column": "Columna"
+    },
     "dataframe": {
       "title": "DataFrame | Conjunto de datos"
     },
@@ -304,6 +319,8 @@
       "no-numeric": "No hay columnas numéricas que describir: todas las columnas son categóricas."
     },
     "query": {
+      "error": "La consulta no es válida: {{message}}",
+      "no-rows": "Ninguna fila cumple la consulta.",
       "title": "DataFrame | Consulta",
       "description": {
         "0": "Consulta el DataFrame por el resultado de una comparación lógica o máscara booleana.",
@@ -420,7 +437,8 @@
     "backend-unavailable": "no disponible",
     "backend-software": "por software, lento",
     "backend-error": "No se ha podido cambiar a {{backend}}",
-    "backend-error-fallback": "Este navegador no puede usarlo. TensorFlow.js sigue usando {{backend}}."
+    "backend-error-fallback": "Este navegador no puede usarlo. TensorFlow.js sigue usando {{backend}}.",
+    "menu": "Menú"
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -443,7 +461,8 @@
     "binary": "Añada el fichero binario",
     "json": "Añada el fichero JSON",
     "csv": "Añada el fichero CSV",
-    "csv-json": "Introduce el fichero de datos plantilla.json"
+    "csv-json": "Introduce el fichero de datos plantilla.json",
+    "dataset": "Añada el fichero de datos (CSV, ARFF, JSON, JSONL o Parquet)"
   },
   "custom-canvas-drawer": {
     "validate": "Clasificar",
@@ -1759,8 +1778,8 @@
     },
     "menu-selection-dataset": {
       "0-tabular-classification": {
-        "csv": "Subir conjunto de datos - CSV",
-        "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
+        "csv": "Subir conjunto de datos",
+        "csv-text": "Sube un fichero con un conjunto de datos en formato <code>.csv</code>, <code>.arff</code>, <code>.json</code>, <code>.jsonl</code> o <code>.parquet</code>"
       },
       "form-description-1": "Elige el conjunto de datos con el que vas a entrenar o sube el tuyo.",
       "form-label": "Selecciona un conjunto de datos",
@@ -1768,10 +1787,10 @@
       "form-upload-description": "Ahora si lo deseas puedes cargar tu propia arquitectura, en caso contrario pulsa en continuar y se cargará una arquitectura por defecto de ejemplo.",
       "form-submit": "Continuar",
       "1-regression": {
-        "csv": "Subir conjunto de datos - CSV",
-        "csv-text": "Sube un fichero con un conjunto de datos tratado en formato <code>.csv</code>"
+        "csv": "Subir conjunto de datos",
+        "csv-text": "Sube un fichero con un conjunto de datos en formato <code>.csv</code>, <code>.arff</code>, <code>.json</code>, <code>.jsonl</code> o <code>.parquet</code>"
       },
-      "upload-text": "Sube tu propio conjunto de datos en formato CSV y prepáralo antes de entrenar.",
+      "upload-text": "Sube tu propio conjunto de datos (CSV, ARFF, JSON, JSONL o Parquet) y prepáralo antes de entrenar.",
       "own-dataset": "Tu propio conjunto de datos",
       "example-datasets": "Conjuntos de datos de ejemplo"
     },
@@ -1984,7 +2003,7 @@
         },
         "loaded": "Cargado",
         "load": "Cargar",
-        "waiting-for-file": "Sube un fichero CSV para empezar.",
+        "waiting-for-file": "Sube un fichero de datos (CSV, ARFF, JSON, JSONL o Parquet) para empezar.",
         "waiting-for-process": "Procesa el conjunto de datos para continuar.",
         "waiting-for-training": "Todavía no hay modelos entrenados. Configura la red y entrena uno para verlo aquí.",
         "models": {
@@ -2191,7 +2210,9 @@
           "predicted-value": "Valor predicho de {{target}}",
           "actual-value": "Valor real: {{value}}",
           "error": "Error: {{value}} ({{percent}})",
-          "input-details": "Entrada del modelo paso a paso"
+          "input-details": "Entrada del modelo paso a paso",
+          "choose-instance": "Elige una instancia del conjunto de datos para rellenar el formulario; después puedes cambiar sus valores.",
+          "no-models": "Este conjunto de datos no tiene ningún modelo preentrenado. Elige otro conjunto de datos o entrena tu propio modelo en el playground de regresión."
         },
         "model-selector": {
           "title": "Selector de modelos",
@@ -2267,7 +2288,145 @@
     },
     "dataframe": {
       "title": "Analizar conjunto de datos",
-      "upload-csv": "Subir conjunto de datos"
+      "upload-csv": "Subir conjunto de datos",
+      "intro": "Explora un conjunto de datos antes de entrenar un modelo: su tamaño, el tipo y la forma de cada variable, los valores ausentes, cómo se relacionan las variables entre sí y con la variable objetivo, y cómo prepararlo.",
+      "waiting": "Elige uno de los conjuntos de datos del proyecto o sube tu propio fichero (CSV, ARFF, JSON, JSONL o Parquet) para empezar el análisis.",
+      "sections": {
+        "data": "Conjunto de datos",
+        "summary": "Resumen",
+        "variables": "Variables",
+        "distributions": "Distribuciones",
+        "relations": "Relaciones",
+        "table": "Datos y consultas",
+        "preprocess": "Preprocesado",
+        "charts": "Más gráficos"
+      },
+      "picker": {
+        "project": "Conjuntos de datos del proyecto",
+        "project-help": "Los CSV de los modelos de Nets4Learning y otros para practicar, con la descripción de sus variables.",
+        "placeholder": "Elige un conjunto de datos",
+        "upload": "Tu propio fichero",
+        "upload-help": "CSV (con «,» o «;»), ARFF, JSON, JSONL o Parquet. Se lee en tu navegador: el fichero no se envía a ningún servidor.",
+        "loading": "Cargando…"
+      },
+      "info": {
+        "shape": "{{rows}} filas × {{columns}} columnas",
+        "source": "Fuente",
+        "variables-sheet": "con ficha de variables",
+        "target": "Variable objetivo",
+        "target-none": "Ninguna",
+        "target-help": "La que se quiere predecir o clasificar: se resalta en todo el análisis y separa los gráficos por clases.",
+        "problem-classification": "Clasificación · {{count}} clases",
+        "problem-regression": "Regresión",
+        "problem-none": "Sin variable objetivo"
+      },
+      "summary": {
+        "rows": "Filas",
+        "columns": "Columnas",
+        "columns-detail": "Numéricas: {{numeric}} · categóricas: {{categorical}}",
+        "missing": "Valores ausentes",
+        "missing-detail": "{{percent}} de las celdas",
+        "duplicates": "Filas repetidas",
+        "duplicates-detail": "{{percent}} de las filas",
+        "target-distribution": "Distribución de <code>{{target}}</code>",
+        "target-distribution-none": "Distribución de la variable objetivo",
+        "no-target": "Elige una variable objetivo para ver cómo se reparten sus valores.",
+        "warnings": "Avisos sobre los datos",
+        "no-warnings": "No se ha encontrado ningún problema: sin valores ausentes, filas repetidas, columnas constantes, identificadores ni clases desequilibradas."
+      },
+      "warnings": {
+        "missing": "<code>{{column}}</code> tiene {{count}} valores ausentes ({{percent}}).",
+        "constant": "<code>{{column}}</code> tiene siempre el mismo valor: no aporta información.",
+        "identifier": "<code>{{column}}</code> parece un identificador (un código por registro), no un atributo: conviene no usarla para entrenar.",
+        "outliers": "<code>{{column}}</code> tiene {{count}} valores atípicos ({{percent}}) según la regla del rango intercuartílico.",
+        "imbalance": "Las clases de <code>{{column}}</code> están desequilibradas: «{{minority}}» tiene el {{percent}} de las filas de la clase más frecuente.",
+        "correlation": "<code>{{column}}</code> y <code>{{other}}</code> están muy correlacionadas (r = {{value}}): aportan casi la misma información.",
+        "duplicates": "Hay {{count}} filas repetidas."
+      },
+      "variables": {
+        "title": "Perfil de cada variable",
+        "search": "Buscar variable",
+        "type": "Tipo",
+        "all": "Todas",
+        "numeric": "Numéricas",
+        "categorical": "Categóricas",
+        "view-cards": "Fichas",
+        "view-table": "Tabla",
+        "kind-numeric": "Numérica",
+        "kind-categorical": "Categórica",
+        "target": "Objetivo",
+        "missing": "Ausentes",
+        "distinct": "Distintos",
+        "mean": "Media",
+        "std": "Desv. típica",
+        "min": "Mín.",
+        "median": "Mediana",
+        "max": "Máx.",
+        "top": "Valores más frecuentes",
+        "more": "y {{count}} más",
+        "show-distribution": "Ver su distribución →",
+        "no-results": "Ninguna variable coincide con la búsqueda.",
+        "units": "Unidades: {{units}}",
+        "column": "Variable",
+        "histogram-of": "Histograma de {{column}}"
+      },
+      "distributions": {
+        "title": "Distribución de una variable",
+        "variable": "Variable",
+        "bins": "Intervalos",
+        "bins-auto": "Automático",
+        "by-class": "Separar por clase de <code>{{target}}</code>",
+        "histogram": "Histograma",
+        "frequencies": "Frecuencia de cada valor",
+        "boxplot": "Diagrama de caja",
+        "count": "Filas",
+        "class": "Clase",
+        "by-class-table": "<code>{{column}}</code> en cada clase de <code>{{target}}</code>",
+        "help-histogram": "Cuántas filas tienen un valor en cada intervalo. Si las clases se solapan poco, la variable ayuda a distinguirlas.",
+        "help-frequencies": "Cuántas filas tienen cada valor (los 30 más frecuentes).",
+        "help-boxplot": "La caja va del primer al tercer cuartil y la línea central es la mediana; los puntos sueltos son valores atípicos."
+      },
+      "relations": {
+        "title": "Correlación y dispersión",
+        "correlation": "Matriz de correlación",
+        "correlation-help": "Correlación de Pearson entre cada par de variables numéricas: 1 es una relación lineal directa, −1 inversa y 0 ninguna.",
+        "target-correlation": "Correlación con <code>{{target}}</code>",
+        "target-correlation-help": "Las variables más correlacionadas con el objetivo suelen ser las más útiles para predecirlo.",
+        "scatter": "Diagrama de dispersión",
+        "x": "Eje X",
+        "y": "Eje Y",
+        "color-help": "Cada punto es una fila, coloreada por <code>{{target}}</code>.",
+        "not-enough": "Hacen falta al menos dos variables numéricas."
+      },
+      "table": {
+        "title": "Tabla de datos"
+      },
+      "preprocess": {
+        "title": "Preparar los datos para un modelo",
+        "help": "Un modelo solo recibe números: el texto se codifica (label encoder) y lo que no sirve se descarta. El resultado se actualiza con cada cambio y se puede descargar como CSV.",
+        "missing": "Valores ausentes",
+        "missing-keep": "Dejarlos",
+        "missing-drop-rows": "Quitar las filas con alguno",
+        "missing-impute": "Rellenar (media o valor más frecuente)",
+        "scaler": "Escalado de los atributos numéricos",
+        "scaler-none": "Ninguno",
+        "scaler-min-max": "Min-max (de 0 a 1)",
+        "scaler-standard": "Estandarizar (media 0, desviación 1)",
+        "scaler-help": "La variable objetivo no se escala.",
+        "duplicates": "Quitar las filas repetidas",
+        "action": "Transformación",
+        "action-keep": "Sin cambios",
+        "action-label-encoder": "Codificar (label encoder)",
+        "action-drop": "Descartar",
+        "result": "Resultado",
+        "download": "Descargar CSV",
+        "removed-rows": "Filas quitadas: {{duplicates}} repetidas y {{missing}} con valores ausentes.",
+        "encodings": "Codificación de las columnas de texto",
+        "imputed": "Valores con los que se rellenó",
+        "imputed-value": "<code>{{column}}</code>: {{value}}"
+      },
+      "analyzing": "Analizando el conjunto de datos…",
+      "charts-sample": "Con tantas filas, estos gráficos usan una muestra aleatoria de {{sample}} de las {{rows}}."
     },
     "documentation": {
       "title": "Documentación"
@@ -2382,6 +2541,33 @@
     },
     "glossary": {
       "title": "Glosario",
+      "intro": "Los términos que aparecen en Nets4Learning: las tareas, los editores de la red, los optimizadores y las funciones de activación, de pérdida y de métrica.",
+      "search": "Buscar en el glosario",
+      "search-placeholder": "Por ejemplo: ReLU, Adam, épocas…",
+      "results_one": "{{count}} término",
+      "results_other": "{{count}} términos",
+      "no-results": "Ningún término coincide con «{{query}}».",
+      "anchor": "Enlace a «{{term}}»",
+      "plot": "Gráfica de {{term}}",
+      "plot-tabs": {
+        "image": "Imagen",
+        "animation": "Animación"
+      },
+      "animation": {
+        "slider": "Recorrido de x en {{name}}",
+        "play": "Reproducir",
+        "pause": "Pausa"
+      },
+      "references-title": "Referencias",
+      "confusion-legend": {
+        "abbreviation": "Abreviatura",
+        "english": "En inglés",
+        "meaning": "Significado",
+        "tp": "Verdaderos positivos",
+        "tn": "Verdaderos negativos",
+        "fp": "Falsos positivos",
+        "fn": "Falsos negativos"
+      },
       "table-head": {
         "name": "Nombre",
         "description": "Descripción",
@@ -2427,6 +2613,14 @@
         "sub-title-3": "Activaciones no lineales (otras)",
         "text-1": "Una función de activación es una función matemática utilizada en una red neuronal artificial para determinar la salida de una neurona o de un conjunto de neuronas en función de la entrada recibida. La función de activación introduce no linealidad en la red neuronal, lo que permite a la red aprender patrones más complejos en los datos de entrada. Ejemplos comunes de funciones de activación son:",
         "table": {
+          "linear": {
+            "title": "Linear",
+            "description": "Devuelve la entrada sin cambios (la identidad). Es la activación de la capa de salida en regresión, donde la red tiene que poder dar cualquier número.",
+            "characteristics": {
+              "0": "No limita el rango de la salida.",
+              "1": "Una red solo con capas lineales equivale a una única capa lineal: no puede aprender relaciones no lineales."
+            }
+          },
           "softmax": {
             "title": "Softmax",
             "description": "Transforma las salidas a una representación en forma de probabilidades, de forma que la suma de todas las probabilidades da 1",
@@ -2524,11 +2718,11 @@
       "editor-layers": {
         "title": "Glosario del editor de capas",
         "table": {
-          "activation-function": {
+          "units": {
             "title": "Neuronas de Capa (Layer Neurons)",
             "description": "Son las unidades individuales o nodos en una capa específica de la red. Cada neurona recibe entradas, realiza cálculos y produce una salida que se transmite a la siguiente capa. La cantidad de neuronas en una capa puede variar y suele ser un hiperparámetro del modelo. La elección del número de neuronas en una capa afecta la capacidad del modelo para aprender representaciones de los datos."
           },
-          "units": {
+          "activation-function": {
             "title": "Función de Activación de Capa (Layer Activation Function)",
             "description": "En cada neurona de una capa de una red neuronal, se aplica una función de activación para introducir no linealidad en el modelo. La función de activación determina la salida de la neurona en función de su entrada y los pesos asociados."
           }
@@ -2644,7 +2838,8 @@
           "cosineProximity": {
             "description": "Compara la dirección del vector real y la del predicho (el ángulo entre ellos), sin tener en cuenta su tamaño."
           }
-        }
+        },
+        "related": "Otras fórmulas relacionadas"
       },
       "metric-functions": {
         "title": "Funciones de métrica",
@@ -2685,6 +2880,10 @@
             "references": "Error cuadrático medio",
             "description": "Determina el error cuadrático medio entre las etiquetas y las predicciones."
           }
+        },
+        "confusion": {
+          "title": "Métricas de la matriz de confusión",
+          "description": "Se calculan a partir de los aciertos y fallos de cada clase en la matriz de confusión: cuántas predicciones positivas son correctas (precisión), cuántos positivos reales se detectan (exhaustividad o sensibilidad), la media armónica de ambas (F1) y cuántos negativos reales se reconocen (especificidad)."
         }
       }
     },
@@ -2847,7 +3046,9 @@
     "label": "Ruta de navegación",
     "models": "Modelos pre-entrenados",
     "datasets": "Entrenar un modelo",
-    "change": "Cambiar a otro de la lista"
+    "change": "Cambiar a otro de la lista",
+    "train-with-dataset": "Entrenar con este conjunto de datos",
+    "try-pretrained": "Probar el modelo pre-entrenado"
   },
   "neural-network": {
     "layer": "Capa {{index}}",

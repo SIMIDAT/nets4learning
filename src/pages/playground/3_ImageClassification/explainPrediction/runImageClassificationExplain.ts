@@ -6,6 +6,7 @@ import { createImageClassificationAdapter } from '@core/explainability/adapters/
 import { buildMaskedBackground, minShapSamples } from '@core/explainability/shapSampling';
 import { computeSLICzeroMap } from '@utils/slic0';
 import { ExplainError } from '@core/explainability/explainError';
+import { compileShaders } from '@core/nn-utils/warmUpModel';
 
 export interface ExplainParams {
   iModel         : any;
@@ -171,6 +172,44 @@ export async function runImageClassificationExplain(
 /**
  * Ejecuta el flujo de explicabilidad para LRP (Layer-wise Relevance Propagation).
  */
+/** Las capas que recorre LRP (todas menos la de entrada) */
+const lrpLayerNames = (modelInstance: tfjs.LayersModel): string[] =>
+  modelInstance.layers
+    .filter((layer) => layer.getClassName() !== 'InputLayer')
+    .map((layer) => layer.name);
+
+const withBatch = (shape: Array<number | null>): number[] => [1, ...shape.slice(1).map((size) => size ?? 1)];
+
+/**
+ * Compila los shaders de LRP (gradientes de cada capa, argMax, oneHot…) antes de la primera explicación, que si no
+ * bloquea unos 300 ms compilándolos (TODO-worker.md, fase 0). Se propaga la relevancia con activaciones a cero de la
+ * forma de cada capa (la forma sale del modelo, sin calcular nada) en modo solo compilar: ver `compileShaders`.
+ */
+export async function warmUpLrp(iModel: any, modelInstance: tfjs.LayersModel): Promise<void> {
+  if (!supportsLrp(iModel)) return;
+  const inputShape = modelInstance.inputs[0]?.shape;
+  if (!inputShape) return;
+  const layers: Record<string, { data: Float32Array; shape: number[] }> = {};
+  const add = (name: string, shape: Array<number | null>) => {
+    const full = withBatch(shape);
+    layers[name] = { data: new Float32Array(full.reduce((a, b) => a * b, 1)), shape: full };
+  };
+  add('__input__', inputShape);
+  const names = lrpLayerNames(modelInstance);
+  for (const name of names) {
+    const outputShape = modelInstance.getLayer(name).outputShape;
+    // Capas con varias salidas: no las hay en estos modelos; si las hubiera, no se calienta
+    if (!Array.isArray(outputShape) || Array.isArray(outputShape[0])) return;
+    add(name, outputShape as Array<number | null>);
+  }
+  await compileShaders(() => iModel.CALCULATE_LRP_PROPAGATION(
+    modelInstance,
+    null,
+    { layers, order: ['__input__', ...names] },
+    { rule: 'epsilon', epsilon: 0.01, winnerTakesAll: true },
+  ));
+}
+
 export async function runImageClassificationExplainLrp(
   params: ExplainLrpParams,
 ): Promise<ExplainResult> {
@@ -195,9 +234,7 @@ export async function runImageClassificationExplainLrp(
     );
   }
 
-  const layerNames = modelInstance.layers
-    .filter((layer: any) => layer?.getClassName?.() !== 'InputLayer')
-    .map((layer: any) => layer.name);
+  const layerNames = lrpLayerNames(modelInstance);
 
   const activations = await iModel.GET_ACTIVATIONS_IMAGE(
     modelInstance,
@@ -220,7 +257,8 @@ export async function runImageClassificationExplainLrp(
   );
 
   try {
-    const relevanceValues: number[] = Array.from(relevanceTensor.dataSync());
+    // Lectura asíncrona: dataSync detiene el hilo principal hasta que la GPU termina
+    const relevanceValues: number[] = Array.from(await relevanceTensor.data());
     const { index: predictedIndex, predictions } = await iModel.CLASSIFY_IMAGE(
       modelInstance,
       imageData,

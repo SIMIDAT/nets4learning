@@ -3,11 +3,11 @@
  * (Copyright 2018 Google LLC, Apache License 2.0), generalizado para cualquier sprite con el mismo formato.
  */
 import * as tf from '@tensorflow/tfjs'
+import { createWorkerClient } from '@core/workers/workerClient'
+import { CHUNK_SIZE, IMAGE_SIZE, copyRedChannel } from './spriteDecode'
+import type { SpriteWorkerApi_t } from './sprite.worker'
 
-const IMAGE_SIZE = 28 * 28
 const NUM_CLASSES = 10
-// Filas del sprite que se leen de cada vez a través del canvas
-const CHUNK_SIZE = 5000
 
 /**
  * Dataset de imágenes de 28x28 en escala de grises guardado como sprite:
@@ -42,10 +42,10 @@ export const KMNIST_DATASET: SpriteDatasetConfig_t = {
 /** Descarga el sprite y las etiquetas y devuelve lotes barajados de entrenamiento y de test. */
 export class SpriteImageDataset {
   private readonly config: SpriteDatasetConfig_t
-  private trainImages = new Float32Array(0)
-  private testImages = new Float32Array(0)
-  private trainLabels = new Uint8Array(0)
-  private testLabels = new Uint8Array(0)
+  private trainImages    : Float32Array<ArrayBufferLike> = new Float32Array(0)
+  private testImages     : Float32Array<ArrayBufferLike> = new Float32Array(0)
+  private trainLabels    : Uint8Array<ArrayBufferLike> = new Uint8Array(0)
+  private testLabels     : Uint8Array<ArrayBufferLike> = new Uint8Array(0)
   private trainIndices   : Uint32Array<ArrayBufferLike> = new Uint32Array(0)
   private testIndices    : Uint32Array<ArrayBufferLike> = new Uint32Array(0)
   private shuffledTrainIndex = 0
@@ -55,29 +55,50 @@ export class SpriteImageDataset {
     this.config = config
   }
 
-  async load() {
+  /** Todo el conjunto o, con `testOnly`, solo las imágenes de test (las de entrenamiento no se decodifican) */
+  async load({ testOnly = false } = {}) {
     const { numElements, numTrain } = this.config
-    const [images, labels] = await Promise.all([this.loadImages(), this.loadLabels()])
+    const firstRow = testOnly ? numTrain : 0
+    const [images, labels] = await Promise.all([this.loadImages(firstRow, numElements - firstRow), this.loadLabels()])
     if (labels.length !== numElements * NUM_CLASSES) {
       throw new Error(`Labels file has ${labels.length} bytes, expected ${numElements * NUM_CLASSES}`)
     }
-    this.trainIndices = tf.util.createShuffledIndices(numTrain)
+    // subarray y no slice: comparten memoria en vez de copiarla (MNIST entero son 204 MB de Float32Array)
+    const trainRows = numTrain - firstRow
+    this.trainIndices = tf.util.createShuffledIndices(Math.max(trainRows, 0))
     this.testIndices = tf.util.createShuffledIndices(numElements - numTrain)
-    this.trainImages = images.slice(0, IMAGE_SIZE * numTrain)
-    this.testImages = images.slice(IMAGE_SIZE * numTrain)
-    this.trainLabels = labels.slice(0, NUM_CLASSES * numTrain)
-    this.testLabels = labels.slice(NUM_CLASSES * numTrain)
+    this.trainImages = images.subarray(0, IMAGE_SIZE * Math.max(trainRows, 0))
+    this.testImages = images.subarray(IMAGE_SIZE * Math.max(trainRows, 0))
+    this.trainLabels = labels.subarray(firstRow * NUM_CLASSES, NUM_CLASSES * numTrain)
+    this.testLabels = labels.subarray(NUM_CLASSES * numTrain)
+  }
+
+  /**
+   * Las filas [firstRow, firstRow + numRows) del sprite. En un worker (decodificar MNIST bloqueaba el hilo principal
+   * ~320 ms); si no se puede (sin workers u OffscreenCanvas), aquí mismo
+   */
+  private async loadImages(firstRow: number, numRows: number): Promise<Float32Array> {
+    const url = new URL(this.config.imagesUrl, document.baseURI).href
+    const worker = createWorkerClient<SpriteWorkerApi_t>(() => new Worker(new URL('./sprite.worker.ts', import.meta.url), { type: 'module' }))
+    try {
+      return await worker.call('decode', { url, firstRow, numRows })
+    } catch (error) {
+      console.warn('Sprite decoded in the main thread:', error)
+      return this.loadImagesInMainThread(firstRow, numRows)
+    } finally {
+      worker.terminate()
+    }
   }
 
   // Lee el sprite por trozos en un canvas; al ser gris basta con el canal rojo (0-255 → 0-1)
-  private loadImages(): Promise<Float32Array> {
-    const { imagesUrl, numElements } = this.config
+  private loadImagesInMainThread(firstRow: number, numRows: number): Promise<Float32Array> {
+    const { imagesUrl } = this.config
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = ''
       img.onerror = () => reject(new Error(`Could not load dataset images: ${imagesUrl}`))
       img.onload = () => {
-        const images = new Float32Array(numElements * IMAGE_SIZE)
+        const images = new Float32Array(numRows * IMAGE_SIZE)
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d', { willReadFrequently: true })
         if (ctx === null) {
@@ -85,15 +106,11 @@ export class SpriteImageDataset {
           return
         }
         canvas.width = img.naturalWidth
-        for (let row = 0; row < numElements; row += CHUNK_SIZE) {
-          const rows = Math.min(CHUNK_SIZE, numElements - row)
+        for (let row = 0; row < numRows; row += CHUNK_SIZE) {
+          const rows = Math.min(CHUNK_SIZE, numRows - row)
           canvas.height = rows
-          ctx.drawImage(img, 0, row, img.naturalWidth, rows, 0, 0, img.naturalWidth, rows)
-          const { data } = ctx.getImageData(0, 0, canvas.width, rows)
-          const offset = row * IMAGE_SIZE
-          for (let j = 0; j < data.length / 4; j++) {
-            images[offset + j] = data[j * 4] / 255
-          }
+          ctx.drawImage(img, 0, firstRow + row, img.naturalWidth, rows, 0, 0, img.naturalWidth, rows)
+          copyRedChannel(ctx.getImageData(0, 0, canvas.width, rows).data, images, row * IMAGE_SIZE)
         }
         resolve(images)
       }
@@ -160,17 +177,23 @@ export class SpriteImageDataset {
   }
 }
 
-// Un sprite por dataset y visita: el entrenamiento y el selector de imágenes de test comparten la descarga
+// Un sprite por dataset y visita: el entrenamiento y el selector de imágenes de test comparten la descarga. Se guarda
+// el conjunto entero y, aparte, el de solo test (el selector de la página del modelo no necesita las de entrenamiento)
 const loadedDatasets = new Map<string, Promise<SpriteImageDataset>>()
 
-/** El dataset ya cargado (lo descarga la primera vez). Si la descarga falla, la siguiente llamada lo vuelve a intentar */
-export function loadSpriteDataset(config: SpriteDatasetConfig_t): Promise<SpriteImageDataset> {
-  let loading = loadedDatasets.get(config.imagesUrl)
+/**
+ * El dataset ya cargado (lo descarga la primera vez). Con `testOnly` basta con las imágenes de test y, si el entero
+ * ya está, se usa ese. Si la descarga falla, la siguiente llamada lo vuelve a intentar
+ */
+export function loadSpriteDataset(config: SpriteDatasetConfig_t, { testOnly = false } = {}): Promise<SpriteImageDataset> {
+  const fullKey = config.imagesUrl + '#all'
+  const key = testOnly ? config.imagesUrl + '#test' : fullKey
+  let loading = loadedDatasets.get(key) ?? (testOnly ? loadedDatasets.get(fullKey) : undefined)
   if (loading === undefined) {
     const dataset = new SpriteImageDataset(config)
-    loading = dataset.load().then(() => dataset)
-    loading.catch(() => loadedDatasets.delete(config.imagesUrl))
-    loadedDatasets.set(config.imagesUrl, loading)
+    loading = dataset.load({ testOnly }).then(() => dataset)
+    loading.catch(() => loadedDatasets.delete(key))
+    loadedDatasets.set(key, loading)
   }
   return loading
 }

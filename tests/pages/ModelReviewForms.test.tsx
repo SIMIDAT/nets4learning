@@ -55,7 +55,8 @@ describe('ModelReviewRegressionPredictForm', () => {
 
   // Un conjunto de datos mínimo con un atributo entero, uno decimal, uno categórico, una columna que el modelo no usa
   // y la variable objetivo
-  function makeDataset(): _Types.DatasetProcessed_t {
+  /** dropId: la columna "id" se descarta al procesar (el procesado tiene menos columnas que el original) */
+  function makeDataset({ dropId = false } = {}): _Types.DatasetProcessed_t {
     const dataframe_original = new dfd.DataFrame({
       rooms: [2, 3, 5],
       area : [55.5, 80.25, 120],
@@ -71,8 +72,9 @@ describe('ModelReviewRegressionPredictForm', () => {
     ]
     const dataset_transforms = dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder)
     // Como en los modelos, el dataframe procesado tiene las mismas columnas que el original
-    const { dataframe_processed, encoder_map } = DataFrameTransformAndEncoder(dataframe_original, dataset_transforms)
-    const dataframe_X = dataframe_processed.drop({ columns: ['id', 'price'] })
+    const transforms: _Types.DataFrameColumnTransform_t[] = dropId ? [...dataset_transforms, { column_name: 'id', column_transform: 'drop' }] : dataset_transforms
+    const { dataframe_processed, encoder_map } = DataFrameTransformAndEncoder(dataframe_original, transforms)
+    const dataframe_X = dataframe_processed.drop({ columns: dropId ? ['price'] : ['id', 'price'] })
     const scaler = new dfd.MinMaxScaler().fit(dataframe_X)
     return {
       is_dataset_upload   : false,
@@ -118,6 +120,17 @@ describe('ModelReviewRegressionPredictForm', () => {
     expect(screen.getByLabelText('rooms').parentElement).toHaveTextContent('pages.playground.form.type-integer · pages.playground.form.range')
     expect(screen.getByLabelText('area')).toHaveValue(55.5)
     expect(screen.getByLabelText('city').parentElement).toHaveTextContent('pages.playground.form.type-categorical')
+  })
+
+  test('con columnas descartadas al procesar, la instancia se prepara igual y el formulario no las pide', () => {
+    // Antes el dataframe procesado se creaba con los tipos del original y fallaba si tenían distinto número de columnas
+    const dataset = makeDataset({ dropId: true })
+    const state = TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION(dataset, 2)
+    expect(state.input_1_dataframe_processed.columns).not.toContain('id')
+    expect(state.input_1_dataframe_original['id'].values[0]).toBe(103)
+    render(<RegressionForm dataset={dataset} onChange={() => {}} />)
+    expect(screen.queryByLabelText('id')).toBeNull()
+    expect(screen.getByLabelText('rooms')).toHaveValue(2)
   })
 
   test('al cambiar un valor se codifica y se escala la entrada del modelo', () => {

@@ -1,6 +1,136 @@
-.custom-navbar {
-  box-shadow: 5px 6px 6px 6px rgba(247, 3, 3, 0.2);
-}
 .n4l-icon-1rem svg {
   width: 1rem;
+}
+
+/* Valor actual de un ajuste (idioma, tema, backend) junto a su nombre */
+.n4l-navbar-value {
+  margin-left: .375rem;
+  color: var(--bs-secondary-color);
+  font-size: .875em;
+}
+
+/* El botón del menú: el anillo de foco solo con teclado (con el dedo se quedaba un borde negro grueso) */
+.n4l-navbar .navbar-toggler:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+/* Con el menú abierto, el botón es una X */
+.n4l-navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-width='2' d='M8 8l14 14M22 8L8 22'/%3e%3c/svg%3e");
+}
+
+[data-bs-theme="dark"] .n4l-navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-width='2' d='M8 8l14 14M22 8L8 22'/%3e%3c/svg%3e");
+}
+
+.n4l-navbar .nav-link.active {
+  font-weight: 600;
+}
+
+/* Escritorio: páginas a la izquierda y ajustes a la derecha; la página actual, subrayada sobre el borde inferior */
+@media (min-width: 992px) {
+  .n4l-navbar-menu {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+  }
+
+  /* Cada enlace en una línea (el japonés se parte entre caracteres) */
+  .n4l-navbar .navbar-nav .nav-link {
+    white-space: nowrap;
+  }
+
+  .n4l-navbar-links .nav-link {
+    position: relative;
+  }
+
+  .n4l-navbar-links .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: var(--bs-navbar-nav-link-padding-x);
+    right: var(--bs-navbar-nav-link-padding-x);
+    bottom: calc(-1 * var(--bs-navbar-padding-y));
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background-color: var(--bs-primary);
+  }
+}
+
+/* Justo por encima de lg cabe todo en una línea con algo menos de aire entre enlaces. En japonés no: "AED
+   (探索的データ分析)" es mucho más largo y, en una línea, la barra se sale de la pantalla; ahí se deja partir */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .n4l-navbar {
+    --bs-navbar-nav-link-padding-x: .375rem;
+  }
+
+  html[lang="ja"] .n4l-navbar-links .nav-link {
+    white-space: normal;
+  }
+}
+
+/* Móvil y tablet: el menú desplegado es una lista con filas cómodas para el dedo y los ajustes aparte */
+@media (max-width: 991.98px) {
+  /* La barra es fija: si el menú no cabe en la pantalla (móvil en horizontal), se desliza dentro */
+  .n4l-navbar .navbar-collapse {
+    max-height: calc(100dvh - var(--n4l-navbar-height, 56px));
+    overflow-y: auto;
+  }
+
+  .n4l-navbar-menu {
+    margin-inline: -.75rem;
+    padding: .5rem 0 .25rem;
+  }
+
+  .n4l-navbar .navbar-nav .nav-link {
+    padding: .625rem .75rem;
+    border-radius: var(--bs-border-radius);
+  }
+
+  .n4l-navbar-links .nav-link.active {
+    background-color: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-text-emphasis);
+  }
+
+  .n4l-navbar-settings {
+    margin-top: .5rem;
+    padding-top: .5rem;
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
+  }
+
+  /* Cada ajuste en una fila: el nombre a la izquierda y su valor y la flecha a la derecha */
+  .n4l-navbar-settings .dropdown-toggle {
+    display: flex;
+    align-items: center;
+  }
+
+  .n4l-navbar-settings .n4l-navbar-value {
+    margin-left: auto;
+    margin-right: .375rem;
+  }
+
+  .n4l-navbar-settings .dropdown-menu {
+    margin-inline: .75rem;
+  }
+
+  .n4l-navbar-settings .dropdown-item {
+    padding-block: .5rem;
+  }
+}
+
+/* Tablet: dos columnas, páginas y ajustes */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .n4l-navbar-menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+
+  .n4l-navbar-settings {
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 1.5rem;
+    border-top: 0;
+    border-left: var(--bs-border-width) solid var(--bs-border-color);
+  }
 }

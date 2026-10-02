@@ -11,6 +11,7 @@ import N4LEmptyState from "@components/loading/N4LEmptyState"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 import N4LHelpLink from "@components/helpLink/N4LHelpLink"
+import { DATASET_ACCEPT } from "@core/dataframe/datasetFormats"
 
 type PropsTabularClassificationDatasetProps_t = {
   dataset: string
@@ -82,8 +83,8 @@ export default function TabularClassificationDataset(props: PropsTabularClassifi
           <DragAndDrop
             id="drag-zone-tabular-classification"
             name={"csv"}
-            accept={{ "text/csv": [".csv"] }}
-            text={t("drag-and-drop.csv")}
+            accept={DATASET_ACCEPT}
+            text={t("drag-and-drop.dataset")}
             labelFiles={t("drag-and-drop.label-files-one")}
             function_DropAccepted={handleChange_FileUpload_CSV}
             function_DropRejected={handleChange_FileUpload_CSV_reject}

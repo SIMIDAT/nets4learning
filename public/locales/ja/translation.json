@@ -191,11 +191,26 @@
       },
       "note": "役割・型・説明（英語）・単位はデータセットの出典ページによるものです。欠損値はここでダウンロードできるファイルで数えています。",
       "images": "このデータセットは画像で構成されているため、変数の表はありません。"
+    },
+    "analyze-action": "分析する",
+    "analyze-title": "「{{name}}」を探索的データ分析で開く",
+    "data": {
+      "title": "データ",
+      "describe": "統計",
+      "file": "ファイル",
+      "error": "CSV を読み込めませんでした。",
+      "describe-help": "数値の列ごとに 1 行：値の数（count）、平均（mean）、標準偏差（std）、最小値、四分位数、最大値。"
     }
   },
   "dataframe-original": "データフレーム | 元データ",
   "dataframe-form": "データフレーム | 前処理フォーム",
   "dataframe": {
+    "table": {
+      "target": "<code>{{column}}</code>: 目的列(予測・分類する列)",
+      "shape": "{{rows}} 行 × {{columns}} 列",
+      "scroll-rows": "残りは表の中をスクロールして表示",
+      "column": "列"
+    },
     "dataframe": {
       "title": "データフレーム | データセット"
     },
@@ -231,6 +246,8 @@
       "no-numeric": "説明できる数値列がありません。すべての列がカテゴリ列です。"
     },
     "query": {
+      "error": "クエリが正しくありません: {{message}}",
+      "no-rows": "クエリに一致する行はありません。",
       "title": "データフレーム | クエリ",
       "description": {
         "0": "論理比較またはブールマスクの結果に基づいてデータフレームをクエリします。",
@@ -347,7 +364,8 @@
     "backend-unavailable": "利用不可",
     "backend-software": "ソフトウェア・低速",
     "backend-error": "{{backend}} に切り替えられませんでした",
-    "backend-error-fallback": "このブラウザでは使用できません。TensorFlow.js は引き続き {{backend}} を使用します。"
+    "backend-error-fallback": "このブラウザでは使用できません。TensorFlow.js は引き続き {{backend}} を使用します。",
+    "menu": "メニュー"
   },
   "footer": {
     "description-app": "深層学習モデルの設計と実行のためのウェブプラットフォーム。",
@@ -370,7 +388,8 @@
     "binary": "バイナリファイルを追加",
     "json": "JSONファイルを追加",
     "csv": "CSVファイルを追加",
-    "csv-json": "テンプレートデータファイル template.json を入力"
+    "csv-json": "テンプレートデータファイル template.json を入力",
+    "dataset": "データファイル（CSV、ARFF、JSON、JSONL、Parquet）を追加"
   },
   "ui": {
     "blur": {
@@ -1759,8 +1778,8 @@
     },
     "menu-selection-dataset": {
       "0-tabular-classification": {
-        "csv": "データセットをアップロード - CSV",
-        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+        "csv": "データセットをアップロード",
+        "csv-text": "<code>.csv</code>、<code>.arff</code>、<code>.json</code>、<code>.jsonl</code>、<code>.parquet</code> 形式のデータセットファイルをアップロード"
       },
       "form-description-1": "学習に使うデータセットを選ぶか、自分のデータセットをアップロードしてください。",
       "form-label": "データセットを選択",
@@ -1768,10 +1787,10 @@
       "form-upload-description": "次に、必要に応じて独自のアーキテクチャをロードできます。そうしない場合は、続行をクリックすると、デフォルトの例のアーキテクチャがロードされます。",
       "form-submit": "続行",
       "1-regression": {
-        "csv": "データセットをアップロード - CSV",
-        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+        "csv": "データセットをアップロード",
+        "csv-text": "<code>.csv</code>、<code>.arff</code>、<code>.json</code>、<code>.jsonl</code>、<code>.parquet</code> 形式のデータセットファイルをアップロード"
       },
-      "upload-text": "自分のデータセットを CSV ファイルでアップロードし、学習の前に準備します。",
+      "upload-text": "自分のデータセット（CSV、ARFF、JSON、JSONL、Parquet）をアップロードし、学習の前に準備します。",
       "own-dataset": "自分のデータセット",
       "example-datasets": "サンプルのデータセット"
     },
@@ -1984,7 +2003,7 @@
         },
         "loaded": "ロード済み",
         "load": "ロード",
-        "waiting-for-file": "始めるには CSV ファイルをアップロードしてください。",
+        "waiting-for-file": "始めるにはデータファイル（CSV、ARFF、JSON、JSONL、Parquet）をアップロードしてください。",
         "waiting-for-process": "続けるにはデータセットを処理してください。",
         "waiting-for-training": "まだ学習済みモデルはありません。ネットワークを設定して学習させると、ここに表示されます。",
         "models": {
@@ -2191,7 +2210,9 @@
           "predicted-value": "{{target}} の予測値",
           "actual-value": "実際の値: {{value}}",
           "error": "誤差: {{value}} ({{percent}})",
-          "input-details": "モデルへの入力(各段階)"
+          "input-details": "モデルへの入力(各段階)",
+          "choose-instance": "データセットのインスタンスを選ぶとフォームに入力されます。その後、値を変更できます。",
+          "no-models": "このデータセットには事前学習済みモデルがありません。別のデータセットを選ぶか、回帰のプレイグラウンドで独自のモデルを学習してください。"
         },
         "model-selector": {
           "title": "モデルセレクター",
@@ -2267,7 +2288,145 @@
     },
     "dataframe": {
       "title": "データセットを分析",
-      "upload-csv": "データセットをアップロード"
+      "upload-csv": "データセットをアップロード",
+      "intro": "モデルを学習する前にデータセットを探索します。サイズ、各変数の型と分布、欠損値、変数同士や目的変数との関係、そしてその準備方法を確認できます。",
+      "waiting": "プロジェクトのデータセットを選ぶか、独自のファイル（CSV、ARFF、JSON、JSONL、Parquet）をアップロードして分析を始めてください。",
+      "sections": {
+        "data": "データセット",
+        "summary": "概要",
+        "variables": "変数",
+        "distributions": "分布",
+        "relations": "関係",
+        "table": "データとクエリ",
+        "preprocess": "前処理",
+        "charts": "その他のグラフ"
+      },
+      "picker": {
+        "project": "プロジェクトのデータセット",
+        "project-help": "Nets4Learning のモデルが使う CSV と練習用の CSV。各変数の説明付きです。",
+        "placeholder": "データセットを選択",
+        "upload": "独自のファイル",
+        "upload-help": "CSV（「,」または「;」区切り）、ARFF、JSON、JSONL、Parquet。ブラウザ内で読み込まれ、ファイルはどのサーバーにも送信されません。",
+        "loading": "読み込み中…"
+      },
+      "info": {
+        "shape": "{{rows}} 行 × {{columns}} 列",
+        "source": "出典",
+        "variables-sheet": "変数の説明あり",
+        "target": "目的変数",
+        "target-none": "なし",
+        "target-help": "予測または分類したい変数です。分析全体で強調表示され、グラフをクラスごとに分けます。",
+        "problem-classification": "分類 · {{count}} クラス",
+        "problem-regression": "回帰",
+        "problem-none": "目的変数なし"
+      },
+      "summary": {
+        "rows": "行",
+        "columns": "列",
+        "columns-detail": "数値: {{numeric}} · カテゴリ: {{categorical}}",
+        "missing": "欠損値",
+        "missing-detail": "セルの {{percent}}",
+        "duplicates": "重複行",
+        "duplicates-detail": "行の {{percent}}",
+        "target-distribution": "<code>{{target}}</code> の分布",
+        "target-distribution-none": "目的変数の分布",
+        "no-target": "目的変数を選ぶと、その値の分布が表示されます。",
+        "warnings": "データに関する注意",
+        "no-warnings": "問題は見つかりませんでした。欠損値、重複行、定数列、識別子、不均衡なクラスはありません。"
+      },
+      "warnings": {
+        "missing": "<code>{{column}}</code> には欠損値が {{count}} 個あります ({{percent}})。",
+        "constant": "<code>{{column}}</code> は常に同じ値で、情報を持ちません。",
+        "identifier": "<code>{{column}}</code> は属性ではなく識別子 (レコードごとのコード) のようです。学習には使わない方がよいでしょう。",
+        "outliers": "<code>{{column}}</code> には四分位範囲の規則による外れ値が {{count}} 個あります ({{percent}})。",
+        "imbalance": "<code>{{column}}</code> のクラスは不均衡です。「{{minority}}」の行数は最も多いクラスの {{percent}} です。",
+        "correlation": "<code>{{column}}</code> と <code>{{other}}</code> は強く相関しています (r = {{value}})。ほぼ同じ情報を持っています。",
+        "duplicates": "重複行が {{count}} 行あります。"
+      },
+      "variables": {
+        "title": "各変数のプロファイル",
+        "search": "変数を検索",
+        "type": "型",
+        "all": "すべて",
+        "numeric": "数値",
+        "categorical": "カテゴリ",
+        "view-cards": "カード",
+        "view-table": "表",
+        "kind-numeric": "数値",
+        "kind-categorical": "カテゴリ",
+        "target": "目的",
+        "missing": "欠損",
+        "distinct": "異なる値",
+        "mean": "平均",
+        "std": "標準偏差",
+        "min": "最小",
+        "median": "中央値",
+        "max": "最大",
+        "top": "最も多い値",
+        "more": "ほか {{count}} 個",
+        "show-distribution": "分布を見る →",
+        "no-results": "検索に一致する変数はありません。",
+        "units": "単位: {{units}}",
+        "column": "変数",
+        "histogram-of": "{{column}} のヒストグラム"
+      },
+      "distributions": {
+        "title": "変数の分布",
+        "variable": "変数",
+        "bins": "区間数",
+        "bins-auto": "自動",
+        "by-class": "<code>{{target}}</code> のクラスごとに分ける",
+        "histogram": "ヒストグラム",
+        "frequencies": "各値の度数",
+        "boxplot": "箱ひげ図",
+        "count": "行",
+        "class": "クラス",
+        "by-class-table": "<code>{{target}}</code> の各クラスにおける <code>{{column}}</code>",
+        "help-histogram": "各区間に値を持つ行の数です。クラス同士の重なりが少なければ、その変数はクラスの区別に役立ちます。",
+        "help-frequencies": "各値を持つ行の数です (多い順に 30 個)。",
+        "help-boxplot": "箱は第1四分位数から第3四分位数まで、中央の線は中央値です。離れた点は外れ値です。"
+      },
+      "relations": {
+        "title": "相関と散布図",
+        "correlation": "相関行列",
+        "correlation-help": "数値変数の各ペアのピアソン相関です。1 は正の線形関係、−1 は負の線形関係、0 は関係なしを表します。",
+        "target-correlation": "<code>{{target}}</code> との相関",
+        "target-correlation-help": "目的変数と相関の強い変数ほど、予測に役立つことが多いです。",
+        "scatter": "散布図",
+        "x": "X 軸",
+        "y": "Y 軸",
+        "color-help": "各点は 1 行で、<code>{{target}}</code> で色分けされています。",
+        "not-enough": "数値変数が少なくとも 2 つ必要です。"
+      },
+      "table": {
+        "title": "データ表"
+      },
+      "preprocess": {
+        "title": "モデル用にデータを準備",
+        "help": "モデルは数値しか受け取れません。テキストはエンコード (ラベルエンコーダ) し、不要なものは除外します。結果は変更ごとに更新され、CSV としてダウンロードできます。",
+        "missing": "欠損値",
+        "missing-keep": "そのままにする",
+        "missing-drop-rows": "欠損のある行を削除",
+        "missing-impute": "補完 (平均または最頻値)",
+        "scaler": "数値属性のスケーリング",
+        "scaler-none": "なし",
+        "scaler-min-max": "Min-max (0 から 1)",
+        "scaler-standard": "標準化 (平均 0、標準偏差 1)",
+        "scaler-help": "目的変数はスケーリングしません。",
+        "duplicates": "重複行を削除",
+        "action": "変換",
+        "action-keep": "変更なし",
+        "action-label-encoder": "エンコード (ラベルエンコーダ)",
+        "action-drop": "除外",
+        "result": "結果",
+        "download": "CSV をダウンロード",
+        "removed-rows": "削除した行: 重複 {{duplicates}} 行、欠損のある行 {{missing}} 行。",
+        "encodings": "テキスト列のエンコード",
+        "imputed": "補完に使った値",
+        "imputed-value": "<code>{{column}}</code>: {{value}}"
+      },
+      "analyzing": "データセットを分析中…",
+      "charts-sample": "行数が多いため、これらのグラフは {{rows}} 行のうち {{sample}} 行のランダムサンプルを使います。"
     },
     "menu": {
       "select-model": {
@@ -2399,6 +2558,32 @@
     },
     "glossary": {
       "title": "用語集",
+      "intro": "Nets4Learning に出てくる用語：タスク、ネットワークのエディター、オプティマイザー、活性化関数・損失関数・評価指標。",
+      "search": "用語集を検索",
+      "search-placeholder": "例：ReLU、Adam、エポック…",
+      "results_other": "{{count}} 件の用語",
+      "no-results": "「{{query}}」に一致する用語はありません。",
+      "anchor": "「{{term}}」へのリンク",
+      "plot": "{{term}} のグラフ",
+      "plot-tabs": {
+        "image": "画像",
+        "animation": "アニメーション"
+      },
+      "animation": {
+        "slider": "{{name}} の x の位置",
+        "play": "再生",
+        "pause": "一時停止"
+      },
+      "references-title": "参考文献",
+      "confusion-legend": {
+        "abbreviation": "略語",
+        "english": "英語",
+        "meaning": "意味",
+        "tp": "真陽性",
+        "tn": "真陰性",
+        "fp": "偽陽性",
+        "fn": "偽陰性"
+      },
       "table-head": {
         "name": "名前",
         "description": "説明",
@@ -2444,6 +2629,14 @@
         "sub-title-3": "非線形活性化（その他）",
         "text-1": "活性化関数は、人工ニューラルネットワークにおいて、受け取った入力に基づいてニューロン（またはニューロンの集まり）の出力を決める数学的な関数です。活性化関数はニューラルネットワークに非線形性を導入し、入力データのより複雑なパターンを学習できるようにします。代表的な活性化関数は次のとおりです。",
         "table": {
+          "linear": {
+            "title": "Linear",
+            "description": "入力をそのまま返します（恒等関数）。回帰の出力層で使う活性化関数で、ネットワークが任意の数値を出力できるようにします。",
+            "characteristics": {
+              "0": "出力の範囲を制限しません。",
+              "1": "線形層だけのネットワークは 1 つの線形層と同じで、非線形な関係を学習できません。"
+            }
+          },
           "softmax": {
             "title": "Softmax",
             "description": "出力を確率の形に変換し、すべての確率の合計が 1 になるようにします",
@@ -2541,11 +2734,11 @@
       "editor-layers": {
         "title": "層エディタの用語集",
         "table": {
-          "activation-function": {
+          "units": {
             "title": "層のニューロン（Layer Neurons）",
             "description": "ネットワークの特定の層にある個々のユニット（ノード）です。各ニューロンは入力を受け取り、計算を行い、次の層に渡す出力を生成します。層のニューロン数は変えることができ、通常はモデルのハイパーパラメータです。層のニューロン数の選び方は、モデルがデータの表現を学習する能力に影響します。"
           },
-          "units": {
+          "activation-function": {
             "title": "層の活性化関数（Layer Activation Function）",
             "description": "ニューラルネットワークの層の各ニューロンでは、モデルに非線形性を導入するために活性化関数が適用されます。活性化関数は、入力と対応する重みに応じてニューロンの出力を決めます。"
           }
@@ -2661,7 +2854,8 @@
           "cosineProximity": {
             "description": "正解ベクトルと予測ベクトルの向き（なす角）を比べます。ベクトルの大きさは考慮しません。"
           }
-        }
+        },
+        "related": "その他の関連する式"
       },
       "metric-functions": {
         "title": "評価指標",
@@ -2702,6 +2896,10 @@
             "references": "平均二乗誤差",
             "description": "ラベルと予測の間の平均二乗誤差を求めます。"
           }
+        },
+        "confusion": {
+          "title": "混同行列の評価指標",
+          "description": "混同行列の各クラスの正解と誤りから計算します：陽性と予測したうち正しいものの割合（適合率）、実際の陽性のうち見つけられた割合（再現率・感度）、その調和平均（F1）、実際の陰性のうち正しく認識された割合（特異度）。"
         }
       }
     },
@@ -2847,7 +3045,9 @@
     "label": "パンくずリスト",
     "models": "学習済みモデル",
     "datasets": "モデルを学習する",
-    "change": "リストの別の項目に切り替える"
+    "change": "リストの別の項目に切り替える",
+    "train-with-dataset": "このデータセットで学習する",
+    "try-pretrained": "学習済みモデルを試す"
   },
   "neural-network": {
     "layer": "レイヤー {{index}}",

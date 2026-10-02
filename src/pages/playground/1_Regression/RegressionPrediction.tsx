@@ -9,7 +9,7 @@ import N4LEmptyState from '@components/loading/N4LEmptyState'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 import { useRegressionContext } from '@context/useRegressionContext'
-import RegressionPredictionForm from '@pages/playground/1_Regression/RegressionPredictionForm'
+import ModelReviewRegressionPredictForm from '@pages/playground/1_Regression/ModelReviewRegressionPredictForm'
 import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionPredictionInfo'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
@@ -39,6 +39,8 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
 
   // Instancia del conjunto de datos copiada al formulario (null hasta elegir una)
   const [indexInstance, setIndexInstance] = useState<number | null>(null)
+  // Valor real de lo que se predijo: si después se edita el formulario, el resultado sigue siendo de esa instancia
+  const [resultActual, setResultActual] = useState<number | null>(null)
 
   const handleSubmit_Predict = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,6 +53,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
     const result = Array.from(await predictTensor.data<'float32'>())
     predictTensor.dispose()
 
+    setResultActual(actualValue)
     setPrediction((prevState) => ({
       ...prevState,
       result: result
@@ -97,6 +100,17 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
     return targets.map((target, index) => ({ value: index, label: `#${index} · ${formatTarget(target)}` }))
   }, [dataProcessed])
 
+  // El valor real solo se enseña si el formulario sigue siendo la instancia elegida (sin editar)
+  const generatedModel = showPrediction ? listModels.data[_indexModel] : undefined
+  const originalRows = generatedModel?.dataset_processed.dataframe_original.values as unknown[][] | undefined
+  const selectedRow = indexInstance === null ? undefined : originalRows?.[indexInstance]
+  const formRow = prediction.input_1_dataframe_original.values[0] as unknown[] | undefined
+  const instanceMatches = selectedRow !== undefined && formRow !== undefined &&
+    selectedRow.every((value, column) => String(value) === String(formRow[column]))
+  const actualValue = instanceMatches && indexInstance !== null
+    ? Number((dataProcessed?.dataframe_y.values as unknown[] | undefined)?.[indexInstance])
+    : null
+
   // Explicabilidad: el modelo recibe la instancia ESCALADA (input_3_dataframe_scaling), así que el
   // background sale de la X escalada del dataset del modelo seleccionado.
   const explainModel = listModels.data[_indexModel]?.model ?? null
@@ -107,19 +121,17 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
     <Card>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h2><Trans i18nKey={prefix + 'title'} /></h2>
-        <div className="d-flex flex-wrap gap-2">
-          <div>
-            <div style={{ minWidth: '16rem' }}>
-              <N4LVirtualSelect options={instanceOptions}
-                value={indexInstance}
-                onChange={handleChange_Instance_Index}
-                disabled={!showPrediction}
-                size={'sm'}
-                placeholder={t(prefix + 'list-instances')}
-                searchPlaceholder={t(prefixForm + 'search-entity')}
-                noResultsText={t(prefixForm + 'no-entity')}
-                countText={(shown, total) => t(prefixForm + 'entity-count', { shown, total })} />
-            </div>
+        <div className={'d-flex flex-wrap gap-2 n4l-card-header-controls'}>
+          <div className={'n4l-instance-select'}>
+            <N4LVirtualSelect options={instanceOptions}
+              value={indexInstance}
+              onChange={handleChange_Instance_Index}
+              disabled={!showPrediction}
+              size={'sm'}
+              placeholder={t(prefix + 'list-instances')}
+              searchPlaceholder={t(prefixForm + 'search-entity')}
+              noResultsText={t(prefixForm + 'no-entity')}
+              countText={(shown, total) => t(prefixForm + 'entity-count', { shown, total })} />
           </div>
           <div>
             <Form.Group controlId={'model-selector'}>
@@ -178,18 +190,21 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
           <hr />
           <Form onSubmit={handleSubmit_Predict} noValidate>
 
-            <RegressionPredictionForm
-              generatedModel={listModels.data[_indexModel]}
-            />
+            {/* El mismo formulario que el de los modelos preentrenados: tipo y rango de cada atributo */}
+            {indexInstance === null || generatedModel === undefined
+              ? <N4LEmptyState i18nKey={prefix + 'choose-instance'} />
+              : <ModelReviewRegressionPredictForm customModel={{ model: generatedModel.model }}
+                dataset={generatedModel.dataset_processed}
+                prediction={prediction}
+                setPrediction={setPrediction} />}
 
-            <hr />
-
-            <Row>
+            <Row className={'mt-2'}>
               <div className="d-grid gap-2">
                 <Button
                   variant={'primary'}
                   size={'lg'}
-                  type={'submit'}>
+                  type={'submit'}
+                  disabled={indexInstance === null}>
                   <Trans i18nKey={prefix + 'button-submit'} />
                 </Button>
               </div>
@@ -197,7 +212,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
 
             <hr />
 
-            <RegressionPredictionInfo prediction={prediction} targetName={listModels.data[_indexModel]?.params_features.Y_target} />
+            <RegressionPredictionInfo prediction={prediction} targetName={dataProcessed?.column_name_target} actual={resultActual} />
 
           </Form>
         </>}

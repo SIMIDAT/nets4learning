@@ -1,17 +1,16 @@
-import React, { useEffect, useId, useState } from 'react'
+import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import * as dfd from 'danfojs'
 
-import * as _Types from '@core/types'
 import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
-import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 
 import N4LSummary from '@components/summary/N4LSummary'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
+import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
@@ -35,9 +34,6 @@ export default function TabularClassificationDatasetShow() {
     const { datasets } = useTabularClassificationContext()
   const prefix = 'pages.playground.generator.dataset.'
   const { t } = useTranslation()
-  const dataframe_original_plotID = useId()
-  const dataframe_processed_plotID = useId()
-
   const [showProcessed, setShowProcessed] = useState(false)
 
   const datasetSelected = datasets.index >= 0 ? datasets.datasets[datasets.index] : undefined
@@ -48,26 +44,8 @@ export default function TabularClassificationDatasetShow() {
     setShowProcessed(e.target.checked)
   }
 
-  useEffect(() => {
-
-    /**
-     * @param {_Types.DatasetProcessed_t} _datasetSelected 
-     */
-    const _updateDataFrameDescribe = (_datasetSelected: _Types.DatasetProcessed_t) => {
-      const options = { config: TABLE_PLOT_STYLE_CONFIG, emptyText: t('dataframe.describe.no-numeric') }
-      DataFrameUtils.DataFrameDescribePlot(_datasetSelected.dataframe_original, dataframe_original_plotID, options)
-      DataFrameUtils.DataFrameDescribePlot(_datasetSelected.dataframe_processed, dataframe_processed_plotID, options)
-    }
-    const currentDataset = datasets?.datasets?.[datasets.index];
-
-    // Guard: Ensure data is ready AND the DOM element exists
-    const originalEl = document.getElementById(dataframe_original_plotID);
-    const processedEl = document.getElementById(dataframe_processed_plotID);
-
-    if (showDataset && currentDataset && originalEl && processedEl) {
-      _updateDataFrameDescribe(currentDataset);
-    }
-  }, [showDataset, datasets, dataframe_original_plotID, dataframe_processed_plotID, t])
+  // Columna que se clasifica: se resalta en la tabla y en las estadísticas
+  const target = datasetSelected?.data_processed?.column_name_target ?? null
 
   if (VERBOSE) console.debug('render TabularClassificationDatasetShow')
   return <>
@@ -97,7 +75,8 @@ export default function TabularClassificationDatasetShow() {
             <Col className={'overflow-x-auto'}>
               <N4LTablePagination
                 data_head={dataframe.columns}
-                data_body={DataFrameUtils.DataFrameIterRows(dataframe)} />
+                data_body={DataFrameUtils.DataFrameIterRows(dataframe)}
+                highlight_column={target === null ? -1 : dataframe.columns.indexOf(target)} />
             </Col>
           </Row>
           <hr />
@@ -109,10 +88,10 @@ export default function TabularClassificationDatasetShow() {
             <Col>
               <N4LSummary
                 title={<Trans i18nKey={prefix + 'details.description-original'} />}
-                info={<div id={dataframe_original_plotID}></div>} />
+                info={datasetSelected && <N4LDataFrameDescribe dataframe={datasetSelected.dataframe_original} target={target} />} />
               <N4LSummary
                 title={<Trans i18nKey={prefix + 'details.description-processed'} />}
-                info={<div id={dataframe_processed_plotID}></div>} />
+                info={datasetSelected && <N4LDataFrameDescribe dataframe={datasetSelected.dataframe_processed} target={target} />} />
             </Col>
           </Row>
         </>}

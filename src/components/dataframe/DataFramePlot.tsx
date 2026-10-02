@@ -17,6 +17,8 @@ import DataFramePlotModalDescription from './DataFramePlotModalDescription'
 import DataFramePlotContext from '../_context/DataFramePlotContext'
 import { E_PLOTS, LIST_PLOTS } from '../_context/CONSTANTS'
 import { VERBOSE } from '@/CONSTANTS'
+import { useTheme } from '@hooks/useTheme'
+import { TABLE_PALETTE } from '@core/dataframe/DataFrameTable'
 
 /**
  * @typedef DataFramePlotProps_t
@@ -51,6 +53,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
   const showDataframe = isDataFrameProcessed
 
   const dataframe_plot_ID = useId()
+  const theme = useTheme()
 
   const init = useCallback(() => {
     // Funciones para inicializar TIME_SERIES_PLOTS
@@ -129,10 +132,14 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
       return { warnings: [] }
     }
 
+    // Fondo transparente y texto del tema: el gráfico se ve igual que la tarjeta en modo claro y oscuro
     const layout = {
-      title: dataframePlotConfig.LAYOUT.title,
-      xaxis: { title: dataframePlotConfig.LAYOUT.x_axis },
-      yaxis: { title: dataframePlotConfig.LAYOUT.y_axis },
+      title        : dataframePlotConfig.LAYOUT.title,
+      xaxis        : { title: dataframePlotConfig.LAYOUT.x_axis, gridcolor: TABLE_PALETTE[theme].line, zerolinecolor: TABLE_PALETTE[theme].line },
+      yaxis        : { title: dataframePlotConfig.LAYOUT.y_axis, gridcolor: TABLE_PALETTE[theme].line, zerolinecolor: TABLE_PALETTE[theme].line },
+      paper_bgcolor: 'rgba(0, 0, 0, 0)',
+      plot_bgcolor : 'rgba(0, 0, 0, 0)',
+      font         : { family: getComputedStyle(document.body).fontFamily, color: TABLE_PALETTE[theme].text },
     }
 
     const warnings: string[] = []
@@ -220,7 +227,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
     }
 
     return { warnings, draw }
-  }, [dataFrameLocal, dataframePlotConfig, dataframe_plot_ID, showDataframe])
+  }, [dataFrameLocal, dataframePlotConfig, dataframe_plot_ID, showDataframe, theme])
   const listWarning = plot.warnings
 
   useEffect(() => {
@@ -258,9 +265,9 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
   if (VERBOSE) console.debug('render DataFramePlot')
   return <>
     <Card className={'mt-3'}>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <h2><Trans i18nKey={'dataframe-plot.title'} /></h2>
-        <div className={'d-flex'}>
+        <div className={'d-flex flex-wrap gap-2'}>
           <Form.Group controlId={'plot'}>
             <Form.Select size={'sm'}
               aria-label={'plot'}
@@ -279,7 +286,6 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
 
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-3'}
             aria-label={'description'}
             disabled={!showDataframe}
             onClick={() => setShowOptions(true)}>
@@ -287,7 +293,6 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
           </Button>
           <Button variant={'outline-primary'}
             size={'sm'}
-            className={'ms-3'}
             aria-label={'description'}
             disabled={!showDataframe}
             onClick={() => setShowDescription(true)}>

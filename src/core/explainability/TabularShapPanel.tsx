@@ -305,7 +305,9 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
 
         <div className="d-grid gap-2 mb-3">
           <Button size={'lg'} variant={isCalculatingGlobal || globalVisible ? 'outline-secondary' : 'primary'}
-                  onClick={handleClick_ExplainGlobal}>
+                  onClick={handleClick_ExplainGlobal}
+                  data-testid={'Test-ShapGlobal'}
+                  data-calculating={isCalculatingGlobal}>
             {isCalculatingGlobal
               ? t('ui.explain.cancel')
               : globalVisible ? t(PREFIX + 'hide-global') : t(PREFIX + 'show-global')}

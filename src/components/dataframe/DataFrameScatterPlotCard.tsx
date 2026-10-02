@@ -33,10 +33,10 @@ export default function DataFrameScatterPlotCard(props: DataFrameScatterPlotCard
   if (VERBOSE) console.debug('render DataFrameScatterPlotCard')
   return <>
     <Card className={'mt-3'}>
-      <Card.Header className={'d-flex justify-content-between'}>
+      <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h3><Trans i18nKey={'dataframe-scatterplot.title'} /></h3>
-        <div className={'d-flex gap-2'}>
-          <Form.Group controlId={'selector-x'}>
+        <div className={'d-flex gap-2 n4l-card-header-controls'}>
+          <Form.Group controlId={'selector-x'} className={'flex-fill'}>
             <Form.Select
               onChange={handleChange_SelectorX}
               aria-label={'selector-x'}
@@ -50,7 +50,7 @@ export default function DataFrameScatterPlotCard(props: DataFrameScatterPlotCard
               </>
             </Form.Select>
           </Form.Group>
-          <Form.Group controlId={'selector-y'}>
+          <Form.Group controlId={'selector-y'} className={'flex-fill'}>
             <Form.Select
               onChange={handleChange_SelectorY}
               aria-label={'selector-y'}

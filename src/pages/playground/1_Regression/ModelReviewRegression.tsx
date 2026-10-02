@@ -9,6 +9,7 @@ import * as tfjs from "@tensorflow/tfjs"
 import * as _Types from "@core/types"
 import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, DEFAULT_SELECTOR_INSTANCE_INDEX } from "@/CONSTANTS"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
+import N4LEmptyState from "@components/loading/N4LEmptyState"
 import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
 import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
 import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
@@ -115,7 +116,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       ) {
         const _models = await iModelInstance.MODELS(listDatasets.data[listDatasets.index].csv)
         setListCustomModels({
-          data : _models,
+          // Un conjunto de datos sin modelos preentrenados devuelve [] (o nada, si no está en la lista)
+          data : _models ?? [],
           index: 0,
           model: "select-model",
         })
@@ -130,7 +132,9 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       console.debug("useEffect[init][ datasets, datasets.data, datasets.index, models, models.data, models.index ]")
     const init = async () => {
       await tfjs.ready()
-      if (listCustomModels.index !== DEFAULT_SELECTOR_MODEL_INDEX && listCustomModels.data.length > 0) {
+      // Las instancias y el gráfico son del conjunto de datos elegido, tenga o no modelos: antes, con uno sin
+      // modelos, se quedaban las del anterior
+      if (listCustomModels.index !== DEFAULT_SELECTOR_MODEL_INDEX && listDatasets.data[listDatasets.index] !== undefined) {
         /**@type {_Types.DatasetProcessed_t}*/
         const dataset_processed: _Types.DatasetProcessed_t = listDatasets.data[listDatasets.index]
         const { dataframe_original /* data_processed */ } = dataset_processed
@@ -171,6 +175,11 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       ...prevState,
       index: parseInt(event.target.value),
     }))
+    // Los modelos y la instancia eran del conjunto anterior: se vacían hasta cargar los del nuevo (si no, el
+    // formulario mezclaba las columnas del nuevo con la instancia del anterior y la página fallaba)
+    setListCustomModels({ data: [], index: DEFAULT_SELECTOR_MODEL_INDEX, model: "select-model" })
+    setInstances({ data: [], index: DEFAULT_SELECTOR_INSTANCE_INDEX, instance: "select-instance" })
+    setPrediction((prevState) => ({ ...prevState, input_1_dataframe_original: new dfd.DataFrame(), result: [] }))
   }
 
   const handleChange_Models_Index = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -206,6 +215,9 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   // background sale de la X escalada del dataset (data_processed.X).
   const explainDataProcessed = listDatasets.data[listDatasets.index]?.data_processed
   const explainModel = listCustomModels.data[listCustomModels.index]?.model ?? null
+
+  // Ya cargados los modelos del conjunto de datos elegido, no hay ninguno
+  const hasNoModels = listCustomModels.index !== DEFAULT_SELECTOR_MODEL_INDEX && listCustomModels.data.length === 0
 
   // Selector de instancias: su número y el valor real de la variable objetivo. Puede haber miles: el desplegable solo
   // pinta las que se ven
@@ -290,12 +302,12 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                   <h2>
                     <Trans i18nKey={prefix + "predict.title"} />
                   </h2>
-                  <div className={"d-flex flex-wrap gap-2"}>
-                    <div style={{ minWidth: "16rem" }}>
+                  <div className={"d-flex flex-wrap gap-2 n4l-card-header-controls"}>
+                    <div className={"n4l-instance-select"}>
                       <N4LVirtualSelect options={instanceOptions}
                         value={instanceMatches ? instances.index : null}
                         onChange={handleChange_Instance_Index}
-                        disabled={instances.data.length === 0}
+                        disabled={instances.data.length === 0 || hasNoModels}
                         size={"sm"}
                         placeholder={t(instances.index >= 0 ? "example-custom" : prefix + "predict.list-instances")}
                         searchPlaceholder={t("pages.playground.generator.dynamic-form-dataset.search-entity")}
@@ -304,6 +316,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                     </div>
                     <Form.Group controlId={"FormSelector_Models"}>
                       <Form.Select
+                        disabled={hasNoModels}
                         aria-label={t(prefix + "predict.list-models")}
                         size={"sm"}
                         value={listCustomModels.index}
@@ -325,13 +338,14 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <ModelReviewRegressionPredict
+                  {hasNoModels && <N4LEmptyState i18nKey={prefix + "predict.no-models"} />}
+                  {!hasNoModels && <ModelReviewRegressionPredict
                     customModel={listCustomModels.data[listCustomModels.index]}
                     dataset={listDatasets.data[listDatasets.index]}
                     prediction={prediction}
                     setPrediction={setPrediction}
                     actualValue={actualValue}
-                  />
+                  />}
                 </Card.Body>
               </Card>
 

@@ -1,16 +1,18 @@
-import { useState, useId, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans } from 'react-i18next'
 import * as dfd from 'danfojs'
 
 import * as _Types from '@core/types'
-import { DEFAULT_SCALER, DEFAULT_SELECTOR_DATASET_INDEX, E_TRANSFORMS, VERBOSE } from '@/CONSTANTS'
-import { TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1, F_TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2 } from '@/CONSTANTS_DanfoJS'
+import { DEFAULT_SCALER, DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { useRegressionContext } from '@context/useRegressionContext'
+import N4LDataFrameTable from '@components/dataframe/N4LDataFrameTable'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { LIST_TRANSFORMATIONS } from './CONSTANTS'
-import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
 
+
+/** Transformación por defecto de una columna: las de texto se codifican con label encoder y el resto se queda igual */
+const defaultTransform = (column_type: _Types.DataFrameColumnType_t) => ((column_type === 'string') ? 'label-encoder' : column_type) as _Types.ColumnTransform_t
 
 /** Estado inicial del formulario para un dataframe: todas las columnas activas y el objetivo en la última. */
 function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
@@ -27,7 +29,7 @@ function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
     }
   })
   const _listTransformations: _Types.DataFrameColumnTransformEnable_t[] = _listColumnNameType.map(({ column_name, column_type, column_enable }) => {
-    const _column_transform: _Types.ColumnTransform_t = /** @type {_Types.ColumnTransform_t} */ ((column_type === 'string') ? 'label-encoder' : column_type)
+    const _column_transform = defaultTransform(column_type)
     return {
       column_name     : column_name,
       column_type     : column_type,
@@ -45,10 +47,6 @@ function getDefaultColumns(dataframe_original: _Types.DataFrame_t) {
 export default function RegressionDatasetProcessForm() {
 
   const prefix = 'form-dataframe.'
-  const { t } = useTranslation()
-
-  const plot_original_ID = useId()
-  const plot_processed_ID = useId()
 
   const {
     datasets,
@@ -104,23 +102,32 @@ export default function RegressionDatasetProcessForm() {
     const { dataframe_original } = datasets.data[_index]
     let { dataframe_processed } = datasets.data[_index]
 
+    // Lo elegido en el formulario (antes se ignoraba y solo se codificaban las columnas de texto): las columnas
+    // desactivadas se descartan; las de texto que se usan, se codifican con label encoder porque el modelo solo recibe
+    // números; el objetivo nunca se descarta
+    const transformOf = ({ column_name, column_type, column_enable, column_transform }: _Types.DataFrameColumnTransformEnable_t): _Types.ColumnTransform_t => {
+      const isTarget = column_name === columnNameTarget
+      if (!isTarget && (!column_enable || column_transform === 'drop')) return 'drop'
+      if (column_type === 'string') return 'label-encoder'
+      return column_transform === 'drop' ? defaultTransform(column_type) : column_transform
+    }
+    const new_dataset_transforms: _Types.DataFrameColumnTransform_t[] = listColumnNameTransformations.map((column) => ({
+      column_name     : column.column_name,
+      column_transform: transformOf(column),
+    }))
+    const keptColumns = new Set(new_dataset_transforms.filter(({ column_transform }) => column_transform !== 'drop').map(({ column_name }) => column_name))
+
     /**
      * @type {_Types.DatasetColumn_t[]}
      */
-    const new_dataset: _Types.DatasetColumn_t[] = []
-    for (let index = 0; index < dataframe_original.columns.length; index++) {
-      new_dataset[index] = {
-        column_name          : dataframe_original.columns[index],
+    const new_dataset: _Types.DatasetColumn_t[] = dataframe_original.columns
+      .map((column_name, index) => ({
+        column_name,
         column_type          : DataFrameUtils.DataFrameColumnType_To_DatasetColumnType(dataframe_original.dtypes[index]),
-        column_role          : dataframe_original.columns[index] === columnNameTarget ? 'Target' : 'Feature',
+        column_role          : column_name === columnNameTarget ? 'Target' : 'Feature',
         column_missing_values: false,
-      }
-    }
-    const new_dataset_transforms = [
-      // Los que sean de tipo String se pasan a categoricos y se filtran para añadir la función de transformación label encoder
-      ...new_dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
-      // listColumnNameTransformations
-    ]
+      } as _Types.DatasetColumn_t))
+      .filter(({ column_name }) => keptColumns.has(column_name))
 
     const dataframe_encoder = DataFrameUtils.DataFrameTransformAndEncoder(dataframe_processed, new_dataset_transforms)
     const new_encoders_map = dataframe_encoder.encoder_map
@@ -186,15 +193,6 @@ export default function RegressionDatasetProcessForm() {
       }
     })
 
-    dataframe_processed
-      .plot(plot_processed_ID)
-      .table({
-        config: F_TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_2(dataframe_processed.columns, listColumnNameTransformations, columnNameTarget),
-        layout: {
-          title: t('dataframe-processed'),
-        },
-      })
-
     setShowDetails({
       show_dataframe_original : false,
       show_dataframe_form     : false,
@@ -204,23 +202,11 @@ export default function RegressionDatasetProcessForm() {
 
 
 
-  useEffect(() => {
-    // datasetLocal
-    if (datasets.index === DEFAULT_SELECTOR_DATASET_INDEX) {
-      console.error('DEFAULT_SELECTOR_DATASET_INDEX')
-      return
-    }
-    const _index: number = datasets.index as number
-    datasets.data[_index]
-      .dataframe_original
-      .plot(plot_original_ID)
-      .table({
-        config: TABLE_PLOT_STYLE_CONFIG__STYLE_N4L_1,
-        layout: {
-          title: t('dataframe-original'),
-        },
-      })
-  }, [/* datasetLocal */ datasets, t, plot_original_ID/*, plot_processed_ID, listColumnNameTransformations, columnNameTarget */])
+  // Lo procesado: cada columna con la transformación que se le aplicó
+  const datasetSelected = datasets.index === DEFAULT_SELECTOR_DATASET_INDEX ? undefined : datasets.data[datasets.index as number]
+  const processedSubtitles = useMemo(() => Object.fromEntries(
+    (datasetSelected?.dataset_transforms ?? []).map(({ column_name, column_transform }) => [column_name, column_transform]),
+  ), [datasetSelected?.dataset_transforms])
 
   const handleChange_Scaler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     /**
@@ -234,10 +220,11 @@ export default function RegressionDatasetProcessForm() {
     setListColumnNameTransformations((prevState) => {
       return prevState.map((oldColumn) => {
         if (oldColumn.column_name === column_name) {
+          // Al volver a activarla recupera la transformación de su tipo (antes se quedaba en "drop")
           return {
             ...oldColumn,
             column_enable   : e.target.checked,
-            column_transform: 'drop'
+            column_transform: e.target.checked ? defaultTransform(oldColumn.column_type) : 'drop'
           }
         }
         return { ...oldColumn }
@@ -259,16 +246,15 @@ export default function RegressionDatasetProcessForm() {
   }
 
   const handleChange_ColumnNameTarget = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setColumnNameTarget(e.target.value)
-    setListColumnNameTransformations((prevState) => {
-      return prevState.map((oldColumn: _Types.DataFrameColumnTransformEnable_t) => {
-        const newColumn = {
-          ...oldColumn,
-          column_transform: E_TRANSFORMS.LABEL_ENCODER as _Types.ColumnTransform_t
-        }
-        return newColumn
-      })
-    })
+    const target = e.target.value
+    setColumnNameTarget(target)
+    // Antes pasaba todas las columnas a label encoder. El objetivo de una regresión es un número y se queda como
+    // está; si estaba desactivado, vuelve a usarse
+    setListColumnNameTransformations((prevState) => prevState.map((oldColumn) => (
+      oldColumn.column_name === target && !oldColumn.column_enable
+        ? { ...oldColumn, column_enable: true, column_transform: defaultTransform(oldColumn.column_type) }
+        : oldColumn
+    )))
   }
 
   if (VERBOSE) console.debug('render RegressionDatasetProcessForm')
@@ -282,7 +268,7 @@ export default function RegressionDatasetProcessForm() {
           <main>
             <Row>
               <Col>
-                <div id={plot_original_ID} />
+                <N4LDataFrameTable dataframe={dataframeOriginal} target={columnNameTarget} subtitles={'dtype'} />
               </Col>
             </Row>
           </main>
@@ -357,6 +343,7 @@ export default function RegressionDatasetProcessForm() {
                       name={'column-switch-' + column_name}
                       label={column_enable ? 'Enable' : 'Disabled'}
                       checked={column_enable}
+                      disabled={column_name === columnNameTarget}
                       onChange={(e) => handleChange_ColumnTransformEnable(e, column_name)}
                     />
                     <Form.Group controlId={'FormControl_' + column_name} className="mt-2">
@@ -404,7 +391,10 @@ export default function RegressionDatasetProcessForm() {
           <main>
             <Row>
               <Col>
-                <div id={plot_processed_ID} />
+                {datasetSelected?.is_dataset_processed &&
+                  <N4LDataFrameTable dataframe={datasetSelected.dataframe_processed}
+                    target={datasetSelected.data_processed?.column_name_target ?? null}
+                    subtitles={processedSubtitles} />}
               </Col>
             </Row>
           </main>

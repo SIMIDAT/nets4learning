@@ -130,7 +130,7 @@ async function loadWasmBackend() {
 }
 
 /** Carga el backend si hace falta y lo activa. Devuelve false si el navegador no puede usarlo */
-async function activateTFBackend(backend: TFBackend_t): Promise<boolean> {
+export async function activateTFBackend(backend: TFBackend_t): Promise<boolean> {
   try {
     if (backend === 'webgpu' && await detectWebGPUAdapter() === null) return false
     const tfjs = await import('@tensorflow/tfjs')

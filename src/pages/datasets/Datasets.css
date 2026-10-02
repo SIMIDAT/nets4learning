@@ -1,0 +1,67 @@
+/* Tablas de /datasets: el nombre (con su tamaño) a la izquierda y las acciones a la derecha, ajustadas a su contenido */
+.n4l-datasets-table thead th {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  white-space: nowrap;
+}
+
+.n4l-datasets-table .n4l-datasets-actions {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+/* Varios ficheros (vino tinto y blanco, los tres de cáncer de mama…): un enlace por línea */
+.n4l-datasets-links {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .25rem;
+}
+
+@media (max-width: 575.98px) {
+  /* Pestañas del modal (información, variables, datos, estadísticas): en una línea que se desliza, no en dos */
+  .n4l-dataset-modal-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+  }
+
+  .n4l-dataset-modal-tabs .nav-link {
+    white-space: nowrap;
+  }
+
+  /* Cada fila es un bloque (n4l-stack-table): el nombre arriba y las acciones debajo, a la izquierda */
+  .n4l-datasets-table .n4l-datasets-actions {
+    width: auto;
+    text-align: start;
+  }
+
+  .n4l-datasets-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Con varios ficheros la celda va en su línea y dice de qué son sus enlaces (en escritorio lo dice la cabecera) */
+  .n4l-datasets-table td[data-label] {
+    display: flex;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .n4l-datasets-table td[data-label]::before {
+    content: attr(data-label);
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color);
+  }
+}

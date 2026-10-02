@@ -24,7 +24,7 @@ export default function DataFrameCard({ title, ready = true, description, childr
   const [showDescription, setShowDescription] = useState(false)
   return <>
     <Card className={'mt-3'}>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <h3><Trans i18nKey={title} /></h3>
         {description && (
           <div className={'d-flex'}>

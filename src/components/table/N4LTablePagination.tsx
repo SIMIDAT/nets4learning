@@ -5,13 +5,16 @@ import { Trans } from 'react-i18next'
 import N4LPagination from '@components/table/N4LPagination'
 
 type N4LTablePaginationProps = {
-  data_head     : string[]
-  data_body     : any[][]
-  rows_per_page?: number
+  data_head        : string[]
+  data_body        : any[][]
+  rows_per_page?   : number
+  /** Posición en data_head de la columna objetivo (la que se predice o clasifica), que se resalta */
+  highlight_column?: number
 }
 
 export default function N4LTablePagination (props: N4LTablePaginationProps) {
-  const { data_head, data_body, rows_per_page = 10 } = props
+  const { data_head, data_body, rows_per_page = 10, highlight_column = -1 } = props
+  const targetClass = (column: number) => (column === highlight_column ? 'n4l-table-target' : undefined)
   const [activePage, setActivePage] = useState<number>(0)
 
   const rowsPerPage = rows_per_page
@@ -42,7 +45,7 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
         <tr>
           <th>ID</th>
           {data_head.map((v: string, i: number) => {
-            return <th key={'thead_' + i}>{v}</th>
+            return <th key={'thead_' + i} className={targetClass(i)}>{v}</th>
           })}
         </tr>
         </thead>
@@ -54,7 +57,7 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
             return <tr key={'tbody_' + r_i}>
               <th key={'tbody_id_' + r_i}>{(activePage * rowsPerPage) + r_i}</th>
               {r_v.map((c_v, c_i) => {
-                return <td key={'tbody_' + r_i + '_' + c_i}>{c_v}</td>
+                return <td key={'tbody_' + r_i + '_' + c_i} className={targetClass(c_i)}>{c_v}</td>
               })}
             </tr>
           })}

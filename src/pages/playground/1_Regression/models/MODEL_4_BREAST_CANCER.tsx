@@ -417,19 +417,13 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
    * @return {Promise<_Types.CustomModel_t[]>}
    */
   async MODELS (dataset: string = ''): Promise<_Types.CustomModel_t[]> {
-    const path = import.meta.env.VITE_PATH + '/models/01-regression/breast-cancer'
-    // const model = await tfjs.loadLayersModel(path + '/0/lr-model-0.json')
+    // Ningún conjunto tiene modelo preentrenado (en models/01-regression/breast-cancer solo hay uno que no encaja)
     
     const models: { [key: string]: _Types.CustomModel_t[] } = {
       'breast-cancer-wisconsin.csv': [],
       'wpbc.csv'                   : [],
-      'wdbc.csv'                   : [
-        { 
-          model_path: path + '/0/lr-model-0.json', 
-          X         : this.wdbc_columns_X, 
-          y         : 'Outcome'
-        }
-      ],
+      // 0/lr-model-0.json no sirve para wdbc: recibe 1 atributo (wdbc tiene 30) y nunca se cargaba
+      'wdbc.csv'                   : [],
     }
     return models[dataset]
   }

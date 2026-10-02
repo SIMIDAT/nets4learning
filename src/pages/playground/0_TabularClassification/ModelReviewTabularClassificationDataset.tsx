@@ -1,14 +1,13 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Nav, Tab } from 'react-bootstrap'
 
 import type * as _Types from '@core/types'
 import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
-import { TABLE_PLOT_STYLE_CONFIG } from '@/CONSTANTS_DanfoJS'
 import { VERBOSE } from '@/CONSTANTS'
-import N4LSummary from '@components/summary/N4LSummary'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import type I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
 
@@ -25,7 +24,6 @@ type Tab_t = 'original' | 'processed'
 export default function ModelReviewTabularClassificationDataset({ iModelInstance }: ModelReviewTabularClassificationDatasetProps) {
   const prefix = 'pages.playground.generator.dataset.'
   const { t } = useTranslation()
-  const describePlotID = useId()
   // undefined mientras se carga; null si el modelo no tiene conjunto de datos (p. ej. uno propio)
   const [dataset, setDataset] = useState<_Types.DatasetProcessed_t | null | undefined>(undefined)
   const [activeTab, setActiveTab] = useState<Tab_t>('original')
@@ -41,15 +39,6 @@ export default function ModelReviewTabularClassificationDataset({ iModelInstance
   const originalRows = useMemo(() => (dataset ? DataFrameUtils.DataFrameIterRows(dataset.dataframe_original) : []), [dataset])
   const processedRows = useMemo(() => (dataset ? DataFrameUtils.DataFrameIterRows(dataset.dataframe_processed) : []), [dataset])
 
-  // La descripción la dibuja danfo en su div, que solo existe con la pestaña abierta
-  useEffect(() => {
-    if (activeTab !== 'processed' || !dataset || document.getElementById(describePlotID) === null) return
-    DataFrameUtils.DataFrameDescribePlot(dataset.dataframe_processed, describePlotID, {
-      config   : TABLE_PLOT_STYLE_CONFIG,
-      emptyText: t('dataframe.describe.no-numeric'),
-    })
-  }, [activeTab, dataset, describePlotID, t])
-
   if (dataset === null) return null
 
   const tableHeader = iModelInstance.TABLE_HEADER.map((name) => t(name))
@@ -57,6 +46,10 @@ export default function ModelReviewTabularClassificationDataset({ iModelInstance
   const processedHeader = dataset && tableHeader.length === dataset.dataframe_processed.columns.length
     ? tableHeader
     : dataset?.dataframe_processed.columns ?? []
+
+  // La clase: se resalta en las tablas y en las estadísticas
+  const target = dataset?.data_processed?.column_name_target ?? null
+  const targetIndexIn = (columns: string[]) => (target === null ? -1 : columns.indexOf(target))
 
   if (VERBOSE) console.debug('render ModelReviewTabularClassificationDataset')
   return (
@@ -77,7 +70,8 @@ export default function ModelReviewTabularClassificationDataset({ iModelInstance
           {dataset && <Tab.Content>
             <Tab.Pane eventKey={'original'}>
               <div className={'overflow-x-auto'}>
-                <N4LTablePagination data_head={tableHeader} data_body={originalRows} />
+                <N4LTablePagination data_head={tableHeader} data_body={originalRows}
+                  highlight_column={targetIndexIn(dataset.dataframe_original.columns)} />
               </div>
             </Tab.Pane>
             <Tab.Pane eventKey={'processed'} mountOnEnter={true}>
@@ -85,13 +79,14 @@ export default function ModelReviewTabularClassificationDataset({ iModelInstance
                 <Trans i18nKey={'pages.playground.0-tabular-classification.general.dataframe-processed-help'} />
               </p>
               <div className={'overflow-x-auto'}>
-                <N4LTablePagination data_head={processedHeader} data_body={processedRows} />
+                <N4LTablePagination data_head={processedHeader} data_body={processedRows}
+                  highlight_column={targetIndexIn(dataset.dataframe_processed.columns)} />
               </div>
               <hr />
               <TabularClassificationDatasetShowInfo datasets={{ index: 0, datasets: [dataset] }} />
               <hr />
-              <N4LSummary title={<Trans i18nKey={prefix + 'details.description-processed'} />}
-                info={<div id={describePlotID}></div>} />
+              <h4 className={'h5'}><Trans i18nKey={prefix + 'details.description-processed'} /></h4>
+              <N4LDataFrameDescribe dataframe={dataset.dataframe_processed} target={target} />
             </Tab.Pane>
           </Tab.Content>}
         </Card.Body>
