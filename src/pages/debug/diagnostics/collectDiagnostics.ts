@@ -157,7 +157,8 @@ export function describeWebGLRenderer(renderer: string): { angleBackend: string 
 
 const loseContext = (gl: WebGLRenderingContext | null) => gl?.getExtension('WEBGL_lose_context')?.loseContext()
 
-function probeWebGL(): WebGLInfo_t {
+/** WebGL del navegador y la GPU que hay detrás (también en la información del dispositivo de la cámara) */
+export function probeWebGL(): WebGLInfo_t {
   const getContext = (type: 'webgl' | 'webgl2', options?: WebGLContextAttributes) => {
     try {
       return document.createElement('canvas').getContext(type, options) as WebGLRenderingContext | null
@@ -387,7 +388,8 @@ type UserAgentData_t = {
   getHighEntropyValues?: (hints: string[]) => Promise<{ architecture?: string, bitness?: string, platformVersion?: string }>
 }
 
-async function probeSystem(): Promise<SystemInfo_t> {
+/** Navegador, sistema y pantalla (también en la información del dispositivo de la cámara) */
+export async function probeSystem(): Promise<SystemInfo_t> {
   const nav = navigator as Navigator & { userAgentData?: UserAgentData_t, deviceMemory?: number }
   const uaData = nav.userAgentData
   let highEntropy: Awaited<ReturnType<NonNullable<UserAgentData_t['getHighEntropyValues']>>> | null = null

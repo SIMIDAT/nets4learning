@@ -262,9 +262,6 @@
     }
   },
   "dataframe-processed": "データフレーム | 処理済み",
-  "dataframe-scatterplot": {
-    "title": "散布図"
-  },
   "model-selector": {
     "title": "モデル選択"
   },
@@ -462,7 +459,9 @@
       "waiting-for-model": "予測を説明するには、まずモデルを学習させてください。"
     },
     "take-screenshot": "スクリーンショットを撮る",
-    "table-scroll-hint": "横にスクロールするとすべての列が表示されます →"
+    "table-scroll-hint": "横にスクロールするとすべての列が表示されます →",
+    "maximize": "最大化",
+    "minimize": "元のサイズに戻す"
   },
   "custom-canvas-drawer": {
     "validate": "分類する",
@@ -1054,6 +1053,64 @@
         "process-image": {
           "title": "画像処理",
           "sub-title": "画像をアップロード"
+        },
+        "device-info": {
+          "camera": "使用中のカメラ",
+          "camera-off": "カメラの情報を見るにはWebカメラをオンにしてください。",
+          "name": "名前",
+          "resolution": "解像度",
+          "frames": "受信した画像",
+          "aspect": "アスペクト比",
+          "frame-rate": "フレームレート（fps）",
+          "facing": "カメラ",
+          "facing-user": "前面",
+          "facing-environment": "背面",
+          "resize-mode": "リサイズモード",
+          "displayed": "画面上のサイズ",
+          "mirrored": "ミラー表示",
+          "state": "状態",
+          "state-live": "配信中",
+          "state-ended": "停止",
+          "device-id": "デバイスID",
+          "capabilities": "カメラの機能",
+          "capabilities-none": "ブラウザがカメラの機能を報告していません。",
+          "detection": "検出",
+          "model": "モデル",
+          "predictions": "1秒あたりの予測数",
+          "prediction-time": "1回の予測時間",
+          "limit": "上限",
+          "limit-value": "1秒あたり{{fps}}回",
+          "backend": "TensorFlow.jsのバックエンド",
+          "tensors": "TensorFlow.jsのメモリ",
+          "devices": "利用できるカメラ",
+          "devices-none": "カメラが見つかりません。",
+          "unnamed": "カメラ{{index}}",
+          "in-use": "使用中",
+          "browser": "ブラウザとシステム",
+          "browser-name": "ブラウザ",
+          "platform": "システム",
+          "mobile": "モバイル",
+          "architecture": "アーキテクチャ",
+          "cores": "CPUコア数",
+          "memory": "メモリ（概算）",
+          "language": "言語",
+          "permission": "カメラの許可",
+          "permission-granted": "許可済み",
+          "permission-denied": "拒否",
+          "permission-prompt": "未許可",
+          "webview": "WebView",
+          "secure": "安全な接続（HTTPS）",
+          "user-agent": "ユーザーエージェント",
+          "screen": "画面とGPU",
+          "screen-size": "画面",
+          "window": "ウィンドウ",
+          "pixel-ratio": "ピクセル密度",
+          "orientation": "向き",
+          "gpu": "GPU",
+          "webgl2": "WebGL 2",
+          "software": "ソフトウェアレンダリング",
+          "yes": "はい",
+          "no": "いいえ"
         }
       },
       "face-detection": {
@@ -2426,7 +2483,12 @@
         "imputed-value": "<code>{{column}}</code>: {{value}}"
       },
       "analyzing": "データセットを分析中…",
-      "charts-sample": "行数が多いため、これらのグラフは {{rows}} 行のうち {{sample}} 行のランダムサンプルを使います。"
+      "charts-sample": "行数が多いため、これらのグラフは {{rows}} 行のうち {{sample}} 行のランダムサンプルを使います。",
+      "essentials": {
+        "tab": "分析",
+        "help": "データセットの探索的分析の要点：サイズ、欠損値と重複行、目的変数の分布、注意点、目的変数と関係のある変数。",
+        "open": "完全な分析を見る（探索的データ分析）"
+      }
     },
     "menu": {
       "select-model": {
@@ -2980,7 +3042,6 @@
   "upload-dataset-info": "タスクを実行するにはデータセットをアップロードする必要があります。",
   "upload-model": "モデルをアップロード",
   "upload-model-info": "タスクを実行するにはモデルをアップロードする必要があります。",
-  "select-attr": "属性を選択",
   "upload-dataset": "データセットをアップロード",
   "00-tc": {
     "car": {

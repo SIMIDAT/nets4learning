@@ -70,7 +70,9 @@
       "waiting-for-model": "Train a model to be able to explain its predictions."
     },
     "take-screenshot": "Take a screenshot",
-    "table-scroll-hint": "Scroll horizontally to see all the columns →"
+    "table-scroll-hint": "Scroll horizontally to see all the columns →",
+    "maximize": "Maximize",
+    "minimize": "Minimize"
   },
   "welcome": "Welcome to Nets4Learning",
   "welcome-2": "To continue select one of these tasks",
@@ -335,9 +337,6 @@
     }
   },
   "dataframe-processed": "DataFrame | Processed",
-  "dataframe-scatterplot": {
-    "title": "scatter plot"
-  },
   "model-selector": {
     "title": "Model selector"
   },
@@ -1054,6 +1053,64 @@
         "process-image": {
           "title": "Image processing",
           "sub-title": "Upload Image"
+        },
+        "device-info": {
+          "camera": "Camera in use",
+          "camera-off": "Turn on the webcam to see the camera details.",
+          "name": "Name",
+          "resolution": "Resolution",
+          "frames": "Received image",
+          "aspect": "Aspect ratio",
+          "frame-rate": "Frames per second",
+          "facing": "Camera",
+          "facing-user": "Front",
+          "facing-environment": "Back",
+          "resize-mode": "Resize mode",
+          "displayed": "Size on screen",
+          "mirrored": "Mirrored image",
+          "state": "State",
+          "state-live": "Streaming",
+          "state-ended": "Stopped",
+          "device-id": "Device ID",
+          "capabilities": "Camera capabilities",
+          "capabilities-none": "The browser does not report the camera capabilities.",
+          "detection": "Detection",
+          "model": "Model",
+          "predictions": "Predictions per second",
+          "prediction-time": "Time per prediction",
+          "limit": "Limit",
+          "limit-value": "{{fps}} per second",
+          "backend": "TensorFlow.js backend",
+          "tensors": "TensorFlow.js memory",
+          "devices": "Available cameras",
+          "devices-none": "No camera was found.",
+          "unnamed": "Camera {{index}}",
+          "in-use": "in use",
+          "browser": "Browser and system",
+          "browser-name": "Browser",
+          "platform": "System",
+          "mobile": "Mobile",
+          "architecture": "Architecture",
+          "cores": "CPU cores",
+          "memory": "Memory (approx.)",
+          "language": "Language",
+          "permission": "Camera permission",
+          "permission-granted": "Granted",
+          "permission-denied": "Denied",
+          "permission-prompt": "Not granted yet",
+          "webview": "WebView",
+          "secure": "Secure connection (HTTPS)",
+          "user-agent": "User agent",
+          "screen": "Screen and GPU",
+          "screen-size": "Screen",
+          "window": "Window",
+          "pixel-ratio": "Pixel density",
+          "orientation": "Orientation",
+          "gpu": "GPU",
+          "webgl2": "WebGL 2",
+          "software": "Software rendering",
+          "yes": "Yes",
+          "no": "No"
         }
       },
       "face-detection": {
@@ -2426,7 +2483,12 @@
         "imputed-value": "<code>{{column}}</code>: {{value}}"
       },
       "analyzing": "Analysing the data set…",
-      "charts-sample": "With so many rows, these charts use a random sample of {{sample}} of the {{rows}}."
+      "charts-sample": "With so many rows, these charts use a random sample of {{sample}} of the {{rows}}.",
+      "essentials": {
+        "tab": "Analysis",
+        "help": "The key points of the exploratory analysis of the data set: its size, missing and duplicate values, how the target variable is distributed, the warnings and which variables are related to it.",
+        "open": "See the full analysis (EDA)"
+      }
     },
     "documentation": {
       "title": "Documentation"
@@ -2981,7 +3043,6 @@
   "upload-dataset-info": "You must upload a dataset to perform the task.",
   "upload-model": "Upload model",
   "upload-model-info": "You must upload a model to perform the task.",
-  "select-attr": "Select attribute",
   "upload-dataset": "Upload dataset",
   "00-tc": {
     "car": {

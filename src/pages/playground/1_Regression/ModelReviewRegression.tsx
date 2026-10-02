@@ -11,7 +11,6 @@ import { VERBOSE, DEFAULT_SELECTOR_DATASET, DEFAULT_SELECTOR_MODEL, DEFAULT_SELE
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
 import N4LEmptyState from "@components/loading/N4LEmptyState"
 import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
-import DataFrameScatterPlotCard from "@components/dataframe/DataFrameScatterPlotCard"
 import { type I_MODEL_REGRESSION, MAP_LR_CLASSES } from "@pages/playground/1_Regression/models"
 import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
 import ModelReviewRegressionDataset from "./ModelReviewRegressionDataset"
@@ -37,8 +36,6 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   const prefix = "pages.playground.1-regression."
   const { t } = useTranslation()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_REGRESSION | null>(null)
-
-  const [dataframe_X, setDataFrame_X] = useState(new dfd.DataFrame())
 
   /**
    * @type {ReturnType<typeof useState<_Types.StateListDatasetProcessed_t>>}
@@ -132,13 +129,12 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       console.debug("useEffect[init][ datasets, datasets.data, datasets.index, models, models.data, models.index ]")
     const init = async () => {
       await tfjs.ready()
-      // Las instancias y el gráfico son del conjunto de datos elegido, tenga o no modelos: antes, con uno sin
-      // modelos, se quedaban las del anterior
+      // Las instancias son del conjunto de datos elegido, tenga o no modelos: antes, con uno sin modelos, se quedaban
+      // las del anterior
       if (listCustomModels.index !== DEFAULT_SELECTOR_MODEL_INDEX && listDatasets.data[listDatasets.index] !== undefined) {
         /**@type {_Types.DatasetProcessed_t}*/
         const dataset_processed: _Types.DatasetProcessed_t = listDatasets.data[listDatasets.index]
         const { dataframe_original /* data_processed */ } = dataset_processed
-        setDataFrame_X(dataframe_original)
         // El formulario empieza con la primera instancia, y el selector lo dice
         setInstances((_prevState) => ({
           data    : dataframe_original.values as Array<Array<string | number | boolean>>,
@@ -291,10 +287,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
               </Card>
             </Col>
             <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
+              {/* Conjunto de datos: tal cual, procesado y su análisis (correlaciones y dispersión, entre otros) */}
               <ModelReviewRegressionDataset dataset={datasetSelected} />
-
-              {/* DataFrame PLOT */}
-              <DataFrameScatterPlotCard dataframe={dataframe_X} />
 
               {/* Model PREDICT */}
               <Card className={"mt-3"}>

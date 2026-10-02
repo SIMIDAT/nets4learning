@@ -70,7 +70,9 @@
       "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones."
     },
     "take-screenshot": "Hacer una captura",
-    "table-scroll-hint": "Desliza en horizontal para ver todas las columnas →"
+    "table-scroll-hint": "Desliza en horizontal para ver todas las columnas →",
+    "maximize": "Maximizar",
+    "minimize": "Minimizar"
   },
   "welcome": "Bienvenido a Nets4Learning",
   "welcome-2": "Para continuar selecciona una de estas disciplinas",
@@ -335,9 +337,6 @@
     }
   },
   "dataframe-processed": "DataFrame | Procesado",
-  "dataframe-scatterplot": {
-    "title": "Gráfico de dispersión"
-  },
   "model-selector": {
     "title": "Selector de modelos"
   },
@@ -1054,6 +1053,64 @@
         "process-image": {
           "title": "Procesamiento de images",
           "sub-title": "Subida de imágenes"
+        },
+        "device-info": {
+          "camera": "Cámara en uso",
+          "camera-off": "Activa la webcam para ver los datos de la cámara.",
+          "name": "Nombre",
+          "resolution": "Resolución",
+          "frames": "Imagen recibida",
+          "aspect": "Proporción",
+          "frame-rate": "Fotogramas por segundo",
+          "facing": "Cámara",
+          "facing-user": "Frontal",
+          "facing-environment": "Trasera",
+          "resize-mode": "Ajuste de resolución",
+          "displayed": "Tamaño en pantalla",
+          "mirrored": "Imagen en espejo",
+          "state": "Estado",
+          "state-live": "Emitiendo",
+          "state-ended": "Detenida",
+          "device-id": "Id. del dispositivo",
+          "capabilities": "Capacidades de la cámara",
+          "capabilities-none": "El navegador no informa de las capacidades de la cámara.",
+          "detection": "Detección",
+          "model": "Modelo",
+          "predictions": "Predicciones por segundo",
+          "prediction-time": "Tiempo por predicción",
+          "limit": "Límite",
+          "limit-value": "{{fps}} por segundo",
+          "backend": "Backend de TensorFlow.js",
+          "tensors": "Memoria de TensorFlow.js",
+          "devices": "Cámaras disponibles",
+          "devices-none": "No se ha encontrado ninguna cámara.",
+          "unnamed": "Cámara {{index}}",
+          "in-use": "en uso",
+          "browser": "Navegador y sistema",
+          "browser-name": "Navegador",
+          "platform": "Sistema",
+          "mobile": "Móvil",
+          "architecture": "Arquitectura",
+          "cores": "Núcleos de CPU",
+          "memory": "Memoria (aprox.)",
+          "language": "Idioma",
+          "permission": "Permiso de la cámara",
+          "permission-granted": "Concedido",
+          "permission-denied": "Denegado",
+          "permission-prompt": "Sin conceder todavía",
+          "webview": "WebView",
+          "secure": "Conexión segura (HTTPS)",
+          "user-agent": "User agent",
+          "screen": "Pantalla y GPU",
+          "screen-size": "Pantalla",
+          "window": "Ventana",
+          "pixel-ratio": "Densidad de píxeles",
+          "orientation": "Orientación",
+          "gpu": "GPU",
+          "webgl2": "WebGL 2",
+          "software": "Renderizado por software",
+          "yes": "Sí",
+          "no": "No"
         }
       },
       "face-detection": {
@@ -2426,7 +2483,12 @@
         "imputed-value": "<code>{{column}}</code>: {{value}}"
       },
       "analyzing": "Analizando el conjunto de datos…",
-      "charts-sample": "Con tantas filas, estos gráficos usan una muestra aleatoria de {{sample}} de las {{rows}}."
+      "charts-sample": "Con tantas filas, estos gráficos usan una muestra aleatoria de {{sample}} de las {{rows}}.",
+      "essentials": {
+        "tab": "Análisis",
+        "help": "Lo más importante del análisis exploratorio del conjunto: su tamaño, los valores ausentes y repetidos, cómo se reparte la variable objetivo, los avisos y qué variables se relacionan con ella.",
+        "open": "Ver el análisis completo (AED)"
+      }
     },
     "documentation": {
       "title": "Documentación"
@@ -2981,7 +3043,6 @@
   "upload-dataset-info": "Debes subir un conjunto de datos para realizar la tarea.",
   "upload-model": "Subir modelo",
   "upload-model-info": "Debes subir un modelo para realizar la tarea.",
-  "select-attr": "Selecciona atributo",
   "upload-dataset": "Subir conjunto de datos",
   "00-tc": {
     "car": {

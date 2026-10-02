@@ -11,6 +11,8 @@ import { VERBOSE } from '@/CONSTANTS'
 import { UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import FakeProgressBar from '@components/loading/FakeProgressBar'
+import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
+import { useMaximize } from '@components/maximize/useMaximize'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
 import { restoreTFBackend } from '@core/tfBackend'
@@ -25,13 +27,22 @@ import {
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
 import { explainErrorKey } from '@core/explainability/explainError'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
+import WebcamDeviceInfo, { type DetectionStats_t } from './WebcamDeviceInfo'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
-/**
- * @typedef {'ratio-9x16'|'ratio-2x3'|'ratio-3x4'|'ratio-1x1'|'ratio-4x3'|'ratio-3x2'|'ratio-16x9'} Ratio_t
- */
-type Ratio_t = 'ratio-9x16' | 'ratio-2x3' | 'ratio-3x4' | 'ratio-1x1' | 'ratio-4x3' | 'ratio-3x2' | 'ratio-16x9'
+// El vídeo de la cámara y el lienzo con las detecciones ocupan todo #webcamContainer y se encajan igual dentro, sin
+// recortar (contain): las detecciones caen sobre el vídeo aunque el contenedor no tenga su proporción (maximizado)
+// Predicciones por segundo con la cámara, como mucho
+const DETECTION_FPS = 20
+
+const WEBCAM_LAYER_STYLE: React.CSSProperties = {
+  position : 'absolute',
+  inset    : 0,
+  width    : '100%',
+  height   : '100%',
+  objectFit: 'contain',
+}
 
 type ModelReviewObjectDetectionProps = {
   dataset: string
@@ -58,10 +69,13 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
 
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_OBJECT_DETECTION | null>(null)
-  /**
-   * @type {ReturnType<typeof useState<Ratio_t>>}
-   */
-  const [ratioCamera, setRatioCamera] = useState<Ratio_t>('ratio-16x9')
+  // Proporción (ancho / alto) de los fotogramas de la cámara: la toma su contenedor, así el vídeo lo llena sin bandas.
+  // Sale del propio vídeo y no de getSettings().aspectRatio, que Firefox no da (el contenedor quedaba cuadrado)
+  const [cameraAspect, setCameraAspect] = useState(16 / 9)
+  // La tarjeta de la cámara, a pantalla completa
+  const webcamMaximize = useMaximize()
+  // Predicciones hechas con la cámara y lo que han tardado: los lee la información del dispositivo
+  const detectionStats_ref = useRef<DetectionStats_t>({ predictions: 0, totalMs: 0 })
 
   /**
    * @type {ReturnType<typeof useRef<number>>}
@@ -244,7 +258,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // La predicción puede acabar después de apagar la cámara o cambiar de modelo: entonces no se pinta
     let isCancelled = false
     try {
-      const fps = 20
+      const fps = DETECTION_FPS
       let fpsInterval: number, now: number, then: number, elapsed: number
       // Una predicción cada vez: si la anterior no ha terminado se salta el fotograma. Si no, mientras el modelo
       // espera a la GPU (lecturas asíncronas) empezaban predicciones nuevas que se pisaban y el vídeo iba a saltos.
@@ -259,7 +273,10 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
             then = now - (elapsed % fpsInterval)
             isPredicting = true
             try {
+              const start = performance.now()
               const predictions = await iModelInstance.PREDICTION(video, { flipHorizontal: iModelInstance.mirror ?? false })
+              detectionStats_ref.current.predictions += 1
+              detectionStats_ref.current.totalMs += performance.now() - start
               if (isCancelled) return
               // El canvas se limpia justo antes de pintar: limpiarlo antes de predecir lo dejaba vacío mientras tanto
               const _processWebcam = processWebcam()
@@ -307,26 +324,19 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     setDeviceId(_deviceId)
   }
 
-  const onUserMediaEvent = (mediaStream: MediaStream) => {
-    const aspectRatio = mediaStream.getVideoTracks()[0].getSettings().aspectRatio || 1
-    if (aspectRatio >= 0.5 && aspectRatio < 0.6) {
-      setRatioCamera('ratio-9x16')
-    } else if (aspectRatio >= 0.6 && aspectRatio < 0.7) {
-      setRatioCamera('ratio-2x3')
-    } else if (aspectRatio >= 0.7 && aspectRatio < 0.8) {
-      setRatioCamera('ratio-3x4')
-    } else if (aspectRatio === 1) {
-      setRatioCamera('ratio-1x1')
-    } else if (aspectRatio >= 1.3 && aspectRatio < 1.4) {
-      setRatioCamera('ratio-4x3')
-    } else if (aspectRatio >= 1.4 && aspectRatio < 1.6) {
-      setRatioCamera('ratio-3x2')
-    } else if (aspectRatio >= 1.7 && aspectRatio < 1.8) {
-      setRatioCamera('ratio-16x9')
-    } else {
-      setRatioCamera('ratio-1x1')
-    }
-    // mediaStream.scale(-1, 1)
+  // La cámara ya emite: el permiso está concedido aunque permissions.query no lo diga (Firefox, con el permiso dado
+  // solo para esta visita, sigue diciendo "prompt": el selector pedía permisos y la lista de cámaras se quedaba vacía)
+  const handleUserMedia = async () => {
+    setCameraPermission('granted')
+    if (!navigator?.mediaDevices?.enumerateDevices) return
+    const mediaDevices = await navigator.mediaDevices.enumerateDevices()
+    setDevices(mediaDevices.filter(({ kind }) => kind === 'videoinput'))
+  }
+
+  // Al llegar los primeros fotogramas y cada vez que cambian de tamaño (otra cámara, el móvil girado)
+  const handleVideoSize = (event: React.SyntheticEvent<HTMLVideoElement>) => {
+    const { videoWidth, videoHeight } = event.currentTarget
+    if (videoWidth > 0 && videoHeight > 0) setCameraAspect(videoWidth / videoHeight)
   }
 
   const onUserMediaErrorEvent = (error: any) => {
@@ -553,7 +563,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
-              <Card className={'mt-3'}>
+              <Card className={'mt-3 ' + webcamMaximize.className} data-testid={'Test-WebcamCard'}>
                 <Card.Header className={'d-flex align-items-center justify-content-between'}>
                   <h3>
                     <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
@@ -631,83 +641,68 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                       onClick={handleClick_getScreenshot}>
                       <IconCamera aria-hidden={true} />
                     </Button>
+                    <N4LMaximizeButton maximized={webcamMaximize.maximized} onToggle={webcamMaximize.toggle} />
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <Card.Title className={'text-center'}>
+                  {/* Con la cámara encendida sobra: ya se ve */}
+                  {!isCameraEnable && <Card.Title className={'text-center'}>
                     <Trans
                       i18nKey={
                         'datasets-models.2-object-detection.interface.process-webcam.sub-title'
                       }
                     />
-                  </Card.Title>
-                  <Row className={'mt-3'}>
-                    <Col>
-                      {isCameraEnable && (
-                        <>
-                          <div
-                            id={'webcamContainer'}
-                            ref={WebCamContainer_ref}
-                            className={'ratio ' + ratioCamera}
-                            style={{
-                              position: 'relative',
-                              overflow: 'hidden',
-                              // paddingBottom: '56.25%'
-                            }}
-                          >
-                            <WebcamComponent
-                              ref={WebCam_ref}
-                              forceScreenshotSourceSize={true}
-                              onUserMedia={onUserMediaEvent}
-                              onUserMediaError={onUserMediaErrorEvent}
-                              videoConstraints={{
-                                deviceId: deviceId,
-                                width   : {
-                                  min  : 640,
-                                  ideal: 1280,
-                                  max  : 1920
-                                },
-                                height: {
-                                  min  : 480,
-                                  ideal: 720,
-                                  max  : 1080
-                                }
-                              }}
-                              mirrored={iModelInstance?.mirror ?? false}
-                              style={{
-                                position: 'absolute',
-                                width   : '100%',
-                                height  : '100%',
-                              }}
-                            />
-                            <canvas
-                              ref={canvas_ref}
-                              style={{
-                                objectFit: 'contain',
-                                position : 'absolute',
-                                width    : '100%',
-                                height   : '100%',
-                              }}
-                            ></canvas>
-                          </div>
-                        </>
-                      )}
-                    </Col>
-                  </Row>
+                  </Card.Title>}
+                  {/* Directamente en el cuerpo de la tarjeta: maximizada, la cámara ocupa el alto que queda y el vídeo y
+                      el lienzo (con su tamaño y object-fit: contain) se encajan igual dentro */}
+                  {isCameraEnable && (
+                    <div
+                      id={'webcamContainer'}
+                      ref={WebCamContainer_ref}
+                      className={'ratio n4l-maximized-fill'}
+                      style={{
+                        position           : 'relative',
+                        overflow           : 'hidden',
+                        // El alto de .ratio de Bootstrap, con la proporción exacta de la cámara
+                        '--bs-aspect-ratio': `${100 / cameraAspect}%`,
+                      } as React.CSSProperties}
+                    >
+                      <WebcamComponent
+                        ref={WebCam_ref}
+                        forceScreenshotSourceSize={true}
+                        onUserMedia={handleUserMedia}
+                        onUserMediaError={onUserMediaErrorEvent}
+                        onLoadedMetadata={handleVideoSize}
+                        onResize={handleVideoSize}
+                        videoConstraints={{
+                          deviceId: deviceId,
+                          width   : {
+                            min  : 640,
+                            ideal: 1280,
+                            max  : 1920
+                          },
+                          height: {
+                            min  : 480,
+                            ideal: 720,
+                            max  : 1080
+                          }
+                        }}
+                        mirrored={iModelInstance?.mirror ?? false}
+                        style={WEBCAM_LAYER_STYLE}
+                      />
+                      <canvas ref={canvas_ref} style={WEBCAM_LAYER_STYLE}></canvas>
+                    </div>
+                  )}
                 </Card.Body>
                 <Card.Footer>
-                  <details>
-                    <summary>{t('Device info')}</summary>
-                    <ol>
-                      {devices.map((device, index) => {
-                        return (
-                          <li key={index}>
-                            {device.kind} | {device.label}
-                          </li>
-                        )
-                      })}
-                    </ol>
-                  </details>
+                  <WebcamDeviceInfo getVideo={() => WebCam_ref.current?.video}
+                    devices={devices}
+                    cameraPermission={cameraPermission}
+                    isWebView={isWebView}
+                    mirrored={iModelInstance?.mirror ?? false}
+                    model={iModelInstance ? t(iModelInstance.TITLE) : '—'}
+                    fpsLimit={DETECTION_FPS}
+                    stats={detectionStats_ref} />
                 </Card.Footer>
               </Card>
             </Col>
@@ -783,7 +778,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         <canvas
                           id="resultCanvas"
                           ref={canvasImage_ref}
-                          className={'ratio ' + ratioCamera}
+                          className={'ratio'}
                           style={{
                             //position: 'absolute',
                             width : '100%',

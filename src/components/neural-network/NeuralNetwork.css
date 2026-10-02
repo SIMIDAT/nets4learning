@@ -21,6 +21,12 @@
   font-size: 3rem;
 }
 
+/* El grafo en la tarjeta maximizada: todo el hueco de la columna, menos su margen interior */
+.n4l-nn-fill {
+  position: absolute;
+  inset: 0 calc(var(--bs-gutter-x) * .5);
+}
+
 /* En móvil la columna lateral es estrecha: flecha más pequeña para que quepa el texto */
 @media (max-width: 575.98px) {
   .n4l-nn-arrow {

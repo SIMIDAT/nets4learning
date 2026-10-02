@@ -30,6 +30,18 @@ const faceApiTfjs: Plugin = {
   resolveId: (source, importer) => resolveFaceApiTfjs(source, importer),
 }
 
+/**
+ * Librerías que van en un chunk propio. danfojs las importa sin import() (y la app usa también Plotly y mathjs en las
+ * mismas páginas), así que Rollup las juntaba con danfojs en un solo chunk de 5,3 MB. Por separado se descargan en
+ * paralelo y siguen en la caché del navegador cuando cambia el código de la app; se siguen cargando solo en las
+ * páginas que las usan.
+ */
+const VENDOR_CHUNKS: [name: string, module: RegExp][] = [
+  ["plotly", /\/node_modules\/plotly\.js-dist-min\//],
+  ["mathjs", /\/node_modules\/(mathjs|decimal\.js|complex\.js|fraction\.js|typed-function)\//],
+  ["xlsx", /\/node_modules\/xlsx\//],
+]
+
 // https://vite.dev/config/
 export default defineConfig(({ mode, command }) => {
   // `base` (ruta de los assets) sigue a VITE_PATH:
@@ -117,8 +129,16 @@ export default defineConfig(({ mode, command }) => {
       exclude    : [...configDefaults.exclude, "e2e/**"],
     },
     build: {
-      // Sin manualChunks: Rollup divide el código según las rutas cargadas con lazy(), así
-      // cada página descarga solo sus librerías (tfjs, danfojs, modelos de visión…).
+      // Rollup divide el código según las rutas cargadas con lazy(), así cada página descarga solo sus librerías
+      // (tfjs, danfojs, modelos de visión…). manualChunks solo saca de ahí las de VENDOR_CHUNKS.
+      rollupOptions: {
+        output: {
+          manualChunks            : (id: string) => VENDOR_CHUNKS.find(([, module]) => module.test(id))?.[0],
+          // Sin esto Rollup mete en cada uno también sus dependencias, incluidas las que comparte con el resto de la
+          // app (los helpers de CommonJS, @babel/runtime, seedrandom…): la página de inicio cargaba entero el de mathjs
+          onlyExplicitManualChunks: true,
+        },
+      },
       // TensorFlow.js y danfojs siguen siendo grandes por sí solos, de ahí el límite alto.
       chunkSizeWarningLimit: 5000,
     },

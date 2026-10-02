@@ -10,6 +10,8 @@ import type { Network } from 'react-vis-graph-wrapper'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { NEURAL_NETWORK_MODES } from './neural_network'
 import N4LHelpLink from '@components/helpLink/N4LHelpLink'
+import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
+import { useMaximize } from '@components/maximize/useMaximize'
 
 /**
  * @typedef N4LLayerDesignProps_t
@@ -45,6 +47,8 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
 
   const [mode, setMode] = useState<"EXTEND" | "COMPACT">(NEURAL_NETWORK_MODES.COMPACT)
   const networkRef = useRef<Network | undefined>(undefined)
+  // A pantalla completa se ve mejor una red con muchas capas o en modo extendido
+  const maximize = useMaximize()
 
   const handleChange_mode = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedMode = e.target.value as "EXTEND" | "COMPACT"
@@ -53,10 +57,10 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
 
   if (VERBOSE) console.debug('render N4LLayerDesign')
   return <>
-    <Card>
+    <Card className={maximize.className}>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h3><Trans i18nKey={prefix + 'layer-design'} /></h3>
-        <div>
+        <div className={'d-flex align-items-center gap-2'}>
           <Form.Group controlId={'mode'}>
             <Form.Select
               disabled={show === false}
@@ -68,6 +72,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <option value={NEURAL_NETWORK_MODES.EXTEND}>{t(prefix + 'neural_network_modes.extend')}</option>
             </Form.Select>
           </Form.Group>
+          <N4LMaximizeButton maximized={maximize.maximized} onToggle={maximize.toggle} disabled={show === false} />
         </div>
       </Card.Header>
       <Card.Body id={'RegressionLayerDesign'}>
@@ -77,6 +82,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
             layers={layers}
             mode={mode}
             networkRef={networkRef}
+            fill={maximize.maximized}
           />
         </>}
         {!show && <>

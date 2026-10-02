@@ -1,5 +1,5 @@
 import './NeuralNetwork.css'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
@@ -17,15 +17,21 @@ type NeuralNetworkProps = {
   id_parent  : string
   networkRef?: React.Ref<Network | undefined>
   mode?      : NEURAL_NETWORK_MODES_t
+  /** Ocupa todo el alto que le dé su contenedor (la tarjeta maximizada), no los 250 px de siempre */
+  fill?      : boolean
 }
 
+const HEIGHT = 250
+
 export default function NeuralNetwork(props: NeuralNetworkProps) {
-  const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
+  const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT, fill = false } = props
   const { t } = useTranslation()
   // vis-network pinta en un canvas: el color de las aristas no sale del CSS
   const theme = useTheme()
 
-  const [options, setOptions] = useState({ height: 250, width: 300 })
+  const [fillHeight, setFillHeight] = useState(HEIGHT)
+  const height = fill ? fillHeight : HEIGHT
+  const network = useRef<Network | null>(null)
 
   const events = {
     afterDrawing: (_e: unknown) => {
@@ -55,39 +61,29 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
     return { label: lines.join('\n'), title: [layer, ...parts].join('\n') }
   }, [t])
 
-  // Ajusta el grafo al tamaño del contenedor, también cuando este cambia (p. ej. al redimensionar la ventana)
+  // Con fill, el alto del contenedor, también cuando cambia (p. ej. al girar el móvil). El grafo va encima (absolute):
+  // así el contenedor no crece con él y el alto que se mide es el que le da la tarjeta
   useEffect(() => {
+    if (!fill) return
     const element = document.getElementById(id_parent)
     if (element === null) return
     const observer = new ResizeObserver(() => {
       const cs = getComputedStyle(element)
-      const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
       const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
-      const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth)
       const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
-      const height = Math.max(250, element.offsetHeight - paddingY - borderY)
-      const width = Math.max(350, element.offsetWidth - paddingX - borderX)
-      // Mismo tamaño → mismo objeto, para no volver a renderizar
-      setOptions((prevState) => (prevState.height === height && prevState.width === width ? prevState : { height, width }))
+      setFillHeight(Math.max(HEIGHT, element.offsetHeight - paddingY - borderY))
     })
     observer.observe(element)
-
-
-    // Quita el evento de zoom para que no moleste al usar el scroll
-    // Deprecated by zoomView
-    // const dom = document.querySelectorAll('#vis-network canvas')[0]
-    // if (dom) {
-    //   const wheel = dom.getEventListeners('wheel')
-    //   if (wheel) {
-    //     const listener = wheel[0].listener
-    //     dom.removeEventListener('wheel', listener)
-    //   }
-    // }
-
     return () => {
       observer.disconnect()
     }
-  }, [id_parent])
+  }, [fill, id_parent])
+
+  // Con otro alto, el grafo se vuelve a encuadrar (vis-network solo cambia el tamaño del canvas). El efecto de VisGraph,
+  // que le pasa el alto nuevo, ya ha corrido: los de los hijos van antes
+  useEffect(() => {
+    network.current?.fit()
+  }, [height])
 
   const modeCompact = useCallback(() => {
     const nodes = [], edges = []
@@ -145,13 +141,13 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
   }, [mode, modeCompact, modeExtend])
 
   return <>
-    <Row className={'mt-3'}>
+    <Row className={'mt-3' + (fill ? ' n4l-maximized-fill' : '')}>
       <Col xs={2} className={'n4l-nn-side'}>
         <span className={'n4l-nn-side-label'}><Trans i18nKey={'graphic-red.input'} /></span>
         <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
       </Col>
-      <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
-        <div style={{ 'position': 'relative', height: '100%', width: '100%' }}>
+      <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} className={fill ? 'position-relative' : undefined}>
+        <div className={fill ? 'n4l-nn-fill' : undefined} style={fill ? undefined : { position: 'relative', height: '100%', width: '100%' }}>
           <VisGraph
             graph={graphState}
             options={{
@@ -180,10 +176,10 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
               edges: {
                 color: theme === 'dark' ? '#dee2e6' : '#000000',
               },
-              height: `${options.height}px`,
-              // width : `${options.width}px`
+              height: `${height}px`,
             }}
             events={events}
+            getNetwork={(instance: Network) => { network.current = instance }}
             ref={networkRef} />
         </div>
       </Col>

@@ -123,3 +123,32 @@ test('el glosario busca términos y cada uno tiene su enlace', async ({ page }) 
   await expect(sigmoid.locator('.katex')).toBeVisible()
   await expect(sigmoid.locator('img')).toHaveJSProperty('complete', true)
 })
+
+test('el diseño de capas se maximiza a pantalla completa y Escape lo devuelve a su sitio', async ({ page }) => {
+  await page.goto('/playground/regression/dataset/AUTO_MPG')
+  const card = page.locator('.card', { has: page.getByRole('heading', { name: 'Diseño de capas' }) })
+  const graph = card.locator('#vis-network canvas')
+  await expect(graph).toBeVisible()
+  expect((await graph.boundingBox())?.height).toBe(250)
+
+  await card.getByRole('button', { name: 'Maximizar' }).click()
+  const viewport = page.viewportSize()!
+  await expect.poll(() => card.boundingBox()).toEqual({ x: 0, y: 0, width: viewport.width, height: viewport.height })
+  // El grafo crece con la tarjeta
+  await expect.poll(async () => (await graph.boundingBox())?.height ?? 0).toBeGreaterThan(400)
+
+  await page.keyboard.press('Escape')
+  await expect(card.getByRole('button', { name: 'Maximizar' })).toBeVisible()
+  await expect.poll(async () => (await graph.boundingBox())?.height).toBe(250)
+})
+
+test('la revisión de un modelo de regresión enseña el análisis de su conjunto de datos', async ({ page }) => {
+  await page.goto('/playground/regression/model/AUTO_MPG')
+  await page.getByTestId('Test-ModelReviewDataset-AnalysisTab').click()
+  await expect(page.getByTestId('Test-AnalyzeTile-rows')).toContainText('396')
+  await expect(page.getByTestId('Test-AnalyzeTargetCard')).toContainText('mpg')
+  await expect(page.getByTestId('Test-AnalyzeWarningsCard')).toBeVisible()
+  await expect(page.getByTestId('Test-AnalyzeEssentialsLink')).toHaveAttribute('href', '/analyze?dataset=auto-mpg')
+  // La tarjeta del gráfico de dispersión ya no está: la dispersión va en el análisis
+  await expect(page.getByRole('heading', { name: 'Gráfico de dispersión' })).toHaveCount(0)
+})

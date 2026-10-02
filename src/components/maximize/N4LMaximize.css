@@ -1,0 +1,52 @@
+/* Tarjeta maximizada (useMaximize): toda la pantalla, por encima de la barra de navegación (1030) y del visor del
+   entrenamiento (1035) y por debajo de los modales (1055) */
+.card.n4l-maximized {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 !important;
+  border-radius: 0;
+}
+
+.card.n4l-maximized > .card-header,
+.card.n4l-maximized > .card-footer {
+  border-radius: 0;
+}
+
+/* El cuerpo ocupa el alto que dejan la cabecera y el pie; lo que lleve n4l-maximized-fill, lo que queda en él */
+.card.n4l-maximized > .card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+}
+
+.card.n4l-maximized .n4l-maximized-fill {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Un contenedor .ratio (la cámara) deja de tener el alto de su proporción: el vídeo y el lienzo se ajustan dentro */
+.card.n4l-maximized .ratio.n4l-maximized-fill::before {
+  padding-top: 0;
+}
+
+/* El botón (N4LMaximizeButton): cuadrado, con el alto de los controles pequeños de al lado (form-select-sm) y el icono
+   en el centro. Sin flex, el SVG va sobre la línea base del texto y queda 2 px por debajo del centro */
+.n4l-maximize-button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: calc(1.5em + .5rem + var(--bs-border-width) * 2);
+  height: calc(1.5em + .5rem + var(--bs-border-width) * 2);
+  padding: 0;
+}
+
+/* !important: react-joyride (el tutorial) deja en el body un overflow en línea */
+body.n4l-maximized-open {
+  overflow: hidden !important;
+}
