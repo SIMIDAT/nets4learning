@@ -1,8 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap'
 import { Camera as IconCamera } from 'react-bootstrap-icons'
-import { trackPageView } from '@core/analytics'
 import Webcam from 'react-webcam'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -10,7 +9,8 @@ import { useNavigate } from 'react-router'
 import { VERBOSE } from '@/CONSTANTS'
 import { UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
-import FakeProgressBar from '@components/loading/FakeProgressBar'
+import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
+import { trackDownloads } from '@core/downloadProgress'
 import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
 import { useMaximize } from '@components/maximize/useMaximize'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
@@ -26,8 +26,11 @@ import {
 } from '@core/explainability/ImageExplainPanel'
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
 import { explainErrorKey } from '@core/explainability/explainError'
+import { trackEvent } from '@core/analytics'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 import WebcamDeviceInfo, { type DetectionStats_t } from './WebcamDeviceInfo'
+import N4LGuide from '@components/guide/N4LGuide'
+import { objectDetectionReviewGuide } from './modelReviewGuide'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
@@ -76,6 +79,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const webcamMaximize = useMaximize()
   // Predicciones hechas con la cámara y lo que han tardado: los lee la información del dispositivo
   const detectionStats_ref = useRef<DetectionStats_t>({ predictions: 0, totalMs: 0 })
+  // Guía paso a paso de la página (con voz): solo con el botón "Guía"
+  const guideSteps = useMemo(() => (iModelInstance === null ? null : objectDetectionReviewGuide(t, dataset)), [t, dataset, iModelInstance])
 
   /**
    * @type {ReturnType<typeof useRef<number>>}
@@ -113,9 +118,6 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const [isCalculo, setIsCalculo] = useState(false)
   const [shapOptions, setShapOptions] = useState({ ...DEFAULT_SHAP_IMAGE_OPTIONS, maskValue: 0 })
 
-  useEffect(() => {
-    trackPageView(`/ModelReviewObjectDetection/${dataset}`, dataset)
-  }, [dataset])
 
   const handleDevices = useCallback(async () => {
     if (VERBOSE) console.debug('useCallback[handleDevices]')
@@ -187,7 +189,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        await _iModelInstance.ENABLE_MODEL()
+        // Con el progreso real de la descarga (los de COCO-SSD y MoveNet pesan varios MB)
+        await trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load')
         setLoading(false)
         await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } catch (error) {
@@ -314,6 +317,14 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     }
   }, [isCameraEnable, iModelInstance, processWebcam])
 
+  // Analíticas: cuánto tiempo se usa la cámara en tiempo real
+  useEffect(() => {
+    if (!isCameraEnable) return
+    const startedAt = performance.now()
+    trackEvent('webcam_start')
+    return () => trackEvent('webcam_end', { duration_sec: Math.round((performance.now() - startedAt) / 1000) })
+  }, [isCameraEnable])
+
   const handleChange_Camera = (e: React.ChangeEvent<HTMLInputElement>) => {
     const webcamChecked = e.target.checked
     setCameraEnable(!!webcamChecked)
@@ -432,6 +443,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         // Process detection
         // Una imagen subida no se muestra en espejo (la webcam sí): nunca se refleja.
         await processData(resultCtx, imgData, { flipHorizontal: false });
+        trackEvent('predict', { input: 'image' })
 
         await delay(2000); // Artificial delay if needed for UI/UX
 
@@ -481,6 +493,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       return
     }
 
+    trackEvent('explain', { method: 'shap' })
     setIsCalculo(true)
     try {
       const result = await runObjectDetectionExplain({
@@ -527,14 +540,14 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         <Row>
           <Col>
-            <FakeProgressBar isLoading={isLoading} />
+            <N4LDownloadProgress isLoading={isLoading} />
           </Col>
         </Row>
 
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
             <div className={'sticky-top'} style={{ zIndex: 0 }}>
-              <Card className={'mt-3 mb-3 border-info'}>
+              <Card className={'mt-3 mb-3 border-info'} data-guide={'model'}>
                 <Card.Header
                   className={'d-flex align-items-center justify-content-between'}
                 >
@@ -543,12 +556,13 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                   </h2>
                 </Card.Header>
                 <Card.Body>
+                  {guideSteps !== null && <N4LGuide id={'object-detection.' + dataset} steps={guideSteps} />}
                   {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
                 </Card.Body>
               </Card>
 
               {/* Panel narrativo del método (idéntico patrón al review tabular). OD usa SHAP. */}
-              <Card className={'mb-3 border-success'}>
+              <Card className={'mb-3 border-success'} data-guide={'explain-about'}>
                 <Card.Header>
                   <h2 className={'h5 mb-0'}>
                     <Trans i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-title'} />
@@ -563,12 +577,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
-              <Card className={'mt-3 ' + webcamMaximize.className} data-testid={'Test-WebcamCard'}>
+              <Card className={'mt-3 ' + webcamMaximize.className} data-testid={'Test-WebcamCard'} data-guide={'webcam'}>
                 <Card.Header className={'d-flex align-items-center justify-content-between'}>
                   <h3>
                     <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
                   </h3>
-                  <div className={'d-flex align-items-center gap-2 n4l-card-header-controls'}>
+                  <div className={'d-flex align-items-center gap-2 n4l-card-header-controls'} data-guide={'webcam-controls'}>
 
                     <div key={'default-switch'}>
                       <Form.Check
@@ -694,7 +708,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                     </div>
                   )}
                 </Card.Body>
-                <Card.Footer>
+                <Card.Footer data-guide={'device-info'}>
                   <WebcamDeviceInfo getVideo={() => WebCam_ref.current?.video}
                     devices={devices}
                     cameraPermission={cameraPermission}
@@ -708,7 +722,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
             </Col>
 
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
-              <Card className={'mt-3'}>
+              <Card className={'mt-3'} data-guide={'image'}>
                 <Card.Header>
                   <h3>
                     <Trans
@@ -791,7 +805,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                 </Card.Body>
               </Card>
 
-              <Card className={'mt-3'} data-testid={'explainability-card'}>
+              <Card className={'mt-3'} data-testid={'explainability-card'} data-guide={'explain'}>
                 <Card.Header className="d-flex justify-content-between align-items-center">
                   <h3>{t('ui.explain.title')}</h3>
                 </Card.Header>

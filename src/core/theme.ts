@@ -1,7 +1,9 @@
+import { trackEvent } from '@core/analytics'
+
 export const THEMES = ['light', 'dark'] as const
 export type Theme_t = typeof THEMES[number]
 
-const THEME_STORAGE_KEY = 'theme'
+export const THEME_STORAGE_KEY = 'theme'
 
 export const isTheme = (value: string): value is Theme_t => (THEMES as readonly string[]).includes(value)
 
@@ -38,4 +40,15 @@ export function changeUserTheme(theme: Theme_t) {
     // Sin almacenamiento: el tema solo dura esta visita
   }
   applyTheme(theme)
+  trackEvent('settings_change', { setting: 'theme', value: theme })
+}
+
+/** Vuelve al tema del sistema: olvida el elegido y aplica el que pide el sistema operativo */
+export function clearUserTheme() {
+  try {
+    localStorage.removeItem(THEME_STORAGE_KEY)
+  } catch {
+    // Sin almacenamiento no había nada guardado
+  }
+  applyTheme(systemPrefersDark() ? 'dark' : 'light')
 }

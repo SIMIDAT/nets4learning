@@ -4,6 +4,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap'
 import * as tfjs from '@tensorflow/tfjs'
 
 import * as _Types from '@core/types'
+import { trackEvent } from '@core/analytics'
 import { VERBOSE } from '@/CONSTANTS'
 import ModelReviewRegressionPredictForm from './ModelReviewRegressionPredictForm'
 import RegressionPredictionInfo from './RegressionPredictionInfo'
@@ -50,6 +51,7 @@ export default function ModelReviewRegressionPredict(props: ModelReviewRegressio
       ...prevState,
       result: result
     }))
+    trackEvent('predict', { input: 'form' })
   }
 
   if (VERBOSE) console.debug('ModelReviewLinearRegressionPredict')
@@ -63,7 +65,7 @@ export default function ModelReviewRegressionPredict(props: ModelReviewRegressio
 
       <Row className={'mt-2'}>
         <Col>
-          <div className={'d-grid gap-2'}>
+          <div className={'d-grid gap-2'} data-guide={'predict'}>
             <Button variant={'primary'}
               size={'lg'}
               type={'submit'}
@@ -76,9 +78,11 @@ export default function ModelReviewRegressionPredict(props: ModelReviewRegressio
 
       <hr />
 
-      <RegressionPredictionInfo prediction={prediction}
-        targetName={dataset?.data_processed?.column_name_target}
-        actual={resultActual} />
+      <div data-guide={'result'}>
+        <RegressionPredictionInfo prediction={prediction}
+          targetName={dataset?.data_processed?.column_name_target}
+          actual={resultActual} />
+      </div>
 
     </Form>
   )

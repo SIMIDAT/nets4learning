@@ -1,0 +1,56 @@
+/* Bocadillo de la guía (N4LGuide): con los colores del tema, también en modo oscuro */
+.n4l-guide-tooltip {
+  position: relative;
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.25rem 1rem 1rem;
+  overflow: hidden;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius-lg);
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  box-shadow: var(--bs-box-shadow-lg);
+  text-align: start;
+}
+
+/* El progreso, como una línea en el borde de arriba */
+.n4l-guide-progress {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: .25rem;
+  border-radius: 0;
+}
+
+.n4l-guide-content {
+  margin-bottom: 1rem;
+  line-height: 1.55;
+}
+
+/* Ir a un paso y elegir la voz: dos desplegables, uno debajo del otro si no caben */
+.n4l-guide-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem .75rem;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: var(--bs-border-width) solid var(--bs-border-color-translucent);
+}
+
+.n4l-guide-option {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+/* Mientras lee en voz alta, el botón de la voz late */
+@media (prefers-reduced-motion: no-preference) {
+  .n4l-guide-speaking {
+    animation: n4l-guide-pulse 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes n4l-guide-pulse {
+  50% {
+    box-shadow: 0 0 0 .3rem rgba(var(--bs-primary-rgb), .25);
+  }
+}

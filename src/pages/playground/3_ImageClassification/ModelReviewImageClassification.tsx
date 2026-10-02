@@ -3,7 +3,6 @@ import { Button, Card, Col, Container, Row, Spinner } from "react-bootstrap"
 import { useNavigate } from "react-router"
 import * as tfjs from "@tensorflow/tfjs"
 import { Trans, useTranslation } from "react-i18next"
-import { trackPageView } from "@core/analytics"
 
 import type I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
 import type { ImageClassificationResult_t } from "./models/_model"
@@ -11,7 +10,8 @@ import type { SpriteImageDataset } from "./models/SpriteImageDataset"
 import { VERBOSE } from "@/CONSTANTS"
 import { UPLOAD } from "@/TASKS"
 import alertHelper from "@utils/alertHelper"
-import FakeProgressBar from "@components/loading/FakeProgressBar"
+import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
+import { trackDownloads } from "@core/downloadProgress"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 
 import ModelReviewImageClassificationDraw from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw"
@@ -27,9 +27,12 @@ import {
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from "@core/explainability/shapImageOptions"
 import { explainErrorKey } from "@core/explainability/explainError"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
+import N4LGuide from "@components/guide/N4LGuide"
+import { imageClassificationReviewGuide } from "./modelReviewGuide"
 import N4LClassificationChart from "@components/neural-network/N4LClassificationChart"
 import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
 import { warmUpModel } from "@core/nn-utils/warmUpModel"
+import { trackEvent } from "@core/analytics"
 import N4LEmptyState from "@components/loading/N4LEmptyState"
 import {
   runImageClassificationExplain,
@@ -80,9 +83,6 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const [lrpAvailable, setLrpAvailable] = useState(false)
   const [shapOptions, setShapOptions] = useState(DEFAULT_SHAP_IMAGE_OPTIONS)
 
-  useEffect(() => {
-    trackPageView(`/ModelReviewImageClassification/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init][ dataset, t, history ]")
@@ -91,7 +91,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        const _model = await _iModelInstance.ENABLE_MODEL() as tfjs.LayersModel
+        // Con el progreso real de la descarga (MobileNet pesa unos 16 MB)
+        const _model = await trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load') as tfjs.LayersModel
         // Shaders compilados antes de poder clasificar: la primera clasificación ya no bloquea la página
         if (_model instanceof tfjs.LayersModel) await warmUpModel(_model)
         setModel(_model)
@@ -110,6 +111,11 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   // MNIST y KMNIST: se puede dibujar la entrada y la explicación es siempre con LRP
   const isDrawable = iModelInstance?.DRAWABLE ?? false
+  // Guía paso a paso de la página (con voz): solo con el botón "Guía"
+  const hasSummary = model instanceof tfjs.LayersModel
+  const guideSteps = useMemo(() => (iModelInstance === null
+    ? null
+    : imageClassificationReviewGuide(t, dataset, { drawable: isDrawable, summary: hasSummary })), [t, dataset, iModelInstance, isDrawable, hasSummary])
 
   // region CLASIFICACIÓN
   /** Clasifica la entrada del modelo y la deja como entrada de la explicación */
@@ -151,6 +157,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const handleClick_Example = async (image_src: string) => {
     setSelectedInstance(null)
     await classifyImage(image_src)
+    trackEvent("predict", { input: "sample" })
     scrollToResult()
   }
 
@@ -166,11 +173,13 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     }
     setSelectedInstance(null)
     await classifyImage(URL.createObjectURL(imageUpload))
+    trackEvent("predict", { input: "image" })
   }
 
   const handleClassify_Drawing = async (imageData: ImageData) => {
     setSelectedInstance(null)
     await classify(imageData)
+    trackEvent("predict", { input: "drawing" })
   }
 
   const handleClick_LoadTestDataset = async () => {
@@ -208,6 +217,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     canvas_ctx.drawImage(small, 0, 0, canvas.width, canvas.height)
     setSelectedInstance(index)
     await classify(imageData, label)
+    trackEvent("predict", { input: "test_sample" })
     scrollToResult()
   }
   // endregion
@@ -245,6 +255,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       return
     }
 
+    trackEvent("explain", { method: useLrp ? "lrp" : "shap" })
     setIsCalculo(true)
     try {
       // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar
@@ -291,25 +302,26 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         </Row>
         <Row>
           <Col>
-            <FakeProgressBar isLoading={isLoading} />
+            <N4LDownloadProgress isLoading={isLoading} />
           </Col>
         </Row>
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
             <div className={"sticky-top"} style={{ zIndex: 0 }}>
-              <Card className={"mt-3 border-info"}>
+              <Card className={"mt-3 border-info"} data-guide={"model"}>
                 <Card.Header>
                   <h2>
                     {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
                   </h2>
                 </Card.Header>
                 <Card.Body>
+                  {guideSteps !== null && <N4LGuide id={"image-classification." + dataset} steps={guideSteps} />}
                   <N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ""} />
                   {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
                 </Card.Body>
               </Card>
               {/* Panel narrativo del método de explicabilidad (idéntico patrón al review tabular). */}
-              <Card className={"mt-3 border-success"}>
+              <Card className={"mt-3 border-success"} data-guide={"explain-about"}>
                 <Card.Header>
                   <h2 className={"h5 mb-0"}>
                     <Trans i18nKey={"pages.playground.0-tabular-classification.general.explain-panel-title"} />
@@ -327,18 +339,18 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
           </Col>
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             {/* IMÁGENES DE EJEMPLO (y, en MNIST y KMNIST, las del conjunto de test) */}
-            <Card className={"mt-3"}>
+            <Card className={"mt-3"} data-guide={"examples"}>
               <Card.Header className={"d-flex flex-wrap align-items-center justify-content-between gap-2"}>
                 <h2>
                   <Trans i18nKey={prefix + "process-examples.title"} />
                 </h2>
                 {isDrawable && testDataset === null &&
-                  <Button size={"sm"} variant={"outline-primary"} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={"Test-LoadTestDataset"}>
+                  <Button size={"sm"} variant={"outline-primary"} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={"Test-LoadTestDataset"} data-guide={"test-images"}>
                     {isLoadingTestDataset && <Spinner size={"sm"} className={"me-2"} />}
                     <Trans i18nKey={prefix + (isLoadingTestDataset ? "test-images.loading" : "test-images.load")} />
                   </Button>}
                 {isDrawable && testDataset !== null &&
-                  <div className={"n4l-card-header-controls n4l-instance-select"}>
+                  <div className={"n4l-card-header-controls n4l-instance-select"} data-guide={"test-images"}>
                     <N4LVirtualSelect options={testOptions}
                       value={selectedInstance}
                       onChange={handleChange_TestImage}
@@ -369,7 +381,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
             {/* SUBIR UNA IMAGEN Y DIBUJAR */}
             <Row>
               <Col className={"d-grid"} xs={12} md={isDrawable ? 6 : 12}>
-                <Card className={"mt-3"}>
+                <Card className={"mt-3"} data-guide={"upload"}>
                   <Card.Header>
                     <h3>
                       <Trans i18nKey={prefix + "process-image.title"} />
@@ -405,7 +417,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
             </Row>
 
             {/* CLASIFICACIÓN */}
-            <Card className={"mt-3"} ref={result_ref}>
+            <Card className={"mt-3"} ref={result_ref} data-guide={"result"}>
               <Card.Header>
                 <h3>
                   <Trans i18nKey={"Classify"} />
@@ -432,7 +444,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               </Card.Body>
             </Card>
 
-            <Card className={"mt-3"} data-testid={"explainability-card"}>
+            <Card className={"mt-3"} data-testid={"explainability-card"} data-guide={"explain"}>
               <Card.Header className="d-flex justify-content-between align-items-center">
                 <h3>{t("pages.playground.0-tabular-classification.general.explain-panel-title")} ({isDrawable || explainMethod === "lrp" ? "LRP" : "SHAP"})</h3>
                 {!isDrawable && (

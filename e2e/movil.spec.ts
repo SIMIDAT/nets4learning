@@ -12,6 +12,11 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
     '/datasets',
     '/glossary',
     '/manual',
+    '/settings',
+    '/contribute',
+    '/version',
+    '/terms-and-conditions',
+    '/404',
   ]
   for (const path of paths) {
     await page.goto(path)
@@ -88,4 +93,38 @@ test('al entrenar, el visor no tapa la página', async ({ page }) => {
   await expect(page.locator('.swal2-popup')).toContainText('Modelo entrenado con éxito', { timeout: 200_000 })
   const visorLeft = await page.locator('#tfjs-visor-container .visor').evaluate((visor) => visor.getBoundingClientRect().left)
   expect(visorLeft).toBeGreaterThanOrEqual(page.viewportSize()!.width)
+})
+
+test('al recargar la página (como al desbloquear el móvil), la guía sigue en su paso', async ({ page }) => {
+  // Lo que se leería en voz alta (se apunta de nuevo en cada carga)
+  await page.addInitScript(() => {
+    const spoken: string[] = []
+    Object.assign(window, { spoken })
+    window.speechSynthesis.speak = (utterance) => { spoken.push(utterance.text) }
+  })
+  const spoken = () => page.evaluate(() => (window as unknown as { spoken: string[] }).spoken.join(' '))
+  await page.goto('/playground/tabular-classification/model/CAR')
+  await page.getByTestId('Test-GuideButton').click()
+  const tooltip = page.getByTestId('Test-GuideTooltip')
+  for (let step = 2; step <= 4; step++) {
+    await tooltip.getByRole('button', { name: 'Siguiente' }).click()
+    await expect(tooltip).toContainText(`Paso ${step} de 18`)
+  }
+
+  await page.reload()
+  // Se vuelve a abrir sola en el mismo paso, cuando ya están los datos que señala
+  await expect(tooltip).toContainText('Paso 4 de 18', { timeout: 30_000 })
+  await expect(tooltip).toContainText('El conjunto de datos')
+  // Se lee el paso: enseguida si el navegador lo deja (Chrome mantiene la activación al recargar) o, si no, al tocar la
+  // página (eso lo prueba N4LGuide.test.tsx)
+  await tooltip.locator('p').click()
+  await expect.poll(spoken).toContain('El conjunto de datos.')
+
+  // Cerrada a medias, al recargar ya no se abre sola y el botón sigue desde ese paso
+  await page.keyboard.press('Escape')
+  await expect(tooltip).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByTestId('Test-GuideButton')).toHaveText('Continuar la guía (paso 4 de 18)')
+  await page.waitForTimeout(1500)
+  await expect(tooltip).toHaveCount(0)
 })

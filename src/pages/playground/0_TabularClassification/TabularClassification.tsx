@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
-import { trackPageView } from '@core/analytics'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
@@ -38,6 +37,7 @@ import TabularClassificationTableModels from '@pages/playground/0_TabularClassif
 import TabularClassificationPrediction from '@pages/playground/0_TabularClassification/TabularClassificationPrediction'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
+import { trackEvent } from '@core/analytics'
 
 import { VERBOSE } from '@/CONSTANTS'
 
@@ -163,9 +163,6 @@ export default function TabularClassification(props: Props) {
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
   const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
 
-  useEffect(() => {
-    trackPageView(`/TabularClassification/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
@@ -224,7 +221,7 @@ export default function TabularClassification(props: Props) {
 
     try {
       setIsTraining(true)
-      training.start()
+      training.start({ epochs: numberEpochs, learningRate, optimizer: idOptimizer, loss: idLoss, layers: layers.length })
       const _dataset_processed = datasets.datasets[datasets.index]
       const _learningRate = learningRate
       const _numberOfEpoch = numberEpochs
@@ -267,6 +264,7 @@ export default function TabularClassification(props: Props) {
       // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
       setModel(model)
       setGeneratedModelsIndex(generatedModels.length)
+      training.complete()
       await alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
@@ -313,6 +311,7 @@ export default function TabularClassification(props: Props) {
       predictedDisplay_ref.current = inputDataToPredict.map((value) => (Array.isArray(value) ? value.join(', ') : String(value)))
       setPredictedClassIndex(argMax(predictionValues))
       setPredictionBar({ classes: classes, labels: classes, data: predictionValues })
+      trackEvent('predict', { input: 'form' })
     } catch (error) {
       console.error(error)
       await alertHelper.alertError(t('error.model-not-valid'))

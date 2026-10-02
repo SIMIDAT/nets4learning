@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
-import { trackPageView } from '@core/analytics'
 import * as tfjs from '@tensorflow/tfjs'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
@@ -139,9 +138,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
   const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
 
 
-  useEffect(() => {
-    trackPageView(`/Regression/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, history ]')
@@ -236,13 +232,19 @@ export default function Regression({ dataset }: RegressionProps_t) {
       input_2_dataframe_encoding : newPredictionState.input_2_dataframe_encoding,
       input_3_dataframe_scaling  : newPredictionState.input_3_dataframe_scaling,
     }))
-
+    training.complete()
   }
 
   const handleSubmit_TrainModel = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setIsTraining(true)
-    training.start()
+    training.start({
+      epochs      : params.params_training.n_of_epochs,
+      learningRate: params.params_training.learning_rate,
+      optimizer   : params.params_training.id_optimizer,
+      loss        : params.params_training.id_loss,
+      layers      : params.params_layers.length,
+    })
 
     try {
       await TrainModel()

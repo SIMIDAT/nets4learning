@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { lazy, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
@@ -9,9 +9,11 @@ import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LSummary from '@components/summary/N4LSummary'
-import N4LDataFrameTable from '@components/dataframe/N4LDataFrameTable'
-import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 import { useRegressionContext } from '@context/useRegressionContext'
+
+// Tablas de Plotly dentro de apartados plegados: se descargan (1,1 MB) al abrirlos, no con la página
+const N4LDataFrameTable = lazy(() => import('@components/dataframe/N4LDataFrameTable'))
+const N4LDataFrameDescribe = lazy(() => import('@components/dataframe/N4LDataFrameDescribe'))
 
 const EMPTY_DATAFRAME = new DataFrame()
 

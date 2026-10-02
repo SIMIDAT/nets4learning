@@ -5,12 +5,17 @@ import { Col, Form, Row } from "react-bootstrap"
 import { Trans, useTranslation } from "react-i18next"
 
 import { VERBOSE } from "@/CONSTANTS"
+import { trackEvent } from "@core/analytics"
 import N4LDivider from "@components/divider/N4LDivider"
 import N4LSectionLayout from "@components/divider/N4LSectionLayout"
 import Glossary5Layers from "./Glossary5Layers"
 import GlossaryTerm from "./GlossaryTerm"
 import { GLOSSARY_SECTIONS, matchesSearch, termSearchText, type GlossarySection_t } from "./glossaryTerms"
 import { glossaryTarget } from "./glossaryTarget"
+
+// Una búsqueda se registra cuando se deja de escribir durante este tiempo y tiene al menos estas letras
+const SEARCH_TRACK_MS = 1500
+const SEARCH_MIN_LENGTH = 3
 
 /**
  * Glosario: un apartado por tema (tareas, editores, optimizadores, activaciones, pérdidas y métricas) con su índice al
@@ -48,6 +53,14 @@ export default function Glossary() {
   }, [isSearching, deferredQuery, searchTexts])
   const matches = sections.reduce((total, section) => total + section.groups.reduce((sum, group) => sum + group.terms.length, 0), 0)
   const steps = sections.map(({ step }) => step)
+
+  // Analíticas: qué se busca (y si se encuentra), cuando se deja de escribir
+  const searchTerm = deferredQuery.trim().toLowerCase()
+  useEffect(() => {
+    if (searchTerm.length < SEARCH_MIN_LENGTH) return
+    const timer = window.setTimeout(() => trackEvent("search", { search_term: searchTerm, results: matches }), SEARCH_TRACK_MS)
+    return () => window.clearTimeout(timer)
+  }, [searchTerm, matches])
 
   // Al llegar con #glossary-… o desde una ayuda del playground, la vista va al término o grupo
   useEffect(() => {

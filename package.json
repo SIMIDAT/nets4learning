@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:host": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "build:simidat": "tsc -b && vite build --mode simidat",
     "build:netlify": "tsc -b && vite build --mode netlify",
@@ -39,6 +40,8 @@
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.22.0",
     "@tensorflow/tfjs-vis": "^1.5.1",
+    "@tsparticles/engine": "^4.4.0",
+    "@tsparticles/particles": "^4.4.0",
     "@types/react-plotly.js": "^2.6.4",
     "@vladmandic/face-api": "^1.7.15",
     "bootstrap": "^5.3.8",

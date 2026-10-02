@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 import * as _Types from '@core/types'
-import { trackPageView } from '@core/analytics'
 
 import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 import * as ImageClassificationUtils from './utils/utils'
@@ -45,6 +44,7 @@ import {
 } from './CONSTANTS'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
+import { trackEvent } from '@core/analytics'
 import { useNavigate } from 'react-router'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import type { SpriteImageDataset } from '@pages/playground/3_ImageClassification/models/SpriteImageDataset'
@@ -155,9 +155,6 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
    */
   const [GeneratedModels, setGeneratedModels] = useState<Array<_Types.ImageClassificationGeneratedModel_t>>([])
 
-  useEffect(() => {
-    trackPageView(`/ImageClassification/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t ]')
@@ -192,7 +189,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
       return
     }
-    training.start()
+    training.start({ epochs: NumberEpochs, learningRate: LearningRate, optimizer: idOptimizer, loss: idLoss, layers: Layers.length })
     try {
       const params = {
         learningRate : LearningRate,
@@ -236,6 +233,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await selectModel(GeneratedModels.length, model)
       // El entrenamiento ya lo ha descargado: sus imágenes de test pasan al selector
       setTestDataset(await iModelInstance.LOAD_DATASET())
+      training.complete()
       await alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
@@ -310,7 +308,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     explainInput_ref.current = { imageData, imageSrc: ImageClassificationUtils.imageDataToDataUrl(imageData, 200) }
     setHasExplainInput(true)
     clearExplainResult()
-    if (Model !== null) setPrediction(makeImagePrediction(await predictImageData(Model, imageData), selectedModelIndex))
+    if (Model !== null) {
+      setPrediction(makeImagePrediction(await predictImageData(Model, imageData), selectedModelIndex))
+      trackEvent('predict', { input: 'test_sample' })
+    }
   }
 
   const handleSubmit_VectorTest = async (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, canvas_small: HTMLCanvasElement | null) => {
@@ -326,6 +327,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     const { imgData, values } = await predictDrawing(canvas, canvas_small, Model)
     setExplainInput(imgData, canvas)
     setPrediction(makeImagePrediction(values, selectedModelIndex))
+    trackEvent('predict', { input: 'drawing' })
   }
 
   const handleSubmit_VectorTestImageUpload = async (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => {
@@ -341,6 +343,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     const { imgData, values } = await predictDrawing(canvas, canvas_small, Model)
     setExplainInput(imgData, canvas)
     setPrediction(makeImagePrediction(values, selectedModelIndex))
+    trackEvent('predict', { input: 'image' })
   }
   // endregion
 
@@ -369,6 +372,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       return
     }
 
+    trackEvent('explain', { method: 'lrp' })
     setIsCalculo(true)
     try {
       // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar

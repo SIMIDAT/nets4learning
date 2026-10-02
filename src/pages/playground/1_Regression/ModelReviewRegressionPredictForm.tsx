@@ -85,14 +85,14 @@ export default function ModelReviewRegressionPredictForm(props: ModelReviewRegre
   const instanceColumns = ready ? prediction.input_1_dataframe_original.columns : []
   if (!ready || !fields.every((field) => instanceColumns.includes(field.name))) return <WaitingPlaceholder i18nKey_title={'Waiting'} />
   return (
-    <Row xs={1} sm={2} lg={3} xxl={4}>
+    <Row xs={1} sm={2} lg={3} xxl={4} data-guide={'form'}>
       {fields.map((field, index) => {
         const controlId = `${formId}-${index}`
         const value = prediction.input_1_dataframe_original[field.name].values[0]
         // NaN mientras se borra un número: el campo se queda vacío en vez de mostrar "NaN"
         const inputValue = typeof value === 'number' && Number.isNaN(value) ? '' : value ?? ''
         return (
-          <Col key={controlId} className={'mb-3'}>
+          <Col key={controlId} className={'mb-3'} data-guide={'field-' + field.name}>
             <Form.Group controlId={controlId}>
               <Form.Label className={'fw-semibold mb-1'}>{field.name}</Form.Label>
               {field.type === 'string'

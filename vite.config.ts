@@ -30,6 +30,22 @@ const faceApiTfjs: Plugin = {
   resolveId: (source, importer) => resolveFaceApiTfjs(source, importer),
 }
 
+// Lo que danfojs importa al cargarse y casi nunca usa, cambiado solo para él (src/core/dataframe/danfo*.ts): Plotly
+// (df.plot) se descarga al dibujar y xlsx (readExcel y toExcel, que la app no usa) no se incluye
+const DANFO = fs.realpathSync(path.resolve(__dirname, "node_modules/danfojs"))
+const DANFO_LAZY_DEPS: Record<string, string> = {
+  "plotly.js-dist-min": path.resolve(__dirname, "src/core/dataframe/danfoPlotly.ts"),
+  "xlsx"              : path.resolve(__dirname, "src/core/dataframe/danfoXlsx.ts"),
+}
+
+// Solo en la build: en desarrollo Vite empaqueta danfo con esbuild y no pasa por aquí (lleva los de verdad)
+const danfoLazyDeps: Plugin = {
+  name     : "n4l:danfo-lazy-deps",
+  enforce  : "pre",
+  apply    : "build",
+  resolveId: (source, importer) => (importer?.startsWith(DANFO) ? DANFO_LAZY_DEPS[source] : undefined),
+}
+
 /**
  * Librerías que van en un chunk propio. danfojs las importa sin import() (y la app usa también Plotly y mathjs en las
  * mismas páginas), así que Rollup las juntaba con danfojs en un solo chunk de 5,3 MB. Por separado se descargan en
@@ -52,6 +68,7 @@ export default defineConfig(({ mode, command }) => {
   return {
     plugins: [
       faceApiTfjs,
+      danfoLazyDeps,
       react(),
       svgrPlugin({
         svgrOptions: { exportType: "default", ref: true, svgo: false, titleProp: true },

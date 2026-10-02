@@ -1,15 +1,29 @@
+import { lazy, Suspense, useEffect } from 'react'
 import styles from './NotFoundPage.module.css'
 import { Trans } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
+
+import { trackEvent } from '@core/analytics'
+
+// Es decoración: tsParticles va en su propio fragmento y el 404 se ve sin esperar a que llegue
+const NeuralNetworkBackground = lazy(() => import('./NeuralNetworkBackground'))
 
 export default function NotFoundPage () {
+  // La ruta que no existe (App la pasa al redirigir aquí): para encontrar enlaces rotos
+  const missingPath = (useLocation().state as { missingPath?: string } | null)?.missingPath
+  useEffect(() => {
+    if (missingPath !== undefined) trackEvent('not_found', { missing_path: missingPath })
+  }, [missingPath])
+
   return <>
-    <div
-      className={'d-flex align-items-center justify-content-center'}
-      style={{ minHeight: 'calc(100vh - 56px)' }}
+    <main
+      className={`d-flex align-items-center justify-content-center ${styles.page}`}
       data-testid={'Test-NotFoundPage'}
     >
-      <div className="text-center">
+      <Suspense fallback={null}>
+        <NeuralNetworkBackground />
+      </Suspense>
+      <div className={`text-center ${styles.content}`}>
         <h1 className={`display-1 fw-bold ${styles.title_404}`}>404</h1>
         <h2 className={`fw-bold ${styles.subtitle_404}`}>
           <Trans i18nKey={'pages.not-found.title'} />
@@ -20,6 +34,6 @@ export default function NotFoundPage () {
           </Link>
         </p>
       </div>
-    </div>
+    </main>
   </>
 }

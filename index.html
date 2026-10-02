@@ -10,10 +10,60 @@
     <meta name="theme-color" content="#1f1a7a" />
     <meta name="description" content="Nets4Learning: aprende inteligencia artificial entrenando y explicando redes neuronales en el navegador." />
     <title>Nets4Learning</title>
+    <script>
+      // El tema antes de pintar nada, como detectTheme() de src/core/theme.ts (que lo vuelve a aplicar al arrancar):
+      // así el indicador de carga y la página no se ven un instante en claro con el tema oscuro
+      try {
+        var saved = localStorage.getItem('theme')
+        var theme = saved === 'dark' || saved === 'light' ? saved : (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        document.documentElement.setAttribute('data-bs-theme', theme)
+        document.documentElement.setAttribute('data-theme', theme)
+      } catch (error) {}
+    </script>
+    <style>
+      /* Indicador de carga mientras llega la aplicación (React lo sustituye al pintarla): sin Bootstrap, que aún no ha
+         llegado */
+      .n4l-boot {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #212529;
+        background-color: #fff;
+      }
+      [data-bs-theme="dark"] .n4l-boot {
+        color: #dee2e6;
+        background-color: #212529;
+      }
+      .n4l-boot-spinner {
+        width: 2rem;
+        height: 2rem;
+        border: .25rem solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        opacity: .6;
+        animation: n4l-boot-spin .75s linear infinite;
+      }
+      @keyframes n4l-boot-spin {
+        to { transform: rotate(360deg); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .n4l-boot-spinner { animation-duration: 2s; }
+      }
+    </style>
   </head>
   <body>
     <noscript>Nets4Learning necesita JavaScript para funcionar.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div class="n4l-boot" role="status" aria-live="polite">
+        <img src="/logo-64.png" width="64" height="64" alt="" />
+        <div class="n4l-boot-spinner"></div>
+        <span>Nets4Learning</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

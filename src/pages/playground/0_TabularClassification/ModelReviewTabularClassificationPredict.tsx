@@ -18,7 +18,7 @@ export default function ModelReviewTabularClassificationPredict(props: ModelRevi
 
   if (VERBOSE) console.debug('render ModelReviewTabularClassificationPredict')
   return <>
-    <Card className={'mt-3'} data-testid={'Test-ModelReviewTabularClassificationPredict'}>
+    <Card className={'mt-3'} data-testid={'Test-ModelReviewTabularClassificationPredict'} data-guide={'result'}>
       <Card.Header>
         <h3>
           <Trans i18nKey={'Classify'} />

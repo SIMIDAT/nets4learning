@@ -47,7 +47,7 @@ export default function ModelReviewTabularClassificationPredictForm(
 
   if (VERBOSE) console.debug("render ModelReviewTabularClassificationPredictForm")
   return (
-    <Row xs={1} sm={2} lg={3} xxl={4}>
+    <Row xs={1} sm={2} lg={3} xxl={4} data-guide={"form"}>
       {iModelInstance.FORM.map((field, index) => {
         const controlId = `${formId}-${index}`
         const headerKey = headerKeyOf(iModelInstance.TABLE_HEADER, field.name)
@@ -56,7 +56,7 @@ export default function ModelReviewTabularClassificationPredictForm(
         const value = dataToTest[field.name]
         const inputValue = typeof value === "number" && Number.isNaN(value) ? "" : value ?? ""
         return (
-          <Col key={controlId} className={"mb-3"}>
+          <Col key={controlId} className={"mb-3"} data-guide={"field-" + field.name}>
             <Form.Group controlId={controlId}>
               <Form.Label className={"fw-semibold mb-1"}>{label}</Form.Label>
               {field.type === "label-encoder"

@@ -358,10 +358,27 @@
   "predict": "Predecir",
   "cookies-policies": {
     "title": "Política de cookies",
+    "banner-title": "¿Nos ayudas a mejorar Nets4Learning?",
     "accept": "Aceptar",
-    "banner": "Usamos cookies de Google Analytics para saber qué partes de la aplicación se usan y así mejorarla. No se usan con fines publicitarios y solo se activan si las aceptas.",
+    "banner": "Nets4Learning es un proyecto docente del grupo SIMIDAT de la Universidad de Jaén. Si aceptas las cookies de Google Analytics, sabremos de forma anónima qué modelos, conjuntos de datos y secciones se usan y qué falla, para decidir qué mejorar. Solo se activan si las aceptas, y puedes cambiar de opinión cuando quieras.",
     "more-info": "Más información",
-    "reject": "Rechazar"
+    "reject": "Rechazar",
+    "settings": "Configuración",
+    "close": "Cerrar sin cambiar nada",
+    "details": "Qué se mide y qué no",
+    "measured-title": "Se mide",
+    "measured": [
+      "Las páginas que visitas y el tiempo que pasas en ellas.",
+      "Qué modelos y conjuntos de datos usas y qué botones pulsas.",
+      "Los entrenamientos (épocas, optimizador, cuánto tardan), las predicciones y lo que tardan en cargar los modelos.",
+      "Los errores que aparecen, el idioma, el tema y el backend de TensorFlow.js."
+    ],
+    "never-title": "Nunca se envía",
+    "never": [
+      "Tus ficheros, sus nombres ni sus datos; tus dibujos ni la imagen de la cámara.",
+      "Datos personales: no hay cuentas ni formularios.",
+      "Nada para publicidad: las señales publicitarias de Google están desactivadas."
+    ]
   },
   "error": {
     "load-json-csv": "Error, no se ha podido cargar el fichero",
@@ -451,7 +468,8 @@
     "version": "Versión",
     "cookies": "Preferencias de cookies",
     "links": "Enlaces",
-    "institutions": "Instituciones"
+    "institutions": "Instituciones",
+    "settings": "Configuración"
   },
   "drag-and-drop": {
     "label-files-one": "Fichero:",
@@ -1756,7 +1774,23 @@
   },
   "pages": {
     "version": {
-      "title": "Versión"
+      "title": "Versión",
+      "app": "Versión de la aplicación",
+      "environment": "Entorno · modo",
+      "backend": "Backend en uso",
+      "runtime": "Esta instalación",
+      "changes": "Cambios",
+      "changes-text": "Todo lo que cambia en cada versión queda en el historial del repositorio.",
+      "commits": "Historial de cambios (commits)",
+      "releases": "Versiones publicadas",
+      "dependencies": "Dependencias",
+      "dependencies-help": "Las librerías de las que depende la aplicación, con la versión que pide package.json.",
+      "runtime-dependencies": "De la aplicación",
+      "dev-dependencies": "De desarrollo",
+      "package": "Paquete",
+      "declared": "Versión pedida",
+      "search": "Buscar un paquete",
+      "no-results": "Ningún paquete coincide con la búsqueda."
     },
     "index": {
       "tabular-classification": {
@@ -1830,7 +1864,69 @@
         "title": "Proyecto en GitHub"
       },
       "license": {
-        "title": "Licencia"
+        "title": "Licencia",
+        "text": "El código tiene licencia MIT: puedes usarlo, copiarlo, modificarlo y distribuirlo libremente, manteniendo el aviso de copyright. Los conjuntos de datos y los modelos de terceros conservan sus propias licencias, que se indican en la descripción de cada uno.",
+        "full": "Texto completo de la licencia"
+      },
+      "intro": "Nets4Learning es software libre, con licencia MIT, del grupo de investigación SIMIDAT de la Universidad de Jaén. Cualquier ayuda es bienvenida: avisar de un error, proponer una mejora, traducir, añadir conjuntos de datos y modelos o mejorar el código.",
+      "ways": {
+        "title": "Cómo colaborar",
+        "issues": {
+          "title": "Informa de un error o propón una mejora",
+          "text": "Abre una incidencia en GitHub contando qué ha pasado, en qué página y con qué navegador, o qué te gustaría que tuviera la aplicación.",
+          "link": "Abrir una incidencia"
+        },
+        "translate": {
+          "title": "Traduce la aplicación",
+          "text": "Los textos están en public/locales, un fichero por idioma (español, inglés y japonés), y el manual en public/docs. Cualquier corrección o idioma nuevo ayuda.",
+          "link": "Ver las traducciones"
+        },
+        "datasets": {
+          "title": "Añade un conjunto de datos o un modelo",
+          "text": "Cada uno es una clase en la carpeta models de su tarea, con su clave en MODEL_KEYS.ts, su opción del menú en DATA_MODEL.ts, sus textos y sus ficheros.",
+          "link": "Ver las tareas"
+        },
+        "code": {
+          "title": "Mejora el código",
+          "text": "Haz un fork del repositorio, crea una rama con tus cambios y abre un pull request. Las pruebas automáticas lo revisarán antes de integrarlo.",
+          "link": "Ver los pull requests"
+        }
+      },
+      "setup": {
+        "title": "Ponlo en marcha en tu equipo",
+        "requirements": "Necesitas Node.js 22 o posterior y pnpm 12; Corepack instala la versión exacta de pnpm.",
+        "url": "La aplicación queda en",
+        "scripts": [
+          "Servidor de desarrollo, que se recarga al guardar",
+          "Tests unitarios (Vitest), una vez",
+          "Pruebas en el navegador (Playwright) con la versión de Netlify",
+          "Revisión del código con ESLint",
+          "Comprueba los tipos y construye la versión de SIMIDAT"
+        ]
+      },
+      "checklist": {
+        "title": "Antes de enviar tus cambios",
+        "items": [
+          "Escribe los commits con Conventional Commits (feat:, fix:, docs:…): commitlint los comprueba.",
+          "Pasa pnpm lint, pnpm test run y pnpm build:simidat. Las pruebas de GitHub también pasan pnpm test:e2e.",
+          "Pon cada texto nuevo de la interfaz en los tres ficheros de traducción.",
+          "Si añades un conjunto de datos o un modelo, cita su origen y su licencia en su descripción."
+        ]
+      },
+      "cite": {
+        "title": "Cita el trabajo",
+        "text": "Si usas Nets4Learning en una clase, un trabajo o un artículo, cita el artículo que describe la plataforma:",
+        "copy": "Copiar BibTeX",
+        "copied": "Copiado"
+      },
+      "docs": {
+        "title": "Documentación técnica",
+        "text": "Guías del repositorio para quien quiera tocar el código (en inglés).",
+        "i18n": "Traducciones (i18n)",
+        "directory-structure": "Estructura de carpetas",
+        "introduction": "Clasificación tabular: introducción",
+        "add-entry": "Clasificación tabular: añadir un conjunto de datos",
+        "create-model": "Clasificación tabular: crear un modelo"
       }
     },
     "menu-selection-dataset": {
@@ -2967,15 +3063,140 @@
       }
     },
     "terms": {
-      "title": "Políticas de privacidad y cookies",
-      "privacy-title": "Políticas de privacidad",
-      "privacy-text": "En nuestro sitio web, solo recopilamos información estadística sobre las visitas con el fin de mejorar el rendimiento y la funcionalidad del sitio. No recopilamos ni almacenamos ninguna información personal de nuestros usuarios. Utilizamos cookies para contabilizar el número de visitantes y mejorar la experiencia de navegación. Si tienes alguna pregunta o duda sobre nuestra política de privacidad, no dudes en ponerte en contacto con nosotros a través de nuestra página de contacto.",
-      "cookies-title": "Cookies",
-      "cookies-text": "Nuestra página web utiliza cookies de Google Analytics para contabilizar el número de visitantes que recibimos. Estas cookies nos permiten recopilar información estadística anónima sobre el uso de nuestro sitio web y nos ayudan a mejorar su rendimiento y funcionalidad. Las cookies de Google Analytics no recopilan información personal de los usuarios. Solo se activan si las aceptas en el aviso de cookies, y puedes cambiar tu decisión en cualquier momento desde «Preferencias de cookies», en el pie de página."
+      "title": "Términos y condiciones",
+      "updated": "Última actualización: 2 de octubre de 2026.",
+      "summary-title": "En resumen",
+      "summary": [
+        "Nets4Learning es una herramienta educativa gratuita: no hay cuentas ni registros.",
+        "Tus datos se quedan en tu navegador: los modelos se entrenan y se usan en tu equipo.",
+        "Las cookies de Google Analytics solo se activan si las aceptas, y puedes cambiar de opinión cuando quieras."
+      ],
+      "index": "Apartados",
+      "use": {
+        "title": "Uso de la aplicación",
+        "items": [
+          "Nets4Learning es una plataforma educativa y gratuita para aprender y enseñar aprendizaje profundo.",
+          "El código es libre, con licencia MIT. Los conjuntos de datos y los modelos de terceros conservan sus propias licencias, indicadas en la descripción de cada uno.",
+          "Los resultados de los modelos sirven para aprender: no los uses para tomar decisiones reales, por ejemplo médicas, económicas o sobre personas.",
+          "La aplicación se ofrece tal cual, sin garantías: puede tener errores y cambiar en cualquier momento."
+        ]
+      },
+      "privacy": {
+        "title": "Tus datos",
+        "text": "Todo el aprendizaje automático se ejecuta en tu navegador con TensorFlow.js. No hay ningún servidor que reciba tus datos:",
+        "items": [
+          "Los ficheros que subes (conjuntos de datos, modelos e imágenes), tus dibujos y la imagen de la cámara se procesan en tu equipo y no se envían a ningún sitio.",
+          "Los modelos que entrenas se quedan en esta pestaña hasta que la cierras, salvo que los descargues tú.",
+          "No pedimos ni guardamos datos personales: no hay cuentas, formularios ni correos."
+        ]
+      },
+      "storage": {
+        "title": "Lo que se guarda en tu navegador",
+        "text": "Para recordar tus preferencias, la aplicación guarda en el almacenamiento local de tu navegador (no en nuestros servidores):",
+        "items": [
+          "El idioma, el tema y el backend de TensorFlow.js que elijas.",
+          "Los ajustes de la voz de las guías y por qué paso va cada guía.",
+          "Qué tutoriales de las páginas de entrenamiento ya has visto.",
+          "Tu decisión sobre las cookies, en una cookie propia."
+        ],
+        "settings": "Puedes cambiarlo o borrarlo todo desde"
+      },
+      "third-parties": {
+        "title": "Servicios externos",
+        "items": [
+          "Google Analytics, solo si aceptas sus cookies: qué secciones, modelos y conjuntos de datos se usan, cuánto tiempo, qué botones se pulsan y qué errores aparecen.",
+          "Algunos modelos preentrenados (los de detección y MobileNet) se descargan al abrirlos desde servidores de Google y de jsDelivr. Como cualquier web, esos servidores ven la petición, pero no tus datos ni tus imágenes.",
+          "Si eliges una voz «en línea» para las guías, tu navegador envía el texto de la guía a su servicio de voz para leerlo."
+        ]
+      },
+      "cookies": {
+        "title": "Cookies",
+        "text": "Esta es la lista completa de cookies. Las de Google Analytics recogen estadísticas anónimas de uso, nunca con fines publicitarios, y solo se crean si las aceptas. Si las rechazas después, se borran.",
+        "name": "Cookie",
+        "purpose": "Para qué sirve",
+        "duration": "Duración",
+        "consent": {
+          "purpose": "Recordar si has aceptado o rechazado las cookies de Google Analytics.",
+          "duration": "120 días"
+        },
+        "ga": {
+          "purpose": "Google Analytics: distinguir visitantes de forma anónima.",
+          "duration": "13 meses"
+        },
+        "ga-session": {
+          "purpose": "Google Analytics: mantener el estado de la visita.",
+          "duration": "13 meses"
+        }
+      },
+      "contact": {
+        "title": "Contacto",
+        "text": "Nets4Learning lo desarrolla el grupo de investigación SIMIDAT (Sistemas Inteligentes y Minería de Datos) de la Universidad de Jaén. Para cualquier duda o problema:",
+        "issues": "Abre una incidencia en GitHub",
+        "simidat": "Web del grupo SIMIDAT"
+      }
     },
     "not-found": {
       "title": "Página no encontrada",
       "return-home": "Volver al inicio"
+    },
+    "settings": {
+      "title": "Configuración",
+      "intro": "Todo lo que puedes ajustar de la aplicación. Se guarda solo en este navegador.",
+      "appearance": {
+        "title": "Idioma y apariencia",
+        "language": "Idioma",
+        "theme": "Tema",
+        "theme-system": "Como el sistema",
+        "theme-help": "«Como el sistema» sigue el modo claro u oscuro de tu sistema operativo."
+      },
+      "backend": {
+        "title": "Backend de TensorFlow.js",
+        "help": "Dónde hace los cálculos TensorFlow.js al entrenar y predecir. El cambio se aplica al momento; los modelos que ya tengas siguen valiendo.",
+        "active": "en uso",
+        "webgl": "Usa la tarjeta gráfica a través de WebGL. Es el más rápido en casi todos los equipos.",
+        "webgpu": "Usa la tarjeta gráfica con WebGPU, la API más moderna. Puede ser más rápido, pero no todos los navegadores lo tienen.",
+        "wasm": "Calcula en el procesador con WebAssembly. Útil si la tarjeta gráfica da problemas.",
+        "cpu": "Calcula en el procesador con JavaScript. Funciona en todas partes, pero es el más lento."
+      },
+      "speech": {
+        "title": "Voz de las guías",
+        "help": "Las guías de las páginas de los modelos pueden leer cada paso en voz alta con las voces de tu sistema.",
+        "voice": "Leer las guías en voz alta",
+        "auto": "Avanzar solo al terminar de leer cada paso",
+        "voice-help": "Las voces «en línea» funcionan en un servidor del navegador: el texto de la guía se envía allí para leerlo.",
+        "no-voices": "Tu sistema no tiene voces en este idioma: se usará la que elija el navegador.",
+        "rate": "Velocidad: {{rate}}×",
+        "test": "Probar la voz",
+        "stop": "Parar",
+        "sample": "Hola. Así sonará la guía de cada página de Nets4Learning."
+      },
+      "tutorials": {
+        "title": "Guías y tutoriales",
+        "guides-help": "Cada guía recuerda por qué paso vas. Reinícialas para que todas vuelvan a empezar desde el principio.",
+        "guides-reset": "Reiniciar las guías",
+        "done": "Hecho",
+        "training-help_zero": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Todavía no has visto ninguno.",
+        "training-help_one": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Ya has visto 1; con este botón volverá a salir.",
+        "training-help_other": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Ya has visto {{count}}; con este botón volverán a salir.",
+        "training-reset": "Volver a mostrar los tutoriales"
+      },
+      "privacy": {
+        "title": "Privacidad y cookies",
+        "help": "Las cookies de Google Analytics nos dicen de forma anónima qué secciones, modelos y conjuntos de datos se usan y qué falla, sin datos personales ni lo que subes. Solo se activan si las aceptas.",
+        "analytics": "Permitir las cookies de Google Analytics",
+        "status-accepted": "Ahora mismo: cookies aceptadas.",
+        "status-rejected": "Ahora mismo: cookies rechazadas.",
+        "status-undecided": "Todavía no has decidido: de momento no se usan.",
+        "more": "Más información sobre las cookies"
+      },
+      "data": {
+        "title": "Datos guardados en este navegador",
+        "help": "Borra todos los ajustes de la aplicación: idioma, tema, backend, voz y progreso de las guías, tutoriales vistos y tu decisión sobre las cookies. La página se recargará con los valores por defecto.",
+        "reset": "Restablecer todos los ajustes",
+        "confirm": "¿Seguro? Se borrarán todos los ajustes guardados en este navegador.",
+        "confirm-button": "Sí, borrarlos",
+        "cancel": "Cancelar"
+      }
     }
   },
   "generator": {
@@ -3126,5 +3347,638 @@
     "error-not-json": "El fichero no es un JSON válido",
     "error-not-session": "El fichero no es una configuración de Nets4Learning",
     "error-other-task": "La configuración es de otra tarea"
+  },
+  "guide": {
+    "button": "Guía",
+    "button-title": "Guía paso a paso de esta página, leída en voz alta",
+    "resume": "Continuar la guía (paso {{current}} de {{total}})",
+    "restart": "Volver al principio",
+    "step": "Paso {{current}} de {{total}}",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "finish": "Terminar",
+    "close": "Cerrar la guía",
+    "voice-on": "Leer en voz alta",
+    "voice-off": "Silenciar la voz",
+    "no-voice": "Este navegador no puede leer en voz alta",
+    "repeat": "Volver a leer este paso",
+    "auto-on": "Avanzar solo al terminar cada paso",
+    "auto-off": "Dejar de avanzar solo",
+    "0-tabular-classification": {
+      "CAR": {
+        "intro": {
+          "title": "Clasificación de coches",
+          "content": "En esta página, una red neuronal ya entrenada decide si un coche es aceptable a partir de seis características: el precio de compra, el mantenimiento, las puertas, las plazas, el maletero y la seguridad. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo. Cuenta de dónde salen los datos, el conjunto Car Evaluation del repositorio de la UCI, qué características recibe la red y qué clases puede predecir."
+        },
+        "model-summary": {
+          "title": "Resumen del modelo",
+          "content": "Este botón abre el resumen de la red: sus capas, cuántas neuronas tiene cada una y cuántos parámetros, que son los pesos que ajustó durante el entrenamiento."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Estos son los 1728 coches con los que se entrenó la red. Cada fila es un coche y cada columna, una de sus características. La última columna, resaltada, es la clase: lo que la red aprendió a predecir."
+        },
+        "dataset-processed": {
+          "title": "Datos procesados",
+          "content": "Una red neuronal solo trabaja con números. En esta pestaña verás los mismos coches con cada categoría convertida en un número: por ejemplo, los cuatro precios posibles pasan a ser números del 0 al 3. Así es como los recibe el modelo."
+        },
+        "instances": {
+          "title": "Ejemplos y filas",
+          "content": "Con este selector rellenas el formulario de golpe. Arriba están los ejemplos, marcados con una estrella, uno de cada clase; debajo, todas las filas del conjunto de datos con su clase real."
+        },
+        "fields": {
+          "Buying": {
+            "title": "Precio de compra",
+            "content": "Cuánto cuesta comprar el coche: muy alto, alto, medio o bajo."
+          },
+          "Maint": {
+            "title": "Precio del mantenimiento",
+            "content": "Lo que cuesta mantener el coche, con sus revisiones y reparaciones. También va de muy alto a bajo."
+          },
+          "Doors": {
+            "title": "Número de puertas",
+            "content": "Dos, tres, cuatro, o cinco o más. Es la característica que menos influye en la decisión."
+          },
+          "Persons": {
+            "title": "Capacidad de personas",
+            "content": "Cuántas personas caben: dos, cuatro o más. En estos datos, un coche de solo dos plazas siempre es inaceptable."
+          },
+          "Lug_boot": {
+            "title": "Tamaño del maletero",
+            "content": "Pequeño, mediano o grande. Cuanto más grande es el maletero, más aceptable es el coche."
+          },
+          "Safety": {
+            "title": "Seguridad",
+            "content": "La seguridad estimada del coche: baja, media o alta. Es la característica que más pesa: con seguridad baja, el coche siempre es inaceptable."
+          }
+        },
+        "vector": {
+          "title": "De palabras a números",
+          "content": "A la izquierda están los valores del formulario y, a la derecha, el vector que entra en la red: las mismas seis características convertidas en números con la codificación aprendida al entrenar."
+        },
+        "classify": {
+          "title": "Clasificar",
+          "content": "Al pulsar este botón, la red recibe el vector, lo pasa capa a capa y calcula una probabilidad para cada clase."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la probabilidad de cada clase, y la más alta es la predicción. Si clasificas un ejemplo o una fila sin cambiarla, también verás su clase real, para comprobar si la red acierta. Este modelo solo tiene tres salidas: inaceptable, aceptable y muy bueno. La clase bueno no tiene ninguna, así que nunca la predice."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de clasificar, aquí ves por qué la red ha decidido eso. SHAP reparte la decisión entre las características: cuáles empujan hacia la clase y cuáles en contra. La importancia global hace lo mismo con muchas filas, para ver qué característica pesa más en general."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Prueba a elegir un ejemplo, clasifícalo y cambia después la seguridad o el número de plazas para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "common": {
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo: de dónde salen los datos, qué características recibe la red y qué clases puede predecir."
+        },
+        "model-summary": {
+          "title": "Resumen del modelo",
+          "content": "Este botón abre el resumen de la red: sus capas, cuántas neuronas tiene cada una y cuántos parámetros, que son los pesos que ajustó durante el entrenamiento."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Estos son los datos con los que se entrenó la red. Cada fila es un ejemplo y cada columna, una característica. La última columna, resaltada, es la clase: lo que la red aprendió a predecir."
+        },
+        "dataset-processed": {
+          "title": "Datos procesados",
+          "content": "Una red neuronal solo trabaja con números. En esta pestaña verás los mismos datos tal y como los recibe el modelo, con cada categoría convertida en un número."
+        },
+        "dataset-analysis": {
+          "title": "Análisis",
+          "content": "Esta pestaña resume el análisis exploratorio del conjunto: su tamaño, los valores ausentes, cuántos ejemplos hay de cada clase, los avisos, por ejemplo si las clases están desequilibradas, y qué características se relacionan entre sí. Es un buen sitio para entender los datos antes de clasificar."
+        },
+        "instances": {
+          "title": "Ejemplos y filas",
+          "content": "Con este selector rellenas el formulario de golpe. Arriba están los ejemplos, marcados con una estrella; debajo, todas las filas del conjunto de datos con su clase real."
+        },
+        "form": {
+          "title": "El formulario",
+          "content": "Aquí escribes los valores de lo que quieres clasificar, una casilla por característica. Debajo de cada una verás su nombre en el conjunto de datos y qué valores admite."
+        },
+        "vector": {
+          "title": "De los datos al vector",
+          "content": "A la izquierda están los valores del formulario y, a la derecha, el vector que entra en la red: las mismas características convertidas en números con la codificación aprendida al entrenar."
+        },
+        "classify": {
+          "title": "Clasificar",
+          "content": "Al pulsar este botón, la red recibe el vector, lo pasa capa a capa y calcula una probabilidad para cada clase."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la probabilidad de cada clase, y la más alta es la predicción. Si clasificas un ejemplo o una fila sin cambiarla, también verás su clase real, para comprobar si la red acierta."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de clasificar, aquí ves por qué la red ha decidido eso. SHAP reparte la decisión entre las características: cuáles empujan hacia la clase y cuáles en contra. La importancia global hace lo mismo con muchas filas, para ver qué característica pesa más en general."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Prueba a elegir un ejemplo, clasifícalo y cambia después alguna característica para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "IRIS": {
+        "intro": {
+          "title": "Clasificación de flores iris",
+          "content": "En esta página, una red neuronal ya entrenada reconoce la especie de una flor iris a partir de cuatro medidas: el largo y el ancho del sépalo y del pétalo. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Es el famoso conjunto Iris, que el estadístico Ronald Fisher dio a conocer en 1936: 150 flores, 50 de cada especie. Cada fila es una flor con sus cuatro medidas en centímetros y la última columna, resaltada, es su especie."
+        },
+        "fields": {
+          "sepal_length": {
+            "title": "Longitud del sépalo",
+            "content": "El sépalo es la hoja verde que protege la flor antes de abrirse. Esta casilla es su largo, en centímetros."
+          },
+          "sepal_width": {
+            "title": "Anchura del sépalo",
+            "content": "El ancho del sépalo, en centímetros. Es la medida que menos ayuda a distinguir las especies."
+          },
+          "petal_length": {
+            "title": "Longitud del pétalo",
+            "content": "El largo del pétalo, en centímetros. Junto con su anchura, es la medida que mejor separa las especies: la setosa tiene los pétalos mucho más pequeños que las otras dos."
+          },
+          "petal_width": {
+            "title": "Anchura del pétalo",
+            "content": "El ancho del pétalo, en centímetros. En estos datos, una flor con el pétalo de menos de un centímetro de ancho siempre es una setosa."
+          }
+        },
+        "vector": {
+          "title": "De los datos al vector",
+          "content": "Aquí las cuatro medidas ya son números, así que el vector que entra en la red son esas mismas medidas, en el mismo orden."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la probabilidad de cada especie: setosa, versicolor y virginica. La más alta es la predicción. La setosa es fácil de reconocer; las otras dos se parecen más y es donde la red puede dudar."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige el ejemplo de versicolor, clasifícalo y ve aumentando poco a poco el largo y el ancho del pétalo: verás cómo la red empieza a dudar y acaba diciendo virginica. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "LYMPHOGRAPHY": {
+        "intro": {
+          "title": "Clasificación de linfografías",
+          "content": "En esta página, una red neuronal ya entrenada clasifica el resultado de una linfografía, una prueba de imagen del sistema linfático, en cuatro diagnósticos: normal, metástasis, linfoma maligno o fibrosis. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Son 148 pacientes del Instituto de Oncología del Centro Médico Universitario de Liubliana. Cada fila es un paciente y cada columna, algo que se observó en su linfografía. Las clases están muy desequilibradas: hay 81 casos de metástasis y 61 de linfoma maligno, pero solo 4 de fibrosis y 2 normales."
+        },
+        "form": {
+          "title": "Lo que se ve en la linfografía",
+          "content": "El formulario tiene dieciocho características. Unas dicen si los vasos linfáticos son normales, arqueados, deformados o desplazados; otras, si hay bloqueos, derivaciones o salida del contraste; y otras describen los ganglios: cuántos hay, si han aumentado o disminuido, su forma y los defectos y cambios de su estructura. Son términos médicos: no hace falta entenderlos todos para ver cómo cambia la predicción."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la probabilidad de cada diagnóstico, y la más alta es la predicción. Con tan pocos casos de fibrosis y de resultados normales, la red ha aprendido sobre todo a distinguir entre metástasis y linfoma maligno."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige un ejemplo de cada diagnóstico, clasifícalo y mira después en la explicabilidad qué características han pesado más en cada uno. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      }
+    },
+    "1-regression": {
+      "common": {
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo: de dónde salen los datos, qué variables recibe la red y cuál predice."
+        },
+        "model-summary": {
+          "title": "Resumen del modelo",
+          "content": "Este botón abre el resumen de la red: sus capas, cuántas neuronas tiene cada una y cuántos parámetros, que son los pesos que ajustó durante el entrenamiento."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Aquí eliges el conjunto de datos. Cada uno tiene sus propias redes entrenadas."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Estos son los datos con los que se entrenó la red. Cada fila es un ejemplo y cada columna, una variable. La columna resaltada es la variable objetivo: el número que la red aprendió a predecir."
+        },
+        "dataset-processed": {
+          "title": "Datos procesados",
+          "content": "En esta pestaña verás los mismos datos tal y como los recibe el modelo, con los textos convertidos en números, y debajo la descripción estadística de cada columna."
+        },
+        "dataset-analysis": {
+          "title": "Análisis",
+          "content": "Esta pestaña resume el análisis exploratorio del conjunto: su tamaño, los valores ausentes, cómo se reparte la variable objetivo y qué variables se relacionan más con ella. Es un buen sitio para entender los datos antes de predecir."
+        },
+        "instances": {
+          "title": "Filas del conjunto",
+          "content": "Con este selector rellenas el formulario con cualquier fila del conjunto de datos. Junto al número de fila verás su valor real, para compararlo después con la predicción."
+        },
+        "models": {
+          "title": "Modelos",
+          "content": "Aquí eliges una de las redes ya entrenadas para este conjunto de datos."
+        },
+        "form": {
+          "title": "El formulario",
+          "content": "Aquí escribes los valores de las variables de entrada, una casilla por variable. Debajo de cada una verás su tipo y el rango de valores que toma en los datos."
+        },
+        "predict": {
+          "title": "Predecir",
+          "content": "Al pulsar este botón, la red recibe los valores ya codificados y escalados, los pasa capa a capa y devuelve un número: su predicción."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece el valor predicho. Si usaste una fila del conjunto sin cambiarla, también verás su valor real y el error, la diferencia entre los dos. Debajo están los pasos por los que pasan los datos antes de entrar en la red."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de predecir, aquí ves por qué la red ha dado ese valor. SHAP reparte la predicción entre las variables: cuáles la suben y cuáles la bajan respecto a la predicción media. La importancia global hace lo mismo con muchas filas, para ver qué variable pesa más en general."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige una fila, predice su valor y cambia después alguna variable para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "AUTO_MPG": {
+        "intro": {
+          "title": "Rendimiento de combustible",
+          "content": "En esta página, una red neuronal ya entrenada predice cuántas millas recorre un coche con un galón de combustible, a partir de seis datos del coche: los cilindros, la cilindrada, la potencia, el peso, la aceleración y el año del modelo. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Este modelo tiene un único conjunto de datos, Auto MPG."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Son 396 coches de 1970 a 1982, del conjunto Auto MPG. La columna resaltada, mpg, son las millas por galón: cuanto más alta, menos gasta el coche. En estos datos van de 9 a 46."
+        },
+        "fields": {
+          "cylinders": {
+            "title": "Cilindros",
+            "content": "El número de cilindros del motor, de tres a ocho. Más cilindros suelen significar más consumo."
+          },
+          "displacement": {
+            "title": "Cilindrada",
+            "content": "El volumen total de los cilindros del motor, en pulgadas cúbicas. Cuanto mayor es, más combustible gasta el coche."
+          },
+          "horsepower": {
+            "title": "Potencia",
+            "content": "Los caballos de potencia del motor. Los coches más potentes suelen recorrer menos millas por galón."
+          },
+          "weight": {
+            "title": "Peso",
+            "content": "El peso del coche, en libras. Es la variable más relacionada con el consumo: cuanto más pesa, menos millas recorre por galón."
+          },
+          "acceleration": {
+            "title": "Aceleración",
+            "content": "Los segundos que tarda el coche en pasar de 0 a 60 millas por hora. Un número más alto es un coche menos brusco, que suele gastar menos."
+          },
+          "model-year": {
+            "title": "Año del modelo",
+            "content": "El año en que salió el modelo, con dos cifras, de 70 a 82. Los coches más modernos de este conjunto gastan menos, en parte por las leyes de ahorro de combustible de aquellos años."
+          }
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece el consumo predicho, en millas por galón. Si usaste una fila sin cambiarla, también verás el valor real y el error. Debajo están los pasos por los que pasan los datos antes de entrar en la red."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige un coche, predice su consumo y súbele después el peso o la potencia: verás que la red predice menos millas por galón. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "STUDENT_PERFORMANCE": {
+        "intro": {
+          "title": "Rendimiento de estudiantes",
+          "content": "En esta página, una red neuronal ya entrenada predice la nota final de un estudiante de secundaria, de 0 a 20, a partir de treinta datos sobre su vida escolar, familiar y social. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo: de dónde salen los datos, qué variables recibe la red y cuál predice. La nota sobre G1 y G2 que verás en ella habla de los datos originales: esta versión las deja fuera a propósito, como te explico más adelante."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Hay dos conjuntos: estudiantes de matemáticas y estudiantes de portugués, de dos institutos de Portugal. Cada uno tiene su propia red entrenada."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Cada fila es un estudiante: 395 en matemáticas y 649 en portugués. La columna resaltada, G3, es la nota final del curso, de 0 a 20. A los datos originales les faltan aquí dos columnas, G1 y G2, las notas del primer y del segundo trimestre: se quitaron a propósito."
+        },
+        "form": {
+          "title": "Los datos del estudiante",
+          "content": "El formulario tiene treinta variables: personales, como la edad y el sexo; familiares, como los estudios y el trabajo de la madre y del padre; escolares, como el tiempo de estudio, los suspensos anteriores y las faltas; y sociales, como las salidas con amigos o el consumo de alcohol. Los suspensos anteriores son lo que más se relaciona con una nota final baja. Las notas de los trimestres no están: en el siguiente paso te explico por qué."
+        },
+        "grades": {
+          "title": "¿Y las notas G1 y G2?",
+          "content": "G1 y G2 son las notas del primer y del segundo trimestre, y se parecen muchísimo a la final: su correlación con G3 va de 0,8 a 0,92. Con ellas, la red apenas tendría que aprender nada, le bastaría con copiar la nota del segundo trimestre. Sin ellas, tiene que predecir la nota final solo con la vida escolar, familiar y social del estudiante. Es mucho más difícil, pero también mucho más útil: se puede hacer antes de que haya ninguna nota, para ayudar a tiempo a quien lo necesite. Por eso las redes de esta página se entrenaron sin G1 ni G2."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la nota final predicha, de 0 a 20. Si usaste una fila sin cambiarla, también verás la nota real y el error. Como la red no conoce las notas de los trimestres, es normal que se equivoque en varios puntos: es el precio de poder predecir antes de que haya notas."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige un estudiante, predice su nota y cambia después el número de suspensos anteriores o el tiempo de estudio para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "WINE": {
+        "intro": {
+          "title": "Calidad del vino",
+          "content": "En esta página, una red neuronal ya entrenada predice la calidad de un vino portugués, la nota que le dieron los catadores, a partir de once medidas químicas. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Hay dos conjuntos: vino tinto y vino blanco, de la denominación vinho verde. Cada uno tiene su propia red entrenada."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Cada fila es un vino: 1599 tintos y 4898 blancos. La columna resaltada, quality, es la nota de los catadores, de 0 a 10, aunque en estos datos solo va de 3 a 9 y casi todos los vinos tienen un 5 o un 6."
+        },
+        "form": {
+          "title": "Las medidas del vino",
+          "content": "El formulario tiene once medidas químicas: la acidez fija y la volátil, el ácido cítrico, el azúcar residual, los cloruros, el dióxido de azufre libre y el total, la densidad, el pH, los sulfatos y el alcohol. El alcohol es la que más se relaciona con la calidad: los vinos con más grados suelen tener mejor nota. En los tintos, además, una acidez volátil alta la baja."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la calidad predicha. No tiene por qué ser un número entero: la red puede decir, por ejemplo, 5,6. Si usaste una fila sin cambiarla, también verás la nota real y el error."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige un vino, predice su calidad y súbele después el alcohol para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      }
+    },
+    "2-object-detection": {
+      "common": {
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo: qué detecta, qué recibe y qué devuelve. Es un modelo ya entrenado: aquí solo se usa, no se entrena."
+        },
+        "explain-about": {
+          "title": "Cómo se explica",
+          "content": "Este recuadro resume cómo se calcula la explicabilidad: la imagen se divide en trozos, se tapan en muchas combinaciones distintas y se mira cuánto cambia el resultado. Así se sabe qué zonas han pesado más."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Aquí se ve la imagen de la cámara con lo que detecta el modelo dibujado encima, hasta veinte veces por segundo."
+        },
+        "webcam-controls": {
+          "title": "Los controles de la cámara",
+          "content": "Con el interruptor enciendes la webcam; el navegador te pedirá permiso la primera vez. Con el desplegable eliges la cámara, si tienes varias. El botón de la cámara de fotos descarga una captura y el último pone la cámara a pantalla completa."
+        },
+        "device-info": {
+          "title": "Información del dispositivo",
+          "content": "Aquí tienes los datos de tu cámara, de tu navegador y de tu pantalla, y cómo va la detección: cuántas predicciones por segundo hace y cuánto tarda cada una."
+        },
+        "image": {
+          "title": "Reconocimiento en imágenes",
+          "content": "Si no tienes cámara, arrastra aquí una foto o elígela de tu equipo: el modelo la procesa y dibuja encima lo que detecta."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de procesar una foto, aquí puedes calcular su explicación: un mapa de calor sobre la imagen que marca qué zonas han pesado más en lo que ha detectado el modelo."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam o sube una foto y mira qué detecta el modelo. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "FACE-DETECTOR": {
+        "intro": {
+          "title": "Detección de caras",
+          "content": "En esta página, el modelo Face Detector de MediaPipe encuentra las caras de una foto o de la cámara, hasta cuatro a la vez, y marca en cada una seis puntos clave: los ojos, la nariz, la boca y las orejas. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás encima de tu cara sus puntos clave con su nombre, en tiempo real. La imagen se muestra como en un espejo."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam, gira la cabeza o tápate parte de la cara y mira cuándo deja de encontrarla. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "FACE-MESH": {
+        "intro": {
+          "title": "Malla facial",
+          "content": "En esta página, el modelo Face Mesh de MediaPipe encuentra las caras de una foto o de la cámara, hasta cuatro a la vez, y coloca sobre cada una cientos de puntos que forman una malla en tres dimensiones de su superficie. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás la malla de puntos encima de tu cara, siguiendo tus gestos en tiempo real. La imagen se muestra como en un espejo."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam, abre la boca, guiña un ojo o levanta las cejas y mira cómo la malla sigue cada gesto. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "MOVE-NET--POSE-NET": {
+        "intro": {
+          "title": "Detector de articulaciones",
+          "content": "En esta página, el modelo MoveNet estima la postura del cuerpo: hasta cinco personas a la vez, con diecisiete puntos cada una, como los ojos, las orejas, los hombros, los codos, las muñecas, las caderas, las rodillas y los tobillos. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás encima de cada persona sus puntos unidos por líneas, como un esqueleto que se mueve contigo. Aléjate un poco para que se vea el cuerpo entero."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam, aléjate hasta que se vea todo tu cuerpo y mueve los brazos y las piernas. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "COCO-SSD": {
+        "intro": {
+          "title": "Detector de objetos",
+          "content": "En esta página, el modelo COCO-SSD encuentra objetos en una foto o en la cámara: los rodea con un recuadro y dice qué son y con qué confianza. Reconoce ochenta clases del conjunto COCO, como personas, animales, vehículos, comida o muebles. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás un recuadro alrededor de cada objeto que reconoce, con su nombre y el porcentaje de confianza."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam y pon delante una taza, una botella, un libro o tu móvil: mira qué reconoce y con cuánta confianza. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "FACE-API": {
+        "intro": {
+          "title": "Expresiones en la cara",
+          "content": "En esta página, face-api, un conjunto de varias redes neuronales, encuentra las caras de una foto o de la cámara y estima para cada una su edad aproximada y su expresión: neutral, feliz, triste, enfadada, asustada, asqueada o sorprendida. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás un recuadro alrededor de cada cara con su edad estimada y cuánto se parece su gesto a cada expresión."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam y prueba a sonreír, a poner cara de sorpresa o de enfado: mira cómo cambian los porcentajes de cada expresión. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "HAND-SIGN": {
+        "intro": {
+          "title": "Lengua de signos",
+          "content": "En esta página, una red neuronal encuentra tu mano y veintiún puntos de sus dedos y articulaciones; después, otro programa compara la posición de los dedos con las letras del alfabeto dactilológico: el de la lengua de signos española si la aplicación está en español, y el de la americana en los demás idiomas. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "webcam": {
+          "title": "Reconocimiento en tiempo real",
+          "content": "Al encender la cámara verás los puntos de tu mano y la letra que reconoce. Pon la mano de frente, bien iluminada y sin que se salga de la imagen."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Enciende la webcam, mira en la ficha del modelo la imagen con el alfabeto e intenta formar varias letras con la mano. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      }
+    },
+    "3-image-classification": {
+      "common": {
+        "model": {
+          "title": "El modelo",
+          "content": "Esta es la ficha del modelo: con qué imágenes se entrenó, qué recibe y qué clases puede reconocer."
+        },
+        "model-summary": {
+          "title": "Resumen del modelo",
+          "content": "Este botón abre el resumen de la red: sus capas, cuántas neuronas tiene cada una y cuántos parámetros, que son los pesos que ajustó durante el entrenamiento."
+        },
+        "explain-about": {
+          "title": "Cómo se explica",
+          "content": "Este recuadro resume el método con el que se explican las predicciones. LRP recorre la red hacia atrás y reparte la decisión hasta los píxeles; SHAP tapa trozos de la imagen en muchas combinaciones y mira cuánto cambia el resultado."
+        },
+        "examples": {
+          "title": "Imágenes de ejemplo",
+          "content": "Pulsa cualquiera de estas imágenes para clasificarla: el resultado aparece más abajo."
+        },
+        "test-images": {
+          "title": "Imágenes de test",
+          "content": "Con este botón cargas las imágenes de test, las que la red no vio al entrenar. Después, en este mismo sitio, eliges cualquiera para clasificarla y comparar la predicción con su clase real."
+        },
+        "upload": {
+          "title": "Subir una imagen",
+          "content": "También puedes arrastrar aquí una imagen tuya, o elegirla de tu equipo, y pulsar el botón para clasificarla."
+        },
+        "draw": {
+          "title": "Dibujar",
+          "content": "O dibuja aquí con el ratón o con el dedo y pulsa el botón para clasificar tu dibujo. Se reduce a 28 por 28 píxeles, como las imágenes con las que se entrenó la red."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la imagen que se ha clasificado y, al lado, la probabilidad de cada clase. La más alta es la predicción."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de clasificar, aquí calculas un mapa de calor sobre la imagen que marca qué píxeles han pesado más en la decisión de la red."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Clasifica un ejemplo, sube una imagen tuya y mira en la explicabilidad en qué se ha fijado la red. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "IMAGE-MNIST": {
+        "intro": {
+          "title": "Reconocimiento de dígitos",
+          "content": "En esta página, una red neuronal convolucional ya entrenada reconoce números del 0 al 9 escritos a mano. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "La red se entrenó con MNIST, una colección de 70.000 dígitos escritos a mano, 60.000 para entrenar y 10.000 para probar, en imágenes de 28 por 28 píxeles en escala de grises. Es uno de los conjuntos de datos más usados para empezar con el aprendizaje automático."
+        },
+        "examples": {
+          "title": "Imágenes de ejemplo",
+          "content": "Pulsa cualquiera de estos dígitos para clasificarlo: el resultado aparece más abajo."
+        },
+        "draw": {
+          "title": "Dibujar un número",
+          "content": "Dibuja aquí un número del 0 al 9 con el ratón o con el dedo y pulsa el botón para clasificarlo. Tu dibujo se reduce a 28 por 28 píxeles, como los de MNIST, así que dibújalo grande y centrado."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la imagen que ha visto la red y la probabilidad de cada dígito. La más alta es la predicción. Si clasificas una imagen de test, también verás cuál era el dígito real."
+        },
+        "explain": {
+          "title": "Explicabilidad con LRP",
+          "content": "Después de clasificar, aquí calculas un mapa de calor con LRP, que reparte la decisión de la red hacia atrás, capa a capa, hasta los píxeles: verás qué trazos del dibujo han pesado más."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Dibuja un número a tu manera, por ejemplo un siete con raya o un uno con base, y mira si la red lo reconoce y en qué se ha fijado. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "IMAGE-KMNIST": {
+        "intro": {
+          "title": "Caracteres japoneses",
+          "content": "En esta página, una red neuronal convolucional ya entrenada reconoce diez caracteres japoneses del silabario hiragana escritos a mano en kuzushiji, la escritura cursiva que se usó en Japón durante siglos. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "La red se entrenó con Kuzushiji-MNIST: imágenes de 28 por 28 píxeles, como las de MNIST, pero con caracteres en lugar de dígitos. Es más difícil que MNIST, porque un mismo carácter se puede escribir de formas muy distintas."
+        },
+        "examples": {
+          "title": "Imágenes de ejemplo",
+          "content": "Pulsa cualquiera de estos caracteres para clasificarlo: el resultado aparece más abajo."
+        },
+        "draw": {
+          "title": "Dibujar un carácter",
+          "content": "Dibuja aquí uno de los diez caracteres con el ratón o con el dedo y pulsa el botón para clasificarlo. Ten en cuenta que la red aprendió la escritura cursiva antigua, que no siempre se parece al hiragana de hoy."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la imagen que ha visto la red y la probabilidad de cada carácter. La más alta es la predicción. Si clasificas una imagen de test, también verás cuál era el carácter real."
+        },
+        "explain": {
+          "title": "Explicabilidad con LRP",
+          "content": "Después de clasificar, aquí calculas un mapa de calor con LRP, que reparte la decisión de la red hacia atrás, capa a capa, hasta los píxeles: verás qué trazos han pesado más."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Carga las imágenes de test y compara varias formas de escribir un mismo carácter: verás que la red acierta incluso con trazos muy diferentes. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "IMAGE-MOBILENET": {
+        "intro": {
+          "title": "Clasificación de imágenes",
+          "content": "En esta página, MobileNet, una red neuronal convolucional pensada para móviles, reconoce lo que aparece en una foto entre mil categorías: animales, objetos, vehículos, comida y mucho más. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "Es MobileNet, entrenada con ImageNet, más de un millón de fotos de mil categorías. Recibe imágenes en color de 224 por 224 píxeles."
+        },
+        "examples": {
+          "title": "Imágenes de ejemplo",
+          "content": "Pulsa cualquiera de estas fotos para clasificarla: el resultado aparece más abajo."
+        },
+        "upload": {
+          "title": "Subir una imagen",
+          "content": "Arrastra aquí una foto tuya, o elígela de tu equipo, y pulsa el botón para clasificarla. Funciona mejor si lo que quieres reconocer ocupa casi toda la foto."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la foto que ha visto la red y las categorías más probables, de mayor a menor. Con mil categorías, es normal que dude entre varias parecidas, como dos razas de perro."
+        },
+        "explain": {
+          "title": "Explicabilidad con SHAP",
+          "content": "Después de clasificar, aquí calculas un mapa de calor con SHAP: la foto se divide en trozos, se tapan en muchas combinaciones y se mira cuánto cambia la predicción. Así ves qué zonas de la foto han pesado más."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Sube una foto de algo que tengas cerca y mira si la red lo reconoce y en qué se ha fijado. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      }
+    },
+    "go-to": "Ir al paso",
+    "voice": "Voz",
+    "voice-auto": "Automática",
+    "voice-online": "en línea"
+  },
+  "loading-status": {
+    "page": "Cargando la página…",
+    "slow": "La primera vez tarda un poco más: se están descargando las librerías de esta sección. Las siguientes visitas irán más rápido.",
+    "model": "Cargando el modelo…",
+    "model-progress": "Descargando el modelo: {{loaded}} de {{total}} MB",
+    "model-loaded": "Descargando el modelo: {{loaded}} MB",
+    "model-help": "La primera vez puede tardar: el modelo se descarga de internet."
   }
 }

@@ -2,6 +2,11 @@ import { useMemo } from 'react'
 import { useDropzone, type DropEvent, type DropzoneRootProps, type FileRejection } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 
+import { trackEvent } from '@core/analytics'
+
+// Para las analíticas, del fichero solo la extensión: el nombre puede ser personal
+const fileFormat = (fileName: string) => fileName.includes('.') ? fileName.split('.').pop()!.toLowerCase() : 'none'
+
 const baseStyle = {
   flex           : 1,
   display        : 'flex',
@@ -84,10 +89,16 @@ export default function DragAndDrop (props: DragAndDropProps) {
     fileRejections,
   } = useDropzone({
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-    onDropAccepted: (files, event) => function_DropAccepted(files, event),
-    onDropRejected: (files, event) => function_DropRejected(files, event) ,
-    accept        : accept,
-    multiple      : multiple,
+    onDropAccepted: (files, event) => {
+      for (const file of files) trackEvent('file_upload', { zone: name, format: fileFormat(file.name), size_kb: Math.round(file.size / 1024) })
+      function_DropAccepted(files, event)
+    },
+    onDropRejected: (files, event) => {
+      for (const { file } of files) trackEvent('file_rejected', { zone: name, format: fileFormat(file.name) })
+      function_DropRejected(files, event)
+    },
+    accept  : accept,
+    multiple: multiple,
   })
   const styles = useMemo(() => ({
     ...baseStyle,

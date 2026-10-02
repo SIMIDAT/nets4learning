@@ -7,13 +7,23 @@ import wasmPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm?
 import wasmSimdPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-simd.wasm?url'
 import wasmThreadedSimdPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-threaded-simd.wasm?url'
 
+import { trackEvent } from '@core/analytics'
+
 export const TF_BACKENDS = ['webgl', 'webgpu', 'wasm', 'cpu'] as const
 export type TFBackend_t = typeof TF_BACKENDS[number]
+
+// Nombres propios: no se traducen
+export const TF_BACKEND_LABELS: Record<TFBackend_t, string> = {
+  webgl : 'WebGL',
+  webgpu: 'WebGPU',
+  wasm  : 'WebAssembly',
+  cpu   : 'CPU',
+}
 
 /** El que usa TF.js si no se le dice nada: el de más prioridad de los que trae @tensorflow/tfjs */
 export const DEFAULT_TF_BACKEND: TFBackend_t = 'webgl'
 
-const TF_BACKEND_STORAGE_KEY = 'tf-backend'
+export const TF_BACKEND_STORAGE_KEY = 'tf-backend'
 
 export const isTFBackend = (value: string): value is TFBackend_t => (TF_BACKENDS as readonly string[]).includes(value)
 
@@ -157,6 +167,7 @@ export function changeUserTFBackend(backend: TFBackend_t): Promise<boolean> {
     const previous = activeBackend
     if (!await activateTFBackend(backend)) {
       await activateTFBackend(previous)
+      trackEvent('settings_change', { setting: 'tf_backend', value: backend, outcome: 'error' })
       return false
     }
     try {
@@ -165,6 +176,7 @@ export function changeUserTFBackend(backend: TFBackend_t): Promise<boolean> {
       // Sin almacenamiento: el backend solo dura esta visita
     }
     setActiveBackend(backend)
+    trackEvent('settings_change', { setting: 'tf_backend', value: backend, outcome: 'completed' })
     return true
   })
   pendingChange = change

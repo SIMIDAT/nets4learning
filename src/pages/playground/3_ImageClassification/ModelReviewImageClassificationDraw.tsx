@@ -30,7 +30,7 @@ export default function ModelReviewImageClassificationDraw ({ canvasResultRef, o
   }
 
   return <>
-    <Col className={'d-grid'} xs={12} md={6}>
+    <Col className={'d-grid'} xs={12} md={6} data-guide={'draw'}>
       <Card className={'mt-3'}>
         <Card.Header>
           <h3><Trans i18nKey={'datasets-models.3-image-classifier.interface.process-draw.title'}/></h3>

@@ -20,10 +20,11 @@ const DEVELOPERS: Person_t[] = [
   { name: 'Carlos Requena', href: 'https://github.com/El-Requedaddy' },
 ]
 
+// Logos a 88 px de alto (el doble de lo que se ven, para pantallas de doble densidad): los originales pesan mucho más
 const INSTITUTIONS = [
-  { name: 'SIMIDAT', href: 'https://simidat.ujaen.es', src: '/assets/Logo-Simidat-2023-oficial.png' },
+  { name: 'SIMIDAT', href: 'https://simidat.ujaen.es', src: '/assets/footer/SIMIDAT.png' },
   { name: 'Universidad de Jaén', href: 'https://ujaen.es', src: '/assets/uja.svg' },
-  { name: 'DaSCI', href: 'https://dasci.es', src: '/assets/DaSCI_logo-1.png' },
+  { name: 'DaSCI', href: 'https://dasci.es', src: '/assets/footer/DaSCI.png' },
 ]
 
 // Enlaces discretos: subrayado tenue que se marca al pasar el ratón
@@ -59,7 +60,7 @@ export default function N4LFooter() {
         <Row className={'g-4'}>
           <Col xs={12} lg={5}>
             <h2 className={'n4l-footer-brand'}>
-              <img src={VITE_PATH + '/without_background.png'} width={32} height={32} alt={''} />
+              <img src={VITE_PATH + '/logo-64.png'} width={32} height={32} alt={''} />
               Nets4Learning
             </h2>
             <p className={'text-body-secondary mb-2'}><Trans i18nKey={'footer.description-app'} /></p>
@@ -83,6 +84,7 @@ export default function N4LFooter() {
           <Col xs={12} sm={5} lg={3}>
             <h2 className={'n4l-footer-heading'}><Trans i18nKey={'footer.links'} /></h2>
             <ul className={'n4l-footer-links'}>
+              <li><Link to={'/settings'} className={LINK_CLASS}><Trans i18nKey={'footer.settings'} /></Link></li>
               <li><Link to={'/contribute'} className={LINK_CLASS}><Trans i18nKey={'footer.contribute'} /></Link></li>
               <li><Link to={'/version'} className={LINK_CLASS}><Trans i18nKey={'footer.version'} /></Link></li>
               <li><Link to={'/terms-and-conditions'} className={LINK_CLASS}><Trans i18nKey={'footer.terms'} /></Link></li>

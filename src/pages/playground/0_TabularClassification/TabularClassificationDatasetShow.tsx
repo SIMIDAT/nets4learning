@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Col, Form, Row } from 'react-bootstrap'
 import * as dfd from 'danfojs'
@@ -10,11 +10,13 @@ import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import N4LSummary from '@components/summary/N4LSummary'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
-import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
 
 import TabularClassificationDatasetShowInfo from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShowInfo'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 import N4LHelpLink from '@components/helpLink/N4LHelpLink'
+
+// Tablas de Plotly dentro de apartados plegados: se descargan (1,1 MB) al abrirlos, no con la página
+const N4LDataFrameDescribe = lazy(() => import('@components/dataframe/N4LDataFrameDescribe'))
 
 /**
  * @typedef {object} PropsTabularClassificationDatasetShow

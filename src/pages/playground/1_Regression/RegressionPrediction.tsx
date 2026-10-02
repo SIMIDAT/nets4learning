@@ -14,6 +14,7 @@ import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionP
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from '@core/explainability/shapSampling'
+import { trackEvent } from '@core/analytics'
 
 type RegressionPredictionProps = {
   /** Secciones de la página (numeran el separador de la explicabilidad) */
@@ -58,7 +59,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
       ...prevState,
       result: result
     }))
-
+    trackEvent('predict', { input: 'form' })
   }
 
   const handleChange_Model_Index = (e: React.ChangeEvent<HTMLSelectElement>) => {

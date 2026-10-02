@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
-import { Button, Card, Col, Container, Form, ProgressBar, Row } from "react-bootstrap"
-import { trackPageView } from "@core/analytics"
+import { Button, Card, Col, Container, Form, Row } from "react-bootstrap"
 import * as tfjs from "@tensorflow/tfjs"
 
 import alertHelper from "@utils/alertHelper"
@@ -20,7 +19,12 @@ import type { BasicPrediction_t, DatasetProcessed_t } from "@core/types"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
 import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
 import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
+import N4LGuide from "@components/guide/N4LGuide"
+import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
+import { trackDownloads } from "@core/downloadProgress"
 import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
+import { trackEvent } from "@core/analytics"
+import { tabularReviewGuide } from "./modelReviewGuide"
 type Props = {
   dataset: string
 }
@@ -35,7 +39,6 @@ export default function ModelReviewTabularClassification(props: Props) {
   const [model, setModel] = useState<tfjs.LayersModel | null>(null)
 
   const [isLoading, setIsLoading] = useState(true)
-  const [progress, setProgress] = useState(0)
 
   const [isButtonToPredictDisabled, setIsButtonToPredictDisabled] = useState(true)
 
@@ -63,9 +66,6 @@ export default function ModelReviewTabularClassification(props: Props) {
   const [explainMeta, setExplainMeta] = useState<{ features: string[], classes: string[] }>({ features: [], classes: [] })
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
 
-  const handleChange_onProgress = (fraction: number) => {
-    setProgress(fraction * 100)
-  }
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect [dataToPredict]")
     // TODO encoders to dataToPredict
@@ -87,9 +87,6 @@ export default function ModelReviewTabularClassification(props: Props) {
     init().then()
   }, [dataToPredict, iModelInstance])
 
-  useEffect(() => {
-    trackPageView(`/ModelReviewTabularClassification/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init]")
@@ -98,11 +95,13 @@ export default function ModelReviewTabularClassification(props: Props) {
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        setModel(await _iModelInstance.LOAD_LAYERS_MODEL({
-          onProgress: handleChange_onProgress,
-        }))
+        // El modelo y su conjunto de datos, con el progreso real de lo que se descarga
+        const { _model, _datasets } = await trackDownloads(async () => ({
+          _model   : await _iModelInstance.LOAD_LAYERS_MODEL({}),
+          _datasets: await _iModelInstance.DATASETS() as DatasetProcessed_t[],
+        }), 'model_load')
+        setModel(_model)
         setDataToPredict(_iModelInstance.DATA_DEFAULT)
-        const _datasets: DatasetProcessed_t[] = await _iModelInstance.DATASETS()
         if (!_datasets.length || !_datasets[0].data_processed) {
           console.warn("No datasets available.")
           return
@@ -161,6 +160,7 @@ export default function ModelReviewTabularClassification(props: Props) {
       setPredictedClassIndex(probabilities.indexOf(Math.max(...probabilities)))
       setPredictionActual(instanceMatches && selectedInstance !== null ? actualClassOf(selectedInstance) : null)
       setPrediction({ labels: iModelInstance.CLASSES, data: probabilities })
+      trackEvent('predict', { input: 'form' })
     } catch (error) {
       console.error(error)
       await alertHelper.alertError(t("error.prediction"))
@@ -222,6 +222,11 @@ export default function ModelReviewTabularClassification(props: Props) {
   }
   // endregion
 
+  // Guía paso a paso de la página (con voz), si el modelo la tiene: solo con el botón "Guía"
+  const guideSteps = useMemo(() => (iModelInstance === null
+    ? null
+    : tabularReviewGuide(t, dataset, iModelInstance.FORM.map(({ name }) => name))), [t, dataset, iModelInstance])
+
   if (VERBOSE) console.debug("render ModelReviewTabularClassification")
   return (
     <>
@@ -240,25 +245,19 @@ export default function ModelReviewTabularClassification(props: Props) {
       <Container className={'n4l-container-wide'} id={"ModelReviewTabularClassification"} data-testid={"Test-ModelReviewTabularClassification"}>
         <Row>
           <Col>
-            {isLoading && (
-              <ProgressBar
-                label={progress < 100 ? t("downloading") : t("downloaded")}
-                striped={true}
-                animated={true}
-                now={progress}
-              />
-            )}
+            <N4LDownloadProgress isLoading={isLoading} />
           </Col>
         </Row>
         {iModelInstance !== null && model !== null && <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <Card className={"sticky-top mt-3 border-info"} style={{ zIndex: 0 }}>
+            <Card className={"sticky-top mt-3 border-info"} style={{ zIndex: 0 }} data-guide={"model"}>
               <Card.Header>
                 <h2>
                   <Trans i18nKey={"pages.playground.0-tabular-classification.general.model"} />
                 </h2>
               </Card.Header>
               <Card.Body>
+                {guideSteps !== null && <N4LGuide id={"tabular-classification." + dataset} steps={guideSteps} />}
                 <N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />
                 <Card.Title>
                   <Trans i18nKey={iModelInstance.TITLE} />
@@ -276,7 +275,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                 <h3>
                   <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-features"} />
                 </h3>
-                <div className={"n4l-card-header-controls n4l-instance-select"}>
+                <div className={"n4l-card-header-controls n4l-instance-select"} data-guide={"instances"}>
                   <N4LVirtualSelect options={instanceOptions}
                     value={instanceMatches ? selectedInstance : null}
                     onChange={handleChange_Instance}
@@ -301,7 +300,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                     dataToTest={dataToPredict}
                     setDataToTest={setDataToPredict}
                   />
-                  <Row className={"mt-3"}>
+                  <Row className={"mt-3"} data-guide={"vector"}>
                     <Col>
                       <Form.Group controlId={"formInputData"}>
                         <Form.Label>
@@ -328,7 +327,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                   {/*<Row><Col><pre>[[{vectorToPredict.join(',')}], [1, {vectorToPredict.length}]]</pre></Col></Row>*/}
                   <Row className={"mt-3"}>
                     <Col>
-                      <div className="d-grid gap-2">
+                      <div className="d-grid gap-2" data-guide={"classify"}>
                         <Button variant={"primary"} size={"lg"} type={"submit"} disabled={isButtonToPredictDisabled}>
                           <Trans i18nKey={"pages.playground.generator.dynamic-form-dataset.classify-button"} />
                         </Button>

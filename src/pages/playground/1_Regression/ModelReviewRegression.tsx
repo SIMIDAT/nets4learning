@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams, useNavigate } from "react-router"
 import { Trans, useTranslation } from "react-i18next"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
-import { trackPageView } from "@core/analytics"
 import * as dfd from "danfojs"
 import * as tfjs from "@tensorflow/tfjs"
 
@@ -17,6 +16,10 @@ import ModelReviewRegressionDataset from "./ModelReviewRegressionDataset"
 import ModelReviewRegressionPredict from "./ModelReviewRegressionPredict"
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from "./utils"
 import TabularShapPanel from "@core/explainability/TabularShapPanel"
+import N4LGuide from "@components/guide/N4LGuide"
+import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
+import { trackDownloads } from "@core/downloadProgress"
+import { regressionReviewGuide } from "./modelReviewGuide"
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from "@core/explainability/shapSampling"
 
 // Valor de la variable objetivo para la lista de instancias: sin decimales de más
@@ -36,6 +39,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   const prefix = "pages.playground.1-regression."
   const { t } = useTranslation()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_REGRESSION | null>(null)
+  // Hasta tener los conjuntos de datos y las redes del elegido (otra vez al cambiar de conjunto)
+  const [isLoading, setIsLoading] = useState(true)
 
   /**
    * @type {ReturnType<typeof useState<_Types.StateListDatasetProcessed_t>>}
@@ -78,9 +83,6 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     result                     : [],
   })
 
-  useEffect(() => {
-    trackPageView(`/ModelReviewRegression/${dataset}`, dataset)
-  }, [dataset])
 
   useEffect(() => {
     if (VERBOSE) console.debug("useEffect[init][ dataset, t ]")
@@ -89,7 +91,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        const _datasets = await _iModelInstance.DATASETS()
+        // Con el progreso real de lo que se descarga
+        const _datasets = await trackDownloads(() => _iModelInstance.DATASETS(), 'dataset_load')
         setDatasets({
           data   : _datasets,
           index  : 0,
@@ -111,7 +114,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
         listDatasets.data.length > 0 &&
         iModelInstance
       ) {
-        const _models = await iModelInstance.MODELS(listDatasets.data[listDatasets.index].csv)
+        const _models = await trackDownloads(() => iModelInstance.MODELS(listDatasets.data[listDatasets.index].csv), 'model_load')
+        setIsLoading(false)
         setListCustomModels({
           // Un conjunto de datos sin modelos preentrenados devuelve [] (o nada, si no está en la lista)
           data : _models ?? [],
@@ -167,6 +171,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   ])
 
   const handleChange_Datasets_Index = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setIsLoading(true)
     setDatasets((prevState) => ({
       ...prevState,
       index: parseInt(event.target.value),
@@ -231,6 +236,12 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     selectedRow.every((value, column) => String(value) === String(formRow[column]))
   const actualValue = instanceMatches && targetIndex >= 0 ? Number(selectedRow[targetIndex]) : null
 
+  // Guía paso a paso de la página (con voz), si el modelo la tiene: un paso por variable de entrada del conjunto elegido
+  const guideFields = datasetSelected?.data_processed?.dataframe_X.columns
+  const guideSteps = useMemo(() => (iModelInstance === null
+    ? null
+    : regressionReviewGuide(t, dataset, guideFields ?? [])), [t, dataset, iModelInstance, guideFields])
+
   if (VERBOSE) console.debug("render ModelReviewRegression")
   return (
     <>
@@ -244,19 +255,25 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
             </div>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <N4LDownloadProgress isLoading={isLoading} />
+          </Col>
+        </Row>
 
         {iModelInstance !== null && (
           <Row>
             <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-              <Card className={"sticky-top border-info mt-3"}>
+              <Card className={"sticky-top border-info mt-3"} data-guide={"model"}>
                 <Card.Header>
                   <h2>
                     <Trans i18nKey={iModelInstance.i18n_TITLE} />
                   </h2>
                 </Card.Header>
                 <Card.Body>
+                  {guideSteps !== null && <N4LGuide id={"regression." + dataset} steps={guideSteps} />}
                   <N4LModelSummaryButton model={explainModel} title={`${t(iModelInstance.i18n_TITLE)} (${listDatasets.data[listDatasets.index]?.csv ?? ""})`} />
-                  <Form.Group controlId="FormSelector_Dataset">
+                  <Form.Group controlId="FormSelector_Dataset" data-guide={"dataset-select"}>
                     <Form.Label>
                       <Trans i18nKey={"form.select-dataset.title"} />
                     </Form.Label>
@@ -297,7 +314,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                     <Trans i18nKey={prefix + "predict.title"} />
                   </h2>
                   <div className={"d-flex flex-wrap gap-2 n4l-card-header-controls"}>
-                    <div className={"n4l-instance-select"}>
+                    <div className={"n4l-instance-select"} data-guide={"instances"}>
                       <N4LVirtualSelect options={instanceOptions}
                         value={instanceMatches ? instances.index : null}
                         onChange={handleChange_Instance_Index}
@@ -308,7 +325,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                         noResultsText={t("pages.playground.generator.dynamic-form-dataset.no-entity")}
                         countText={(shown, total) => t("pages.playground.generator.dynamic-form-dataset.entity-count", { shown, total })} />
                     </div>
-                    <Form.Group controlId={"FormSelector_Models"}>
+                    <Form.Group controlId={"FormSelector_Models"} data-guide={"models"}>
                       <Form.Select
                         disabled={hasNoModels}
                         aria-label={t(prefix + "predict.list-models")}

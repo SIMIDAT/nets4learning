@@ -1,10 +1,11 @@
 import { lazy, Suspense, use, useEffect, type ReactNode } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
 
 import Loading from './pages/Loading'
 import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
 import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
+import N4LAnalytics from './components/analytics/N4LAnalytics'
 import { readConsent, startAnalytics } from '@core/analytics'
 import { startupTFBackend } from '@core/tfBackend'
 
@@ -23,6 +24,7 @@ const PageContribute = lazy(() => import( './pages/contribute/Contribute'))
 const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditions'))
 const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
+const PageSettings = lazy(() => import( './pages/settings/Settings'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
 // /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
 const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
@@ -39,6 +41,12 @@ function TFBackendReady({ children }: { children: ReactNode }) {
   return children
 }
 
+// Una ruta que no existe lleva a la 404 diciéndole cuál era (para las analíticas: enlaces rotos)
+function NotFoundRedirect() {
+  const { pathname } = useLocation()
+  return <Navigate to="/404" replace state={{ missingPath: pathname }} />
+}
+
 function App() {
   
   // Google Analytics solo se carga si el usuario lo ha aceptado (N4LCookiesBanner)
@@ -49,6 +57,7 @@ function App() {
   return (
     <div className="body">
       <BrowserRouter basename={VITE_PATH}>
+        <N4LAnalytics />
         <Suspense fallback={''}>
           <N4LNavbar />
         </Suspense>
@@ -68,6 +77,7 @@ function App() {
               <Route path={'/contribute/'} element={<PageContribute />}></Route>
               <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
               <Route path={'/version'} element={<PageVersion />}></Route>
+              <Route path={'/settings'} element={<PageSettings />}></Route>
 
               {SHOW_DEV_PAGES && <>
                 <Route path={'/debug'} element={<PageDebug />}></Route>
@@ -76,7 +86,7 @@ function App() {
               </>}
 
               <Route path="/404" element={<PageNotFoundPage />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
+              <Route path="*" element={<NotFoundRedirect />} />
             </Routes>
           </TFBackendReady>
         </Suspense>

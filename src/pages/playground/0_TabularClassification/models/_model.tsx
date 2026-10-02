@@ -12,7 +12,7 @@ export type TabularFormField_t =
   | { type: 'int32' | 'float32', name: string }
   | { type: 'label-encoder', name: string, options: Array<{ value: string, text: string }> }
 
-export type LoadModelCallbacks_t = { onProgress: (fraction: number) => void }
+export type LoadModelCallbacks_t = { onProgress?: (fraction: number) => void }
 
 export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   KEY                  : string = 'I_MODEL_TABULAR_CLASSIFICATION'

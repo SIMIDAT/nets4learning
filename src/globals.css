@@ -1,12 +1,16 @@
 
+/* WOFF2 pesa un tercio que el TTF (que queda para navegadores antiguos). Con swap, el texto se ve desde el principio
+   con la fuente del sistema y cambia a Barlow cuando llega, en vez de quedarse invisible mientras se descarga */
 @font-face {
-  font-family: "Barlow-Regular";   /*Can be any text*/
-  src: local("Barlow-Regular"), url("./styles/fonts/Barlow-Regular.ttf") format("truetype");
+  font-family: "Barlow-Regular";
+  font-display: swap;
+  src: local("Barlow-Regular"), url("./styles/fonts/Barlow-Regular.woff2") format("woff2"), url("./styles/fonts/Barlow-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "Barlow-SemiBold";   /*Can be any text*/
-  src: local("Barlow-SemiBold"), url("./styles/fonts/Barlow-SemiBold.ttf") format("truetype");
+  font-family: "Barlow-SemiBold";
+  font-display: swap;
+  src: local("Barlow-SemiBold"), url("./styles/fonts/Barlow-SemiBold.woff2") format("woff2"), url("./styles/fonts/Barlow-SemiBold.ttf") format("truetype");
 }
 
 #root {
@@ -25,7 +29,9 @@ body {
 }
 
 .body {
-  background-color: #E8EaEd;
+  /* El fondo de la aplicación; también lo usa lo que se funde con él (el halo detrás del texto de la 404) */
+  --n4l-page-bg: #E8EaEd;
+  background-color: var(--n4l-page-bg);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -579,7 +585,7 @@ html[data-theme="dark"] .n4l-footer {
 }
 
 html[data-theme="dark"] .body {
-  background-color: #212529;
+  --n4l-page-bg: #212529;
   min-height: 100vh;
 }
 
@@ -913,4 +919,41 @@ h6 {
 
 .n4l-eda-encodings dd {
   margin: 0;
+}
+
+/* Mientras llega el código de una página (Loading.tsx): en medio del espacio de la página, sin empujar el pie fuera */
+.n4l-page-loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aviso de cookies: con el detalle desplegado en un móvil no pasa de la pantalla (se desplaza por dentro) */
+.n4l-cookies-banner {
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+
+/* Aceptar y rechazar, del mismo tamaño; en pantallas estrechas se reparten el ancho */
+.n4l-cookies-button {
+  min-width: 8.5rem;
+}
+
+@media (max-width: 991.98px) {
+  .n4l-cookies-actions .n4l-cookies-button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .n4l-cookies-text {
+    font-size: .9rem;
+  }
+}
+
+.n4l-cookies-details > summary {
+  width: fit-content;
+  cursor: pointer;
 }

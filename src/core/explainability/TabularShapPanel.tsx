@@ -11,6 +11,7 @@ import ShapExplanationChart from '@core/explainability/ModelExplanationChart'
 import ShapBeeswarmChart from '@core/explainability/ShapBeeswarmChart'
 import ExplanationSummary from '@core/explainability/ExplanationSummary'
 import { buildShapBackground, sampleIndicesWithoutReplacement } from '@core/explainability/shapSampling'
+import { trackEvent } from '@core/analytics'
 
 type PredictModel = { predict: (x: tf.Tensor) => tf.Tensor | tf.Tensor[] }
 
@@ -116,6 +117,7 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       return
     }
 
+    trackEvent('explain', { method: 'shap', scope: 'local' })
     setIsCalculatingLocal(true)
     try {
       // KernelSHAP bloquea el hilo: dejamos que el botón pinte "Calculando…" antes de empezar.
@@ -160,6 +162,7 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
       return
     }
 
+    trackEvent('explain', { method: 'shap', scope: 'global' })
     cancelGlobal_ref.current = false
     setIsCalculatingGlobal(true)
     setGlobalProgress(0)
@@ -200,7 +203,7 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
 
   if (!modelReady) {
     return (
-      <Card className={'mt-3'} data-testid={'explainability-card'}>
+      <Card className={'mt-3'} data-testid={'explainability-card'} data-guide={'explain'}>
         <Card.Header>
           <h3>{t(PREFIX + 'explainability')}</h3>
         </Card.Header>
@@ -212,7 +215,7 @@ export default function TabularShapPanel(props: TabularShapPanelProps) {
   }
 
   return (
-    <Card className={'mt-3'} data-testid={'explainability-card'}>
+    <Card className={'mt-3'} data-testid={'explainability-card'} data-guide={'explain'}>
       <Card.Header>
         <h3>{t(PREFIX + 'explainability')}</h3>
       </Card.Header>

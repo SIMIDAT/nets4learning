@@ -7,8 +7,9 @@ import { Trans, useTranslation } from 'react-i18next'
 import IconThemeLight from '@assets/sun.svg'
 import IconThemeDark from '@assets/moon.svg'
 import IconGithub from '@assets/github.svg'
-import { changeUserLanguage, type Language_t } from '@core/i18n/language'
+import { changeUserLanguage, LANGUAGE_OPTIONS } from '@core/i18n/language'
 import { changeUserTheme, type Theme_t } from '@core/theme'
+import { useTheme } from '@hooks/useTheme'
 import {
   changeUserTFBackend,
   DEFAULT_TF_BACKEND,
@@ -16,17 +17,11 @@ import {
   detectWebGPUAdapter,
   isTFBackendAvailable,
   subscribeActiveTFBackend,
+  TF_BACKEND_LABELS,
   TF_BACKENDS,
   type TFBackend_t,
   type WebGPUAdapter_t,
 } from '@core/tfBackend'
-
-// Cada idioma con su nombre en ese idioma (sin banderas: un idioma no es un país)
-const LANGUAGE_OPTIONS: Array<{ language: Language_t, label: string }> = [
-  { language: 'en', label: 'English' },
-  { language: 'es', label: 'Español' },
-  { language: 'ja', label: '日本語' },
-]
 
 // Páginas del menú; Inicio solo está activa en la home
 const NAV_LINKS: Array<{ to: string, i18n: string }> = [
@@ -39,19 +34,12 @@ const NAV_LINKS: Array<{ to: string, i18n: string }> = [
 
 const isActivePath = (pathname: string, to: string) => (to === '/' ? pathname === '/' : pathname === to || pathname.startsWith(to + '/'))
 
-// Nombres propios: no se traducen
-const TF_BACKEND_LABELS: Record<TFBackend_t, string> = {
-  webgl : 'WebGL',
-  webgpu: 'WebGPU',
-  wasm  : 'WebAssembly',
-  cpu   : 'CPU',
-}
-
 export default function N4LNavbar() {
   const { t, i18n } = useTranslation()
   const { pathname } = useLocation()
   // main.tsx ya ha aplicado el tema inicial (el guardado o el del sistema)
-  const [theme, setTheme] = useState<Theme_t>(() => document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light')
+  // También cambia si se elige desde /settings
+  const theme = useTheme()
 
   // Menú desplegado en móvil y tablet. Al cambiar de página se cierra: si no, tapa la página nueva
   const [expanded, setExpanded] = useState(false)
@@ -79,7 +67,6 @@ export default function N4LNavbar() {
 
   const handleClick_ChangeTheme = (newTheme: Theme_t) => {
     changeUserTheme(newTheme)
-    setTheme(newTheme)
   }
 
   const tfBackend = useSyncExternalStore(subscribeActiveTFBackend, getActiveTFBackend)
@@ -123,7 +110,7 @@ export default function N4LNavbar() {
         <Container className={'n4l-container-wide'}>
           <Navbar.Brand as={Link} to={'/'}>
             <img
-              src={import.meta.env.VITE_PATH + '/without_background.png'}
+              src={import.meta.env.VITE_PATH + '/logo-64.png'}
               width="30"
               height="30"
               className="d-inline-block align-top me-1"

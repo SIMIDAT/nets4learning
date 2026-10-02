@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import { Trans } from 'react-i18next'
 import { Card, Nav, Tab } from 'react-bootstrap'
 
@@ -7,8 +7,9 @@ import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
 import { VERBOSE } from '@/CONSTANTS'
 import N4LTablePagination from '@components/table/N4LTablePagination'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
-import N4LDataFrameDescribe from '@components/dataframe/N4LDataFrameDescribe'
-import AnalyzeEssentials from '@pages/analyze/components/AnalyzeEssentials'
+// La descripción y el análisis usan Plotly (tablas y gráficos): se descargan al abrir su pestaña, no con la página
+const N4LDataFrameDescribe = lazy(() => import('@components/dataframe/N4LDataFrameDescribe'))
+const AnalyzeEssentials = lazy(() => import('@pages/analyze/components/AnalyzeEssentials'))
 
 type ModelReviewRegressionDatasetProps = {
   /** undefined mientras se carga */
@@ -35,7 +36,7 @@ export default function ModelReviewRegressionDataset({ dataset }: ModelReviewReg
 
   if (VERBOSE) console.debug('render ModelReviewRegressionDataset')
   return (
-    <Card className={'mt-3'} data-testid={'Test-ModelReviewDataset'}>
+    <Card className={'mt-3'} data-testid={'Test-ModelReviewDataset'} data-guide={'dataset'}>
       <Tab.Container activeKey={activeTab} onSelect={(key) => setActiveTab(TABS.find((tab) => tab === key) ?? 'original')}>
         <Card.Header>
           <Nav variant={'tabs'} className={'card-header-tabs'}>
@@ -43,10 +44,10 @@ export default function ModelReviewRegressionDataset({ dataset }: ModelReviewReg
               <Nav.Link eventKey={'original'}><Trans i18nKey={'table.dataset'} /></Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey={'processed'}><Trans i18nKey={prefix + 'dataframe.title'} /></Nav.Link>
+              <Nav.Link eventKey={'processed'} data-guide={'dataset-processed'}><Trans i18nKey={prefix + 'dataframe.title'} /></Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey={'analysis'} data-testid={'Test-ModelReviewDataset-AnalysisTab'}>
+              <Nav.Link eventKey={'analysis'} data-testid={'Test-ModelReviewDataset-AnalysisTab'} data-guide={'dataset-analysis'}>
                 <Trans i18nKey={'pages.dataframe.essentials.tab'} />
               </Nav.Link>
             </Nav.Item>
@@ -73,11 +74,15 @@ export default function ModelReviewRegressionDataset({ dataset }: ModelReviewReg
               </div>
               <hr />
               <h4 className={'h5'}><Trans i18nKey={prefix + 'details.description-processed.describe'} /></h4>
-              <N4LDataFrameDescribe dataframe={dataset.dataframe_processed} target={target} />
+              <Suspense fallback={<WaitingPlaceholder />}>
+                <N4LDataFrameDescribe dataframe={dataset.dataframe_processed} target={target} />
+              </Suspense>
             </Tab.Pane>
             {/* Al abrirla por primera vez: el análisis (en un worker) y sus gráficos no hacen falta antes */}
             <Tab.Pane eventKey={'analysis'} mountOnEnter={true}>
-              <AnalyzeEssentials dataframe={dataset.dataframe_original} target={target} problem={'regression'} csv={dataset.csv} />
+              <Suspense fallback={<WaitingPlaceholder i18nKey_title={'pages.dataframe.analyzing'} />}>
+                <AnalyzeEssentials dataframe={dataset.dataframe_original} target={target} problem={'regression'} csv={dataset.csv} />
+              </Suspense>
             </Tab.Pane>
           </Tab.Content>}
         </Card.Body>
