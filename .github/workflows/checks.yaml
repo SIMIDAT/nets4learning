@@ -12,16 +12,17 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      # La versión de pnpm se toma de "packageManager" en package.json (pnpm 12).
+      # La versión de pnpm se toma de "packageManager" en package.json (pnpm 12, que necesita la 6.1.0 o posterior:
+      # la etiqueta v6 se quedó en la anterior).
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.1.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
@@ -35,15 +36,15 @@ jobs:
     # Entrenar las tres tareas con WebGL por software lleva unos minutos
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.1.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
@@ -55,7 +56,7 @@ jobs:
           NODE_OPTIONS: "--max_old_space_size=6144"
 
       # Informe con capturas y trazas de las pruebas que fallen
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report

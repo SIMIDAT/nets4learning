@@ -25,38 +25,63 @@ jobs:
     name: 'Deploy to netlify stable'
     needs: checks
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - name: 'Create env file'
+      # Antes de instalar y construir: que el token valga y pueda publicar en el sitio, con un error que diga cuál de
+      # los dos falla (netlify-cli 17, el de la acción que se usaba antes, decía "Site not found" en ambos casos).
+      - name: 'Check the Netlify token and site'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STABLE }}
         run: |
-          echo "${{ vars.NETLIFY_ENV_FILE_STABLE }}" > .env.netlify
-      - uses: actions/checkout@v4
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::Faltan los secretos NETLIFY_AUTH_TOKEN o NETLIFY_SITE_ID_STABLE (Settings › Secrets and variables › Actions)"
+            exit 1
+          fi
+          status() {
+            curl -sS --retry 2 -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" "https://api.netlify.com/api/v1/$1"
+          }
+          user=$(status user)
+          if [ "$user" != "200" ]; then
+            echo "::error::Netlify no acepta NETLIFY_AUTH_TOKEN (HTTP $user): ha caducado o se ha revocado. Crea otro en https://app.netlify.com/user/applications#personal-access-tokens y actualiza el secreto"
+            exit 1
+          fi
+          site=$(status "sites/$NETLIFY_SITE_ID")
+          if [ "$site" != "200" ]; then
+            echo "::error::El token es válido pero no llega al sitio de NETLIFY_SITE_ID_STABLE (HTTP $site): comprueba el Project ID (Project configuration › General) y que el dueño del token esté en el equipo del sitio"
+            exit 1
+          fi
+          echo "Token y sitio de Netlify correctos"
+
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
 
-      # La versión de pnpm se toma de "packageManager" en package.json (pnpm 12).
+      # Se usa el .env.netlify del repositorio salvo que la variable NETLIFY_ENV_FILE_STABLE traiga otro. Va después
+      # del checkout: antes, el checkout lo sobrescribía.
+      - name: 'Create env file'
+        if: ${{ vars.NETLIFY_ENV_FILE_STABLE != '' }}
+        env:
+          ENV_FILE: ${{ vars.NETLIFY_ENV_FILE_STABLE }}
+        run: printf '%s\n' "$ENV_FILE" > .env.netlify
+
+      # La versión de pnpm se toma de "packageManager" en package.json (pnpm 12, que necesita la 6.1.0 o posterior:
+      # la etiqueta v6 se quedó en la anterior).
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.1.0
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
           cache: 'pnpm'
 
-      - uses: jsmrcaga/action-netlify-deploy@v2.4.0
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STABLE }}
-          NETLIFY_DEPLOY_MESSAGE: "Deploy ${{ github.ref_name }} (${{ github.sha }})"
-          NETLIFY_DEPLOY_TO_PROD: true
-          # NODE_ENV=production (abajo) haría que pnpm omitiera las devDependencies (vite, typescript…)
-          # que necesita el build: --production=false las instala igualmente.
-          INSTALL_COMMAND: pnpm install --frozen-lockfile --production=false
-          BUILD_COMMAND: pnpm run build:netlify
-          # Vite genera el build en dist/ (no en build/, que era la carpeta de Create React App).
-          BUILD_DIRECTORY: 'dist'
+      - run: pnpm install --frozen-lockfile
+
+      # Vite genera el build en dist/
+      - name: Build
+        run: pnpm run build:netlify
         env:
-          CI: false
           NODE_OPTIONS: "--max_old_space_size=6144"
           NODE_ENV: "production"
           PUBLIC_URL: "https://nets4learning.netlify.app"
@@ -64,3 +89,12 @@ jobs:
           VITE_PATH: ""
           VITE_PUBLIC_URL: "https://nets4learning.netlify.app"
           VITE_GA_MEASUREMENT_ID: "G-3644EFBXMG"
+
+      # netlify-cli al día (jsmrcaga/action-netlify-deploy, la acción de antes, fijaba la 17, de 2024). Ahora `deploy`
+      # construye por defecto: --no-build publica el dist/ de arriba.
+      - name: 'Deploy to Netlify'
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_STABLE }}
+          DEPLOY_MESSAGE: "Deploy ${{ github.ref_name }} (${{ github.sha }})"
+        run: npx --yes netlify-cli@27 deploy --no-build --prod --dir dist --message "$DEPLOY_MESSAGE"
