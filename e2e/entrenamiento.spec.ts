@@ -1,17 +1,18 @@
 import { test, expect } from './fixtures'
 
-// Las tres tareas que se entrenan en el navegador (en un worker), con pocas épocas para que no tarde
+// Las tres tareas que se entrenan en el navegador (en un worker), con pocas épocas para que no tarde. MNIST, con una:
+// en CI (2 núcleos, WebGL por software y otra prueba a la vez) cada época tarda minutos
 const TRAINERS = [
-  { name: 'clasificación tabular (Iris)', path: '/playground/tabular-classification/dataset/IRIS' },
-  { name: 'regresión (Auto MPG)', path: '/playground/regression/dataset/AUTO_MPG' },
-  { name: 'clasificación de imágenes (MNIST)', path: '/playground/image-classification/dataset/IMAGE-MNIST' },
+  { name: 'clasificación tabular (Iris)', path: '/playground/tabular-classification/dataset/IRIS', epochs: '2' },
+  { name: 'regresión (Auto MPG)', path: '/playground/regression/dataset/AUTO_MPG', epochs: '2' },
+  { name: 'clasificación de imágenes (MNIST)', path: '/playground/image-classification/dataset/IMAGE-MNIST', epochs: '1' },
 ]
 
-for (const { name, path } of TRAINERS) {
+for (const { name, path, epochs } of TRAINERS) {
   test(`entrena ${name}, el modelo aparece en la lista y sigue ahí al recargar`, async ({ page }) => {
-    test.setTimeout(300_000)
+    test.setTimeout(480_000)
     await page.goto(path)
-    await page.getByRole('spinbutton', { name: 'N. épocas' }).fill('2')
+    await page.getByRole('spinbutton', { name: 'N. épocas' }).fill(epochs)
     await page.getByTestId('Test-TrainButton').click()
 
     // Mientras entrena, el botón pasa a ser el progreso con "Detener"
