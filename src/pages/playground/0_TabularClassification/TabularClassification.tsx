@@ -21,12 +21,21 @@ import { argMax } from '@core/nn-utils/classificationOutput'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import { useStoredModels } from '@hooks/useStoredModels'
+import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
+import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import { layerIssueText } from '@components/neural-network/layerCheckText'
+import { checkDenseLayers } from '@core/nn-utils/checkLayers'
+import { historyFromData } from '@core/training/modelStore'
+import { reportTrainResult } from '@core/training/trainResult'
+import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
 import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
 import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
 import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
-import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
+import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
+import { useSharedSession } from '@hooks/useSharedSession'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
@@ -96,6 +105,9 @@ import { useTabularClassificationContext } from '@context/useTabularClassificati
 type Props = {
   dataset: string
 }
+/** Lo que se guarda de cada modelo entrenado (con el modelo): todo menos el modelo, y el historial como datos */
+type StoredTabularModel_t = Omit<_Types.TabularClassificationGeneratedModel_t, 'model' | 'history'> & { history: TrainingHistory_t }
+
 export default function TabularClassification(props: Props) {
   const { dataset } = props
   const navigate = useNavigate()
@@ -130,20 +142,33 @@ export default function TabularClassification(props: Props) {
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
   const training = useTrainingProgress()
 
+  // Los modelos entrenados antes con este conjunto (guardados en el navegador): vuelven a la tabla, y se clasifica con
+  // el último. Los de un conjunto subido no se guardan
+  const storedModels = useStoredModels<StoredTabularModel_t>('tabular-classification', dataset, dataset !== UPLOAD, (stored) => {
+    const restored = stored.map(({ model, data }) => ({ ...data, model: model as tfjs.Sequential, history: historyFromData(data.history) }))
+    setGeneratedModels((current) => [...restored, ...current])
+    setGeneratedModelsIndex((current) => (current >= 0 ? current + restored.length : restored.length - 1))
+    setModel((current) => current ?? restored.at(-1)!.model)
+  })
+  const handleClear_StoredModels = async () => {
+    await storedModels.clear()
+    setGeneratedModels([])
+    setGeneratedModelsIndex(-1)
+    setModel(null)
+  }
+
   // region SESIÓN: exportar e importar capas e hiperparámetros
   // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
   const [sessionVersion, setSessionVersion] = useState(0)
 
-  const handleClick_ExportSession = () => {
-    downloadSession({
-      app            : 'nets4learning',
-      version        : 1,
-      task           : TASKS.TABULAR_CLASSIFICATION,
-      dataset        : dataset,
-      layers         : layers,
-      hyperparameters: { learningRate, epochs: numberEpochs, testSize, optimizer: idOptimizer, loss: idLoss, metrics: [idMetrics] },
-    })
-  }
+  const currentSession = (): TrainingSession_t => ({
+    app            : 'nets4learning',
+    version        : 1,
+    task           : TASKS.TABULAR_CLASSIFICATION,
+    dataset        : dataset,
+    layers         : layers,
+    hyperparameters: { learningRate, epochs: numberEpochs, testSize, optimizer: idOptimizer, loss: idLoss, metrics: [idMetrics] },
+  })
 
   const handleImport_Session = async (text: string) => {
     try {
@@ -161,6 +186,8 @@ export default function TabularClassification(props: Props) {
       await alertHelper.alertError(t(error instanceof SessionError ? error.i18nKey : 'session.error-not-session'))
     }
   }
+  // La de un enlace compartido, cuando ya están los datos (antes, la página pone sus capas por defecto)
+  useSharedSession(datasets.datasets.length > 0, handleImport_Session)
   // endregion
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
   // Paso a paso solo si se ha activado en /settings
@@ -221,15 +248,10 @@ export default function TabularClassification(props: Props) {
       return
     }
 
-    const last_layer_units = layers[layers.length - 1].units ?? 0
-    const classes_length = data_processed.classes.length
-
-    if (last_layer_units !== classes_length) {
-      await alertHelper.alertWarning(t('error.tensor-shape'), {
-        footer: '',
-        text  : '',
-        html  : <Trans i18nKey={'error.tensor-shape-change'} values={{ last_layer_units: last_layer_units, class_length: classes_length }} />,
-      })
+    // Lo que está mal en las capas (la salida con tantas neuronas como clases, unidades válidas…) impide entrenar
+    const layerError = checkDenseLayers(layers, { units: data_processed.classes.length, activation: 'softmax' }).find(({ severity }) => severity === 'error')
+    if (layerError) {
+      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
       return
     }
 
@@ -277,6 +299,9 @@ export default function TabularClassification(props: Props) {
 
       // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
       setModel(model)
+      const { model: _model, history: _history, ...stored } = newModel
+      storedModels.save(model, { ...stored, history: historyData(history) })
+      reportTrainResult({ history: history.history, layers: _layerList, evaluation })
       setGeneratedModelsIndex(generatedModels.length)
       training.complete()
       await alertHelper.alertSuccess(t('alert.model-train-success'))
@@ -348,7 +373,7 @@ export default function TabularClassification(props: Props) {
               <div className={'d-flex flex-wrap gap-2'}>
                 <N4LGuide id={'train.tabular-classification.' + dataset} steps={guideSteps} compact={true} />
                 <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
                 </div>
               </div>
             </div>
@@ -445,6 +470,8 @@ export default function TabularClassification(props: Props) {
                   disabled={isTraining || !datasets.datasets[datasets.index] || (!datasets.datasets[datasets.index].is_dataset_processed)}>
                   <Trans i18nKey={prefix + 'models.button-submit'} />
                 </N4LTrainButton>
+                {!training.isTraining &&
+                  <N4LTrainingDiagnosis history={generatedModels.at(-1)?.history.history} model={generatedModels.length} />}
               </Col>
             </Row>
           </Form>
@@ -461,6 +488,7 @@ export default function TabularClassification(props: Props) {
           </Row>
         </>}
 
+        <N4LStoredModelsNotice count={storedModels.restored} onClear={handleClear_StoredModels} />
         {/* TABLE MODELS */}
         <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
         <Row className={'mt-3'} data-guide={'models'}>

@@ -24,7 +24,7 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
       <p>
         <Trans i18nKey={prefix + 'link'}
                components={{
-                 link1: <a href={this.URL_SALARY} target={'_blank'} rel="noreferrer" className={'text-info'}>link</a>,
+                 link1: <a href={this.URL_SALARY} target={'_blank'} rel="noreferrer">link</a>,
                }} />
       </p>
       <details>

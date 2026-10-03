@@ -422,6 +422,111 @@
     "scaled-help": "The {{columns}} input columns scaled ({{scaler}}): exactly what the network receives. At the end, highlighted, what it has to predict, “{{target}}”, which is not scaled.",
     "statistics": "Statistics of each column"
   },
+  "stored-models": {
+    "restored_one": "1 model you trained before with this dataset has been recovered: models are saved in this browser so they are not lost when reloading.",
+    "restored_other": "{{count}} models you trained before with this dataset have been recovered: models are saved in this browser so they are not lost when reloading.",
+    "delete-ask": "Delete the models of this dataset",
+    "confirm": "Are you sure? The saved models of this dataset will be deleted and removed from the table.",
+    "delete": "Yes, delete them",
+    "cancel": "Cancel"
+  },
+  "training-diagnosis": {
+    "title": "How the training of model {{model}} went",
+    "diverged": {
+      "title": "The loss blew up",
+      "text": "From epoch {{epoch}} the loss is no longer a number (NaN): the weights grew out of control.",
+      "tip": "Lower the learning rate, for example to a tenth, and train again."
+    },
+    "worse": {
+      "title": "The loss got worse",
+      "text": "The loss went up from {{first}} to {{last}}: the weights take such big steps that they overshoot.",
+      "tip": "Lower the learning rate and train again."
+    },
+    "unstable": {
+      "title": "The loss is jumping around",
+      "text": "In the second half of the training, the loss goes up and down a lot from one epoch to the next (between {{min}} and {{max}}): this way you can't tell whether it's really learning.",
+      "tip": "Lower the learning rate. If it stays the same, increase the percentage of test data: with little of it, each epoch changes a lot."
+    },
+    "not-learning": {
+      "title": "It barely learned",
+      "text": "The loss only went down from {{first}} to {{last}}.",
+      "tip": "Try raising the learning rate or the epochs, or giving the layers more neurons. Also check that the last layer has the right activation."
+    },
+    "overfitting": {
+      "title": "It is memorising the data (overfitting)",
+      "text": "The loss on the test data was lowest at epoch {{epoch}} ({{min}}) and since then has risen to {{last}}, while the training loss kept going down.",
+      "tip": "Train fewer epochs (about {{epoch}}) or use a smaller network."
+    },
+    "still-improving": {
+      "title": "It was still improving",
+      "text": "In {{epochs}} epochs the loss went down from {{first}} to {{last}}, and it was still going down at the end.",
+      "tip": "With more epochs it would probably learn more: try raising them."
+    },
+    "good": {
+      "title": "It learned well",
+      "text": "The loss went down from {{first}} to {{last}}, and on the test data it ended at {{validation}}.",
+      "tip": "To compare, change just one thing (the neurons, the learning rate…) and train again."
+    }
+  },
+  "layer-check": {
+    "title-error": "Check the layers: the network can't be trained like this",
+    "title-warning": "The layers could be better",
+    "error": "Error",
+    "warning": "Warning",
+    "params": {
+      "units": "neurons",
+      "kernelSize": "kernel size",
+      "filters": "filters",
+      "poolSize": "pool size",
+      "strides": "strides"
+    },
+    "param": {
+      "text": "Layer {{layer}}: the value of “{{param}}” is not valid.",
+      "fix": "Set {{value}}"
+    },
+    "hidden-softmax": {
+      "text": "Layer {{layer}}: softmax splits 100 % among its neurons and only makes sense in the output; in a hidden layer it slows learning down.",
+      "fix": "Use ReLU"
+    },
+    "output-units": {
+      "text": "The last layer has {{units}} neurons but there are {{classes}} classes: it needs one neuron per class.",
+      "fix": "Set {{classes}}"
+    },
+    "output-activation": {
+      "text": "The last layer uses {{activation}}; with {{expected}}, its outputs are the probability of each class (they add up to 1).",
+      "fix": "Use {{expected}}"
+    },
+    "output-missing": {
+      "text": "The network has to end in a Dense layer with {{classes}} neurons (one per class) and Softmax.",
+      "fix": "Add it at the end"
+    },
+    "after-flatten": {
+      "text": "Layer {{layer}}: after Flatten the image is already a list of numbers, and {{type}} needs the image in two dimensions.",
+      "fix": "Remove the layer"
+    },
+    "flatten-again": {
+      "text": "Layer {{layer}}: the data is already flat, so this Flatten is not needed.",
+      "fix": "Remove the layer"
+    },
+    "dense-before-flatten": {
+      "text": "Layer {{layer}}: a Dense layer takes a list of numbers; it needs a Flatten before it to flatten the image.",
+      "fix": "Add Flatten before"
+    },
+    "too-small": {
+      "text": "Layer {{layer}}: at this point the image is {{height}}×{{width}} and the {{window}}×{{window}} window of {{type}} doesn't fit.",
+      "fix": "Remove the layer"
+    }
+  },
+  "download-consent": {
+    "title": "This model downloads about {{mb}} MB",
+    "reason": {
+      "save-data": "Your browser has data saving on: it is only downloaded if you ask.",
+      "slow": "Your connection seems slow: the download may take a while.",
+      "always": "In Settings you asked to be asked before downloading a model."
+    },
+    "accept": "Download ({{mb}} MB)",
+    "settings": "You can change this in <link1>Settings</link1>."
+  },
   "model-selector": {
     "title": "Model selector"
   },
@@ -2200,6 +2305,17 @@
           "stopping": "Stopping…",
           "curves-title": "Training curves",
           "curves-model": "Model whose curves are shown",
+          "curves-compare": "Compare models",
+          "compare-pick": "Models to compare (up to {{max}})",
+          "compare-pick-more": "Tick at least two models to compare them.",
+          "compare-same": "They have the same hyperparameters: the differences come from chance (the weights each network starts with and how the data is split).",
+          "compare-one": "Only {{name}} changes: the difference between their results is mostly down to that.",
+          "compare-some": "Several things change ({{names}}): with several changes at once you can't tell which one mattered. To see what each one does, change only one thing between trainings.",
+          "compare-quote": "“{{name}}”",
+          "compare-caption": "Hyperparameters of each model (the ones that change are highlighted) and values in the last epoch (in brackets, on the validation data).",
+          "compare-parameter": "Parameter",
+          "compare-changed": "changes",
+          "compare-final": "{{name}} at the end",
           "epoch-axis": "Epoch",
           "train": "Training",
           "validation": "Validation",
@@ -3107,7 +3223,7 @@
         "text": "All the machine learning runs in your browser with TensorFlow.js. There is no server that receives your data:",
         "items": [
           "The files you upload (data sets, models and images), your drawings and the camera image are processed on your computer and are not sent anywhere.",
-          "The models you train stay in this tab until you close it, unless you download them yourself.",
+          "The models you train with the example datasets are saved in your browser (at most 10 per dataset) so they are not lost when reloading the page. You can delete them from Settings and, to take them with you, download them.",
           "We do not ask for or store personal data: there are no accounts, forms or emails."
         ]
       },
@@ -3117,6 +3233,7 @@
         "items": [
           "The language, theme and TensorFlow.js backend you choose.",
           "The guide voice settings and which step each guide is on.",
+          "The models you train with the example datasets and whether you show the Step by step section.",
           "Your decision about cookies, in a cookie of its own."
         ],
         "settings": "You can change it or delete it all from"
@@ -3178,6 +3295,19 @@
         "wasm": "Computes on the processor with WebAssembly. Useful if the graphics card causes problems.",
         "cpu": "Computes on the processor with JavaScript. It works everywhere, but it is the slowest."
       },
+      "downloads": {
+        "title": "Model downloads",
+        "help": "Some pretrained models (object detection, MobileNet…) download between 2 and 18 MB when you open their page. You can ask to be asked first.",
+        "auto": "Ask when saving data or on a slow connection",
+        "auto-help": "When the browser has data saving on or the connection is 2G or 3G.",
+        "always": "Always ask",
+        "always-help": "Before downloading any model over 2 MB that you haven't downloaded before.",
+        "never": "Don't ask",
+        "never-help": "Models are downloaded when you open their page.",
+        "now-save-data": "Right now, the browser has data saving on.",
+        "now-slow": "Right now, the connection seems slow.",
+        "now-normal": "Right now, there's no data saving and the connection doesn't seem slow (or the browser doesn't say)."
+      },
       "speech": {
         "title": "Guide voice",
         "help": "The guides of the model pages can read each step aloud with the voices of your system.",
@@ -3213,11 +3343,117 @@
       },
       "data": {
         "title": "Data saved in this browser",
-        "help": "Delete all the settings of the application: language, theme, backend, guide voice and progress, tutorials seen and your decision about cookies. The page will reload with the default values.",
+        "help": "Deletes all the application settings: language, theme, backend, guide voice and progress, Step by step, the saved trained models and your cookie decision. The page will reload with the default values.",
+        "models_zero": "There are no saved trained models.",
+        "models_one": "There is 1 saved trained model ({{size}}): it is recovered when you go back to its page.",
+        "models_other": "There are {{count}} saved trained models ({{size}}): each one is recovered when you go back to its page.",
+        "models-delete": "Delete the saved models",
         "reset": "Reset all settings",
         "confirm": "Are you sure? All the settings saved in this browser will be deleted.",
         "confirm-button": "Yes, delete them",
         "cancel": "Cancel"
+      }
+    },
+    "learn": {
+      "title": "Start here",
+      "intro": "Eight short steps to learn the essentials of neural networks by doing: from trying a trained network to asking it why it decides what it decides. Each step is ticked off on its own when you do it.",
+      "progress": "{{count}} of {{total}} steps done",
+      "step": "Step {{number}}",
+      "done": "Done",
+      "next": "Next",
+      "go": "Go to the step",
+      "again": "Do it again",
+      "mark-done": "Mark as done",
+      "mark-undone": "Unmark",
+      "reset": "Start over",
+      "reset-confirm": "Are you sure? All steps will be unmarked.",
+      "reset-yes": "Yes, start over",
+      "reset-no": "Cancel",
+      "finished": {
+        "title": "Route completed!",
+        "text": "You can now train, compare, fix and explain neural networks. Now try your own data: upload a CSV in tabular classification or regression, or explore it first in the EDA."
+      },
+      "steps": {
+        "glossary": {
+          "title": "The key words",
+          "text": "Read in the glossary what a neural network, a layer, a neuron and an epoch are: they appear on every page."
+        },
+        "pretrained": {
+          "title": "Try a trained network",
+          "text": "Draw a digit and see how a network trained on thousands of handwritten digits (MNIST) recognises it."
+        },
+        "train": {
+          "title": "Train your first network",
+          "text": "With the Iris flowers: press “Train model” and watch the loss go down epoch by epoch. Below, you'll see in words how it went."
+        },
+        "compare": {
+          "title": "Change one thing and compare",
+          "text": "Train again changing only the learning rate and turn on “Compare models” next to the curves: you'll see what changed and which one learns better."
+        },
+        "fix-layers": {
+          "title": "Fix a badly built network",
+          "text": "In the layer editor, give the last layer a number of neurons different from the number of classes: a warning will appear. Fix it with its button and you'll see why the output has one neuron per class."
+        },
+        "regression": {
+          "title": "Predict a number",
+          "text": "In regression the network doesn't choose a class, it gives a value: train with Auto MPG to predict a car's fuel consumption."
+        },
+        "cnn": {
+          "title": "Train a network for images",
+          "text": "Convolutional networks look for strokes and shapes in images: train one with MNIST (it takes a bit longer than the others)."
+        },
+        "explain": {
+          "title": "Ask the model why",
+          "text": "With the cars model (CAR), make a prediction and ask for its explanation: you'll see which attributes weighed most in the decision."
+        }
+      },
+      "challenges": {
+        "title": "Challenges",
+        "intro": "Once you know how to train, put what you've learned to the test: change the layers and hyperparameters until you get there. They're ticked off on their own when you train.",
+        "progress": "{{count}} of {{total}} challenges completed",
+        "passed": "Completed",
+        "result": "You did it with {{value}} accuracy.",
+        "hint": "Hint",
+        "go": "Try it",
+        "again": "Try again",
+        "iris-accuracy": {
+          "title": "Perfect Iris",
+          "goal": "With Iris, get every test flower right (the ones the network doesn't see while training): 100 % accuracy.",
+          "hint": "Try more epochs (50) and a somewhat higher learning rate (0.05). If it doesn't work the first time, train again: each time the network starts with different weights."
+        },
+        "iris-tiny": {
+          "title": "With very few neurons",
+          "goal": "With Iris, reach 90 % accuracy with 4 hidden neurons at most (not counting the output layer).",
+          "hint": "Keep a single hidden layer of 4 neurons (or two of 2) and give it more epochs: a simple problem doesn't need a big network."
+        },
+        "iris-fast": {
+          "title": "In few epochs",
+          "goal": "With Iris, reach 90 % accuracy in 5 epochs at most.",
+          "hint": "With few epochs, every step has to count: raise the learning rate (0.1) and use Adam."
+        },
+        "regression-good": {
+          "title": "A textbook training",
+          "goal": "In regression, with any dataset, get a training the diagnosis considers good: the loss goes down and settles, without overfitting.",
+          "hint": "Start with Salary and about 40 epochs. If the diagnosis says it was still improving, raise the epochs; if it says the loss is jumping around or blowing up, lower the learning rate."
+        },
+        "mnist-fast": {
+          "title": "Digits in a hurry",
+          "goal": "With MNIST, get at least 93 % accuracy on the test images in 2 epochs at most.",
+          "hint": "In two epochs the network only sees the data twice: try raising the learning rate step by step (0.005, 0.01…) without overdoing it, or the diagnosis will tell you the loss is jumping around or blowing up."
+        }
+      },
+      "toast": {
+        "title": "Step {{number}} of {{total}} done",
+        "next": "Next: {{title}} →",
+        "finished": "You've completed the route! →",
+        "close": "Close",
+        "challenge": "Challenge completed!",
+        "challenges": "See the challenges →"
+      },
+      "home": {
+        "first": "First time here? <link1>Start here</link1>: eight short steps to learn by doing.",
+        "continue": "You've done {{count}} of {{total}} steps of <link1>Start here</link1>: pick up where you left off.",
+        "finished": "You've completed <link1>Start here</link1>: now try your own data."
       }
     }
   },
@@ -3361,7 +3597,19 @@
     "imported": "Settings imported",
     "error-not-json": "The file is not valid JSON",
     "error-not-session": "The file is not a Nets4Learning settings file",
-    "error-other-task": "The settings belong to another task"
+    "error-other-task": "The settings belong to another task",
+    "error-link": "The link doesn't carry a valid configuration (it may have been cut off when copied)",
+    "share": {
+      "button": "Share",
+      "title": "Share this exercise",
+      "text": "Whoever opens the link will get this same network and these hyperparameters, ready to train with the same dataset. The data and the trained models are not shared.",
+      "link": "Link to share",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "native": "Share with another app…",
+      "qr": "Or scan it with your phone",
+      "close": "Close"
+    }
   },
   "guide": {
     "button": "Guide",
@@ -4300,7 +4548,7 @@
           },
           "layers": {
             "title": "The layers",
-            "content": "A network for images combines several kinds of layer. Convolutional layers look for patterns, such as edges or curves, with small filters that sweep the image; pooling layers, max pooling, shrink it keeping the most salient values; the flatten layer turns the result into a list of numbers, and the dense layers decide the class. The last one needs ten neurons, one per class, with the softmax activation."
+            "content": "A network for images combines several kinds of layer. Convolutional layers look for patterns, such as edges or curves, with small filters that sweep the image; pooling layers, max pooling, shrink it keeping the most salient values; the flatten layer turns the result into a list of numbers, and the dense layers decide the class. The last one needs ten neurons, one per class, with the softmax activation. Now let's go through them one by one."
           },
           "epochs": {
             "title": "Epochs",
@@ -4329,18 +4577,58 @@
           "end": {
             "title": "Your turn",
             "content": "Train with the starting network and try drawing. Then add or remove a convolutional layer, train again and compare in the table which model gets more right. You can open this guide again whenever you want with the Guide button."
+          },
+          "layer": {
+            "class-name": "symbol",
+            "conv-first": {
+              "title": "Layer {{number}}: convolution",
+              "content": "It's the first one: it gets the image, {{inputSize}} pixels in greyscale. {{filters}} filters of {{kernel}}×{{kernel}} slide over it; each one learns to recognise a small pattern (a stroke, an edge, a curve) and leaves a map of where it finds it. That's why {{outputChannels}} maps of {{outputSize}} come out: one per filter, a bit smaller than the image because the filter doesn't go past the border. It has {{params}} weights to learn."
+            },
+            "conv": {
+              "title": "Layer {{number}}: convolution",
+              "content": "It gets the {{inputChannels}} maps of {{inputSize}} from the previous layer and slides {{filters}} filters of {{kernel}}×{{kernel}} over them. Each filter looks at all the maps at once, so it joins simple patterns into more complex shapes, such as the parts of a {{class}}. Out come {{outputChannels}} maps of {{outputSize}}, with {{params}} weights to learn."
+            },
+            "relu": "With ReLU, negative values become zero: only what has been found moves on.",
+            "activation": "Its activation is {{activation}}.",
+            "pool": {
+              "title": "Layer {{number}}: max pooling",
+              "content": "It shrinks each map by keeping the highest value of each {{pool}}×{{pool}} window, which moves {{strides}} at a time: the most salient part of each area. The {{inputChannels}} maps go from {{inputSize}} to {{outputSize}}. It has no weights and learns nothing, but it makes the network faster and less sensitive to the stroke moving a little."
+            },
+            "flatten": {
+              "title": "Layer {{number}}: flatten",
+              "content": "It lines up the {{inputChannels}} maps of {{inputSize}}: a list of {{values}} numbers, because dense layers don't work with images but with lists. It doesn't learn anything either."
+            },
+            "dense": {
+              "title": "Layer {{number}}: dense",
+              "content": "Each of its {{units}} neurons is connected to the {{inputValues}} values of the previous layer: it combines everything the filters have found, wherever it is in the image. It has {{params}} weights to learn; in a network like this, the dense layers usually have the most."
+            },
+            "output": {
+              "title": "Layer {{number}}: the output",
+              "content": "The last layer has {{units}} neurons, one per {{class}}, connected to the {{inputValues}} previous values ({{params}} weights). With softmax, its values are the probability of each {{class}} and add up to 1: the network's answer is the highest one.",
+              "content-other": "The last layer has {{units}} neurons, connected to the {{inputValues}} previous values ({{params}} weights). Its activation is {{activation}}: with softmax, its values would be the probability of each {{class}}. Check the warning at the top of the editor."
+            },
+            "broken": {
+              "title": "Layer {{number}}: doesn't fit",
+              "content": "The data doesn't reach it in the shape it needs (or a parameter is missing). Check the warning at the top of the editor: it says what's wrong and fixes it with a button."
+            }
           }
         },
         "IMAGE-MNIST": {
           "intro": {
             "title": "Handwritten digits",
             "content": "On this page you train a convolutional network that recognises handwritten digits from 0 to 9, with the images of the MNIST dataset, and then you test it by drawing your own numbers. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "layer": {
+            "class-name": "digit"
           }
         },
         "IMAGE-KMNIST": {
           "intro": {
             "title": "Japanese characters",
             "content": "On this page you train a convolutional network that recognises ten handwritten hiragana characters of classical Japanese, from the Kuzushiji-MNIST dataset, and then you test it by drawing them. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "layer": {
+            "class-name": "character"
           }
         }
       }

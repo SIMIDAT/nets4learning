@@ -13,10 +13,20 @@ import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import { useStoredModels } from '@hooks/useStoredModels'
+import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
+import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import { reportTrainResult } from '@core/training/trainResult'
+import { layerIssueText } from '@components/neural-network/layerCheckText'
+import { checkImageLayers } from '@core/nn-utils/checkLayers'
+import { historyFromData } from '@core/training/modelStore'
+import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
 import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
-import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
+import { layersGuide } from '@pages/playground/3_ImageClassification/layersGuide'
+import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
+import { useSharedSession } from '@hooks/useSharedSession'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
@@ -58,17 +68,18 @@ import type { VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 type ImageClassificationProps_t = {
   dataset: string;
 }
+/** Lo que se guarda de cada modelo entrenado (con el modelo): sus hiperparámetros, su evaluación y el historial */
+type StoredImageModel_t = Omit<_Types.ImageClassificationGeneratedModel_t, 'model' | 'history'> & { history: TrainingHistory_t }
+
 /**
  * @param {ImageClassificationProps_t} props
  */
 export default function ImageClassification(props: ImageClassificationProps_t) {
   const { dataset } = props
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const training = useTrainingProgress()
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
   const steps = ['hr.information', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
-  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso
-  const guideSteps = useMemo(() => trainerGuide(t, '3-image-classification', dataset, { upload: false, datasetTable: false, testSize: 'hp-test-size', stepByStep: false }), [t, dataset])
   const navigate = useNavigate()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
 
@@ -78,6 +89,14 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
 
   const [Layers, setLayers] = useState(DEFAULT_LAYERS)
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso, con un paso por capa, que explica lo que hace cada una (se rehace al cambiar las capas)
+  const guideSteps = useMemo(() => trainerGuide(t, '3-image-classification', dataset, {
+    upload      : false,
+    datasetTable: false,
+    testSize    : 'hp-test-size',
+    stepByStep  : false,
+    layerSteps  : layersGuide(t, i18n.language, dataset, Layers),
+  }), [t, i18n.language, dataset, Layers])
 
   const [idOptimizer, setIdOptimizer] = useState<IdOptimizer_t>(DEFAULT_ID_OPTIMIZATION)
   const [idLoss, setIdLoss] = useState<IdLoss_t | IdMetric_t>(DEFAULT_ID_LOSS)
@@ -91,16 +110,14 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
   const [sessionVersion, setSessionVersion] = useState(0)
 
-  const handleClick_ExportSession = () => {
-    downloadSession({
-      app            : 'nets4learning',
-      version        : 1,
-      task           : TASKS.IMAGE_CLASSIFICATION,
-      dataset        : dataset,
-      layers         : Layers,
-      hyperparameters: { learningRate: LearningRate, epochs: NumberEpochs, testSize: TestSize, optimizer: idOptimizer, loss: idLoss, metrics: idMetricsList },
-    })
-  }
+  const currentSession = (): TrainingSession_t => ({
+    app            : 'nets4learning',
+    version        : 1,
+    task           : TASKS.IMAGE_CLASSIFICATION,
+    dataset        : dataset,
+    layers         : Layers,
+    hyperparameters: { learningRate: LearningRate, epochs: NumberEpochs, testSize: TestSize, optimizer: idOptimizer, loss: idLoss, metrics: idMetricsList },
+  })
 
   const handleImport_Session = async (text: string) => {
     try {
@@ -157,6 +174,23 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
    */
   const [GeneratedModels, setGeneratedModels] = useState<Array<_Types.ImageClassificationGeneratedModel_t>>([])
 
+  // Los modelos entrenados antes con este conjunto (guardados en el navegador): vuelven a la tabla, y se clasifica con
+  // el último
+  const storedModels = useStoredModels<StoredImageModel_t>('image-classification', dataset, true, (stored) => {
+    const restored = stored.map(({ model, data }) => ({ ...data, model: model as tfjs.Sequential, history: historyFromData(data.history) }))
+    setGeneratedModels((current) => [...restored, ...current])
+    setSelectedModelIndex((current) => (current >= 0 ? current + restored.length : restored.length - 1))
+    setModel((current) => current ?? restored.at(-1)!.model)
+  })
+  const handleClear_StoredModels = async () => {
+    await storedModels.clear()
+    setGeneratedModels([])
+    setSelectedModelIndex(-1)
+    setModel(null)
+    setPrediction(null)
+    clearExplainResult()
+  }
+
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t ]')
@@ -181,6 +215,9 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     return () => { tfvis.visor().close() }
   }, [dataset, navigate, t])
 
+  // La de un enlace compartido, después de las capas por defecto del modelo (init)
+  useSharedSession(iModelInstance !== null, handleImport_Session)
+
   const classLabel = (index: number) => iModelInstance?.CLASS_LABELS[index] ?? String(index)
 
   // region CREACIÓN DEL MODELO
@@ -189,6 +226,11 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     if (iModelInstance === null) return
     if (Layers[0]._class !== 'conv2d') {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
+      return
+    }
+    const layerError = checkImageLayers(Layers, iModelInstance.CLASS_LABELS.length).find(({ severity }) => severity === 'error')
+    if (layerError) {
+      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
       return
     }
     training.start({ epochs: NumberEpochs, learningRate: LearningRate, optimizer: idOptimizer, loss: idLoss, layers: Layers.length })
@@ -208,26 +250,23 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         return
       }
       const { model, history, evaluation } = tranin_model
-      setGeneratedModels((oldModels: Array<_Types.ImageClassificationGeneratedModel_t>) => {
-        const newModel: _Types.ImageClassificationGeneratedModel_t = {
-          model     : model,
-          history   : history,
-          evaluation: evaluation && { classes: iModelInstance.CLASS_LABELS, ...evaluation },
-          params    : {
-            learning_rate  : LearningRate,
-            n_epochs       : NumberEpochs,
-            test_size      : TestSize,
-            layers         : Layers,
-            id_optimizer   : idOptimizer,
-            id_loss        : idLoss,
-            id_metrics_list: idMetricsList,
-          },
-        }
-        return [
-          ...oldModels,
-          newModel
-        ]
-      })
+      const newModel: _Types.ImageClassificationGeneratedModel_t = {
+        model     : model,
+        history   : history,
+        evaluation: evaluation && { classes: iModelInstance.CLASS_LABELS, ...evaluation },
+        params    : {
+          learning_rate  : LearningRate,
+          n_epochs       : NumberEpochs,
+          test_size      : TestSize,
+          layers         : Layers,
+          id_optimizer   : idOptimizer,
+          id_loss        : idLoss,
+          id_metrics_list: idMetricsList,
+        },
+      }
+      setGeneratedModels((oldModels) => [...oldModels, newModel])
+      storedModels.save(model, { evaluation: newModel.evaluation, params: newModel.params, history: historyData(history) })
+      reportTrainResult({ history: history.history, layers: Layers, evaluation })
       // Shaders del modelo nuevo compilados antes de clasificar con él, y los de LRP mientras tanto ("Explicar" espera)
       await warmUpModel(model)
       lrpWarmUp_ref.current = warmUpLrp(iModelInstance, model)
@@ -421,7 +460,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
               <div className={'d-flex flex-wrap gap-2'}>
                 <N4LGuide id={'train.image-classification.' + dataset} steps={guideSteps} compact={true} />
                 <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
                 </div>
               </div>
             </div>
@@ -471,7 +510,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             <Col xl={6} className={'mt-3'}>
               <ImageClassificationEditorLayers
                 Layers={Layers}
-                setLayers={setLayers} />
+                setLayers={setLayers}
+                classes={iModelInstance?.CLASS_LABELS.length ?? 10} />
             </Col>
 
             {/* GENERAL PARAMETERS */}
@@ -503,6 +543,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
                 onStop={training.stop}>
                 <Trans i18nKey={prefix + 'models.button-submit'} />
               </N4LTrainButton>
+              {!training.isTraining &&
+                <N4LTrainingDiagnosis history={GeneratedModels.at(-1)?.history.history} model={GeneratedModels.length} />}
             </Col>
           </Row>
 
@@ -510,6 +552,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
         <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
 
+        <N4LStoredModelsNotice count={storedModels.restored} onClear={handleClear_StoredModels} />
         {/* GENERATED MODELS */}
         <Row className={'mt-3'}>
           <Col data-guide={'models'}>

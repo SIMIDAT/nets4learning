@@ -17,6 +17,7 @@ const PAGE_TYPES: Record<string, string> = {
   'terms-and-conditions': 'terms',
   'version'             : 'version',
   'settings'            : 'settings',
+  'learn'               : 'learn',
   '404'                 : 'not_found',
   'debug'               : 'dev',
 }

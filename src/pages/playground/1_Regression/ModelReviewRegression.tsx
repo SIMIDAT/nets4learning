@@ -277,7 +277,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
         {iModelInstance !== null && (
           <Row>
             <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-              <Card className={"sticky-top border-info mt-3"} data-guide={"model"}>
+              {/* sticky-top trae z-index 1020: por encima de la barra de secciones (1015) y de los desplegables (1000) */}
+              <Card className={"sticky-top border-info mt-3"} style={{ zIndex: 980 }} data-guide={"model"}>
                 <Card.Header>
                   <h2>
                     <Trans i18nKey={iModelInstance.i18n_TITLE} />

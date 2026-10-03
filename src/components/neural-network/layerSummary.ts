@@ -32,3 +32,8 @@ export function layerSummaryParts(t: TFunction, layer: DrawableLayer_t): string[
       return [units, String(layer.activation)]
   }
 }
+
+/** Todas las capas en una línea (para comparar modelos): «Dense · 10 neuronas · relu → Dense · 3 neuronas · softmax» */
+export function layersSummary(t: TFunction, layers: DrawableLayer_t[]): string {
+  return layers.map((layer) => layerSummaryParts(t, layer).join(' · ')).join(' → ')
+}

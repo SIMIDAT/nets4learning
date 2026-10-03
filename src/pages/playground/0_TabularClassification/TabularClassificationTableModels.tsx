@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Table, Card, Button, Container, Row, Col } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
@@ -11,6 +11,7 @@ import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFin
 import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
 import N4LConfusionMatrix from '@components/neural-network/N4LConfusionMatrix'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
+import { layersSummary } from '@components/neural-network/layerSummary'
 import type { TabularClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
@@ -41,6 +42,16 @@ export default function TabularClassificationTableModels(props: TabularClassific
   // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
   const histories = listModels.map((generated) => generated.history.history)
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+  // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
+  const { t } = useTranslation()
+  const parameters = listModels.map((generated) => ({
+    'learning-rate': String(generated.learningRate),
+    'n-of-epochs'  : String(generated.numberOfEpoch),
+    'test-size'    : Math.round(generated.testSize * 100) + '%',
+    'layers'       : layersSummary(t, generated.layerList),
+    'id-optimizer' : nnLabel(generated.idOptimizer),
+    'id-loss'      : nnLabel(generated.idLoss),
+  }))
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
@@ -111,7 +122,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
                           <th className={'text-nowrap'}>{(activePage * rowsPerPage) + index + 1}{(activePage * rowsPerPage) + index === bestIndex && <N4LBestBadge />}</th>
                           <td><span className={'n4l-table-cell'}>{value.learningRate}</span></td>
                           <td><span className={'n4l-table-cell'}>{formatEpochs(value.history.epoch.length, value.numberOfEpoch)}</span></td>
-                          <td><span className={'n4l-table-cell'}>{value.testSize * 100}%</span></td>
+                          <td><span className={'n4l-table-cell'}>{Math.round(value.testSize * 100)}%</span></td>
                           <td>
                             {value.layerList
                               .map((value, index2) => {
@@ -152,7 +163,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
             </Row>
             <Row>
               <Col>
-                <N4LTrainingCurves histories={histories}
+                <N4LTrainingCurves histories={histories} parameters={parameters}
                   renderDetails={(index) => listModels[index].evaluation !== undefined && <N4LConfusionMatrix {...listModels[index].evaluation} />} />
               </Col>
             </Row>

@@ -47,7 +47,7 @@ export default function DataFrameCorrelationMatrixModalDescription(props: DataFr
         <p className={'text-muted'}>
           <Trans i18nKey={'dataframe.correlation-matrix.link'}
             components={{
-              link1: <a href={URL} target={'_blank'} rel="noreferrer" className={'text-info'}>link</a>
+              link1: <a href={URL} target={'_blank'} rel="noreferrer">link</a>
             }} />
         </p>
       </Modal.Footer>

@@ -6,8 +6,11 @@ import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
 import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
 import N4LAnalytics from './components/analytics/N4LAnalytics'
+import N4LScrollManager from './components/navigation/N4LScrollManager'
 import { readConsent, startAnalytics } from '@core/analytics'
 import { startupTFBackend } from '@core/tfBackend'
+import { trackLearningPath } from '@core/learning/learningPath'
+import N4LLearningToast from './components/learning/N4LLearningToast'
 
 import './ConfigChartJS'
 
@@ -25,6 +28,7 @@ const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditi
 const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
 const PageSettings = lazy(() => import( './pages/settings/Settings'))
+const PageLearn = lazy(() => import( './pages/learn/Learn'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
 // /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
 const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
@@ -33,6 +37,9 @@ const TestPageEasy_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageEasy'
 const TestPageAdvanced_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageAdvanced'))
 
 const VITE_PATH = import.meta.env.VITE_PATH
+
+// «Empieza aquí» marca sus pasos con los eventos de la aplicación desde el principio (también la primera página vista)
+trackLearningPath()
 
 // Las páginas usan TF.js en cuanto se montan: esperan a que esté activo el backend elegido en el menú
 function TFBackendReady({ children }: { children: ReactNode }) {
@@ -58,6 +65,7 @@ function App() {
     <div className="body">
       <BrowserRouter basename={VITE_PATH}>
         <N4LAnalytics />
+        <N4LScrollManager />
         <Suspense fallback={''}>
           <N4LNavbar />
         </Suspense>
@@ -78,6 +86,7 @@ function App() {
               <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
               <Route path={'/version'} element={<PageVersion />}></Route>
               <Route path={'/settings'} element={<PageSettings />}></Route>
+              <Route path={'/learn'} element={<PageLearn />}></Route>
 
               {SHOW_DEV_PAGES && <>
                 <Route path={'/debug'} element={<PageDebug />}></Route>
@@ -93,6 +102,7 @@ function App() {
         <Suspense fallback={''}>
           <N4LFooter />
           <N4LCookiesBanner />
+          <N4LLearningToast />
         </Suspense>
       </BrowserRouter>
     </div>

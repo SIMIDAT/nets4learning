@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Table, Card, Button, Container, Row, Col } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
@@ -9,6 +9,7 @@ import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFin
 import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
 import N4LConfusionMatrix from '@components/neural-network/N4LConfusionMatrix'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
+import { layersSummary } from '@components/neural-network/layerSummary'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
@@ -38,6 +39,16 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
   // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
   const histories = GeneratedModels.map((generated) => generated.history.history)
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+  // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
+  const { t } = useTranslation()
+  const parameters = GeneratedModels.map(({ params }) => ({
+    'learning-rate': String(params.learning_rate),
+    'n-epochs'     : String(params.n_epochs),
+    'test-size'    : params.test_size + '%',
+    'layers'       : layersSummary(t, params.layers),
+    'id-optimizer' : nnLabel(params.id_optimizer),
+    'id-loss'      : nnLabel(params.id_loss),
+  }))
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
@@ -148,7 +159,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
             </Row>
             <Row>
               <Col>
-                <N4LTrainingCurves histories={histories}
+                <N4LTrainingCurves histories={histories} parameters={parameters}
                   renderDetails={(index) => GeneratedModels[index].evaluation !== undefined && <N4LConfusionMatrix {...GeneratedModels[index].evaluation} />} />
               </Col>
             </Row>

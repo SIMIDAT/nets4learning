@@ -22,6 +22,8 @@ import { clearAllGuideProgress } from '@components/guide/guideProgress'
 import { MAX_RATE, MIN_RATE, setGuideVoice, updateGuideSettings, useGuideSettings } from '@components/guide/guideSettings'
 import { isSpeechSupported, useSpeech, useVoices, voicesForLanguage } from '@components/guide/speech'
 import { setStepByStepEnabled, useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
+import { deleteTrainedModels, storedModelsUsage } from '@core/training/modelStore'
+import { downloadReason, setDownloadWarning, useDownloadWarning, type DownloadWarning_t } from '@core/models/downloadConsent'
 import { resetAllSettings } from './storedSettings'
 
 const prefix = 'pages.settings.'
@@ -54,6 +56,7 @@ export default function Settings() {
         <Row xs={1} lg={2} className={'g-3'}>
           <Col><AppearanceSettings /></Col>
           <Col><BackendSettings /></Col>
+          <Col><DownloadSettings /></Col>
           <Col><SpeechSettings /></Col>
           <Col><TutorialSettings /></Col>
           <Col><LearningSettings /></Col>
@@ -224,6 +227,33 @@ function TutorialSettings() {
   )
 }
 
+const DOWNLOAD_WARNINGS: DownloadWarning_t[] = ['auto', 'always', 'never']
+
+/** Si se pregunta antes de descargar un modelo preentrenado grande, y qué dice ahora el navegador de la conexión */
+function DownloadSettings() {
+  const { t } = useTranslation()
+  const warning = useDownloadWarning()
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean, effectiveType?: string } }).connection
+  const now = downloadReason('auto', connection) ?? 'normal'
+  return (
+    <Section id={'downloads'} title={t(prefix + 'downloads.title')} help={t(prefix + 'downloads.help')}>
+      <fieldset>
+        <legend className={'visually-hidden'}>{t(prefix + 'downloads.title')}</legend>
+        {DOWNLOAD_WARNINGS.map((value) => (
+          <Form.Check key={value} type={'radio'} id={'settings-downloads-' + value} name={'settings-downloads'} className={'mb-2'}>
+            <Form.Check.Input type={'radio'} checked={warning === value} onChange={() => setDownloadWarning(value)} />
+            <Form.Check.Label className={'w-100'}>
+              <span className={'fw-semibold'}>{t(prefix + 'downloads.' + value)}</span>
+              <span className={'d-block small text-body-secondary'}>{t(prefix + 'downloads.' + value + '-help')}</span>
+            </Form.Check.Label>
+          </Form.Check>
+        ))}
+      </fieldset>
+      <p className={'small text-body-secondary mb-0'} data-testid={'Test-Settings-Connection'}>{t(prefix + 'downloads.now-' + now)}</p>
+    </Section>
+  )
+}
+
 /** Lo que se puede enseñar de más en las páginas para aprender: de momento, Paso a paso (oculto por defecto) */
 function LearningSettings() {
   const { t } = useTranslation()
@@ -263,18 +293,46 @@ function PrivacySettings() {
   )
 }
 
+/** Los modelos entrenados guardados en el navegador: cuántos son, cuánto ocupan y un botón para borrarlos */
+function StoredModelsUsage() {
+  const { t, i18n } = useTranslation()
+  const [usage, setUsage] = useState<{ count: number, bytes: number } | null>(null)
+  useEffect(() => {
+    let isCancelled = false
+    storedModelsUsage().then((result) => {
+      if (!isCancelled) setUsage(result)
+    })
+    return () => { isCancelled = true }
+  }, [])
+  if (usage === null) return null
+  // En kB si no llega a 1 MB: los modelos pequeños (Iris) ocupan unos pocos kB
+  const number = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 1 })
+  const size = usage.bytes < 1024 * 1024 ? number.format(usage.bytes / 1024) + ' kB' : number.format(usage.bytes / 1024 / 1024) + ' MB'
+  return (
+    <div className={'d-flex flex-wrap align-items-center gap-2 mb-3'} data-testid={'Test-Settings-StoredModels'}>
+      <span className={'small'}>{t(prefix + 'data.models', { count: usage.count, size })}</span>
+      {usage.count > 0 &&
+        <Button size={'sm'} variant={'outline-danger'} onClick={async () => {
+          await deleteTrainedModels()
+          setUsage({ count: 0, bytes: 0 })
+        }}>{t(prefix + 'data.models-delete')}</Button>}
+    </div>
+  )
+}
+
 function StoredDataSettings() {
   const { t } = useTranslation()
   const [confirming, setConfirming] = useState(false)
 
-  const handleClick_Reset = () => {
-    resetAllSettings()
+  const handleClick_Reset = async () => {
+    await resetAllSettings()
     // Para que todo vuelva a su valor por defecto (idioma del navegador, tema del sistema…)
     window.location.reload()
   }
 
   return (
     <Section id={'data'} title={t(prefix + 'data.title')} help={t(prefix + 'data.help')}>
+      <StoredModelsUsage />
       {!confirming && <Button variant={'outline-danger'} onClick={() => setConfirming(true)}>{t(prefix + 'data.reset')}</Button>}
       {confirming &&
         <Alert variant={'danger'} className={'mb-0'}>

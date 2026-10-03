@@ -107,13 +107,27 @@ function send(name: string, params: AnalyticsParams_t) {
   else console.debug('[analytics]', name, params)
 }
 
+type AppEventListener_t = (name: string, params: AnalyticsParams_t) => void
+const appEventListeners = new Set<AppEventListener_t>()
+
+/**
+ * Los eventos (y las páginas vistas) dentro de la propia aplicación, con o sin consentimiento: no salen del navegador.
+ * Así, p. ej., el recorrido «Empieza aquí» sabe qué pasos se han hecho sin repetir los avisos en cada página.
+ */
+export function onAppEvent(listener: AppEventListener_t): () => void {
+  appEventListeners.add(listener)
+  return () => { appEventListeners.delete(listener) }
+}
+
 /**
  * Registra un evento con el contexto de la página actual (tarea, modelo o conjunto de datos…). Sin consentimiento no
- * hace nada, ni lo guarda para enviarlo después.
+ * hace nada, ni lo guarda para enviarlo después (solo se avisa dentro de la aplicación: onAppEvent).
  */
 export function trackEvent(name: string, params: AnalyticsParams_t = {}) {
+  const event = { ...currentPage?.context, ...params }
+  appEventListeners.forEach((listener) => listener(name, event))
   if (!enabled) return
-  send(name, { ...currentPage?.context, ...params })
+  send(name, event)
 }
 
 function sendPageView(location: string, context: PageContext_t) {
@@ -123,6 +137,7 @@ function sendPageView(location: string, context: PageContext_t) {
 /** La página cambia: desde ahora los eventos llevan su contexto */
 export function trackPageView(location: string, context: PageContext_t) {
   currentPage = { location, context }
+  appEventListeners.forEach((listener) => listener('page_view', context))
   if (enabled) sendPageView(location, context)
 }
 

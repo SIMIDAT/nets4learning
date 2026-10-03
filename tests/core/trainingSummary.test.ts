@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { bestModelIndex, confusionMatrix, confusionStats, finalLoss, formatEpochs, historyCurves } from '../../src/core/history/trainingSummary'
+import { bestModelIndex, changedParameters, confusionMatrix, confusionStats, finalLoss, formatEpochs, historyCurves } from '../../src/core/history/trainingSummary'
 
 describe('trainingSummary', () => {
   test('una curva por métrica, con la pérdida primero y su validación', () => {
@@ -53,5 +53,13 @@ describe('trainingSummary', () => {
     expect(stats.recall).toStrictEqual([1, null])
     expect(stats.precision).toStrictEqual([1, null])
     expect(confusionStats([]).accuracy).toBe(0)
+  })
+
+  test('changedParameters: lo que no vale lo mismo en todos los modelos que se comparan', () => {
+    const a = { 'learning-rate': '0.01', 'n-of-epochs': '10', 'id-optimizer': 'Adam' }
+    expect(changedParameters([a, { ...a, 'learning-rate': '0.1' }])).toEqual(['learning-rate'])
+    expect(changedParameters([a, { ...a, 'learning-rate': '0.1' }, { ...a, 'id-optimizer': 'SGD' }])).toEqual(['learning-rate', 'id-optimizer'])
+    expect(changedParameters([a, { ...a }])).toEqual([])
+    expect(changedParameters([a])).toEqual([])
   })
 })

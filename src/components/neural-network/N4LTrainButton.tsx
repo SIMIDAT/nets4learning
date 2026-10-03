@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button, ProgressBar } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
 import type { TrainingProgress_t } from '@hooks/useTrainingProgress'
+import N4LProgressBar from '@components/loading/N4LProgressBar'
 
 type N4LTrainButtonProps = {
   isTraining: boolean
@@ -41,7 +42,7 @@ export default function N4LTrainButton({ isTraining, progress, isStopping, onSto
     <div className={'d-flex align-items-center gap-2'} role={'status'} aria-live={'polite'}>
       <div className={'flex-grow-1'}>
         <div className={'small mb-1'}>{label}</div>
-        <ProgressBar now={percent} striped={true} animated={true} aria-label={label} />
+        <N4LProgressBar now={percent} striped={true} animated={true} label={label} />
       </div>
       <Button variant={'outline-danger'} onClick={onStop} disabled={isStopping}>
         <Trans i18nKey={prefix + (isStopping ? 'stopping' : 'stop')} />

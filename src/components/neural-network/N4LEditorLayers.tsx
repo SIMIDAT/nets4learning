@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
+import { N4LLayerFlag } from '@components/neural-network/N4LLayerCheck'
 
 export type EditableLayer_t = {
   units       : number
@@ -22,6 +23,10 @@ type N4LEditorLayersProps = {
   waiting?  : boolean
   titleAs?  : 'h2' | 'h3'
   footer?   : React.ReactNode
+  /** Lo que está mal en las capas (N4LLayerCheck), encima de ellas */
+  check?    : React.ReactNode
+  /** Capas con un error o un aviso, marcadas en su cabecera */
+  flagged?  : Partial<Record<number, 'error' | 'warning'>>
 }
 
 const prefix = 'pages.playground.generator.editor-layers.'
@@ -37,7 +42,7 @@ const activationLabel = (activation: string | null) => {
  * Las reglas de cada tarea (capa de salida, número máximo de capas…) las pone quien lo usa.
  */
 export default function N4LEditorLayers(props: N4LEditorLayersProps) {
-  const { layers, onAddStart, onAddEnd, onRemove, onChange, waiting = false, titleAs: Title = 'h3', footer } = props
+  const { layers, onAddStart, onAddEnd, onRemove, onChange, waiting = false, titleAs: Title = 'h3', footer, check, flagged = {} } = props
   const { t } = useTranslation()
 
   return <>
@@ -55,6 +60,7 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
       </Card.Header>
       <Card.Body>
         {waiting && <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />}
+        {!waiting && check}
         {!waiting && (
           <Accordion>
             {layers.map((item, index) => (
@@ -65,6 +71,7 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
                   <span className={'ms-2 text-body-secondary'}>
                     · {t('neural-network.units', { units: item.units })} · {activationLabel(item.activation)}
                   </span>
+                  <N4LLayerFlag severity={flagged[index]} />
                 </Accordion.Header>
                 <Accordion.Body>
                   <div className="d-grid gap-2">

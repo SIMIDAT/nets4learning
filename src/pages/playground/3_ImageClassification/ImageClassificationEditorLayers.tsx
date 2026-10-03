@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { layerSummaryParts } from '@components/neural-network/layerSummary'
 import { Accordion, Button, Card, Form } from 'react-bootstrap'
@@ -9,6 +10,9 @@ import alertHelper from '@utils/alertHelper'
 import ImageClassificationEditorLayersItem from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayersItem'
 import type { Layer_t } from 'src/types/types'
 import N4LHelpLink from '@components/helpLink/N4LHelpLink'
+import N4LLayerCheck, { N4LLayerFlag } from '@components/neural-network/N4LLayerCheck'
+import { flaggedLayers } from '@components/neural-network/layerCheckText'
+import { checkImageLayers } from '@core/nn-utils/checkLayers'
 
 const DEFAULT_LAYER_END: Layer_t = {
   _class    : 'maxPooling2d',
@@ -49,12 +53,16 @@ const MAP_CLASS_LAYERS: Record<string, Layer_t> = {
 type Props = {
   Layers   : Layer_t[],
   setLayers: React.Dispatch<React.SetStateAction<Layer_t[]>>
+  /** Clases del conjunto de datos: la última capa necesita una neurona por cada una */
+  classes  : number
 }
 export default function ImageClassificationEditorLayers(props: Props) {
-  const { Layers, setLayers } = props
+  const { Layers, setLayers, classes } = props
 
   const prefix = 'pages.playground.generator.editor-layers.'
   const { t } = useTranslation()
+  const issues = useMemo(() => checkImageLayers(Layers, classes), [Layers, classes])
+  const flagged = flaggedLayers(issues)
 
   // region CONTROL DE LAS CAPAS
   // const handleClick_AddLayer_Start = async () => {
@@ -104,7 +112,8 @@ export default function ImageClassificationEditorLayers(props: Props) {
     const updatedLayers = [...Layers]
     updatedLayers[indexLayer] = {
       ...updatedLayers[indexLayer],
-      [_param_name_]: parseInt(e.target.value)
+      // La activación es un texto; el resto de parámetros, números
+      [_param_name_]: _param_name_ === 'activation' ? e.target.value : parseInt(e.target.value)
     }
     setLayers(updatedLayers)
   }
@@ -144,13 +153,15 @@ export default function ImageClassificationEditorLayers(props: Props) {
         </div>
       </Card.Header>
       <Card.Body>
+        <N4LLayerCheck issues={issues} onFix={setLayers} />
         <Accordion>
           {Layers.map((item, index: number) => {
-            return <Accordion.Item key={index} eventKey={index.toString()}>
+            return <Accordion.Item key={index} eventKey={index.toString()} data-guide={'layer-' + index}>
               <Accordion.Header>
                 <span className={'text-nowrap'}><Trans i18nKey={prefix + 'layer-id'} values={{ index: index + 1 }} /></span>
                 {/* Resumen de la capa para no tener que abrirla */}
                 <span className={'ms-2 text-body-secondary'}>· {layerSummaryParts(t, item).join(' · ')}</span>
+                <N4LLayerFlag severity={flagged[index]} />
               </Accordion.Header>
               <Accordion.Body>
                 <div className="d-grid gap-2">

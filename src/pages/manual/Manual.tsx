@@ -203,7 +203,6 @@ export default function Manual() {
                               href={"https://www.ugr.es/~jsalinas/apuntes/C5.pdf"}
                               target={"_blank"}
                               rel={"noreferrer"}
-                              className={"text-info"}
                             >
                               link
                             </a>

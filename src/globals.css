@@ -354,6 +354,16 @@ html[data-theme="dark"] .n4l-footer {
   padding: 0.25rem;
 }
 
+/* Color de cada modelo en la comparación (N4LModelComparison), el mismo que sus curvas */
+.n4l-compare-swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.35rem;
+  border-radius: 2px;
+  vertical-align: -0.05rem;
+}
+
 /* Matriz de confusión (N4LConfusionMatrix): celdas amplias y centradas, con el recuento grande y el porcentaje debajo */
 .n4l-confusion-matrix {
   text-align: center;
@@ -587,6 +597,67 @@ html[data-theme="dark"] .n4l-footer {
 html[data-theme="dark"] .body {
   --n4l-page-bg: #212529;
   min-height: 100vh;
+}
+
+/*
+ * Contraste mínimo del texto (WCAG AA, 4,5:1). En el tema claro, el azul de Bootstrap (#0d6efd) sobre el fondo gris de
+ * la aplicación se queda en 3,7:1: los enlaces, el texto de los botones de contorno y la sección activa del índice usan
+ * el azul más oscuro de Bootstrap (#0a58ca, el de pasar el ratón por un enlace: 5,3:1). Los botones rellenos no cambian.
+ * El gris de los enlaces secundarios (#6c757d: 4,4:1 en el pie, 3,9:1 sobre el fondo) pasa a #565e64 (más de 5,4:1).
+ */
+html:not([data-theme="dark"]) {
+  --bs-link-color: #0a58ca;
+  --bs-link-color-rgb: 10, 88, 202;
+  --bs-link-hover-color: #084298;
+  --bs-link-hover-color-rgb: 8, 66, 152;
+}
+
+html:not([data-theme="dark"]) .btn-outline-primary {
+  --bs-btn-color: #0a58ca;
+  --bs-btn-border-color: #0a58ca;
+}
+
+html:not([data-theme="dark"]) .n4l-section-nav-link.active {
+  color: #0a58ca;
+  border-left-color: #0a58ca;
+}
+
+html:not([data-theme="dark"]) .link-secondary {
+  --bs-secondary-rgb: 86, 94, 100;
+}
+
+/*
+ * En el tema oscuro, Bootstrap deja los botones de contorno y los enlaces secundarios con los colores del claro
+ * (#0d6efd, #6c757d, #dc3545, #198754: entre 3,2 y 3,4:1 sobre el fondo): usan los tonos de texto del tema oscuro de
+ * Bootstrap (más de 6:1). El relleno al pasar el ratón no cambia.
+ */
+html[data-theme="dark"] .btn-outline-primary {
+  --bs-btn-color: #6ea8fe;
+  --bs-btn-border-color: #6ea8fe;
+}
+
+html[data-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: #a7acb1;
+  --bs-btn-border-color: #a7acb1;
+}
+
+html[data-theme="dark"] .btn-outline-danger {
+  --bs-btn-color: #ea868f;
+  --bs-btn-border-color: #ea868f;
+}
+
+html[data-theme="dark"] .btn-outline-success {
+  --bs-btn-color: #75b798;
+  --bs-btn-border-color: #75b798;
+}
+
+html[data-theme="dark"] .link-secondary {
+  --bs-secondary-rgb: 167, 172, 177;
+}
+
+html[data-theme="dark"] .n4l-section-nav-link.active {
+  color: #6ea8fe;
+  border-left-color: #6ea8fe;
 }
 
 html[data-theme="dark"] .n4l-hr-title {
@@ -1002,4 +1073,39 @@ h6 {
   padding: 1rem;
   border-radius: var(--bs-border-radius);
   background-color: var(--bs-tertiary-bg);
+}
+
+/*
+ * Al llegar a una sección por su ancla (/terms-and-conditions#cookies, /learn#challenges…), su título no queda debajo
+ * de la barra de navegación, que va fija arriba. Sin especificidad (:where): las secciones con su propio margen (el
+ * índice de los entrenadores, los términos del glosario) lo conservan.
+ */
+:where(main [id]) {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+}
+
+/* Número (o ✓) de cada paso de «Empieza aquí» (/learn) */
+.n4l-learn-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+/* QR para compartir un ejercicio (N4LShareSession): grande para que lo lea la cámara, sin salirse en el móvil */
+.n4l-share-qr {
+  width: min(100%, 18rem);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Las referencias BibTeX de las descripciones (dentro de un <details>): con las líneas partidas no hace falta
+   desplazarlas en horizontal (una zona con desplazamiento tendría que poder recorrerse con el teclado) */
+details > pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }

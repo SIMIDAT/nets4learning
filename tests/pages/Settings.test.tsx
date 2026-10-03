@@ -93,18 +93,21 @@ describe('Settings', () => {
     expect(readConsent()).toBe('rejected')
   })
 
-  test('restablecer todo borra los ajustes de la aplicación y nada más', () => {
+  test('restablecer todo borra los ajustes de la aplicación y nada más', async () => {
     localStorage.setItem('theme', 'dark')
     localStorage.setItem('language', 'ja')
     localStorage.setItem('tf-backend', 'wasm')
     localStorage.setItem('n4l-guide-progress.regression.WINE', JSON.stringify({ step: 3, open: false, savedAt: 1 }))
     localStorage.setItem('tabular-classification.joyride-CAR', '{}')
     localStorage.setItem('n4l-step-by-step', 'true')
+    localStorage.setItem('n4l-download-warning', 'always')
+    localStorage.setItem('n4l-downloads-accepted', '["object-detection/COCO-SSD"]')
+    localStorage.setItem('n4l-learning-path', JSON.stringify({ started: true, done: ['train'] }))
     localStorage.setItem('otra-web', 'no se toca')
     updateGuideSettings({ auto: true })
     document.cookie = 'n4l-accept-cookies=true;path=/'
 
-    resetAllSettings()
+    await resetAllSettings()
     expect(Object.keys(localStorage)).toEqual(['otra-web'])
     expect(isStepByStepEnabled()).toBe(false)
     expect(getGuideSettings().auto).toBe(false)

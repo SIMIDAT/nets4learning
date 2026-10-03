@@ -62,6 +62,7 @@
     "npyjs": "^1.0.4",
     "papaparse": "5.5.3",
     "plotly.js-dist-min": "2.8.0",
+    "qrcode-generator": "^2.0.4",
     "react": "^19.2.3",
     "react-bootstrap": "^2.10.10",
     "react-bootstrap-icons": "^1.11.6",
@@ -88,6 +89,7 @@
     "sweetalert2-react-content": "^5.1.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
     "@eslint/js": "^9.39.2",

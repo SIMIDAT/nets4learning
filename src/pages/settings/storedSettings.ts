@@ -5,6 +5,9 @@ import { TF_BACKEND_STORAGE_KEY } from '@core/tfBackend'
 import { clearAllGuideProgress } from '@components/guide/guideProgress'
 import { resetGuideSettings } from '@components/guide/guideSettings'
 import { resetStepByStep } from '@components/neural-network/stepByStep/stepByStepSetting'
+import { deleteTrainedModels } from '@core/training/modelStore'
+import { resetDownloadConsent } from '@core/models/downloadConsent'
+import { resetLearningPath } from '@core/learning/learningPath'
 
 // Lo que la aplicación guarda en el navegador (localStorage y la cookie del consentimiento), para borrarlo desde
 // /settings.
@@ -21,8 +24,11 @@ function removeLegacyTutorialKeys() {
   }
 }
 
-/** Borra todos los ajustes: idioma, tema, backend, voz y progreso de las guías, Paso a paso y cookies */
-export function resetAllSettings() {
+/**
+ * Borra todos los ajustes: idioma, tema, backend, voz y progreso de las guías, Paso a paso, el aviso de descargas, el
+ * progreso de «Empieza aquí», modelos guardados y cookies
+ */
+export async function resetAllSettings() {
   try {
     [LANGUAGE_STORAGE_KEY, THEME_STORAGE_KEY, TF_BACKEND_STORAGE_KEY].forEach((key) => localStorage.removeItem(key))
   } catch {
@@ -31,6 +37,9 @@ export function resetAllSettings() {
   resetGuideSettings()
   clearAllGuideProgress()
   resetStepByStep()
+  resetDownloadConsent()
+  resetLearningPath()
   removeLegacyTutorialKeys()
   clearConsent()
+  await deleteTrainedModels()
 }

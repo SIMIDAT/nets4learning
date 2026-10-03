@@ -17,7 +17,9 @@ const baseStyle = {
   borderColor    : '#b1b1b1',
   borderStyle    : 'dashed',
   backgroundColor: 'var(--bc-drag-and-drop)',
-  color          : '#bdbdbd',
+  // El gris secundario del tema: se lee sobre el fondo de la zona en el tema claro y en el oscuro (el #bdbdbd de antes
+  // se quedaba en 1,5:1 sobre el gris claro)
+  color          : 'var(--bs-secondary-color)',
   outline        : 'none',
   transition     : 'border .24s ease-in-out',
 }
@@ -132,7 +134,8 @@ export default function DragAndDrop (props: DragAndDropProps) {
   return (
     <section className="container p-0">
       <div {...getRootProps(dropzone_root_props)}>
-        <input id={id}{...getInputProps()} />
+        {/* El campo de fichero está oculto, pero se llama como lo que dice la zona (para los lectores de pantalla) */}
+        <input id={id} {...getInputProps({ 'aria-label': text })} />
         <p className={'mb-0'}>{text}</p>
       </div>
       <aside className={'mt-2'}>

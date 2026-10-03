@@ -4,20 +4,29 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Card, Col, Form, Row } from 'react-bootstrap'
 import * as tfjs from '@tensorflow/tfjs'
 
-import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
+import { DEFAULT_SELECTOR_DATASET_INDEX, DEFAULT_SELECTOR_MODEL_INDEX, VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
 
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import { useStoredModels } from '@hooks/useStoredModels'
+import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
+import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import { reportTrainResult } from '@core/training/trainResult'
+import { layerIssueText } from '@components/neural-network/layerCheckText'
+import { checkDenseLayers } from '@core/nn-utils/checkLayers'
+import { historyFromData } from '@core/training/modelStore'
+import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
 import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
 import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
 import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
-import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
+import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
+import { useSharedSession } from '@hooks/useSharedSession'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import DebugJSON from '@components/debug/DebugJSON'
@@ -53,6 +62,9 @@ type RegressionProps_t = {
   dataset: string
 }
 
+/** Lo que se guarda de cada modelo entrenado (con el modelo): sus parámetros, el fichero con el que se entrenó y el historial */
+type StoredRegressionModel_t = Omit<_Types.CustomModelGenerated_t, 'model' | 'history' | 'dataset_processed' | 'dataframe'> & { csv: string, history: TrainingHistory_t }
+
 export default function Regression({ dataset }: RegressionProps_t) {
   /** @type {ReturnType<typeof useParams<{id: string}>>} */
   const { id: param_id } = useParams()
@@ -82,6 +94,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
     isTraining,
     setIsTraining,
 
+    listModels,
     setListModels,
 
     accordionActive,
@@ -104,9 +117,9 @@ export default function Regression({ dataset }: RegressionProps_t) {
   // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
   const [sessionVersion, setSessionVersion] = useState(0)
 
-  const handleClick_ExportSession = () => {
+  const currentSession = (): TrainingSession_t => {
     const training_params = params.params_training
-    downloadSession({
+    return {
       app            : 'nets4learning',
       version        : 1,
       task           : TASKS.REGRESSION,
@@ -120,7 +133,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         loss        : training_params.id_loss,
         metrics     : training_params.list_id_metrics,
       },
-    })
+    }
   }
 
   const handleImport_Session = async (text: string) => {
@@ -203,6 +216,9 @@ export default function Regression({ dataset }: RegressionProps_t) {
     }
   }, [dataset, iModelInstance, datasets, setParams])
 
+  // La de un enlace compartido, después de las capas por defecto del conjunto de datos (el efecto de arriba)
+  useSharedSession(iModelInstance !== null && (dataset === UPLOAD || datasets.data.length > 0), handleImport_Session)
+
   const TrainModel = async () => {
     const dataset_processed = datasets.data[datasets.index]
     const result = await createRegressionCustomModel({
@@ -238,7 +254,20 @@ export default function Regression({ dataset }: RegressionProps_t) {
         index: prevState.data.length
       }
     })
+    storedModels.save(model, {
+      params_layers  : newModel.params_layers,
+      params_training: newModel.params_training,
+      params_features: newModel.params_features,
+      csv            : dataset_processed.csv,
+      history        : historyData(history),
+    })
+    reportTrainResult({ history: history.history, layers: newModel.params_layers })
+    fillPredictionForm(dataset_processed)
+    training.complete()
+  }
 
+  /** El formulario de predicción, con la primera fila del conjunto con el que se entrenó el modelo elegido */
+  const fillPredictionForm = (dataset_processed: _Types.DatasetProcessed_t) => {
     const newPredictionState = TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION(dataset_processed, 0)
     setPrediction((prevState) => ({
       ...prevState,
@@ -248,11 +277,35 @@ export default function Regression({ dataset }: RegressionProps_t) {
       input_2_dataframe_encoding : newPredictionState.input_2_dataframe_encoding,
       input_3_dataframe_scaling  : newPredictionState.input_3_dataframe_scaling,
     }))
-    training.complete()
+  }
+
+  // Los modelos entrenados antes con este conjunto (guardados en el navegador): vuelven a la tabla con el fichero con el
+  // que se entrenaron (por su nombre). Cuando ya están cargados los datos; los de un conjunto subido no se guardan
+  const storedModels = useStoredModels<StoredRegressionModel_t>('regression', dataset, dataset !== UPLOAD && datasets.data.length > 0, (stored) => {
+    const restored = stored.flatMap(({ model, data: { csv, history, ...params } }): _Types.CustomModelGenerated_t[] => {
+      const dataset_processed = datasets.data.find((candidate) => candidate.csv === csv)
+      return dataset_processed === undefined ? [] : [{ ...params, model: model as tfjs.Sequential, history: historyFromData(history), dataset_processed }]
+    })
+    if (restored.length === 0) return
+    setListModels((prevState) => ({
+      ...prevState,
+      data : [...restored, ...prevState.data],
+      index: prevState.index >= 0 ? prevState.index + restored.length : restored.length - 1,
+    }))
+    if (listModels.data.length === 0) fillPredictionForm(restored.at(-1)!.dataset_processed)
+  })
+  const handleClear_StoredModels = async () => {
+    await storedModels.clear()
+    setListModels((prevState) => ({ ...prevState, data: [], index: DEFAULT_SELECTOR_MODEL_INDEX }))
   }
 
   const handleSubmit_TrainModel = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const layerError = checkDenseLayers(params.params_layers).find(({ severity }) => severity === 'error')
+    if (layerError) {
+      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
+      return
+    }
     setIsTraining(true)
     training.start({
       epochs      : params.params_training.n_of_epochs,
@@ -305,7 +358,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
               <div className={'d-flex flex-wrap gap-2'}>
                 <N4LGuide id={'train.regression.' + dataset} steps={guideSteps} compact={true} />
                 <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
                 </div>
               </div>
             </div>
@@ -397,12 +450,15 @@ export default function Regression({ dataset }: RegressionProps_t) {
                 disabled={!ready || isTraining || !datasets.data[datasets.index].is_dataset_processed}>
                 <Trans i18nKey={prefix + 'models.button-submit'} />
               </N4LTrainButton>
+              {!training.isTraining &&
+                <N4LTrainingDiagnosis history={listModels.data.at(-1)?.history.history} model={listModels.data.length} />}
             </Col>
           </Row>
         </Form>
 
         <hr />
 
+        <N4LStoredModelsNotice count={storedModels.restored} onClear={handleClear_StoredModels} />
         <Row className={'mt-3'}>
           <Col data-guide={'models'}>
             <Suspense fallback={<></>}><RegressionTableModels /></Suspense>

@@ -28,6 +28,7 @@ Qué se mide, dónde está en el código y cómo configurar la propiedad de GA4 
 | `src/components/analytics/N4LAnalytics.tsx` | Lo automático: páginas vistas, tiempo en cada página, clics, cambios de idioma, tema y backend, errores y tiempos de carga |
 | `src/hooks/useTrainingProgress.ts` | `train_start` / `train_end` de las tres tareas que entrenan |
 | `src/core/downloadProgress.ts` | `model_load`: lo que tarda en cargar un modelo y cuánto descarga |
+| `src/core/models/downloadConsent.ts` | `download_consent`: la pregunta antes de descargar un modelo grande |
 | `src/components/dragAndDrop/DragAndDrop.tsx` | `file_upload` / `file_rejected` de todas las zonas de subida |
 | `src/components/guide/N4LGuide.tsx` | `guide_start` / `guide_end` |
 
@@ -40,7 +41,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 
 | Parámetro | Valores |
 |---|---|
-| `page_type` | `home`, `select_dataset`, `select_model`, `playground`, `regression_description`, `manual`, `glossary`, `datasets`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
+| `page_type` | `home`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `manual`, `glossary`, `datasets`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
 | `task` | `tabular-classification`, `regression`, `image-classification`, `object-detection` |
 | `mode` | `train` (entrenar con un conjunto de datos) o `pretrained` (probar un modelo ya entrenado) |
 | `item` | El conjunto de datos o el modelo: `CAR`, `IRIS`, `AUTO_MPG`, `UPLOAD`, `IMAGE-MNIST`… En `/analyze`, el de `?dataset=` |
@@ -52,7 +53,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | `page_view` | Cada cambio de ruta (o de `?dataset=` en el AED) | `page_location`, `page_title` |
 | `page_time` | Al salir de una página, cerrar la pestaña o pasar a otra app | `engaged_seconds`: solo el tiempo con la pestaña visible |
 | `ui_click` | Clic en un botón, enlace, pestaña o elemento de menú con identificador | `element`: `data-analytics`, `data-testid`, `id` o la ruta del enlace interno |
-| `settings_change` | Cambio de idioma, tema o backend de TF.js (desde la barra o desde `/settings`), o activar Paso a paso | `setting` (`language`, `theme`, `tf_backend`, `step_by_step`), `value`, `outcome` (backend: `completed` o `error` si el navegador no puede usarlo) |
+| `settings_change` | Cambio de idioma, tema o backend de TF.js (desde la barra o desde `/settings`), activar Paso a paso o cambiar el aviso de descargas | `setting` (`language`, `theme`, `tf_backend`, `step_by_step`, `download_warning`), `value`, `outcome` (backend: `completed` o `error` si el navegador no puede usarlo) |
 | `consent_granted` | Al aceptar las cookies | `source` (`banner`, `settings`, `terms`) |
 | `not_found` | Al llegar a la 404 desde una ruta que no existe | `missing_path` |
 | `search` | Búsqueda en el glosario: 1,5 s después de dejar de escribir, con 3 letras o más | `search_term`, `results` (0: lo que se busca y no está) |
@@ -63,7 +64,12 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 |---|---|---|
 | `train_start` | Pulsar «Entrenar» | `epochs`, `learning_rate`, `optimizer`, `loss`, `layers` |
 | `train_end` | Fin del entrenamiento | `outcome` (`completed`, `stopped`, `error`), `duration_sec`, `epochs`, `epochs_done` |
+| `train_result` | Cómo terminó un entrenamiento que ha dado un modelo (lo usan también los retos de `/learn`) | `accuracy` (aciertos con los datos de prueba, 0–1; solo en clasificación), `hidden_units`, `layers`, `epochs` (entrenadas), `diagnosis` (`good`, `overfitting`, `still-improving`…) |
 | `model_load` / `dataset_load` | Carga de un modelo preentrenado (detección, imágenes, CAR…, regresión) o de los datos de la página de un modelo de regresión | `load_ms`, `download_kb` (de la red o de la caché del navegador), `outcome` (`completed`, `error`) |
+| `download_consent` | Antes de descargar un modelo grande con ahorro de datos, conexión lenta o «Preguntar siempre»: al preguntar y al aceptar | `reason` (`save-data`, `slow`, `always`), `download_mb`, `outcome` (`shown`, `accepted`) |
+| `models_compare` | Activar «Comparar modelos» en las curvas de entrenamiento | `models` (cuántos modelos hay en la tabla) |
+| `layer_fix` | Arreglar las capas con el botón de su aviso (antes de entrenar) | `kind` (`output-units`, `output-activation`, `dense-before-flatten`…) |
+| `session_share` | Compartir la configuración de una página de entrenamiento con un enlace | `action` (`open`: abrir la ventana; `copy`: copiar el enlace; `native`: compartir con otra aplicación) |
 | `predict` | Una predicción o clasificación | `input` (`form`, `drawing`, `image`, `sample`, `test_sample`) |
 | `webcam_start` / `webcam_end` | Activar y desactivar la cámara en tiempo real | `duration_sec` (en `webcam_end`) |
 | `explain` | Pedir la explicación de una predicción | `method` (`shap`, `lrp`), `scope` (`local`, `global`; en SHAP tabular) |

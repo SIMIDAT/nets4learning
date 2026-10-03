@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ProgressBar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 import { useDownloadProgress } from '@core/downloadProgress'
+import { cancelPendingDownload, usePendingDownload } from '@core/models/downloadConsent'
+import N4LDownloadConsent from '@components/loading/N4LDownloadConsent'
+import N4LProgressBar from '@components/loading/N4LProgressBar'
 
 type N4LDownloadProgressProps = {
   isLoading: boolean
@@ -47,6 +49,11 @@ export default function N4LDownloadProgress({ isLoading }: N4LDownloadProgressPr
         ? t('loading-status.model-loaded', { loaded: mb(progress.loaded) })
         : t('loading-status.model')
 
+  // Un modelo grande con ahorro de datos o conexión lenta: antes de descargarlo se pregunta (askBeforeDownload)
+  const pendingDownload = usePendingDownload()
+  useEffect(() => cancelPendingDownload, [])
+
+  if (isLoading && pendingDownload !== null) return <N4LDownloadConsent download={pendingDownload} />
   if (!isLoading && !done) return null
 
   return (
@@ -56,7 +63,7 @@ export default function N4LDownloadProgress({ isLoading }: N4LDownloadProgressPr
         <span>{label}</span>
         {known && <span className={'text-body-secondary'}>{Math.round(percent)} %</span>}
       </div>
-      <ProgressBar now={percent} striped={isLoading} animated={isLoading && !known} aria-label={label} />
+      <N4LProgressBar now={percent} striped={isLoading} animated={isLoading && !known} label={label} />
       {isLoading && <p className={'small text-body-secondary mt-1 mb-0'}>{t('loading-status.model-help')}</p>}
     </div>
   )

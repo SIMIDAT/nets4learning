@@ -72,7 +72,8 @@ describe('guías de las páginas de entrenamiento', () => {
       .map((name) => `[data-guide="hp-${name}"]`)))
   })
 
-  // Los de .common también sirven de respaldo a un conjunto de datos nuevo sin textos propios: esos pueden no usarse hoy
+  // Los de .common también sirven de respaldo a un conjunto de datos nuevo sin textos propios: esos pueden no usarse hoy.
+  // Los de las capas (.layer.*) los usa layersGuide y se comprueban en layersGuide.test.ts
   test('no sobra ningún texto propio de un conjunto de datos: todos se usan en su guía', () => {
     for (const language of LANGUAGES) {
       const used = new Set<string>()
@@ -80,7 +81,7 @@ describe('guías de las páginas de entrenamiento', () => {
         trainerGuide(translator(language, [], used), task, dataset, { upload: dataset === UPLOAD, datasetTable, testSize, stepByStep })
       }
       const texts = keysOf(lookup(language, 'guide.train'), 'guide.train').map((key) => key.replace(/\.(title|content)$/, ''))
-      expect([...new Set(texts)].filter((key) => !key.includes('.common.') && !used.has(key + '.title'))).toEqual([])
+      expect([...new Set(texts)].filter((key) => !key.includes('.common.') && !key.includes('.layer.') && !used.has(key + '.title'))).toEqual([])
     }
   })
 })

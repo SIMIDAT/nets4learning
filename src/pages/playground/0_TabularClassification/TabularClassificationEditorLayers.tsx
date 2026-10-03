@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
 import alertHelper from '@utils/alertHelper'
@@ -7,6 +7,9 @@ import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
 import * as _Types from '@core/types'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
 import N4LHelpLink from '@components/helpLink/N4LHelpLink'
+import N4LLayerCheck from '@components/neural-network/N4LLayerCheck'
+import { flaggedLayers } from '@components/neural-network/layerCheckText'
+import { checkDenseLayers } from '@core/nn-utils/checkLayers'
 
 
 
@@ -20,6 +23,9 @@ export default function TabularClassificationEditorLayers() {
   const { datasets, index: datasetIndex } = datasetsState
 
   const { t } = useTranslation()
+  const classes = datasets[datasetIndex]?.data_processed?.classes?.length ?? 0
+  // La salida, una neurona por clase con softmax (sin datos procesados todavía no se sabe cuántas)
+  const issues = useMemo(() => checkDenseLayers(layers, classes > 0 ? { units: classes, activation: 'softmax' } : undefined), [layers, classes])
 
   useEffect(() => {
     // La capa de salida tiene tantas unidades como clases (nuevo array: el estado no se modifica en el sitio)
@@ -105,6 +111,8 @@ export default function TabularClassificationEditorLayers() {
   return (
     <N4LEditorLayers
       layers={layers}
+      check={<N4LLayerCheck issues={issues} onFix={setLayers} />}
+      flagged={flaggedLayers(issues)}
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}

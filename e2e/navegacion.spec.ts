@@ -366,3 +366,93 @@ test('un conjunto de datos propio se prepara en tres pasos y después se puede e
   await views.getByTestId('Test-DatasetViews').getByText('Escalado (entrada de la red)').click()
   await expect(views.getByTestId('Test-DatasetViews-Help')).toContainText('exactamente lo que recibe la red')
 })
+
+test('con el ahorro de datos activado, se pregunta antes de descargar un modelo grande (y solo la primera vez)', async ({ page }) => {
+  // Lo que diría Chrome con "Ahorro de datos" (Network Information API)
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'connection', { configurable: true, get: () => ({ saveData: true, effectiveType: '4g' }) })
+  })
+  const modelRequests: string[] = []
+  page.on('request', (request) => { if (request.url().includes('keras-mnist/model.json')) modelRequests.push(request.url()) })
+
+  await page.goto('/playground/image-classification/model/IMAGE-MNIST')
+  const consent = page.getByTestId('Test-DownloadConsent')
+  await expect(consent).toContainText('Este modelo descarga unos 4,6 MB')
+  await expect(consent).toContainText('ahorro de datos')
+  await page.waitForTimeout(1000)
+  expect(modelRequests).toEqual([])
+
+  await consent.getByTestId('Test-DownloadConsent-Accept').click()
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  expect(modelRequests.length).toBeGreaterThan(0)
+
+  await page.reload()
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  await expect(consent).toHaveCount(0)
+})
+
+test('«Empieza aquí»: los pasos se marcan solos al hacerlos y se avisa del siguiente', async ({ page }) => {
+  await page.goto('/')
+  await page.getByTestId('Test-StartHere').getByRole('link', { name: 'Empieza aquí' }).click()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('0 de 8 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Challenges-Progress')).toHaveText('0 de 5 retos superados')
+
+  await page.getByTestId('Test-Learn-Go-glossary').click()
+  await expect(page).toHaveURL(/\/glossary$/)
+  const toast = page.getByTestId('Test-LearningToast')
+  await expect(toast).toContainText('Paso 1 de 8 hecho')
+  await expect(toast).toContainText('Siguiente: Prueba una red ya entrenada')
+
+  await toast.getByRole('link').click()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 8 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Step-glossary')).toHaveAttribute('data-done', 'true')
+  await page.reload()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 8 pasos hechos')
+})
+
+test('un ejercicio se comparte con un enlace (y su QR): quien lo abre tiene la misma red e hiperparámetros', async ({ page, context }) => {
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await page.getByRole('spinbutton', { name: 'N. épocas' }).fill('7')
+  await page.locator('[data-guide="hp-learning-rate"] select').selectOption('0.1')
+
+  await page.getByTestId('Test-SessionShare').click()
+  const modal = page.getByTestId('Test-SessionShare-Modal')
+  await expect(modal.getByTestId('Test-SessionShare-QR')).toBeVisible()
+  const link = await modal.getByTestId('Test-SessionShare-Link').inputValue()
+  expect(link).toMatch(/\/playground\/tabular-classification\/dataset\/IRIS#n4z=/)
+
+  const other = await context.newPage()
+  await other.goto(link)
+  await expect(other.locator('.swal2-popup')).toContainText('Configuración importada', { timeout: 60_000 })
+  await expect(other.getByRole('spinbutton', { name: 'N. épocas' })).toHaveValue('7')
+  await expect(other.locator('[data-guide="hp-learning-rate"] select')).toHaveValue('0.1')
+  // Se quita de la dirección: al recargar no se vuelve a aplicar
+  await expect(other).toHaveURL(/\/IRIS$/)
+})
+
+test('al cambiar de página se empieza arriba (con el foco en el título), atrás vuelve a donde se estaba y un enlace a una sección lleva a ella', async ({ page }) => {
+  const scrollY = () => page.evaluate(() => window.scrollY)
+  await page.goto('/glossary')
+  await expect(page.locator('main h1')).toBeVisible()
+  await page.evaluate(() => window.scrollTo({ top: 2000, behavior: 'instant' }))
+  await expect.poll(scrollY).toBeGreaterThan(1500)
+  const position = await scrollY()
+
+  await page.locator('.n4l-navbar').getByRole('link', { name: 'Manual', exact: true }).click()
+  await expect(page).toHaveURL(/\/manual\/?$/)
+  await expect.poll(scrollY).toBe(0)
+  await expect(page.locator('main h1').first()).toBeFocused()
+
+  await page.goBack()
+  await expect(page).toHaveURL(/\/glossary$/)
+  await expect.poll(async () => Math.abs((await scrollY()) - position)).toBeLessThan(5)
+
+  await page.goto('/settings')
+  await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }))
+  await page.getByRole('link', { name: 'Más información sobre las cookies' }).click()
+  await expect(page).toHaveURL(/\/terms-and-conditions#cookies$/)
+  // La sección, arriba y debajo de la barra de navegación
+  await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeGreaterThan(0)
+  await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeLessThan(200)
+})

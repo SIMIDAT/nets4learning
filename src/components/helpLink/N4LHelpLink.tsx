@@ -14,7 +14,7 @@ type N4LHelpLinkProps = {
  */
 export default function N4LHelpLink({ page, action, children }: N4LHelpLinkProps) {
   return (
-    <Link className={'text-info'}
+    <Link
       to={{ pathname: `/${page}/`, search: new URLSearchParams({ action }).toString() }}
       target={'_blank'}
       rel={'noreferrer'}>

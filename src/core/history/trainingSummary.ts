@@ -45,6 +45,16 @@ export function bestModelIndex(histories: TrainingLogs_t[]): number {
   return best
 }
 
+/** Hiperparámetros de un modelo tal como se enseñan (nombre → valor) */
+export type ModelParameters_t = Record<string, string>
+
+/** Los hiperparámetros que no valen lo mismo en todos los modelos, en el orden en que los tiene el primero */
+export function changedParameters(parameters: ModelParameters_t[]): string[] {
+  if (parameters.length < 2) return []
+  const names = [...new Set(parameters.flatMap(Object.keys))]
+  return names.filter((name) => new Set(parameters.map((values) => values[name])).size > 1)
+}
+
 /** Épocas de un modelo: las configuradas o, si se detuvo antes, "entrenadas/configuradas" */
 export function formatEpochs(trained: number, configured: number): string {
   return trained < configured ? `${trained}/${configured}` : String(configured)

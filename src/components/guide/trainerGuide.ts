@@ -13,6 +13,8 @@ type TrainerGuideOptions_t = {
   testSize    : 'hp-train-rate' | 'hp-test-size'
   /** La sección Paso a paso (redes densas pequeñas): detrás del botón de entrenar o de la tabla de modelos */
   stepByStep  : 'after-train' | 'after-models' | false
+  /** Un paso por capa (lo que hace cada una), detrás del de las capas */
+  layerSteps? : GuideStep_t[]
 }
 
 /**
@@ -23,7 +25,7 @@ type TrainerGuideOptions_t = {
  * grandes (la red, las capas, las tablas) no fijan dónde va el bocadillo: con 'auto' va donde quepa entero.
  */
 export function trainerGuide(t: GuideTranslate_t, task: TrainerTask_t, dataset: string, options: TrainerGuideOptions_t): GuideStep_t[] {
-  return buildGuideSteps(t, 'guide.train.' + task, dataset, [
+  const steps = buildGuideSteps(t, 'guide.train.' + task, dataset, [
     centerStep('intro'),
     guideStep('session', 'session', 'bottom'),
     guideStep('manual', 'manual', 'bottom'),
@@ -47,4 +49,7 @@ export function trainerGuide(t: GuideTranslate_t, task: TrainerTask_t, dataset: 
     guideStep('explain', 'explain'),
     centerStep('end'),
   ])
+  if (options.layerSteps === undefined || options.layerSteps.length === 0) return steps
+  const afterLayers = steps.findIndex(({ target }) => target === '[data-guide="layers"]') + 1
+  return [...steps.slice(0, afterLayers), ...options.layerSteps, ...steps.slice(afterLayers)]
 }

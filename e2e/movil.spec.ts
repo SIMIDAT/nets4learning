@@ -13,6 +13,7 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
     '/glossary',
     '/manual',
     '/settings',
+    '/learn',
     '/contribute',
     '/version',
     '/terms-and-conditions',
@@ -39,8 +40,11 @@ test('al bajar, la barra de navegación sigue arriba y el índice de secciones a
   expect((await navbar.boundingBox())!.y).toBe(0)
 })
 
-test('el menú se cierra al ir a otra página', async ({ page }) => {
+test('el menú se cierra al ir a otra página, que empieza arriba', async ({ page }) => {
   await page.goto('/')
+  await expect(page.getByTestId('Test-InitialMenu')).toBeVisible()
+  await page.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' }))
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(300)
   const toggler = page.locator('.navbar-toggler')
   await toggler.click()
   await expect(toggler).toHaveAttribute('aria-expanded', 'true')
@@ -48,6 +52,7 @@ test('el menú se cierra al ir a otra página', async ({ page }) => {
   await expect(page).toHaveURL(/\/manual$/)
   await expect(toggler).toHaveAttribute('aria-expanded', 'false')
   await expect(page.locator('.navbar-collapse')).not.toHaveClass(/show/)
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
 })
 
 test('se dibuja un número con el dedo y el modelo lo reconoce', async ({ page }) => {

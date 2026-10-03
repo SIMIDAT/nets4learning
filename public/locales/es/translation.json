@@ -422,6 +422,111 @@
     "scaled-help": "Las {{columns}} columnas de entrada escaladas ({{scaler}}): exactamente lo que recibe la red. Al final, resaltado, lo que tiene que predecir, «{{target}}», que no se escala.",
     "statistics": "Estadísticas de cada columna"
   },
+  "stored-models": {
+    "restored_one": "Se ha recuperado 1 modelo que entrenaste antes con este conjunto de datos: los modelos se guardan en este navegador para no perderlos al recargar.",
+    "restored_other": "Se han recuperado {{count}} modelos que entrenaste antes con este conjunto de datos: los modelos se guardan en este navegador para no perderlos al recargar.",
+    "delete-ask": "Borrar los modelos de este conjunto",
+    "confirm": "¿Seguro? Se borrarán los modelos guardados de este conjunto y saldrán de la tabla.",
+    "delete": "Sí, borrarlos",
+    "cancel": "Cancelar"
+  },
+  "training-diagnosis": {
+    "title": "Cómo ha ido el entrenamiento del modelo {{model}}",
+    "diverged": {
+      "title": "La pérdida se ha disparado",
+      "text": "Desde la época {{epoch}} la pérdida ya no es un número (NaN): los pesos han crecido sin control.",
+      "tip": "Baja la tasa de aprendizaje, por ejemplo a la décima parte, y vuelve a entrenar."
+    },
+    "worse": {
+      "title": "La pérdida ha empeorado",
+      "text": "La pérdida ha subido de {{first}} a {{last}}: los pesos dan saltos tan grandes que se pasan de largo.",
+      "tip": "Baja la tasa de aprendizaje y vuelve a entrenar."
+    },
+    "unstable": {
+      "title": "La pérdida va a saltos",
+      "text": "En la segunda mitad del entrenamiento, la pérdida sube y baja mucho de una época a otra (entre {{min}} y {{max}}): así no se puede saber si está aprendiendo de verdad.",
+      "tip": "Baja la tasa de aprendizaje. Si sigue igual, aumenta el porcentaje de datos de prueba: con pocos, cada época cambia mucho."
+    },
+    "not-learning": {
+      "title": "Apenas ha aprendido",
+      "text": "La pérdida solo ha bajado de {{first}} a {{last}}.",
+      "tip": "Prueba a subir la tasa de aprendizaje o las épocas, o a dar más neuronas a las capas. Revisa también que la última capa tenga la activación adecuada."
+    },
+    "overfitting": {
+      "title": "Se está aprendiendo los datos de memoria (sobreajuste)",
+      "text": "La pérdida con los datos de prueba fue mínima en la época {{epoch}} ({{min}}) y desde entonces ha subido hasta {{last}}, mientras la de entrenamiento seguía bajando.",
+      "tip": "Entrena menos épocas (unas {{epoch}}) o usa una red más pequeña."
+    },
+    "still-improving": {
+      "title": "Seguía mejorando",
+      "text": "En {{epochs}} épocas la pérdida bajó de {{first}} a {{last}}, y al final todavía bajaba.",
+      "tip": "Con más épocas probablemente aprendería más: prueba a subirlas."
+    },
+    "good": {
+      "title": "Ha aprendido bien",
+      "text": "La pérdida bajó de {{first}} a {{last}}, y con los datos de prueba se quedó en {{validation}}.",
+      "tip": "Para comparar, cambia una sola cosa (las neuronas, la tasa de aprendizaje…) y vuelve a entrenar."
+    }
+  },
+  "layer-check": {
+    "title-error": "Revisa las capas: así no se puede entrenar",
+    "title-warning": "Las capas se pueden mejorar",
+    "error": "Error",
+    "warning": "Aviso",
+    "params": {
+      "units": "neuronas",
+      "kernelSize": "tamaño del kernel",
+      "filters": "filtros",
+      "poolSize": "tamaño del pooling",
+      "strides": "paso (strides)"
+    },
+    "param": {
+      "text": "Capa {{layer}}: el valor de «{{param}}» no es válido.",
+      "fix": "Poner {{value}}"
+    },
+    "hidden-softmax": {
+      "text": "Capa {{layer}}: softmax reparte el 100 % entre sus neuronas y solo tiene sentido en la salida; en una capa oculta frena el aprendizaje.",
+      "fix": "Usar ReLU"
+    },
+    "output-units": {
+      "text": "La última capa tiene {{units}} neuronas, pero hay {{classes}} clases: hace falta una neurona por clase.",
+      "fix": "Poner {{classes}}"
+    },
+    "output-activation": {
+      "text": "La última capa usa {{activation}}; con {{expected}}, sus salidas son la probabilidad de cada clase (suman 1).",
+      "fix": "Usar {{expected}}"
+    },
+    "output-missing": {
+      "text": "La red tiene que terminar en una capa Dense con {{classes}} neuronas (una por clase) y Softmax.",
+      "fix": "Añadirla al final"
+    },
+    "after-flatten": {
+      "text": "Capa {{layer}}: después de Flatten la imagen ya es una lista de números, y {{type}} necesita la imagen en dos dimensiones.",
+      "fix": "Quitar la capa"
+    },
+    "flatten-again": {
+      "text": "Capa {{layer}}: los datos ya están aplanados, este Flatten sobra.",
+      "fix": "Quitar la capa"
+    },
+    "dense-before-flatten": {
+      "text": "Capa {{layer}}: una capa Dense recibe una lista de números; antes hace falta un Flatten que aplane la imagen.",
+      "fix": "Añadir Flatten antes"
+    },
+    "too-small": {
+      "text": "Capa {{layer}}: a esas alturas la imagen mide {{height}}×{{width}} y no cabe la ventana de {{window}}×{{window}} de {{type}}.",
+      "fix": "Quitar la capa"
+    }
+  },
+  "download-consent": {
+    "title": "Este modelo descarga unos {{mb}} MB",
+    "reason": {
+      "save-data": "Tu navegador tiene activado el ahorro de datos: se descarga solo si lo pides.",
+      "slow": "Tu conexión parece lenta: la descarga puede tardar un rato.",
+      "always": "En Ajustes has pedido que se pregunte antes de descargar un modelo."
+    },
+    "accept": "Descargar ({{mb}} MB)",
+    "settings": "Puedes cambiarlo en <link1>Ajustes</link1>."
+  },
   "model-selector": {
     "title": "Selector de modelos"
   },
@@ -2200,6 +2305,17 @@
           "stopping": "Deteniendo…",
           "curves-title": "Curvas de entrenamiento",
           "curves-model": "Modelo cuyas curvas se muestran",
+          "curves-compare": "Comparar modelos",
+          "compare-pick": "Modelos que se comparan (hasta {{max}})",
+          "compare-pick-more": "Marca al menos dos modelos para compararlos.",
+          "compare-same": "Tienen los mismos hiperparámetros: lo que cambia entre ellos viene del azar (los pesos con los que empieza cada red y el reparto de los datos).",
+          "compare-one": "Solo cambia {{name}}: la diferencia entre sus resultados se debe sobre todo a eso.",
+          "compare-some": "Cambian varias cosas ({{names}}): con varios cambios a la vez no se sabe cuál ha influido. Para ver qué hace cada uno, cambia solo una cosa entre un entrenamiento y otro.",
+          "compare-quote": "«{{name}}»",
+          "compare-caption": "Hiperparámetros de cada modelo (resaltados, los que cambian) y valores de la última época (entre paréntesis, con los datos de validación).",
+          "compare-parameter": "Parámetro",
+          "compare-changed": "cambia",
+          "compare-final": "{{name}} al final",
           "epoch-axis": "Época",
           "train": "Entrenamiento",
           "validation": "Validación",
@@ -3107,7 +3223,7 @@
         "text": "Todo el aprendizaje automático se ejecuta en tu navegador con TensorFlow.js. No hay ningún servidor que reciba tus datos:",
         "items": [
           "Los ficheros que subes (conjuntos de datos, modelos e imágenes), tus dibujos y la imagen de la cámara se procesan en tu equipo y no se envían a ningún sitio.",
-          "Los modelos que entrenas se quedan en esta pestaña hasta que la cierras, salvo que los descargues tú.",
+          "Los modelos que entrenas con los conjuntos de ejemplo se guardan en tu navegador (como mucho 10 por conjunto) para no perderlos al recargar la página. Los puedes borrar desde Configuración y, para llevártelos, descargarlos.",
           "No pedimos ni guardamos datos personales: no hay cuentas, formularios ni correos."
         ]
       },
@@ -3117,6 +3233,7 @@
         "items": [
           "El idioma, el tema y el backend de TensorFlow.js que elijas.",
           "Los ajustes de la voz de las guías y por qué paso va cada guía.",
+          "Los modelos que entrenas con los conjuntos de ejemplo y si muestras la sección Paso a paso.",
           "Tu decisión sobre las cookies, en una cookie propia."
         ],
         "settings": "Puedes cambiarlo o borrarlo todo desde"
@@ -3178,6 +3295,19 @@
         "wasm": "Calcula en el procesador con WebAssembly. Útil si la tarjeta gráfica da problemas.",
         "cpu": "Calcula en el procesador con JavaScript. Funciona en todas partes, pero es el más lento."
       },
+      "downloads": {
+        "title": "Descarga de modelos",
+        "help": "Algunos modelos preentrenados (detección de objetos, MobileNet…) descargan entre 2 y 18 MB al abrir su página. Puedes pedir que se pregunte antes.",
+        "auto": "Preguntar si ahorro datos o la conexión es lenta",
+        "auto-help": "Cuando el navegador tiene activado el ahorro de datos o la conexión es 2G o 3G.",
+        "always": "Preguntar siempre",
+        "always-help": "Antes de descargar cualquier modelo de más de 2 MB que no hayas descargado antes.",
+        "never": "No preguntar",
+        "never-help": "Los modelos se descargan al abrir su página.",
+        "now-save-data": "Ahora mismo, el navegador tiene activado el ahorro de datos.",
+        "now-slow": "Ahora mismo, la conexión parece lenta.",
+        "now-normal": "Ahora mismo, ni hay ahorro de datos ni la conexión parece lenta (o el navegador no lo dice)."
+      },
       "speech": {
         "title": "Voz de las guías",
         "help": "Las guías de las páginas de los modelos pueden leer cada paso en voz alta con las voces de tu sistema.",
@@ -3213,11 +3343,117 @@
       },
       "data": {
         "title": "Datos guardados en este navegador",
-        "help": "Borra todos los ajustes de la aplicación: idioma, tema, backend, voz y progreso de las guías, tutoriales vistos y tu decisión sobre las cookies. La página se recargará con los valores por defecto.",
+        "help": "Borra todos los ajustes de la aplicación: idioma, tema, backend, voz y progreso de las guías, Paso a paso, los modelos entrenados guardados y tu decisión sobre las cookies. La página se recargará con los valores por defecto.",
+        "models_zero": "No hay modelos entrenados guardados.",
+        "models_one": "Hay 1 modelo entrenado guardado ({{size}}): se recupera al volver a su página.",
+        "models_other": "Hay {{count}} modelos entrenados guardados ({{size}}): cada uno se recupera al volver a su página.",
+        "models-delete": "Borrar los modelos guardados",
         "reset": "Restablecer todos los ajustes",
         "confirm": "¿Seguro? Se borrarán todos los ajustes guardados en este navegador.",
         "confirm-button": "Sí, borrarlos",
         "cancel": "Cancelar"
+      }
+    },
+    "learn": {
+      "title": "Empieza aquí",
+      "intro": "Ocho pasos cortos para aprender lo esencial de las redes neuronales haciendo: de probar una red ya entrenada a preguntarle por qué decide lo que decide. Cada paso se marca solo al hacerlo.",
+      "progress": "{{count}} de {{total}} pasos hechos",
+      "step": "Paso {{number}}",
+      "done": "Hecho",
+      "next": "Siguiente",
+      "go": "Ir al paso",
+      "again": "Volver a hacerlo",
+      "mark-done": "Marcar como hecho",
+      "mark-undone": "Desmarcar",
+      "reset": "Empezar de cero",
+      "reset-confirm": "¿Seguro? Se desmarcarán todos los pasos.",
+      "reset-yes": "Sí, empezar de cero",
+      "reset-no": "Cancelar",
+      "finished": {
+        "title": "¡Recorrido completado!",
+        "text": "Ya sabes entrenar, comparar, arreglar y explicar redes neuronales. Ahora prueba con tus propios datos: sube un CSV en clasificación tabular o en regresión, o analízalo antes en el AED."
+      },
+      "steps": {
+        "glossary": {
+          "title": "Las palabras clave",
+          "text": "Lee en el glosario qué son una red neuronal, una capa, una neurona y una época: salen en todas las páginas."
+        },
+        "pretrained": {
+          "title": "Prueba una red ya entrenada",
+          "text": "Dibuja un número y mira cómo lo reconoce una red entrenada con miles de dígitos escritos a mano (MNIST)."
+        },
+        "train": {
+          "title": "Entrena tu primera red",
+          "text": "Con las flores Iris: pulsa «Entrenar modelo» y mira cómo baja la pérdida época a época. Debajo verás en palabras cómo ha ido."
+        },
+        "compare": {
+          "title": "Cambia una cosa y compara",
+          "text": "Vuelve a entrenar cambiando solo la tasa de aprendizaje y activa «Comparar modelos» junto a las curvas: verás qué ha cambiado y cuál aprende mejor."
+        },
+        "fix-layers": {
+          "title": "Arregla una red mal montada",
+          "text": "En el editor de capas, pon en la última capa un número de neuronas distinto del de clases: aparecerá un aviso. Arréglalo con su botón y entenderás por qué la salida tiene una neurona por clase."
+        },
+        "regression": {
+          "title": "Predice un número",
+          "text": "En regresión la red no elige una clase, sino que da un valor: entrena con Auto MPG para predecir el consumo de un coche."
+        },
+        "cnn": {
+          "title": "Entrena una red para imágenes",
+          "text": "Las redes convolucionales buscan trazos y formas en las imágenes: entrena una con MNIST (tarda algo más que las otras)."
+        },
+        "explain": {
+          "title": "Pregunta al modelo por qué",
+          "text": "Con el modelo de los coches (CAR), haz una predicción y pide su explicación: verás qué atributos han pesado más en la decisión."
+        }
+      },
+      "challenges": {
+        "title": "Retos",
+        "intro": "Cuando ya sepas entrenar, pon a prueba lo aprendido: cambia las capas y los hiperparámetros hasta conseguirlo. Se marcan solos al entrenar.",
+        "progress": "{{count}} de {{total}} retos superados",
+        "passed": "Superado",
+        "result": "Lo has conseguido con un {{value}} de aciertos.",
+        "hint": "Pista",
+        "go": "Intentarlo",
+        "again": "Volver a intentarlo",
+        "iris-accuracy": {
+          "title": "Iris perfecto",
+          "goal": "Con Iris, acierta todas las flores de prueba (las que la red no ve al entrenar): un 100 % de aciertos.",
+          "hint": "Prueba con más épocas (50) y una tasa de aprendizaje algo mayor (0,05). Si no sale a la primera, vuelve a entrenar: cada vez la red empieza con otros pesos."
+        },
+        "iris-tiny": {
+          "title": "Con muy pocas neuronas",
+          "goal": "Con Iris, llega al 90 % de aciertos con 4 neuronas ocultas como mucho (sin contar la capa de salida).",
+          "hint": "Deja una sola capa oculta de 4 neuronas (o dos de 2) y dale más épocas: un problema sencillo no necesita una red grande."
+        },
+        "iris-fast": {
+          "title": "En pocas épocas",
+          "goal": "Con Iris, llega al 90 % de aciertos en 5 épocas como mucho.",
+          "hint": "Con pocas épocas, cada paso tiene que contar: sube la tasa de aprendizaje (0,1) y usa Adam."
+        },
+        "regression-good": {
+          "title": "Un entrenamiento de manual",
+          "goal": "En regresión, con cualquier conjunto de datos, consigue un entrenamiento que el diagnóstico dé por bueno: la pérdida baja y se estabiliza, sin sobreajuste.",
+          "hint": "Empieza con Salary y unas 40 épocas. Si el diagnóstico dice que seguía mejorando, sube las épocas; si dice que la pérdida va a saltos o se dispara, baja la tasa de aprendizaje."
+        },
+        "mnist-fast": {
+          "title": "Dígitos a toda prisa",
+          "goal": "Con MNIST, consigue al menos un 93 % de aciertos con las imágenes de prueba en 2 épocas como mucho.",
+          "hint": "En dos épocas la red ve los datos solo dos veces: prueba a subir la tasa de aprendizaje poco a poco (0,005, 0,01…) sin pasarte, o el diagnóstico te dirá que la pérdida va a saltos o se dispara."
+        }
+      },
+      "toast": {
+        "title": "Paso {{number}} de {{total}} hecho",
+        "next": "Siguiente: {{title}} →",
+        "finished": "¡Has completado el recorrido! →",
+        "close": "Cerrar",
+        "challenge": "¡Reto superado!",
+        "challenges": "Ver los retos →"
+      },
+      "home": {
+        "first": "¿Es tu primera vez? <link1>Empieza aquí</link1>: ocho pasos cortos para aprender haciendo.",
+        "continue": "Llevas {{count}} de {{total}} pasos de <link1>Empieza aquí</link1>: sigue por donde ibas.",
+        "finished": "Has completado <link1>Empieza aquí</link1>: ya puedes probar con tus propios datos."
       }
     }
   },
@@ -3361,7 +3597,19 @@
     "imported": "Configuración importada",
     "error-not-json": "El fichero no es un JSON válido",
     "error-not-session": "El fichero no es una configuración de Nets4Learning",
-    "error-other-task": "La configuración es de otra tarea"
+    "error-other-task": "La configuración es de otra tarea",
+    "error-link": "El enlace no trae una configuración válida (puede que se haya cortado al copiarlo)",
+    "share": {
+      "button": "Compartir",
+      "title": "Compartir este ejercicio",
+      "text": "Quien abra el enlace tendrá esta misma red y estos hiperparámetros, listos para entrenar con el mismo conjunto de datos. Los datos y los modelos entrenados no se comparten.",
+      "link": "Enlace para compartir",
+      "copy": "Copiar",
+      "copied": "¡Copiado!",
+      "native": "Compartir con otra aplicación…",
+      "qr": "O escanéalo con el móvil",
+      "close": "Cerrar"
+    }
   },
   "guide": {
     "button": "Guía",
@@ -4300,7 +4548,7 @@
           },
           "layers": {
             "title": "Las capas",
-            "content": "Una red para imágenes combina varios tipos de capa. Las convolucionales buscan patrones, como bordes o curvas, con filtros pequeños que recorren la imagen; las de agrupación, max pooling, la reducen quedándose con lo más destacado; la de aplanado convierte el resultado en una lista de números, y las densas deciden la clase. La última necesita diez neuronas, una por clase, con la activación softmax."
+            "content": "Una red para imágenes combina varios tipos de capa. Las convolucionales buscan patrones, como bordes o curvas, con filtros pequeños que recorren la imagen; las de agrupación, max pooling, la reducen quedándose con lo más destacado; la de aplanado convierte el resultado en una lista de números, y las densas deciden la clase. La última necesita diez neuronas, una por clase, con la activación softmax. Ahora las vemos una a una."
           },
           "epochs": {
             "title": "Épocas",
@@ -4329,18 +4577,58 @@
           "end": {
             "title": "Ahora tú",
             "content": "Entrena con la red de partida y prueba a dibujar. Después añade o quita una capa convolucional, entrena otra vez y compara en la tabla qué modelo acierta más. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+          },
+          "layer": {
+            "class-name": "símbolo",
+            "conv-first": {
+              "title": "Capa {{number}}: convolución",
+              "content": "Es la primera: recibe la imagen, de {{inputSize}} píxeles en escala de grises. La recorren {{filters}} filtros de {{kernel}}×{{kernel}}; cada uno aprende a reconocer un patrón pequeño (un trazo, un borde, una curva) y deja un mapa de dónde lo encuentra. Por eso salen {{outputChannels}} mapas de {{outputSize}}: uno por filtro, algo más pequeños que la imagen porque el filtro no se sale del borde. Tiene {{params}} pesos que aprender."
+            },
+            "conv": {
+              "title": "Capa {{number}}: convolución",
+              "content": "Recibe los {{inputChannels}} mapas de {{inputSize}} de la capa anterior y los recorre con {{filters}} filtros de {{kernel}}×{{kernel}}. Cada filtro mira todos los mapas a la vez, así que junta patrones sencillos en formas más complejas, como las partes de un {{class}}. Salen {{outputChannels}} mapas de {{outputSize}}, con {{params}} pesos que aprender."
+            },
+            "relu": "Con ReLU, lo negativo pasa a cero: solo sigue adelante lo que se ha encontrado.",
+            "activation": "Su activación es {{activation}}.",
+            "pool": {
+              "title": "Capa {{number}}: max pooling",
+              "content": "Reduce cada mapa quedándose con el valor más alto de cada ventana de {{pool}}×{{pool}}, que avanza de {{strides}} en {{strides}}: lo más destacado de cada zona. Los {{inputChannels}} mapas pasan de {{inputSize}} a {{outputSize}}. No tiene pesos ni aprende nada, pero hace la red más rápida y menos sensible a que el trazo se mueva un poco."
+            },
+            "flatten": {
+              "title": "Capa {{number}}: aplanado (flatten)",
+              "content": "Pone en fila los {{inputChannels}} mapas de {{inputSize}}: una lista de {{values}} números, porque las capas densas no trabajan con imágenes, sino con listas. Tampoco aprende nada."
+            },
+            "dense": {
+              "title": "Capa {{number}}: densa",
+              "content": "Cada una de sus {{units}} neuronas está conectada con los {{inputValues}} valores de la capa anterior: combina todo lo que han encontrado los filtros, esté donde esté en la imagen. Tiene {{params}} pesos que aprender; en una red así, las densas suelen ser las que más tienen."
+            },
+            "output": {
+              "title": "Capa {{number}}: la salida",
+              "content": "La última capa tiene {{units}} neuronas, una por cada {{class}}, conectadas con los {{inputValues}} valores anteriores ({{params}} pesos). Con softmax, sus valores son la probabilidad de cada {{class}} y suman 1: la respuesta de la red es la más alta.",
+              "content-other": "La última capa tiene {{units}} neuronas, conectadas con los {{inputValues}} valores anteriores ({{params}} pesos). Su activación es {{activation}}: con softmax, sus valores serían la probabilidad de cada {{class}}. Mira el aviso de arriba del editor."
+            },
+            "broken": {
+              "title": "Capa {{number}}: no encaja",
+              "content": "Los datos no le llegan con la forma que necesita (o le falta algún parámetro). Mira el aviso de arriba del editor: dice qué pasa y lo arregla con un botón."
+            }
           }
         },
         "IMAGE-MNIST": {
           "intro": {
             "title": "Dígitos escritos a mano",
             "content": "En esta página entrenas una red convolucional que reconoce los dígitos del 0 al 9 escritos a mano, con las imágenes del conjunto MNIST, y después la pruebas dibujando tus propios números. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "layer": {
+            "class-name": "dígito"
           }
         },
         "IMAGE-KMNIST": {
           "intro": {
             "title": "Caracteres japoneses",
             "content": "En esta página entrenas una red convolucional que reconoce diez caracteres hiragana del japonés clásico escritos a mano, del conjunto Kuzushiji-MNIST, y después la pruebas dibujándolos. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "layer": {
+            "class-name": "carácter"
           }
         }
       }

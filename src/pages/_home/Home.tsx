@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation, Trans } from 'react-i18next'
 import { Col, Container, Row, Button, Card } from 'react-bootstrap'
 
 
 import { TASKS, type TASKS_TYPE_V } from '@/TASKS'
 import N4LDivider from '@components/divider/N4LDivider'
+import { LEARNING_STEPS, useLearningPath } from '@core/learning/learningPath'
 
 const SELECTED_TASK_STORAGE_KEY = 'selected-task'
 
@@ -261,6 +262,7 @@ export default function Home() {
             <Col>
               <h1 className="mt-3"><Trans i18nKey={'welcome'} /></h1>
               <p className="lead mb-0"><Trans i18nKey={'pages.index.hero.text'} /></p>
+              <N4LStartHere />
               <h2 className="mt-3"><Trans i18nKey={'welcome-2'} /></h2>
             </Col>
           </Row>
@@ -318,5 +320,19 @@ export default function Home() {
         </Container>
       </main>
     </>
+  )
+}
+
+/** ¿Primera vez? El enlace a «Empieza aquí» (/learn) o, si ya se empezó, cuántos pasos van */
+function N4LStartHere() {
+  const { started, done } = useLearningPath()
+  const count = LEARNING_STEPS.filter(({ id }) => done.includes(id)).length
+  const key = !started ? 'first' : count < LEARNING_STEPS.length ? 'continue' : 'finished'
+  return (
+    <p className={'mt-2 mb-0'} data-testid={'Test-StartHere'}>
+      <Trans i18nKey={'pages.learn.home.' + key}
+        values={{ count, total: LEARNING_STEPS.length }}
+        components={{ link1: <Link to={'/learn'} className={'fw-semibold'} /> }} />
+    </p>
   )
 }

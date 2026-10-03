@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Table, Card, Button, Container, Row, Col } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
@@ -8,6 +8,7 @@ import { bestModelIndex, formatEpochs } from '@core/history/trainingSummary'
 import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
 import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
+import { layersSummary } from '@components/neural-network/layerSummary'
 import { useRegressionContext } from '@context/useRegressionContext'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { CustomModelGenerated_t } from '@core/types'
@@ -28,6 +29,16 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
   // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
   const histories = listModels.data.map((generated) => generated.history.history)
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+  // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
+  const { t } = useTranslation()
+  const parameters = listModels.data.map(({ params_training, params_layers }) => ({
+    'learning-rate': String(params_training.learning_rate),
+    'n-of-epochs'  : String(params_training.n_of_epochs),
+    'test-size'    : params_training.test_size + '%',
+    'layers'       : layersSummary(t, params_layers),
+    'id-optimizer' : nnLabel(params_training.id_optimizer),
+    'id-loss'      : nnLabel(params_training.id_loss),
+  }))
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
@@ -146,7 +157,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
             </Row>
             <Row>
               <Col>
-                <N4LTrainingCurves histories={histories} />
+                <N4LTrainingCurves histories={histories} parameters={parameters} />
               </Col>
             </Row>
           </>}

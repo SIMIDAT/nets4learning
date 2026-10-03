@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
@@ -5,6 +6,33 @@ import N4LLatex from '@components/latex/N4LLatex'
 import { termCharacteristics, termTitle, type GlossaryTerm_t } from './glossaryTerms'
 import { ACTIVATION_FUNCTIONS } from './activationFunctions'
 import GlossaryActivationPlot from './GlossaryActivationPlot'
+
+/**
+ * Una fórmula, que en pantallas estrechas puede no caber y desplazarse en horizontal: entonces se puede enfocar, para
+ * recorrerla también con el teclado (solo entonces: con todas, habría decenas de paradas al tabular).
+ */
+function GlossaryFormula({ children }: { children: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [isScrollable, setIsScrollable] = useState(false)
+  useEffect(() => {
+    const element = ref.current
+    if (element === null) return
+    const check = () => setIsScrollable(element.scrollWidth > element.clientWidth)
+    check()
+    // La fórmula se ensancha al llegar las fuentes de KaTeX, sin que cambie el tamaño de su caja
+    void document.fonts?.ready.then(check)
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(check)
+    observer.observe(element)
+    element.querySelectorAll('.katex').forEach((formula) => observer.observe(formula))
+    return () => observer.disconnect()
+  }, [])
+  return (
+    <div ref={ref} className={'n4l-glossary-formula'} tabIndex={isScrollable ? 0 : undefined}>
+      <N4LLatex>{children}</N4LLatex>
+    </div>
+  )
+}
 
 const CONFUSION = ['tp', 'tn', 'fp', 'fn'] as const
 const CONFUSION_EN = { tp: 'True Positive', tn: 'True Negative', fp: 'False Positive', fn: 'False Negative' }
@@ -62,7 +90,7 @@ export default function GlossaryTerm({ term, headingLevel = 3 }: { term: Glossar
         {term.math !== undefined &&
           <div className={'n4l-glossary-math'}>
             {term.math.map((item, index) => typeof item === 'string'
-              ? <div key={index} className={'n4l-glossary-formula'}><N4LLatex>{item}</N4LLatex></div>
+              ? <GlossaryFormula key={index}>{item}</GlossaryFormula>
               : <div key={index} className={'small text-body-secondary'}><N4LLatex>{t(item.noteKey)}</N4LLatex></div>)}
           </div>}
         {term.confusionLegend && <ConfusionLegend />}

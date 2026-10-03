@@ -69,3 +69,41 @@ export function downloadSession(session: TrainingSession_t) {
   link.click()
   URL.revokeObjectURL(url)
 }
+
+// region Enlace para compartir: la sesión va en la dirección, tras #n4z= (JSON comprimido con deflate, en base64url) o,
+// si el navegador no sabe comprimir, tras #n4l= (el JSON tal cual). Lo que va tras # no llega al servidor: la
+// configuración solo la ve quien abre el enlace. Comprimida ocupa unas tres veces menos: el QR se lee mejor.
+const PLAIN_PREFIX = '#n4l='
+const DEFLATE_PREFIX = '#n4z='
+
+const toBase64Url = (bytes: Uint8Array) => {
+  let binary = ''
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte) })
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+const fromBase64Url = (text: string) => Uint8Array.from(atob(text.replace(/-/g, '+').replace(/_/g, '/')), (char) => char.charCodeAt(0))
+
+async function pipe(bytes: Uint8Array, stream: CompressionStream | DecompressionStream): Promise<Uint8Array> {
+  return new Uint8Array(await new Response(new Response(bytes as BlobPart).body!.pipeThrough(stream)).arrayBuffer())
+}
+
+/** La parte de la dirección con la sesión (#n4z=… o #n4l=…) */
+export async function sessionHash(session: TrainingSession_t): Promise<string> {
+  const bytes = new TextEncoder().encode(JSON.stringify(session))
+  if (typeof CompressionStream !== 'function') return PLAIN_PREFIX + toBase64Url(bytes)
+  return DEFLATE_PREFIX + toBase64Url(await pipe(bytes, new CompressionStream('deflate-raw')))
+}
+
+/** El texto (JSON) de la sesión que viene en la dirección; null si no trae ninguna. Lo valida parseSession */
+export async function sessionFromHash(hash: string): Promise<string | null> {
+  const isDeflated = hash.startsWith(DEFLATE_PREFIX)
+  if (!isDeflated && !hash.startsWith(PLAIN_PREFIX)) return null
+  try {
+    const encoded = fromBase64Url(hash.slice(PLAIN_PREFIX.length))
+    const bytes = isDeflated ? await pipe(encoded, new DecompressionStream('deflate-raw')) : encoded
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+  } catch {
+    throw new SessionError('session.error-link')
+  }
+}
+// endregion

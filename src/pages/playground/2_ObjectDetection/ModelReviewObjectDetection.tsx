@@ -7,10 +7,11 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
 import { trackDownloads } from '@core/downloadProgress'
+import { askBeforeDownload } from '@core/models/downloadConsent'
 import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
 import { useMaximize } from '@components/maximize/useMaximize'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
@@ -189,7 +190,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        // Con el progreso real de la descarga (los de COCO-SSD y MoveNet pesan varios MB)
+        // Con ahorro de datos o conexión lenta, antes se pregunta; luego, con el progreso real (COCO-SSD pesa unos 18 MB)
+        await askBeforeDownload(TASKS.OBJECT_DETECTION, dataset)
         await trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load')
         setLoading(false)
         await alertHelper.alertSuccess(t('model-loaded-successfully'))

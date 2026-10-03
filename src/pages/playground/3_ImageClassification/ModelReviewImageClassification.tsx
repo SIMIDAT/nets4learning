@@ -8,10 +8,11 @@ import type I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
 import type { ImageClassificationResult_t } from "./models/_model"
 import type { SpriteImageDataset } from "./models/SpriteImageDataset"
 import { VERBOSE } from "@/CONSTANTS"
-import { UPLOAD } from "@/TASKS"
+import { TASKS, UPLOAD } from "@/TASKS"
 import alertHelper from "@utils/alertHelper"
 import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
 import { trackDownloads } from "@core/downloadProgress"
+import { askBeforeDownload } from "@core/models/downloadConsent"
 import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
 
 import ModelReviewImageClassificationDraw from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw"
@@ -91,7 +92,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        // Con el progreso real de la descarga (MobileNet pesa unos 16 MB)
+        // Con ahorro de datos o conexión lenta, antes se pregunta; luego, con el progreso real (MobileNet pesa unos 16 MB)
+        await askBeforeDownload(TASKS.IMAGE_CLASSIFICATION, dataset)
         const _model = await trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load') as tfjs.LayersModel
         // Shaders compilados antes de poder clasificar: la primera clasificación ya no bloquea la página
         if (_model instanceof tfjs.LayersModel) await warmUpModel(_model)
