@@ -957,3 +957,49 @@ h6 {
   width: fit-content;
   cursor: pointer;
 }
+
+/* Procesamiento de un conjunto de datos subido (N4LDatasetProcessForm): pasos, bloques y una tarjeta por columna. La
+   columna que se predice, del mismo color que en las tablas */
+.n4l-process-steps .nav-link {
+  border: 1px solid var(--bs-border-color);
+}
+
+.n4l-process-block {
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+}
+
+.n4l-process-block > legend {
+  float: none;
+  width: auto;
+  margin-bottom: 0.5rem;
+}
+
+.n4l-process-column {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+}
+
+.n4l-process-column.is-target {
+  border-color: var(--n4l-target-color);
+  box-shadow: inset 4px 0 0 var(--n4l-target-color);
+}
+
+.n4l-process-column.is-unused {
+  opacity: 0.6;
+}
+
+.n4l-target-badge {
+  background-color: var(--n4l-target-color);
+  color: #fff;
+}
+
+.n4l-process-summary {
+  padding: 1rem;
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-tertiary-bg);
+}

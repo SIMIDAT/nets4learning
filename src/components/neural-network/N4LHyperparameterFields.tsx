@@ -48,7 +48,7 @@ type HyperparameterNumberProps = {
 export function HyperparameterNumber({ controlId, name, min, max, defaultValue, onChange }: HyperparameterNumberProps) {
   const { t } = useTranslation()
   return (
-    <Form.Group className="mb-3" controlId={controlId}>
+    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-' + name}>
       <FieldLabel name={name} />
       <Form.Control
         type="number"
@@ -80,7 +80,7 @@ type HyperparameterLearningRateProps = {
 /** Selector de la tasa de aprendizaje con su valor real (0.01, no "1 %"). */
 export function HyperparameterLearningRate({ controlId, defaultValue, onChange }: HyperparameterLearningRateProps) {
   return (
-    <Form.Group className="mb-3" controlId={controlId}>
+    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-learning-rate'}>
       <FieldLabel name={'learning-rate'} />
       <Form.Select
         aria-describedby={controlId + '-info'}
@@ -108,7 +108,7 @@ type HyperparameterSelectProps = {
 export function HyperparameterSelect({ controlId, label, info, value, defaultValue, disabled, onChange, children }: HyperparameterSelectProps) {
   const { t } = useTranslation()
   return (
-    <Form.Group className="mb-3" controlId={controlId}>
+    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-' + label.replace(/-id$/, '')}>
       <FieldLabel name={label} />
       <Form.Select
         aria-label={t(prefix + info)}
@@ -159,7 +159,7 @@ type MetricsListProps = {
 /** Lista editable de métricas de entrenamiento: una por pestaña, cada una con su botón de borrar. */
 export function MetricsList({ metrics, onChange, onRemove, valuePrefix = '' }: MetricsListProps) {
   return (
-    <Accordion className={'mt-2'}>
+    <Accordion className={'mt-2'} data-guide={'hp-metrics'}>
       {metrics.map((metric, index) => (
         <Accordion.Item key={index} eventKey={index.toString()}>
           <Accordion.Header>

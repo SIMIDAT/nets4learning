@@ -189,15 +189,20 @@ test('la guía del modelo CAR solo empieza con su botón y explica la página pa
   await expect(tooltip).toHaveCount(0)
 })
 
-// Una guía de cada tarea, entera: cada paso encuentra su elemento (si no, se saltaría y el contador daría un salto). Los
-// modelos de detección y MobileNet se descargan de internet: sus guías las prueban modelReviewGuide.test.ts
+// Una guía de cada tarea, entera, en la página de un modelo y en la de entrenar: cada paso encuentra su elemento (si no,
+// se saltaría y el contador daría un salto). Los modelos de detección y MobileNet se descargan de internet: sus guías
+// las prueban modelReviewGuide.test.ts
 const GUIDES = [
   { path: '/playground/tabular-classification/model/LYMPHOGRAPHY', ready: '[data-guide="form"]' },
   { path: '/playground/regression/model/AUTO_MPG', ready: '[data-guide="field-weight"]' },
   { path: '/playground/image-classification/model/IMAGE-MNIST', ready: '[data-guide="model-summary"]' },
+  { path: '/playground/tabular-classification/dataset/IRIS', ready: '[data-guide="hp-learning-rate"]' },
+  { path: '/playground/regression/dataset/AUTO_MPG', ready: '[data-guide="hp-learning-rate"]' },
+  { path: '/playground/image-classification/dataset/IMAGE-MNIST', ready: '[data-guide="layers"]' },
+  { path: '/glossary', ready: '.n4l-glossary-search' },
 ]
 for (const { path, ready } of GUIDES) {
-  test(`la guía de ${path.split('/').pop()} recorre todos sus pasos en orden`, async ({ page }) => {
+  test(`la guía de ${path.split('/').slice(-2).join('/')} recorre todos sus pasos en orden`, async ({ page }) => {
     test.setTimeout(120_000)
     await page.addInitScript(() => { window.speechSynthesis.speak = () => {} })
     await page.goto(path)
@@ -281,4 +286,83 @@ test('el aviso de cookies explica qué se mide, rechazar es tan fácil como acep
   const dataLayer = await page.evaluate(() => (window as unknown as { dataLayer: unknown[][] }).dataLayer.map((args) => Array.from(args)))
   expect(dataLayer).toContainEqual(['consent', 'default', expect.objectContaining({ ad_storage: 'denied', analytics_storage: 'granted' })])
   expect(dataLayer).toContainEqual(['event', 'page_view', expect.objectContaining({ page_type: 'playground', task: 'tabular-classification', mode: 'pretrained', item: 'CAR' })])
+})
+
+test('el paso a paso enseña un ejemplo hacia delante y hacia atrás, y con más ejemplos la pérdida baja', async ({ page }) => {
+  // Oculto por defecto: se activa en /settings
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible()
+  await expect(page.getByTestId('Test-StepByStep')).toHaveCount(0)
+  await page.goto('/settings')
+  await page.getByTestId('Test-Settings-learning').getByRole('checkbox').check()
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  const card = page.getByTestId('Test-StepByStep')
+  const phase = card.getByTestId('Test-StepByStep-Phase')
+  await expect(phase).toHaveText('La entrada')
+  // 4 + 10 + 10 + 3 neuronas: entrada, tres capas hacia delante, error, tres hacia atrás y actualización
+  const titles = [await phase.innerText()]
+  for (let i = 0; i < 8; i++) {
+    await card.getByTestId('Test-StepByStep-Next').click()
+    titles.push(await phase.innerText())
+  }
+  expect(titles).toEqual(['La entrada', 'Hacia delante: capa 1', 'Hacia delante: capa 2', 'Hacia delante: capa 3', 'El error',
+    'Hacia atrás: capa 3', 'Hacia atrás: capa 2', 'Hacia atrás: capa 1', 'Actualizar los pesos'])
+  // En la actualización, cuánto cambian el sesgo y el peso que más se mueve
+  await expect(card.getByTestId('Test-StepByStep-Formula')).toContainText('El peso que más cambia')
+  for (let i = 0; i < 5; i++) await card.getByTestId('Test-StepByStep-Ten').click()
+  const history = await card.getByTestId('Test-StepByStep-History').innerText()
+  const [, first, last] = history.match(/de ([\d,]+) a ([\d,]+)/)!.map((value) => Number(value.replace(',', '.')))
+  expect(last).toBeLessThan(first)
+
+  // CAR, con su red por defecto, es demasiado grande para seguirla
+  await page.goto('/playground/tabular-classification/dataset/CAR')
+  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('234 neuronas')
+
+  // En la página de un modelo ya entrenado, con sus pesos: IRIS (4 + 10 + 3) cabe; AUTO_MPG no
+  await page.goto('/playground/tabular-classification/model/IRIS')
+  const model = page.getByTestId('Test-StepByStep')
+  await expect(model).toContainText('Así calcula este modelo ya entrenado su respuesta')
+  for (let i = 0; i < 3; i++) await model.getByTestId('Test-StepByStep-Next').click()
+  await expect(model.getByTestId('Test-StepByStep-Phase')).toHaveText('El error')
+  await page.goto('/playground/regression/model/AUTO_MPG')
+  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('135 neuronas')
+})
+
+test('un conjunto de datos propio se prepara en tres pasos y después se puede entrenar', async ({ page }) => {
+  const upload = (file: string) => page.locator('input[type=file]:not([data-testid="Test-SessionImport"])').first()
+    .setInputFiles(path.join(__dirname, '..', 'public', file))
+  const ok = async () => {
+    const confirm = page.locator('.swal2-confirm')
+    if (await confirm.isVisible().catch(() => false)) await confirm.click()
+  }
+
+  // Clasificación: la última columna es la clase; antes de procesar no se puede entrenar
+  await page.goto('/playground/tabular-classification/dataset/UPLOAD')
+  await upload('models/00-tabular-classification/car/car.csv')
+  await ok()
+  const form = page.getByTestId('Test-DatasetProcess-Form')
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Result» tiene 4 clases')
+  await expect(page.getByTestId('Test-DatasetProcess-Summary')).toContainText('Entrarán 6 columnas')
+  await form.getByTestId('Test-DatasetProcess-Column-Doors').getByRole('checkbox').uncheck()
+  await expect(page.getByTestId('Test-DatasetProcess-Summary')).toContainText('Entrarán 5 columnas')
+  await form.getByTestId('Test-DatasetProcess-Submit').click()
+  await ok()
+  await expect(page.getByTestId('Test-DatasetProcess-Done')).toContainText('1728 filas, 5 columnas de entrada')
+  await expect(page.getByTestId('Test-TrainButton')).toBeEnabled()
+
+  // Regresión: un objetivo de texto no se puede predecir; hasta procesar, no se entrena
+  await page.goto('/playground/regression/dataset/UPLOAD')
+  await upload('datasets/01-regression/auto-mpg/auto-mpg.csv')
+  await ok()
+  await expect(page.getByTestId('Test-TrainButton')).toBeDisabled()
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«mpg» va de')
+  await page.getByTestId('Test-DatasetProcess-Submit').click()
+  await ok()
+  await expect(page.getByTestId('Test-DatasetProcess-Done')).toContainText('396 filas, 6 columnas de entrada y «mpg»')
+  await expect(page.getByTestId('Test-TrainButton')).toBeEnabled()
+  // El conjunto se actualiza en su sitio: no sale repetido en el selector de fichero, y se ve lo que recibe la red
+  await expect(page.locator('#regression-dataset-file')).toHaveCount(0)
+  const views = page.locator('[data-guide="dataset"]')
+  await views.getByTestId('Test-DatasetViews').getByText('Escalado (entrada de la red)').click()
+  await expect(views.getByTestId('Test-DatasetViews-Help')).toContainText('exactamente lo que recibe la red')
 })

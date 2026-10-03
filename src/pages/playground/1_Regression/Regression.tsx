@@ -1,7 +1,7 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
+import { Accordion, Card, Col, Form, Row } from 'react-bootstrap'
 import * as tfjs from '@tensorflow/tfjs'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
@@ -12,10 +12,14 @@ import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
+import N4LGuide from '@components/guide/N4LGuide'
+import { trainerGuide } from '@components/guide/trainerGuide'
+import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
+import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
+import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
 import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
-import N4LJoyride from '@components/joyride/N4LJoyride'
 import DebugJSON from '@components/debug/DebugJSON'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
@@ -59,7 +63,11 @@ export default function Regression({ dataset }: RegressionProps_t) {
   const { t } = useTranslation()
   const training = useTrainingProgress()
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
-  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.predict', 'hr.explainability']
+  // Paso a paso solo si se ha activado en /settings
+  const stepByStep = useStepByStepEnabled()
+  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', ...(stepByStep ? ['hr.step-by-step'] : []), 'hr.predict', 'hr.explainability']
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso
+  const guideSteps = useMemo(() => trainerGuide(t, '1-regression', dataset, { upload: dataset === UPLOAD, datasetTable: true, testSize: 'hp-train-rate', stepByStep: stepByStep ? 'after-models' : false }), [t, dataset, stepByStep])
 
   const {
     // prediction,
@@ -82,6 +90,15 @@ export default function Regression({ dataset }: RegressionProps_t) {
     iModelInstance,
     setIModelInstance,
   } = useRegressionContext()
+
+  // El paso a paso (N4LStepByStep): las capas del editor y las filas ya procesadas, como las recibe la red
+  const stepLayers = useMemo(() => params.params_layers.map(({ units, activation }) => ({ units, activation: activation ?? 'linear' })), [params.params_layers])
+  const stepProcessed = datasets.data[datasets.index]?.data_processed
+  const stepData = useMemo(() => ({
+    X       : dataframeRowsToNumbers(stepProcessed?.X.values),
+    y       : ((stepProcessed?.y.values ?? []) as number[]).map((value) => [Number(value)]),
+    features: (stepProcessed?.X.columns ?? []) as string[],
+  }), [stepProcessed])
 
   // region SESIÓN: exportar e importar capas e hiperparámetros
   // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
@@ -135,7 +152,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
   }
   // endregion
 
-  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
 
 
 
@@ -281,25 +297,16 @@ export default function Regression({ dataset }: RegressionProps_t) {
   if (VERBOSE) console.debug('render Regression')
   return (
     <>
-      <N4LJoyride 
-        joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.JOYRIDE()}
-        TASK={'regression'}
-        KEY={'LinearRegression'}
-      />
-
       <N4LSectionLayout steps={steps}>
         <Row className={'mt-2 mb-3'}>
           <Col xl={12}>
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <h1><Trans i18nKey={'modality.' + param_id} /></h1>
               <div className={'d-flex flex-wrap gap-2'}>
-                <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
-                <Button className={'text-nowrap'} size={'sm'}
-                  variant={'outline-primary'}
-                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                  <Trans i18nKey={'datasets-models.1-regression.joyride.title'} />
-                </Button>
+                <N4LGuide id={'train.regression.' + dataset} steps={guideSteps} compact={true} />
+                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
+                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                </div>
               </div>
             </div>
           </Col>
@@ -310,7 +317,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         <Row>
           <Col>
             <Accordion defaultActiveKey={[]} activeKey={accordionActive}>
-              <Accordion.Item className={'joyride-step-1-manual'} eventKey={'manual'}>
+              <Accordion.Item data-guide={'manual'} eventKey={'manual'}>
                 <Accordion.Header onClick={() => accordionToggle('manual')} as={'h2'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={'pages.playground.1-regression.generator.manual.title'} />
                 </Accordion.Header>
@@ -319,7 +326,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item className={'joyride-step-2-dataset-info'} eventKey={'dataset_info'}>
+              <Accordion.Item data-guide={'dataset-info'} eventKey={'dataset_info'}>
                 <Accordion.Header onClick={() => accordionToggle('dataset_info')} as={'h2'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.i18n_TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
@@ -334,7 +341,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         {/* PROCESS DATASET */}
         {dataset === UPLOAD && <>
           <N4LDivider i18nKey={'hr.process-dataset'} steps={steps} />
-          <Row className={'joyride-step-3-pre-process-dataset'}>
+          <Row data-guide={'process'}>
             <Col>
               <Suspense fallback={<></>}><RegressionDatasetProcess /></Suspense>
             </Col>
@@ -343,7 +350,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
         {/* SHOW DATASET */}
         <N4LDivider i18nKey={'hr.dataset'} steps={steps} />
-        <Row className={'joyride-step-4-dataset'}>
+        <Row data-guide={'dataset'}>
           <Col>
             <Suspense fallback={<></>}><RegressionDatasetShow /></Suspense>
           </Col>
@@ -352,7 +359,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
         {/* MODEL */}
         <N4LDivider i18nKey={'hr.model'} steps={steps} />
         <Row>
-          <Col className={'joyride-step-5-layer'}>
+          <Col data-guide={'layer-design'}>
             <N4LLayerDesign
               layers={params.params_layers}
               show={ready}
@@ -372,22 +379,17 @@ export default function Regression({ dataset }: RegressionProps_t) {
         <Form onSubmit={handleSubmit_TrainModel}>
           <Row className={'mt-3'}>
             <Col className={'mb-3'}>
-              <div className={'joyride-step-6-editor-layers'}>
-                <Suspense fallback={<></>}><RegressionEditorLayers /></Suspense>
-              </div>
-
-              <div className={'joyride-step-6-editor-selector-features'}>
-                <Suspense fallback={<></>}><RegressionEditorFeaturesSelector /></Suspense>
-              </div>
+              <Suspense fallback={<></>}><RegressionEditorLayers /></Suspense>
+              <Suspense fallback={<></>}><RegressionEditorFeaturesSelector /></Suspense>
             </Col>
 
-            <Col className={'joyride-step-7-editor-trainer'}>
+            <Col>
               <Suspense fallback={<></>}><RegressionEditorHyperparameters key={sessionVersion} /></Suspense>
             </Col>
           </Row>
 
           <Row className={'mt-3'}>
-            <Col xl={12}>
+            <Col xl={12} data-guide={'train'}>
               <N4LTrainButton isTraining={training.isTraining}
                 progress={training.progress}
                 isStopping={training.isStopping}
@@ -402,15 +404,27 @@ export default function Regression({ dataset }: RegressionProps_t) {
         <hr />
 
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-8-list-of-models'}>
+          <Col data-guide={'models'}>
             <Suspense fallback={<></>}><RegressionTableModels /></Suspense>
           </Col>
         </Row>
 
+        {/* Paso a paso, si se ha activado en /settings */}
+        {stepByStep && <>
+          <N4LDivider i18nKey={'hr.step-by-step'} steps={steps} />
+          <Row className={'mt-3'} data-guide={'step-by-step'}>
+            <Col>
+              <N4LStepByStep kind={'regression'} layers={stepLayers} X={stepData.X} y={stepData.y}
+                featureNames={stepData.features} outputNames={[stepProcessed?.column_name_target ?? '']}
+                learningRate={params.params_training.learning_rate} />
+            </Col>
+          </Row>
+        </>}
+
         <N4LDivider i18nKey={'hr.predict'} steps={steps} />
 
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-9-predict-visualization'}>
+          <Col data-guide={'predict'}>
             <Suspense fallback={<></>}>
               <RegressionPrediction steps={steps} />
             </Suspense>

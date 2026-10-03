@@ -122,10 +122,10 @@ export default function ImageClassificationEditorLayers(props: Props) {
 
   if (VERBOSE) console.debug('render ImageClassificationLayerEditor')
   return <>
-    <Card className={'joyride-step-6-editor-layers'}>
+    <Card data-guide={'layers'}>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h3><Trans i18nKey={prefix + 'title'} /></h3>
-        <div className={'d-flex'}>
+        <div className={'d-flex'} data-guide={'layers-add'}>
           {/*
          <Button variant={'outline-primary'}
                   size={'sm'}

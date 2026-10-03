@@ -1,8 +1,8 @@
 import './TabularClassification.css'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
+import { Accordion, Card, Col, Form, Row } from 'react-bootstrap'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
@@ -15,7 +15,6 @@ import { createTabularClassificationCustomModel } from '@core/controller/00-tabu
 
 import alertHelper from '@utils/alertHelper'
 
-import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import { argMax } from '@core/nn-utils/classificationOutput'
@@ -23,6 +22,10 @@ import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
+import N4LGuide from '@components/guide/N4LGuide'
+import { trainerGuide } from '@components/guide/trainerGuide'
+import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
+import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
@@ -125,7 +128,6 @@ export default function TabularClassification(props: Props) {
   const predictedVector_ref = useRef<number[] | null>(null)
   const predictedDisplay_ref = useRef<Array<string | number> | null>(null)
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
-  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
   const training = useTrainingProgress()
 
   // region SESIÓN: exportar e importar capas e hiperparámetros
@@ -161,7 +163,19 @@ export default function TabularClassification(props: Props) {
   }
   // endregion
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
-  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
+  // Paso a paso solo si se ha activado en /settings
+  const stepByStep = useStepByStepEnabled()
+  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', ...(stepByStep ? ['hr.step-by-step'] : []), 'hr.generated-models', 'hr.classify', 'hr.explainability']
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso
+  const guideSteps = useMemo(() => trainerGuide(t, '0-tabular-classification', dataset, { upload: dataset === UPLOAD, datasetTable: true, testSize: 'hp-train-rate', stepByStep: stepByStep ? 'after-train' : false }), [t, dataset, stepByStep])
+  // El paso a paso (N4LStepByStep): las capas del editor y las filas ya procesadas, como las recibe la red
+  const stepLayers = useMemo(() => layers.map(({ units, activation }) => ({ units, activation: activation ?? 'linear' })), [layers])
+  const stepProcessed = datasets.datasets[datasets.index]?.data_processed
+  const stepData = useMemo(() => ({
+    X       : dataframeRowsToNumbers(stepProcessed?.X.values),
+    y       : (stepProcessed?.y.values ?? []) as number[][],
+    features: (stepProcessed?.X.columns ?? []) as string[],
+  }), [stepProcessed])
 
 
   useEffect(() => {
@@ -326,24 +340,16 @@ export default function TabularClassification(props: Props) {
   if (VERBOSE) console.debug('render TabularClassificationCustomDataset')
   return (
     <>
-      <N4LJoyride joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.JOYRIDE()}
-        TASK={'tabular-classification'}
-        KEY={'TabularClassification'}
-      />
-
       <N4LSectionLayout steps={steps} className={'mb-3'}>
         <Row className={'mt-3 mb-3'}>
           <Col xl={12}>
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <h1><Trans i18nKey={'modality.0'} /></h1>
               <div className={'d-flex flex-wrap gap-2'}>
-                <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
-                <Button className={'text-nowrap'} size={'sm'}
-                  variant={'outline-primary'}
-                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                  <Trans i18nKey={'datasets-models.0-tabular-classification.joyride.title'} />
-                </Button>
+                <N4LGuide id={'train.tabular-classification.' + dataset} steps={guideSteps} compact={true} />
+                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
+                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                </div>
               </div>
             </div>
           </Col>
@@ -354,7 +360,7 @@ export default function TabularClassification(props: Props) {
         <Row className={'mt-3'}>
           <Col>
             <Accordion defaultActiveKey={dataset === UPLOAD ? ['dataset_info'] : []}>
-              <Accordion.Item className={'joyride-step-manual'} key={UPLOAD} eventKey={'manual'}>
+              <Accordion.Item data-guide={'manual'} key={UPLOAD} eventKey={'manual'}>
                 <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={prefixManual + 'manual.title'} />
                 </Accordion.Header>
@@ -362,7 +368,7 @@ export default function TabularClassification(props: Props) {
                   <TabularClassificationManual />
                 </Accordion.Body>
               </Accordion.Item>
-              <Accordion.Item className={'joyride-step-dataset-info'} key={'1'} eventKey={'dataset_info'}>
+              <Accordion.Item data-guide={'dataset-info'} key={'1'} eventKey={'dataset_info'}>
                 <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
@@ -377,7 +383,7 @@ export default function TabularClassification(props: Props) {
         {/* PROCESS DATASET */}
         {dataset === UPLOAD && <>
           <N4LDivider i18nKey={'hr.process-dataset'} steps={steps} />
-          <Row className={'mt-3 joyride-step-process-dataset'}>
+          <Row className={'mt-3'} data-guide={'process'}>
             <Col>
               <TabularClassificationDatasetProcess />
             </Col>
@@ -386,7 +392,7 @@ export default function TabularClassification(props: Props) {
 
         {/* SHOW DATASET */}
         <N4LDivider i18nKey={'hr.dataset'} steps={steps} />
-        <Row className={'mt-3 joyride-step-dataset'}>
+        <Row className={'mt-3'} data-guide={'dataset'}>
           <Col>
             <TabularClassificationDatasetShow />
           </Col>
@@ -408,7 +414,7 @@ export default function TabularClassification(props: Props) {
           <Form onSubmit={handleSubmit_CreateModel} id={'TabularClassificationCustomDataset'}>
             {/* BLOCK 1 */}
             <Row className={'mt-3'}>
-              <Col xl={12} className={'joyride-step-layer'}>
+              <Col xl={12} data-guide={'layer-design'}>
                 <N4LLayerDesign
                   layers={layers}
                   show={datasets.index >= 0}
@@ -419,19 +425,19 @@ export default function TabularClassification(props: Props) {
 
             <Row className={'mt-3'}>
               {/* LAYERS EDITOR */}
-              <Col className={'mt-3 joyride-step-editor-layers'} xl={6}>
+              <Col className={'mt-3'} xl={6}>
                 <TabularClassificationEditorLayers />
               </Col>
 
               {/* HYPERPARAMETERS EDITOR */}
-              <Col className={'mt-3 joyride-step-editor-trainer'} xl={6}>
+              <Col className={'mt-3'} xl={6}>
                 <TabularClassificationEditorHyperparameters key={sessionVersion} />
               </Col>
             </Row>
 
             {/* BLOCK BUTTON SUBMIT */}
             <Row className={'mt-3'}>
-              <Col xl={12}>
+              <Col xl={12} data-guide={'train'}>
                 <N4LTrainButton isTraining={training.isTraining}
                   progress={training.progress}
                   isStopping={training.isStopping}
@@ -444,9 +450,20 @@ export default function TabularClassification(props: Props) {
           </Form>
         }
 
+        {/* STEP BY STEP (si se ha activado en /settings) */}
+        {stepByStep && <>
+          <N4LDivider i18nKey={'hr.step-by-step'} steps={steps} />
+          <Row className={'mt-3'} data-guide={'step-by-step'}>
+            <Col>
+              <N4LStepByStep kind={'classification'} layers={stepLayers} X={stepData.X} y={stepData.y}
+                featureNames={stepData.features} outputNames={stepProcessed?.classes ?? []} learningRate={learningRate} />
+            </Col>
+          </Row>
+        </>}
+
         {/* TABLE MODELS */}
         <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
-        <Row className={'mt-3 joyride-step-list-of-models'}>
+        <Row className={'mt-3'} data-guide={'models'}>
           <Col>
             <TabularClassificationTableModels />
           </Col>
@@ -455,7 +472,7 @@ export default function TabularClassification(props: Props) {
         {/* CLASSIFICATION */}
         <N4LDivider i18nKey={'hr.classify'} steps={steps} />
 
-        <Row className={'mt-3 joyride-step-classify-visualization'}>
+        <Row className={'mt-3'} data-guide={'predict'}>
           <Col xl={12}>
             <TabularClassificationPrediction dataset={dataset} handleSubmit_PredictVector={handleSubmit_PredictVector} />
           </Col>

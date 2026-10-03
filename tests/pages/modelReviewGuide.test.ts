@@ -54,10 +54,11 @@ async function cases(): Promise<Case_t[]> {
   const tabular = await Promise.all(TABULAR_REVIEW_GUIDES.map(async (model) => {
     const ModelClass = await MAP_TC_CLASSES[model]()
     const fields = new ModelClass(((key: string) => key) as never, () => {}).FORM.map(({ name }) => name)
-    return { task: 'tabular-classification', prefix: 'guide.0-tabular-classification', model, build: (t: GuideTranslate_t) => tabularReviewGuide(t, model, fields) }
+    // Con Paso a paso activado (/settings): así se comprueban también sus textos
+    return { task: 'tabular-classification', prefix: 'guide.0-tabular-classification', model, build: (t: GuideTranslate_t) => tabularReviewGuide(t, model, fields, true) }
   }))
   const regression = REGRESSION_REVIEW_GUIDES.map((model) => (
-    { task: 'regression', prefix: 'guide.1-regression', model, build: (t: GuideTranslate_t) => regressionReviewGuide(t, model, REGRESSION_FIELDS[model]) }))
+    { task: 'regression', prefix: 'guide.1-regression', model, build: (t: GuideTranslate_t) => regressionReviewGuide(t, model, REGRESSION_FIELDS[model], true) }))
   const detection = OBJECT_DETECTION_REVIEW_GUIDES.map((model) => (
     { task: 'object-detection', prefix: 'guide.2-object-detection', model, build: (t: GuideTranslate_t) => objectDetectionReviewGuide(t, model) }))
   const images = await Promise.all(IMAGE_CLASSIFICATION_REVIEW_GUIDES.map(async (model) => {
@@ -85,6 +86,16 @@ describe('Guías de las páginas de los modelos', () => {
       }
       expect(missing, model).toEqual([])
     }
+  })
+
+  test('el paso de Paso a paso solo está si se ha activado en /settings', () => {
+    const t: GuideTranslate_t = (keys) => (Array.isArray(keys) ? keys[0] : keys)
+    const targets = (stepByStep: boolean) => [
+      ...tabularReviewGuide(t, 'IRIS', ['sepal_length'], stepByStep)!,
+      ...regressionReviewGuide(t, 'AUTO_MPG', REGRESSION_FIELDS.AUTO_MPG, stepByStep)!,
+    ].map(({ target }) => target)
+    expect(targets(false)).not.toContain('[data-guide="step-by-step"]')
+    expect(targets(true).filter((target) => target === '[data-guide="step-by-step"]')).toHaveLength(2)
   })
 
   test('todos los modelos del menú tienen guía', () => {

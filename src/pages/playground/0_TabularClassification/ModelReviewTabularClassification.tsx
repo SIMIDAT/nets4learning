@@ -25,6 +25,10 @@ import { trackDownloads } from "@core/downloadProgress"
 import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
 import { trackEvent } from "@core/analytics"
 import { tabularReviewGuide } from "./modelReviewGuide"
+import N4LStepByStep from "@components/neural-network/stepByStep/N4LStepByStep"
+import { useStepByStepEnabled } from "@components/neural-network/stepByStep/stepByStepSetting"
+import { usePretrainedNetwork } from "@components/neural-network/stepByStep/usePretrainedNetwork"
+import { PRETRAINED_LEARNING_RATE } from "@core/nn-utils/stepByStep"
 type Props = {
   dataset: string
 }
@@ -223,9 +227,32 @@ export default function ModelReviewTabularClassification(props: Props) {
   // endregion
 
   // Guía paso a paso de la página (con voz), si el modelo la tiene: solo con el botón "Guía"
+  // Paso a paso (si se ha activado en /settings), con los pesos de este modelo
+  const stepByStep = useStepByStepEnabled()
+  const stepNetwork = usePretrainedNetwork(model, stepByStep)
+  // Las filas como las recibe el modelo (codificadas, como el formulario) y su clase en one-hot, en el orden de CLASSES.
+  // Una clase sin salida en el modelo no se puede enseñar: en CAR, «good» (el modelo solo tiene 3 salidas)
+  const stepData = useMemo(() => {
+    const outputs = stepNetwork?.layers.at(-1)?.units ?? 0
+    if (!datasetProcessed?.data_processed || iModelInstance === null || outputs === 0) return null
+    const { dataframe_X, column_name_target } = datasetProcessed.data_processed
+    const inputs = dataframeRowsToNumbers(dataframe_X.values)
+    const X: number[][] = []
+    const y: number[][] = []
+    const rows: number[] = []
+    ;(datasetProcessed.dataframe_original[column_name_target].values as unknown[]).forEach((target, row) => {
+      const index = iModelInstance.CLASS_INDEX(target)
+      if (index < 0 || index >= outputs) return
+      X.push(inputs[row])
+      y.push(Array.from({ length: outputs }, (_, k) => (k === index ? 1 : 0)))
+      rows.push(row)
+    })
+    return { X, y, rows, features: dataframe_X.columns as string[], classes: iModelInstance.CLASSES.slice(0, outputs).map((name) => t(name)) }
+  }, [datasetProcessed, iModelInstance, stepNetwork, t])
+
   const guideSteps = useMemo(() => (iModelInstance === null
     ? null
-    : tabularReviewGuide(t, dataset, iModelInstance.FORM.map(({ name }) => name))), [t, dataset, iModelInstance])
+    : tabularReviewGuide(t, dataset, iModelInstance.FORM.map(({ name }) => name), stepByStep)), [t, dataset, iModelInstance, stepByStep])
 
   if (VERBOSE) console.debug("render ModelReviewTabularClassification")
   return (
@@ -351,6 +378,13 @@ export default function ModelReviewTabularClassification(props: Props) {
               getPool={() => backgroundPool_ref.current}
               getInstanceDisplay={() => predictedDisplay_ref.current}
             />
+
+            {stepByStep && stepNetwork !== undefined && (
+              <div className={"mt-3"} data-guide={"step-by-step"}>
+                <N4LStepByStep kind={"classification"} initialNetwork={stepNetwork} X={stepData?.X ?? []} y={stepData?.y ?? []} rowNumbers={stepData?.rows}
+                  featureNames={stepData?.features ?? []} outputNames={stepData?.classes ?? []} learningRate={PRETRAINED_LEARNING_RATE} />
+              </div>
+            )}
           </Col>
         </Row>}
       </Container>

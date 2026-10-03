@@ -1,5 +1,4 @@
 import type * as _tfjs from '@tensorflow/tfjs'
-import { buildJoyride } from '@components/joyride/buildJoyride'
 
 import * as _Types from '@core/types'
 import type { TFunction } from 'i18next'
@@ -67,19 +66,6 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
 
   HTML_EXAMPLE() {
     return <></>
-  }
-
-  JOYRIDE(): _Types.Joyride_t {
-    return buildJoyride(this.t, 'datasets-models.0-tabular-classification.joyride.steps.', [
-      { key: 'manual', target: '.joyride-step-manual', placement: 'top' },
-      { key: 'dataset-info', target: '.joyride-step-dataset-info', placement: 'top' },
-      { key: 'dataset', target: '.joyride-step-dataset', placement: 'top' },
-      { key: 'layer-visualizer', target: '.joyride-step-layer', placement: 'top' },
-      { key: 'layer-editor', target: '.joyride-step-editor-layers', placement: 'right' },
-      { key: 'params-editor', target: '.joyride-step-editor-trainer', placement: 'left-start' },
-      { key: 'list-of-models', target: '.joyride-step-list-of-models', placement: 'bottom' },
-      { key: 'classify-and-visualizer', target: '.joyride-step-classify-visualization', placement: 'top' },
-    ])
   }
 
 }

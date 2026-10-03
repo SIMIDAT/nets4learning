@@ -2,7 +2,7 @@ import './N4LGuide.css'
 import { createContext, useContext, useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { Button, CloseButton, Form, ProgressBar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
-import { ArrowRepeat, PauseFill, PlayFill, SkipStartFill, VolumeMuteFill, VolumeUpFill } from 'react-bootstrap-icons'
+import { ArrowRepeat, PauseFill, PlayFill, Signpost2Fill, SkipStartFill, VolumeMuteFill, VolumeUpFill } from 'react-bootstrap-icons'
 import Joyride, { ACTIONS, EVENTS, STATUS, type CallBackProps, type Step, type TooltipRenderProps } from 'react-joyride'
 
 import { trackEvent } from '@core/analytics'
@@ -25,8 +25,11 @@ export type GuideStep_t = {
 
 type N4LGuideProps = {
   /** Nombre de la guía: con él se guarda en el navegador por qué paso va */
-  id   : string
-  steps: GuideStep_t[]
+  id      : string
+  steps   : GuideStep_t[]
+  /** Solo el botón, para ir entre otros (la cabecera de las páginas de entrenamiento): relleno y con icono, para que no
+   * se confunda con los de al lado. Si no, ocupa todo el ancho */
+  compact?: boolean
 }
 
 /** Lo que manejan los botones del bocadillo, que react-joyride pinta por su cuenta */
@@ -60,7 +63,7 @@ const hasUserActivation = () =>
  * cada uno. Se guarda por qué paso va: al recargar la página (el móvil lo hace al desbloquearlo) se vuelve a abrir en
  * ese paso si estaba abierta y, si se cerró, el botón sigue desde ahí. No arranca sola en ningún otro caso.
  */
-export default function N4LGuide({ id, steps }: N4LGuideProps) {
+export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) {
   const { t, i18n } = useTranslation()
   // Voz, avanzar solo, velocidad y voz elegida: los mismos que en /settings
   const { voice, auto, rate, voices: chosenVoices } = useGuideSettings()
@@ -232,14 +235,17 @@ export default function N4LGuide({ id, steps }: N4LGuideProps) {
     spotlightPadding: 6,
   })), [steps])
 
+  const button = (
+    <Button size={'sm'} variant={compact ? 'primary' : 'outline-primary'} className={compact ? 'text-nowrap' : undefined}
+      onClick={() => start(stepIndex)} title={t('guide.button-title')} data-testid={'Test-GuideButton'}>
+      {compact && <Signpost2Fill className={'me-1'} aria-hidden={true} />}
+      {/* Cerrada a medias, sigue desde ese paso; abierta, el paso ya se ve en el bocadillo */}
+      {!run && stepIndex > 0 ? t('guide.resume', { current: stepIndex + 1, total: steps.length }) : t('guide.button')}
+    </Button>
+  )
+
   return <>
-    <div className={'d-grid mb-2'}>
-      <Button size={'sm'} variant={'outline-primary'} onClick={() => start(stepIndex)} title={t('guide.button-title')}
-        data-testid={'Test-GuideButton'}>
-        {/* Cerrada a medias, sigue desde ese paso; abierta, el paso ya se ve en el bocadillo */}
-        {!run && stepIndex > 0 ? t('guide.resume', { current: stepIndex + 1, total: steps.length }) : t('guide.button')}
-      </Button>
-    </div>
+    {compact ? button : <div className={'d-grid mb-2'}>{button}</div>}
     {run &&
       <GuideControls.Provider value={controls}>
         <Joyride run={true}

@@ -27,7 +27,7 @@ export const REGRESSION_REVIEW_GUIDES = Object.keys(GUIDES)
  * conjuntos de datos (tal cual, procesados y su análisis), el formulario, la predicción y su explicación. `fields`
  * son las variables de entrada del conjunto elegido.
  */
-export function regressionReviewGuide(t: GuideTranslate_t, modelKey: string, fields: string[]): GuideStep_t[] | null {
+export function regressionReviewGuide(t: GuideTranslate_t, modelKey: string, fields: string[], stepByStep = false): GuideStep_t[] | null {
   const guide = GUIDES[modelKey]
   if (guide === undefined) return null
   const specs: GuideStepSpec_t[] = [
@@ -46,6 +46,8 @@ export function regressionReviewGuide(t: GuideTranslate_t, modelKey: string, fie
     guideStep('predict', 'predict'),
     guideStep('result', 'result'),
     guideStep('explain', 'explain'),
+    // Paso a paso, solo si se ha activado en /settings
+    ...(stepByStep ? [guideStep('step-by-step', 'step-by-step')] : []),
     centerStep('end'),
   ]
   return buildGuideSteps(t, 'guide.1-regression', modelKey, specs.flatMap((spec) => [spec, ...(guide.extra?.[spec.key] ?? [])]))

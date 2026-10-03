@@ -20,7 +20,7 @@ export const TABULAR_REVIEW_GUIDES = Object.keys(GUIDES)
  * modelo, sus datos, el formulario, cómo se convierte en números, la clasificación y su explicación. Los elementos que
  * señala llevan data-guide.
  */
-export function tabularReviewGuide(t: GuideTranslate_t, modelKey: string, fields: string[]): GuideStep_t[] | null {
+export function tabularReviewGuide(t: GuideTranslate_t, modelKey: string, fields: string[], stepByStep = false): GuideStep_t[] | null {
   const guide = GUIDES[modelKey]
   if (guide === undefined) return null
   return buildGuideSteps(t, 'guide.0-tabular-classification', modelKey, [
@@ -38,6 +38,8 @@ export function tabularReviewGuide(t: GuideTranslate_t, modelKey: string, fields
     guideStep('classify', 'classify'),
     guideStep('result', 'result'),
     guideStep('explain', 'explain'),
+    // Paso a paso, solo si se ha activado en /settings
+    ...(stepByStep ? [guideStep('step-by-step', 'step-by-step')] : []),
     centerStep('end'),
   ])
 }

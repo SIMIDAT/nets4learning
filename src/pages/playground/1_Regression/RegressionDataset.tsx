@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as dfd from 'danfojs'
 import { DataFrameReadCSV } from '@core/dataframe/DataFrameUtils'
 
 import * as _Types from '@core/types'
@@ -43,27 +42,19 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
       const _dataframeProcessed = await DataFrameReadCSV(file_csv)
 
       /**@type {_Types.DatasetProcessed_t} */
+      // Sin procesar: hasta pasar por el formulario de procesamiento no hay entradas ni objetivo, ni se puede entrenar
+      // (antes se marcaba como procesado con todo vacío y el botón de entrenar se activaba)
       const newDataset: _Types.DatasetProcessed_t = {
         is_dataset_upload   : true,
-        is_dataset_processed: true,
+        is_dataset_processed: false,
         csv                 : files[0].name,
         path                : '',
         info                : '',
         container_info      : '',
-        dataset             : [/* TODO */],
+        dataset             : [],
         dataframe_original  : _dataframeOriginal,
         dataframe_processed : _dataframeProcessed,
         dataset_transforms  : [],
-        data_processed      : {
-          /* TODO */
-          encoders          : {},
-          column_name_target: '',
-          scaler            : new dfd.MinMaxScaler(),
-          dataframe_X       : new dfd.DataFrame(),
-          dataframe_y       : new dfd.DataFrame(),
-          X                 : new dfd.DataFrame(),
-          y                 : new dfd.DataFrame(),
-        }
       }
       setDatasets((prevState) => {
         return {

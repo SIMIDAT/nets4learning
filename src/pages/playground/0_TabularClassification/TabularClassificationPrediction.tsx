@@ -106,7 +106,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
         </h3>
         <div className={'d-flex flex-wrap gap-2 n4l-card-header-controls'}>
           {(generatedModels.length !== 0 && dataset_selected && dataset_selected.is_dataset_processed) && <>
-            <div className={'joyride-step-select-instance n4l-instance-select'}>
+            <div className={'n4l-instance-select'}>
               <N4LVirtualSelect options={rowOptions}
                 value={selectedRow}
                 onChange={handleChange_Row}
@@ -118,7 +118,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
             </div>
           </>}
           {generatedModels.length !== 0 && <>
-            <Form.Group controlId={'MODEL'} className={'joyride-step-select-model'}>
+            <Form.Group controlId={'MODEL'}>
               <Form.Select
                 aria-label={t('selector-model')}
                 size={'sm'}

@@ -9,12 +9,13 @@ import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 import * as ImageClassificationUtils from './utils/utils'
 
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
-import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
+import N4LGuide from '@components/guide/N4LGuide'
+import { trainerGuide } from '@components/guide/trainerGuide'
 import { downloadSession, parseSession, SessionError } from '@core/session/trainingSession'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
@@ -66,6 +67,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const training = useTrainingProgress()
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
   const steps = ['hr.information', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso
+  const guideSteps = useMemo(() => trainerGuide(t, '3-image-classification', dataset, { upload: false, datasetTable: false, testSize: 'hp-test-size', stepByStep: false }), [t, dataset])
   const navigate = useNavigate()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
 
@@ -119,7 +122,6 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   }
   // endregion
 
-  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
   /**
    * @type {ReturnType<typeof useState<tfjs.Sequential>>}
    */
@@ -410,13 +412,6 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   if (VERBOSE) console.debug('render ImageClassification')
   return (
     <>
-      <N4LJoyride
-        joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.JOYRIDE()}
-        TASK={'image-classification'}
-        KEY={'ImageClassification'}
-      />
-
       {/* MANUAL */}
       <N4LSectionLayout steps={steps}>
         <Row className={'mt-3'}>
@@ -424,13 +419,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
               <h1><Trans i18nKey={'modality.3'} /></h1>
               <div className={'d-flex flex-wrap gap-2'}>
-                <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
-                <Button className={'text-nowrap'}
-                  size={'sm'}
-                  variant={'outline-primary'}
-                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                  <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
-                </Button>
+                <N4LGuide id={'train.image-classification.' + dataset} steps={guideSteps} compact={true} />
+                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
+                  <N4LSessionButtons onExport={handleClick_ExportSession} onImport={handleImport_Session} />
+                </div>
               </div>
             </div>
           </Col>
@@ -442,7 +434,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         <Row className={'mt-3'}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
             <Accordion>
-              <Accordion.Item eventKey={'manual'} className={'joyride-step-1-manual'}>
+              <Accordion.Item eventKey={'manual'} data-guide={'manual'}>
                 <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} />
                 </Accordion.Header>
@@ -451,7 +443,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey={'description-dataset'} className={'joyride-step-2-dataset-info'}>
+              <Accordion.Item eventKey={'description-dataset'} data-guide={'dataset-info'}>
                 <Accordion.Header as={'h3'} className={'n4l-accordion-h3'}>
                   <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
@@ -469,7 +461,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         <Form onSubmit={handleSubmit_Play} id={'ImageClassification'}>
 
           <Row className={'mt-3'}>
-            <Col xl={12} className={'joyride-step-5-layer'}>
+            <Col xl={12} data-guide={'layer-design'}>
               <N4LLayerDesign layers={Layers} />
             </Col>
           </Row>
@@ -503,7 +495,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           </Row>
 
           <Row className={'mt-3'}>
-            <Col>
+            <Col data-guide={'train'}>
               {/* BLOCK  BUTTON */}
               <N4LTrainButton isTraining={training.isTraining}
                 progress={training.progress}
@@ -520,7 +512,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
         {/* GENERATED MODELS */}
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-8-list-of-models'}>
+          <Col data-guide={'models'}>
             <ImageClassificationTableModels
               rowsPerPage={3}
               GeneratedModels={GeneratedModels}
@@ -532,7 +524,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
         {/* BLOCK 2 */}
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-9-classify'}>
+          <Col data-guide={'predict'}>
             <ImageClassificationClassify
               handleSubmit_VectorTest={handleSubmit_VectorTest}
               handleSubmit_VectorTestImageUpload={handleSubmit_VectorTestImageUpload}
@@ -558,7 +550,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
         <Row className={'mt-3'}>
           <Col xl={12}>
-            <Card data-testid={'explainability-card'}>
+            <Card data-testid={'explainability-card'} data-guide={'explain'}>
               <Card.Header>
                 <h3>{t('pages.playground.0-tabular-classification.general.explain-panel-title')} (LRP)</h3>
               </Card.Header>

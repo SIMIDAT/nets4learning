@@ -66,7 +66,7 @@ export default function ImageClassificationEditorHyperparameters(props: ImageCla
 
   if (VERBOSE) console.debug('render ImageClassificationEditorHyperparameters')
   return <>
-    <Card className={'sticky-top joyride-step-7-editor-trainer'} style={{ zIndex: 10 }}>
+    <Card className={'sticky-top'} style={{ zIndex: 10 }}>
       <Card.Header><h3><Trans i18nKey={prefix + 'title'} /></h3></Card.Header>
       <Card.Body>
         <HyperparameterLearningRate controlId="formLearningRate"

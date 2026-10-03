@@ -41,10 +41,10 @@ export default function N4LEditorLayers(props: N4LEditorLayersProps) {
   const { t } = useTranslation()
 
   return <>
-    <Card>
+    <Card data-guide={'layers'}>
       <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
         <Title><Trans i18nKey={prefix + 'title'} /></Title>
-        <div className={'d-flex gap-2'}>
+        <div className={'d-flex gap-2'} data-guide={'layers-add'}>
           <Button disabled={waiting} variant={'outline-primary'} size={'sm'} className={'text-nowrap'} onClick={onAddStart}>
             <Trans i18nKey={prefix + 'add-layer-start'} />
           </Button>

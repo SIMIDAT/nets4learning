@@ -1,6 +1,5 @@
 import type * as _dfd from "danfojs"
 import type * as _tfjs from "@tensorflow/tfjs"
-import type { CallBackProps } from "react-joyride"
 import type _I_MODEL_TABULAR_CLASSIFICATION from "@pages/playground/0_TabularClassification/models/_model"
 import type _I_MODEL_REGRESSION from "@pages/playground/1_Regression/models/_model"
 import type _I_MODEL_OBJECT_DETECTION from "@pages/playground/2_ObjectDetection/models/_model"
@@ -651,38 +650,3 @@ export type StateInstance_t = {
 
 // TYPESCRIPT TYPE EXPORTS
 
-/**
- * @typedef JoyrideStep_t
- * @property {string} title
- * @property {string} content
- * @property {string} target
- * @property {'top'|'right'|'bottom'|'left'|'left-start'} placement
- */
-export type JoyrideStep_t = {
-  title    : string
-  content  : string
-  target   : string
-  placement: "top" | "right" | "bottom" | "left" | "left-start"
-}
-
-/**
- * @typedef Joyride_t
- * @property {boolean} run
- * @property {boolean} continuous
- * @property {(data: CallBackProps) => Promise<void>} [handleJoyrideCallback]
- * @property {Array<JoyrideStep_t>} steps
- */
-
-export type Joyride_t = {
-  run                   : boolean
-  continuous            : boolean
-  handleJoyrideCallback?: (data: CallBackProps) => Promise<void>
-  steps                 : Array<JoyrideStep_t>
-}
-
-/**
- * Lo que N4LJoyride expone a la página (vía ref) para arrancar el tour desde un botón.
- */
-export type JoyrideHandle_t = {
-  handleClick_StartJoyride?: () => void
-}

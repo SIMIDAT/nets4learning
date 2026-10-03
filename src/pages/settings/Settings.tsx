@@ -21,7 +21,8 @@ import {
 import { clearAllGuideProgress } from '@components/guide/guideProgress'
 import { MAX_RATE, MIN_RATE, setGuideVoice, updateGuideSettings, useGuideSettings } from '@components/guide/guideSettings'
 import { isSpeechSupported, useSpeech, useVoices, voicesForLanguage } from '@components/guide/speech'
-import { countSeenTrainingTutorials, resetAllSettings, resetTrainingTutorials } from './storedSettings'
+import { setStepByStepEnabled, useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
+import { resetAllSettings } from './storedSettings'
 
 const prefix = 'pages.settings.'
 
@@ -39,8 +40,8 @@ function Section({ id, title, help, children }: { id: string, title: string, hel
 }
 
 /**
- * Configuración general de la aplicación: idioma y tema, backend de TensorFlow.js, voz de las guías, guías y
- * tutoriales, cookies y lo guardado en el navegador. Los mismos ajustes que la barra de navegación y la guía, en un
+ * Configuración general de la aplicación: idioma y tema, backend de TensorFlow.js, voz de las guías, progreso de las
+ * guías, herramientas para aprender (Paso a paso), cookies y lo guardado en el navegador. Los mismos ajustes que la barra de navegación y la guía, en un
  * solo sitio y explicados.
  */
 export default function Settings() {
@@ -55,6 +56,7 @@ export default function Settings() {
           <Col><BackendSettings /></Col>
           <Col><SpeechSettings /></Col>
           <Col><TutorialSettings /></Col>
+          <Col><LearningSettings /></Col>
           <Col><PrivacySettings /></Col>
           <Col><StoredDataSettings /></Col>
         </Row>
@@ -207,25 +209,32 @@ function SpeechSettings() {
 function TutorialSettings() {
   const { t } = useTranslation()
   const [guidesReset, setGuidesReset] = useState(false)
-  const [seen, setSeen] = useState(countSeenTrainingTutorials)
 
   return (
     <Section id={'tutorials'} title={t(prefix + 'tutorials.title')}>
       <p className={'small text-body-secondary'}>{t(prefix + 'tutorials.guides-help')}</p>
-      <div className={'d-flex flex-wrap align-items-center gap-2 mb-4'}>
+      <div className={'d-flex flex-wrap align-items-center gap-2'}>
         <Button variant={'outline-primary'} onClick={() => {
           clearAllGuideProgress()
           setGuidesReset(true)
         }}>{t(prefix + 'tutorials.guides-reset')}</Button>
         {guidesReset && <span className={'small text-success-emphasis'} role={'status'}>{t(prefix + 'tutorials.done')}</span>}
       </div>
-      <p className={'small text-body-secondary'}>{t(prefix + 'tutorials.training-help', { count: seen })}</p>
-      <div className={'d-flex flex-wrap align-items-center gap-2'}>
-        <Button variant={'outline-primary'} disabled={seen === 0} onClick={() => {
-          resetTrainingTutorials()
-          setSeen(0)
-        }}>{t(prefix + 'tutorials.training-reset')}</Button>
-      </div>
+    </Section>
+  )
+}
+
+/** Lo que se puede enseñar de más en las páginas para aprender: de momento, Paso a paso (oculto por defecto) */
+function LearningSettings() {
+  const { t } = useTranslation()
+  const stepByStep = useStepByStepEnabled()
+  return (
+    <Section id={'learning'} title={t(prefix + 'learning.title')} help={t(prefix + 'learning.help')}>
+      <Form.Check type={'switch'} id={'settings-learning-step-by-step'} className={'mb-2'}
+        label={t(prefix + 'learning.step-by-step')}
+        checked={stepByStep}
+        onChange={(event) => setStepByStepEnabled(event.target.checked)} />
+      <p className={'small text-body-secondary mb-0'}>{t(prefix + 'learning.step-by-step-help')}</p>
     </Section>
   )
 }

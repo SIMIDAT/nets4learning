@@ -20,6 +20,10 @@ import N4LGuide from "@components/guide/N4LGuide"
 import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
 import { trackDownloads } from "@core/downloadProgress"
 import { regressionReviewGuide } from "./modelReviewGuide"
+import N4LStepByStep from "@components/neural-network/stepByStep/N4LStepByStep"
+import { useStepByStepEnabled } from "@components/neural-network/stepByStep/stepByStepSetting"
+import { usePretrainedNetwork } from "@components/neural-network/stepByStep/usePretrainedNetwork"
+import { PRETRAINED_LEARNING_RATE } from "@core/nn-utils/stepByStep"
 import { dataframeRowsToNumbers, dataframeRowsWithDisplay } from "@core/explainability/shapSampling"
 
 // Valor de la variable objetivo para la lista de instancias: sin decimales de más
@@ -238,9 +242,18 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
 
   // Guía paso a paso de la página (con voz), si el modelo la tiene: un paso por variable de entrada del conjunto elegido
   const guideFields = datasetSelected?.data_processed?.dataframe_X.columns
+  // Paso a paso (si se ha activado en /settings), con los pesos del modelo elegido y las filas del conjunto elegido
+  const stepByStep = useStepByStepEnabled()
+  const stepNetwork = usePretrainedNetwork(explainModel, stepByStep)
+  const stepData = useMemo(() => ({
+    X       : dataframeRowsToNumbers(explainDataProcessed?.X.values),
+    y       : ((explainDataProcessed?.y.values ?? []) as number[]).map((value) => [Number(value)]),
+    features: (explainDataProcessed?.X.columns ?? []) as string[],
+  }), [explainDataProcessed])
+
   const guideSteps = useMemo(() => (iModelInstance === null
     ? null
-    : regressionReviewGuide(t, dataset, guideFields ?? [])), [t, dataset, iModelInstance, guideFields])
+    : regressionReviewGuide(t, dataset, guideFields ?? [], stepByStep)), [t, dataset, iModelInstance, guideFields, stepByStep])
 
   if (VERBOSE) console.debug("render ModelReviewRegression")
   return (
@@ -372,6 +385,14 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                 getInstanceDisplay={() => (prediction.input_2_dataframe_encoding.values[0] as Array<string | number> | undefined) ?? null}
                 valuesAreScaled
               />
+
+              {stepByStep && stepNetwork !== undefined && (
+                <div className={"mt-3"} data-guide={"step-by-step"}>
+                  <N4LStepByStep kind={"regression"} initialNetwork={stepNetwork} X={stepData.X} y={stepData.y}
+                    featureNames={stepData.features} outputNames={[explainDataProcessed?.column_name_target ?? ""]}
+                    learningRate={PRETRAINED_LEARNING_RATE} />
+                </div>
+              )}
             </Col>
           </Row>
         )}

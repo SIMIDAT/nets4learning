@@ -337,6 +337,91 @@
     }
   },
   "dataframe-processed": "DataFrame | Procesado",
+  "dataset-process": {
+    "tabs": {
+      "original": "1. Datos originales",
+      "form": "2. Cómo procesarlos",
+      "processed": "3. Datos procesados"
+    },
+    "original-help": "{{rows}} filas y {{columns}} columnas, tal como están en el fichero. La columna resaltada es la que se va a predecir.",
+    "classification": {
+      "target-title": "¿Qué columna es la clase?",
+      "target-help": "La red aprenderá a decir a qué clase pertenece cada fila. Suele ser la última columna.",
+      "target-badge": "Clase",
+      "target-transform": "Cada clase se convierte en un número para entrenar.",
+      "summary_one": "Entrará {{count}} columna en la red y se predice «{{target}}» ({{classes}} clases), con escalado {{scaler}}.",
+      "summary_other": "Entrarán {{count}} columnas en la red y se predice «{{target}}» ({{classes}} clases), con escalado {{scaler}}."
+    },
+    "regression": {
+      "target-title": "¿Qué número quieres predecir?",
+      "target-help": "La red aprenderá a calcular el valor de esta columna a partir de las demás. Tiene que ser numérica.",
+      "target-badge": "Se predice",
+      "target-transform": "Se usa tal cual: es el número que se predice.",
+      "summary_one": "Entrará {{count}} columna en la red y se predice «{{target}}», con escalado {{scaler}}.",
+      "summary_other": "Entrarán {{count}} columnas en la red y se predice «{{target}}», con escalado {{scaler}}."
+    },
+    "target-classes": "«{{name}}» tiene {{count}} clases ({{sample}}): la red tendrá {{count}} neuronas de salida.",
+    "target-too-many": "Son {{count}} clases, demasiadas para una clasificación: ¿seguro que es esta columna? Si es un número continuo, quizá encaje mejor la regresión.",
+    "target-range": "«{{name}}» va de {{min}} a {{max}}, con una media de {{mean}}.",
+    "target-not-numeric": "«{{name}}» es una columna de texto y la regresión predice números: elige una numérica o usa la clasificación tabular.",
+    "scaler-title": "Escalado de las entradas",
+    "scaler-help": "Cada columna tiene su escala (años, euros, centímetros). Escalarlas hace que todas pesen parecido y que la red aprenda mejor.",
+    "scalers": {
+      "min-max-scaler": {
+        "name": "Min-Max",
+        "help": "Lleva cada columna al intervalo de 0 a 1."
+      },
+      "standard-scaler": {
+        "name": "Estándar",
+        "help": "Resta la media y divide entre la desviación típica: media 0 y desviación 1. Aguanta mejor los valores extremos."
+      }
+    },
+    "columns-title": "Columnas de entrada",
+    "columns-help": "Elige qué columnas usa la red y cómo se convierten en números. Las de texto se codifican como categorías: un número por cada valor distinto.",
+    "use": "Usar",
+    "types": {
+      "int32": "Entero",
+      "float32": "Decimal",
+      "string": "Texto",
+      "boolean": "Sí/no",
+      "datetime": "Fecha"
+    },
+    "transforms": {
+      "int32": "Como número entero",
+      "float32": "Como número decimal",
+      "label-encoder": "Como categoría (un número por valor)",
+      "drop": "No se usa",
+      "string": "Como texto",
+      "boolean": "Como sí/no",
+      "one-hot-encoder": "Una columna por valor (one-hot)"
+    },
+    "transform-of": "Cómo se convierte «{{name}}»",
+    "distinct_one": "{{count}} valor: {{sample}}",
+    "distinct_other": "{{count}} valores distintos, p. ej. {{sample}}",
+    "range_one": "siempre {{min}}",
+    "range_other": "de {{min}} a {{max}} ({{count}} valores distintos)",
+    "no-inputs": "No hay ninguna columna de entrada: activa al menos una.",
+    "submit": "Procesar los datos",
+    "done_one": "Datos listos: {{rows}} filas, {{count}} columna de entrada y «{{target}}» para predecir. Ya puedes diseñar la red más abajo.",
+    "done_other": "Datos listos: {{rows}} filas, {{count}} columnas de entrada y «{{target}}» para predecir. Ya puedes diseñar la red más abajo.",
+    "view": "Qué datos ver",
+    "views": {
+      "scaled": "Escalados",
+      "encoded": "Codificados",
+      "scaled-help": "Las columnas de entrada ya escaladas: exactamente lo que recibe la red.",
+      "encoded-help": "Cada categoría ya convertida en un número, antes de escalar; debajo de cada columna, cómo se ha convertido."
+    }
+  },
+  "dataset-view": {
+    "file": "Fichero",
+    "original": "Original",
+    "encoded": "Codificado",
+    "scaled": "Escalado (entrada de la red)",
+    "original-help": "Los datos tal como están en el fichero: {{rows}} filas y {{columns}} columnas. La columna resaltada, «{{target}}», es la que se predice.",
+    "encoded-help": "Cada categoría de texto ya es un número y no están las columnas que no se usan. Todavía sin escalar.",
+    "scaled-help": "Las {{columns}} columnas de entrada escaladas ({{scaler}}): exactamente lo que recibe la red. Al final, resaltado, lo que tiene que predecir, «{{target}}», que no se escala.",
+    "statistics": "Estadísticas de cada columna"
+  },
   "model-selector": {
     "title": "Selector de modelos"
   },
@@ -653,47 +738,6 @@
         "0-option-1": "Clasificación de coches",
         "0-option-2": "Clasificación de flor iris",
         "0-option-3": "Clasificación de linfomas"
-      },
-      "joyride": {
-        "title": "Activar el tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "Puedes consultar el manual en búsqueda de información"
-          },
-          "dataset-info": {
-            "title": "Información del conjunto de datos",
-            "content": "Analiza el conjunto de datos"
-          },
-          "dataset": {
-            "title": "Conjunto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
-          },
-          "dataset-plot": {
-            "title": "Gráficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
-          },
-          "layer-visualizer": {
-            "title": "Visor de las capas de la red neuronal",
-            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
-          },
-          "layer-editor": {
-            "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
-          },
-          "params-editor": {
-            "title": "Editor de hiperparámetros",
-            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
-          },
-          "list-of-models": {
-            "title": "Lista de modelos",
-            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar la clasificación."
-          },
-          "classify-and-visualizer": {
-            "title": "Clasificar y visualizar",
-            "content": "Una vez cargado nuestro modelo para la clasificación tabular puedes realizar la clasificación y visualizar los resultados"
-          }
-        }
       }
     },
     "1-regression": {
@@ -1014,51 +1058,6 @@
         "breast-cancer": "Breast cancer",
         "student-performance": "Student performance",
         "wine": "Wine"
-      },
-      "joyride": {
-        "title": "Activar el tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "Puedes consultar el manual en búsqueda de información"
-          },
-          "dataset-info": {
-            "title": "Información del conjunto de datos",
-            "content": "Consulta la información del conjunto de datos"
-          },
-          "dataset": {
-            "title": "Conjunto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
-          },
-          "pre-process-dataset": {
-            "title": "Pre procesamiento",
-            "content": "Limpieza y preparación del conjunto de datos"
-          },
-          "dataset-plot": {
-            "title": "Gráficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
-          },
-          "layer-visualizer": {
-            "title": "Visor de las capas de la red neuronal",
-            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
-          },
-          "layer-editor": {
-            "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
-          },
-          "params-editor": {
-            "title": "Editor de hiperparámetros",
-            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
-          },
-          "list-of-models": {
-            "title": "Lista de modelos",
-            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar las predicciones."
-          },
-          "predict-and-visualizer": {
-            "title": "Predicción y visualización",
-            "content": "Una vez cargado nuestro modelo para la regresión puedes realizar predicciones y visualizar los resultados"
-          }
-        }
       }
     },
     "2-object-detection": {
@@ -1496,47 +1495,6 @@
       "list-datasets": {
         "mnist": "MNIST",
         "kmnist": "KMNIST"
-      },
-      "joyride": {
-        "title": "Activar el tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "Puedes consultar el manual en búsqueda de información"
-          },
-          "dataset-info": {
-            "title": "Información del conjunto de datos",
-            "content": "Consulta la información del conjunto de datos"
-          },
-          "dataset": {
-            "title": "Conjunto de datos",
-            "content": "Puedes ver el conjunto de datos y extraer estadísticas de su descripciones"
-          },
-          "dataset-plot": {
-            "title": "Gráficas de los conjuntos de datos",
-            "content": "Puedes extraer información muy relevante analizando el conjunto de datos usando las distintas gráficas, diagrama de barras, diagramas de sectores, etc."
-          },
-          "layer-visualizer": {
-            "title": "Visor de las capas de la red neuronal",
-            "content": "Puedes visualizar las capas, funciones de activación en dos formatos, modo compacto y modo extendido"
-          },
-          "layer-editor": {
-            "title": "Editor de capas",
-            "content": "Puedes editar las capas de la red neuronal, modificar de las unidades de cada capa, la función de activación, añadir nuevas capas o eliminarlas."
-          },
-          "params-editor": {
-            "title": "Editor de hiperparámetros",
-            "content": "Puedes configurar los hiperparámetros de tu red neuronal de forma que el entrenamiento sea personalizado para el conjunto de datos."
-          },
-          "list-of-models": {
-            "title": "Lista de modelos",
-            "content": "Una vez generado el modelo puedes cargar o descargar el modelo, para probar cada modelo y realizar las predicciones."
-          },
-          "classify": {
-            "title": "Predicción y visualización",
-            "content": "Una vez cargado nuestro modelo para la regresión puedes realizar predicciones y visualizar los resultados"
-          }
-        }
       }
     }
   },
@@ -2437,6 +2395,69 @@
             }
           }
         }
+      },
+      "step-by-step": {
+        "title": "Paso a paso",
+        "intro": "Así aprende tu red: un ejemplo entra por la izquierda, recorre la red hacia delante, se mide cuánto se equivoca y ese error vuelve hacia atrás para corregir cada peso. Es la red que has diseñado arriba, con pesos iniciales al azar. Pulsa una neurona para ver sus cuentas.",
+        "intro-pretrained": "Así calcula este modelo ya entrenado su respuesta: un ejemplo entra por la izquierda, recorre la red hacia delante y se compara con la respuesta correcta. Hacia atrás verás cuánto cambiaría cada peso con un paso más de entrenamiento; el modelo de la página no cambia. Pulsa una neurona para ver sus cuentas.",
+        "too-big": "Tu red tiene {{nodes}} neuronas contando las de entrada ({{detail}}). El paso a paso solo se dibuja con menos de {{max}}, para que se pueda seguir: quita capas o neuronas en el editor de capas, por ejemplo con dos capas ocultas de 8.",
+        "too-big-pretrained": "Este modelo tiene {{nodes}} neuronas contando las de entrada ({{detail}}). El paso a paso solo se dibuja con menos de {{max}}, para que se pueda seguir. En la página de entrenamiento de este conjunto de datos puedes verlo con una red más pequeña.",
+        "not-dense": "Este modelo no es una red de capas densas: el paso a paso solo dibuja ese tipo de red.",
+        "mismatch": "La última capa tiene {{units}} neuronas y la red tiene que dar {{classes}} salidas: cámbiala en el editor de capas para verla paso a paso.",
+        "example": "Elige un ejemplo",
+        "search": "Buscar un ejemplo",
+        "no-results": "Ningún ejemplo coincide",
+        "back": "Fase anterior",
+        "next": "Siguiente",
+        "play": "Reproducir",
+        "pause": "Pausa",
+        "ten": "Entrenar con 10 ejemplos de golpe",
+        "speed": "Velocidad",
+        "speeds": {
+          "slow": "Lenta",
+          "normal": "Normal",
+          "fast": "Rápida"
+        },
+        "same-example": "Repetir el mismo ejemplo",
+        "reset": "Reiniciar los pesos",
+        "reset-pretrained": "Volver a los pesos del modelo",
+        "legend": "Azul: valor o peso positivo; rojo: negativo. Cuanto más intenso o más grueso, mayor. En naranja, lo que vuelve hacia atrás: los deltas de las neuronas y los gradientes de los pesos.",
+        "phase-count": "Fase {{current}} de {{total}}",
+        "phase-title": {
+          "input": "La entrada",
+          "forward": "Hacia delante: capa {{layer}}",
+          "loss": "El error",
+          "backward": "Hacia atrás: capa {{layer}}",
+          "update": "Actualizar los pesos"
+        },
+        "phase": {
+          "input": "Entra el ejemplo n.º {{row}}: sus {{count}} características, ya escaladas como en el entrenamiento, son los valores de las neuronas de entrada.",
+          "input-pretrained": "Entra el ejemplo n.º {{row}}: sus {{count}} características, tal como las recibe este modelo, son los valores de las neuronas de entrada.",
+          "forward": "Cada neurona de la capa {{layer}} multiplica cada entrada por el peso de su conexión, suma los productos y su sesgo (z) y aplica la activación {{activation}}. Las conexiones resaltadas son las que intervienen.",
+          "forward-softmax": "La capa {{layer}} suma sus entradas por sus pesos (z) y softmax convierte esas sumas en probabilidades, una por clase, que suman 1.",
+          "loss-classification": "La red da una probabilidad de {{probability}} a «{{target}}», la respuesta correcta. La pérdida, la entropía cruzada, es −log({{probability}}) = {{loss}}: cuanto más baja es la probabilidad de la clase correcta, mayor. Ahora mismo la red respondería «{{predicted}}».",
+          "loss-regression": "La red predice {{prediction}} y el valor real es {{actual}}. En el paso a paso el objetivo se escala entre 0 y 1 ({{output}} frente a {{target}}), y la pérdida es el error cuadrático: ({{output}} − {{target}})² = {{loss}}.",
+          "loss-regression-raw": "La red predice {{prediction}} y el valor real es {{actual}}. La pérdida es el error cuadrático: ({{output}} − {{target}})² = {{loss}}.",
+          "backward-output": "Empieza el paso hacia atrás. El delta de cada neurona de salida dice cuánto cambiaría la pérdida si cambiara su suma z. El gradiente de cada peso que llega a ella es su delta por la entrada de esa conexión: son las conexiones en naranja.",
+          "backward": "El error sigue hacia atrás hasta la capa {{layer}}: el delta de cada neurona es la suma de los deltas de la capa siguiente por los pesos que las unen, multiplicada por la derivada de {{activation}}. Así cada peso sabe cuánto ha contribuido al error.",
+          "update": "Cada peso se mueve un poco en contra de su gradiente: w ← w − η·g, con η = {{rate}}, la tasa de aprendizaje. Con este ejemplo, la pérdida pasa de {{before}} a {{after}}. Entrenar es repetir esto con todos los ejemplos, época tras época; el optimizador que elijas ajusta cada paso de forma más elaborada."
+        },
+        "focus": "Neurona {{index}} de la capa {{layer}}",
+        "focus-input": "Entrada {{index}}",
+        "formula-input": "{{name}} = {{value}}",
+        "formula-pending": "La neurona {{index}} de la capa {{layer}} todavía no se ha calculado.",
+        "formula-update": "Su sesgo pasa de {{before}} a {{after}}. El peso que más cambia, el que viene de {{from}}, pasa de {{weight}} a {{weightAfter}}.",
+        "from-neuron": "la neurona {{index}} de la capa {{layer}}",
+        "history_one": "Pérdida media de {{sample}} ejemplos de los datos tras cada actualización: de {{first}} a {{last}} ({{count}} ejemplo usado). Si la red aprende, la línea baja.",
+        "history_other": "Pérdida media de {{sample}} ejemplos de los datos tras cada actualización: de {{first}} a {{last}} ({{count}} ejemplos usados). Si la red aprende, la línea baja.",
+        "history-empty": "Al terminar cada ejemplo, aquí verás cómo cambia la pérdida.",
+        "diagram": "La red neuronal, capa a capa",
+        "node-input": "Entrada {{name}}: {{value}}",
+        "node": "Neurona {{index}} de la capa {{layer}}: {{value}}",
+        "column-input": "Entrada",
+        "column-layer": "Capa {{layer}} · {{activation}}",
+        "column-output": "Salida · {{activation}}",
+        "update-rule": "w ← w − {{rate}} · gradiente"
       }
     },
     "dataframe": {
@@ -3096,7 +3117,6 @@
         "items": [
           "El idioma, el tema y el backend de TensorFlow.js que elijas.",
           "Los ajustes de la voz de las guías y por qué paso va cada guía.",
-          "Qué tutoriales de las páginas de entrenamiento ya has visto.",
           "Tu decisión sobre las cookies, en una cookie propia."
         ],
         "settings": "Puedes cambiarlo o borrarlo todo desde"
@@ -3171,14 +3191,16 @@
         "sample": "Hola. Así sonará la guía de cada página de Nets4Learning."
       },
       "tutorials": {
-        "title": "Guías y tutoriales",
+        "title": "Guías",
         "guides-help": "Cada guía recuerda por qué paso vas. Reinícialas para que todas vuelvan a empezar desde el principio.",
         "guides-reset": "Reiniciar las guías",
-        "done": "Hecho",
-        "training-help_zero": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Todavía no has visto ninguno.",
-        "training-help_one": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Ya has visto 1; con este botón volverá a salir.",
-        "training-help_other": "Los tutoriales de las páginas de entrenamiento salen solos la primera vez que entras en cada una. Ya has visto {{count}}; con este botón volverán a salir.",
-        "training-reset": "Volver a mostrar los tutoriales"
+        "done": "Hecho"
+      },
+      "learning": {
+        "title": "Para aprender",
+        "help": "Herramientas que no se ven por defecto para no recargar las páginas.",
+        "step-by-step": "Mostrar «Paso a paso»: cómo aprende la red, ejemplo a ejemplo, hacia delante y hacia atrás",
+        "step-by-step-help": "Aparece en las páginas de entrenamiento y en las de los modelos de clasificación tabular y regresión, con redes de menos de 64 neuronas."
       },
       "privacy": {
         "title": "Privacidad y cookies",
@@ -3222,6 +3244,7 @@
     "editor": "Editor",
     "dataset": "Conjunto de datos",
     "model": "Modelo",
+    "step-by-step": "Paso a paso",
     "generated-models": "Modelos generados",
     "predict": "Predecir",
     "classify": "Clasificar",
@@ -3252,14 +3275,6 @@
     "drop": "Descartar",
     "ignored": "Ignorar",
     "submit": "Procesar dataframe"
-  },
-  "joyride": {
-    "back": "Atras",
-    "close": "Cerrar",
-    "last": "Anterior",
-    "next": "Siguiente",
-    "open": "Abrir",
-    "skip": "Saltar"
   },
   "upload-dataset-info": "Debes subir un conjunto de datos para realizar la tarea.",
   "upload-model": "Subir modelo",
@@ -3482,6 +3497,10 @@
           "title": "Explicabilidad",
           "content": "Después de clasificar, aquí ves por qué la red ha decidido eso. SHAP reparte la decisión entre las características: cuáles empujan hacia la clase y cuáles en contra. La importancia global hace lo mismo con muchas filas, para ver qué característica pesa más en general."
         },
+        "step-by-step": {
+          "title": "Paso a paso",
+          "content": "Aquí ves cómo calcula este modelo su respuesta, con sus pesos de verdad: el paso hacia delante capa a capa, el error y, hacia atrás, cuánto cambiaría cada peso con un paso más de entrenamiento. Pulsa una neurona para ver sus cuentas. Solo se dibuja con modelos de menos de 64 neuronas."
+        },
         "end": {
           "title": "Ahora tú",
           "content": "Prueba a elegir un ejemplo, clasifícalo y cambia después alguna característica para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
@@ -3599,6 +3618,10 @@
         "explain": {
           "title": "Explicabilidad",
           "content": "Después de predecir, aquí ves por qué la red ha dado ese valor. SHAP reparte la predicción entre las variables: cuáles la suben y cuáles la bajan respecto a la predicción media. La importancia global hace lo mismo con muchas filas, para ver qué variable pesa más en general."
+        },
+        "step-by-step": {
+          "title": "Paso a paso",
+          "content": "Aquí ves cómo calcula este modelo su respuesta, con sus pesos de verdad: el paso hacia delante capa a capa, el error y, hacia atrás, cuánto cambiaría cada peso con un paso más de entrenamiento. Pulsa una neurona para ver sus cuentas. Solo se dibuja con modelos de menos de 64 neuronas."
         },
         "end": {
           "title": "Ahora tú",
@@ -3971,7 +3994,431 @@
     "go-to": "Ir al paso",
     "voice": "Voz",
     "voice-auto": "Automática",
-    "voice-online": "en línea"
+    "voice-online": "en línea",
+    "train": {
+      "0-tabular-classification": {
+        "common": {
+          "intro": {
+            "title": "Entrena tu red",
+            "content": "En esta página diseñas y entrenas tu propia red neuronal para clasificar un conjunto de datos, y después la pruebas. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "session": {
+            "title": "Guardar la configuración",
+            "content": "Con estos botones guardas en un fichero las capas y los hiperparámetros que hayas elegido, y lo cargas otro día para seguir donde lo dejaste o para compartirlo. No se guardan los datos ni los modelos entrenados."
+          },
+          "manual": {
+            "title": "El manual",
+            "content": "Si es tu primera vez, despliega el manual: explica con calma cada parte de esta página y qué significa cada opción."
+          },
+          "layers-add": {
+            "title": "Añadir y quitar capas",
+            "content": "Con estos botones añades una capa al principio o al final de la red. Para quitar una, o cambiar sus neuronas y su activación, despliégala en la lista."
+          },
+          "learning-rate": {
+            "title": "Tasa de aprendizaje",
+            "content": "Es cuánto se corrigen los pesos en cada paso. Con una tasa alta aprende deprisa, pero puede pasarse de largo y no estabilizarse; con una baja es más estable, pero necesita más épocas. 0,01 es un buen punto de partida."
+          },
+          "test-size": {
+            "title": "Datos de prueba",
+            "content": "Este porcentaje de los datos se aparta y la red no lo ve al entrenar. Sirve para comprobar después cómo acierta con datos nuevos, que es lo que de verdad importa: una red que solo acierta con lo que ya ha visto ha memorizado, no aprendido."
+          },
+          "optimizer": {
+            "title": "Optimizador",
+            "content": "Es el método que ajusta los pesos a partir del error. Adam suele funcionar bien sin tocar nada; SGD es el más sencillo, y RMSprop, Adagrad o Adadelta adaptan el paso de cada peso."
+          },
+          "step-by-step": {
+            "title": "Paso a paso",
+            "content": "Antes de entrenar de verdad, aquí ves cómo aprende tu red con un ejemplo cada vez: el paso hacia delante capa a capa, el error y cómo vuelve hacia atrás para corregir cada peso. Avanza fase a fase o pulsa reproducir, y pulsa una neurona para ver sus cuentas. Solo se dibuja con redes de menos de 64 neuronas, para que se pueda seguir."
+          },
+          "models": {
+            "title": "Modelos generados",
+            "content": "Cada entrenamiento añade aquí una fila con su configuración y sus resultados, para compararlos. El mejor, el de menor error con los datos de prueba, lleva una marca. Desde aquí también puedes ver su historial o descargarlo."
+          },
+          "dataset-info": {
+            "title": "El conjunto de datos",
+            "content": "Aquí se describe el conjunto de datos: de dónde sale, qué significa cada columna y qué clases hay que predecir. Conviene leerlo antes de diseñar la red."
+          },
+          "dataset": {
+            "title": "Los datos",
+            "content": "Esta es la tabla con la que vas a entrenar. Cada fila es un ejemplo y cada columna una característica; la resaltada es la clase. En los apartados de debajo tienes las estadísticas de cada columna, antes y después de procesarla: la red solo trabaja con números, así que cada categoría se convierte en un número."
+          },
+          "layer-design": {
+            "title": "Tu red",
+            "content": "Este dibujo es la red que vas a entrenar. A la izquierda está la capa de entrada, con una neurona por característica; en medio, las capas ocultas, y a la derecha la de salida, con una neurona por clase. Cambia en cuanto editas las capas, y con el botón de la esquina la ves a pantalla completa."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y pueden memorizar los datos en lugar de generalizar. La última capa da la respuesta: necesita tantas neuronas como clases y la activación softmax, que convierte la salida en probabilidades."
+          },
+          "epochs": {
+            "title": "Épocas",
+            "content": "Una época es una pasada completa por todos los datos de entrenamiento. Con pocas, la red no llega a aprender; con demasiadas, tarda más y puede memorizar los datos. Empieza con 10 y súbelas si la precisión sigue mejorando al final."
+          },
+          "loss": {
+            "title": "Función de pérdida",
+            "content": "Mide cuánto se equivoca la red en cada ejemplo, y es lo que el optimizador intenta reducir. Para elegir entre varias clases se usa la entropía cruzada categórica, que es la que viene elegida."
+          },
+          "metrics": {
+            "title": "Métrica",
+            "content": "Es lo que se enseña durante el entrenamiento para saber si va bien, por ejemplo la precisión: el porcentaje de ejemplos que acierta. No cambia cómo aprende la red, solo lo que ves."
+          },
+          "train": {
+            "title": "Entrenar",
+            "content": "Al pulsar Entrenar, la red aprende época a época. Verás el progreso aquí y, en el visor, cómo baja la pérdida y sube la precisión, tanto con los datos de entrenamiento como con los de prueba. Si tarda demasiado, puedes pararlo."
+          },
+          "predict": {
+            "title": "Clasificar",
+            "content": "Con un modelo entrenado, elige una fila del conjunto de datos o escribe los valores de un ejemplo, y pulsa Clasificar. Verás la probabilidad de cada clase. Arriba eliges con qué modelo clasificar, para comparar unos con otros."
+          },
+          "explain": {
+            "title": "Explicabilidad",
+            "content": "Después de clasificar, SHAP muestra por qué la red ha decidido eso: qué características han empujado hacia la clase predicha y cuáles en contra. La importancia global hace lo mismo con muchas filas, para ver qué característica pesa más en general."
+          },
+          "end": {
+            "title": "Ahora tú",
+            "content": "Entrena con los valores de partida y mira la precisión. Después cambia una sola cosa, por ejemplo las épocas o las neuronas de una capa, vuelve a entrenar y compara los dos modelos en la tabla. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+          }
+        },
+        "CAR": {
+          "intro": {
+            "title": "Clasificación de coches",
+            "content": "En esta página entrenas una red que decide si un coche es aceptable a partir de seis características, como el precio, el mantenimiento o la seguridad, con 1728 coches de ejemplo. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y pueden memorizar los datos en lugar de generalizar. La última capa da la respuesta: tiene 4 neuronas, una por clase (inaceptable, aceptable, bueno y muy bueno), con la activación softmax, que las convierte en probabilidades."
+          }
+        },
+        "IRIS": {
+          "intro": {
+            "title": "Clasificación de flores iris",
+            "content": "En esta página entrenas una red que reconoce la especie de una flor iris, entre tres, a partir de cuatro medidas de sus pétalos y sépalos, con 150 flores de ejemplo. Es un conjunto pequeño: entrena en un momento y es perfecto para experimentar. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y pueden memorizar los datos en lugar de generalizar. La última capa da la respuesta: tiene 3 neuronas, una por especie (setosa, versicolor y virginica), con la activación softmax, que las convierte en probabilidades."
+          }
+        },
+        "LYMPHOGRAPHY": {
+          "intro": {
+            "title": "Linfografía",
+            "content": "En esta página entrenas una red que clasifica exploraciones de linfografía en cuatro diagnósticos a partir de 18 características, con 148 pacientes de ejemplo. Hay muy pocos casos de algunas clases, así que fíjate en cómo acierta con cada una. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y, con tan pocos pacientes, es fácil que memoricen los datos. La última capa da la respuesta: tiene 4 neuronas, una por diagnóstico, con la activación softmax, que las convierte en probabilidades."
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "Tus propios datos",
+            "content": "En esta página entrenas una red con tus propios datos: los subes, eliges qué columna quieres predecir, diseñas la red y la entrenas. Tus datos no salen de tu navegador. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "dataset-info": {
+            "title": "Subir los datos",
+            "content": "Arrastra aquí tu fichero o pulsa para elegirlo. Admite CSV, TSV, ARFF, JSON, JSON Lines y Parquet. Cada fila tiene que ser un ejemplo, y una de las columnas, la clase que quieres predecir."
+          },
+          "process": {
+            "title": "Preparar los datos",
+            "content": "Antes de entrenar hay que preparar los datos: elige la columna que quieres predecir, cómo convertir en números las columnas de texto y cómo escalar los valores. Al pulsar el botón, los datos quedan listos y aparece la red."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y pueden memorizar los datos. La última capa da la respuesta: necesita tantas neuronas como clases tenga la columna que predices, con la activación softmax, que las convierte en probabilidades."
+          }
+        }
+      },
+      "1-regression": {
+        "common": {
+          "intro": {
+            "title": "Entrena tu red de regresión",
+            "content": "En esta página diseñas y entrenas una red neuronal que predice un número, como un precio o una nota, a partir de otras columnas, y después la pruebas. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "session": {
+            "title": "Guardar la configuración",
+            "content": "Con estos botones guardas en un fichero las capas y los hiperparámetros que hayas elegido, y lo cargas otro día para seguir donde lo dejaste o para compartirlo. No se guardan los datos ni los modelos entrenados."
+          },
+          "manual": {
+            "title": "El manual",
+            "content": "Si es tu primera vez, despliega el manual: explica con calma cada parte de esta página y qué significa cada opción."
+          },
+          "layers-add": {
+            "title": "Añadir y quitar capas",
+            "content": "Con estos botones añades una capa al principio o al final de la red. Para quitar una, o cambiar sus neuronas y su activación, despliégala en la lista."
+          },
+          "learning-rate": {
+            "title": "Tasa de aprendizaje",
+            "content": "Es cuánto se corrigen los pesos en cada paso. Con una tasa alta aprende deprisa, pero puede pasarse de largo y no estabilizarse; con una baja es más estable, pero necesita más épocas. 0,01 es un buen punto de partida."
+          },
+          "test-size": {
+            "title": "Datos de prueba",
+            "content": "Este porcentaje de los datos se aparta y la red no lo ve al entrenar. Sirve para comprobar después cómo acierta con datos nuevos, que es lo que de verdad importa: una red que solo acierta con lo que ya ha visto ha memorizado, no aprendido."
+          },
+          "optimizer": {
+            "title": "Optimizador",
+            "content": "Es el método que ajusta los pesos a partir del error. RMSprop, el que viene elegido, va bien en regresión; Adam también suele funcionar sin tocar nada, y SGD es el más sencillo."
+          },
+          "step-by-step": {
+            "title": "Paso a paso",
+            "content": "Antes de entrenar de verdad, aquí ves cómo aprende tu red con un ejemplo cada vez: el paso hacia delante capa a capa, el error y cómo vuelve hacia atrás para corregir cada peso. Avanza fase a fase o pulsa reproducir, y pulsa una neurona para ver sus cuentas. Solo se dibuja con redes de menos de 64 neuronas, para que se pueda seguir."
+          },
+          "models": {
+            "title": "Modelos generados",
+            "content": "Cada entrenamiento añade aquí una fila con su configuración y sus resultados, para compararlos. El mejor, el de menor error con los datos de prueba, lleva una marca. Desde aquí también puedes ver su historial o descargarlo."
+          },
+          "dataset-info": {
+            "title": "El conjunto de datos",
+            "content": "Aquí se describe el conjunto de datos: de dónde sale, qué significa cada columna y cuál es el número que hay que predecir. Conviene leerlo antes de diseñar la red."
+          },
+          "dataset": {
+            "title": "Los datos",
+            "content": "Esta es la tabla con la que vas a entrenar, con sus estadísticas y gráficos. Fíjate en qué columnas cambian a la vez que la que se predice: son las que más ayudarán a la red. Antes de entrenar, los valores se escalan para que todas las columnas pesen parecido."
+          },
+          "layer-design": {
+            "title": "Tu red",
+            "content": "Este dibujo es la red que vas a entrenar. A la izquierda está la capa de entrada, con una neurona por característica; en medio, las capas ocultas, y a la derecha una sola neurona de salida: el número que predice. Cambia en cuanto editas las capas, y con el botón de la esquina la ves a pantalla completa."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Cada capa tiene un número de neuronas y una función de activación. Más neuronas o más capas permiten aprender relaciones más complejas, pero entrenan más despacio y pueden memorizar los datos. La última capa no se puede cambiar: es una sola neurona con activación lineal, porque el resultado es un número cualquiera, no una probabilidad."
+          },
+          "epochs": {
+            "title": "Épocas",
+            "content": "Una época es una pasada completa por todos los datos de entrenamiento. Con pocas, la red no llega a aprender; con demasiadas, tarda más y puede memorizar los datos. Empieza con las que vienen y fíjate en si el error sigue bajando al final."
+          },
+          "loss": {
+            "title": "Función de pérdida",
+            "content": "Mide cuánto se aleja la predicción del valor real, y es lo que el optimizador intenta reducir. El error cuadrático medio, el que viene elegido, castiga mucho los errores grandes; el error absoluto medio los trata a todos por igual."
+          },
+          "metrics": {
+            "title": "Métricas",
+            "content": "Son lo que se enseña durante el entrenamiento para saber si va bien. Puedes añadir varias: el error absoluto medio, por ejemplo, dice cuánto se equivoca de media, en las mismas unidades que el dato que predices."
+          },
+          "train": {
+            "title": "Entrenar",
+            "content": "Al pulsar Entrenar, la red aprende época a época. Verás el progreso aquí y, en el visor, cómo baja el error, tanto con los datos de entrenamiento como con los de prueba. Si tarda demasiado, puedes pararlo."
+          },
+          "predict": {
+            "title": "Predecir",
+            "content": "Con un modelo entrenado, elige una fila del conjunto de datos o escribe los valores, y pulsa Predecir. Verás el número que predice la red y, si eliges una fila sin cambiarla, el valor real para comparar. Arriba eliges con qué modelo predecir."
+          },
+          "explain": {
+            "title": "Explicabilidad",
+            "content": "Después de predecir, SHAP muestra por qué la red ha dado ese número: qué características lo han subido y cuáles lo han bajado. La importancia global hace lo mismo con muchas filas, para ver qué característica pesa más en general."
+          },
+          "end": {
+            "title": "Ahora tú",
+            "content": "Entrena con los valores de partida y mira el error. Después cambia una sola cosa, por ejemplo la tasa de aprendizaje o las neuronas de una capa, vuelve a entrenar y compara los dos modelos en la tabla. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+          }
+        },
+        "SALARY": {
+          "intro": {
+            "title": "Salario según la experiencia",
+            "content": "En esta página entrenas una red que predice el salario de una persona a partir de su experiencia laboral, con 1000 personas de ejemplo. Con tan pocas columnas es fácil ver qué aprende la red. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "AUTO_MPG": {
+          "intro": {
+            "title": "Consumo de coches",
+            "content": "En esta página entrenas una red que predice el consumo de un coche, en millas por galón, a partir de seis características como los cilindros, la potencia o el peso, con 396 coches de ejemplo. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "HOUSING_PRICES": {
+          "intro": {
+            "title": "Precio de la vivienda",
+            "content": "En esta página entrenas una red que predice el valor medio de las viviendas de un barrio de Boston a partir de 12 características, como el número de habitaciones o la criminalidad de la zona, con 506 barrios de ejemplo. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "STUDENT_PERFORMANCE": {
+          "intro": {
+            "title": "Notas de estudiantes",
+            "content": "En esta página entrenas una red que predice la nota final de un estudiante, de 0 a 20, a partir de 30 características como las horas de estudio, las faltas o las notas de los dos primeros trimestres, G1 y G2. Hay datos de dos asignaturas: matemáticas, con 395 estudiantes, y portugués, con 649. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "WINE": {
+          "intro": {
+            "title": "Calidad del vino",
+            "content": "En esta página entrenas una red que predice la calidad de un vino, de 0 a 10, a partir de 11 medidas químicas como la acidez o el alcohol. Hay dos ficheros: 1599 vinos tintos y 4898 blancos. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "Tus propios datos",
+            "content": "En esta página entrenas una red con tus propios datos: los subes, eliges qué columna numérica quieres predecir, diseñas la red y la entrenas. Tus datos no salen de tu navegador. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "dataset-info": {
+            "title": "Subir los datos",
+            "content": "Arrastra aquí tu fichero o pulsa para elegirlo. Admite CSV, TSV, ARFF, JSON, JSON Lines y Parquet. Cada fila tiene que ser un ejemplo, y una de las columnas, el número que quieres predecir."
+          },
+          "process": {
+            "title": "Preparar los datos",
+            "content": "Antes de entrenar hay que preparar los datos: elige la columna que quieres predecir, cómo convertir en números las columnas de texto y cómo escalar los valores. Al pulsar el botón, los datos quedan listos para diseñar la red."
+          }
+        }
+      },
+      "3-image-classification": {
+        "common": {
+          "intro": {
+            "title": "Entrena tu red de imágenes",
+            "content": "En esta página diseñas y entrenas una red convolucional que reconoce imágenes de 28 por 28 píxeles, y después la pruebas dibujando. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "session": {
+            "title": "Guardar la configuración",
+            "content": "Con estos botones guardas en un fichero las capas y los hiperparámetros que hayas elegido, y lo cargas otro día para seguir donde lo dejaste o para compartirlo. No se guardan los datos ni los modelos entrenados."
+          },
+          "manual": {
+            "title": "El manual",
+            "content": "Si es tu primera vez, despliega el manual: explica con calma cada parte de esta página y qué significa cada opción."
+          },
+          "layers-add": {
+            "title": "Añadir y quitar capas",
+            "content": "Con este botón añades una capa al final. Despliega cada capa para elegir su tipo, sus filtros, el tamaño del filtro o sus neuronas, o para quitarla. La primera tiene que ser convolucional."
+          },
+          "learning-rate": {
+            "title": "Tasa de aprendizaje",
+            "content": "Es cuánto se corrigen los pesos en cada paso. Con una tasa alta aprende deprisa, pero puede pasarse de largo y no estabilizarse; con una baja es más estable, pero necesita más épocas. 0,01 es un buen punto de partida."
+          },
+          "test-size": {
+            "title": "Datos de prueba",
+            "content": "Este porcentaje de los datos se aparta y la red no lo ve al entrenar. Sirve para comprobar después cómo acierta con datos nuevos, que es lo que de verdad importa: una red que solo acierta con lo que ya ha visto ha memorizado, no aprendido."
+          },
+          "optimizer": {
+            "title": "Optimizador",
+            "content": "Es el método que ajusta los pesos a partir del error. Adam suele funcionar bien sin tocar nada; SGD es el más sencillo, y RMSprop, Adagrad o Adadelta adaptan el paso de cada peso."
+          },
+          "models": {
+            "title": "Modelos generados",
+            "content": "Cada entrenamiento añade aquí una fila con su configuración y sus resultados, para compararlos. El mejor, el de menor error con los datos de prueba, lleva una marca. Desde aquí también puedes ver su historial o descargarlo."
+          },
+          "dataset-info": {
+            "title": "El conjunto de imágenes",
+            "content": "Aquí se describe el conjunto: de dónde salen las imágenes, cuántas hay y qué representa cada una de las diez clases."
+          },
+          "layer-design": {
+            "title": "Tu red",
+            "content": "Este dibujo es la red que vas a entrenar: la imagen entra por la izquierda, pasa por las capas convolucionales y de agrupación, se aplana y termina en las capas densas, con una neurona por clase a la derecha. Con el botón de la esquina la ves a pantalla completa."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "Una red para imágenes combina varios tipos de capa. Las convolucionales buscan patrones, como bordes o curvas, con filtros pequeños que recorren la imagen; las de agrupación, max pooling, la reducen quedándose con lo más destacado; la de aplanado convierte el resultado en una lista de números, y las densas deciden la clase. La última necesita diez neuronas, una por clase, con la activación softmax."
+          },
+          "epochs": {
+            "title": "Épocas",
+            "content": "Una época es una pasada completa por todas las imágenes de entrenamiento. Con imágenes cada época tarda bastante más que con una tabla, así que empieza con pocas, como las 5 que vienen, y súbelas si la precisión sigue mejorando."
+          },
+          "loss": {
+            "title": "Función de pérdida",
+            "content": "Mide cuánto se equivoca la red con cada imagen, y es lo que el optimizador intenta reducir. Para elegir entre diez clases se usa la entropía cruzada categórica, que es la que viene elegida."
+          },
+          "metrics": {
+            "title": "Métricas",
+            "content": "Son lo que se enseña durante el entrenamiento para saber si va bien. Puedes añadir varias, como la precisión: el porcentaje de imágenes que acierta. No cambian cómo aprende la red, solo lo que ves."
+          },
+          "train": {
+            "title": "Entrenar",
+            "content": "Al pulsar Entrenar, primero se descargan las imágenes y después la red aprende época a época. Tarda más que con una tabla: el progreso y el visor te dicen cómo va la pérdida y la precisión, y puedes pararlo si hace falta."
+          },
+          "predict": {
+            "title": "Probar la red",
+            "content": "Con un modelo entrenado, dibuja en el lienzo, elige una imagen de prueba del conjunto o sube una tuya, y la red dirá qué ve, con la probabilidad de cada clase. Arriba eliges con qué modelo probar."
+          },
+          "explain": {
+            "title": "Explicabilidad",
+            "content": "Después de clasificar, LRP colorea los píxeles según cuánto han contado para la decisión. Así ves en qué partes del dibujo se ha fijado la red para decidir."
+          },
+          "end": {
+            "title": "Ahora tú",
+            "content": "Entrena con la red de partida y prueba a dibujar. Después añade o quita una capa convolucional, entrena otra vez y compara en la tabla qué modelo acierta más. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+          }
+        },
+        "IMAGE-MNIST": {
+          "intro": {
+            "title": "Dígitos escritos a mano",
+            "content": "En esta página entrenas una red convolucional que reconoce los dígitos del 0 al 9 escritos a mano, con las imágenes del conjunto MNIST, y después la pruebas dibujando tus propios números. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        },
+        "IMAGE-KMNIST": {
+          "intro": {
+            "title": "Caracteres japoneses",
+            "content": "En esta página entrenas una red convolucional que reconoce diez caracteres hiragana del japonés clásico escritos a mano, del conjunto Kuzushiji-MNIST, y después la pruebas dibujándolos. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          }
+        }
+      }
+    },
+    "glossary": {
+      "intro": {
+        "title": "El glosario",
+        "content": "Aquí están explicados todos los conceptos que usa Nets4Learning: las tareas, las capas, los hiperparámetros, los optimizadores y las funciones de activación, de pérdida y las métricas. Te enseño lo más importante y dónde encontrarlo. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+      },
+      "search": {
+        "title": "Buscar",
+        "content": "Escribe aquí cualquier término, por ejemplo «época» o «ReLU», y solo quedarán las tarjetas que lo mencionan."
+      },
+      "index": {
+        "title": "El índice",
+        "content": "Las secciones del glosario, en orden. Pulsa una para ir directamente a ella; mientras bajas, se marca en la que estás."
+      },
+      "tasks": {
+        "title": "Las tareas",
+        "content": "Lo primero: qué problema resuelve cada tarea de la aplicación. Clasificar filas de una tabla, predecir números con la regresión, clasificar imágenes e identificar objetos."
+      },
+      "units": {
+        "title": "Neuronas",
+        "content": "Cada capa de la red tiene neuronas: cada una multiplica sus entradas por unos pesos, las suma y aplica una función de activación. Más neuronas permiten aprender relaciones más complejas."
+      },
+      "activation-function": {
+        "title": "Función de activación",
+        "content": "Decide qué deja pasar cada neurona. Sin ella, la red solo podría aprender relaciones lineales, por muchas capas que tuviera."
+      },
+      "learning-rate": {
+        "title": "Tasa de aprendizaje",
+        "content": "Cuánto se corrigen los pesos en cada paso del entrenamiento. Es quizá el hiperparámetro más importante: demasiado alta y la red no se estabiliza; demasiado baja y aprende muy despacio."
+      },
+      "epochs": {
+        "title": "Épocas",
+        "content": "Cuántas veces recorre la red todos los datos de entrenamiento. Pocas no bastan para aprender; demasiadas llevan a memorizar los datos en vez de generalizar."
+      },
+      "test-size": {
+        "title": "Datos de prueba",
+        "content": "La parte de los datos que se aparta para comprobar al final cómo acierta la red con datos que no ha visto. Es la medida honesta de lo que ha aprendido."
+      },
+      "optimizer": {
+        "title": "Optimizadores",
+        "content": "Los métodos que ajustan los pesos a partir del error, cada uno con su fórmula. Adam, el que viene elegido casi siempre, combina las ideas de Momentum y de RMSProp."
+      },
+      "activation-plots": {
+        "title": "Las gráficas",
+        "content": "Cada función de activación tiene su fórmula y su gráfica, y en la pestaña de animación ves cómo transforma cada valor. ReLU, la más usada en las capas ocultas, deja pasar los positivos y anula los negativos."
+      },
+      "softmax": {
+        "title": "Softmax",
+        "content": "Va en la última capa cuando se clasifica: convierte las salidas en probabilidades, una por clase, que suman 1."
+      },
+      "loss": {
+        "title": "Función de pérdida",
+        "content": "Mide cuánto se equivoca la red y es lo que el entrenamiento intenta reducir. Para elegir entre varias clases se usa la entropía cruzada categórica."
+      },
+      "loss-regression": {
+        "title": "La pérdida en regresión",
+        "content": "Para predecir números, la más habitual es el error cuadrático medio, que castiga mucho los errores grandes. El error absoluto medio, justo debajo, los trata a todos por igual."
+      },
+      "metrics": {
+        "title": "Métricas",
+        "content": "Dicen cómo de bien funciona la red de una forma fácil de entender, como la precisión: el porcentaje de aciertos. No cambian cómo aprende."
+      },
+      "confusion-matrix": {
+        "title": "Matriz de confusión",
+        "content": "Una tabla que cruza la clase real con la predicha: así no solo ves cuánto acierta la red, sino con qué clases se confunde."
+      },
+      "anchor": {
+        "title": "Enlaces a cada término",
+        "content": "Cada tarjeta tiene su enlace (#) para compartirla. Los enlaces de «Más información» del playground te traen directamente al término que necesitas."
+      },
+      "end": {
+        "title": "Ahora tú",
+        "content": "Busca un término que no conozcas o baja hasta las funciones de activación y mira sus animaciones. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+      }
+    }
   },
   "loading-status": {
     "page": "Cargando la página…",

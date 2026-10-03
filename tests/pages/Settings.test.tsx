@@ -2,9 +2,10 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import Settings from '@pages/settings/Settings'
-import { countSeenTrainingTutorials, resetAllSettings } from '@pages/settings/storedSettings'
+import { resetAllSettings } from '@pages/settings/storedSettings'
 import { getGuideSettings, resetGuideSettings, updateGuideSettings } from '@components/guide/guideSettings'
 import { readConsent } from '@core/analytics'
+import { isStepByStepEnabled, resetStepByStep } from '@components/neural-network/stepByStep/stepByStepSetting'
 
 // La voz del navegador, de mentira: jsdom no tiene speechSynthesis
 class FakeUtterance {
@@ -61,14 +62,25 @@ describe('Settings', () => {
     expect(speech.getByTestId('Test-Settings-SpeechTest')).toBeDisabled()
   })
 
-  test('los tutoriales de entrenamiento ya vistos vuelven a salir', () => {
-    localStorage.setItem('tabular-classification.joyride-CAR', JSON.stringify({ seen: true }))
-    localStorage.setItem('regression.joyride-AUTO_MPG', JSON.stringify({ seen: true }))
+  test('las guías, también las de entrenamiento, vuelven a empezar desde el principio', () => {
+    localStorage.setItem('n4l-guide-progress.train.tabular-classification.CAR', JSON.stringify({ step: 5, open: false, savedAt: 1 }))
+    localStorage.setItem('n4l-guide-progress.regression.WINE', JSON.stringify({ step: 3, open: false, savedAt: 1 }))
     renderSettings()
     const tutorials = section('tutorials')
-    fireEvent.click(tutorials.getByText('pages.settings.tutorials.training-reset'))
-    expect(countSeenTrainingTutorials()).toBe(0)
-    expect(tutorials.getByText('pages.settings.tutorials.training-reset')).toBeDisabled()
+    fireEvent.click(tutorials.getByText('pages.settings.tutorials.guides-reset'))
+    expect(Object.keys(localStorage).filter((key) => key.startsWith('n4l-guide-progress.'))).toEqual([])
+    expect(tutorials.getByRole('status')).toHaveTextContent('pages.settings.tutorials.done')
+  })
+
+  test('Paso a paso está oculto por defecto y se activa desde aquí', () => {
+    resetStepByStep()
+    renderSettings()
+    const learning = section('learning')
+    const toggle = learning.getByLabelText('pages.settings.learning.step-by-step')
+    expect(toggle).not.toBeChecked()
+    fireEvent.click(toggle)
+    expect(isStepByStepEnabled()).toBe(true)
+    expect(toggle).toBeChecked()
   })
 
   test('las cookies se aceptan y se rechazan desde aquí', () => {
@@ -87,12 +99,14 @@ describe('Settings', () => {
     localStorage.setItem('tf-backend', 'wasm')
     localStorage.setItem('n4l-guide-progress.regression.WINE', JSON.stringify({ step: 3, open: false, savedAt: 1 }))
     localStorage.setItem('tabular-classification.joyride-CAR', '{}')
+    localStorage.setItem('n4l-step-by-step', 'true')
     localStorage.setItem('otra-web', 'no se toca')
     updateGuideSettings({ auto: true })
     document.cookie = 'n4l-accept-cookies=true;path=/'
 
     resetAllSettings()
     expect(Object.keys(localStorage)).toEqual(['otra-web'])
+    expect(isStepByStepEnabled()).toBe(false)
     expect(getGuideSettings().auto).toBe(false)
     expect(readConsent()).toBeNull()
   })

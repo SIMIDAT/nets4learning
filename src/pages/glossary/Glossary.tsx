@@ -12,6 +12,8 @@ import Glossary5Layers from "./Glossary5Layers"
 import GlossaryTerm from "./GlossaryTerm"
 import { GLOSSARY_SECTIONS, matchesSearch, termSearchText, type GlossarySection_t } from "./glossaryTerms"
 import { glossaryTarget } from "./glossaryTarget"
+import { glossaryGuide } from "./glossaryGuide"
+import N4LGuide from "@components/guide/N4LGuide"
 
 // Una búsqueda se registra cuando se deja de escribir durante este tiempo y tiene al menos estas letras
 const SEARCH_TRACK_MS = 1500
@@ -53,6 +55,8 @@ export default function Glossary() {
   }, [isSearching, deferredQuery, searchTexts])
   const matches = sections.reduce((total, section) => total + section.groups.reduce((sum, group) => sum + group.terms.length, 0), 0)
   const steps = sections.map(({ step }) => step)
+  // La guía de la página (botón Guía): lo más importante del glosario y dónde está
+  const guideSteps = useMemo(() => glossaryGuide(t), [t])
 
   // Analíticas: qué se busca (y si se encuentra), cuando se deja de escribir
   const searchTerm = deferredQuery.trim().toLowerCase()
@@ -72,7 +76,10 @@ export default function Glossary() {
   return (
     <main className={"mb-3"} data-title={"Glossary"} data-testid={"Test-Glossary"}>
       <N4LSectionLayout steps={steps} wide={true}>
-        <h1 className={"mt-3"}><Trans i18nKey={"pages.glossary.title"} /></h1>
+        <div className={"d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 mb-2"}>
+          <h1 className={"mb-0"}><Trans i18nKey={"pages.glossary.title"} /></h1>
+          <N4LGuide id={"glossary"} steps={guideSteps} compact={true} />
+        </div>
         <p className={"lead"}>{t("pages.glossary.intro")}</p>
 
         <Form.Group controlId={"glossary-search"} className={"n4l-glossary-search"} role={"search"}>

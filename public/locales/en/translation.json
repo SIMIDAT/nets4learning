@@ -337,6 +337,91 @@
     }
   },
   "dataframe-processed": "DataFrame | Processed",
+  "dataset-process": {
+    "tabs": {
+      "original": "1. Original data",
+      "form": "2. How to process it",
+      "processed": "3. Processed data"
+    },
+    "original-help": "{{rows}} rows and {{columns}} columns, as they are in the file. The highlighted column is the one to be predicted.",
+    "classification": {
+      "target-title": "Which column is the class?",
+      "target-help": "The network will learn to tell which class each row belongs to. It is usually the last column.",
+      "target-badge": "Class",
+      "target-transform": "Each class is turned into a number for training.",
+      "summary_one": "{{count}} column will go into the network and “{{target}}” is predicted ({{classes}} classes), with {{scaler}} scaling.",
+      "summary_other": "{{count}} columns will go into the network and “{{target}}” is predicted ({{classes}} classes), with {{scaler}} scaling."
+    },
+    "regression": {
+      "target-title": "Which number do you want to predict?",
+      "target-help": "The network will learn to compute the value of this column from the others. It has to be numeric.",
+      "target-badge": "Predicted",
+      "target-transform": "It is used as it is: it is the number being predicted.",
+      "summary_one": "{{count}} column will go into the network and “{{target}}” is predicted, with {{scaler}} scaling.",
+      "summary_other": "{{count}} columns will go into the network and “{{target}}” is predicted, with {{scaler}} scaling."
+    },
+    "target-classes": "“{{name}}” has {{count}} classes ({{sample}}): the network will have {{count}} output neurons.",
+    "target-too-many": "That is {{count}} classes, too many for a classification: are you sure it is this column? If it is a continuous number, regression may fit better.",
+    "target-range": "“{{name}}” goes from {{min}} to {{max}}, with a mean of {{mean}}.",
+    "target-not-numeric": "“{{name}}” is a text column and regression predicts numbers: choose a numeric one or use tabular classification.",
+    "scaler-title": "Scaling the inputs",
+    "scaler-help": "Each column has its own scale (years, euros, centimetres). Scaling them makes them all weigh about the same and helps the network learn.",
+    "scalers": {
+      "min-max-scaler": {
+        "name": "Min-Max",
+        "help": "Takes each column to the range from 0 to 1."
+      },
+      "standard-scaler": {
+        "name": "Standard",
+        "help": "Subtracts the mean and divides by the standard deviation: mean 0 and deviation 1. It copes better with extreme values."
+      }
+    },
+    "columns-title": "Input columns",
+    "columns-help": "Choose which columns the network uses and how they are turned into numbers. Text columns are encoded as categories: one number for each distinct value.",
+    "use": "Use",
+    "types": {
+      "int32": "Integer",
+      "float32": "Decimal",
+      "string": "Text",
+      "boolean": "Yes/no",
+      "datetime": "Date"
+    },
+    "transforms": {
+      "int32": "As an integer",
+      "float32": "As a decimal number",
+      "label-encoder": "As a category (one number per value)",
+      "drop": "Not used",
+      "string": "As text",
+      "boolean": "As yes/no",
+      "one-hot-encoder": "One column per value (one-hot)"
+    },
+    "transform-of": "How “{{name}}” is converted",
+    "distinct_one": "{{count}} value: {{sample}}",
+    "distinct_other": "{{count}} distinct values, e.g. {{sample}}",
+    "range_one": "always {{min}}",
+    "range_other": "from {{min}} to {{max}} ({{count}} distinct values)",
+    "no-inputs": "There is no input column: turn on at least one.",
+    "submit": "Process the data",
+    "done_one": "Data ready: {{rows}} rows, {{count}} input column and “{{target}}” to predict. You can now design the network below.",
+    "done_other": "Data ready: {{rows}} rows, {{count}} input columns and “{{target}}” to predict. You can now design the network below.",
+    "view": "Which data to see",
+    "views": {
+      "scaled": "Scaled",
+      "encoded": "Encoded",
+      "scaled-help": "The input columns already scaled: exactly what the network receives.",
+      "encoded-help": "Each category already turned into a number, before scaling; under each column, how it was converted."
+    }
+  },
+  "dataset-view": {
+    "file": "File",
+    "original": "Original",
+    "encoded": "Encoded",
+    "scaled": "Scaled (network input)",
+    "original-help": "The data as it is in the file: {{rows}} rows and {{columns}} columns. The highlighted column, “{{target}}”, is the one being predicted.",
+    "encoded-help": "Each text category is already a number and the unused columns are gone. Not scaled yet.",
+    "scaled-help": "The {{columns}} input columns scaled ({{scaler}}): exactly what the network receives. At the end, highlighted, what it has to predict, “{{target}}”, which is not scaled.",
+    "statistics": "Statistics of each column"
+  },
   "model-selector": {
     "title": "Model selector"
   },
@@ -653,47 +738,6 @@
         "0-option-1": "Car classification",
         "0-option-2": "Iris classification",
         "0-option-3": "Lymphomas classification"
-      },
-      "joyride": {
-        "title": "Activate the tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "You can consult the manual for information"
-          },
-          "dataset-info": {
-            "title": "Dataset information",
-            "content": "Analyze the data set"
-          },
-          "dataset": {
-            "title": "Data set",
-            "content": "You can view the data set and extract statistics from its descriptions"
-          },
-          "dataset-plot": {
-            "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
-          },
-          "layer-visualizer": {
-            "title": "Neural network layer viewer",
-            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
-          },
-          "layer-editor": {
-            "title": "Layer editor",
-            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
-          },
-          "params-editor": {
-            "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
-          },
-          "list-of-models": {
-            "title": "Model List",
-            "content": "Once the model is generated, you can upload or download the model, to test each model and perform classification."
-          },
-          "classify-and-visualizer": {
-            "title": "Classify and view",
-            "content": "Once our model for tabular classification is loaded, you can perform the classification and view the results"
-          }
-        }
       }
     },
     "1-regression": {
@@ -1014,51 +1058,6 @@
         "breast-cancer": "Breast cancer",
         "student-performance": "Student performance",
         "wine": "Wine"
-      },
-      "joyride": {
-        "title": "Activate the tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "You can consult the manual for information"
-          },
-          "dataset-info": {
-            "title": "Dataset information",
-            "content": "Query data set information"
-          },
-          "dataset": {
-            "title": "Data set",
-            "content": "You can view the data set and extract statistics from its descriptions"
-          },
-          "pre-process-dataset": {
-            "title": "Pre process",
-            "content": "Cleaning and preparing the data set"
-          },
-          "dataset-plot": {
-            "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
-          },
-          "layer-visualizer": {
-            "title": "Neural network layer viewer",
-            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
-          },
-          "layer-editor": {
-            "title": "Layer editor",
-            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
-          },
-          "params-editor": {
-            "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
-          },
-          "list-of-models": {
-            "title": "Model List",
-            "content": "Once the model is generated, you can upload or download the model, to test each model and make predictions."
-          },
-          "predict-and-visualizer": {
-            "title": "Prediction and visualization",
-            "content": "Once our model for regression is loaded you can make predictions and visualize the results"
-          }
-        }
       }
     },
     "2-object-detection": {
@@ -1496,47 +1495,6 @@
       "list-datasets": {
         "mnist": "MNIST",
         "kmnist": "KMNIST"
-      },
-      "joyride": {
-        "title": "Activate the tutorial",
-        "steps": {
-          "manual": {
-            "title": "Manual",
-            "content": "You can consult the manual for information"
-          },
-          "dataset-info": {
-            "title": "Dataset information",
-            "content": "Query data set information"
-          },
-          "dataset": {
-            "title": "Data set",
-            "content": "You can view the data set and extract statistics from its descriptions"
-          },
-          "dataset-plot": {
-            "title": "Data set plot",
-            "content": "You can extract very relevant information by analyzing the data set using the different graphs, bar diagrams, pie charts, etc."
-          },
-          "layer-visualizer": {
-            "title": "Neural network layer viewer",
-            "content": "You can view the layers, activation functions in two formats, compact mode and extended mode"
-          },
-          "layer-editor": {
-            "title": "Layer editor",
-            "content": "You can edit the layers of the neural network, modify the units of each layer, the activation function, add new layers or delete them."
-          },
-          "params-editor": {
-            "title": "Hyperparameter editor",
-            "content": "You can configure the hyperparameters of your neural network so that the training is personalized for the data set."
-          },
-          "list-of-models": {
-            "title": "Model List",
-            "content": "Once the model is generated, you can upload or download the model, to test each model and make predictions."
-          },
-          "classify": {
-            "title": "Prediction and visualization",
-            "content": "Once our model for regression is loaded you can make predictions and visualize the results"
-          }
-        }
       }
     }
   },
@@ -2437,6 +2395,69 @@
             }
           }
         }
+      },
+      "step-by-step": {
+        "title": "Step by step",
+        "intro": "This is how your network learns: an example enters on the left, goes forward through the network, its error is measured and that error goes back to correct each weight. It is the network you designed above, with random initial weights. Click a neuron to see its calculations.",
+        "intro-pretrained": "This is how this trained model computes its answer: an example enters on the left, goes forward through the network and is compared with the correct answer. Going backwards you will see how much each weight would change with one more training step; the model on the page does not change. Click a neuron to see its calculations.",
+        "too-big": "Your network has {{nodes}} neurons counting the input ones ({{detail}}). The step by step view is only drawn with fewer than {{max}}, so it can be followed: remove layers or neurons in the layer editor, for example with two hidden layers of 8.",
+        "too-big-pretrained": "This model has {{nodes}} neurons counting the input ones ({{detail}}). The step by step view is only drawn with fewer than {{max}}, so it can be followed. On the training page of this dataset you can see it with a smaller network.",
+        "not-dense": "This model is not a network of dense layers: the step by step view only draws that kind of network.",
+        "mismatch": "The last layer has {{units}} neurons and the network has to give {{classes}} outputs: change it in the layer editor to see it step by step.",
+        "example": "Choose an example",
+        "search": "Search an example",
+        "no-results": "No example matches",
+        "back": "Previous phase",
+        "next": "Next",
+        "play": "Play",
+        "pause": "Pause",
+        "ten": "Train with 10 examples at once",
+        "speed": "Speed",
+        "speeds": {
+          "slow": "Slow",
+          "normal": "Normal",
+          "fast": "Fast"
+        },
+        "same-example": "Repeat the same example",
+        "reset": "Reset the weights",
+        "reset-pretrained": "Back to the model weights",
+        "legend": "Blue: positive value or weight; red: negative. The more intense or thicker, the larger. In orange, what goes backwards: the deltas of the neurons and the gradients of the weights.",
+        "phase-count": "Phase {{current}} of {{total}}",
+        "phase-title": {
+          "input": "The input",
+          "forward": "Forward: layer {{layer}}",
+          "loss": "The error",
+          "backward": "Backward: layer {{layer}}",
+          "update": "Update the weights"
+        },
+        "phase": {
+          "input": "Example no. {{row}} comes in: its {{count}} features, already scaled as in training, are the values of the input neurons.",
+          "input-pretrained": "Example no. {{row}} comes in: its {{count}} features, as this model receives them, are the values of the input neurons.",
+          "forward": "Each neuron of layer {{layer}} multiplies each input by the weight of its connection, adds up the products and its bias (z) and applies the {{activation}} activation. The highlighted connections are the ones involved.",
+          "forward-softmax": "Layer {{layer}} adds up its inputs times its weights (z) and softmax turns those sums into probabilities, one per class, that add up to 1.",
+          "loss-classification": "The network gives a probability of {{probability}} to “{{target}}”, the correct answer. The loss, cross-entropy, is −log({{probability}}) = {{loss}}: the lower the probability of the correct class, the higher it is. Right now the network would answer “{{predicted}}”.",
+          "loss-regression": "The network predicts {{prediction}} and the real value is {{actual}}. In the step by step view the target is scaled between 0 and 1 ({{output}} versus {{target}}), and the loss is the squared error: ({{output}} − {{target}})² = {{loss}}.",
+          "loss-regression-raw": "The network predicts {{prediction}} and the real value is {{actual}}. The loss is the squared error: ({{output}} − {{target}})² = {{loss}}.",
+          "backward-output": "The backward pass starts. The delta of each output neuron says how much the loss would change if its sum z changed. The gradient of each weight reaching it is its delta times the input of that connection: they are the orange connections.",
+          "backward": "The error keeps going back to layer {{layer}}: the delta of each neuron is the sum of the deltas of the next layer times the weights joining them, multiplied by the derivative of {{activation}}. That way each weight knows how much it contributed to the error.",
+          "update": "Each weight moves a little against its gradient: w ← w − η·g, with η = {{rate}}, the learning rate. With this example, the loss goes from {{before}} to {{after}}. Training is repeating this with all the examples, epoch after epoch; the optimizer you choose adjusts each step in a more elaborate way."
+        },
+        "focus": "Neuron {{index}} of layer {{layer}}",
+        "focus-input": "Input {{index}}",
+        "formula-input": "{{name}} = {{value}}",
+        "formula-pending": "Neuron {{index}} of layer {{layer}} has not been computed yet.",
+        "formula-update": "Its bias goes from {{before}} to {{after}}. The weight that changes most, the one coming from {{from}}, goes from {{weight}} to {{weightAfter}}.",
+        "from-neuron": "neuron {{index}} of layer {{layer}}",
+        "history_one": "Mean loss of {{sample}} examples from the data after each update: from {{first}} to {{last}} ({{count}} example used). If the network learns, the line goes down.",
+        "history_other": "Mean loss of {{sample}} examples from the data after each update: from {{first}} to {{last}} ({{count}} examples used). If the network learns, the line goes down.",
+        "history-empty": "When each example finishes, you will see here how the loss changes.",
+        "diagram": "The neural network, layer by layer",
+        "node-input": "Input {{name}}: {{value}}",
+        "node": "Neuron {{index}} of layer {{layer}}: {{value}}",
+        "column-input": "Input",
+        "column-layer": "Layer {{layer}} · {{activation}}",
+        "column-output": "Output · {{activation}}",
+        "update-rule": "w ← w − {{rate}} · gradient"
       }
     },
     "dataframe": {
@@ -3096,7 +3117,6 @@
         "items": [
           "The language, theme and TensorFlow.js backend you choose.",
           "The guide voice settings and which step each guide is on.",
-          "Which tutorials of the training pages you have already seen.",
           "Your decision about cookies, in a cookie of its own."
         ],
         "settings": "You can change it or delete it all from"
@@ -3171,14 +3191,16 @@
         "sample": "Hello. This is how the guide of each Nets4Learning page will sound."
       },
       "tutorials": {
-        "title": "Guides and tutorials",
+        "title": "Guides",
         "guides-help": "Each guide remembers which step you are on. Reset them so that they all start again from the beginning.",
         "guides-reset": "Reset the guides",
-        "done": "Done",
-        "training-help_zero": "The tutorials of the training pages appear by themselves the first time you open each one. You have not seen any yet.",
-        "training-help_one": "The tutorials of the training pages appear by themselves the first time you open each one. You have seen 1; with this button it will appear again.",
-        "training-help_other": "The tutorials of the training pages appear by themselves the first time you open each one. You have seen {{count}}; with this button they will appear again.",
-        "training-reset": "Show the tutorials again"
+        "done": "Done"
+      },
+      "learning": {
+        "title": "For learning",
+        "help": "Tools that are hidden by default so as not to overload the pages.",
+        "step-by-step": "Show “Step by step”: how the network learns, example by example, forwards and backwards",
+        "step-by-step-help": "It appears on the training pages and on the tabular classification and regression model pages, with networks of fewer than 64 neurons."
       },
       "privacy": {
         "title": "Privacy and cookies",
@@ -3222,6 +3244,7 @@
     "editor": "Editor",
     "dataset": "Data set",
     "model": "Model",
+    "step-by-step": "Step by step",
     "generated-models": "Models generated",
     "predict": "Predict",
     "classify": "Classify",
@@ -3252,14 +3275,6 @@
     "drop": "Drop",
     "ignored": "Ignore",
     "submit": "Process dataframe"
-  },
-  "joyride": {
-    "back": "Back",
-    "close": "Close",
-    "last": "Last",
-    "next": "Next",
-    "open": "Open",
-    "skip": "Skip"
   },
   "upload-dataset-info": "You must upload a dataset to perform the task.",
   "upload-model": "Upload model",
@@ -3482,6 +3497,10 @@
           "title": "Explainability",
           "content": "After classifying, here you can see why the network decided that. SHAP shares out the decision among the features: which ones push towards the class and which ones against it. The global importance does the same with many rows, to see which feature weighs the most in general."
         },
+        "step-by-step": {
+          "title": "Step by step",
+          "content": "Here you see how this model computes its answer, with its real weights: the forward pass layer by layer, the error and, going backwards, how much each weight would change with one more training step. Click a neuron to see its calculations. It is only drawn with models of fewer than 64 neurons."
+        },
         "end": {
           "title": "Your turn",
           "content": "Try choosing an example, classify it, and then change a feature to see how the prediction changes. You can open this guide again whenever you like with the Guide button."
@@ -3599,6 +3618,10 @@
         "explain": {
           "title": "Explainability",
           "content": "After predicting, here you can see why the network gave that value. SHAP shares out the prediction among the variables: which ones raise it and which ones lower it compared with the average prediction. The global importance does the same with many rows, to see which variable weighs the most in general."
+        },
+        "step-by-step": {
+          "title": "Step by step",
+          "content": "Here you see how this model computes its answer, with its real weights: the forward pass layer by layer, the error and, going backwards, how much each weight would change with one more training step. Click a neuron to see its calculations. It is only drawn with models of fewer than 64 neurons."
         },
         "end": {
           "title": "Your turn",
@@ -3971,7 +3994,431 @@
     "go-to": "Go to step",
     "voice": "Voice",
     "voice-auto": "Automatic",
-    "voice-online": "online"
+    "voice-online": "online",
+    "train": {
+      "0-tabular-classification": {
+        "common": {
+          "intro": {
+            "title": "Train your network",
+            "content": "On this page you design and train your own neural network to classify a dataset, and then you test it. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "session": {
+            "title": "Save the configuration",
+            "content": "These buttons save the layers and hyperparameters you have chosen to a file, so you can load it another day to pick up where you left off, or share it. The data and the trained models are not saved."
+          },
+          "manual": {
+            "title": "The manual",
+            "content": "If this is your first time, open the manual: it calmly explains each part of this page and what every option means."
+          },
+          "layers-add": {
+            "title": "Add and remove layers",
+            "content": "These buttons add a layer at the beginning or at the end of the network. To remove one, or change its neurons and activation, expand it in the list."
+          },
+          "learning-rate": {
+            "title": "Learning rate",
+            "content": "This is how much the weights are corrected at each step. With a high rate it learns quickly, but it may overshoot and never settle; with a low one it is more stable, but needs more epochs. 0.01 is a good starting point."
+          },
+          "test-size": {
+            "title": "Test data",
+            "content": "This percentage of the data is set aside and the network does not see it while training. It is used afterwards to check how well it does with new data, which is what really matters: a network that only gets right what it has already seen has memorised, not learned."
+          },
+          "optimizer": {
+            "title": "Optimizer",
+            "content": "This is the method that adjusts the weights based on the error. Adam usually works well out of the box; SGD is the simplest, and RMSprop, Adagrad or Adadelta adapt the step of each weight."
+          },
+          "step-by-step": {
+            "title": "Step by step",
+            "content": "Before training for real, here you see how your network learns one example at a time: the forward pass layer by layer, the error and how it goes back to correct each weight. Move phase by phase or press play, and click a neuron to see its calculations. It is only drawn with networks of fewer than 64 neurons, so it can be followed."
+          },
+          "models": {
+            "title": "Generated models",
+            "content": "Each training run adds a row here with its configuration and results, so you can compare them. The best one, with the lowest error on the test data, is marked. From here you can also see its history or download it."
+          },
+          "dataset-info": {
+            "title": "The dataset",
+            "content": "This describes the dataset: where it comes from, what each column means and which classes have to be predicted. It is worth reading before designing the network."
+          },
+          "dataset": {
+            "title": "The data",
+            "content": "This is the table you are going to train with. Each row is an example and each column a feature; the highlighted one is the class. The sections below show the statistics of each column, before and after processing it: the network only works with numbers, so each category is turned into a number."
+          },
+          "layer-design": {
+            "title": "Your network",
+            "content": "This drawing is the network you are going to train. On the left is the input layer, with one neuron per feature; in the middle, the hidden layers, and on the right the output layer, with one neuron per class. It changes as soon as you edit the layers, and the button in the corner shows it full screen."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and may memorise the data instead of generalising. The last layer gives the answer: it needs as many neurons as there are classes and the softmax activation, which turns the output into probabilities."
+          },
+          "epochs": {
+            "title": "Epochs",
+            "content": "An epoch is one complete pass through all the training data. With too few, the network does not get to learn; with too many, it takes longer and may memorise the data. Start with 10 and increase them if the accuracy is still improving at the end."
+          },
+          "loss": {
+            "title": "Loss function",
+            "content": "It measures how wrong the network is on each example, and it is what the optimizer tries to reduce. To choose between several classes, categorical cross-entropy is used, which is the one selected."
+          },
+          "metrics": {
+            "title": "Metric",
+            "content": "This is what is shown during training to tell whether it is going well, for example the accuracy: the percentage of examples it gets right. It does not change how the network learns, only what you see."
+          },
+          "train": {
+            "title": "Train",
+            "content": "When you press Train, the network learns epoch by epoch. You will see the progress here and, in the visor, how the loss goes down and the accuracy goes up, both on the training data and on the test data. If it takes too long, you can stop it."
+          },
+          "predict": {
+            "title": "Classify",
+            "content": "With a trained model, choose a row from the dataset or type in the values of an example, and press Classify. You will see the probability of each class. At the top you choose which model to classify with, to compare them."
+          },
+          "explain": {
+            "title": "Explainability",
+            "content": "After classifying, SHAP shows why the network decided that: which features pushed towards the predicted class and which against it. The global importance does the same with many rows, to see which feature matters most in general."
+          },
+          "end": {
+            "title": "Your turn",
+            "content": "Train with the starting values and look at the accuracy. Then change just one thing, for example the epochs or the neurons of a layer, train again and compare both models in the table. You can open this guide again whenever you want with the Guide button."
+          }
+        },
+        "CAR": {
+          "intro": {
+            "title": "Car classification",
+            "content": "On this page you train a network that decides whether a car is acceptable from six features, such as the price, the maintenance or the safety, with 1728 example cars. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and may memorise the data instead of generalising. The last layer gives the answer: it has 4 neurons, one per class (unacceptable, acceptable, good and very good), with the softmax activation, which turns them into probabilities."
+          }
+        },
+        "IRIS": {
+          "intro": {
+            "title": "Iris flower classification",
+            "content": "On this page you train a network that recognises the species of an iris flower, among three, from four measurements of its petals and sepals, with 150 example flowers. It is a small dataset: it trains in a moment and is perfect for experimenting. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and may memorise the data instead of generalising. The last layer gives the answer: it has 3 neurons, one per species (setosa, versicolor and virginica), with the softmax activation, which turns them into probabilities."
+          }
+        },
+        "LYMPHOGRAPHY": {
+          "intro": {
+            "title": "Lymphography",
+            "content": "On this page you train a network that classifies lymphography examinations into four diagnoses from 18 features, with 148 example patients. Some classes have very few cases, so look at how well it does with each one. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and, with so few patients, they easily memorise the data. The last layer gives the answer: it has 4 neurons, one per diagnosis, with the softmax activation, which turns them into probabilities."
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "Your own data",
+            "content": "On this page you train a network with your own data: you upload it, choose which column you want to predict, design the network and train it. Your data never leaves your browser. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "dataset-info": {
+            "title": "Upload the data",
+            "content": "Drag your file here or click to choose it. CSV, TSV, ARFF, JSON, JSON Lines and Parquet are supported. Each row has to be an example, and one of the columns the class you want to predict."
+          },
+          "process": {
+            "title": "Prepare the data",
+            "content": "Before training, the data has to be prepared: choose the column you want to predict, how to turn the text columns into numbers and how to scale the values. When you press the button, the data is ready and the network appears."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and may memorise the data. The last layer gives the answer: it needs as many neurons as classes in the column you predict, with the softmax activation, which turns them into probabilities."
+          }
+        }
+      },
+      "1-regression": {
+        "common": {
+          "intro": {
+            "title": "Train your regression network",
+            "content": "On this page you design and train a neural network that predicts a number, such as a price or a grade, from other columns, and then you test it. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "session": {
+            "title": "Save the configuration",
+            "content": "These buttons save the layers and hyperparameters you have chosen to a file, so you can load it another day to pick up where you left off, or share it. The data and the trained models are not saved."
+          },
+          "manual": {
+            "title": "The manual",
+            "content": "If this is your first time, open the manual: it calmly explains each part of this page and what every option means."
+          },
+          "layers-add": {
+            "title": "Add and remove layers",
+            "content": "These buttons add a layer at the beginning or at the end of the network. To remove one, or change its neurons and activation, expand it in the list."
+          },
+          "learning-rate": {
+            "title": "Learning rate",
+            "content": "This is how much the weights are corrected at each step. With a high rate it learns quickly, but it may overshoot and never settle; with a low one it is more stable, but needs more epochs. 0.01 is a good starting point."
+          },
+          "test-size": {
+            "title": "Test data",
+            "content": "This percentage of the data is set aside and the network does not see it while training. It is used afterwards to check how well it does with new data, which is what really matters: a network that only gets right what it has already seen has memorised, not learned."
+          },
+          "optimizer": {
+            "title": "Optimizer",
+            "content": "This is the method that adjusts the weights based on the error. RMSprop, the one selected, works well for regression; Adam also usually works out of the box, and SGD is the simplest."
+          },
+          "step-by-step": {
+            "title": "Step by step",
+            "content": "Before training for real, here you see how your network learns one example at a time: the forward pass layer by layer, the error and how it goes back to correct each weight. Move phase by phase or press play, and click a neuron to see its calculations. It is only drawn with networks of fewer than 64 neurons, so it can be followed."
+          },
+          "models": {
+            "title": "Generated models",
+            "content": "Each training run adds a row here with its configuration and results, so you can compare them. The best one, with the lowest error on the test data, is marked. From here you can also see its history or download it."
+          },
+          "dataset-info": {
+            "title": "The dataset",
+            "content": "This describes the dataset: where it comes from, what each column means and which number has to be predicted. It is worth reading before designing the network."
+          },
+          "dataset": {
+            "title": "The data",
+            "content": "This is the table you are going to train with, with its statistics and plots. Look at which columns change together with the one being predicted: they are the ones that will help the network most. Before training, the values are scaled so that all columns weigh about the same."
+          },
+          "layer-design": {
+            "title": "Your network",
+            "content": "This drawing is the network you are going to train. On the left is the input layer, with one neuron per feature; in the middle, the hidden layers, and on the right a single output neuron: the number it predicts. It changes as soon as you edit the layers, and the button in the corner shows it full screen."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "Each layer has a number of neurons and an activation function. More neurons or more layers can learn more complex relationships, but they train more slowly and may memorise the data. The last layer cannot be changed: it is a single neuron with linear activation, because the result is any number, not a probability."
+          },
+          "epochs": {
+            "title": "Epochs",
+            "content": "An epoch is one complete pass through all the training data. With too few, the network does not get to learn; with too many, it takes longer and may memorise the data. Start with the default value and check whether the error is still going down at the end."
+          },
+          "loss": {
+            "title": "Loss function",
+            "content": "It measures how far the prediction is from the real value, and it is what the optimizer tries to reduce. The mean squared error, the one selected, punishes large errors heavily; the mean absolute error treats them all the same."
+          },
+          "metrics": {
+            "title": "Metrics",
+            "content": "These are shown during training to tell whether it is going well. You can add several: the mean absolute error, for example, tells how wrong it is on average, in the same units as the value you predict."
+          },
+          "train": {
+            "title": "Train",
+            "content": "When you press Train, the network learns epoch by epoch. You will see the progress here and, in the visor, how the error goes down, both on the training data and on the test data. If it takes too long, you can stop it."
+          },
+          "predict": {
+            "title": "Predict",
+            "content": "With a trained model, choose a row from the dataset or type in the values, and press Predict. You will see the number the network predicts and, if you choose a row without changing it, the real value to compare. At the top you choose which model to predict with."
+          },
+          "explain": {
+            "title": "Explainability",
+            "content": "After predicting, SHAP shows why the network gave that number: which features pushed it up and which pushed it down. The global importance does the same with many rows, to see which feature matters most in general."
+          },
+          "end": {
+            "title": "Your turn",
+            "content": "Train with the starting values and look at the error. Then change just one thing, for example the learning rate or the neurons of a layer, train again and compare both models in the table. You can open this guide again whenever you want with the Guide button."
+          }
+        },
+        "SALARY": {
+          "intro": {
+            "title": "Salary by experience",
+            "content": "On this page you train a network that predicts the salary of a person from their work experience, with 1000 example people. With so few columns it is easy to see what the network learns. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "AUTO_MPG": {
+          "intro": {
+            "title": "Car fuel consumption",
+            "content": "On this page you train a network that predicts the fuel consumption of a car, in miles per gallon, from six features such as the cylinders, the horsepower or the weight, with 396 example cars. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "HOUSING_PRICES": {
+          "intro": {
+            "title": "Housing prices",
+            "content": "On this page you train a network that predicts the median value of the homes in a Boston neighbourhood from 12 features, such as the number of rooms or the crime rate of the area, with 506 example neighbourhoods. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "STUDENT_PERFORMANCE": {
+          "intro": {
+            "title": "Student grades",
+            "content": "On this page you train a network that predicts the final grade of a student, from 0 to 20, from 30 features such as study time, absences or the grades of the first two terms, G1 and G2. There is data from two subjects: mathematics, with 395 students, and Portuguese, with 649. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "WINE": {
+          "intro": {
+            "title": "Wine quality",
+            "content": "On this page you train a network that predicts the quality of a wine, from 0 to 10, from 11 chemical measurements such as acidity or alcohol. There are two files: 1599 red wines and 4898 white ones. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "Your own data",
+            "content": "On this page you train a network with your own data: you upload it, choose which numeric column you want to predict, design the network and train it. Your data never leaves your browser. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "dataset-info": {
+            "title": "Upload the data",
+            "content": "Drag your file here or click to choose it. CSV, TSV, ARFF, JSON, JSON Lines and Parquet are supported. Each row has to be an example, and one of the columns the number you want to predict."
+          },
+          "process": {
+            "title": "Prepare the data",
+            "content": "Before training, the data has to be prepared: choose the column you want to predict, how to turn the text columns into numbers and how to scale the values. When you press the button, the data is ready to design the network."
+          }
+        }
+      },
+      "3-image-classification": {
+        "common": {
+          "intro": {
+            "title": "Train your image network",
+            "content": "On this page you design and train a convolutional network that recognises 28 by 28 pixel images, and then you test it by drawing. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "session": {
+            "title": "Save the configuration",
+            "content": "These buttons save the layers and hyperparameters you have chosen to a file, so you can load it another day to pick up where you left off, or share it. The data and the trained models are not saved."
+          },
+          "manual": {
+            "title": "The manual",
+            "content": "If this is your first time, open the manual: it calmly explains each part of this page and what every option means."
+          },
+          "layers-add": {
+            "title": "Add and remove layers",
+            "content": "This button adds a layer at the end. Expand each layer to choose its type, its filters, the filter size or its neurons, or to remove it. The first one has to be convolutional."
+          },
+          "learning-rate": {
+            "title": "Learning rate",
+            "content": "This is how much the weights are corrected at each step. With a high rate it learns quickly, but it may overshoot and never settle; with a low one it is more stable, but needs more epochs. 0.01 is a good starting point."
+          },
+          "test-size": {
+            "title": "Test data",
+            "content": "This percentage of the data is set aside and the network does not see it while training. It is used afterwards to check how well it does with new data, which is what really matters: a network that only gets right what it has already seen has memorised, not learned."
+          },
+          "optimizer": {
+            "title": "Optimizer",
+            "content": "This is the method that adjusts the weights based on the error. Adam usually works well out of the box; SGD is the simplest, and RMSprop, Adagrad or Adadelta adapt the step of each weight."
+          },
+          "models": {
+            "title": "Generated models",
+            "content": "Each training run adds a row here with its configuration and results, so you can compare them. The best one, with the lowest error on the test data, is marked. From here you can also see its history or download it."
+          },
+          "dataset-info": {
+            "title": "The image set",
+            "content": "This describes the dataset: where the images come from, how many there are and what each of the ten classes represents."
+          },
+          "layer-design": {
+            "title": "Your network",
+            "content": "This drawing is the network you are going to train: the image enters on the left, goes through the convolutional and pooling layers, is flattened and ends in the dense layers, with one neuron per class on the right. The button in the corner shows it full screen."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "A network for images combines several kinds of layer. Convolutional layers look for patterns, such as edges or curves, with small filters that sweep the image; pooling layers, max pooling, shrink it keeping the most salient values; the flatten layer turns the result into a list of numbers, and the dense layers decide the class. The last one needs ten neurons, one per class, with the softmax activation."
+          },
+          "epochs": {
+            "title": "Epochs",
+            "content": "An epoch is one complete pass through all the training images. With images each epoch takes much longer than with a table, so start with a few, like the default 5, and increase them if the accuracy is still improving."
+          },
+          "loss": {
+            "title": "Loss function",
+            "content": "It measures how wrong the network is on each image, and it is what the optimizer tries to reduce. To choose between ten classes, categorical cross-entropy is used, which is the one selected."
+          },
+          "metrics": {
+            "title": "Metrics",
+            "content": "These are shown during training to tell whether it is going well. You can add several, such as the accuracy: the percentage of images it gets right. They do not change how the network learns, only what you see."
+          },
+          "train": {
+            "title": "Train",
+            "content": "When you press Train, the images are downloaded first and then the network learns epoch by epoch. It takes longer than with a table: the progress and the visor tell you how the loss and accuracy are going, and you can stop it if needed."
+          },
+          "predict": {
+            "title": "Test the network",
+            "content": "With a trained model, draw on the canvas, choose a test image from the dataset or upload your own, and the network will say what it sees, with the probability of each class. At the top you choose which model to test."
+          },
+          "explain": {
+            "title": "Explainability",
+            "content": "After classifying, LRP colours the pixels according to how much they counted for the decision. That way you see which parts of the drawing the network looked at to decide."
+          },
+          "end": {
+            "title": "Your turn",
+            "content": "Train with the starting network and try drawing. Then add or remove a convolutional layer, train again and compare in the table which model gets more right. You can open this guide again whenever you want with the Guide button."
+          }
+        },
+        "IMAGE-MNIST": {
+          "intro": {
+            "title": "Handwritten digits",
+            "content": "On this page you train a convolutional network that recognises handwritten digits from 0 to 9, with the images of the MNIST dataset, and then you test it by drawing your own numbers. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        },
+        "IMAGE-KMNIST": {
+          "intro": {
+            "title": "Japanese characters",
+            "content": "On this page you train a convolutional network that recognises ten handwritten hiragana characters of classical Japanese, from the Kuzushiji-MNIST dataset, and then you test it by drawing them. I will walk you through each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          }
+        }
+      }
+    },
+    "glossary": {
+      "intro": {
+        "title": "The glossary",
+        "content": "Here you will find all the concepts Nets4Learning uses, explained: the tasks, the layers, the hyperparameters, the optimizers and the activation and loss functions and metrics. I will show you the most important ones and where to find them. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+      },
+      "search": {
+        "title": "Search",
+        "content": "Type any term here, for example “epoch” or “ReLU”, and only the cards that mention it will remain."
+      },
+      "index": {
+        "title": "The index",
+        "content": "The sections of the glossary, in order. Click one to go straight to it; as you scroll down, the one you are in is highlighted."
+      },
+      "tasks": {
+        "title": "The tasks",
+        "content": "First of all: which problem each task of the application solves. Classifying rows of a table, predicting numbers with regression, classifying images and identifying objects."
+      },
+      "units": {
+        "title": "Neurons",
+        "content": "Each layer of the network has neurons: each one multiplies its inputs by some weights, adds them up and applies an activation function. More neurons can learn more complex relationships."
+      },
+      "activation-function": {
+        "title": "Activation function",
+        "content": "It decides what each neuron lets through. Without it, the network could only learn linear relationships, however many layers it had."
+      },
+      "learning-rate": {
+        "title": "Learning rate",
+        "content": "How much the weights are corrected at each training step. It is perhaps the most important hyperparameter: too high and the network does not settle; too low and it learns very slowly."
+      },
+      "epochs": {
+        "title": "Epochs",
+        "content": "How many times the network goes through all the training data. Too few are not enough to learn; too many lead to memorising the data instead of generalising."
+      },
+      "test-size": {
+        "title": "Test data",
+        "content": "The part of the data set aside to check at the end how well the network does with data it has not seen. It is the honest measure of what it has learned."
+      },
+      "optimizer": {
+        "title": "Optimizers",
+        "content": "The methods that adjust the weights based on the error, each with its own formula. Adam, which is almost always selected by default, combines the ideas of Momentum and RMSProp."
+      },
+      "activation-plots": {
+        "title": "The plots",
+        "content": "Each activation function has its formula and its plot, and the animation tab shows how it transforms each value. ReLU, the most used in hidden layers, lets positive values through and cancels negative ones."
+      },
+      "softmax": {
+        "title": "Softmax",
+        "content": "It goes in the last layer when classifying: it turns the outputs into probabilities, one per class, that add up to 1."
+      },
+      "loss": {
+        "title": "Loss function",
+        "content": "It measures how wrong the network is, and it is what training tries to reduce. To choose between several classes, categorical cross-entropy is used."
+      },
+      "loss-regression": {
+        "title": "Loss in regression",
+        "content": "To predict numbers, the most common is the mean squared error, which punishes large errors heavily. The mean absolute error, just below, treats them all the same."
+      },
+      "metrics": {
+        "title": "Metrics",
+        "content": "They tell how well the network works in an easy way to understand, like accuracy: the percentage of correct answers. They do not change how it learns."
+      },
+      "confusion-matrix": {
+        "title": "Confusion matrix",
+        "content": "A table that crosses the real class with the predicted one: that way you see not only how often the network is right, but which classes it confuses."
+      },
+      "anchor": {
+        "title": "Links to each term",
+        "content": "Each card has its own link (#) to share it. The “More information” links in the playground bring you straight to the term you need."
+      },
+      "end": {
+        "title": "Your turn",
+        "content": "Search for a term you do not know or scroll down to the activation functions and watch their animations. You can open this guide again whenever you want with the Guide button."
+      }
+    }
   },
   "loading-status": {
     "page": "Loading the page…",

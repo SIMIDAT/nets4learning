@@ -52,7 +52,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | `page_view` | Cada cambio de ruta (o de `?dataset=` en el AED) | `page_location`, `page_title` |
 | `page_time` | Al salir de una página, cerrar la pestaña o pasar a otra app | `engaged_seconds`: solo el tiempo con la pestaña visible |
 | `ui_click` | Clic en un botón, enlace, pestaña o elemento de menú con identificador | `element`: `data-analytics`, `data-testid`, `id` o la ruta del enlace interno |
-| `settings_change` | Cambio de idioma, tema o backend de TF.js (desde la barra o desde `/settings`) | `setting` (`language`, `theme`, `tf_backend`), `value`, `outcome` (backend: `completed` o `error` si el navegador no puede usarlo) |
+| `settings_change` | Cambio de idioma, tema o backend de TF.js (desde la barra o desde `/settings`), o activar Paso a paso | `setting` (`language`, `theme`, `tf_backend`, `step_by_step`), `value`, `outcome` (backend: `completed` o `error` si el navegador no puede usarlo) |
 | `consent_granted` | Al aceptar las cookies | `source` (`banner`, `settings`, `terms`) |
 | `not_found` | Al llegar a la 404 desde una ruta que no existe | `missing_path` |
 | `search` | Búsqueda en el glosario: 1,5 s después de dejar de escribir, con 3 letras o más | `search_term`, `results` (0: lo que se busca y no está) |

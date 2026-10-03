@@ -1,5 +1,4 @@
 import type * as _tfjs from '@tensorflow/tfjs'
-import { buildJoyride } from '@components/joyride/buildJoyride'
 import type {MobileNet} from '@tensorflow-models/mobilenet'
 
 import type * as _Types from '@core/types'
@@ -99,18 +98,6 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
         resolve(null)
       }, 1000)
     })
-  }
-
-  JOYRIDE (): _Types.Joyride_t {
-    return buildJoyride(this.t, 'datasets-models.3-image-classification.joyride.steps.', [
-      { key: 'manual', target: '.joyride-step-1-manual', placement: 'top' },
-      { key: 'dataset-info', target: '.joyride-step-2-dataset-info', placement: 'top' },
-      { key: 'layer-visualizer', target: '.joyride-step-5-layer', placement: 'top' },
-      { key: 'layer-editor', target: '.joyride-step-6-editor-layers', placement: 'right' },
-      { key: 'params-editor', target: '.joyride-step-7-editor-trainer', placement: 'left-start' },
-      { key: 'list-of-models', target: '.joyride-step-8-list-of-models', placement: 'bottom' },
-      { key: 'classify', target: '.joyride-step-9-classify', placement: 'top' },
-    ])
   }
 
   /** Imagen que recibe el modelo; por defecto, el canvas entero */
