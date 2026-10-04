@@ -8,6 +8,7 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
     '/playground/tabular-classification/dataset/IRIS',
     '/playground/regression/model/AUTO_MPG',
     '/playground/image-classification/model/IMAGE-MNIST',
+    '/playground/clustering/dataset/WINE',
     '/analyze',
     '/datasets',
     '/glossary',

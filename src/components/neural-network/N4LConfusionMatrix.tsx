@@ -1,22 +1,14 @@
-import { OverlayTrigger, Popover, Table } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 import { confusionMatrix, confusionStats } from '@core/history/trainingSummary'
+import HelpTerm from '@components/helpLink/N4LHelpTerm'
 
 type N4LConfusionMatrixProps = {
   classes    : string[]
   /** Clase real y predicha (índices) de cada ejemplo de validación */
   labels     : number[]
   predictions: number[]
-}
-
-/** Término con su definición al pasar el ratón o al llegar con el teclado */
-function HelpTerm({ label, help }: { label: string, help: string }) {
-  return (
-    <OverlayTrigger trigger={['hover', 'focus']} placement={'top'} overlay={<Popover><Popover.Body>{help}</Popover.Body></Popover>}>
-      <span className={'n4l-help-term'} tabIndex={0}>{label}</span>
-    </OverlayTrigger>
-  )
 }
 
 /** Fondo de una celda: verde en los aciertos y rojo en los errores, más intenso cuanto mayor es la parte de su fila */

@@ -34,3 +34,10 @@ export const IC_MODEL_KEYS = {
   MOBILENET: 'IMAGE-MOBILENET',
   RESNET   : 'IMAGE-RESNET',
 } as const
+
+export const CL_MODEL_KEYS = {
+  UPLOAD     : 'UPLOAD',
+  IRIS       : 'IRIS',
+  WINE       : 'WINE',
+  NEW_THYROID: 'NEW-THYROID',
+} as const

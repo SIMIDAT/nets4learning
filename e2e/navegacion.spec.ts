@@ -456,3 +456,38 @@ test('al cambiar de página se empieza arriba (con el foco en el título), atrá
   await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeGreaterThan(0)
   await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeLessThan(200)
 })
+
+test('desde /datasets se entrena con un conjunto de práctica: el entrenador lo carga como si se hubiera subido', async ({ page }) => {
+  await page.goto('/datasets')
+  // La pestaña va en la dirección: se puede enlazar y se mantiene al recargar
+  await page.getByRole('tab', { name: 'Regresión' }).click()
+  await expect(page).toHaveURL(/\/datasets\?task=regression$/)
+  await page.reload()
+  await expect(page.getByRole('tab', { name: 'Regresión' })).toHaveAttribute('aria-selected', 'true')
+
+  await page.getByRole('tab', { name: 'Clasificación tabular' }).click()
+  await page.getByTestId('Test-DatasetTrain-datasets/wine.csv').click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/UPLOAD$/)
+  // El aviso de «subido» se cierra solo: lo que importa es que el formulario ya tiene el CSV
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Target» tiene 3 clases', { timeout: 30_000 })
+})
+
+test('sin conexión se sigue usando lo que ya se había abierto (service worker)', async ({ page, context }) => {
+  test.setTimeout(180_000)
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  // Con el service worker ya activo, se recarga para que todo pase por él (y se guarde)
+  await page.evaluate(async () => { await navigator.serviceWorker.ready })
+  await page.reload()
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await page.waitForTimeout(2000)
+
+  // Al perder la conexión se avisa
+  await context.setOffline(true)
+  await expect(page.getByTestId('Test-OfflineBar')).toBeVisible()
+  // Y la página se vuelve a abrir sin conexión, con sus datos
+  await page.reload()
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await expect(page.locator('[data-guide="dataset"]')).toContainText('sepal_length')
+  await context.setOffline(false)
+})

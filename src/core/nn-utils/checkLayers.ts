@@ -1,4 +1,4 @@
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 
 // Lo que está mal (o se puede mejorar) en las capas que ha montado el usuario, antes de entrenar, con el arreglo de
 // cada cosa: las capas ya corregidas, para aplicarlas con un botón. Sin DOM ni traducciones: los textos los pone quien
@@ -76,7 +76,7 @@ export type LayerShape_t = {
  * El tamaño de los datos a la entrada y a la salida de cada capa de la red de imágenes, y sus pesos (para explicarlas);
  * null desde la primera que no encaja (lo que dice checkImageLayers).
  */
-export function imageLayerShapes(layers: Layer_t[], inputShape: number[] = [28, 28, 1]): Array<LayerShape_t | null> {
+export function imageLayerShapes(layers: ImageLayer_t[], inputShape: number[] = [28, 28, 1]): Array<LayerShape_t | null> {
   let shape = layers[0]?.inputShape ?? inputShape
   let isBroken = false
   return layers.map((layer) => {
@@ -107,7 +107,7 @@ export function imageLayerShapes(layers: Layer_t[], inputShape: number[] = [28, 
 }
 
 const DEFAULT_IMAGE_PARAMS = { kernelSize: 3, filters: 16, poolSize: 2, strides: 2, units: 32 } as const
-const IMAGE_PARAMS: Partial<Record<Layer_t['_class'], (keyof typeof DEFAULT_IMAGE_PARAMS)[]>> = {
+const IMAGE_PARAMS: Partial<Record<ImageLayer_t['_class'], (keyof typeof DEFAULT_IMAGE_PARAMS)[]>> = {
   conv2d      : ['kernelSize', 'filters'],
   maxPooling2d: ['poolSize', 'strides'],
   dense       : ['units'],
@@ -118,8 +118,8 @@ const IMAGE_PARAMS: Partial<Record<Layer_t['_class'], (keyof typeof DEFAULT_IMAG
  * Flatten, una lista de números) para ver dónde no encajan. Una capa que sobra se da por quitada (y una Dense sin
  * Flatten, por aplanada), que es su arreglo, para no repetir el mismo error en las siguientes.
  */
-export function checkImageLayers(layers: Layer_t[], classes: number, inputShape: number[] = [28, 28, 1]): LayerIssue_t<Layer_t>[] {
-  const issues: LayerIssue_t<Layer_t>[] = []
+export function checkImageLayers(layers: ImageLayer_t[], classes: number, inputShape: number[] = [28, 28, 1]): LayerIssue_t<ImageLayer_t>[] {
+  const issues: LayerIssue_t<ImageLayer_t>[] = []
   let [height, width] = layers[0]?.inputShape ?? inputShape
   let isFlat = false
   // Las que sobran: la salida es la última de las demás
@@ -163,7 +163,7 @@ export function checkImageLayers(layers: Layer_t[], classes: number, inputShape:
       }
       case 'dense': {
         if (!isFlat) {
-          const fixed = [...layers.slice(0, index), { _class: 'flatten', activation: null } as Layer_t, ...layers.slice(index)]
+          const fixed = [...layers.slice(0, index), { _class: 'flatten', activation: null } as ImageLayer_t, ...layers.slice(index)]
           issues.push({ kind: 'dense-before-flatten', severity: 'error', layer: index, values: {}, fixed })
           isFlat = true
         }
@@ -184,7 +184,7 @@ export function checkImageLayers(layers: Layer_t[], classes: number, inputShape:
     }
   }
   if (last._class !== 'dense') {
-    const output: Layer_t[] = [...(isFlat ? [] : [{ _class: 'flatten', activation: null } as Layer_t]), { _class: 'dense', units: classes, activation: 'softmax' }]
+    const output: ImageLayer_t[] = [...(isFlat ? [] : [{ _class: 'flatten', activation: null } as ImageLayer_t]), { _class: 'dense', units: classes, activation: 'softmax' }]
     issues.push({ kind: 'output-missing', severity: 'error', layer: index, values: { classes }, fixed: [...layers.slice(0, index + 1), ...output, ...layers.slice(index + 1)] })
   } else if (isPositiveInteger(last.units)) {
     if (last.units !== classes) {

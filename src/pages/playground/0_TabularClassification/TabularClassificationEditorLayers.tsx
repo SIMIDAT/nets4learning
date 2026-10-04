@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import N4LDenseLayerFields from '@components/neural-network/N4LDenseLayerFields'
+import { denseLayerSummary } from '@components/neural-network/layerSummary'
 import alertHelper from '@utils/alertHelper'
 import { VERBOSE } from '@/CONSTANTS'
 import { GLOSSARY_ACTIONS, MANUAL_ACTIONS } from '@/CONSTANTS_ACTIONS'
@@ -111,16 +113,19 @@ export default function TabularClassificationEditorLayers() {
   return (
     <N4LEditorLayers
       layers={layers}
+      summary={(layer) => denseLayerSummary(t, layer)}
+      renderFields={(layer, index) => (
+        <N4LDenseLayerFields index={index} layer={layer} onChange={(changed, { units, activation }) => handleChange_Layer(changed, {
+          _class    : layers[changed]._class,
+          units,
+          activation: activation || 'relu',
+        })} />
+      )}
       check={<N4LLayerCheck issues={issues} onFix={setLayers} />}
       flagged={flaggedLayers(issues)}
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
-      onChange={(index, layer) => handleChange_Layer(index, {
-        _class    : layers[index]._class,
-        units     : layer.units,
-        activation: layer.activation || 'relu',
-      })}
       footer={<>
         <p className={'text-muted mb-0 pb-0'}>
           <Trans

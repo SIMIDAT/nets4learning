@@ -1,5 +1,5 @@
-import type { IdOptimizer_t, LossName_t, MetricMap_t } from "@/types/nn-types"
-import type { LayerActivation_t } from "@core/types"
+import type { IdOptimizer_t, LossName_t, MetricMap_t } from '@/types/nn-types'
+import type { LayerActivation_t } from '@core/types'
 
 const TYPE_GRADIENTS = [
   { key: 'grad', label: 'grad' },

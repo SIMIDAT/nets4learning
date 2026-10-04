@@ -127,7 +127,6 @@ export default class MODEL_1_FACE_DETECTOR extends I_MODEL_OBJECT_DETECTION {
     ctx.font = font
     ctx.lineWidth = 5
     ctx.strokeStyle = '#FF0902'
-    // ctx.strokeRect(element.x, element.y, 5, 5)
     for (const face of faces) {
       for (const element of face.keypoints) {
         ctx.beginPath()

@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import * as fs from 'fs'
 
-import { PROJECT_DATASETS, datasetKey, datasetVariables, defaultTarget, fileName, projectDatasetByKey } from '@pages/analyze/projectDatasets'
+import { PROJECT_DATASETS, datasetKey, datasetVariables, defaultTarget, fileName, projectDatasetByKey, taskDatasetFiles } from '@pages/analyze/projectDatasets'
 
 describe('Conjuntos de datos de /analyze', () => {
 
@@ -12,6 +12,14 @@ describe('Conjuntos de datos de /analyze', () => {
     expect(projectDatasetByKey('iris')?.file).toBe('models/00-tabular-classification/iris/iris.csv')
     expect(projectDatasetByKey('no-existe')).toBeUndefined()
     expect(projectDatasetByKey(null)).toBeUndefined()
+  })
+
+  test('los CSV de cada tarea: un mismo fichero puede ser de varias (el vino se clasifica y se agrupa)', () => {
+    expect(taskDatasetFiles('clustering')).toEqual(expect.arrayContaining(['datasets/wine.csv', 'datasets/01-regression/breast-cancer/wdbc.csv']))
+    expect(taskDatasetFiles('tabular-classification')).toContain('datasets/wine.csv')
+    expect(taskDatasetFiles('regression')).not.toContain('datasets/wine.csv')
+    // Todos son del proyecto: se pueden pedir por su clave (/datasets → ?dataset=…)
+    for (const file of taskDatasetFiles('clustering')) expect(projectDatasetByKey(datasetKey(file))?.file, file).toBe(file)
   })
 
   test('todos los CSV existen en public/ y no se repiten', () => {

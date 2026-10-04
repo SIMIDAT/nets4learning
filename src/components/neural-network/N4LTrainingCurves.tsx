@@ -51,7 +51,8 @@ export default function N4LTrainingCurves({ histories, renderDetails, parameters
                 setCompared(isComparing ? null : [histories.length - 2, histories.length - 1])
               }} />
           )}
-          {!isComparing && (
+          {/* Con un solo modelo (el informe) no hay nada que elegir */}
+          {!isComparing && histories.length > 1 && (
             <Form.Select size={'sm'} className={'w-auto'} aria-label={t(prefix + 'curves-model')}
               value={index}
               onChange={(e) => setSelected(Number(e.target.value))}>

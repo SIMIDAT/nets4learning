@@ -77,8 +77,6 @@ export default class MODEL_2_FACE_MESH extends I_MODEL_OBJECT_DETECTION {
 
   async ENABLE_MODEL () {
       
-    // await tf.setBackend('wasm');
-    // await tf.ready();
     
     const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh
     /**

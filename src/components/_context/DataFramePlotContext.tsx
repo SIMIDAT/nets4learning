@@ -1,8 +1,8 @@
-import { createContext, useState } from "react"
-import { DataFrame } from "danfojs"
+import { createContext, useState } from 'react'
+import { DataFrame } from 'danfojs'
 
-import { DEFAULT_DATAFRAME_PLOT_CONFIG } from "./CONSTANTS"
-import type { DataframePlotConfig_t } from "@core/types"
+import { DEFAULT_DATAFRAME_PLOT_CONFIG } from './CONSTANTS'
+import type { DataframePlotConfig_t } from '@core/types'
 
 /**
  * @typedef DataFramePlotContext_t
@@ -27,7 +27,6 @@ type DataFramePlotContext_t = {
   setShowOptions        : React.Dispatch<React.SetStateAction<boolean>>
 }
 
-/** @type {import('react').Context<DataFramePlotContext_t>} */
 // TypeScript change antes {} en vez de null
 const DataFramePlotContext = createContext(null as unknown as DataFramePlotContext_t)
 

@@ -3,7 +3,7 @@ import * as tfjs from '@tensorflow/tfjs'
 import { TAB_03_IMAGE_CLASSIFICATION } from '@/CONSTANTS'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import { forwardProgress, type ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 import { getActiveTFBackend } from '@core/tfBackend'
 import { showTrainingVisor } from '@core/nn-utils/trainingVisor'
 import { ModelDefinitionError, buildImageModel, compileModel, modelFromArtifacts } from '@core/training/buildModels'
@@ -17,7 +17,7 @@ export type ParamsTrainImage_t = {
   idLoss       : IdLoss_t,
   idOptimizer  : IdOptimizer_t,
   idMetricsList: IdMetric_t[],
-  layers       : Layer_t[],
+  layers       : ImageLayer_t[],
 }
 
 /** Progreso del entrenamiento: aviso al acabar cada época (desde 1) y petición de parar */
@@ -112,7 +112,7 @@ async function showEvaluation({ labels, predictions }: ClassificationEvaluation_
 type VisCallbacks_t = ReturnType<typeof tfvis.show.fitCallbacks>
 
 /** La red de las capas del editor, compilada (momento de 0,99 en el optimizador, como siempre en imágenes) */
-function getModel(layerList: Layer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
+function getModel(layerList: ImageLayer_t[], idOptimizer: IdOptimizer_t, idLoss: IdLoss_t, idMetrics_list: IdMetric_t[], learningRate: number) {
   const model = buildImageModel(layerList)
   compileModel(model, { idOptimizer, idLoss, idMetrics: idMetrics_list, learningRate, momentum: 0.99 })
   return model

@@ -88,10 +88,40 @@ describe('Tests for Pages', () => {
     expect(within(imagesModal).getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['datasets.dataset-details'])
   })
 
+  test('Datasets: cada conjunto se entrena desde su tarjeta, y se prueba su modelo si lo hay', () => {
+    const { getByTestId, queryByTestId, getByText } = render(<MemoryRouter><Datasets /></MemoryRouter>)
+    expect(getByTestId('Test-DatasetTrain-IRIS')).toHaveAttribute('href', '/playground/tabular-classification/dataset/IRIS')
+    expect(getByTestId('Test-DatasetModel-IRIS')).toHaveAttribute('href', '/playground/tabular-classification/model/IRIS')
+    // Uno de práctica: en la página de subir datos, ya cargado (como en el AED, por su clave)
+    expect(getByTestId('Test-DatasetTrain-datasets/wine.csv')).toHaveAttribute('href', '/playground/tabular-classification/dataset/UPLOAD?dataset=wine')
+    expect(queryByTestId('Test-DatasetModel-datasets/wine.csv')).toBeNull()
+    // Salary no tiene modelo ya entrenado
+    fireEvent.click(getByText('pages.index.regression.1-title'))
+    expect(getByTestId('Test-DatasetTrain-SALARY')).toHaveAttribute('href', '/playground/regression/dataset/SALARY')
+    expect(queryByTestId('Test-DatasetModel-SALARY')).toBeNull()
+  })
+
   test('Datasets: un dataset extra explica para qué sirve', async () => {
     const { getByTestId, findByRole } = render(<MemoryRouter><Datasets /></MemoryRouter>)
     fireEvent.click(getByTestId('Test-DatasetInfo-datasets/hepatitis-c.csv'))
     expect(await findByRole('dialog')).toHaveTextContent('datasets.extra-text')
+  })
+
+  test('Datasets: los del agrupamiento se agrupan (sin modelo) y su información no espera a ningún modelo', async () => {
+    // La pestaña, desde la dirección (/datasets?task=clustering)
+    const { getByTestId, queryByTestId, getByText, findByRole } = render(<MemoryRouter initialEntries={['/datasets?task=clustering']}><Datasets /></MemoryRouter>)
+    expect(getByTestId('Test-DatasetTrain-IRIS')).toHaveAttribute('href', '/playground/clustering/dataset/IRIS')
+    expect(getByTestId('Test-DatasetTrain-IRIS')).toHaveTextContent('datasets.clustering.run')
+    expect(queryByTestId('Test-DatasetModel-IRIS')).toBeNull()
+    expect(getByText('datasets.clustering.examples-title')).toBeInTheDocument()
+    // Los de práctica, en la página de subir datos del agrupamiento, con su frase de agrupamiento
+    expect(getByTestId('Test-DatasetTrain-datasets/01-regression/breast-cancer/wdbc.csv'))
+      .toHaveAttribute('href', '/playground/clustering/dataset/UPLOAD?dataset=wdbc')
+    expect(getByTestId('Test-Dataset-datasets/hepatitis-c.csv')).toHaveTextContent('datasets.summary.clustering.hepatitis-c')
+    fireEvent.click(getByTestId('Test-DatasetInfo-WINE'))
+    const dialog = await findByRole('dialog')
+    expect(dialog).toHaveTextContent('datasets.summary.clustering.WINE')
+    expect(dialog).toHaveTextContent('datasets.clustering.examples-text')
   })
 
   test('Datasets: la pestaña de variables enseña las columnas del CSV', async () => {

@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Card, Form } from 'react-bootstrap'
 
 import * as _Types from '@core/types'
-import type { Layer_t as ImageLayer_t } from '@/types/types'
+import type { ImageLayer_t as ImageLayer_t } from '@/types/types'
 import { VERBOSE } from '@/CONSTANTS'
 import NeuralNetwork from './NeuralNetwork'
 import type { Network } from 'react-vis-graph-wrapper'
@@ -45,13 +45,13 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
   const prefix = 'pages.playground.generator.'
   const { t } = useTranslation()
 
-  const [mode, setMode] = useState<"EXTEND" | "COMPACT">(NEURAL_NETWORK_MODES.COMPACT)
+  const [mode, setMode] = useState<'EXTEND' | 'COMPACT'>(NEURAL_NETWORK_MODES.COMPACT)
   const networkRef = useRef<Network | undefined>(undefined)
   // A pantalla completa se ve mejor una red con muchas capas o en modo extendido
   const maximize = useMaximize()
 
   const handleChange_mode = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedMode = e.target.value as "EXTEND" | "COMPACT"
+    const selectedMode = e.target.value as 'EXTEND' | 'COMPACT'
     setMode(selectedMode)
   }
 

@@ -6,6 +6,8 @@ import type { CustomParamsLayerModel_t } from '@core/types'
 import alertHelper from '@utils/alertHelper'
 import { useRegressionContext } from '@context/useRegressionContext'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import N4LDenseLayerFields from '@components/neural-network/N4LDenseLayerFields'
+import { denseLayerSummary } from '@components/neural-network/layerSummary'
 import N4LLayerCheck from '@components/neural-network/N4LLayerCheck'
 import { flaggedLayers } from '@components/neural-network/layerCheckText'
 import { checkDenseLayers } from '@core/nn-utils/checkLayers'
@@ -78,16 +80,21 @@ export default function RegressionEditorLayers() {
   return (
     <N4LEditorLayers
       layers={params.params_layers}
+      summary={(layer) => denseLayerSummary(t, layer)}
+      renderFields={(layer, index) => (
+        <N4LDenseLayerFields index={index} layer={layer} onChange={(changed, { units, activation }) => handleChange_Layer(changed, {
+          is_disabled: params.params_layers[changed].is_disabled,
+          units,
+          activation,
+        })} />
+      )}
+      // La salida de regresión (una neurona, lineal) no se borra
+      isLocked={(layer) => layer.is_disabled === true}
       check={<N4LLayerCheck issues={issues} onFix={(params_layers) => setParams((prevState) => ({ ...prevState, params_layers }))} />}
       flagged={flaggedLayers(issues)}
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
-      onChange={(index, layer) => handleChange_Layer(index, {
-        is_disabled: params.params_layers[index].is_disabled,
-        units      : layer.units,
-        activation : layer.activation,
-      })}
       waiting={!show}
       titleAs={'h2'}
     />

@@ -113,7 +113,7 @@ export default function RegressionEditorFeaturesSelector() {
                   <Form.Label>
                     <Trans i18nKey={prefix + 'feature-selector-y'} />
                   </Form.Label>
-                  <Form.Select aria-label={'feature selector y'}
+                  <Form.Select
                     className={styles.border_green}
                     value={params.params_features.Y_target}
                     onChange={(e) => handleChange_FeatureSelector_Y(e)}>

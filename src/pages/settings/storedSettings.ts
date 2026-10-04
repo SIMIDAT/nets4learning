@@ -8,6 +8,7 @@ import { resetStepByStep } from '@components/neural-network/stepByStep/stepBySte
 import { deleteTrainedModels } from '@core/training/modelStore'
 import { resetDownloadConsent } from '@core/models/downloadConsent'
 import { resetLearningPath } from '@core/learning/learningPath'
+import { clearOfflineData } from '@core/offline/offline'
 
 // Lo que la aplicación guarda en el navegador (localStorage y la cookie del consentimiento), para borrarlo desde
 // /settings.
@@ -26,7 +27,7 @@ function removeLegacyTutorialKeys() {
 
 /**
  * Borra todos los ajustes: idioma, tema, backend, voz y progreso de las guías, Paso a paso, el aviso de descargas, el
- * progreso de «Empieza aquí», modelos guardados y cookies
+ * progreso de «Empieza aquí», modelos guardados, lo guardado para usar sin conexión y cookies
  */
 export async function resetAllSettings() {
   try {
@@ -42,4 +43,5 @@ export async function resetAllSettings() {
   removeLegacyTutorialKeys()
   clearConsent()
   await deleteTrainedModels()
+  await clearOfflineData()
 }

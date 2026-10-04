@@ -1,17 +1,17 @@
-import Markdown from "react-markdown"
-import { Accordion } from "react-bootstrap"
-import { Trans } from "react-i18next"
-import N4LDivider from "@components/divider/N4LDivider"
+import Markdown from 'react-markdown'
+import { Accordion } from 'react-bootstrap'
+import { Trans } from 'react-i18next'
+import N4LDivider from '@components/divider/N4LDivider'
 
 export default function Glossary5Layers() {
   return (
     <>
-      {import.meta.env.VITE_ENVIRONMENT === "development" && (
+      {import.meta.env.VITE_ENVIRONMENT === 'development' && (
         <>
-          <N4LDivider i18nKey={"hr.layers"} />
-          <Accordion defaultValue={""} defaultActiveKey={""}>
-            <Accordion.Item eventKey={"layers"}>
-              <Accordion.Header as={"h2"} className={"n4l-accordion-h2"}>
+          <N4LDivider i18nKey={'hr.layers'} />
+          <Accordion defaultValue={''} defaultActiveKey={''}>
+            <Accordion.Item eventKey={'layers'}>
+              <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
                 <Trans>Types of layers</Trans>
               </Accordion.Header>
               <Accordion.Body>

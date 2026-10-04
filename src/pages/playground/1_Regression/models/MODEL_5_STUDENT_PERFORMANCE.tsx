@@ -162,7 +162,6 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     // #region Student Mat
     const mat_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + mat_csv)
     let mat_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + mat_csv)
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const mat_dataset_transforms = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
       // { column_name: 'G1',             column_transform: 'drop' },
@@ -174,7 +173,6 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     const mat_encoders_map = mat_dataframe_encoder.encoder_map
     mat_dataframe_processed = mat_dataframe_encoder.dataframe_processed
     const mat_dataframe_X = mat_dataframe_processed.drop({ columns: ['G3'] }).copy()
-    /**@type {_Types.Series_t}*/
     const mat_dataframe_y = mat_dataframe_original[mat_target]
     const minMaxScaler1 = new dfd.MinMaxScaler()
     const mat_scaler = minMaxScaler1.fit(mat_dataframe_X)
@@ -186,7 +184,6 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     // #region Student Por
     const por_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + por_csv)
     let por_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + por_csv)
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const por_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
       // { column_name: 'G1',             column_transform: 'drop' },
@@ -198,11 +195,9 @@ export default class MODEL_5_STUDENT_PERFORMANCE extends I_MODEL_REGRESSION {
     const por_encoders_map = por_dataframe_encoder.encoder_map
     por_dataframe_processed = por_dataframe_encoder.dataframe_processed
     const por_dataframe_X = por_dataframe_processed.drop({ columns: ['G3'] }).copy()
-    /**@type {_Types.Series_t}*/
     const por_dataframe_y = por_dataframe_original[por_target]
     const minMaxScaler2 = new dfd.MinMaxScaler()
     const por_minMaxScaler = minMaxScaler2.fit(por_dataframe_X)
-    /**@type {_Types.DataFrame_t}*/
     const por_X = por_minMaxScaler.transform(por_dataframe_X)
     const por_y = por_dataframe_y
     // #endregion

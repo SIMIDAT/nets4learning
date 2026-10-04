@@ -17,16 +17,15 @@ import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
 import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
 import { reportTrainResult } from '@core/training/trainResult'
-import { layerIssueText } from '@components/neural-network/layerCheckText'
 import { checkImageLayers } from '@core/nn-utils/checkLayers'
 import { historyFromData } from '@core/training/modelStore'
 import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
-import N4LSessionButtons from '@components/session/N4LSessionButtons'
-import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
 import { layersGuide } from '@pages/playground/3_ImageClassification/layersGuide'
-import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
-import { useSharedSession } from '@hooks/useSharedSession'
+import { SessionError, type TrainingSession_t } from '@core/session/trainingSession'
+import { useTrainerSession } from '@hooks/useTrainerSession'
+import { layersAreValid } from '@components/neural-network/alertLayerError'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
@@ -106,9 +105,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
 
-  // region SESIÓN: exportar e importar capas e hiperparámetros
-  // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
-  const [sessionVersion, setSessionVersion] = useState(0)
+  // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
 
   const currentSession = (): TrainingSession_t => ({
     app            : 'nets4learning',
@@ -119,23 +116,16 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     hyperparameters: { learningRate: LearningRate, epochs: NumberEpochs, testSize: TestSize, optimizer: idOptimizer, loss: idLoss, metrics: idMetricsList },
   })
 
-  const handleImport_Session = async (text: string) => {
-    try {
-      const { layers: importedLayers, hyperparameters: h } = parseSession(text, TASKS.IMAGE_CLASSIFICATION)
-      // Las capas de imágenes tienen tipo (conv2d, maxPooling2d, flatten, dense) y sus propios parámetros
-      if (!importedLayers.every((layer) => typeof layer._class === 'string')) throw new SessionError('session.error-not-session')
-      setLayers(importedLayers as unknown as typeof Layers)
-      setLearningRate(h.learningRate)
-      setNumberEpochs(h.epochs)
-      setTestSize(h.testSize)
-      setIdOptimizer(h.optimizer as IdOptimizer_t)
-      setIdLoss(h.loss as IdLoss_t)
-      setIdMetricsList(h.metrics as IdMetric_t[])
-      setSessionVersion((version) => version + 1)
-      await alertHelper.alertSuccess(t('session.imported'))
-    } catch (error) {
-      await alertHelper.alertError(t(error instanceof SessionError ? error.i18nKey : 'session.error-not-session'))
-    }
+  const applySession = ({ layers: importedLayers, hyperparameters: h }: TrainingSession_t) => {
+    // Las capas de imágenes tienen tipo (conv2d, maxPooling2d, flatten, dense) y sus propios parámetros
+    if (!importedLayers.every((layer) => typeof layer._class === 'string')) throw new SessionError('session.error-not-session')
+    setLayers(importedLayers as unknown as typeof Layers)
+    setLearningRate(h.learningRate)
+    setNumberEpochs(h.epochs)
+    setTestSize(h.testSize)
+    setIdOptimizer(h.optimizer as IdOptimizer_t)
+    setIdLoss(h.loss as IdLoss_t)
+    setIdMetricsList(h.metrics as IdMetric_t[])
   }
   // endregion
 
@@ -215,8 +205,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     return () => { tfvis.visor().close() }
   }, [dataset, navigate, t])
 
-  // La de un enlace compartido, después de las capas por defecto del modelo (init)
-  useSharedSession(iModelInstance !== null, handleImport_Session)
+  // Lista después de las capas por defecto del modelo (init)
+  const { sessionVersion, importSession } = useTrainerSession(TASKS.IMAGE_CLASSIFICATION, iModelInstance !== null, applySession)
 
   const classLabel = (index: number) => iModelInstance?.CLASS_LABELS[index] ?? String(index)
 
@@ -228,11 +218,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
       return
     }
-    const layerError = checkImageLayers(Layers, iModelInstance.CLASS_LABELS.length).find(({ severity }) => severity === 'error')
-    if (layerError) {
-      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
-      return
-    }
+    if (!(await layersAreValid(t, checkImageLayers(Layers, iModelInstance.CLASS_LABELS.length)))) return
     training.start({ epochs: NumberEpochs, learningRate: LearningRate, optimizer: idOptimizer, loss: idLoss, layers: Layers.length })
     try {
       const params = {
@@ -453,19 +439,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     <>
       {/* MANUAL */}
       <N4LSectionLayout steps={steps}>
-        <Row className={'mt-3'}>
-          <Col xl={12}>
-            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <h1><Trans i18nKey={'modality.3'} /></h1>
-              <div className={'d-flex flex-wrap gap-2'}>
-                <N4LGuide id={'train.image-classification.' + dataset} steps={guideSteps} compact={true} />
-                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        <N4LPageHeader title={<Trans i18nKey={'modality.3'} />} guideId={'train.image-classification.' + dataset} guideSteps={guideSteps}
+          getSession={currentSession} onImport={importSession} className={'mt-3'} />
 
         <N4LDivider i18nKey={'hr.information'} steps={steps} />
 

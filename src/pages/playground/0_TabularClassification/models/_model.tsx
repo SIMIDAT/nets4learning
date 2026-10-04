@@ -24,10 +24,10 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   FORM                 : TabularFormField_t[] = []
   DATA_DEFAULT_KEYS    : string[] = []
   DATA_DEFAULT         : TabularInstance_t = {}
-  t                    : TFunction<"translation", undefined>
+  t                    : TFunction<'translation', undefined>
   callbacks            : () => void
 
-  constructor(t: TFunction<"translation", undefined>, callbacks: () => void) {
+  constructor(t: TFunction<'translation', undefined>, callbacks: () => void) {
     this.t = t
     this.callbacks = callbacks
   }

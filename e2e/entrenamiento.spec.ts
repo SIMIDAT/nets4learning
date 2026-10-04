@@ -85,3 +85,25 @@ test('se comparan dos modelos: curvas superpuestas y qué hiperparámetro ha cam
   await comparison.getByLabel('Modelo 1').uncheck()
   await expect(comparison).toContainText('Marca al menos dos modelos')
 })
+
+test('el informe de un modelo entrenado se abre en otra pestaña, listo para imprimir', async ({ page, context }) => {
+  test.setTimeout(300_000)
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await page.getByRole('spinbutton', { name: 'N. épocas' }).fill('3')
+  await page.getByTestId('Test-TrainButton').click()
+  await expect(page.getByText(/Lista (de )?modelos generados \| 1/)).toBeVisible({ timeout: 240_000 })
+  await page.locator('#tfjs-visor-container').getByRole('button', { name: 'Hide' }).click()
+
+  const [report] = await Promise.all([context.waitForEvent('page'), page.getByTestId('Test-ReportButton').click()])
+  await expect(report.getByTestId('Test-Report')).toContainText('Clasificación tabular')
+  await expect(report.getByTestId('Test-Report')).toContainText('Modelo 1')
+  await expect(report.getByTestId('Test-Report-Layers').locator('li')).toHaveCount(3)
+  await expect(report.getByTestId('Test-Report-Parameters')).toContainText('N. épocas')
+  await expect(report.getByTestId('Test-Report-Results')).toContainText('loss')
+  await expect(report.getByTestId('Test-TrainingDiagnosis')).toBeVisible()
+  await expect(report.locator('.n4l-training-curve canvas').first()).toBeVisible()
+  // Al imprimir no salen la barra de navegación ni el pie
+  await report.emulateMedia({ media: 'print' })
+  await expect(report.locator('.n4l-navbar')).toBeHidden()
+  await expect(report.getByTestId('Test-Report-Print')).toBeHidden()
+})

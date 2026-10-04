@@ -1,7 +1,7 @@
-import "./customCanvasDrawer.css"
-import { useEffect, useRef, type PointerEvent } from "react"
-import { Button } from "react-bootstrap"
-import { Trans } from "react-i18next"
+import './customCanvasDrawer.css'
+import { useEffect, useRef, type PointerEvent } from 'react'
+import { Button } from 'react-bootstrap'
+import { Trans } from 'react-i18next'
 
 // El dibujo va en coordenadas de 0 a 200 (el grosor del trazo, 20, es una décima parte del lienzo) sobre un lienzo de
 // 600×600 píxeles, que se muestra con el tamaño que quepa en la pantalla
@@ -50,14 +50,14 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     canvas.width = CANVAS_PIXELS
     canvas.height = CANVAS_PIXELS
 
-    const context = canvas.getContext("2d") as CanvasRenderingContext2D
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D
     // Se dibuja en coordenadas de 0 a DRAW_SIZE sea cual sea el tamaño en pantalla (setTransform y no scale: el
     // efecto puede repetirse, en StrictMode, y scale se acumularía)
     const scale = CANVAS_PIXELS / DRAW_SIZE
     context.setTransform(scale, 0, 0, scale, 0, 0)
-    context.lineCap = "round"
-    context.lineJoin = "round"
-    context.strokeStyle = "black"
+    context.lineCap = 'round'
+    context.lineJoin = 'round'
+    context.strokeStyle = 'black'
     context.lineWidth = 20
     context_ref.current = context
   }, [])
@@ -87,10 +87,10 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
   const startDrawing = (event: PointerEvent<HTMLCanvasElement>) => {
     const context = context_ref.current
     if (context === null) {
-      console.error("Context is null")
+      console.error('Context is null')
       return
     }
-    if (event.pointerType === "mouse" && event.button !== 0) return
+    if (event.pointerType === 'mouse' && event.button !== 0) return
     event.preventDefault()
     // El trazo sigue aunque el dedo o el ratón salgan del lienzo
     event.currentTarget.setPointerCapture?.(event.pointerId)
@@ -124,7 +124,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
 
   const clear = () => {
     if (context_ref.current === null) {
-      console.error("Context is null")
+      console.error('Context is null')
       return
     }
     context_ref.current.clearRect(0, 0, DRAW_SIZE, DRAW_SIZE)
@@ -134,11 +134,11 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
 
   return (
     <>
-      <div className={"d-flex justify-content-center align-items-start gap-2 mt-3"}>
+      <div className={'d-flex justify-content-center align-items-start gap-2 mt-3'}>
         <canvas
           id="canvas"
           ref={canvas_ref}
-          className={"n4l-draw-canvas"}
+          className={'n4l-draw-canvas'}
           onPointerDown={startDrawing}
           onPointerMove={draw}
           onPointerUp={finishDrawing}
@@ -148,13 +148,13 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
           id="canvas_small"
           ref={canvas_small_ref}
           style={{
-            border        : "1px solid black",
-            background    : "white",
-            width         : "28px",
-            height        : "28px",
-            flex          : "none",
-            imageRendering: "pixelated",
-            boxSizing     : "border-box",
+            border        : '1px solid black',
+            background    : 'white',
+            width         : '28px',
+            height        : '28px',
+            flex          : 'none',
+            imageRendering: 'pixelated',
+            boxSizing     : 'border-box',
           }}
           width={28}
           height={28}
@@ -162,28 +162,28 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
       </div>
       <div className="d-flex gap-2 justify-content-center mx-auto mt-3">
         <Button
-          variant={"primary"}
+          variant={'primary'}
           onClick={() => {
             const canvas = canvas_ref.current
             const canvas_small = canvas_small_ref.current
             if (canvas === null || canvas_small === null) {
-              console.error("Canvas or small canvas is null")
+              console.error('Canvas or small canvas is null')
               return
             }
             const context = context_ref.current as CanvasRenderingContext2D
             submitFunction(canvas, context, canvas_small)
           }}
         >
-          <Trans i18nKey={"custom-canvas-drawer.validate"} />
+          <Trans i18nKey={'custom-canvas-drawer.validate'} />
         </Button>
         <Button
-          variant={"outline-secondary"}
+          variant={'outline-secondary'}
           onClick={() => {
             clear()
             clearFunction()
           }}
         >
-          <Trans i18nKey={"custom-canvas-drawer.clear"} />
+          <Trans i18nKey={'custom-canvas-drawer.clear'} />
         </Button>
       </div>
     </>

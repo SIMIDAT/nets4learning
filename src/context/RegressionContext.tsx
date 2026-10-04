@@ -65,9 +65,7 @@ const RegressionContext = createContext<CustomRegressionContext_t | null>(null)
 
 export function RegressionProvider({ children }: { children: React.ReactNode }) {
 
-  /** @type {_Types.DatasetProcessed_t[]} */
   const DEFAULT_DATASETS: _Types.DatasetProcessed_t[] = []
-  /** @type {_Types.CustomParams_t} */
   const DEFAULT_PARAMS: _Types.CustomParams_t = {
     params_training: {
       learning_rate  : DEFAULT_LEARNING_RATE,
@@ -84,10 +82,6 @@ export function RegressionProvider({ children }: { children: React.ReactNode }) 
       Y_target  : '',
     }
   }
-  /** @type {_Types.CustomModel_t} */
-  // const DEFAULT_MODEL: _Types.CustomModel_t = {
-  //   model: new tfjs.Sequential(),
-  // }
 
   /**
    * @type {ReturnType<typeof useState<{data: _Types.DatasetProcessed_t[], index: number, dataset: 'select-dataset'}>>}

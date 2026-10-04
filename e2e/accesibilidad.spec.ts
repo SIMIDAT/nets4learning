@@ -10,6 +10,7 @@ const PAGES = [
   '/glossary',
   '/manual',
   '/datasets',
+  '/datasets?task=clustering',
   '/settings',
   '/analyze',
   '/select-dataset/tabular-classification',
@@ -19,6 +20,8 @@ const PAGES = [
   '/playground/image-classification/dataset/IMAGE-MNIST',
   '/playground/image-classification/model/IMAGE-MOBILENET',
   '/playground/object-detection/model/COCO-SSD',
+  '/select-dataset/clustering',
+  '/playground/clustering/dataset/IRIS',
   '/404',
 ]
 

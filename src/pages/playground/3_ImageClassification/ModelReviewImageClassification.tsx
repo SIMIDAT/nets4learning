@@ -1,46 +1,48 @@
-import { useEffect, useMemo, useRef, useState } from "react"
-import { Button, Card, Col, Container, Row, Spinner } from "react-bootstrap"
-import { useNavigate } from "react-router"
-import * as tfjs from "@tensorflow/tfjs"
-import { Trans, useTranslation } from "react-i18next"
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Button, Card, Col, Container, Row, Spinner } from 'react-bootstrap'
+import { useNavigate } from 'react-router'
+import * as tfjs from '@tensorflow/tfjs'
+import { Trans, useTranslation } from 'react-i18next'
 
-import type I_MODEL_IMAGE_CLASSIFICATION from "./models/_model"
-import type { ImageClassificationResult_t } from "./models/_model"
-import type { SpriteImageDataset } from "./models/SpriteImageDataset"
-import { VERBOSE } from "@/CONSTANTS"
-import { TASKS, UPLOAD } from "@/TASKS"
-import alertHelper from "@utils/alertHelper"
-import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
-import { trackDownloads } from "@core/downloadProgress"
-import { askBeforeDownload } from "@core/models/downloadConsent"
-import DragAndDrop from "@components/dragAndDrop/DragAndDrop"
+import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
+import type { ImageClassificationResult_t } from './models/_model'
+import type { SpriteImageDataset } from './models/SpriteImageDataset'
+import { VERBOSE } from '@/CONSTANTS'
+import { TASKS, UPLOAD } from '@/TASKS'
+import alertHelper from '@utils/alertHelper'
+import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
+import { trackDownloads } from '@core/downloadProgress'
+import { askBeforeDownload } from '@core/models/downloadConsent'
+import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 
-import ModelReviewImageClassificationDraw from "@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw"
-import { MAP_IC_CLASSES } from "@pages/playground/3_ImageClassification/models"
-import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
-import { grayscaleToImageData, UTILS_image } from "@pages/playground/3_ImageClassification/utils/utils"
+import ModelReviewImageClassificationDraw from '@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw'
+import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
+import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
+import { grayscaleToImageData, UTILS_image } from '@pages/playground/3_ImageClassification/utils/utils'
 
 import {
   ImageExplainResults,
   ShapImageControls,
   type ImageExplainResult_t,
-} from "@core/explainability/ImageExplainPanel"
-import { DEFAULT_SHAP_IMAGE_OPTIONS } from "@core/explainability/shapImageOptions"
-import { explainErrorKey } from "@core/explainability/explainError"
-import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
-import N4LGuide from "@components/guide/N4LGuide"
-import { imageClassificationReviewGuide } from "./modelReviewGuide"
-import N4LClassificationChart from "@components/neural-network/N4LClassificationChart"
-import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
-import { warmUpModel } from "@core/nn-utils/warmUpModel"
-import { trackEvent } from "@core/analytics"
-import N4LEmptyState from "@components/loading/N4LEmptyState"
+} from '@core/explainability/ImageExplainPanel'
+import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
+import { explainErrorKey } from '@core/explainability/explainError'
+import N4LModelSummaryButton from '@components/neural-network/N4LModelSummaryButton'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LModelCard from '@components/neural-network/N4LModelCard'
+import N4LModelAside from '@components/neural-network/N4LModelAside'
+import { imageClassificationReviewGuide } from './modelReviewGuide'
+import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
+import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
+import { warmUpModel } from '@core/nn-utils/warmUpModel'
+import { trackEvent } from '@core/analytics'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
   warmUpLrp,
   supportsLrp,
-} from "@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain"
+} from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
 
 /** Lo clasificado: la salida del modelo y, si es una imagen del conjunto de test, su clase real */
 type Result_t = ImageClassificationResult_t & { actualIndex: number | null }
@@ -51,8 +53,8 @@ type ModelReviewImageClassificationProps = {
 export default function ModelReviewImageClassification({ dataset }: ModelReviewImageClassificationProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const prefix = "datasets-models.3-image-classifier.interface."
-  const prefixForm = "pages.playground.generator.dynamic-form-dataset."
+  const prefix = 'datasets-models.3-image-classifier.interface.'
+  const prefixForm = 'pages.playground.generator.dynamic-form-dataset.'
 
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
   const [model, setModel] = useState<tfjs.LayersModel | null>(null)
@@ -80,13 +82,13 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const [showExplain, setShowExplain] = useState(false)
   const [isCalculo, setIsCalculo] = useState(false)
   // Los modelos de dibujos (MNIST, KMNIST) solo ofrecen LRP; el resto elige entre SHAP y LRP (si el modelo implementa LRP).
-  const [explainMethod, setExplainMethod] = useState<"shap" | "lrp">("shap")
+  const [explainMethod, setExplainMethod] = useState<'shap' | 'lrp'>('shap')
   const [lrpAvailable, setLrpAvailable] = useState(false)
   const [shapOptions, setShapOptions] = useState(DEFAULT_SHAP_IMAGE_OPTIONS)
 
 
   useEffect(() => {
-    if (VERBOSE) console.debug("useEffect[init][ dataset, t, history ]")
+    if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
       const _iModelInstance = await createReviewModelInstance(MAP_IC_CLASSES, dataset, (ModelClass) => new ModelClass(t), navigate)
       if (_iModelInstance === null) return
@@ -102,9 +104,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         setIsLoading(false)
         // Los de LRP, mientras tanto (ya se puede clasificar); "Explicar" espera a que acaben
         if (_model instanceof tfjs.LayersModel) lrpWarmUp_ref.current = warmUpLrp(_iModelInstance, _model)
-        await alertHelper.alertSuccess(t("model-loaded-successfully"))
+        await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } catch (error) {
-        console.error("Error", error)
+        console.error('Error', error)
       }
     }
 
@@ -130,8 +132,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   // El resultado queda debajo de las imágenes de ejemplo: se lleva a la vista al clasificar desde ahí
   const scrollToResult = () => {
-    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-    result_ref.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" })
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    result_ref.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' })
   }
 
   /** Pinta una imagen en el canvas del resultado y clasifica lo que se ve en él */
@@ -142,12 +144,12 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       return
     }
     const image = new Image()
-    image.addEventListener("error", (e: Event) => {
+    image.addEventListener('error', (e: Event) => {
       UTILS_image.failed(e)
       resolve()
     })
     image.onload = async () => {
-      const canvas_ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+      const canvas_ctx = canvas.getContext('2d') as CanvasRenderingContext2D
       canvas_ctx.clearRect(0, 0, canvas.width, canvas.height)
       UTILS_image.drawImageInCanvasWithContainer(image, canvas)
       await classify(await iModelInstance.GET_IMAGE_DATA(canvas, canvas_ctx))
@@ -159,7 +161,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const handleClick_Example = async (image_src: string) => {
     setSelectedInstance(null)
     await classifyImage(image_src)
-    trackEvent("predict", { input: "sample" })
+    trackEvent('predict', { input: 'sample' })
     scrollToResult()
   }
 
@@ -170,18 +172,18 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   const handleClick_ImageUploaded_Predict = async () => {
     if (imageUpload === null) {
-      await alertHelper.alertError(t("error.need-to-upload-image"))
+      await alertHelper.alertError(t('error.need-to-upload-image'))
       return
     }
     setSelectedInstance(null)
     await classifyImage(URL.createObjectURL(imageUpload))
-    trackEvent("predict", { input: "image" })
+    trackEvent('predict', { input: 'image' })
   }
 
   const handleClassify_Drawing = async (imageData: ImageData) => {
     setSelectedInstance(null)
     await classify(imageData)
-    trackEvent("predict", { input: "drawing" })
+    trackEvent('predict', { input: 'drawing' })
   }
 
   const handleClick_LoadTestDataset = async () => {
@@ -191,7 +193,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       setTestDataset(await iModelInstance.LOAD_DATASET())
     } catch (error) {
       console.error(error)
-      await alertHelper.alertError(t("error.load-dataset"))
+      await alertHelper.alertError(t('error.load-dataset'))
     } finally {
       setIsLoadingTestDataset(false)
     }
@@ -208,18 +210,18 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     if (testDataset === null || canvas === null) return
     const { pixels, label } = testDataset.testExample(index)
     const imageData = grayscaleToImageData(pixels, 28, 28)
-    const small = document.createElement("canvas")
+    const small = document.createElement('canvas')
     small.width = 28
     small.height = 28
-    small.getContext("2d")?.putImageData(imageData, 0, 0)
+    small.getContext('2d')?.putImageData(imageData, 0, 0)
     canvas.width = 200
     canvas.height = 200
-    const canvas_ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+    const canvas_ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     canvas_ctx.imageSmoothingEnabled = false
     canvas_ctx.drawImage(small, 0, 0, canvas.width, canvas.height)
     setSelectedInstance(index)
     await classify(imageData, label)
-    trackEvent("predict", { input: "test_sample" })
+    trackEvent('predict', { input: 'test_sample' })
     scrollToResult()
   }
   // endregion
@@ -247,17 +249,17 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     const imageData = imgData_ref.current
     const modelInstance = model
     if (!imageData || !modelInstance || iModelInstance === null) {
-      await alertHelper.alertInfo(t("info.insert-input"))
+      await alertHelper.alertInfo(t('info.insert-input'))
       return
     }
 
-    const useLrp = isDrawable || explainMethod === "lrp"
+    const useLrp = isDrawable || explainMethod === 'lrp'
     if (useLrp && !lrpAvailable) {
-      await alertHelper.alertError(t("ui.explain.lrp-not-available"))
+      await alertHelper.alertError(t('ui.explain.lrp-not-available'))
       return
     }
 
-    trackEvent("explain", { method: useLrp ? "lrp" : "shap" })
+    trackEvent('explain', { method: useLrp ? 'lrp' : 'shap' })
     setIsCalculo(true)
     try {
       // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar
@@ -267,7 +269,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         : await runImageClassificationExplain({ iModel: iModelInstance, modelInstance, imageData, ...shapOptions })
 
       setExplainResult({
-        method            : useLrp ? "lrp" : "shap",
+        method            : useLrp ? 'lrp' : 'shap',
         values            : result.shapValues,
         labels            : result.selectedLabels,
         // Con MNIST/KMNIST las etiquetas son índices; MobileNet ya devuelve el nombre de la clase
@@ -282,26 +284,18 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
       })
       setShowExplain(true)
     } catch (error) {
-      console.error("Error calculating explainability", { error })
+      console.error('Error calculating explainability', { error })
       await alertHelper.alertError(t(explainErrorKey(error)))
     } finally {
       setIsCalculo(false)
     }
   }
 
-  if (VERBOSE) console.debug("render ModelReviewImageClassification")
+  if (VERBOSE) console.debug('render ModelReviewImageClassification')
   return (
     <>
-      <Container className={'n4l-container-wide'} id={"ModelReviewImageClassification"} data-testid={"Test-ModelReviewImageClassification"}>
-        <Row className={"mt-2"}>
-          <Col>
-            <div className="d-flex justify-content-between">
-              <h1>
-                <Trans i18nKey={"modality.3"} />
-              </h1>
-            </div>
-          </Col>
-        </Row>
+      <Container className={'n4l-container-wide'} id={'ModelReviewImageClassification'} data-testid={'Test-ModelReviewImageClassification'}>
+        <N4LPageHeader title={<Trans i18nKey={'modality.3'} />} guideId={'image-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
         <Row>
           <Col>
             <N4LDownloadProgress isLoading={isLoading} />
@@ -309,70 +303,62 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
         </Row>
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <div className={"sticky-top"} style={{ zIndex: 0 }}>
-              <Card className={"mt-3 border-info"} data-guide={"model"}>
+            <N4LModelAside>
+              <N4LModelCard title={iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
+                actions={<N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ''} />}>
+                {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
+              </N4LModelCard>
+              {/* Cómo se explica la predicción (SHAP o LRP) */}
+              <Card className={'border-success'} data-guide={'explain-about'}>
                 <Card.Header>
-                  <h2>
-                    {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
+                  <h2 className={'h5 mb-0'}>
+                    <Trans i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-title'} />
                   </h2>
                 </Card.Header>
                 <Card.Body>
-                  {guideSteps !== null && <N4LGuide id={"image-classification." + dataset} steps={guideSteps} />}
-                  <N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ""} />
-                  {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
-                </Card.Body>
-              </Card>
-              {/* Panel narrativo del método de explicabilidad (idéntico patrón al review tabular). */}
-              <Card className={"mt-3 border-success"} data-guide={"explain-about"}>
-                <Card.Header>
-                  <h2 className={"h5 mb-0"}>
-                    <Trans i18nKey={"pages.playground.0-tabular-classification.general.explain-panel-title"} />
-                  </h2>
-                </Card.Header>
-                <Card.Body>
-                  <p className={"small mb-0"}>
-                    {isDrawable || explainMethod === "lrp"
-                      ? t("ui.explain.about-lrp")
-                      : t("ui.explain.about-shap")}
+                  <p className={'small mb-0'}>
+                    {isDrawable || explainMethod === 'lrp'
+                      ? t('ui.explain.about-lrp')
+                      : t('ui.explain.about-shap')}
                   </p>
                 </Card.Body>
               </Card>
-            </div>
+            </N4LModelAside>
           </Col>
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             {/* IMÁGENES DE EJEMPLO (y, en MNIST y KMNIST, las del conjunto de test) */}
-            <Card className={"mt-3"} data-guide={"examples"}>
-              <Card.Header className={"d-flex flex-wrap align-items-center justify-content-between gap-2"}>
+            <Card className={'mt-3'} data-guide={'examples'}>
+              <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
                 <h2>
-                  <Trans i18nKey={prefix + "process-examples.title"} />
+                  <Trans i18nKey={prefix + 'process-examples.title'} />
                 </h2>
                 {isDrawable && testDataset === null &&
-                  <Button size={"sm"} variant={"outline-primary"} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={"Test-LoadTestDataset"} data-guide={"test-images"}>
-                    {isLoadingTestDataset && <Spinner size={"sm"} className={"me-2"} />}
-                    <Trans i18nKey={prefix + (isLoadingTestDataset ? "test-images.loading" : "test-images.load")} />
+                  <Button size={'sm'} variant={'outline-primary'} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={'Test-LoadTestDataset'} data-guide={'test-images'}>
+                    {isLoadingTestDataset && <Spinner size={'sm'} className={'me-2'} />}
+                    <Trans i18nKey={prefix + (isLoadingTestDataset ? 'test-images.loading' : 'test-images.load')} />
                   </Button>}
                 {isDrawable && testDataset !== null &&
-                  <div className={"n4l-card-header-controls n4l-instance-select"} data-guide={"test-images"}>
+                  <div className={'n4l-card-header-controls n4l-instance-select'} data-guide={'test-images'}>
                     <N4LVirtualSelect options={testOptions}
                       value={selectedInstance}
                       onChange={handleChange_TestImage}
-                      size={"sm"}
-                      placeholder={t("pages.playground.generator.classify.select-image")}
-                      searchPlaceholder={t(prefixForm + "search-entity")}
-                      noResultsText={t(prefixForm + "no-entity")}
-                      countText={(shown, total) => t(prefixForm + "entity-count", { shown, total })} />
+                      size={'sm'}
+                      placeholder={t('pages.playground.generator.classify.select-image')}
+                      searchPlaceholder={t(prefixForm + 'search-entity')}
+                      noResultsText={t(prefixForm + 'no-entity')}
+                      countText={(shown, total) => t(prefixForm + 'entity-count', { shown, total })} />
                   </div>}
               </Card.Header>
               <Card.Body>
-                <p className={"text-body-secondary small"}><Trans i18nKey={prefix + "process-examples.help"} /></p>
+                <p className={'text-body-secondary small'}><Trans i18nKey={prefix + 'process-examples.help'} /></p>
                 {/* Dibujos de 28×28: una fila de miniaturas; fotos (MobileNet): tres por fila */}
-                <div className={isDrawable ? "n4l-example-grid n4l-example-grid-small" : "n4l-example-grid"}>
+                <div className={isDrawable ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
                   {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
-                    const path_image = import.meta.env.VITE_PATH + "/assets/" + image
+                    const path_image = import.meta.env.VITE_PATH + '/assets/' + image
                     return (
-                      <button key={index} type={"button"} className={"n4l-example-image"} onClick={() => handleClick_Example(path_image)}
-                        disabled={model === null} aria-label={t(prefix + "process-examples.classify-example", { index: index + 1 })}>
-                        <img className={"img-fluid w-100 h-100 object-fit-cover"} src={path_image} alt={""} />
+                      <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(path_image)}
+                        disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
+                        <img className={'img-fluid w-100 h-100 object-fit-cover'} src={path_image} alt={''} />
                       </button>
                     )
                   })}
@@ -382,28 +368,28 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
             {/* SUBIR UNA IMAGEN Y DIBUJAR */}
             <Row>
-              <Col className={"d-grid"} xs={12} md={isDrawable ? 6 : 12}>
-                <Card className={"mt-3"} data-guide={"upload"}>
+              <Col className={'d-grid'} xs={12} md={isDrawable ? 6 : 12}>
+                <Card className={'mt-3'} data-guide={'upload'}>
                   <Card.Header>
                     <h3>
-                      <Trans i18nKey={prefix + "process-image.title"} />
+                      <Trans i18nKey={prefix + 'process-image.title'} />
                     </h3>
                   </Card.Header>
-                  <Card.Body className={"d-grid"} style={{ alignContent: "space-between" }}>
+                  <Card.Body className={'d-grid'} style={{ alignContent: 'space-between' }}>
                     <DragAndDrop
-                      id={"drop-zone-image-instance"}
-                      name={"doc"}
-                      text={t("drag-and-drop.image")}
-                      labelFiles={t("drag-and-drop.label-files-one")}
+                      id={'drop-zone-image-instance'}
+                      name={'doc'}
+                      text={t('drag-and-drop.image')}
+                      labelFiles={t('drag-and-drop.label-files-one')}
                       accept={{
-                        "image/png": [".png"],
-                        "image/jpg": [".jpg"],
+                        'image/png': ['.png'],
+                        'image/jpg': ['.jpg'],
                       }}
                       function_DropAccepted={handleFileUpload_Image}
                     />
                     <div className="d-flex gap-2 justify-content-center mx-auto">
-                      <Button type={"button"} onClick={handleClick_ImageUploaded_Predict} variant={"primary"} disabled={model === null}>
-                        <Trans i18nKey={prefix + "process-image.validate"} />
+                      <Button type={'button'} onClick={handleClick_ImageUploaded_Predict} variant={'primary'} disabled={model === null}>
+                        <Trans i18nKey={prefix + 'process-image.validate'} />
                       </Button>
                     </div>
                   </Card.Body>
@@ -419,23 +405,23 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
             </Row>
 
             {/* CLASIFICACIÓN */}
-            <Card className={"mt-3"} ref={result_ref} data-guide={"result"}>
+            <Card className={'mt-3'} ref={result_ref} data-guide={'result'}>
               <Card.Header>
                 <h3>
-                  <Trans i18nKey={"Classify"} />
+                  <Trans i18nKey={'Classify'} />
                 </h3>
               </Card.Header>
               <Card.Body>
-                {result === null && <N4LEmptyState i18nKey={"pages.playground.generator.classify.waiting"} />}
+                {result === null && <N4LEmptyState i18nKey={'pages.playground.generator.classify.waiting'} />}
                 {/* El canvas siempre está montado: las imágenes se pintan en él antes de clasificarlas */}
-                <Row className={result === null ? "d-none" : "g-4 align-items-center"}>
-                  <Col xs={12} md={4} className={"d-flex justify-content-center"}>
+                <Row className={result === null ? 'd-none' : 'g-4 align-items-center'}>
+                  <Col xs={12} md={4} className={'d-flex justify-content-center'}>
                     <canvas
                       id="originalImage"
                       ref={canvas_original_image_ref}
                       width={200}
                       height={200}
-                      className={"nets4-border-1"}
+                      className={'nets4-border-1'}
                     ></canvas>
                   </Col>
                   <Col xs={12} md={8}>
@@ -446,25 +432,25 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               </Card.Body>
             </Card>
 
-            <Card className={"mt-3"} data-testid={"explainability-card"} data-guide={"explain"}>
+            <Card className={'mt-3'} data-testid={'explainability-card'} data-guide={'explain'}>
               <Card.Header className="d-flex justify-content-between align-items-center">
-                <h3>{t("pages.playground.0-tabular-classification.general.explain-panel-title")} ({isDrawable || explainMethod === "lrp" ? "LRP" : "SHAP"})</h3>
+                <h3>{t('pages.playground.0-tabular-classification.general.explain-panel-title')} ({isDrawable || explainMethod === 'lrp' ? 'LRP' : 'SHAP'})</h3>
                 {!isDrawable && (
                   <div className="d-flex align-items-center gap-2">
-                    <span className="small">{t("ui.explain.method")}:</span>
+                    <span className="small">{t('ui.explain.method')}:</span>
                     <Button
                       type="button"
                       size="sm"
-                      variant={explainMethod === "shap" ? "primary" : "outline-primary"}
-                      onClick={() => setExplainMethod("shap")}
+                      variant={explainMethod === 'shap' ? 'primary' : 'outline-primary'}
+                      onClick={() => setExplainMethod('shap')}
                     >
                       SHAP
                     </Button>
                     <Button
                       type="button"
                       size="sm"
-                      variant={explainMethod === "lrp" ? "primary" : "outline-primary"}
-                      onClick={() => setExplainMethod("lrp")}
+                      variant={explainMethod === 'lrp' ? 'primary' : 'outline-primary'}
+                      onClick={() => setExplainMethod('lrp')}
                       disabled={!lrpAvailable}
                     >
                       LRP
@@ -474,24 +460,24 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
               </Card.Header>
               <Card.Body>
                 {showExplain && explainResult && <ImageExplainResults result={explainResult} />}
-                {!hasExplainInput && <N4LEmptyState i18nKey={"ui.explain.waiting-for-prediction"} />}
+                {!hasExplainInput && <N4LEmptyState i18nKey={'ui.explain.waiting-for-prediction'} />}
                 <div className="mt-3">
-                  {!isDrawable && explainMethod === "shap" && (
-                    <ShapImageControls idPrefix={"ic-explain"} options={shapOptions} onChange={setShapOptions} />
+                  {!isDrawable && explainMethod === 'shap' && (
+                    <ShapImageControls idPrefix={'ic-explain'} options={shapOptions} onChange={setShapOptions} />
                   )}
                   <Button
                     type="button"
-                    variant={"outline-primary"}
+                    variant={'outline-primary'}
                     onClick={handleRequest_ExplainPrediction}
                     disabled={isCalculo || !hasExplainInput}
-                    data-testid={"Test-ExplainButton"}
+                    data-testid={'Test-ExplainButton'}
                     data-calculating={isCalculo}
                   >
                     {isCalculo
-                      ? t("ui.explain.calculating")
+                      ? t('ui.explain.calculating')
                       : showExplain
-                        ? t("ui.explain.hideExplanation")
-                        : t("ui.explain.explainPrediction")}
+                        ? t('ui.explain.hideExplanation')
+                        : t('ui.explain.explainPrediction')}
                   </Button>
                 </div>
               </Card.Body>

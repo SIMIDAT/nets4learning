@@ -1,5 +1,5 @@
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
-import type { Layer_t } from "src/types/types"
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { ImageLayer_t } from 'src/types/types'
 
 const DEFAULT_LEARNING_RATE = 0.01
 const DEFAULT_NUMBER_EPOCHS = 5
@@ -47,7 +47,7 @@ const DEFAULT_BAR_DATA: BarData_t = {
   }],
 }
 
-const DEFAULT_LAYERS: Layer_t[] = [
+const DEFAULT_LAYERS: ImageLayer_t[] = [
   {
     _class    : 'conv2d',
     _protected: true,
@@ -55,14 +55,14 @@ const DEFAULT_LAYERS: Layer_t[] = [
     kernelSize: 3,
     filters   : 16,
     activation: 'relu',
-    // other properties to satisfy Layer_t type
+    // other properties to satisfy ImageLayer_t type
     units     : 0,
   },
   {
     _class    : 'maxPooling2d',
     poolSize  : 2,
     strides   : 2,
-    // other properties to satisfy Layer_t type
+    // other properties to satisfy ImageLayer_t type
     activation: null,
     units     : 0,
   },
@@ -71,14 +71,14 @@ const DEFAULT_LAYERS: Layer_t[] = [
     kernelSize: 3,
     filters   : 32,
     activation: 'relu',
-    // other properties to satisfy Layer_t type
+    // other properties to satisfy ImageLayer_t type
     units     : 0,
   },
   {
     _class    : 'maxPooling2d',
     poolSize  : 2,
     strides   : 2,
-    // other properties to satisfy Layer_t type
+    // other properties to satisfy ImageLayer_t type
     activation: null,
     units     : 0,
   },

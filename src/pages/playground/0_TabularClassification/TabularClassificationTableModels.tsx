@@ -15,25 +15,21 @@ import { layersSummary } from '@components/neural-network/layerSummary'
 import type { TabularClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
 import { useTabularClassificationContext } from '@context/useTabularClassificationContext'
+import { useParams } from 'react-router'
+import { TASKS } from '@/TASKS'
+import N4LReportButton from '@components/report/N4LReportButton'
+import { historyNumbers } from '@core/report/trainingReport'
+import { denseLayerSummary } from '@components/neural-network/layerSummary'
 
 type TabularClassificationTableModelsProps_t = {
   rowsPerPage?: number,
 }
 export default function TabularClassificationTableModels(props: TabularClassificationTableModelsProps_t) {
-    const { rowsPerPage = 5 } = props
+  const { rowsPerPage = 5 } = props
   const { generatedModels: listModels, isTraining } = useTabularClassificationContext()
   const prefix = 'generator.table-models.'
 
   const [activePage, setActivePage] = useState(0)
-  // const [pageCount, setPageCount] = useState(0)
-
-  // useEffect(() => {
-  //   if (VERBOSE) console.debug('useEffect[listModels.length, rowsPerPage]')
-  //   const rowsCount = listModels.length
-  //   const pageCount = Math.ceil(rowsCount / rowsPerPage)
-
-  //   setPageCount(pageCount)
-  // }, [listModels.length, rowsPerPage])
   const pageCount = useMemo(
     () => Math.ceil(listModels.length / rowsPerPage),
     [listModels.length, rowsPerPage]
@@ -44,6 +40,7 @@ export default function TabularClassificationTableModels(props: TabularClassific
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
   // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
   const { t } = useTranslation()
+  const { example } = useParams()
   const parameters = listModels.map((generated) => ({
     'learning-rate': String(generated.learningRate),
     'n-of-epochs'  : String(generated.numberOfEpoch),
@@ -146,6 +143,17 @@ export default function TabularClassificationTableModels(props: TabularClassific
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LReportButton getReport={() => ({
+                                version   : 1,
+                                task      : TASKS.TABULAR_CLASSIFICATION,
+                                dataset   : example ?? '',
+                                model     : (activePage * rowsPerPage) + index + 1,
+                                createdAt : new Date().toISOString(),
+                                layers    : value.layerList.map((layer) => denseLayerSummary(t, layer)),
+                                parameters: parameters[(activePage * rowsPerPage) + index],
+                                history   : historyNumbers(value.history.history),
+                                ...(value.evaluation !== undefined) && { evaluation: value.evaluation },
+                              })} />
                           </td>
                         </tr>
                       })}

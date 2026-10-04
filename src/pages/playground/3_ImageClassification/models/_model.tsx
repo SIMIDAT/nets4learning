@@ -2,7 +2,7 @@ import type * as _tfjs from '@tensorflow/tfjs'
 import type {MobileNet} from '@tensorflow-models/mobilenet'
 
 import type * as _Types from '@core/types'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import type { BarChartData_t } from '../CONSTANTS'
 import type { TFunction } from 'i18next'
@@ -24,7 +24,7 @@ export type ImageTrainParams_t = {
   idLoss       : IdLoss_t | IdMetric_t
   idOptimizer  : IdOptimizer_t
   idMetricsList: Array<IdLoss_t | IdMetric_t>
-  layers       : Layer_t[]
+  layers       : ImageLayer_t[]
 }
 
 export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
@@ -34,9 +34,9 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   CLASS_LABELS: string[] = []
   /** Clasifica dibujos de 28x28 en escala de grises: la revisión del modelo ofrece el lienzo y explica con LRP */
   DRAWABLE = false
-  t           : TFunction<"translation", undefined>
+  t           : TFunction<'translation', undefined>
 
-  constructor (_t: TFunction<"translation", undefined>) {
+  constructor (_t: TFunction<'translation', undefined>) {
     this.t = _t
   }
 
@@ -44,7 +44,7 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return <></>
   }
 
-  DEFAULT_LAYERS (): Layer_t[] {
+  DEFAULT_LAYERS (): ImageLayer_t[] {
     return []
   }
 

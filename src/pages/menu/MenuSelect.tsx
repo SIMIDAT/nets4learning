@@ -11,7 +11,7 @@ import { taskOptions, type TaskKind_t } from '@/TASK_OPTIONS'
 import N4LDatasetInfo from '@components/dataset/N4LDatasetInfo'
 import { UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
-import { useMenuModel } from '@hooks/useMenuModel'
+import { hasMenuModel, useMenuModel } from '@hooks/useMenuModel'
 
 export type MenuKind_t = TaskKind_t
 
@@ -82,9 +82,9 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
                     data-testid={`${testId}-Open-${value}`}>
                     <Trans i18nKey={'pages.menu.open'} />
                   </Link>
-                  <Button variant={'outline-secondary'} onClick={() => setDescriptionKey(value)}>
+                  {hasMenuModel(id, value) && <Button variant={'outline-secondary'} onClick={() => setDescriptionKey(value)}>
                     <Trans i18nKey={`pages.menu.select-${kind}.description`} />
-                  </Button>
+                  </Button>}
                 </Card.Footer>
               </Card>
             </Col>

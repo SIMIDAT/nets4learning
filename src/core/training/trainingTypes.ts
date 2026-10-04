@@ -1,6 +1,6 @@
 import type * as tfjs from '@tensorflow/tfjs'
 import type { TFBackend_t } from '@core/tfBackend'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 import type { CompileParams_t, DenseLayer_t, TrainingHistory_t } from './buildModels'
 
 // Lo que se intercambian el hilo principal y el worker de entrenamiento (TODO-worker.md)
@@ -38,7 +38,7 @@ export type ImageTrainingRequest_t = {
   labelsUrl    : string
   numElements  : number
   numTrain     : number
-  layers       : Layer_t[]
+  layers       : ImageLayer_t[]
   compile      : CompileParams_t
   numberOfEpoch: number
   /** Imágenes de entrenamiento y de validación que se usan (barajadas) */

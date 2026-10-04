@@ -1,44 +1,33 @@
+import { Trans } from 'react-i18next'
+
 import I_MODEL_IMAGE_CLASSIFICATION from './_model'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
-// TODO
+// TODO: el modelo no se carga todavía (no está en los menús); de momento, solo su descripción
 export default class MODEL_IMAGE_RESNET extends I_MODEL_IMAGE_CLASSIFICATION {
   static KEY = IC_MODEL_KEYS.RESNET
   TITLE = ''
   i18n_TITLE = ''
 
   DESCRIPTION () {
+    const prefix = 'datasets-models.3-image-classifier.resnet.description.'
+    const link = (href: string) => <a href={href} target={'_blank'} rel={'noreferrer'} />
     return <>
-      <p>
-        ResNet V2 es una familiar de redes de arquitecturas para la clasificación de imágenes con un número variable de capas.
-      </p>
-      <p>
-        Están basadas en la arquitectura ResNet original publicada por Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun:
-        <a href="https://arxiv.org/abs/1512.03385" target={'_blank'} rel="noreferrer">"Deep Residual Learning for Image Recognition"</a>, 2015.
-      </p>
-      <p>
-        La variación "V2" utilizada en el modelo que vamos a usar fue realizada por Kaiming He, Xiangyu Zhang,
-        Shaoqing Ren, Jian Sun:{' '}
-        <a href="https://arxiv.org/abs/1603.05027" target={'_blank'} rel="noreferrer">"Identity Mappings in Deep Residual Networks"</a>, 2016.
-      </p>
-      <p>
-        La diferencia con ResNet V1 es el uso de la normalización por lotes antes de cada capa de peso. El modelo
-        cargado usa un total de 50 capas.
-      </p>
+      <p><Trans i18nKey={prefix + 'text-0'} /></p>
+      <p><Trans i18nKey={prefix + 'text-1'} components={{ link1: link('https://arxiv.org/abs/1512.03385') }} /></p>
+      <p><Trans i18nKey={prefix + 'text-2'} components={{ link1: link('https://arxiv.org/abs/1603.05027') }} /></p>
+      <p><Trans i18nKey={prefix + 'text-3'} /></p>
 
       <details>
-        <summary>Datos de entrada</summary>
+        <summary><Trans i18nKey={prefix + 'details-input.title'} /></summary>
         <ol>
-          <li>Imagen con valores de color entre [0,1] de <b> 224 x 224</b> píxeles.</li>
+          <li><Trans i18nKey={prefix + 'details-input.list.0'} components={{ bold: <b /> }} /></li>
         </ol>
       </details>
       <details>
-        <summary>Datos de salida</summary>
+        <summary><Trans i18nKey={prefix + 'details-output.title'} /></summary>
         <ol>
-          <li>Un número de 0 a 1001 que son cada una de las categorías de esta{' '}
-            <a rel="noreferrer" target="_blank"
-               href="https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt">lista</a>
-          </li>
+          <li><Trans i18nKey={prefix + 'details-output.list.0'} components={{ link1: link('https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt') }} /></li>
         </ol>
       </details>
     </>

@@ -1,20 +1,8 @@
 import type { ClassLayer_t } from '@core/types';
 import type { ChartOptions } from 'chart.js'
 
-/**
- * @typedef {Object} Layer_t
- * @property {string} _class // MaxPooling2D or Conv2D
- * // if _class === Conv2D
- * @property {number} kernelSize
- * @property {number} filters
- * @property {number} strides
- * @property {string} activation
- *
- * @property {string} kernelInitializer
- * @property {number} poolSize
- * @property {number} strides
- */
-export type Layer_t = {
+/** Una capa de la red de imágenes (conv2d, maxPooling2d, flatten o dense), como la edita su editor de capas */
+export type ImageLayer_t = {
   _class            : ClassLayer_t;
   _protected?       : boolean;
   // Solo en las capas que las usan (dense y conv2d)

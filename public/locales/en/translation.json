@@ -1,22 +1,22 @@
 {
   "ui": {
     "blur": {
-      "enable": "Apply blur to masked regions",
-      "kernelSize": "Blur kernel size (odd)",
-      "passes": "Blur passes"
+      "enable": "Blur the covered zones (instead of painting them one colour)",
+      "kernelSize": "Blur size (odd)",
+      "passes": "Times it is blurred"
     },
     "explain": {
-      "title": "Explainability (SHAP)",
+      "title": "Model explainability",
       "method": "Method",
       "about-lrp": "LRP (Layer-wise Relevance Propagation) runs backwards through the network from the predicted class, distributing its relevance down to the input pixels. The heatmap shows which areas of the image support the model's prediction.",
       "about-shap": "We split the image into segments (superpixels) and measure each one's importance by masking it or keeping it visible across many different combinations, observing how the prediction changes. The heatmap colours each segment by how much it contributes to the prediction.",
       "perturbationSamples": "Perturbation samples:",
-      "gridSide": "Zones per side (the image is split into N×N segments)",
-      "nSamples": "nSamples (SHAP)",
+      "gridSide": "Zones per side",
+      "nSamples": "Combinations tried",
       "mask": "Mask (SHAP)",
-      "maskRange": "Mask (0..1)",
+      "maskRange": "Colour of the covered zones",
       "calculating": "Calculating...",
-      "explainPrediction": "Explain prediction",
+      "explainPrediction": "Explain the prediction",
       "hideExplanation": "Hide explanation",
       "noData": "No explanation data available.",
       "class": "Class {{index}}",
@@ -67,7 +67,10 @@
         "wrong-prediction": "Did the model get it wrong? The explanation is still useful: it shows what the model looked at to reach that answer."
       },
       "waiting-for-prediction": "Make a prediction to be able to explain it.",
-      "waiting-for-model": "Train a model to be able to explain its predictions."
+      "waiting-for-model": "Train a model to be able to explain its predictions.",
+      "gridSide-help": "The image is split into N × N pieces: with more, the explanation is finer but takes longer.",
+      "nSamples-help": "How many times different zones are covered to measure what each one contributes (SHAP).",
+      "maskRange-help": "From 0 (black) to 1 (white)."
     },
     "take-screenshot": "Take a screenshot",
     "table-scroll-hint": "Scroll horizontally to see all the columns →",
@@ -217,21 +220,21 @@
     "dataset-web": "Original website",
     "dataset-reference": "Reference",
     "download-dataset-car": "Car evaluation data set",
-    "download-dataset-hepatitis-c": "Hepatitis C data set",
+    "download-dataset-hepatitis-c": "Hepatitis C",
     "download-dataset-iris": "Iris data set",
-    "download-dataset-titanic": "Titanic survival data set*",
-    "download-dataset-new-thyroid": "New thyroid data set",
-    "download-dataset-wine": "Wine survival data set",
-    "download-dataset-ecoli": "Ecoli data set",
+    "download-dataset-titanic": "Titanic survival",
+    "download-dataset-new-thyroid": "Thyroid (New Thyroid)",
+    "download-dataset-wine": "Wine cultivars",
+    "download-dataset-ecoli": "E. coli",
     "download": {
       "dataset": {
         "1-regression": {
           "salary": "Salary data set",
           "auto-mpg": "Fuel consumption data set",
           "housing-prices": "House Prices Dataset",
-          "breast-cancer-original": "Breast Cancer Wisconsin Dataset",
-          "breast-cancer-wdbc": "Breast Cancer Wisconsin Dataset (Diagnostic)",
-          "breast-cancer-wpbc": "Breast Cancer Wisconsin Dataset (Prognostic)",
+          "breast-cancer-original": "Breast cancer (Wisconsin)",
+          "breast-cancer-wdbc": "Breast cancer: diagnosis (WDBC)",
+          "breast-cancer-wpbc": "Breast cancer: prognosis (WPBC)",
           "student-performance-mathematics": "Mathematics student Data set",
           "student-performance-portuguese": "Portuguese student Data set",
           "wine-red": "Red wine data set",
@@ -241,7 +244,7 @@
     },
     "dataset-info": "Data",
     "extra-title": "Other datasets",
-    "extra-text": "No model in the app uses them: they are meant for practising with your own CSV upload.",
+    "extra-text": "No model in the app uses them: they are for practising data preparation. “Train” loads them in the upload page, where you choose the target column and what to do with each one.",
     "dataset-details": "Information",
     "show-info": "View information",
     "variables": {
@@ -275,6 +278,55 @@
       "file": "File",
       "error": "The CSV could not be read.",
       "describe-help": "One row per numeric column: how many values it has (count), its mean, its standard deviation (std), the minimum, the quartiles and the maximum."
+    },
+    "intro": "The Nets4Learning datasets, by task. Train with them (or cluster them), try the model that is already trained, open them in the exploratory data analysis (EDA) or download them to use in other tools.",
+    "models-title": "Ready to train",
+    "models-text": "The app's models use them: they come ready, so you pick one and train.",
+    "train": "Train",
+    "try-model": "Try the model",
+    "files": "Files",
+    "summary": {
+      "tabular-classification": {
+        "CAR": "Whether a car is acceptable given its price, maintenance, seats, boot and safety: everything is a category.",
+        "IRIS": "The classic to start with: the species of a flower from the measurements of its petals and sepals.",
+        "LYMPHOGRAPHY": "The diagnosis of a lymphoma from the features of a lymphography: few rows and very unbalanced classes."
+      },
+      "regression": {
+        "SALARY": "The salary by years of experience (and, in the second file, also age, education and job title).",
+        "AUTO_MPG": "The fuel consumption of 70s and 80s cars, in miles per gallon, from their engine, weight and year.",
+        "HOUSING_PRICES": "The median house price in Boston neighbourhoods by crime rate, rooms or distance to the centre.",
+        "STUDENT_PERFORMANCE": "The final grade of Portuguese secondary school students, in maths and Portuguese, by their background and habits.",
+        "WINE": "The quality of Portuguese vinho verde, red and white, from its chemical analysis."
+      },
+      "image-classification": {
+        "IMAGE-MNIST": "Handwritten digits from 0 to 9: the “hello world” of convolutional networks.",
+        "IMAGE-KMNIST": "Ten handwritten hiragana characters from classical Japanese: like MNIST, but harder."
+      },
+      "extra": {
+        "hepatitis-c": "Blood tests of donors and patients to tell hepatitis C, fibrosis and cirrhosis apart.",
+        "ecoli": "Where a protein is inside the E. coli bacterium: eight classes, some with very few cases.",
+        "new-thyroid": "Whether the thyroid works normally, too much or too little, from five lab tests.",
+        "wine": "Three Italian wine cultivars from 13 chemical components: easy, but the columns have very different scales.",
+        "titanic": "Who survived the sinking of the Titanic by class, sex, age and the family travelling with them.",
+        "breast-cancer-wisconsin": "Whether a breast tumour is benign or malignant from nine features of its cells (with some missing values).",
+        "wpbc": "Whether breast cancer comes back, from measurements of the tumour and its cells: only 198 cases.",
+        "wdbc": "Whether a breast tumour is benign or malignant from 30 measurements of its cell nuclei in an image."
+      },
+      "clustering": {
+        "IRIS": "The measurements of 150 flowers, without the species: one species separates on its own and the other two touch.",
+        "WINE": "13 chemical components of 178 wines: unscaled, proline rules; scaled, the groups are almost the three cultivars.",
+        "NEW-THYROID": "Five thyroid tests: almost all are normal, so the hypo- and hyperthyroidism groups are small.",
+        "breast-cancer-wisconsin": "Nine cell traits of 699 tumours, from 1 to 10: with two groups, they almost match the benign and malignant ones.",
+        "wdbc": "30 measurements of the cell nuclei of 569 tumours: with two groups, k-means separates benign from malignant quite well.",
+        "ecoli": "Seven scores of 336 proteins and eight places in the bacterium, some with two or three cases: those small groups get lost.",
+        "hepatitis-c": "Blood tests of 589 people: purity comes out high only because almost all are donors, but the Rand index tells the truth: the groups do not resemble the diagnoses."
+      }
+    },
+    "clustering": {
+      "examples-title": "Ready to cluster",
+      "examples-text": "They include the real classes, but k-means doesn't use them: it clusters with the other columns and compares the groups with them at the end.",
+      "extra-text": "Other project datasets to cluster: “Cluster” loads them as if you had uploaded them. Not all of them resemble their classes equally, and that teaches something too.",
+      "run": "Cluster"
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -330,7 +382,8 @@
         "title": "Description"
       },
       "query": "Query",
-      "link": "Consult more information in the following <link1>link</link1>"
+      "link": "Consult more information in the following <link1>link</link1>",
+      "column": "Column"
     },
     "plot": {
       "link": "Consult more information in the following <link1> link </link1>"
@@ -1170,7 +1223,8 @@
         "process-webcam": {
           "title": "Realtime recognition",
           "sub-title": "Webcam",
-          "button": "Webcam"
+          "button": "Webcam",
+          "device": "Camera"
         },
         "process-image": {
           "title": "Image processing",
@@ -1594,12 +1648,39 @@
         "3-option-2": "MobileNet - Image Classifier",
         "3-option-3": "ResNet - Image classifier",
         "3-option-4": "KMNIST - Japanese character classification"
+      },
+      "resnet": {
+        "description": {
+          "text-0": "ResNet V2 is a family of network architectures for image classification with a variable number of layers.",
+          "text-1": "They are based on the original ResNet architecture published by Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun: <link1>“Deep Residual Learning for Image Recognition”</link1>, 2015.",
+          "text-2": "The “V2” variant used by this model is by the same authors: <link1>“Identity Mappings in Deep Residual Networks”</link1>, 2016.",
+          "text-3": "The difference with ResNet V1 is that it applies batch normalisation before each layer with weights. The loaded model has 50 layers.",
+          "details-input": {
+            "title": "Input data",
+            "list": [
+              "A <bold>224 × 224</bold> pixel image with colour values between 0 and 1."
+            ]
+          },
+          "details-output": {
+            "title": "Output data",
+            "list": [
+              "A number from 0 to 1001: each of the categories in this <link1>list</link1>."
+            ]
+          }
+        }
       }
     },
     "3-image-classification": {
       "list-datasets": {
         "mnist": "MNIST",
         "kmnist": "KMNIST"
+      }
+    },
+    "clustering": {
+      "list-datasets": {
+        "iris": "Iris flowers (without the species)",
+        "wine": "Wine cultivars (without the cultivar)",
+        "new-thyroid": "Thyroid (without the diagnosis)"
       }
     }
   },
@@ -1823,7 +1904,8 @@
           "0": "Violin plots are a useful tool for visualizing and comparing data distributions.\nThey allow you to analyze the shape, dispersion, symmetry and presence of outliers in the data, and are especially useful when comparison between multiple groups or categories is required.\nTheir attractive and concise graphical representation makes them an effective tool for communicating complex information in an understandable way."
         }
       }
-    }
+    },
+    "select-plot": "Chart type"
   },
   "face-api": {
     "years": "Years",
@@ -1919,6 +2001,12 @@
       },
       "hero": {
         "text": "Nets4Learning is a web platform to learn how neural networks work: pick a task, design the network, train it and test it, all in the browser with nothing to install. It is aimed at students and teachers."
+      },
+      "clustering": {
+        "1-title": "Clustering",
+        "1-description-1": "Group the data without saying what each row is (unsupervised learning): k-means looks for k groups of rows similar to each other.",
+        "1-description-2": "You'll see how the groups form step by step and, in datasets with the real classes, whether the groups resemble them even though it never saw them.",
+        "1-button": "Choose a dataset"
       }
     },
     "contribute": {
@@ -2008,7 +2096,10 @@
       },
       "upload-text": "Upload your own dataset (CSV, ARFF, JSON, JSONL or Parquet) and prepare it before training.",
       "own-dataset": "Your own dataset",
-      "example-datasets": "Example datasets"
+      "example-datasets": "Example datasets",
+      "clustering": {
+        "csv": "Upload a CSV"
+      }
     },
     "menu-selection-model": {
       "form-description-1": "Select the trained model on which you are going to work.",
@@ -2180,7 +2271,8 @@
           "strides": "Strides",
           "strides-placeholder": "Enter the strides of the layer",
           "pool-size": "Pool size",
-          "pool-size-placeholder": "Enter the pool size of the layer"
+          "pool-size-placeholder": "Enter the pool size of the layer",
+          "layer-class": "Layer type"
         },
         "editor-feature-selector": {
           "title": "Feature selector",
@@ -2439,7 +2531,8 @@
           "error": "Error: {{value}} ({{percent}})",
           "input-details": "Model input step by step",
           "choose-instance": "Choose an instance of the data set to fill in the form; then you can change its values.",
-          "no-models": "This data set has no pre-trained model. Choose another data set or train your own model in the regression playground."
+          "no-models": "This data set has no pre-trained model. Choose another data set or train your own model in the regression playground.",
+          "model-selector": "Model to predict with"
         },
         "model-selector": {
           "title": "Model selector",
@@ -2574,6 +2667,60 @@
         "column-layer": "Layer {{layer}} · {{activation}}",
         "column-output": "Output · {{activation}}",
         "update-rule": "w ← w − {{rate}} · gradient"
+      },
+      "clustering": {
+        "intro": "k-means places k centroids, assigns each row to the closest one and moves each centroid to the centre of its rows, until no row changes group. It uses no labels: only the columns you choose.",
+        "upload": "Upload your data",
+        "rows_one": "1 row",
+        "rows_other": "{{count}} rows",
+        "features": "Columns used for clustering",
+        "features-help": "Only numeric ones. The more, the harder to picture, but the groups may be better.",
+        "label": "Column with the real classes (optional)",
+        "label-none": "None",
+        "label-help": "It is not used to cluster: only to compare at the end.",
+        "scale": "Scale the columns",
+        "scale-help": "Each column with mean 0 and deviation 1: otherwise the ones with large values (e.g. the proline of the wine) decide on their own.",
+        "k": "Number of groups (k)",
+        "k-help": "If you don't know how many there are, check the elbow after clustering.",
+        "run": "Cluster",
+        "reseed": "Try other initial centroids",
+        "waiting": "Choose the columns and the number of groups, and press “Cluster”.",
+        "groups": "Groups",
+        "iterations": "Iterations",
+        "inertia": "Inertia",
+        "silhouette": "Silhouette",
+        "silhouette-good": "High silhouette (over 0.5): the groups are well separated.",
+        "silhouette-fair": "Medium silhouette (between 0.25 and 0.5): there are groups, but they touch each other.",
+        "silhouette-weak": "Low silhouette (under 0.25): the groups are barely distinguishable; try another k or other columns.",
+        "scatter-title": "The groups",
+        "play": "Watch them form",
+        "pause": "Pause",
+        "iteration": "Iteration {{number}}",
+        "scatter-help": "Each point is a row; the crosses are the centroids. To draw them in 2D they are projected with PCA (the two directions in which the data varies most), but k-means uses all the chosen columns.",
+        "axis": "Component {{number}} ({{variance}} of the variance)",
+        "cluster": "Group {{number}}",
+        "centroids": "Centroids",
+        "comparison-title": "Groups versus the real classes ({{column}})",
+        "comparison-help": "How many rows of each class fell into each group and what share of the group they are. k-means doesn't know what each class is, so the groups have no name: the majority class of each one tells which it resembles.",
+        "group": "Group",
+        "purity": "Purity",
+        "ari": "Adjusted Rand index",
+        "elbow-title": "The elbow",
+        "elbow-help": "Inertia always goes down as k goes up. The “elbow”, where it stops going down a lot, is usually a good number of groups.",
+        "profiles-title": "What each group is like",
+        "size": "Rows",
+        "profiles-help": "The mean of each column in each group, in its units: it helps to give each group a name.",
+        "variable": "Variable",
+        "purity-help": "The share of rows that would be right if each group were named after its majority class. It always goes up as k grows: with one group per row it would be 100%.",
+        "ari-help": "How much the groups resemble the classes, looking at pairs of rows: do the ones together in a class end up together in a group? 1 if they are the same groups and around 0 if they match like chance. It does not go up just by having more groups.",
+        "ari-high": "The groups are almost the same as the classes.",
+        "ari-medium": "The groups resemble the classes quite well, but some class is split or mixed.",
+        "ari-low": "The groups barely resemble the classes.",
+        "ari-none": "The groups don't resemble the classes: as if they were random.",
+        "majority": "Majority class",
+        "mixed": "mixed",
+        "total": "Total",
+        "comparison-legend": "The stronger the background, the larger the share of the group from that class. “Mixed”: no class reaches two thirds of the group."
       }
     },
     "dataframe": {
@@ -3306,7 +3453,11 @@
         "never-help": "Models are downloaded when you open their page.",
         "now-save-data": "Right now, the browser has data saving on.",
         "now-slow": "Right now, the connection seems slow.",
-        "now-normal": "Right now, there's no data saving and the connection doesn't seem slow (or the browser doesn't say)."
+        "now-normal": "Right now, there's no data saving and the connection doesn't seem slow (or the browser doesn't say).",
+        "offline_zero": "What you open is saved so you can use it offline. Nothing is saved yet.",
+        "offline_one": "For offline use, 1 file is saved ({{size}} MB): what you have already opened works without internet.",
+        "offline_other": "For offline use, {{count}} files are saved ({{size}} MB): what you have already opened works without internet.",
+        "offline-delete": "Delete what is saved for offline use"
       },
       "speech": {
         "title": "Guide voice",
@@ -3455,6 +3606,31 @@
         "continue": "You've done {{count}} of {{total}} steps of <link1>Start here</link1>: pick up where you left off.",
         "finished": "You've completed <link1>Start here</link1>: now try your own data."
       }
+    },
+    "regression-description": {
+      "title": "Linear regression",
+      "subtitle": "Description of the problem and the models",
+      "paragraphs": [
+        "In data analysis, a regression problem is one where you want to predict or estimate a numeric value from some input variables. Linear regression is a mathematical model to make that prediction.",
+        "A linear regression model is a statistical technique that looks for a linear relationship between a response variable (or dependent variable) and one or more predictor variables (or independent variables). Its goal is to find the straight line that best fits the observed data, to then use it to predict the response variable from the predictors.",
+        "The model represents that relationship with the equation of a straight line: the value of the response variable is estimated as a linear combination of the predictors. Its coefficients, the regression coefficients, are computed with statistical techniques that make the difference between the observed and predicted values as small as possible.",
+        "Once fitted, the model can predict the response variable when the predictors are known. It also shows how much each predictor contributes to explaining the variability of the response.",
+        "In short, linear regression models are statistical tools to predict numeric values from predictor variables, with a linear relationship between them. They are useful in fields such as economics, science, engineering or social research."
+      ],
+      "example": "Suppose we want to predict the price of a house (the response variable, $Y$) from its size in square metres (the predictor variable, $x$). The relationship between the two can be written with this linear regression equation:",
+      "where": "Where:",
+      "terms": [
+        "$Y$ is the price of the house.",
+        "$x$ is the size of the house.",
+        "$\\beta_0$ is the intercept: the value of $Y$ when $x$ is zero.",
+        "$\\beta_1$ is the slope of the line: how much the price changes for each extra square metre.",
+        "$\\epsilon$ is the error term: the variability the model does not explain."
+      ],
+      "closing": [
+        "The goal of linear regression is to estimate $\\beta_0$ and $\\beta_1$ from the observed data, to get the line that best fits the points of the scatter plot.",
+        "With the fitted model you can predict the price of a new house from its area: just replace $x$ in the equation and compute $Y$.",
+        "This example is a simple case of simple linear regression: in practice, models can have many predictor variables and take into account how they combine with each other."
+      ]
     }
   },
   "generator": {
@@ -4715,5 +4891,23 @@
     "model-progress": "Downloading the model: {{loaded}} of {{total}} MB",
     "model-loaded": "Downloading the model: {{loaded}} MB",
     "model-help": "It may take a while the first time: the model is downloaded from the internet."
+  },
+  "report": {
+    "button": "Report",
+    "title": "Training report",
+    "created": "Created on {{date}}",
+    "print": "Print or save as PDF",
+    "back": "Back to training",
+    "network": "The network",
+    "hyperparameters": "Hyperparameters",
+    "results": "Training result",
+    "results-caption": "Values in the last epoch.",
+    "metric": "Metric",
+    "uploaded": "Uploaded dataset",
+    "empty": "There is no report yet: train a model and press “Report” in its row of the models table.",
+    "error-storage": "The browser doesn't allow saving the report (storage disabled or full)."
+  },
+  "offline": {
+    "bar": "You're offline: you can keep using what you had already opened; the rest will be available when the connection is back."
   }
 }

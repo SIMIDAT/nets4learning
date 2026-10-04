@@ -223,6 +223,25 @@ const MenuSelection = ({ activeTask }: { activeTask: TASKS_TYPE_V }) => {
           </Card>
         </>
       )
+    case TASKS.CLUSTERING:
+      return (
+        <>
+          <Card className={'border border-2 border-success'}>
+            <Card.Header>
+              <h2><Trans i18nKey={'pages.index.clustering.1-title'} /></h2>
+            </Card.Header>
+            <Card.Body>
+              <Card.Text><Trans i18nKey={'pages.index.clustering.1-description-1'} /></Card.Text>
+              <Card.Text><Trans i18nKey={'pages.index.clustering.1-description-2'} /></Card.Text>
+              <div className="d-flex gap-2 justify-content-center">
+                <Button variant={'success'} onClick={() => handleClick_TrainEdit(SELECTOR.DATASET)} data-testid={'Test-GoTo-SelectDataset-Clustering'}>
+                  <Trans i18nKey={'pages.index.clustering.1-button'} />
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </>
+      )
     default:
       return ''
   }
@@ -307,6 +326,16 @@ export default function Home() {
                   data-testid={'Test-InitialMenu-ObjectDetection'}
                   onClick={() => handleClick_OpenCardModel(TASKS.OBJECT_DETECTION)}>
                   <Trans i18nKey={'pages.index.object-detection.1-title'} />
+                </Button>
+              </div>
+            </Col>
+            <Col className={'mt-3'}>
+              <div className="d-grid gap-2 h-100">
+                <Button variant={'success'}
+                  size={'lg'}
+                  data-testid={'Test-InitialMenu-Clustering'}
+                  onClick={() => handleClick_OpenCardModel(TASKS.CLUSTERING)}>
+                  <Trans i18nKey={'pages.index.clustering.1-title'} />
                 </Button>
               </div>
             </Col>

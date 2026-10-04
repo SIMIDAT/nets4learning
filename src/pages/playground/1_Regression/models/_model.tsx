@@ -1,16 +1,16 @@
 
-import * as _Types from "@core/types"
-import type { TFunction } from "i18next"
+import * as _Types from '@core/types'
+import type { TFunction } from 'i18next'
 
 export default abstract class I_MODEL_REGRESSION {
-  _KEY = ""
-  i18n_TITLE = ""
-  URL_DATASET = ""
+  _KEY = ''
+  i18n_TITLE = ''
+  URL_DATASET = ''
 
-  t                 : TFunction<"translation", undefined>
+  t                 : TFunction<'translation', undefined>
   setAccordionActive: React.Dispatch<React.SetStateAction<string[]>>
 
-  constructor(_t: TFunction<"translation", undefined>, _setAccordionActive: React.Dispatch<React.SetStateAction<string[]>>) {
+  constructor(_t: TFunction<'translation', undefined>, _setAccordionActive: React.Dispatch<React.SetStateAction<string[]>>) {
     this.t = _t
     this.setAccordionActive = _setAccordionActive
   }
@@ -29,7 +29,7 @@ export default abstract class I_MODEL_REGRESSION {
    */
   DEFAULT_LAYERS(dataset: string): _Types.CustomParamsLayerModel_t[] {
     const list_map: { [key: string]: _Types.CustomParamsLayerModel_t[] } = {
-      "": [],
+      '': [],
     }
     return list_map[dataset] || []
   }
@@ -48,7 +48,7 @@ export default abstract class I_MODEL_REGRESSION {
    * @param {string} [_dataset='']
    * @return {Promise<_Types.CustomModel_t[]>}
    */
-  async MODELS(_dataset = ""): Promise<_Types.CustomModel_t[]> {
+  async MODELS(_dataset = ''): Promise<_Types.CustomModel_t[]> {
     return []
   }
 }

@@ -247,6 +247,7 @@ body {
 [data-task="regression"] { --n4l-task-color: var(--bs-danger); }
 [data-task="image-classification"] { --n4l-task-color: var(--bs-info); }
 [data-task="object-detection"] { --n4l-task-color: var(--bs-warning); }
+[data-task="clustering"] { --n4l-task-color: var(--bs-success); }
 
 .n4l-task-card {
   border-top: 4px solid var(--n4l-task-color);
@@ -403,6 +404,27 @@ html[data-theme="dark"] .n4l-footer {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   white-space: nowrap;
+}
+
+/* Agrupamiento: los grupos frente a las clases, con el aspecto de la matriz de confusión */
+.n4l-cluster-comparison tbody td {
+  min-width: 4.5rem;
+}
+/* El porcentaje va sobre el fondo de la celda: del color del texto, para que se lea */
+.n4l-cluster-comparison .n4l-confusion-percent {
+  color: inherit;
+}
+.n4l-cluster-agreement {
+  flex: 1 1 14rem;
+}
+@media (max-width: 575.98px) {
+  .n4l-cluster-comparison th,
+  .n4l-cluster-comparison td {
+    padding: 0.4rem 0.5rem;
+  }
+  .n4l-cluster-comparison tbody td {
+    min-width: 3.5rem;
+  }
 }
 
 /* Término con definición emergente (etiquetas de los hiperparámetros) */
@@ -1108,4 +1130,65 @@ h6 {
 details > pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/*
+ * Al imprimir (el informe de un modelo, o cualquier página): solo el contenido, sin la barra de navegación, el pie,
+ * los índices de secciones, los avisos ni el visor; en blanco y sin partir las tarjetas, las tablas ni las gráficas
+ */
+@media print {
+  .n4l-navbar,
+  .n4l-footer,
+  .n4l-cookies-banner,
+  .n4l-section-bar-wrapper,
+  .n4l-section-nav,
+  .toast-container,
+  #tfjs-visor-container {
+    display: none !important;
+  }
+
+  .body {
+    --n4l-page-bg: #fff;
+    min-height: 0;
+  }
+
+  table,
+  figure,
+  .alert,
+  .n4l-training-curve {
+    break-inside: avoid;
+  }
+
+  /* Las gráficas del informe, como imágenes (ver TrainingReport) */
+  .n4l-print-image {
+    display: block !important;
+    width: 100%;
+    height: auto;
+  }
+
+  .n4l-print-hidden {
+    display: none !important;
+  }
+}
+
+.n4l-print-image {
+  display: none;
+}
+
+/* La columna de la tarjeta del modelo (N4LModelAside): fija al bajar en pantallas grandes, con su propio scroll si no cabe */
+@media (min-width: 1200px) {
+  .n4l-model-aside {
+    position: sticky;
+    top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+    max-height: calc(100vh - var(--n4l-navbar-height, 0px) - 2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Sin conexión (N4LOfflineBar): justo debajo de la barra de navegación, que va fija arriba */
+.n4l-offline-bar {
+  position: sticky;
+  top: var(--n4l-navbar-height, 0px);
+  z-index: 1010;
 }

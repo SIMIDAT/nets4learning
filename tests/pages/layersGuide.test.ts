@@ -5,7 +5,7 @@ import i18next from 'i18next'
 
 import { layersGuide } from '@pages/playground/3_ImageClassification/layersGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 
 const LANGUAGES = ['es', 'en', 'ja'] as const
 const resources = Object.fromEntries(LANGUAGES.map((language) => [language, {
@@ -18,7 +18,7 @@ const translator = async (language: string) => {
 }
 
 // Las capas por defecto de MNIST y KMNIST
-const LAYERS: Layer_t[] = [
+const LAYERS: ImageLayer_t[] = [
   { _class: 'conv2d', _protected: true, inputShape: [28, 28, 1], kernelSize: 3, filters: 16, activation: 'relu' },
   { _class: 'maxPooling2d', poolSize: 2, strides: 2 },
   { _class: 'conv2d', kernelSize: 3, filters: 32, activation: 'relu' },

@@ -1,7 +1,5 @@
-// import * as handpose from '@tensorflow-models/handpose'
 import i18next from 'i18next'
 import * as fp from 'fingerpose'
-// import * as tf from '@tensorflow/tfjs-core';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection'
 import * as handsignMultiligual from 'handsign-multilingual'
 import { Trans } from 'react-i18next'
@@ -97,7 +95,6 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
       // fp.Gestures.VictoryGesture,
       ...signs
     ])
-    // await tf.setBackend('webgl');
     const model = handPoseDetection.SupportedModels.MediaPipeHands
     /**
      * @type {handPoseDetection.MediaPipeHandsMediaPipeModelConfig}

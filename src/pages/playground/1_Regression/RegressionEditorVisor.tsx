@@ -30,11 +30,7 @@ export default function RegressionEditorVisor() {
   } = useRegressionContext()
 
   const [visorOptions, setVisorOptions] = useState(DEFAULT_VISOR_OPTIONS)
-  // const [show, setShow] = useState(false)
 
-  // useEffect(() => {
-  //   setShow(datasets.data[datasets.index].is_dataset_processed)
-  // }, [setShow, datasets])
   const isReady = datasets.data[datasets.index]?.is_dataset_processed;
 
   useEffect(() => {

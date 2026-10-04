@@ -24,6 +24,8 @@ const ModelReviewObjectDetection = lazy(() => import('./2_ObjectDetection/ModelR
 const ImageClassification = lazy(() => import('./3_ImageClassification/ImageClassification'))
 const ModelReviewImageClassification = lazy(() => import('./3_ImageClassification/ModelReviewImageClassification'))
 
+const Clustering = lazy(() => import('./4_Clustering/Clustering'))
+
 
 type MisParams = {
   id     : string
@@ -71,6 +73,11 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       } else if (option === 'dataset') {
         return <ImageClassification dataset={example} />
       }
+      break
+    }
+    case TASKS.CLUSTERING: {
+      // Se agrupa al momento: no hay modelos preentrenados
+      if (option === 'dataset') return <Clustering key={example} dataset={example} />
       break
     }
   }

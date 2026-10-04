@@ -101,7 +101,6 @@ export default class MODEL_2_AUTO_MPG extends I_MODEL_REGRESSION {
     const auto_container_info = await auto_promise_info.text()
     const auto_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + auto_csv)
     let auto_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + auto_csv)
-    /** @type {_Types.Dataset_t} */
     const auto_dataset: _Types.Dataset_t = [
       { column_name: 'cylinders',    column_role: 'Feature', column_type: 'Integer',     column_missing_values: false },
       { column_name: 'displacement', column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },

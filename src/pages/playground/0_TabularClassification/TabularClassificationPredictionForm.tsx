@@ -147,7 +147,6 @@ export default function TabularClassificationPredictionForm() {
               <Form.Group controlId={`FormControl_${column_name}__${index}`}>
                 <Form.Label><b>{column_name}</b></Form.Label>
                 <Form.Select
-                  aria-label="select"
                   size={'sm'}
                   value={String(inputDataToPredict[index])}
                   onChange={(e) => handleChange_Select(e, column_name, index)}>
@@ -174,7 +173,6 @@ export default function TabularClassificationPredictionForm() {
             </Col>
           }
           default:
-            // console.warn('Error, option not valid', { attribute })
             return <Col key={'form' + index} className={'mb-3'}>
               <p className={'text-center'}><b>{column_name}</b></p>
               <p className={'text-center'}>{column_type}</p>

@@ -47,9 +47,6 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       if (VERBOSE) console.debug('resize', { _e })
     },
     zoom: (_e: unknown) => {
-      // e.preventDefault()
-      // e.stopPropagation()
-      // e.stopImmediatePropagation()
     }
   }
 

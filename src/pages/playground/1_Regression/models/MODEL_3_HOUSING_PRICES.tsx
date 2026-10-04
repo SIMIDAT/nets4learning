@@ -117,7 +117,6 @@ export default class MODEL_3_HOUSING_PRICES extends I_MODEL_REGRESSION {
     const boston_container_info = await boston_dataset_promise_info.text()
     const boston_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + boston_csv)
     let boston_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + boston_csv)
-    /** @type {_Types.Dataset_t} */
     const boston_dataset: _Types.Dataset_t = [
       { column_name: 'CRIM',    column_type: 'Continuous',   column_role: 'Feature', column_missing_values: false },
       { column_name: 'ZN',      column_type: 'Continuous',   column_role: 'Feature', column_missing_values: false },
@@ -134,7 +133,6 @@ export default class MODEL_3_HOUSING_PRICES extends I_MODEL_REGRESSION {
       { column_name: 'LSTAT',   column_type: 'Continuous',   column_role: 'Feature', column_missing_values: false },
       { column_name: 'MEDV',    column_type: 'Continuous',   column_role: 'Target',  column_missing_values: false }
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const boston_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...boston_dataset.filter(F_FILTER_Categorical).map(v => F_MAP_LabelEncoder(v) as _Types.DataFrameColumnTransform_t),
       // { column_name: 'B',    column_transform: 'drop'    },

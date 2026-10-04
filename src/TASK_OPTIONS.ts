@@ -1,5 +1,5 @@
 import { TASKS, UPLOAD } from '@/TASKS'
-import { IC_MODEL_KEYS, LR_MODEL_KEYS, OD_MODEL_KEYS, TC_MODEL_KEYS } from '@/MODEL_KEYS'
+import { CL_MODEL_KEYS, IC_MODEL_KEYS, LR_MODEL_KEYS, OD_MODEL_KEYS, TC_MODEL_KEYS } from '@/MODEL_KEYS'
 
 // Modelos preentrenados y datasets de cada tarea (clave y etiqueta). Separado de DATA_MODEL, que importa los
 // registros de modelos, para que la home o las migas de pan puedan usar estas listas sin cargarlos.
@@ -31,6 +31,8 @@ const TASK_MODEL_OPTIONS = {
     { i18n: 'datasets-models.3-image-classifier.list-models.3-option-4', value: IC_MODEL_KEYS.KMNIST },
     { i18n: 'datasets-models.3-image-classifier.list-models.3-option-2', value: IC_MODEL_KEYS.MOBILENET },
   ],
+  // Agrupar no necesita un modelo entrenado antes: se hace al momento con los datos
+  [TASKS.CLUSTERING]: [],
 }
 export type TASK_MODEL_OPTIONS_TYPE = typeof TASK_MODEL_OPTIONS
 export type MODEL_OPTIONS_TYPE = TASK_MODEL_OPTIONS_TYPE[keyof TASK_MODEL_OPTIONS_TYPE]
@@ -95,6 +97,25 @@ const TASK_DATASET_OPTIONS = {
       i18n : 'datasets-models.3-image-classification.list-datasets.kmnist',
       value: IC_MODEL_KEYS.KMNIST,
       info : { source: 'https://github.com/rois-codh/kmnist', rows: [25000], classes: 10, images: true },
+    },
+  ],
+  // Conjuntos con clases conocidas: se agrupan sin verlas y al final se comparan los grupos con ellas
+  [TASKS.CLUSTERING]: [
+    { i18n: 'pages.menu-selection-dataset.clustering.csv', value: UPLOAD },
+    {
+      i18n : 'datasets-models.clustering.list-datasets.iris',
+      value: CL_MODEL_KEYS.IRIS,
+      info : { source: 'https://archive.ics.uci.edu/dataset/53/iris', files: ['models/00-tabular-classification/iris/iris.csv'], rows: [150], features: 4, classes: 3 },
+    },
+    {
+      i18n : 'datasets-models.clustering.list-datasets.wine',
+      value: CL_MODEL_KEYS.WINE,
+      info : { source: 'https://archive.ics.uci.edu/dataset/109/wine', files: ['datasets/wine.csv'], rows: [178], features: 13, classes: 3 },
+    },
+    {
+      i18n : 'datasets-models.clustering.list-datasets.new-thyroid',
+      value: CL_MODEL_KEYS.NEW_THYROID,
+      info : { source: 'https://archive.ics.uci.edu/dataset/102/thyroid+disease', files: ['datasets/new-thyroid.csv'], rows: [215], features: 5, classes: 3 },
     },
   ],
 }

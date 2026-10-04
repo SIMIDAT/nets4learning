@@ -3,36 +3,36 @@
 // por defecto se cargaba una segunda copia de TF.js y se registraban de nuevo todos los kernels. El código está
 // parcheado (patches/, ver pnpm-workspace.yaml) para leer los resultados de forma asíncrona: con WebGPU las
 // lecturas síncronas lo hacían muy lento.
-import * as faceapi from "@vladmandic/face-api"
-import { Trans } from "react-i18next"
-import I_MODEL_OBJECT_DETECTION from "./_model"
+import * as faceapi from '@vladmandic/face-api'
+import { Trans } from 'react-i18next'
+import I_MODEL_OBJECT_DETECTION from './_model'
 import {
   MT_CNN_BIBTEX,
   SSD_BIBTEX,
   MOBILE_NETS_BIBTEX,
   TINY_BIBTEX,
   FACE_RECOGNITION_MODEL_BIBTEX,
-} from "./MODEL_5_FACE_API_INFO"
+} from './MODEL_5_FACE_API_INFO'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.FACE_API
-  TITLE = "datasets-models.2-object-detection.face-api.title"
-  i18n_TITLE = "datasets-models.2-object-detection.face-api.title"
-  URL = "https://justadudewhohacks.github.io/face-api.js/docs/index.html"
+  TITLE = 'datasets-models.2-object-detection.face-api.title'
+  i18n_TITLE = 'datasets-models.2-object-detection.face-api.title'
+  URL = 'https://justadudewhohacks.github.io/face-api.js/docs/index.html'
   mirror = false
   usesTensorForPrediction = false
   faces = true
 
   i18n_face_api: Record<string, string> = {
-    years    : "face-api.years",
-    neutral  : "face-api.neutral",
-    happy    : "face-api.happy",
-    sad      : "face-api.sad",
-    angry    : "face-api.angry",
-    fearful  : "face-api.fearful",
-    disgusted: "face-api.disgusted",
-    surprised: "face-api.surprised",
+    years    : 'face-api.years',
+    neutral  : 'face-api.neutral',
+    happy    : 'face-api.happy',
+    sad      : 'face-api.sad',
+    angry    : 'face-api.angry',
+    fearful  : 'face-api.fearful',
+    disgusted: 'face-api.disgusted',
+    surprised: 'face-api.surprised',
   }
 
   // region EXPLICABILIDAD
@@ -62,60 +62,60 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   // endregion
 
   DESCRIPTION() {
-    const prefix = "datasets-models.2-object-detection.face-api.description."
+    const prefix = 'datasets-models.2-object-detection.face-api.description.'
     return (
       <>
         <p>
-          <Trans i18nKey={prefix + "text-0"} />
+          <Trans i18nKey={prefix + 'text-0'} />
         </p>
         <details>
           <summary>
-            <Trans i18nKey={prefix + "details-input.title"} />
+            <Trans i18nKey={prefix + 'details-input.title'} />
           </summary>
           <p>
-            <Trans i18nKey={prefix + "details-input.text-0"} />
+            <Trans i18nKey={prefix + 'details-input.text-0'} />
           </p>
         </details>
         <details>
           <summary>
-            <Trans i18nKey={prefix + "details-output.title"} />
+            <Trans i18nKey={prefix + 'details-output.title'} />
           </summary>
           <p>
-            <Trans i18nKey={prefix + "details-output.text-0"} />
+            <Trans i18nKey={prefix + 'details-output.text-0'} />
           </p>
           <ol>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.bounding"} />
+              <Trans i18nKey={prefix + 'details-output.list.bounding'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.0"} />
+              <Trans i18nKey={prefix + 'details-output.list.0'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.1"} />
+              <Trans i18nKey={prefix + 'details-output.list.1'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.2"} />
+              <Trans i18nKey={prefix + 'details-output.list.2'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.3"} />
+              <Trans i18nKey={prefix + 'details-output.list.3'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.4"} />
+              <Trans i18nKey={prefix + 'details-output.list.4'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.5"} />
+              <Trans i18nKey={prefix + 'details-output.list.5'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.6"} />
+              <Trans i18nKey={prefix + 'details-output.list.6'} />
             </li>
             <li>
-              <Trans i18nKey={prefix + "details-output.list.7"} />
+              <Trans i18nKey={prefix + 'details-output.list.7'} />
             </li>
           </ol>
         </details>
         <details>
           <summary>
-            <Trans i18nKey={prefix + "details-references.title"} />
+            <Trans i18nKey={prefix + 'details-references.title'} />
           </summary>
           <p>
             <strong>Face Detection Models</strong>
@@ -190,8 +190,7 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   }
 
   async ENABLE_MODEL() {
-    // const modelPath = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/'
-    const modelPath = import.meta.env.VITE_PATH + "/models/02-object-detection/face-api-js/v1.7.14/"
+    const modelPath = import.meta.env.VITE_PATH + '/models/02-object-detection/face-api-js/v1.7.14/'
     await Promise.all([
       faceapi.nets.ssdMobilenetv1.load(modelPath),
       faceapi.nets.tinyFaceDetector.load(modelPath),
@@ -202,14 +201,14 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     // await faceapi.nets.faceRecognitionNet.load(modelPath);
 
     this.i18n_face_api = {
-      years    : this.t("face-api.years"),
-      neutral  : this.t("face-api.neutral"),
-      happy    : this.t("face-api.happy"),
-      sad      : this.t("face-api.sad"),
-      angry    : this.t("face-api.angry"),
-      fearful  : this.t("face-api.fearful"),
-      disgusted: this.t("face-api.disgusted"),
-      surprised: this.t("face-api.surprised"),
+      years    : this.t('face-api.years'),
+      neutral  : this.t('face-api.neutral'),
+      happy    : this.t('face-api.happy'),
+      sad      : this.t('face-api.sad'),
+      angry    : this.t('face-api.angry'),
+      fearful  : this.t('face-api.fearful'),
+      disgusted: this.t('face-api.disgusted'),
+      surprised: this.t('face-api.surprised'),
     }
   }
 
@@ -217,10 +216,10 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     let _input = input_image_or_video
     if (input_image_or_video instanceof ImageData) {
       // Canvas (síncrono): con una <img> habría que esperar a que cargue antes de detectar.
-      _input = document.createElement("canvas")
+      _input = document.createElement('canvas')
       _input.width = input_image_or_video.width
       _input.height = input_image_or_video.height
-      _input.getContext("2d").putImageData(input_image_or_video, 0, 0)
+      _input.getContext('2d').putImageData(input_image_or_video, 0, 0)
     }
     // 0.8 para mostrar detecciones; la explicabilidad pasa un umbral más bajo.
     const minConfidence = config.minConfidence ?? 0.8
@@ -266,7 +265,7 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
       }
 
       const ageParsed = Math.round(age)
-      const txt = `${ageParsed} ${this.i18n_face_api["years"]}`
+      const txt = `${ageParsed} ${this.i18n_face_api['years']}`
       this._drawTextBG(ctx, txt, font, x, y - 48, 16)
     }
   }

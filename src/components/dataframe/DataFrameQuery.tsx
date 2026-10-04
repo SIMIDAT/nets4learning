@@ -51,7 +51,7 @@ export default function DataFrameQuery({ dataframe, target }: DataFrameQueryProp
           <InputGroup size={'sm'}>
             <InputGroup.Text>df[</InputGroup.Text>
             <Form.Select
-              aria-label={'column'}
+              aria-label={t('dataframe.query.column')}
               size={'sm'}
               value={columnToQuery}
               onChange={(e) => { setColumnSelected(e.target.value) }}>

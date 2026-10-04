@@ -24,6 +24,7 @@ import { isSpeechSupported, useSpeech, useVoices, voicesForLanguage } from '@com
 import { setStepByStepEnabled, useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 import { deleteTrainedModels, storedModelsUsage } from '@core/training/modelStore'
 import { downloadReason, setDownloadWarning, useDownloadWarning, type DownloadWarning_t } from '@core/models/downloadConsent'
+import { clearOfflineData, offlineUsage } from '@core/offline/offline'
 import { resetAllSettings } from './storedSettings'
 
 const prefix = 'pages.settings.'
@@ -250,7 +251,35 @@ function DownloadSettings() {
         ))}
       </fieldset>
       <p className={'small text-body-secondary mb-0'} data-testid={'Test-Settings-Connection'}>{t(prefix + 'downloads.now-' + now)}</p>
+      <OfflineUsage />
     </Section>
+  )
+}
+
+/** Lo guardado para usar la aplicación sin conexión (el service worker, solo en la versión publicada), y borrarlo */
+function OfflineUsage() {
+  const { t, i18n } = useTranslation()
+  const [usage, setUsage] = useState<{ files: number, bytes: number } | null>(null)
+  const isAvailable = import.meta.env.PROD && 'serviceWorker' in navigator
+  useEffect(() => {
+    if (!isAvailable) return
+    let isCancelled = false
+    offlineUsage().then((result) => {
+      if (!isCancelled) setUsage(result)
+    })
+    return () => { isCancelled = true }
+  }, [isAvailable])
+  if (!isAvailable || usage === null) return null
+  const size = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 1 }).format(usage.bytes / 1024 / 1024)
+  return (
+    <div className={'mt-3 pt-3 border-top'} data-testid={'Test-Settings-Offline'}>
+      <p className={'small mb-2'}>{t(prefix + 'downloads.offline', { count: usage.files, size })}</p>
+      {usage.files > 0 &&
+        <Button size={'sm'} variant={'outline-danger'} onClick={async () => {
+          await clearOfflineData()
+          setUsage({ files: 0, bytes: 0 })
+        }}>{t(prefix + 'downloads.offline-delete')}</Button>}
+    </div>
   )
 }
 

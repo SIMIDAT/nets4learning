@@ -22,6 +22,13 @@ export const PROJECT_DATASETS: ProjectDataset_t[] = TASKS_WITH_CSV.flatMap((task
   ...(EXTRA_DATASETS[task] ?? []).map(({ file, i18n, source }) => ({ file, task, i18n, source })),
 ])
 
+/** Los CSV de una tarea: los de sus conjuntos (de los modelos o de ejemplo) y los de práctica. Un mismo CSV puede ser de
+ * varias tareas: el vino se clasifica y se agrupa */
+export const taskDatasetFiles = (task: TASKS_TYPE_V): string[] => [
+  ...((TASK_DATASET_OPTIONS[task] ?? []) as TaskOption_t[]).flatMap(({ info }) => info?.files ?? []),
+  ...(EXTRA_DATASETS[task] ?? []).map(({ file }) => file),
+]
+
 export const fileName = (file: string) => file.slice(file.lastIndexOf('/') + 1)
 
 /** Clave de un CSV del proyecto en la dirección del AED (/analyze?dataset=iris): su nombre sin extensión (son únicos) */

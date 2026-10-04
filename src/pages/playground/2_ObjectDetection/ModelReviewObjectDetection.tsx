@@ -30,7 +30,9 @@ import { explainErrorKey } from '@core/explainability/explainError'
 import { trackEvent } from '@core/analytics'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
 import WebcamDeviceInfo, { type DetectionStats_t } from './WebcamDeviceInfo'
-import N4LGuide from '@components/guide/N4LGuide'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LModelCard from '@components/neural-network/N4LModelCard'
+import N4LModelAside from '@components/neural-network/N4LModelAside'
 import { objectDetectionReviewGuide } from './modelReviewGuide'
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
@@ -230,7 +232,6 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
     const ctx = canvas_ref.current.getContext('2d') as CanvasRenderingContext2D
     ctx.clearRect(0, 0, canvas_ref.current.width, canvas_ref.current.height)
-    // ctx.setTransform(-1, 0, 0, 1, canvas_ref.current.width, 0)
 
     return { ctx, video }
   }, [])
@@ -393,7 +394,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     const resultCanvas = canvasImage_ref.current;
 
     if (!originalCanvas || !resultCanvas || !processCanvas) {
-      console.error("Canvas references not found");
+      console.error('Canvas references not found');
       return;
     }
 
@@ -401,12 +402,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     const resultCtx = resultCanvas.getContext('2d');
 
     if (!originalCtx || !resultCtx) {
-      console.error("Canvas 2D context not available");
+      console.error('Canvas 2D context not available');
       return;
     }
 
     if (iModelInstance === null) {
-      console.error("Model not loaded");
+      console.error('Model not loaded');
       return;
     }
 
@@ -451,7 +452,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         setProcessImage({ isProcessing: false, isProcessed: true });
       } catch (error) {
-        console.error("Processing failed:", error);
+        console.error('Processing failed:', error);
         setProcessImage({ isProcessing: false, isProcessed: false });
       } finally {
         // 3. Clean up memory
@@ -532,13 +533,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   return (
     <>
       <Container className={'n4l-container-wide'} id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
-        <Row className={'mt-2'}>
-          <Col>
-            <h1>
-              <Trans i18nKey={'modality.2'} />
-            </h1>
-          </Col>
-        </Row>
+        <N4LPageHeader title={<Trans i18nKey={'modality.2'} />} guideId={'object-detection.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
 
         <Row>
           <Col>
@@ -548,23 +543,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <div className={'sticky-top'} style={{ zIndex: 0 }}>
-              <Card className={'mt-3 mb-3 border-info'} data-guide={'model'}>
-                <Card.Header
-                  className={'d-flex align-items-center justify-content-between'}
-                >
-                  <h2>
-                    {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
-                  </h2>
-                </Card.Header>
-                <Card.Body>
-                  {guideSteps !== null && <N4LGuide id={'object-detection.' + dataset} steps={guideSteps} />}
-                  {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
-                </Card.Body>
-              </Card>
-
-              {/* Panel narrativo del método (idéntico patrón al review tabular). OD usa SHAP. */}
-              <Card className={'mb-3 border-success'} data-guide={'explain-about'}>
+            <N4LModelAside>
+              <N4LModelCard title={iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}>
+                {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
+              </N4LModelCard>
+              {/* Cómo se explica la predicción (SHAP) */}
+              <Card className={'border-success'} data-guide={'explain-about'}>
                 <Card.Header>
                   <h2 className={'h5 mb-0'}>
                     <Trans i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-title'} />
@@ -574,7 +558,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                   <p className={'small mb-0'}>{t('ui.explain.about-shap')}</p>
                 </Card.Body>
               </Card>
-            </div>
+            </N4LModelAside>
           </Col>
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
@@ -605,7 +589,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                       className={'flex-grow-1'}
                     >
                       <Form.Select
-                        aria-label={'select-device'}
+                        aria-label={t('datasets-models.2-object-detection.interface.process-webcam.device')}
                         size={'sm'}
                         value={deviceId}
                         disabled={disabledPermissionsCamera()}

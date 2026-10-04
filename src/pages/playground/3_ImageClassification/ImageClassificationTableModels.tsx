@@ -13,6 +13,11 @@ import { layersSummary } from '@components/neural-network/layerSummary'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { ImageClassificationGeneratedModel_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
+import { useParams } from 'react-router'
+import { TASKS } from '@/TASKS'
+import N4LReportButton from '@components/report/N4LReportButton'
+import { historyNumbers } from '@core/report/trainingReport'
+import { layerSummaryParts } from '@components/neural-network/layerSummary'
 
 type ImageClassificationTableModelsProps = {
   GeneratedModels: ImageClassificationGeneratedModel_t[],
@@ -41,6 +46,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
   // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
   const { t } = useTranslation()
+  const { example } = useParams()
   const parameters = GeneratedModels.map(({ params }) => ({
     'learning-rate': String(params.learning_rate),
     'n-epochs'     : String(params.n_epochs),
@@ -145,6 +151,17 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                               onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}>
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LReportButton getReport={() => ({
+                                version   : 1,
+                                task      : TASKS.IMAGE_CLASSIFICATION,
+                                dataset   : example ?? '',
+                                model     : (activePage * rowsPerPage) + index + 1,
+                                createdAt : new Date().toISOString(),
+                                layers    : value.params.layers.map((layer) => layerSummaryParts(t, layer).join(' · ')),
+                                parameters: parameters[(activePage * rowsPerPage) + index],
+                                history   : historyNumbers(value.history.history),
+                                ...(value.evaluation !== undefined) && { evaluation: value.evaluation },
+                              })} />
                           </td>
                         </tr>
                       })}

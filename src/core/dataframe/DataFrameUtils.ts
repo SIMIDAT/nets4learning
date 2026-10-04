@@ -1,8 +1,8 @@
-import * as dfd from "danfojs";
-import { readDatasetInWorker } from "@core/dataframe/datasetReaderClient";
-import { E_PLOTS, LIST_PLOTS } from "@components/_context/CONSTANTS";
-import { VERBOSE } from "@/CONSTANTS";
-import * as _Types from "@core/types";
+import * as dfd from 'danfojs';
+import { readDatasetInWorker } from '@core/dataframe/datasetReaderClient';
+import { E_PLOTS, LIST_PLOTS } from '@components/_context/CONSTANTS';
+import { VERBOSE } from '@/CONSTANTS';
+import * as _Types from '@core/types';
 
 // E_PLOTS.LINE_CHARTS
 // E_PLOTS.BAR_CHARTS
@@ -75,9 +75,6 @@ export function timeSeriesPlotsValidConfig(
   dataframe: dfd.DataFrame,
   dataframePlotConfig: _Types.DataframePlotConfig_t
 ): _Types.TimeSeriesPlotsValidConfigResponse_t {
-  // const notContainIndexInColumnsToShow = !dataframePlotConfig.COLUMNS.includes(dataframePlotConfig.TIME_SERIES_PLOTS.config.index)
-  // const containsIndexInDataframe = dataframe.columns.includes(dataframePlotConfig.TIME_SERIES_PLOTS.config.index)
-  // const isValidConfig_TimeSeries = notContainIndexInColumnsToShow && containsIndexInDataframe
   const isValidConfig_TimeSeries = isTimeSeriesDataFrameValidForIndex(
     dataframe,
     dataframePlotConfig.COLUMNS
@@ -103,9 +100,8 @@ export function violinPlotsValidConfig(
   dataframe: dfd.DataFrame,
   dataframePlotConfig: { COLUMNS: string[] }
 ) {
-  /** @type {string[]} */
   const valid_columns_to_display = dataframePlotConfig.COLUMNS.filter(
-    (column) => dataframe[column].dtype !== "string"
+    (column) => dataframe[column].dtype !== 'string'
   );
   const config_ViolinPlots = { columns: valid_columns_to_display };
   const isValidConfig_ViolinPlots = true;
@@ -153,31 +149,30 @@ export function DataFrameEncoder(
   dataframe: dfd.DataFrame,
   dataframe_transforms: Array<_Types.DataFrameColumnTransform_t>
 ): _Types.EncoderMap_t {
-  /** @type {_Types.EncoderMap_t} */
   const encoder_map: _Types.EncoderMap_t = {};
   const dataframe_local = dataframe.copy();
   for (const { column_name, column_transform } of dataframe_transforms) {
     switch (column_transform) {
-      case "label-encoder": {
+      case 'label-encoder': {
         const encoder = new dfd.LabelEncoder();
         encoder.fit(dataframe_local[column_name]);
         encoder_map[column_name] = {
-          type   : "label-encoder",
+          type   : 'label-encoder',
           encoder: encoder,
         };
         break;
       }
-      case "one-hot-encoder": {
+      case 'one-hot-encoder': {
         const encoder = new dfd.OneHotEncoder();
         encoder.fit(dataframe_local[column_name]);
         encoder_map[column_name] = {
-          type   : "one-hot-encoder",
+          type   : 'one-hot-encoder',
           encoder: encoder,
         };
         break;
       }
       default: {
-        console.warn("Error, option not valid", {
+        console.warn('Error, option not valid', {
           column_transform,
           column_name,
         });
@@ -272,14 +267,14 @@ export function LabelEncoderClasses(encoder: dfd.LabelEncoder): string[] {
  * @return {dfd.DataFrame}
  */
 export function DataFrameDeepCopy(dataframe: dfd.DataFrame) {
-  const dataframe_deep_copy_JSON = dfd.toJSON(dataframe, { format: "row" });
+  const dataframe_deep_copy_JSON = dfd.toJSON(dataframe, { format: 'row' });
   return new dfd.DataFrame(dataframe_deep_copy_JSON);
 }
 
-const NUMERIC_DTYPES = ["int32", "float32"];
+const NUMERIC_DTYPES = ['int32', 'float32'];
 
 const isTextValue = (value: unknown) =>
-  typeof value === "string" && value.trim() !== "" && Number.isNaN(Number(value));
+  typeof value === 'string' && value.trim() !== '' && Number.isNaN(Number(value));
 
 /**
  * danfojs infiere el tipo de cada columna mirando solo las primeras filas (500 por defecto).
@@ -297,7 +292,7 @@ export function DataFrameFixMixedColumns(dataframe: dfd.DataFrame): dfd.DataFram
     if (!NUMERIC_DTYPES.includes(dataframe.dtypes[i])) return;
     const values = dataframe.column(column).values as unknown[];
     if (values.some(isTextValue)) {
-      fixed = fixed.asType(column, "string") as dfd.DataFrame;
+      fixed = fixed.asType(column, 'string') as dfd.DataFrame;
     }
   });
   return fixed;
@@ -313,7 +308,7 @@ export async function DataFrameReadCSV(
   ...args: Parameters<typeof dfd.readCSV>
 ): Promise<dfd.DataFrame> {
   const [source] = args;
-  if (typeof File !== "undefined" && source instanceof File) {
+  if (typeof File !== 'undefined' && source instanceof File) {
     const { columns, rows, dtypes } = await readDatasetInWorker(source);
     return new dfd.DataFrame(rows, { columns, dtypes });
   }
@@ -353,7 +348,7 @@ export function DataFrameTransformAndEncoder(
   const encoder_map: _Types.EncoderMap_t = {};
   for (const { column_name, column_transform, match } of dataframe_transforms) {
     switch (column_transform) {
-      case "one-hot-encoder": {
+      case 'one-hot-encoder': {
         const oneHotEncoder = new dfd.OneHotEncoder();
         const encoder = oneHotEncoder.fit(dataframe_processed[column_name]);
         const new_serie = encoder.transform(
@@ -363,12 +358,12 @@ export function DataFrameTransformAndEncoder(
           inplace: true,
         });
         encoder_map[column_name] = {
-          type   : "one-hot-encoder",
+          type   : 'one-hot-encoder',
           encoder: encoder,
         };
         break;
       }
-      case "label-encoder": {
+      case 'label-encoder': {
         const labelEncoder = new dfd.LabelEncoder();
         const encoder = labelEncoder.fit(dataframe_processed[column_name]);
         const new_serie = encoder.transform(
@@ -377,27 +372,27 @@ export function DataFrameTransformAndEncoder(
         dataframe_processed.addColumn(column_name, new_serie, {
           inplace: true,
         });
-        dataframe_processed.asType(column_name, "int32", { inplace: true });
+        dataframe_processed.asType(column_name, 'int32', { inplace: true });
         encoder_map[column_name] = {
-          type   : "label-encoder",
+          type   : 'label-encoder',
           encoder: encoder,
         };
         break;
       }
-      case "int32": {
+      case 'int32': {
         break;
       }
-      case "float32": {
+      case 'float32': {
         break;
       }
-      case "string": {
+      case 'string': {
         break;
       }
-      case "drop_?": {
+      case 'drop_?': {
         console.warn(`The "drop_?" transform is not implemented (column ${column_name})`);
         break;
       }
-      case "replace_?_NaN": {
+      case 'replace_?_NaN': {
         if (VERBOSE)
           console.debug(`replace_${column_name}_?_NaN`, {
             _dataframe: dataframe_processed,
@@ -405,8 +400,8 @@ export function DataFrameTransformAndEncoder(
             c         : dataframe_processed[column_name],
           });
         const new_serie = dataframe_processed[column_name].apply((val: string) => {
-          if (val === "?") {
-            if (VERBOSE) console.debug("FOUND");
+          if (val === '?') {
+            if (VERBOSE) console.debug('FOUND');
             return NaN;
           }
           return val;
@@ -416,7 +411,7 @@ export function DataFrameTransformAndEncoder(
         });
         break;
       }
-      case "replace_<match>_NaN": {
+      case 'replace_<match>_NaN': {
         if (VERBOSE)
           console.debug(`replace_${column_name}_${match}_NaN`, {
             _dataframe: dataframe_processed,
@@ -434,16 +429,16 @@ export function DataFrameTransformAndEncoder(
         });
         break;
       }
-      case "drop": {
+      case 'drop': {
         dataframe_processed.drop({ columns: [column_name], inplace: true });
         break;
       }
-      case "dropNa": {
+      case 'dropNa': {
         dataframe_processed.dropNa({ axis: 1, inplace: true });
         break;
       }
       default: {
-        console.warn("Error, option not valid", {
+        console.warn('Error, option not valid', {
           column_transform,
           column_name,
         });
@@ -488,18 +483,18 @@ export function DataFrameColumnType_To_DatasetColumnType(
   dtype: string | _Types.DataFrameColumnType_t
 ): _Types.DatasetColumnType_t {
   switch (dtype) {
-    case "int32":
-      return "Integer";
-    case "float32":
-      return "Continuous";
-    case "string":
-      return "Categorical";
-    case "boolean":
-      return "Binary";
-    case "datetime":
-      return "Date";
+    case 'int32':
+      return 'Integer';
+    case 'float32':
+      return 'Continuous';
+    case 'string':
+      return 'Categorical';
+    case 'boolean':
+      return 'Binary';
+    case 'datetime':
+      return 'Date';
 
     default:
-      return "Other";
+      return 'Other';
   }
 }

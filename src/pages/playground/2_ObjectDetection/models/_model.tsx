@@ -1,19 +1,19 @@
-import type { TFunction } from "i18next"
+import type { TFunction } from 'i18next'
 
 /** Lo que se puede pasar a un detector: una imagen subida, un fotograma de la webcam o un canvas */
 export type DetectionInput_t = ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
 
 export default abstract class I_MODEL_OBJECT_DETECTION {
-  TITLE                  : string = ""
-  i18n_TITLE             : string = ""
+  TITLE                  : string = ''
+  i18n_TITLE             : string = ''
   // Cada modelo guarda aquí el detector de su librería y declara su tipo concreto
   _modelDetector         : unknown = null
   mirror                 : boolean = false
   usesTensorForPrediction: boolean = true
   faces                  : boolean = false
-  t                      : TFunction<"translation", undefined>
+  t                      : TFunction<'translation', undefined>
 
-  constructor(_t: TFunction<"translation", undefined>) {
+  constructor(_t: TFunction<'translation', undefined>) {
     this.t = _t
   }
 
@@ -48,7 +48,7 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
    * Por defecto, las clases detectadas.
    */
   EXPLAIN_LABELS(detections: unknown[]): string[] {
-    const classes = (detections ?? []).map((d) => (d as { class?: unknown } | null)?.class).filter((c): c is string => typeof c === "string")
+    const classes = (detections ?? []).map((d) => (d as { class?: unknown } | null)?.class).filter((c): c is string => typeof c === 'string')
     return Array.from(new Set(classes))
   }
 
@@ -61,7 +61,7 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
     for (const det of (Array.isArray(predictions) ? predictions : []) as Array<{ class?: string, score?: unknown } | null>) {
       if (!det || det.class === undefined) continue
       const idx = labels.indexOf(det.class)
-      if (idx !== -1 && typeof det.score === "number") scores[idx] = Math.max(scores[idx], det.score)
+      if (idx !== -1 && typeof det.score === 'number') scores[idx] = Math.max(scores[idx], det.score)
     }
     return scores
   }
@@ -85,7 +85,7 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
    */
   _drawRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
     ctx.lineWidth = 3
-    ctx.strokeStyle = "rgba(0,255,21,0.84)"
+    ctx.strokeStyle = 'rgba(0,255,21,0.84)'
     ctx.strokeRect(x, y, w, h)
   }
   /**
@@ -99,17 +99,17 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
    */
   _drawTextBG(ctx: CanvasRenderingContext2D, txt: string, font: string, x: number, y: number, padding: number) {
     ctx.font = font
-    ctx.textBaseline = "top"
-    ctx.fillStyle = "#fff"
+    ctx.textBaseline = 'top'
+    ctx.fillStyle = '#fff'
 
     const width = ctx.measureText(txt).width
     ctx.fillRect(x, y, width + padding, parseInt(font, 10) + padding)
 
     ctx.lineWidth = 2
-    ctx.strokeStyle = "#009ddf"
+    ctx.strokeStyle = '#009ddf'
     ctx.strokeRect(x, y, width + padding, parseInt(font, 10) + padding)
 
-    ctx.fillStyle = "#000000"
+    ctx.fillStyle = '#000000'
     ctx.fillText(txt, x + padding / 2, y + padding / 2)
   }
 
@@ -133,8 +133,8 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
     threshold: boolean
   ) {
     ctx.font = font
-    ctx.textBaseline = "top"
-    ctx.fillStyle = "#fff"
+    ctx.textBaseline = 'top'
+    ctx.fillStyle = '#fff'
 
     const width = ctx.measureText(txt).width
 
@@ -143,12 +143,12 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
     if (threshold) ctx.globalAlpha = 1.0
 
     ctx.lineWidth = 2
-    ctx.strokeStyle = "#009ddf"
+    ctx.strokeStyle = '#009ddf'
     if (threshold) ctx.globalAlpha = 0.4
     ctx.strokeRect(x, y, width + padding, parseInt(font, 10) + padding)
     if (threshold) ctx.globalAlpha = 1.0
 
-    ctx.fillStyle = "#000000"
+    ctx.fillStyle = '#000000'
     if (threshold) ctx.globalAlpha = 0.8
     ctx.fillText(txt, x + padding / 2, y + padding / 2)
     if (threshold) ctx.globalAlpha = 1.0

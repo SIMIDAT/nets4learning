@@ -1,22 +1,22 @@
 {
   "ui": {
     "blur": {
-      "enable": "Aplicar blur a regiones enmascaradas",
-      "kernelSize": "Tamaño kernel blur (impar)",
-      "passes": "Veces de blur (passes)"
+      "enable": "Desenfocar las zonas tapadas (en vez de pintarlas de un color)",
+      "kernelSize": "Tamaño del desenfoque (impar)",
+      "passes": "Veces que se desenfoca"
     },
     "explain": {
-      "title": "Explicabilidad (SHAP)",
+      "title": "Explicabilidad del modelo",
       "method": "Método",
       "about-lrp": "LRP (propagación de la relevancia capa a capa) recorre la red hacia atrás desde la clase predicha y reparte su relevancia hasta los píxeles de entrada. El mapa de calor muestra qué zonas de la imagen sostienen la predicción del modelo.",
       "about-shap": "Dividimos la imagen en segmentos (superpíxeles) y medimos la importancia de cada uno tapándolo o dejándolo visible en muchas combinaciones distintas, observando cómo cambia la predicción. El mapa de calor colorea cada segmento según cuánto aporta a la predicción.",
       "perturbationSamples": "Muestras de Perturbación:",
-      "gridSide": "Zonas por lado (la imagen se divide en N×N segmentos)",
-      "nSamples": "nSamples (SHAP)",
+      "gridSide": "Zonas por lado",
+      "nSamples": "Combinaciones que se prueban",
       "mask": "Máscara (SHAP)",
-      "maskRange": "Máscara (0..1)",
+      "maskRange": "Color de las zonas tapadas",
       "calculating": "Calculando...",
-      "explainPrediction": "Explicar Predicción",
+      "explainPrediction": "Explicar la predicción",
       "hideExplanation": "Ocultar explicación",
       "noData": "No hay datos de explicación disponibles.",
       "class": "Clase {{index}}",
@@ -67,7 +67,10 @@
         "wrong-prediction": "¿El modelo se ha equivocado? La explicación sigue siendo útil: muestra en qué se ha fijado para llegar a esa respuesta."
       },
       "waiting-for-prediction": "Haz una predicción para poder explicarla.",
-      "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones."
+      "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones.",
+      "gridSide-help": "La imagen se divide en N × N trozos: con más, la explicación es más fina, pero tarda más.",
+      "nSamples-help": "Cuántas veces se tapan zonas distintas para medir lo que aporta cada una (SHAP).",
+      "maskRange-help": "De 0 (negro) a 1 (blanco)."
     },
     "take-screenshot": "Hacer una captura",
     "table-scroll-hint": "Desliza en horizontal para ver todas las columnas →",
@@ -217,21 +220,21 @@
     "dataset-web": "Web original",
     "dataset-reference": "Referencia",
     "download-dataset-car": "Conjunto de datos de evaluación de coches",
-    "download-dataset-hepatitis-c": "Conjunto de datos de hepatitis C",
+    "download-dataset-hepatitis-c": "Hepatitis C",
     "download-dataset-iris": "Conjunto de datos de iris",
-    "download-dataset-titanic": "Conjunto de datos de supervivencia del titanic*",
-    "download-dataset-new-thyroid": "Conjunto de datos de new-thyroid",
-    "download-dataset-wine": "Conjunto de datos de vino",
-    "download-dataset-ecoli": "Conjunto de datos de ecoli",
+    "download-dataset-titanic": "Supervivencia en el Titanic",
+    "download-dataset-new-thyroid": "Tiroides (New Thyroid)",
+    "download-dataset-wine": "Variedades de vino",
+    "download-dataset-ecoli": "E. coli",
     "download": {
       "dataset": {
         "1-regression": {
           "salary": "Conjunto de datos de salarios",
           "auto-mpg": "Conjunto de datos consumo de combustible",
           "housing-prices": "Conjunto de datos precios de casas",
-          "breast-cancer-original": "Conjunto de datos Breast Cancer Wisconsin",
-          "breast-cancer-wdbc": "Conjunto de datos Breast Cancer Wisconsin (Diagnostic)",
-          "breast-cancer-wpbc": "Conjunto de datos Breast Cancer Wisconsin (Prognostic)",
+          "breast-cancer-original": "Cáncer de mama (Wisconsin)",
+          "breast-cancer-wdbc": "Cáncer de mama: diagnóstico (WDBC)",
+          "breast-cancer-wpbc": "Cáncer de mama: pronóstico (WPBC)",
           "student-performance-mathematics": "Conjunto de datos de estudiantes de matemáticas",
           "student-performance-portuguese": "Conjunto de datos de estudiantes de Portugués",
           "wine-red": "Conjunto de datos de vino tinto",
@@ -241,7 +244,7 @@
     },
     "dataset-info": "Datos",
     "extra-title": "Otros conjuntos de datos",
-    "extra-text": "No los usa ningún modelo de la aplicación: sirven para practicar subiendo tu propio CSV.",
+    "extra-text": "No los usa ningún modelo de la aplicación: sirven para practicar la preparación de los datos. Con «Entrenar» se cargan en la página de subir datos, donde eliges la columna objetivo y qué hacer con cada una.",
     "dataset-details": "Información",
     "show-info": "Ver información",
     "variables": {
@@ -275,6 +278,55 @@
       "file": "Fichero",
       "error": "No se ha podido leer el CSV.",
       "describe-help": "Una fila por cada columna numérica: cuántos valores tiene (count), su media (mean), su desviación típica (std), el mínimo, los cuartiles y el máximo."
+    },
+    "intro": "Los conjuntos de datos de Nets4Learning, por tarea. Entrena con ellos (o agrúpalos), prueba el modelo que ya está entrenado, ábrelos en el análisis exploratorio de datos (AED) o descárgalos para usarlos en otras herramientas.",
+    "models-title": "Listos para entrenar",
+    "models-text": "Los usan los modelos de la aplicación: ya vienen preparados, así que eliges uno y entrenas.",
+    "train": "Entrenar",
+    "try-model": "Probar el modelo",
+    "files": "Ficheros",
+    "summary": {
+      "tabular-classification": {
+        "CAR": "Si un coche es aceptable según su precio, su mantenimiento, sus plazas, su maletero y su seguridad: todo son categorías.",
+        "IRIS": "El clásico para empezar: la especie de una flor a partir de las medidas de sus pétalos y sus sépalos.",
+        "LYMPHOGRAPHY": "El diagnóstico de un linfoma a partir de los rasgos de una linfografía: pocas filas y clases muy desequilibradas."
+      },
+      "regression": {
+        "SALARY": "El salario según los años de experiencia (y, en el segundo fichero, también la edad, la formación y el puesto).",
+        "AUTO_MPG": "El consumo de coches de los años 70 y 80, en millas por galón, a partir de su motor, su peso y su año.",
+        "HOUSING_PRICES": "El precio medio de la vivienda en los barrios de Boston según la criminalidad, las habitaciones o la distancia al centro.",
+        "STUDENT_PERFORMANCE": "La nota final de alumnos de secundaria portugueses, en matemáticas y en portugués, según su entorno y sus hábitos.",
+        "WINE": "La calidad de vinos verdes portugueses, tintos y blancos, según su análisis químico."
+      },
+      "image-classification": {
+        "IMAGE-MNIST": "Dígitos del 0 al 9 escritos a mano: el «hola mundo» de las redes convolucionales.",
+        "IMAGE-KMNIST": "Diez caracteres hiragana del japonés clásico escritos a mano: como MNIST, pero más difícil."
+      },
+      "extra": {
+        "hepatitis-c": "Análisis de sangre de donantes y de pacientes para distinguir la hepatitis C, la fibrosis y la cirrosis.",
+        "ecoli": "Dónde está una proteína dentro de la bacteria E. coli: ocho clases, algunas con muy pocos casos.",
+        "new-thyroid": "Si el tiroides funciona con normalidad, de más o de menos, a partir de cinco análisis de laboratorio.",
+        "wine": "Tres variedades de vino italiano según 13 componentes químicos: es fácil, pero las columnas tienen escalas muy distintas.",
+        "titanic": "Quién sobrevivió al hundimiento del Titanic según su clase, su sexo, su edad y la familia que viajaba con él.",
+        "breast-cancer-wisconsin": "Si un tumor de mama es benigno o maligno a partir de nueve rasgos de sus células (con algunos valores ausentes).",
+        "wpbc": "Si un cáncer de mama vuelve a aparecer, a partir de medidas del tumor y de sus células: solo 198 casos.",
+        "wdbc": "Si un tumor de mama es benigno o maligno a partir de 30 medidas de los núcleos de sus células en una imagen."
+      },
+      "clustering": {
+        "IRIS": "Las medidas de 150 flores, sin decirle la especie: una especie se separa sola y las otras dos se tocan.",
+        "WINE": "13 componentes químicos de 178 vinos: sin escalar manda la prolina; escalados, los grupos son casi las tres variedades.",
+        "NEW-THYROID": "Cinco análisis del tiroides: casi todos son normales, así que los grupos del hipo y del hipertiroidismo son pequeños.",
+        "breast-cancer-wisconsin": "Nueve rasgos de las células de 699 tumores, del 1 al 10: con dos grupos, casi coinciden con los benignos y los malignos.",
+        "wdbc": "30 medidas de los núcleos de las células de 569 tumores: con dos grupos, k-means separa bastante bien los benignos de los malignos.",
+        "ecoli": "Siete puntuaciones de 336 proteínas y ocho lugares de la bacteria, algunos con dos o tres casos: esos grupos pequeños se pierden.",
+        "hepatitis-c": "Análisis de sangre de 589 personas: la pureza sale alta solo porque casi todos son donantes, pero el índice de Rand dice la verdad: los grupos no se parecen a los diagnósticos."
+      }
+    },
+    "clustering": {
+      "examples-title": "Listos para agrupar",
+      "examples-text": "Traen las clases reales, pero k-means no las usa: agrupa con las demás columnas y al final compara los grupos con ellas.",
+      "extra-text": "Otros conjuntos del proyecto para agrupar: con «Agrupar» se cargan como si los hubieras subido. No todos se parecen igual a sus clases, y eso también enseña algo.",
+      "run": "Agrupar"
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -330,7 +382,8 @@
         "title": "Descripción"
       },
       "query": "Consulta",
-      "link": "Consulta más información en el siguiente <link1>enlace</link1>"
+      "link": "Consulta más información en el siguiente <link1>enlace</link1>",
+      "column": "Columna"
     },
     "plot": {
       "link": "Consulta más información en el siguiente <link1>enlace</link1>"
@@ -1170,10 +1223,11 @@
         "process-webcam": {
           "title": "Reconocimiento en tiempo real",
           "sub-title": "Webcam",
-          "button": "Webcam"
+          "button": "Webcam",
+          "device": "Cámara"
         },
         "process-image": {
-          "title": "Procesamiento de images",
+          "title": "Procesamiento de imágenes",
           "sub-title": "Subida de imágenes"
         },
         "device-info": {
@@ -1594,12 +1648,39 @@
         "3-option-2": "MobileNet - Clasificación de imágenes",
         "3-option-3": "ResNet - Clasificación de imágenes",
         "3-option-4": "KMNIST - Clasificación de caracteres japoneses"
+      },
+      "resnet": {
+        "description": {
+          "text-0": "ResNet V2 es una familia de arquitecturas de redes para la clasificación de imágenes con un número variable de capas.",
+          "text-1": "Están basadas en la arquitectura ResNet original publicada por Kaiming He, Xiangyu Zhang, Shaoqing Ren y Jian Sun: <link1>«Deep Residual Learning for Image Recognition»</link1>, 2015.",
+          "text-2": "La variante «V2» que usa este modelo es de los mismos autores: <link1>«Identity Mappings in Deep Residual Networks»</link1>, 2016.",
+          "text-3": "La diferencia con ResNet V1 es que normaliza por lotes antes de cada capa con pesos. El modelo que se carga tiene 50 capas.",
+          "details-input": {
+            "title": "Datos de entrada",
+            "list": [
+              "Una imagen de <bold>224 × 224</bold> píxeles con los colores entre 0 y 1."
+            ]
+          },
+          "details-output": {
+            "title": "Datos de salida",
+            "list": [
+              "Un número del 0 al 1001: cada una de las categorías de esta <link1>lista</link1>."
+            ]
+          }
+        }
       }
     },
     "3-image-classification": {
       "list-datasets": {
         "mnist": "MNIST",
         "kmnist": "KMNIST"
+      }
+    },
+    "clustering": {
+      "list-datasets": {
+        "iris": "Flores iris (sin la especie)",
+        "wine": "Variedades de vino (sin la variedad)",
+        "new-thyroid": "Tiroides (sin el diagnóstico)"
       }
     }
   },
@@ -1823,7 +1904,8 @@
           "0": "Los gráficos de violín son una herramienta útil para visualizar y comparar distribuciones de datos.\nPermiten analizar la forma, dispersión, simetría y presencia de valores atípicos en los datos, y son especialmente útiles cuando se requiere la comparación entre múltiples grupos o categorías.\nSu representación gráfica atractiva y concisa los convierte en una herramienta efectiva para comunicar información compleja de manera comprensible."
         }
       }
-    }
+    },
+    "select-plot": "Tipo de gráfico"
   },
   "face-api": {
     "years": "Años",
@@ -1919,6 +2001,12 @@
       },
       "hero": {
         "text": "Nets4Learning es una plataforma web para aprender cómo funcionan las redes neuronales: eliges una tarea, diseñas la red, la entrenas y la pruebas, todo en el navegador y sin instalar nada. Está pensada para estudiantes y docentes."
+      },
+      "clustering": {
+        "1-title": "Agrupamiento",
+        "1-description-1": "Agrupa los datos sin decir qué es cada fila (aprendizaje no supervisado): k-means busca k grupos de filas parecidas entre sí.",
+        "1-description-2": "Verás cómo se forman los grupos paso a paso y, en los conjuntos que traen las clases reales, si los grupos se parecen a ellas aunque no las haya visto.",
+        "1-button": "Elegir un conjunto de datos"
       }
     },
     "contribute": {
@@ -2008,7 +2096,10 @@
       },
       "upload-text": "Sube tu propio conjunto de datos (CSV, ARFF, JSON, JSONL o Parquet) y prepáralo antes de entrenar.",
       "own-dataset": "Tu propio conjunto de datos",
-      "example-datasets": "Conjuntos de datos de ejemplo"
+      "example-datasets": "Conjuntos de datos de ejemplo",
+      "clustering": {
+        "csv": "Subir un CSV"
+      }
     },
     "menu-selection-model": {
       "form-description-1": "Selecciona a continuación el modelo entrenado con el que se va a trabajar.",
@@ -2180,7 +2271,8 @@
           "strides": "Strides",
           "strides-placeholder": "Introduce el strides de la capa",
           "pool-size": "Pool size",
-          "pool-size-placeholder": "Introduce el pool size de la capa"
+          "pool-size-placeholder": "Introduce el pool size de la capa",
+          "layer-class": "Tipo de capa"
         },
         "editor-feature-selector": {
           "title": "Selector de características",
@@ -2439,7 +2531,8 @@
           "error": "Error: {{value}} ({{percent}})",
           "input-details": "Entrada del modelo paso a paso",
           "choose-instance": "Elige una instancia del conjunto de datos para rellenar el formulario; después puedes cambiar sus valores.",
-          "no-models": "Este conjunto de datos no tiene ningún modelo preentrenado. Elige otro conjunto de datos o entrena tu propio modelo en el playground de regresión."
+          "no-models": "Este conjunto de datos no tiene ningún modelo preentrenado. Elige otro conjunto de datos o entrena tu propio modelo en el playground de regresión.",
+          "model-selector": "Modelo con el que predecir"
         },
         "model-selector": {
           "title": "Selector de modelos",
@@ -2574,6 +2667,60 @@
         "column-layer": "Capa {{layer}} · {{activation}}",
         "column-output": "Salida · {{activation}}",
         "update-rule": "w ← w − {{rate}} · gradiente"
+      },
+      "clustering": {
+        "intro": "k-means coloca k centroides, asigna cada fila al más cercano y mueve cada centroide al centro de sus filas, hasta que nadie cambia de grupo. No usa ninguna etiqueta: solo las columnas que elijas.",
+        "upload": "Sube tus datos",
+        "rows_one": "1 fila",
+        "rows_other": "{{count}} filas",
+        "features": "Columnas con las que se agrupa",
+        "features-help": "Solo las numéricas. Cuantas más, más difícil de imaginar, pero los grupos pueden ser mejores.",
+        "label": "Columna con las clases reales (opcional)",
+        "label-none": "Ninguna",
+        "label-help": "No se usa para agrupar: solo para comparar al final.",
+        "scale": "Escalar las columnas",
+        "scale-help": "Cada columna con media 0 y desviación 1: si no, las de valores grandes (p. ej. la prolina del vino) deciden solas.",
+        "k": "Número de grupos (k)",
+        "k-help": "Si no sabes cuántos hay, mira el codo después de agrupar.",
+        "run": "Agrupar",
+        "reseed": "Probar con otros centroides iniciales",
+        "waiting": "Elige las columnas y el número de grupos, y pulsa «Agrupar».",
+        "groups": "Grupos",
+        "iterations": "Iteraciones",
+        "inertia": "Inercia",
+        "silhouette": "Silueta",
+        "silhouette-good": "Silueta alta (más de 0,5): los grupos están bien separados.",
+        "silhouette-fair": "Silueta media (entre 0,25 y 0,5): hay grupos, pero se tocan entre sí.",
+        "silhouette-weak": "Silueta baja (menos de 0,25): los grupos apenas se distinguen; prueba con otro k u otras columnas.",
+        "scatter-title": "Los grupos",
+        "play": "Ver cómo se forman",
+        "pause": "Pausa",
+        "iteration": "Iteración {{number}}",
+        "scatter-help": "Cada punto es una fila; las cruces, los centroides. Para dibujarlos en 2D se proyectan con PCA (las dos direcciones en las que más varían los datos), pero k-means usa todas las columnas elegidas.",
+        "axis": "Componente {{number}} ({{variance}} de la varianza)",
+        "cluster": "Grupo {{number}}",
+        "centroids": "Centroides",
+        "comparison-title": "Grupos frente a las clases reales ({{column}})",
+        "comparison-help": "Cuántas filas de cada clase han caído en cada grupo y qué parte del grupo son. k-means no sabe qué es cada clase, así que los grupos no tienen nombre: la clase mayoritaria de cada uno dice a cuál se parece.",
+        "group": "Grupo",
+        "purity": "Pureza",
+        "ari": "Índice de Rand ajustado",
+        "elbow-title": "El codo",
+        "elbow-help": "La inercia baja siempre al subir k. El «codo», donde deja de bajar mucho, suele ser un buen número de grupos.",
+        "profiles-title": "Cómo es cada grupo",
+        "size": "Filas",
+        "profiles-help": "La media de cada columna en cada grupo, en sus unidades: sirve para ponerle nombre a cada grupo.",
+        "variable": "Variable",
+        "purity-help": "La parte de las filas que acertaría si cada grupo se llamara como su clase mayoritaria. Sube siempre al aumentar k: con un grupo por fila sería del 100 %.",
+        "ari-help": "Cuánto se parecen los grupos a las clases mirando parejas de filas: ¿las que van juntas en una clase van juntas en un grupo? 1 si son los mismos grupos y alrededor de 0 si se parecen como al azar. No sube solo por tener más grupos.",
+        "ari-high": "Los grupos son casi las mismas clases.",
+        "ari-medium": "Los grupos se parecen bastante a las clases, pero alguna se reparte o se mezcla.",
+        "ari-low": "Los grupos se parecen poco a las clases.",
+        "ari-none": "Los grupos no se parecen a las clases: como si fueran al azar.",
+        "majority": "Clase mayoritaria",
+        "mixed": "mezcla",
+        "total": "Total",
+        "comparison-legend": "Cuanto más intenso el fondo, mayor parte del grupo es de esa clase. «Mezcla»: ninguna clase llega a dos tercios del grupo."
       }
     },
     "dataframe": {
@@ -3306,7 +3453,11 @@
         "never-help": "Los modelos se descargan al abrir su página.",
         "now-save-data": "Ahora mismo, el navegador tiene activado el ahorro de datos.",
         "now-slow": "Ahora mismo, la conexión parece lenta.",
-        "now-normal": "Ahora mismo, ni hay ahorro de datos ni la conexión parece lenta (o el navegador no lo dice)."
+        "now-normal": "Ahora mismo, ni hay ahorro de datos ni la conexión parece lenta (o el navegador no lo dice).",
+        "offline_zero": "Lo que abras se guardará para poder usarlo sin conexión. Todavía no hay nada guardado.",
+        "offline_one": "Para usar sin conexión hay guardado 1 fichero ({{size}} MB): lo que ya has abierto funciona sin internet.",
+        "offline_other": "Para usar sin conexión hay guardados {{count}} ficheros ({{size}} MB): lo que ya has abierto funciona sin internet.",
+        "offline-delete": "Borrar lo guardado para usar sin conexión"
       },
       "speech": {
         "title": "Voz de las guías",
@@ -3455,6 +3606,31 @@
         "continue": "Llevas {{count}} de {{total}} pasos de <link1>Empieza aquí</link1>: sigue por donde ibas.",
         "finished": "Has completado <link1>Empieza aquí</link1>: ya puedes probar con tus propios datos."
       }
+    },
+    "regression-description": {
+      "title": "Regresión lineal",
+      "subtitle": "Descripción del problema y los modelos",
+      "paragraphs": [
+        "En el análisis de datos, un problema de regresión es aquel en el que se quiere predecir o estimar un valor numérico a partir de unas variables de entrada. La regresión lineal es un modelo matemático para hacer esa predicción.",
+        "Un modelo de regresión lineal es una técnica estadística que busca una relación lineal entre una variable de respuesta (o dependiente) y una o más variables predictoras (o independientes). Su objetivo es encontrar la recta que mejor se ajusta a los datos observados, para usarla después para predecir la variable de respuesta a partir de las predictoras.",
+        "El modelo representa esa relación con la ecuación de una recta: el valor de la variable de respuesta se estima como una combinación lineal de las predictoras. Sus coeficientes, los coeficientes de regresión, se calculan con técnicas estadísticas que buscan que la diferencia entre los valores observados y los predichos sea la menor posible.",
+        "Una vez ajustado, el modelo sirve para predecir la variable de respuesta cuando se conocen las predictoras. También permite ver cuánto contribuye cada variable predictora a explicar la variabilidad de la respuesta.",
+        "En resumen, los modelos de regresión lineal son herramientas estadísticas para predecir valores numéricos a partir de variables predictoras, con una relación lineal entre ellas. Son útiles en campos como la economía, la ciencia, la ingeniería o la investigación social."
+      ],
+      "example": "Supongamos que queremos predecir el precio de una casa (la variable de respuesta, $Y$) a partir de su tamaño en metros cuadrados (la variable predictora, $x$). La relación entre las dos se puede expresar con esta ecuación de regresión lineal:",
+      "where": "Donde:",
+      "terms": [
+        "$Y$ es el precio de la casa.",
+        "$x$ es el tamaño de la casa.",
+        "$\\beta_0$ es el intercepto: el valor de $Y$ cuando $x$ vale cero.",
+        "$\\beta_1$ es la pendiente de la recta: cuánto cambia el precio de la casa por cada metro cuadrado más.",
+        "$\\epsilon$ es el término de error: la variabilidad que el modelo no explica."
+      ],
+      "closing": [
+        "El objetivo de la regresión lineal es estimar $\\beta_0$ y $\\beta_1$ a partir de los datos observados, para obtener la recta que mejor se ajusta a los puntos del gráfico de dispersión.",
+        "Con el modelo ajustado se puede predecir el precio de una casa nueva a partir de su superficie: basta con sustituir $x$ en la ecuación y calcular $Y$.",
+        "Este ejemplo es un caso sencillo de regresión lineal simple: en la práctica, los modelos pueden tener muchas variables predictoras y tener en cuenta cómo se combinan entre ellas."
+      ]
     }
   },
   "generator": {
@@ -4715,5 +4891,23 @@
     "model-progress": "Descargando el modelo: {{loaded}} de {{total}} MB",
     "model-loaded": "Descargando el modelo: {{loaded}} MB",
     "model-help": "La primera vez puede tardar: el modelo se descarga de internet."
+  },
+  "report": {
+    "button": "Informe",
+    "title": "Informe de entrenamiento",
+    "created": "Creado el {{date}}",
+    "print": "Imprimir o guardar en PDF",
+    "back": "Volver al entrenamiento",
+    "network": "La red",
+    "hyperparameters": "Hiperparámetros",
+    "results": "Resultado del entrenamiento",
+    "results-caption": "Valores de la última época.",
+    "metric": "Métrica",
+    "uploaded": "Conjunto de datos subido",
+    "empty": "No hay ningún informe todavía: entrena un modelo y pulsa «Informe» en su fila de la tabla de modelos.",
+    "error-storage": "El navegador no deja guardar el informe (almacenamiento desactivado o lleno)."
+  },
+  "offline": {
+    "bar": "Sin conexión: puedes seguir usando lo que ya habías abierto; lo demás estará disponible al volver la conexión."
   }
 }

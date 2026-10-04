@@ -1,4 +1,4 @@
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 
 // 0 - 1 --> 0 - 100
 const DEFAULT_LEARNING_RATE = 0.01

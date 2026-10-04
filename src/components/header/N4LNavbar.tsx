@@ -1,11 +1,10 @@
-import "./N4LNavbar.css"
+import './N4LNavbar.css'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, useLocation } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
-import IconThemeLight from '@assets/sun.svg'
-import IconThemeDark from '@assets/moon.svg'
+import { Cpu, GpuCard, MoonStarsFill, SunFill, Translate } from 'react-bootstrap-icons'
 import IconGithub from '@assets/github.svg'
 import { changeUserLanguage, LANGUAGE_OPTIONS } from '@core/i18n/language'
 import { changeUserTheme, type Theme_t } from '@core/theme'
@@ -99,10 +98,14 @@ export default function N4LNavbar() {
   const currentLanguage = LANGUAGE_OPTIONS.find(({ language }) => i18n.resolvedLanguage === language)?.label ?? i18n.language
   // Título de los desplegables de ajustes: el ajuste y, solo en el menú del móvil y la tablet, su valor actual (en
   // escritorio, solo el nombre)
-  const settingTitle = (label: string, value: string) => <>
+  // Un ajuste: su icono (Bootstrap Icons, decorativo), su nombre y, en el menú del móvil, su valor
+  const settingTitle = (icon: React.ReactNode, label: string, value: string) => <>
+    <span className={'n4l-navbar-icon'} aria-hidden={true}>{icon}</span>
     {label}
     <span className={'n4l-navbar-value d-lg-none'}>{value}</span>
   </>
+  // El backend calcula en la tarjeta gráfica (WebGL, WebGPU) o en el procesador (WASM, CPU)
+  const backendIcon = (backend: TFBackend_t) => (backend === 'webgl' || backend === 'webgpu' ? <GpuCard /> : <Cpu />)
 
   return (
     <>
@@ -135,36 +138,26 @@ export default function N4LNavbar() {
                     </Nav.Item>
                   )
                 })}
-                {/*<Nav.Link onClick={() => handleClick_GoTo__PAGE__('/contribute/')}>*/}
-                {/*  <Trans i18nKey={'header.contribute'} />*/}
-                {/*</Nav.Link>*/}
-                {/*<Nav.Link onClick={() => handleClick_GoTo__PAGE__('/documentation/')}>*/}
-                {/*  <Trans i18nKey={'header.documentation'} />*/}
-                {/*</Nav.Link>*/}
               </Nav>
               <Nav className={'n4l-navbar-settings'}>
-                <NavDropdown align={'end'} title={settingTitle(t('header.language'), currentLanguage)} id="change-language-nav-dropdown">
+                <NavDropdown align={'end'} title={settingTitle(<Translate />, t('header.language'), currentLanguage)} id="change-language-nav-dropdown">
                   {LANGUAGE_OPTIONS.map(({ language, label }) => (
                     <NavDropdown.Item key={language} lang={language} active={i18n.language === language} onClick={() => changeUserLanguage(i18n, language)}>
                       {label}
                     </NavDropdown.Item>
                   ))}
                 </NavDropdown>
-                <NavDropdown align={'end'} title={settingTitle(t('header.theme'), t(theme === 'dark' ? 'header.theme-dark' : 'header.theme-light'))} id="change-theme-nav-dropdown">
+                <NavDropdown align={'end'} title={settingTitle(theme === 'dark' ? <MoonStarsFill /> : <SunFill />, t('header.theme'), t(theme === 'dark' ? 'header.theme-dark' : 'header.theme-light'))} id="change-theme-nav-dropdown">
                   <NavDropdown.Item active={theme === 'light'} onClick={() => handleClick_ChangeTheme('light')}>
-                    <span className={'me-2 n4l-icon-1rem'}>
-                      <IconThemeLight />
-                    </span>
+                    <span className={'n4l-navbar-icon'} aria-hidden={true}><SunFill /></span>
                     <Trans i18nKey={'header.theme-light'} />
                   </NavDropdown.Item>
                   <NavDropdown.Item active={theme === 'dark'} onClick={() => handleClick_ChangeTheme('dark')}>
-                    <span className={'me-2 n4l-icon-1rem'}>
-                      <IconThemeDark />
-                    </span>
+                    <span className={'n4l-navbar-icon'} aria-hidden={true}><MoonStarsFill /></span>
                     <Trans i18nKey={'header.theme-dark'} />
                   </NavDropdown.Item>
                 </NavDropdown>
-                <NavDropdown align={'end'} title={settingTitle(t('header.backend'), TF_BACKEND_LABELS[tfBackend])} id="change-tf-backend-nav-dropdown" onToggle={handleToggle_TFBackend}>
+                <NavDropdown align={'end'} title={settingTitle(backendIcon(tfBackend), t('header.backend'), TF_BACKEND_LABELS[tfBackend])} id="change-tf-backend-nav-dropdown" onToggle={handleToggle_TFBackend}>
                   {TF_BACKENDS.map((backend) => {
                     const isAvailable = isTFBackendAvailable(backend) && (backend !== 'webgpu' || webgpuAdapter !== null)
                     return (
@@ -172,6 +165,7 @@ export default function N4LNavbar() {
                         active={tfBackend === backend}
                         disabled={!isAvailable || isChangingTFBackend}
                         onClick={() => handleClick_ChangeTFBackend(backend)}>
+                        <span className={'n4l-navbar-icon'} aria-hidden={true}>{backendIcon(backend)}</span>
                         {TF_BACKEND_LABELS[backend]}
                         {backend === DEFAULT_TF_BACKEND && <small className={'ms-2 opacity-75'}>({t('header.backend-default')})</small>}
                         {!isAvailable && <small className={'ms-2'}>({t('header.backend-unavailable')})</small>}

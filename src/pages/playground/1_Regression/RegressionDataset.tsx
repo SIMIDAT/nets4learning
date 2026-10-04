@@ -7,10 +7,11 @@ import { useRegressionContext } from '@context/useRegressionContext'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import alertHelper from '@utils/alertHelper'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import type { DropEvent, FileRejection } from 'react-dropzone'
 import { DATASET_ACCEPT } from '@core/dataframe/datasetFormats'
+import { useProjectDatasetUpload } from '@hooks/useProjectDatasetUpload'
 
 type RegressionDatasetProps_t = {
   dataset: string
@@ -23,8 +24,6 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
     datasets,
     setDatasets,
 
-    // datasetLocal,
-    // setDatasetLocal,
 
     iModelInstance,
   } = useRegressionContext()
@@ -41,7 +40,6 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
       const _dataframeOriginal = await DataFrameReadCSV(file_csv)
       const _dataframeProcessed = await DataFrameReadCSV(file_csv)
 
-      /**@type {_Types.DatasetProcessed_t} */
       // Sin procesar: hasta pasar por el formulario de procesamiento no hay entradas ni objetivo, ni se puede entrenar
       // (antes se marcaba como procesado con todo vacío y el botón de entrenar se activaba)
       const newDataset: _Types.DatasetProcessed_t = {
@@ -66,16 +64,6 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
           index: datasets.data.length
         }
       })
-      // setIndexDatasetSelected(datasets.length)
-      // setDatasetLocal((prevState) => ({
-      //   ...prevState,
-      //   is_dataset_upload   : true,
-      //   is_dataset_processed: false,
-      //   dataframe_original  : _dataframeOriginal,
-      //   dataframe_processed : _dataframeProcessed,
-      //   container_info      : '',
-      //   csv                 : files[0].name,
-      // }))
       setShowDatasetInfo(true)
       await alertHelper.alertSuccess(t('alert.file-upload-success'))
     } catch (error) {
@@ -86,6 +74,9 @@ export default function RegressionDataset({ dataset }: RegressionDatasetProps_t)
   const handleChange_FileUpload_CSV_reject = (files: FileRejection[], _event: DropEvent) => {
     if (VERBOSE) console.debug({ files })
   }
+
+  // Desde «Entrenar» en /datasets (?dataset=wdbc): el CSV del proyecto, como si se hubiera arrastrado
+  useProjectDatasetUpload(TASKS.REGRESSION, dataset === UPLOAD, (files) => handleChange_FileUpload_CSV(files, {} as DropEvent))
 
   if (VERBOSE) console.debug('render RegressionDataset')
   return <>

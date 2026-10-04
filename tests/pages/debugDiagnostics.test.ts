@@ -45,9 +45,9 @@ describe('parseGraphicsFeatureStatus', () => {
   })
 
   test('del informe entero se queda solo con la sección "Graphics Feature Status"', () => {
-    const report = `Graphics Feature Status\n=======================\n*   WebGL: Hardware accelerated\n*   WebGPU: Disabled\n\n`
-      + `Problems Detected\n=================\n*   Accelerated video encode has been disabled: Disabled Features: video_encode\n\n`
-      + `Version Information\nData exported: 2026-10-01T12:00:00.000Z\nChrome version: Chrome/152.0.7977.82`
+    const report = 'Graphics Feature Status\n=======================\n*   WebGL: Hardware accelerated\n*   WebGPU: Disabled\n\n'
+      + 'Problems Detected\n=================\n*   Accelerated video encode has been disabled: Disabled Features: video_encode\n\n'
+      + 'Version Information\nData exported: 2026-10-01T12:00:00.000Z\nChrome version: Chrome/152.0.7977.82'
     expect(parseGraphicsFeatureStatus(report).map((p) => p.name)).toEqual(['WebGL', 'WebGPU'])
   })
 

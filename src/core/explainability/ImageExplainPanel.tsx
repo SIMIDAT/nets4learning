@@ -128,40 +128,47 @@ export function ShapImageControls({ idPrefix, options, onChange }: ShapImageCont
   const set = <K extends keyof ShapImageOptions_t>(key: K, value: ShapImageOptions_t[K]) =>
     onChange({ ...options, [key]: value })
 
+  const field = (key: 'gridSide' | 'nSamples' | 'maskRange', id: string, control: React.ReactNode) => (
+    <Col>
+      <Form.Group controlId={`${idPrefix}-${id}`}>
+        <Form.Label>{t('ui.explain.' + key)}</Form.Label>
+        {control}
+        <Form.Text className={'text-muted'}>{t('ui.explain.' + key + '-help')}</Form.Text>
+      </Form.Group>
+    </Col>
+  )
+
   return (
     <>
-      <Form.Group className="mb-2" controlId={`${idPrefix}-grid-side`}>
-        <Form.Label>{t('ui.explain.gridSide')}</Form.Label>
-        <Form.Control type="number" min={2} max={32} value={options.gridSide}
-                      onChange={(e) => set('gridSide', Number(e.target.value))} />
-      </Form.Group>
-      <Form.Group className="mb-2" controlId={`${idPrefix}-n-samples`}>
-        <Form.Label>{t('ui.explain.nSamples')}</Form.Label>
-        <Form.Control type="number" min={10} max={2000} step={10} value={options.nSamples}
-                      onChange={(e) => set('nSamples', Number(e.target.value))} />
-      </Form.Group>
-      <Form.Group className="mb-2" controlId={`${idPrefix}-mask`}>
-        <Form.Label>{t('ui.explain.maskRange')}</Form.Label>
-        <Form.Control type="number" min={0} max={1} step={0.05} value={options.maskValue}
-                      onChange={(e) => set('maskValue', Number(e.target.value))} />
-      </Form.Group>
-      <Form.Group className="mb-2" controlId={`${idPrefix}-blur`}>
-        <Form.Check type="checkbox" label={t('ui.blur.enable')} checked={options.blur}
-                    onChange={(e) => set('blur', e.target.checked)} />
+      <Row xs={1} md={3} className={'g-3 mb-3'}>
+        {field('gridSide', 'grid-side', <Form.Control type={'number'} min={2} max={32} value={options.gridSide}
+          onChange={(e) => set('gridSide', Number(e.target.value))} />)}
+        {field('nSamples', 'n-samples', <Form.Control type={'number'} min={10} max={2000} step={10} value={options.nSamples}
+          onChange={(e) => set('nSamples', Number(e.target.value))} />)}
+        {field('maskRange', 'mask', <Form.Control type={'number'} min={0} max={1} step={0.05} value={options.maskValue}
+          onChange={(e) => set('maskValue', Number(e.target.value))} />)}
+      </Row>
+      <Form.Group className={'mb-2'} controlId={`${idPrefix}-blur`}>
+        <Form.Check type={'checkbox'} label={t('ui.blur.enable')} checked={options.blur}
+          onChange={(e) => set('blur', e.target.checked)} />
       </Form.Group>
       {options.blur && (
-        <>
-          <Form.Group className="mb-2" controlId={`${idPrefix}-blur-kernel`}>
-            <Form.Label>{t('ui.blur.kernelSize')}</Form.Label>
-            <Form.Control type="number" min={3} max={101} step={2} value={options.blurKernelSize}
-                          onChange={(e) => set('blurKernelSize', Number(e.target.value))} />
-          </Form.Group>
-          <Form.Group className="mb-2" controlId={`${idPrefix}-blur-passes`}>
-            <Form.Label>{t('ui.blur.passes')}</Form.Label>
-            <Form.Control type="number" min={1} max={6} value={options.blurPasses}
-                          onChange={(e) => set('blurPasses', Number(e.target.value))} />
-          </Form.Group>
-        </>
+        <Row xs={1} md={3} className={'g-3 mb-2'}>
+          <Col>
+            <Form.Group controlId={`${idPrefix}-blur-kernel`}>
+              <Form.Label>{t('ui.blur.kernelSize')}</Form.Label>
+              <Form.Control type={'number'} min={3} max={101} step={2} value={options.blurKernelSize}
+                onChange={(e) => set('blurKernelSize', Number(e.target.value))} />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId={`${idPrefix}-blur-passes`}>
+              <Form.Label>{t('ui.blur.passes')}</Form.Label>
+              <Form.Control type={'number'} min={1} max={6} value={options.blurPasses}
+                onChange={(e) => set('blurPasses', Number(e.target.value))} />
+            </Form.Group>
+          </Col>
+        </Row>
       )}
     </>
   )

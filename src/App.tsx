@@ -11,6 +11,7 @@ import { readConsent, startAnalytics } from '@core/analytics'
 import { startupTFBackend } from '@core/tfBackend'
 import { trackLearningPath } from '@core/learning/learningPath'
 import N4LLearningToast from './components/learning/N4LLearningToast'
+import N4LOfflineBar from './components/offline/N4LOfflineBar'
 
 import './ConfigChartJS'
 
@@ -29,6 +30,7 @@ const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
 const PageSettings = lazy(() => import( './pages/settings/Settings'))
 const PageLearn = lazy(() => import( './pages/learn/Learn'))
+const PageReport = lazy(() => import( './pages/report/TrainingReport'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
 // /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
 const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
@@ -69,6 +71,7 @@ function App() {
         <Suspense fallback={''}>
           <N4LNavbar />
         </Suspense>
+        <N4LOfflineBar />
         <Suspense fallback={<Loading />}>
           <TFBackendReady>
             <Routes>
@@ -87,6 +90,7 @@ function App() {
               <Route path={'/version'} element={<PageVersion />}></Route>
               <Route path={'/settings'} element={<PageSettings />}></Route>
               <Route path={'/learn'} element={<PageLearn />}></Route>
+              <Route path={'/report'} element={<PageReport />}></Route>
 
               {SHOW_DEV_PAGES && <>
                 <Route path={'/debug'} element={<PageDebug />}></Route>

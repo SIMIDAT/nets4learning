@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest'
 import { checkDenseLayers, checkImageLayers, imageLayerShapes } from '@core/nn-utils/checkLayers'
 import { buildImageModel } from '@core/training/buildModels'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 
 type Dense_t = { units: number, activation: string | null }
 const kinds = (issues: { kind: string }[]) => issues.map(({ kind }) => kind)
@@ -46,15 +46,15 @@ describe('checkDenseLayers: capas de clasificación tabular y regresión', () =>
 })
 
 describe('checkImageLayers: la red de imágenes, siguiendo el tamaño de los datos capa a capa', () => {
-  const conv = (kernelSize = 3, filters = 8): Layer_t => ({ _class: 'conv2d', kernelSize, filters, activation: 'relu' })
-  const pool = (poolSize = 2, strides = 2): Layer_t => ({ _class: 'maxPooling2d', poolSize, strides })
-  const flatten: Layer_t = { _class: 'flatten' }
-  const dense = (units: number, activation = 'relu'): Layer_t => ({ _class: 'dense', units, activation })
-  const first: Layer_t = { ...conv(), _protected: true, inputShape: [28, 28, 1] }
+  const conv = (kernelSize = 3, filters = 8): ImageLayer_t => ({ _class: 'conv2d', kernelSize, filters, activation: 'relu' })
+  const pool = (poolSize = 2, strides = 2): ImageLayer_t => ({ _class: 'maxPooling2d', poolSize, strides })
+  const flatten: ImageLayer_t = { _class: 'flatten' }
+  const dense = (units: number, activation = 'relu'): ImageLayer_t => ({ _class: 'dense', units, activation })
+  const first: ImageLayer_t = { ...conv(), _protected: true, inputShape: [28, 28, 1] }
   const good = [first, pool(), conv(), pool(), flatten, dense(32), dense(10, 'softmax')]
 
   // El arreglo vale de verdad: tfjs construye la red y da una salida por clase
-  const builds = (layers: Layer_t[]) => expect(buildImageModel(layers).outputs[0].shape).toEqual([null, 10])
+  const builds = (layers: ImageLayer_t[]) => expect(buildImageModel(layers).outputs[0].shape).toEqual([null, 10])
 
   test('la red por defecto está bien y se construye', () => {
     expect(checkImageLayers(good, 10)).toEqual([])
@@ -110,7 +110,7 @@ describe('checkImageLayers: la red de imágenes, siguiendo el tamaño de los dat
 
 describe('imageLayerShapes: el tamaño de los datos y los pesos de cada capa', () => {
   test('la red por defecto de MNIST: 28×28×1 → … → 10, con los mismos pesos que cuenta tfjs', () => {
-    const layers: Layer_t[] = [
+    const layers: ImageLayer_t[] = [
       { _class: 'conv2d', _protected: true, inputShape: [28, 28, 1], kernelSize: 3, filters: 16, activation: 'relu' },
       { _class: 'maxPooling2d', poolSize: 2, strides: 2 },
       { _class: 'conv2d', kernelSize: 3, filters: 32, activation: 'relu' },

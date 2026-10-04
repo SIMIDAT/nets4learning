@@ -1,5 +1,7 @@
 import type { TFunction } from 'i18next'
 
+import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
+
 /** Lo que se describe de una capa; vale para las dense (tabular, regresión) y las de imágenes */
 export type DrawableLayer_t = {
   _class?    : string
@@ -36,4 +38,10 @@ export function layerSummaryParts(t: TFunction, layer: DrawableLayer_t): string[
 /** Todas las capas en una línea (para comparar modelos): «Dense · 10 neuronas · relu → Dense · 3 neuronas · softmax» */
 export function layersSummary(t: TFunction, layers: DrawableLayer_t[]): string {
   return layers.map((layer) => layerSummaryParts(t, layer).join(' · ')).join(' → ')
+}
+
+/** Una capa dense en la cabecera de su editor: «10 neuronas · ReLU» (sin activación, ReLU, como el selector) */
+export function denseLayerSummary(t: TFunction, { units, activation }: { units: number, activation: string | null }): string {
+  const key = activation || 'relu'
+  return `${t('neural-network.units', { units })} · ${TYPE_ACTIVATION.find((option) => option.key === key)?.label ?? key}`
 }

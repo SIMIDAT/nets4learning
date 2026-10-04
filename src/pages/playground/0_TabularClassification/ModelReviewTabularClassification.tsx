@@ -1,41 +1,42 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
-import { useNavigate } from "react-router"
-import { Trans, useTranslation } from "react-i18next"
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap"
-import * as tfjs from "@tensorflow/tfjs"
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { Trans, useTranslation } from 'react-i18next'
+import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import * as tfjs from '@tensorflow/tfjs'
 
-import alertHelper from "@utils/alertHelper"
-import type I_MODEL_TABULAR_CLASSIFICATION from "./models/_model"
-import type { TabularInstance_t } from "./models/_model"
-import { VERBOSE } from "@/CONSTANTS"
-import { UPLOAD } from "@/TASKS"
-import { MAP_TC_CLASSES } from "@pages/playground/0_TabularClassification/models"
-import { createReviewModelInstance } from "@core/models/createReviewModelInstance"
-import ModelReviewTabularClassificationDataset from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDataset"
-import ModelReviewTabularClassificationPredict from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredict"
-import ModelReviewTabularClassificationPredictForm from "@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm"
-import * as DataFrameUtils from "@core/dataframe/DataFrameUtils"
-import type { BasicPrediction_t, DatasetProcessed_t } from "@core/types"
-import TabularShapPanel from "@core/explainability/TabularShapPanel"
-import N4LModelSummaryButton from "@components/neural-network/N4LModelSummaryButton"
-import N4LVirtualSelect, { type VirtualSelectOption_t } from "@components/select/N4LVirtualSelect"
-import N4LGuide from "@components/guide/N4LGuide"
-import N4LDownloadProgress from "@components/loading/N4LDownloadProgress"
-import { trackDownloads } from "@core/downloadProgress"
-import { dataframeRowsToNumbers, formatFeatureName } from "@core/explainability/shapSampling"
-import { trackEvent } from "@core/analytics"
-import { tabularReviewGuide } from "./modelReviewGuide"
-import N4LStepByStep from "@components/neural-network/stepByStep/N4LStepByStep"
-import { useStepByStepEnabled } from "@components/neural-network/stepByStep/stepByStepSetting"
-import { usePretrainedNetwork } from "@components/neural-network/stepByStep/usePretrainedNetwork"
-import { PRETRAINED_LEARNING_RATE } from "@core/nn-utils/stepByStep"
+import alertHelper from '@utils/alertHelper'
+import type I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
+import type { TabularInstance_t } from './models/_model'
+import { VERBOSE } from '@/CONSTANTS'
+import { UPLOAD } from '@/TASKS'
+import { MAP_TC_CLASSES } from '@pages/playground/0_TabularClassification/models'
+import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
+import ModelReviewTabularClassificationDataset from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationDataset'
+import ModelReviewTabularClassificationPredict from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredict'
+import ModelReviewTabularClassificationPredictForm from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm'
+import * as DataFrameUtils from '@core/dataframe/DataFrameUtils'
+import type { BasicPrediction_t, DatasetProcessed_t } from '@core/types'
+import TabularShapPanel from '@core/explainability/TabularShapPanel'
+import N4LModelSummaryButton from '@components/neural-network/N4LModelSummaryButton'
+import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LModelCard from '@components/neural-network/N4LModelCard'
+import N4LModelAside from '@components/neural-network/N4LModelAside'
+import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
+import { trackDownloads } from '@core/downloadProgress'
+import { dataframeRowsToNumbers, formatFeatureName } from '@core/explainability/shapSampling'
+import { trackEvent } from '@core/analytics'
+import { tabularReviewGuide } from './modelReviewGuide'
+import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
+import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
+import { usePretrainedNetwork } from '@components/neural-network/stepByStep/usePretrainedNetwork'
+import { PRETRAINED_LEARNING_RATE } from '@core/nn-utils/stepByStep'
 type Props = {
   dataset: string
 }
 export default function ModelReviewTabularClassification(props: Props) {
   const { dataset } = props
 
-  //const prefix = 'pages.playground.0-tabular-classification'
   const { t } = useTranslation()
   const navigate = useNavigate()
 
@@ -71,14 +72,14 @@ export default function ModelReviewTabularClassification(props: Props) {
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
 
   useEffect(() => {
-    if (VERBOSE) console.debug("useEffect [dataToPredict]")
+    if (VERBOSE) console.debug('useEffect [dataToPredict]')
     // TODO encoders to dataToPredict
     const init = async () => {
       // Hasta que termina la carga no hay datos que codificar (los encoders fallan con valores vacíos)
       if (iModelInstance === null || Object.keys(dataToPredict).length === 0) return
       const datasets = await iModelInstance.DATASETS()
       if (datasets.length === 0 || !datasets[0].data_processed) {
-        console.warn("Error, datasets is empty")
+        console.warn('Error, datasets is empty')
         return
       }
       const _vectorValuesEncoders = DataFrameUtils.DataFrameApplyEncoders(
@@ -93,7 +94,7 @@ export default function ModelReviewTabularClassification(props: Props) {
 
 
   useEffect(() => {
-    if (VERBOSE) console.debug("useEffect[init]")
+    if (VERBOSE) console.debug('useEffect[init]')
     const init = async () => {
       const _iModelInstance = await createReviewModelInstance(MAP_TC_CLASSES, dataset, (ModelClass) => new ModelClass(t, () => {}), navigate)
       if (_iModelInstance === null) return
@@ -107,7 +108,7 @@ export default function ModelReviewTabularClassification(props: Props) {
         setModel(_model)
         setDataToPredict(_iModelInstance.DATA_DEFAULT)
         if (!_datasets.length || !_datasets[0].data_processed) {
-          console.warn("No datasets available.")
+          console.warn('No datasets available.')
           return
         }
         const encoders = _datasets[0].data_processed.encoders
@@ -125,14 +126,14 @@ export default function ModelReviewTabularClassification(props: Props) {
         })
         setIsLoading(false)
         setIsButtonToPredictDisabled(false)
-        await alertHelper.alertSuccess(t("model-loaded-successfully"))
+        await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } catch (e) {
         console.error("Error, can't load model", { e })
       }
     }
 
     init().then((_r) => {
-      if (VERBOSE) console.debug("init end")
+      if (VERBOSE) console.debug('init end')
     })
   }, [dataset, navigate, t])
 
@@ -140,16 +141,16 @@ export default function ModelReviewTabularClassification(props: Props) {
     e.preventDefault()
     setIsButtonToPredictDisabled(true)
     if (vectorToPredict === undefined || vectorToPredict.length < 1) {
-      await alertHelper.alertInfo(t("info.insert-input"))
+      await alertHelper.alertInfo(t('info.insert-input'))
       setIsButtonToPredictDisabled(false)
       return
     }
     if (model === null) {
-      console.error("Error, model is null")
+      console.error('Error, model is null')
       return
     }
     if (iModelInstance === null) {
-      console.error("Error, model instance is null")
+      console.error('Error, model instance is null')
       return
     }
 
@@ -167,7 +168,7 @@ export default function ModelReviewTabularClassification(props: Props) {
       trackEvent('predict', { input: 'form' })
     } catch (error) {
       console.error(error)
-      await alertHelper.alertError(t("error.prediction"))
+      await alertHelper.alertError(t('error.prediction'))
     }
 
     setIsButtonToPredictDisabled(false)
@@ -206,7 +207,7 @@ export default function ModelReviewTabularClassification(props: Props) {
     }
     const examples = iModelInstance.LIST_EXAMPLES.map((_example, index) => ({
       value: -(index + 1),
-      label: `★ ${t("example-i", { i: classText(iModelInstance.LIST_EXAMPLES_RESULTS[index]) })}`,
+      label: `★ ${t('example-i', { i: classText(iModelInstance.LIST_EXAMPLES_RESULTS[index]) })}`,
     }))
     const targets = targetColumn ? datasetProcessed?.dataframe_original[targetColumn].values as unknown[] : []
     const rows = (targets ?? []).map((target, index) => ({ value: index, label: `#${index} · ${classText(target)}` }))
@@ -254,22 +255,14 @@ export default function ModelReviewTabularClassification(props: Props) {
     ? null
     : tabularReviewGuide(t, dataset, iModelInstance.FORM.map(({ name }) => name), stepByStep)), [t, dataset, iModelInstance, stepByStep])
 
-  if (VERBOSE) console.debug("render ModelReviewTabularClassification")
+  if (VERBOSE) console.debug('render ModelReviewTabularClassification')
   return (
     <>
       <Container className={'n4l-container-wide'}>
-        <Row className={"mt-2"}>
-          <Col xl={12}>
-            <div className="d-flex justify-content-between">
-              <h1>
-                <Trans i18nKey={"modality.0"} />
-              </h1>
-            </div>
-          </Col>
-        </Row>
+        <N4LPageHeader title={<Trans i18nKey={'modality.0'} />} guideId={'tabular-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
       </Container>
 
-      <Container className={'n4l-container-wide'} id={"ModelReviewTabularClassification"} data-testid={"Test-ModelReviewTabularClassification"}>
+      <Container className={'n4l-container-wide'} id={'ModelReviewTabularClassification'} data-testid={'Test-ModelReviewTabularClassification'}>
         <Row>
           <Col>
             <N4LDownloadProgress isLoading={isLoading} />
@@ -277,48 +270,39 @@ export default function ModelReviewTabularClassification(props: Props) {
         </Row>
         {iModelInstance !== null && model !== null && <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <Card className={"sticky-top mt-3 border-info"} style={{ zIndex: 0 }} data-guide={"model"}>
-              <Card.Header>
-                <h2>
-                  <Trans i18nKey={"pages.playground.0-tabular-classification.general.model"} />
-                </h2>
-              </Card.Header>
-              <Card.Body>
-                {guideSteps !== null && <N4LGuide id={"tabular-classification." + dataset} steps={guideSteps} />}
-                <N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />
-                <Card.Title>
-                  <Trans i18nKey={iModelInstance.TITLE} />
-                </Card.Title>
+            <N4LModelAside>
+              <N4LModelCard title={<Trans i18nKey={iModelInstance.TITLE} />}
+                actions={<N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />}>
                 {iModelInstance.DESCRIPTION()}
-              </Card.Body>
-            </Card>
+              </N4LModelCard>
+            </N4LModelAside>
           </Col>
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             <ModelReviewTabularClassificationDataset iModelInstance={iModelInstance} />
 
-            <Card className={"mt-3"}>
-              <Card.Header className={"d-flex align-items-center justify-content-between"}>
+            <Card className={'mt-3'}>
+              <Card.Header className={'d-flex align-items-center justify-content-between'}>
                 <h3>
-                  <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-features"} />
+                  <Trans i18nKey={'pages.playground.0-tabular-classification.general.description-features'} />
                 </h3>
-                <div className={"n4l-card-header-controls n4l-instance-select"} data-guide={"instances"}>
+                <div className={'n4l-card-header-controls n4l-instance-select'} data-guide={'instances'}>
                   <N4LVirtualSelect options={instanceOptions}
                     value={instanceMatches ? selectedInstance : null}
                     onChange={handleChange_Instance}
-                    size={"sm"}
-                    placeholder={t("example-custom")}
-                    searchPlaceholder={t("pages.playground.generator.dynamic-form-dataset.search-entity")}
-                    noResultsText={t("pages.playground.generator.dynamic-form-dataset.no-entity")}
-                    countText={(shown, total) => t("pages.playground.generator.dynamic-form-dataset.entity-count", { shown, total })} />
+                    size={'sm'}
+                    placeholder={t('example-custom')}
+                    searchPlaceholder={t('pages.playground.generator.dynamic-form-dataset.search-entity')}
+                    noResultsText={t('pages.playground.generator.dynamic-form-dataset.no-entity')}
+                    countText={(shown, total) => t('pages.playground.generator.dynamic-form-dataset.entity-count', { shown, total })} />
                 </div>
               </Card.Header>
               <Card.Body>
                 {/* Qué valores pide el formulario (antes iba en una tarjeta aparte, "Descripción de la entrada de datos") */}
                 {dataset === UPLOAD
                   ? <p>
-                    <Trans i18nKey={"datasets-models.0-tabular-classification.upload.html-example.text"} /><br />
-                    <b><Trans i18nKey={"datasets-models.0-tabular-classification.upload.html-example.items"} /></b>
+                    <Trans i18nKey={'datasets-models.0-tabular-classification.upload.html-example.text'} /><br />
+                    <b><Trans i18nKey={'datasets-models.0-tabular-classification.upload.html-example.items'} /></b>
                   </p>
                   : iModelInstance.HTML_EXAMPLE()}
                 <Form onSubmit={handleSubmit_PredictVector}>
@@ -327,36 +311,36 @@ export default function ModelReviewTabularClassification(props: Props) {
                     dataToTest={dataToPredict}
                     setDataToTest={setDataToPredict}
                   />
-                  <Row className={"mt-3"} data-guide={"vector"}>
+                  <Row className={'mt-3'} data-guide={'vector'}>
                     <Col>
-                      <Form.Group controlId={"formInputData"}>
+                      <Form.Group controlId={'formInputData'}>
                         <Form.Label>
-                          <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-data"} />
+                          <Trans i18nKey={'pages.playground.0-tabular-classification.general.description-data'} />
                         </Form.Label>
-                        <Form.Control size={"sm"} disabled={true} value={Object.values(dataToPredict).join(",")} />
+                        <Form.Control size={'sm'} disabled={true} value={Object.values(dataToPredict).join(',')} />
                         <Form.Text className="text-muted">
-                          <Trans i18nKey={"pages.playground.form.data-to-check"} />
+                          <Trans i18nKey={'pages.playground.form.data-to-check'} />
                         </Form.Text>
                       </Form.Group>
                     </Col>
                     <Col>
-                      <Form.Group controlId={"formInputVector"}>
+                      <Form.Group controlId={'formInputVector'}>
                         <Form.Label>
-                          <Trans i18nKey={"pages.playground.0-tabular-classification.general.description-vector"} />
+                          <Trans i18nKey={'pages.playground.0-tabular-classification.general.description-vector'} />
                         </Form.Label>
-                        <Form.Control size={"sm"} disabled={true} value={vectorToPredict.join(",")} />
+                        <Form.Control size={'sm'} disabled={true} value={vectorToPredict.join(',')} />
                         <Form.Text className="text-muted">
-                          <Trans i18nKey={"pages.playground.form.vector-to-check"} />
+                          <Trans i18nKey={'pages.playground.form.vector-to-check'} />
                         </Form.Text>
                       </Form.Group>
                     </Col>
                   </Row>
                   {/*<Row><Col><pre>[[{vectorToPredict.join(',')}], [1, {vectorToPredict.length}]]</pre></Col></Row>*/}
-                  <Row className={"mt-3"}>
+                  <Row className={'mt-3'}>
                     <Col>
-                      <div className="d-grid gap-2" data-guide={"classify"}>
-                        <Button variant={"primary"} size={"lg"} type={"submit"} disabled={isButtonToPredictDisabled}>
-                          <Trans i18nKey={"pages.playground.generator.dynamic-form-dataset.classify-button"} />
+                      <div className="d-grid gap-2" data-guide={'classify'}>
+                        <Button variant={'primary'} size={'lg'} type={'submit'} disabled={isButtonToPredictDisabled}>
+                          <Trans i18nKey={'pages.playground.generator.dynamic-form-dataset.classify-button'} />
                         </Button>
                       </div>
                     </Col>
@@ -380,8 +364,8 @@ export default function ModelReviewTabularClassification(props: Props) {
             />
 
             {stepByStep && stepNetwork !== undefined && (
-              <div className={"mt-3"} data-guide={"step-by-step"}>
-                <N4LStepByStep kind={"classification"} initialNetwork={stepNetwork} X={stepData?.X ?? []} y={stepData?.y ?? []} rowNumbers={stepData?.rows}
+              <div className={'mt-3'} data-guide={'step-by-step'}>
+                <N4LStepByStep kind={'classification'} initialNetwork={stepNetwork} X={stepData?.X ?? []} y={stepData?.y ?? []} rowNumbers={stepData?.rows}
                   featureNames={stepData?.features ?? []} outputNames={stepData?.classes ?? []} learningRate={PRETRAINED_LEARNING_RATE} />
               </div>
             )}

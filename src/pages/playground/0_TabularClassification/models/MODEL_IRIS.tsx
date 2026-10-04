@@ -112,7 +112,6 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
     const iris_container_info = await dataset_promise_info.text()
     const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + iris_csv)
     let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + iris_csv)
-    /** @type {_Types.Dataset_t} */
     const dataset: _Types.Dataset_t = [
       { column_name: 'sepal length', column_role: 'Feature', column_type: 'Continuous', column_missing_values: false },
       { column_name: 'sepal width', column_role: 'Feature', column_type: 'Continuous', column_missing_values: false },
@@ -120,7 +119,6 @@ export default class MODEL_IRIS extends I_MODEL_TABULAR_CLASSIFICATION {
       { column_name: 'petal width', column_role: 'Feature', column_type: 'Continuous', column_missing_values: false },
       { column_name: 'class', column_role: 'Target', column_type: 'Categorical', column_missing_values: false },
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const dataset_transforms = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder)
       // { column_transform: 'label-encoder', column_name: 'class' },

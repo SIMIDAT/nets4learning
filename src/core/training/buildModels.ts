@@ -2,7 +2,7 @@ import * as tfjs from '@tensorflow/tfjs'
 import { createLoss, createMetrics, createOptimizer } from '@core/nn-utils/ArchitectureHelper'
 import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 import type * as _Types from '@core/types'
 
 // Construcción de las redes de los tres entrenadores. Sin DOM ni avisos: la usan igual el worker de entrenamiento y el
@@ -37,7 +37,7 @@ export function buildDenseModel(layerList: DenseLayer_t[], inputSize: number): t
 }
 
 /** Red convolucional (clasificación de imágenes de 28×28) */
-export function buildImageModel(layerList: Layer_t[]): tfjs.Sequential {
+export function buildImageModel(layerList: ImageLayer_t[]): tfjs.Sequential {
   const model = tfjs.sequential()
   for (const [index, layer] of layerList.entries()) {
     const activation = layer.activation ?? undefined

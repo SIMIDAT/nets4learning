@@ -137,7 +137,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
           <div>
             <Form.Group controlId={'model-selector'}>
               <Form.Select
-                aria-label={'model-selector'}
+                aria-label={t(prefix + 'model-selector')}
                 size={'sm'}
                 data-value={listModels.index}
                 value={listModels.index}

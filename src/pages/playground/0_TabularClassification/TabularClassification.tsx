@@ -24,18 +24,17 @@ import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
 import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
-import { layerIssueText } from '@components/neural-network/layerCheckText'
 import { checkDenseLayers } from '@core/nn-utils/checkLayers'
 import { historyFromData } from '@core/training/modelStore'
 import { reportTrainResult } from '@core/training/trainResult'
 import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
-import N4LSessionButtons from '@components/session/N4LSessionButtons'
-import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
 import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
 import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
-import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
-import { useSharedSession } from '@hooks/useSharedSession'
+import type { TrainingSession_t } from '@core/session/trainingSession'
+import { useTrainerSession } from '@hooks/useTrainerSession'
+import { layersAreValid } from '@components/neural-network/alertLayerError'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
@@ -157,10 +156,7 @@ export default function TabularClassification(props: Props) {
     setModel(null)
   }
 
-  // region SESIÓN: exportar e importar capas e hiperparámetros
-  // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
-  const [sessionVersion, setSessionVersion] = useState(0)
-
+  // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
   const currentSession = (): TrainingSession_t => ({
     app            : 'nets4learning',
     version        : 1,
@@ -170,24 +166,17 @@ export default function TabularClassification(props: Props) {
     hyperparameters: { learningRate, epochs: numberEpochs, testSize, optimizer: idOptimizer, loss: idLoss, metrics: [idMetrics] },
   })
 
-  const handleImport_Session = async (text: string) => {
-    try {
-      const { layers: importedLayers, hyperparameters: h } = parseSession(text, TASKS.TABULAR_CLASSIFICATION)
-      setLayers(importedLayers.map((layer) => ({ _class: 'dense', units: Number(layer.units), activation: String(layer.activation ?? 'relu') })))
-      setLearningRate(h.learningRate)
-      setNumberEpochs(h.epochs)
-      setTestSize(h.testSize)
-      setIdOptimizer(h.optimizer as IdOptimizer_t)
-      setIdLoss(h.loss as IdLoss_t)
-      setIdMetrics((h.metrics[0] ?? idMetrics) as IdMetric_t)
-      setSessionVersion((version) => version + 1)
-      await alertHelper.alertSuccess(t('session.imported'))
-    } catch (error) {
-      await alertHelper.alertError(t(error instanceof SessionError ? error.i18nKey : 'session.error-not-session'))
-    }
+  const applySession = ({ layers: importedLayers, hyperparameters: h }: TrainingSession_t) => {
+    setLayers(importedLayers.map((layer) => ({ _class: 'dense', units: Number(layer.units), activation: String(layer.activation ?? 'relu') })))
+    setLearningRate(h.learningRate)
+    setNumberEpochs(h.epochs)
+    setTestSize(h.testSize)
+    setIdOptimizer(h.optimizer as IdOptimizer_t)
+    setIdLoss(h.loss as IdLoss_t)
+    setIdMetrics((h.metrics[0] ?? idMetrics) as IdMetric_t)
   }
-  // La de un enlace compartido, cuando ya están los datos (antes, la página pone sus capas por defecto)
-  useSharedSession(datasets.datasets.length > 0, handleImport_Session)
+  // Lista cuando ya están los datos: antes, la página pone sus capas por defecto
+  const { sessionVersion, importSession } = useTrainerSession(TASKS.TABULAR_CLASSIFICATION, datasets.datasets.length > 0, applySession)
   // endregion
   // Secciones de la página en orden: numeran los separadores (N4LDivider)
   // Paso a paso solo si se ha activado en /settings
@@ -249,11 +238,7 @@ export default function TabularClassification(props: Props) {
     }
 
     // Lo que está mal en las capas (la salida con tantas neuronas como clases, unidades válidas…) impide entrenar
-    const layerError = checkDenseLayers(layers, { units: data_processed.classes.length, activation: 'softmax' }).find(({ severity }) => severity === 'error')
-    if (layerError) {
-      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
-      return
-    }
+    if (!(await layersAreValid(t, checkDenseLayers(layers, { units: data_processed.classes.length, activation: 'softmax' })))) return
 
     try {
       setIsTraining(true)
@@ -278,7 +263,6 @@ export default function TabularClassification(props: Props) {
         idMetrics        : _idMetrics,
         ...training.callbacks,
       })
-      /**@type {_Types.TabularClassificationGeneratedModel_t} */
       const newModel: _Types.TabularClassificationGeneratedModel_t = {
         model        : model,
         history      : history,
@@ -366,19 +350,8 @@ export default function TabularClassification(props: Props) {
   return (
     <>
       <N4LSectionLayout steps={steps} className={'mb-3'}>
-        <Row className={'mt-3 mb-3'}>
-          <Col xl={12}>
-            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <h1><Trans i18nKey={'modality.0'} /></h1>
-              <div className={'d-flex flex-wrap gap-2'}>
-                <N4LGuide id={'train.tabular-classification.' + dataset} steps={guideSteps} compact={true} />
-                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        <N4LPageHeader title={<Trans i18nKey={'modality.0'} />} guideId={'train.tabular-classification.' + dataset} guideSteps={guideSteps}
+          getSession={currentSession} onImport={importSession} />
 
         {/* INFORMATION */}
         <N4LDivider i18nKey={'hr.information'} steps={steps} />

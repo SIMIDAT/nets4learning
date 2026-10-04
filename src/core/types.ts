@@ -1,15 +1,15 @@
-import type * as _dfd from "danfojs"
-import type * as _tfjs from "@tensorflow/tfjs"
-import type _I_MODEL_TABULAR_CLASSIFICATION from "@pages/playground/0_TabularClassification/models/_model"
-import type _I_MODEL_REGRESSION from "@pages/playground/1_Regression/models/_model"
-import type _I_MODEL_OBJECT_DETECTION from "@pages/playground/2_ObjectDetection/models/_model"
-import type _I_MODEL_IMAGE_CLASSIFICATION from "@pages/playground/3_ImageClassification/models/_model"
-import type MODEL_IRIS from "@pages/playground/0_TabularClassification/models/MODEL_IRIS"
-import type MODEL_CAR from "@pages/playground/0_TabularClassification/models/MODEL_CAR"
-import type MODEL_LYMPHOGRAPHY from "@pages/playground/0_TabularClassification/models/MODEL_LYMPHOGRAPHY"
-import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from "@/types/nn-types"
+import type * as _dfd from 'danfojs'
+import type * as _tfjs from '@tensorflow/tfjs'
+import type _I_MODEL_TABULAR_CLASSIFICATION from '@pages/playground/0_TabularClassification/models/_model'
+import type _I_MODEL_REGRESSION from '@pages/playground/1_Regression/models/_model'
+import type _I_MODEL_OBJECT_DETECTION from '@pages/playground/2_ObjectDetection/models/_model'
+import type _I_MODEL_IMAGE_CLASSIFICATION from '@pages/playground/3_ImageClassification/models/_model'
+import type MODEL_IRIS from '@pages/playground/0_TabularClassification/models/MODEL_IRIS'
+import type MODEL_CAR from '@pages/playground/0_TabularClassification/models/MODEL_CAR'
+import type MODEL_LYMPHOGRAPHY from '@pages/playground/0_TabularClassification/models/MODEL_LYMPHOGRAPHY'
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 // Capas de clasificación de imágenes (conv2d, maxPooling2d, flatten, dense): distinto de Layer_t, que son capas dense
-import type { Layer_t as ImageLayer_t } from "@/types/types"
+import type { ImageLayer_t } from '@/types/types'
 
 export type BasicPrediction_t = {
   labels: string[]
@@ -23,10 +23,10 @@ export type N4LDataFrameType = string | number | boolean | string[] | number[] |
  * @typedef {Object.<string, typeof _I_MODEL_TABULAR_CLASSIFICATION>} MAP_TC_CLASSES_t
  */
 export type MAP_TC_CLASSES_t = {
-  "IRIS"                          : typeof MODEL_IRIS
-  "CAR"                           : typeof MODEL_CAR
-  "LYMPHOGRAPHY"                  : typeof MODEL_LYMPHOGRAPHY
-  "I_MODEL_TABULAR_CLASSIFICATION": typeof _I_MODEL_TABULAR_CLASSIFICATION
+  'IRIS'                          : typeof MODEL_IRIS
+  'CAR'                           : typeof MODEL_CAR
+  'LYMPHOGRAPHY'                  : typeof MODEL_LYMPHOGRAPHY
+  'I_MODEL_TABULAR_CLASSIFICATION': typeof _I_MODEL_TABULAR_CLASSIFICATION
 }
 
 /**
@@ -66,38 +66,31 @@ export type CustomParamsLayerModel_t = {
  * @typedef {'elu'|'hardSigmoid'|'linear'|'relu'|'relu6'|'selu'|'sigmoid'|'softmax'|'softplus'|'softsign'|'tanh'|'swish'|'mish'|'gelu'|'gelu_new'} LayerActivation_t
  */
 export type LayerActivation_t =
-  | "elu"
-  | "hardSigmoid"
-  | "linear"
-  | "relu"
-  | "relu6"
-  | "selu"
-  | "sigmoid"
-  | "softmax"
-  | "softplus"
-  | "softsign"
-  | "tanh"
-  | "swish"
-  | "mish"
-  | "gelu"
-  | "gelu_new"
+  | 'elu'
+  | 'hardSigmoid'
+  | 'linear'
+  | 'relu'
+  | 'relu6'
+  | 'selu'
+  | 'sigmoid'
+  | 'softmax'
+  | 'softplus'
+  | 'softsign'
+  | 'tanh'
+  | 'swish'
+  | 'mish'
+  | 'gelu'
+  | 'gelu_new'
 
-export type ClassLayer_t = 'flatten' | 'dense' | 'conv2d' | 'maxPooling2d' | 'dropout' | 'flatten'
+export type ClassLayer_t = 'flatten' | 'dense' | 'conv2d' | 'maxPooling2d' | 'dropout'
 
-/**
- * @typedef Layer_t
- * @property {number} units
- * @property {LayerActivation_t} activation
- * @property {boolean} [is_disabled]
- * @property {'dense'} [type_layer]
- */
+/** Una capa dense (clasificación tabular y regresión); las de la red de imágenes son ImageLayer_t (src/types/types) */
 export type Layer_t = {
   units       : number
   activation  : LayerActivation_t | string | null
+  /** La capa de salida de regresión no se puede editar */
   is_disabled?: boolean
-  type_layer? : "dense"
-  // FIX 
-  // TypeScript error
+  type_layer? : 'dense'
   _class      : ClassLayer_t
 }
 
@@ -117,7 +110,7 @@ export type LabelEncoder_t = _dfd.LabelEncoder
 /**
  * @typedef {'standard-scaler'|'min-max-scaler'} ScalerKey_t
  */
-export type ScalerKey_t = "standard-scaler" | "min-max-scaler"
+export type ScalerKey_t = 'standard-scaler' | 'min-max-scaler'
 
 /**
  * @typedef {_I_MODEL_TABULAR_CLASSIFICATION} I_MODEL_TABULAR_CLASSIFICATION_t
@@ -177,35 +170,35 @@ export type TimeSeriesPlotsValidConfigResponse_t = {
  * @typedef {'string'|'one-hot-encoder'|'label-encoder'|'int32'|'float32'|'replace_<match>_NaN'|'replace_?_NaN'|'drop_?'|'drop'|'dropNa'|'ignored'} ColumnTransform_t
  */
 export type ColumnTransform_t =
-  | "string"
-  | "one-hot-encoder"
-  | "label-encoder"
-  | "int32"
-  | "float32"
+  | 'string'
+  | 'one-hot-encoder'
+  | 'label-encoder'
+  | 'int32'
+  | 'float32'
   | `replace_${string}_NaN`
-  | `replace_?_NaN`
-  | `drop_?`
-  | "drop"
-  | "dropNa"
-  | "ignored"
+  | 'replace_?_NaN'
+  | 'drop_?'
+  | 'drop'
+  | 'dropNa'
+  | 'ignored'
   // FIX TypeScript error
-  | "boolean"
-  | "datetime"
+  | 'boolean'
+  | 'datetime'
 
 /**
  * @typedef {'int32'|'float32'|'string'|'boolean'|'datetime'} DataFrameColumnType_t
  */
-export type DataFrameColumnType_t = "int32" | "float32" | "string" | "boolean" | "datetime"
+export type DataFrameColumnType_t = 'int32' | 'float32' | 'string' | 'boolean' | 'datetime'
 
 /**
  * @typedef {'Integer'|'Continuous'|'Categorical'|'Binary'|'Date'|'Other'} DatasetColumnType_t
  */
-export type DatasetColumnType_t = "Integer" | "Continuous" | "Categorical" | "Binary" | "Date" | "Other"
+export type DatasetColumnType_t = 'Integer' | 'Continuous' | 'Categorical' | 'Binary' | 'Date' | 'Other'
 
 /**
  * @typedef {'ID'|'Feature'|'Target'} DatasetColumnRole_t
  */
-export type DatasetColumnRole_t = "ID" | "Feature" | "Target"
+export type DatasetColumnRole_t = 'ID' | 'Feature' | 'Target'
 
 /**
  * @typedef DataFrameColumnNameAndType_t
@@ -356,7 +349,7 @@ export type ConfigLayoutPlots_t = {
  * @property {Array<{value: string, text: string}>} options
  */
 export type DataFrameColumnTypeTransform_t = {
-  type   : "drop" | "ignore" | "int32" | "float32" | "label-encoder"
+  type   : 'drop' | 'ignore' | 'int32' | 'float32' | 'label-encoder'
   name   : string
   options: Array<{ value: string; text: string }>
 }
@@ -367,7 +360,7 @@ export type DataFrameColumnTypeTransform_t = {
  * @property {_dfd.LabelEncoder | _dfd.OneHotEncoder} encoder
  */
 export type EncoderObject_t = {
-  type   : "label-encoder" | "one-hot-encoder"
+  type   : 'label-encoder' | 'one-hot-encoder'
   encoder: _dfd.LabelEncoder | _dfd.OneHotEncoder
 }
 
@@ -376,7 +369,7 @@ export type EncoderObject_t = {
  */
 export type EncoderMap_t = {
   [key: string]: {
-    type   : "label-encoder" | "one-hot-encoder"
+    type   : 'label-encoder' | 'one-hot-encoder'
     encoder: _dfd.LabelEncoder | _dfd.OneHotEncoder
   }
 }
@@ -400,7 +393,7 @@ export type DataProcessed_t = {
   classes?          : string[]
   encoders: {
     [key: string]: {
-      type   : "label-encoder" | "one-hot-encoder"
+      type   : 'label-encoder' | 'one-hot-encoder'
       encoder: _dfd.LabelEncoder | _dfd.OneHotEncoder
     }
   }
@@ -619,7 +612,7 @@ export type CustomModelGenerated_t = {
 export type StateListDatasetProcessed_t = {
   data   : Array<DatasetProcessed_t>
   index  : number 
-  dataset: "select-dataset" 
+  dataset: 'select-dataset' 
 }
 
 /**
@@ -631,7 +624,7 @@ export type StateListDatasetProcessed_t = {
 export type StateListCustomModel_t = {
   data : Array<CustomModel_t>
   index: number
-  model: "select-model"
+  model: 'select-model'
 }
 
 /**
@@ -645,7 +638,7 @@ export type StateListCustomModel_t = {
 export type StateInstance_t = {
   data    : Array<Array<string | number | boolean>>
   index   : number
-  instance: "select-instance"
+  instance: 'select-instance'
 }
 
 // TYPESCRIPT TYPE EXPORTS

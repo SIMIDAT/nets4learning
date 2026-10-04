@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, useMemo } from 'react'
+import { lazy, Suspense, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Accordion, Card, Col, Form, Row } from 'react-bootstrap'
@@ -15,18 +15,17 @@ import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
 import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
 import { reportTrainResult } from '@core/training/trainResult'
-import { layerIssueText } from '@components/neural-network/layerCheckText'
 import { checkDenseLayers } from '@core/nn-utils/checkLayers'
 import { historyFromData } from '@core/training/modelStore'
 import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
-import N4LSessionButtons from '@components/session/N4LSessionButtons'
-import N4LGuide from '@components/guide/N4LGuide'
 import { trainerGuide } from '@components/guide/trainerGuide'
 import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
 import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
-import { parseSession, SessionError, type TrainingSession_t } from '@core/session/trainingSession'
-import { useSharedSession } from '@hooks/useSharedSession'
+import type { TrainingSession_t } from '@core/session/trainingSession'
+import { useTrainerSession } from '@hooks/useTrainerSession'
+import { layersAreValid } from '@components/neural-network/alertLayerError'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import DebugJSON from '@components/debug/DebugJSON'
@@ -36,7 +35,6 @@ import { MAP_LR_CLASSES } from './models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 
 import * as _Types from '@core/types'
-// import LinearRegressionModelController_Simple from '@core/controller/01-regression/LinearRegressionModelController_Simple'
 import { createRegressionCustomModel } from '@core/controller/01-regression/RegressionModelController'
 import { useRegressionContext } from '@context/useRegressionContext'
 import alertHelper from '@utils/alertHelper'
@@ -53,7 +51,6 @@ const RegressionDatasetShow = lazy(() => import('./RegressionDatasetShow'))
 const RegressionEditorLayers = lazy(() => import('./RegressionEditorLayers'))
 const RegressionEditorFeaturesSelector = lazy(() => import('./RegressionEditorFeaturesSelector'))
 const RegressionEditorHyperparameters = lazy(() => import('./RegressionEditorHyperparameters'))
-// const RegressionEditorVisor = lazy(() => import( './RegressionEditorVisor'))
 // Models
 const RegressionTableModels = lazy(() => import('./RegressionTableModels'))
 const RegressionPrediction = lazy(() => import('./RegressionPrediction'))
@@ -113,9 +110,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
     features: (stepProcessed?.X.columns ?? []) as string[],
   }), [stepProcessed])
 
-  // region SESIÓN: exportar e importar capas e hiperparámetros
-  // Cambia al importar para volver a montar el editor de hiperparámetros con los valores nuevos
-  const [sessionVersion, setSessionVersion] = useState(0)
+  // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
 
   const currentSession = (): TrainingSession_t => {
     const training_params = params.params_training
@@ -136,32 +131,25 @@ export default function Regression({ dataset }: RegressionProps_t) {
     }
   }
 
-  const handleImport_Session = async (text: string) => {
-    try {
-      const { layers: importedLayers, hyperparameters: h } = parseSession(text, TASKS.REGRESSION)
-      setParams((prevState) => ({
-        ...prevState,
-        params_layers: importedLayers.map((layer) => ({
-          units     : Number(layer.units),
-          activation: String(layer.activation ?? 'relu'),
-          // La capa de salida de regresión no se puede editar
-          ...(layer.is_disabled === true ? { is_disabled: true } : {}),
-        })),
-        params_training: {
-          ...prevState.params_training,
-          learning_rate  : h.learningRate,
-          n_of_epochs    : h.epochs,
-          test_size      : h.testSize,
-          id_optimizer   : h.optimizer as IdOptimizer_t,
-          id_loss        : h.loss as IdLoss_t,
-          list_id_metrics: h.metrics as IdMetric_t[],
-        },
-      }))
-      setSessionVersion((version) => version + 1)
-      await alertHelper.alertSuccess(t('session.imported'))
-    } catch (error) {
-      await alertHelper.alertError(t(error instanceof SessionError ? error.i18nKey : 'session.error-not-session'))
-    }
+  const applySession = ({ layers: importedLayers, hyperparameters: h }: TrainingSession_t) => {
+    setParams((prevState) => ({
+      ...prevState,
+      params_layers: importedLayers.map((layer) => ({
+        units     : Number(layer.units),
+        activation: String(layer.activation ?? 'relu'),
+        // La capa de salida de regresión no se puede editar
+        ...(layer.is_disabled === true ? { is_disabled: true } : {}),
+      })),
+      params_training: {
+        ...prevState.params_training,
+        learning_rate  : h.learningRate,
+        n_of_epochs    : h.epochs,
+        test_size      : h.testSize,
+        id_optimizer   : h.optimizer as IdOptimizer_t,
+        id_loss        : h.loss as IdLoss_t,
+        list_id_metrics: h.metrics as IdMetric_t[],
+      },
+    }))
   }
   // endregion
 
@@ -173,7 +161,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
     const init = async () => {
       await tfjs.ready()
       if (hasModel(MAP_LR_CLASSES, dataset)) {
-        /** @type {_Types.I_MODEL_REGRESSION_t} */
         const _iModelInstance = new (await loadModelClass(MAP_LR_CLASSES, dataset))(t, setAccordionActive)
         setIModelInstance(_iModelInstance)
         // Al subir un CSV no hay datasets predefinidos: los aporta el usuario
@@ -197,27 +184,19 @@ export default function Regression({ dataset }: RegressionProps_t) {
   }, [dataset, t, setIModelInstance, setAccordionActive, setDatasets, setParams, navigate])
 
 
+  // Las capas por defecto de cada fichero (el vino tinto o el blanco…): al cargarlo o al elegir otro, no con cualquier
+  // cambio de los datos (procesarlos las borraría, y con ellas una configuración importada)
+  const selectedCsv = datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX ? datasets.data[datasets.index]?.csv : undefined
   useEffect(() => {
-    if (dataset === UPLOAD) {
-      if (VERBOSE) console.debug('Regression upload csv')
-    } else if (hasModel(MAP_LR_CLASSES, dataset)) {
-      if (iModelInstance
-        && datasets
-        && datasets.data
-        && datasets.index != DEFAULT_SELECTOR_DATASET_INDEX
-        && datasets.data[datasets.index]
-        && datasets.data[datasets.index].csv
-      ) {
-        setParams((prevState) => ({
-          ...prevState,
-          params_layers: iModelInstance.DEFAULT_LAYERS(datasets.data[datasets.index].csv)
-        }))
-      }
-    }
-  }, [dataset, iModelInstance, datasets, setParams])
+    if (dataset === UPLOAD || !hasModel(MAP_LR_CLASSES, dataset) || iModelInstance === null || !selectedCsv) return
+    setParams((prevState) => ({
+      ...prevState,
+      params_layers: iModelInstance.DEFAULT_LAYERS(selectedCsv),
+    }))
+  }, [dataset, iModelInstance, selectedCsv, setParams])
 
-  // La de un enlace compartido, después de las capas por defecto del conjunto de datos (el efecto de arriba)
-  useSharedSession(iModelInstance !== null && (dataset === UPLOAD || datasets.data.length > 0), handleImport_Session)
+  // Lista después de las capas por defecto del conjunto de datos (el efecto de arriba)
+  const { sessionVersion, importSession } = useTrainerSession(TASKS.REGRESSION, iModelInstance !== null && (dataset === UPLOAD || datasets.data.length > 0), applySession)
 
   const TrainModel = async () => {
     const dataset_processed = datasets.data[datasets.index]
@@ -238,7 +217,6 @@ export default function Regression({ dataset }: RegressionProps_t) {
     }
     const { model, history } = result
 
-    /** @type {_Types.CustomModelGenerated_t} */
     const newModel: _Types.CustomModelGenerated_t = {
       model            : model,
       history          : history,
@@ -301,11 +279,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
   const handleSubmit_TrainModel = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const layerError = checkDenseLayers(params.params_layers).find(({ severity }) => severity === 'error')
-    if (layerError) {
-      await alertHelper.alertWarning(t('layer-check.title-error'), { footer: '', text: '', html: <>{layerIssueText(t, layerError)}</> })
-      return
-    }
+    if (!(await layersAreValid(t, checkDenseLayers(params.params_layers)))) return
     setIsTraining(true)
     training.start({
       epochs      : params.params_training.n_of_epochs,
@@ -351,19 +325,8 @@ export default function Regression({ dataset }: RegressionProps_t) {
   return (
     <>
       <N4LSectionLayout steps={steps}>
-        <Row className={'mt-2 mb-3'}>
-          <Col xl={12}>
-            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
-              <h1><Trans i18nKey={'modality.' + param_id} /></h1>
-              <div className={'d-flex flex-wrap gap-2'}>
-                <N4LGuide id={'train.regression.' + dataset} steps={guideSteps} compact={true} />
-                <div className={'d-flex flex-wrap gap-2'} data-guide={'session'}>
-                  <N4LSessionButtons getSession={currentSession} onImport={handleImport_Session} />
-                </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        <N4LPageHeader title={<Trans i18nKey={'modality.' + param_id} />} guideId={'train.regression.' + dataset} guideSteps={guideSteps}
+          getSession={currentSession} onImport={importSession} className={'mt-2 mb-3'} />
 
         {/* INFORMATION */}
         <N4LDivider i18nKey={'hr.information'} steps={steps} />

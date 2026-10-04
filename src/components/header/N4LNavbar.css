@@ -2,6 +2,17 @@
   width: 1rem;
 }
 
+/* Icono de un ajuste (idioma, tema, backend) y de sus opciones: a la altura del texto, como en Bootstrap Icons */
+.n4l-navbar-icon {
+  display: inline-block;
+  margin-right: .375rem;
+  vertical-align: -.125em;
+}
+
+.n4l-navbar-icon svg {
+  display: block;
+}
+
 /* Valor actual de un ajuste (idioma, tema, backend) junto a su nombre */
 .n4l-navbar-value {
   margin-left: .375rem;

@@ -3,7 +3,7 @@ import type { TFunction } from 'i18next'
 import type { GuideStep_t } from '@components/guide/N4LGuide'
 import { imageLayerShapes } from '@core/nn-utils/checkLayers'
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 
 const prefix = 'guide.train.3-image-classification.'
 
@@ -13,7 +13,7 @@ const prefix = 'guide.train.3-image-classification.'
  * guide.train.3-image-classification.<KEY>.layer.* (cómo se llama cada clase: dígito, carácter…) y, lo demás, en
  * .common.layer.*
  */
-export function layersGuide(t: TFunction, language: string, dataset: string, layers: Layer_t[]): GuideStep_t[] {
+export function layersGuide(t: TFunction, language: string, dataset: string, layers: ImageLayer_t[]): GuideStep_t[] {
   const shapes = imageLayerShapes(layers)
   const text = (key: string, values: Record<string, string | number> = {}) =>
     t([`${prefix}${dataset}.layer.${key}`, `${prefix}common.layer.${key}`], values)

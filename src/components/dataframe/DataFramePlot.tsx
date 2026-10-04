@@ -270,7 +270,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
         <div className={'d-flex flex-wrap gap-2'}>
           <Form.Group controlId={'plot'}>
             <Form.Select size={'sm'}
-              aria-label={'plot'}
+              aria-label={t('dataframe-plot.select-plot')}
               disabled={!showDataframe}
               value={dataframePlotConfig.PLOT_ENABLE}
               onChange={(e) => handleChange_Plot(e)} >
@@ -286,14 +286,12 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
 
           <Button variant={'outline-primary'}
             size={'sm'}
-            aria-label={'description'}
             disabled={!showDataframe}
             onClick={() => setShowOptions(true)}>
             <Trans i18nKey={'dataframe-plot.buttons.configuration'} />
           </Button>
           <Button variant={'outline-primary'}
             size={'sm'}
-            aria-label={'description'}
             disabled={!showDataframe}
             onClick={() => setShowDescription(true)}>
             <Trans i18nKey={'dataframe-plot.buttons.description'} />

@@ -75,7 +75,7 @@ export default function TestPageEasy() {
   }
 
   const handleClick_TFJSMultiple = async () => {
-    const backend_webgpu = await tfjs.setBackend("webgpu")
+    const backend_webgpu = await tfjs.setBackend('webgpu')
     console.debug('backend_webgpu', backend_webgpu)
     await tfjs.ready()
     const backend = tfjs.getBackend()

@@ -275,7 +275,6 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
     const lymphography_container_info = await lymphography_promise_info.text()
     const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
     let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + lymphography_csv)
-    /** @type {_Types.Dataset_t} */
     // Todos los atributos son categóricos (códigos 1..n): el modelo preentrenado recibe cada columna
     // codificada con LabelEncoder, igual que aquí.
     const dataset: _Types.Dataset_t = [
@@ -299,7 +298,6 @@ export default class MODEL_LYMPHOGRAPHY extends I_MODEL_TABULAR_CLASSIFICATION {
       { column_name: 'no. of nodes in',   column_role: 'Feature',   column_type: 'Categorical', column_missing_values: false },
       { column_name: 'class',             column_role: 'Target',    column_type: 'Integer',     column_missing_values: false },
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const dataset_transforms = [
         ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder),
     ]

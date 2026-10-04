@@ -69,7 +69,6 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
 
     const dataset_promise_info = await fetch(path_datasets + salary_info)
     const salary_container_info = await dataset_promise_info.text()
-    /** @type {_Types.Dataset_t} */
     const salary_dataset: _Types.Dataset_t = [
       { column_name: 'YearsExperience', column_role: 'Feature', column_type: 'Continuous',  column_missing_values: false },
       { column_name: 'Salary',          column_role: 'Target',  column_type: 'Continuous',  column_missing_values: false },
@@ -99,7 +98,6 @@ export default class MODEL_1_SALARY extends I_MODEL_REGRESSION {
 
     const salary_extra_dataset_promise_info = await fetch(path_datasets + salary_extra_info)
     const salary_extra_container_info = await salary_extra_dataset_promise_info.text()
-    /** @type {_Types.Dataset_t} */
     const salary_extra_dataset: _Types.Dataset_t = [
       { column_name: 'Age',                 column_role: 'Feature', column_type: 'Integer',     column_missing_values: false },
       { column_name: 'Gender',              column_role: 'Feature', column_type: 'Categorical', column_missing_values: false },

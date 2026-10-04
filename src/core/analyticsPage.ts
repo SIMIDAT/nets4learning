@@ -18,6 +18,7 @@ const PAGE_TYPES: Record<string, string> = {
   'version'             : 'version',
   'settings'            : 'settings',
   'learn'               : 'learn',
+  'report'              : 'report',
   '404'                 : 'not_found',
   'debug'               : 'dev',
 }

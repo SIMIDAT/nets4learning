@@ -13,6 +13,11 @@ import { useRegressionContext } from '@context/useRegressionContext'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { CustomModelGenerated_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
+import { useParams } from 'react-router'
+import { TASKS } from '@/TASKS'
+import N4LReportButton from '@components/report/N4LReportButton'
+import { historyNumbers } from '@core/report/trainingReport'
+import { denseLayerSummary } from '@components/neural-network/layerSummary'
 
 export default function RegressionTableModels({ rowsPerPage = 3 }) {
   const prefix = 'generator.table-models.'
@@ -31,6 +36,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
   const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
   // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
   const { t } = useTranslation()
+  const { example } = useParams()
   const parameters = listModels.data.map(({ params_training, params_layers }) => ({
     'learning-rate': String(params_training.learning_rate),
     'n-of-epochs'  : String(params_training.n_of_epochs),
@@ -143,6 +149,16 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LReportButton getReport={() => ({
+                                version   : 1,
+                                task      : TASKS.REGRESSION,
+                                dataset   : example ?? '',
+                                model     : (activePage * rowsPerPage) + index + 1,
+                                createdAt : new Date().toISOString(),
+                                layers    : value.params_layers.map((layer) => denseLayerSummary(t, layer)),
+                                parameters: parameters[(activePage * rowsPerPage) + index],
+                                history   : historyNumbers(value.history.history),
+                              })} />
                           </td>
                         </tr>
                       })}

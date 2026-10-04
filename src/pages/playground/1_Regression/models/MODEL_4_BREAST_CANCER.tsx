@@ -176,7 +176,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
     const bcw_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + bcw_csv)
     let bcw_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + bcw_csv)
     
-    /** @type {_Types.Dataset_t} */
     const bcw_dataset: _Types.Dataset_t = [
       { column_name: 'Sample_code_number',           column_role: 'ID',       column_type: 'Categorical', column_missing_values: false },
       { column_name: 'Clump_thickness',              column_role: 'Feature',  column_type: 'Integer',     column_missing_values: false },
@@ -190,7 +189,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
       { column_name: 'Mitoses',                      column_role: 'Feature',  column_type: 'Integer',     column_missing_values: false },
       { column_name: 'Class',                        column_role: 'Target',   column_type: 'Binary',      column_missing_values: false },
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const bcw_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...bcw_dataset.filter(F_FILTER_Categorical).map(v => F_MAP_LabelEncoder(v) as _Types.DataFrameColumnTransform_t),
       { column_name: 'Sample_code_number', column_transform: 'drop' },
@@ -216,7 +214,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
     // #region Breast Cancer Wisconsin (Diagnostic)
     const wdbc_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + wdbc_csv)
     let wdbc_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + wdbc_csv)
-    /**@type {_Types.Dataset_t} */
     const wdbc_dataset: _Types.Dataset_t = [
       { column_name: 'ID',                  column_type: 'Categorical', column_role: 'ID',      column_missing_values: false },
       { column_name: 'radius1',             column_type: 'Continuous',  column_role: 'Feature', column_missing_values: false },
@@ -251,7 +248,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
       { column_name: 'fractal_dimension3',  column_type: 'Continuous',  column_role: 'Feature', column_missing_values: false },
       { column_name: 'Diagnosis',           column_type: 'Categorical', column_role: 'Target',  column_missing_values: false },
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const wdbc_dataset_transforms = [
       ...wdbc_dataset.filter(F_FILTER_Categorical).map(v => F_MAP_LabelEncoder(v) as _Types.DataFrameColumnTransform_t),
       // { column_name: 'ID',        column_transform: 'drop' },
@@ -274,7 +270,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
     // #region Breast Cancer Wisconsin (Prognostic)
     const wpbc_dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_datasets + wpbc_csv)
     let wpbc_dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_datasets + wpbc_csv)
-    /** @type {_Types.Dataset_t} */
     const wpbc_dataset: _Types.Dataset_t = [
       { column_name: 'ID',                   column_role: 'ID',             column_type: 'Integer',        column_missing_values: false },
       { column_name: 'Time',                 column_role: 'Feature',        column_type: 'Integer',        column_missing_values: false }, // empiezan los 3 ciclos
@@ -312,7 +307,6 @@ export default class MODEL_4_BREAST_CANCER extends I_MODEL_REGRESSION {
       { column_name: 'lymph_node_status',    column_role: 'Feature',        column_type: 'Integer',        column_missing_values: true,  column_missing_values_key: '?' },
       { column_name: 'Outcome',              column_role: 'Target',         column_type: 'Categorical',    column_missing_values: false },
     ]
-    /** @type {_Types.DataFrameColumnTransform_t[]} */
     const wpbc_dataset_transforms: _Types.DataFrameColumnTransform_t[] = [
       ...wpbc_dataset.filter(F_FILTER_Categorical).map(v => F_MAP_LabelEncoder(v) as _Types.DataFrameColumnTransform_t)
 ,

@@ -151,7 +151,6 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
 
     const dataframe_original = await DataFrameUtils.DataFrameReadCSV(path_dataset + car_csv)
     let dataframe_processed = await DataFrameUtils.DataFrameReadCSV(path_dataset + car_csv)
-    /** @type {_Types.Dataset_t} */
     const dataset: _Types.Dataset_t = [
       { column_name: 'Buying', column_role: 'Feature', column_type: 'Categorical', column_missing_values: false },
       { column_name: 'Maint', column_role: 'Feature', column_type: 'Categorical', column_missing_values: false },
@@ -161,7 +160,6 @@ export default class MODEL_CAR extends I_MODEL_TABULAR_CLASSIFICATION {
       { column_name: 'Safety', column_role: 'Feature', column_type: 'Categorical', column_missing_values: false },
       { column_name: 'Result', column_role: 'Target', column_type: 'Categorical', column_missing_values: false },
     ]
-    /** @type {Array<_Types.DataFrameColumnTransform_t>} */
     const dataset_transforms = [
       ...dataset.filter(F_FILTER_Categorical).map(F_MAP_LabelEncoder)
     ]
