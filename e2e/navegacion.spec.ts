@@ -17,6 +17,22 @@ test('la barra de navegación lleva a cada página y marca la actual', async ({ 
   }
 })
 
+test('«Tareas» en la cabecera abre la página de cada tarea: modelos ya entrenados o diseñar una red', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.n4l-navbar').getByRole('button', { name: 'Tareas' }).click()
+  await page.locator('.n4l-navbar').getByRole('link', { name: 'Clasificación de imágenes' }).click()
+  await expect(page).toHaveURL(/\/task\/image-classification$/)
+  await expect(page.locator('#tasks-nav-dropdown')).toHaveClass(/active/)
+  await expect(page.getByTestId('Test-Task-Pretrained')).toContainText('Modelos ya entrenados')
+  await expect(page.getByTestId('Test-Task-Design')).toContainText('Diseñar, crear y editar una arquitectura')
+  await page.getByTestId('Test-Task-Choose-dataset').click()
+  await expect(page).toHaveURL(/\/select-dataset\/image-classification$/)
+  // Y de vuelta, con la miga de pan de la tarea
+  await page.getByTestId('Test-Breadcrumb').getByRole('link', { name: 'Clasificación de imágenes' }).click()
+  await page.getByTestId('Test-Task-Choose-model').click()
+  await expect(page).toHaveURL(/\/select-model\/image-classification$/)
+})
+
 test('las migas de pan cambian de modelo y llevan a entrenar con su dataset', async ({ page }) => {
   await page.goto('/playground/tabular-classification/model/IRIS')
   const breadcrumb = page.getByTestId('Test-Breadcrumb')
@@ -29,9 +45,9 @@ test('las migas de pan cambian de modelo y llevan a entrenar con su dataset', as
   await breadcrumb.getByTestId('Test-Breadcrumb-OtherKind').click()
   await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/CAR$/)
 
-  // La tarea lleva a su tarjeta en la home
+  // La tarea lleva a su página: modelos ya entrenados o diseñar una red
   await breadcrumb.locator('.n4l-breadcrumb-task a').click()
-  await expect(page).toHaveURL(/\/\?task=tabular-classification$/)
+  await expect(page).toHaveURL(/\/task\/tabular-classification$/)
 })
 
 test('el AED analiza un conjunto de datos del proyecto', async ({ page }) => {
@@ -389,6 +405,39 @@ test('con el ahorro de datos activado, se pregunta antes de descargar un modelo 
   await page.reload()
   await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
   await expect(consent).toHaveCount(0)
+})
+
+test('MNIST: cada imagen de ejemplo, un dígito escrito con una fuente, se clasifica como ese dígito', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-MNIST')
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  for (let digit = 0; digit < 10; digit++) {
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${digit + 1}`, exact: true }).click()
+    await expect(page.getByText(new RegExp(`Clase predicha\\s*${digit}`))).toBeVisible({ timeout: 30_000 })
+  }
+})
+
+test('KMNIST enseña cada carácter como se escribe hoy junto a sus formas antiguas, y cualquiera se clasifica', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-KMNIST')
+  const su = page.getByTestId('Test-CharacterExamples').getByRole('group', { name: 'す (su)' })
+  await expect(su).toContainText('Hoy')
+  await expect(su).toContainText('Antes')
+  await expect(su.getByRole('button', { name: /^Clasificar す antiguo, que viene de/ })).toHaveCount(3)
+  // La de hoy y una antigua que no se le parece: la red aprendió las dos
+  await expect(su.getByRole('button', { name: 'Clasificar す como se escribe hoy' })).toBeEnabled({ timeout: 60_000 })
+  await su.getByRole('button', { name: 'Clasificar す como se escribe hoy' }).click()
+  await expect(page.getByText(/Clase predicha\s*す/)).toBeVisible({ timeout: 30_000 })
+  // は escrito a partir de 者: no se parece en nada al de hoy
+  await page.getByTestId('Test-CharacterExamples').getByRole('button', { name: 'Clasificar は antiguo, que viene de 者' }).click()
+  await expect(page.getByText(/Clase predicha\s*は/)).toBeVisible({ timeout: 30_000 })
+
+  // En la información del conjunto: los diez, con su lectura, el kanji del que vienen y sus formas antiguas
+  await page.goto('/datasets?task=image-classification')
+  await page.getByTestId('Test-DatasetInfo-IMAGE-KMNIST').click()
+  const forms = page.getByRole('dialog').getByTestId('Test-CharacterForms')
+  await expect(forms.getByRole('row')).toHaveCount(11)
+  // は se escribía de otras 11 formas, cada una con su kanji
+  await expect(forms.getByRole('row').filter({ hasText: 'ha · 波' }).getByRole('img')).toHaveCount(11)
+  await expect(forms.getByRole('img', { name: 'は antiguo, que viene de 八' })).toBeVisible()
 })
 
 test('«Empieza aquí»: los pasos se marcan solos al hacerlos y se avisa del siguiente', async ({ page }) => {

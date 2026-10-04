@@ -697,7 +697,8 @@
     "backend-software": "software, slow",
     "backend-error": "Could not switch to {{backend}}",
     "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}.",
-    "menu": "Menu"
+    "menu": "Menu",
+    "tasks": "Tasks"
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -1544,7 +1545,12 @@
         "process-examples": {
           "title": "Example images",
           "help": "Click an image to classify it.",
-          "classify-example": "Classify example {{index}}"
+          "classify-example": "Classify example {{index}}",
+          "forms-help": "Each character as it is written today and in three old forms (hentaigana), with the kanji each one comes from, drawn with a font. Press any of them to classify it. With the old ones it is not always right: the network learned from strokes handwritten in books, not from printed type.",
+          "modern": "Today",
+          "old": "Before",
+          "classify-modern": "Classify {{char}} as written today",
+          "classify-old": "Classify old {{char}}, from {{origin}}"
         },
         "process-draw": {
           "title": "Drawing"
@@ -1592,7 +1598,7 @@
         "description": {
           "text-0": "<strong>Kuzushiji-MNIST (KMNIST)</strong> is a drop-in replacement for MNIST: grayscale images of <strong>28 x 28</strong> pixels and 10 classes, but instead of digits it contains handwritten Japanese characters written in <i>kuzushiji</i> (cursive script).",
           "text-1": "Kuzushiji was the usual way of writing Japanese for over a thousand years, but it stopped being taught after the writing reform of the early 20th century and today very few people can read it. The images come from classical books digitised by the National Institute of Japanese Literature and were prepared by the ROIS-DS Center for Open Data in the Humanities (CODH).",
-          "text-2": "Each class is a hiragana character (お, き, す, つ, な, は, ま, や, れ, を), and one character can be written in many different ways, so it is harder than MNIST.",
+          "text-2": "Each class is a modern hiragana character, but in the dataset it appears handwritten as it used to be. Until 1900 the same syllable could be written in many ways: with the kanji today's form comes from, drawn differently, or starting from another kanji. These are the <i>hentaigana</i>; that year only one form was kept, today's. That is why one class gathers strokes that look little like each other or like the modern character, and it is harder than MNIST.",
           "details-input": {
             "title": "Input data",
             "list": {
@@ -1611,6 +1617,13 @@
               "0": "Pre-trained model: convolutional network trained with the 55,000 training images (and 5,000 more for validation), with <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> accuracy on the 10,000 test images.",
               "1": "Training in the browser: a balanced subset is used, with <strong>2,000</strong> training images and <strong>500</strong> test images per character."
             }
+          },
+          "forms": {
+            "title": "The 10 characters, today and before",
+            "modern": "Today",
+            "old": "Before: other forms (hentaigana), with their kanji",
+            "old-alt": "old {{char}}, from {{origin}}",
+            "note": "Under each modern character, how it is read and the kanji it comes from; under each old form, its own. The old forms are the Unicode hentaigana, drawn with the Noto Serif Hentaigana font. In the dataset they appear handwritten: to see them like that, load the test images on the model page."
           }
         }
       },
@@ -3631,6 +3644,23 @@
         "With the fitted model you can predict the price of a new house from its area: just replace $x$ in the equation and compute $Y$.",
         "This example is a simple case of simple linear regression: in practice, models can have many predictor variables and take into account how they combine with each other."
       ]
+    },
+    "task": {
+      "pretrained-title": "Pre-trained models",
+      "pretrained-text": "Models that have already learned: try them right away, without waiting for any training, and see why they decide what they decide.",
+      "pretrained-count_one": "1 model",
+      "pretrained-count_other": "{{count}} models",
+      "pretrained-button": "Choose a model",
+      "design-title": "Design, create and edit an architecture",
+      "design-text": "Choose a dataset (or upload yours), design the layers of the network, tune the training and watch it learn.",
+      "design-count_one": "1 dataset",
+      "design-count_other": "{{count}} datasets",
+      "design-button": "Choose a dataset",
+      "cluster-title": "Cluster a dataset",
+      "cluster-text": "You choose the columns and the number of groups, and k-means looks for them step by step; if the dataset has the real classes, they are compared at the end.",
+      "upload": "Upload yours",
+      "only-pretrained": "This task only has pre-trained models.",
+      "only-cluster": "Clustering uses neither a network nor pre-trained models: k-means groups the data directly."
     }
   },
   "generator": {
@@ -4365,7 +4395,7 @@
         },
         "examples": {
           "title": "Example images",
-          "content": "Press any of these characters to classify it: the result appears further down."
+          "content": "Each character appears as it is written today and in three old forms (hentaigana), with the kanji each one comes from: notice how different they are. Press any of them to classify it; the result appears further down."
         },
         "draw": {
           "title": "Draw a character",

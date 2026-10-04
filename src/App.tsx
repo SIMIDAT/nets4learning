@@ -16,6 +16,7 @@ import N4LOfflineBar from './components/offline/N4LOfflineBar'
 import './ConfigChartJS'
 
 const PageHome = lazy(() => import( './pages/_home/Home'))
+const PageTask = lazy(() => import( './pages/task/Task'))
 const PageMenuSelectModel = lazy(() => import( './pages/menu/MenuSelectModel'))
 const PageMenuSelectDataset = lazy(() => import( './pages/menu/MenuSelectDataset'))
 const PagePlayground = lazy(() => import( './pages/playground/Playground'))
@@ -77,6 +78,7 @@ function App() {
             <Routes>
               <Route index path={'/'} element={<PageHome />}></Route>
               <Route path={'/home'} element={<PageHome />}></Route>
+              <Route path={'/task/:id'} element={<PageTask />}></Route>
               <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
               <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
               <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>

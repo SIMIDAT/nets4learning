@@ -32,6 +32,7 @@ const MODES: Record<string, string> = { dataset: 'train', model: 'pretrained' }
  */
 export function pageContextFromPath(pathname: string, search = ''): PageContext_t {
   const [first = '', ...rest] = pathname.split('/').filter((part) => part !== '').map(decodeURIComponent)
+  if (first === 'task') return { page_type: 'task', task: rest[0] }
   if (first === 'select-dataset' || first === 'select-model') {
     return { page_type: first.replace('-', '_'), task: rest[0] }
   }

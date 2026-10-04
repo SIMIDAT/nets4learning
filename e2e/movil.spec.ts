@@ -5,6 +5,7 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
   const paths = [
     '/',
     '/select-dataset/tabular-classification',
+    '/task/regression',
     '/playground/tabular-classification/dataset/IRIS',
     '/playground/regression/model/AUTO_MPG',
     '/playground/image-classification/model/IMAGE-MNIST',
@@ -54,6 +55,17 @@ test('el menú se cierra al ir a otra página, que empieza arriba', async ({ pag
   await expect(toggler).toHaveAttribute('aria-expanded', 'false')
   await expect(page.locator('.navbar-collapse')).not.toHaveClass(/show/)
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0)
+})
+
+test('desde el menú se abre la página de una tarea, y el menú se cierra', async ({ page }) => {
+  await page.goto('/')
+  const toggler = page.locator('.navbar-toggler')
+  await toggler.click()
+  await page.locator('.n4l-navbar').getByRole('button', { name: 'Tareas' }).click()
+  await page.locator('.n4l-navbar').getByRole('link', { name: 'Agrupamiento' }).click()
+  await expect(page).toHaveURL(/\/task\/clustering$/)
+  await expect(toggler).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByTestId('Test-Task-Design')).toContainText('Agrupar un conjunto de datos')
 })
 
 test('se dibuja un número con el dedo y el modelo lo reconoce', async ({ page }) => {

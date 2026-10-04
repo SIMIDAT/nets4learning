@@ -7,6 +7,7 @@ import MODEL_IMAGE_KMNIST, {
   KMNIST_PRETRAINED_TEST_ACCURACY,
   LIST_OF_IMAGES_KMNIST,
 } from '../../src/pages/playground/3_ImageClassification/models/MODEL_IMAGE_KMNIST'
+import { FEATURED_FORMS, KMNIST_CHARACTERS } from '../../src/pages/playground/3_ImageClassification/models/characterForms'
 import fixture from './fixtures/kmnist-test-samples.json'
 
 // Las URLs de la app (VITE_PATH + /models/...) se sirven desde public/
@@ -66,5 +67,26 @@ describe('MODEL_IMAGE_KMNIST — modelo preentrenado', () => {
 
   test('existen las imágenes de ejemplo', () => {
     expect(LIST_OF_IMAGES_KMNIST.filter((image) => !fs.existsSync('public/assets/' + image))).toStrictEqual([])
+  })
+
+  test('cada carácter de hoy va con sus formas antiguas (hentaigana): cada una con su imagen y su kanji', () => {
+    expect(KMNIST_CHARACTERS.map(({ char }) => char)).toStrictEqual(iModelInstance.CLASS_LABELS)
+    expect(iModelInstance.CHARACTER_FORMS()).toBe(KMNIST_CHARACTERS)
+    // Las 68 hentaigana de Unicode de estas diez sílabas, sin repetir
+    const images = KMNIST_CHARACTERS.flatMap(({ old }) => old.map(({ image }) => image))
+    expect(images).toHaveLength(68)
+    expect(new Set(images).size).toBe(images.length)
+    for (const { char, old } of KMNIST_CHARACTERS) {
+      // Las de los ejemplos, de kanji distintos (お solo tiene tres, dos de 於)
+      const featured = old.slice(0, FEATURED_FORMS).map(({ origin }) => origin)
+      if (char !== 'お') expect(new Set(featured).size, char).toBe(FEATURED_FORMS)
+      for (const { image, origin } of old) {
+        expect(origin, image).toMatch(/^\p{Script=Han}$/u)
+        // Del bloque de las hentaigana (U+1B000–U+1B12F), y de 112x112 (la cabecera IHDR del PNG: bytes 16 a 23)
+        expect(Number.parseInt(image.match(/([0-9A-F]+)\.png$/)![1], 16), image).toBeGreaterThanOrEqual(0x1B000)
+        const png = fs.readFileSync('public/assets/' + image)
+        expect([png.readUInt32BE(16), png.readUInt32BE(20)], image).toStrictEqual([112, 112])
+      }
+    }
   })
 })

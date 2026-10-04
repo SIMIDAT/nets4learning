@@ -6,6 +6,7 @@ describe('analyticsPage: el contexto de cada ruta', () => {
     ['/', '', { page_type: 'home' }],
     ['/home', '', { page_type: 'home' }],
     ['/select-model/regression', '', { page_type: 'select_model', task: 'regression' }],
+    ['/task/regression', '', { page_type: 'task', task: 'regression' }],
     ['/select-dataset/tabular-classification', '', { page_type: 'select_dataset', task: 'tabular-classification' }],
     ['/playground/tabular-classification/model/CAR', '', { page_type: 'playground', task: 'tabular-classification', mode: 'pretrained', item: 'CAR' }],
     ['/playground/regression/dataset/UPLOAD', '', { page_type: 'playground', task: 'regression', mode: 'train', item: 'UPLOAD' }],

@@ -96,6 +96,122 @@ body {
   opacity: .6;
 }
 
+/* KMNIST: cada carácter de hoy junto a sus formas antiguas (información del modelo y ejemplos) */
+.n4l-character-forms {
+  margin-bottom: 1rem;
+}
+.n4l-character-modern {
+  width: 4.5rem;
+  text-align: center;
+}
+.n4l-character-glyph {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.n4l-character-reading {
+  display: block;
+  font-size: .75rem;
+  font-weight: 400;
+  color: var(--bs-secondary-color);
+}
+.n4l-character-old-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+}
+/* Cada forma antigua, con el kanji del que viene debajo */
+.n4l-character-old {
+  margin: 0;
+  text-align: center;
+}
+/* Las imágenes son de papel (negro sobre blanco), también en el tema oscuro */
+.n4l-character-old img {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 2px;
+}
+.n4l-character-old figcaption,
+.n4l-character-example-origin {
+  font-size: .7rem;
+  line-height: 1.2;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-character-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
+  gap: .5rem;
+}
+.n4l-character-example {
+  padding: .5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+.n4l-character-example-title {
+  margin-bottom: .25rem;
+  font-weight: 600;
+}
+.n4l-character-example-title [lang="ja"] {
+  font-size: 1.25rem;
+}
+.n4l-character-example-modern {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.n4l-character-example-old-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .125rem;
+}
+.n4l-character-example-old {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: #fff;
+}
+.n4l-character-example-modern img,
+.n4l-character-example-old img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.n4l-character-example-label {
+  font-size: .75rem;
+  color: var(--bs-secondary-color);
+}
+/* En el móvil, cada carácter en una fila: su nombre a la izquierda y sus imágenes a la derecha */
+@media (max-width: 575.98px) {
+  .n4l-character-examples {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .n4l-character-example {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .n4l-character-example-title {
+    display: flex;
+    flex: 0 0 2.5rem;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+  .n4l-character-example-title .n4l-character-example-separator {
+    display: none;
+  }
+  .n4l-character-example-modern {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  .n4l-character-example-old {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
 /* Índice de las secciones en los entrenadores (escritorio): fijo en su columna mientras se baja por la página */
 .n4l-section-nav {
   position: sticky;

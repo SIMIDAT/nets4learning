@@ -19,18 +19,37 @@ const OTHER_KIND: Record<TaskKind_t, { kind: TaskKind_t, i18n: string }> = {
 
 type N4LBreadcrumbProps = {
   task    : TASKS_TYPE_V
-  kind    : TaskKind_t
+  /** Sin él, la última miga es la tarea (su página: /task/<tarea>) */
+  kind?   : TaskKind_t
   /** Modelo o dataset abierto en el playground; sin él, la última miga es la página de selección */
   example?: string
 }
 
 /**
- * Inicio › tarea › modelos preentrenados o entrenar › modelo o dataset abierto. La tarea lleva a su tarjeta en la
- * home y la última miga es un desplegable para cambiar a otro modelo o dataset de la misma lista sin volver a la
+ * Inicio › tarea › modelos preentrenados o entrenar › modelo o dataset abierto. La tarea lleva a su página (elegir
+ * entre los modelos ya entrenados y diseñar una red) y la última miga es un desplegable para cambiar a otro modelo o dataset de la misma lista sin volver a la
  * página de selección (y, si existe, al dataset del modelo o al modelo del dataset). Siempre en una línea: si no cabe,
  * los nombres se recortan con puntos suspensivos.
  */
-export default function N4LBreadcrumb({ task, kind, example }: N4LBreadcrumbProps) {
+export default function N4LBreadcrumb(props: N4LBreadcrumbProps) {
+  const { t } = useTranslation()
+  const { i18nTitle } = TASK_INFO[props.task]
+  if (props.kind === undefined) {
+    return (
+      <nav aria-label={t('breadcrumb.label')} className={'n4l-breadcrumb'} data-task={props.task} data-testid={'Test-Breadcrumb'}>
+        <ol className={'breadcrumb mb-0'}>
+          <li className={'breadcrumb-item'}>
+            <Link to={'/'}><Trans i18nKey={'header.home'} /></Link>
+          </li>
+          <li className={'breadcrumb-item active'} aria-current={'page'}><span className={'text-truncate'}><Trans i18nKey={i18nTitle} /></span></li>
+        </ol>
+      </nav>
+    )
+  }
+  return <N4LBreadcrumbKind {...props} kind={props.kind} />
+}
+
+function N4LBreadcrumbKind({ task, kind, example }: N4LBreadcrumbProps & { kind: TaskKind_t }) {
   const { t } = useTranslation()
   const { i18nTitle } = TASK_INFO[task]
   const options = taskOptions(task, kind)
@@ -56,7 +75,7 @@ export default function N4LBreadcrumb({ task, kind, example }: N4LBreadcrumbProp
           <Link to={'/'}><Trans i18nKey={'header.home'} /></Link>
         </li>
         <li className={'breadcrumb-item n4l-breadcrumb-task'}>
-          <Link to={{ pathname: '/', search: `?task=${task}` }}><Trans i18nKey={i18nTitle} /></Link>
+          <Link to={`/task/${task}`}><Trans i18nKey={i18nTitle} /></Link>
         </li>
         {example === undefined
           ? <li className={'breadcrumb-item active'} aria-current={'page'}><span className={'text-truncate'}><Trans i18nKey={KIND_I18N[kind]} /></span></li>

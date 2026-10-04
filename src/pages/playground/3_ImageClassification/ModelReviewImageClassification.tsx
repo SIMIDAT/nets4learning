@@ -37,6 +37,8 @@ import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select
 import { warmUpModel } from '@core/nn-utils/warmUpModel'
 import { trackEvent } from '@core/analytics'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
+import { CharacterFormsExamples } from '@pages/playground/3_ImageClassification/components/N4LCharacterForms'
+import { FEATURED_FORMS } from '@pages/playground/3_ImageClassification/models/characterForms'
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
@@ -113,6 +115,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     init().then()
   }, [dataset, t, navigate])
 
+  // KMNIST: los ejemplos enseñan cada carácter de hoy junto a sus formas antiguas
+  const characterForms = iModelInstance?.CHARACTER_FORMS() ?? null
   // MNIST y KMNIST: se puede dibujar la entrada y la explicación es siempre con LRP
   const isDrawable = iModelInstance?.DRAWABLE ?? false
   // Guía paso a paso de la página (con voz): solo con el botón "Guía"
@@ -350,19 +354,27 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   </div>}
               </Card.Header>
               <Card.Body>
-                <p className={'text-body-secondary small'}><Trans i18nKey={prefix + 'process-examples.help'} /></p>
-                {/* Dibujos de 28×28: una fila de miniaturas; fotos (MobileNet): tres por fila */}
-                <div className={isDrawable ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
-                  {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
-                    const path_image = import.meta.env.VITE_PATH + '/assets/' + image
-                    return (
-                      <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(path_image)}
-                        disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
-                        <img className={'img-fluid w-100 h-100 object-fit-cover'} src={path_image} alt={''} />
-                      </button>
-                    )
-                  })}
-                </div>
+                {/* KMNIST: cada carácter como se escribe hoy junto a formas antiguas del conjunto */}
+                {characterForms !== null && <>
+                  <p className={'text-body-secondary small'}><Trans i18nKey={prefix + 'process-examples.forms-help'} /></p>
+                  <CharacterFormsExamples characters={characterForms} forms={FEATURED_FORMS} prefix={prefix + 'process-examples.'}
+                    disabled={model === null} onClassify={handleClick_Example} />
+                </>}
+                {characterForms === null && <>
+                  <p className={'text-body-secondary small'}><Trans i18nKey={prefix + 'process-examples.help'} /></p>
+                  {/* Dibujos de 28×28: una fila de miniaturas; fotos (MobileNet): tres por fila */}
+                  <div className={isDrawable ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
+                    {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
+                      const path_image = import.meta.env.VITE_PATH + '/assets/' + image
+                      return (
+                        <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(path_image)}
+                          disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
+                          <img className={'img-fluid w-100 h-100 object-fit-cover'} src={path_image} alt={''} />
+                        </button>
+                      )
+                    })}
+                  </div>
+                </>}
               </Card.Body>
             </Card>
 

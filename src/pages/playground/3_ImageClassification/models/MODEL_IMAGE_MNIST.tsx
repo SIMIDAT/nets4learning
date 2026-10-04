@@ -4,18 +4,8 @@ import I_MODEL_IMAGE_28X28 from './_model_28x28'
 import { MNIST_DATASET } from './SpriteImageDataset'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
 
-export const LIST_OF_IMAGES_MNIST: string[] = [
-  '0_new.png',
-  '1_new.png',
-  '2_new.png',
-  '3_new.png',
-  '4_new.png',
-  '5_new.png',
-  '6_new.png',
-  '7_new.png',
-  '8_new.png',
-  '9_new.png'
-]
+// Cada dígito escrito con la fuente Lato Bold; las genera Scripts/build_mnist_examples.py
+export const LIST_OF_IMAGES_MNIST: string[] = Array.from({ length: 10 }, (_, digit) => `mnist/${digit}.png`)
 
 export default class MODEL_IMAGE_MNIST extends I_MODEL_IMAGE_28X28 {
   static KEY = IC_MODEL_KEYS.MNIST

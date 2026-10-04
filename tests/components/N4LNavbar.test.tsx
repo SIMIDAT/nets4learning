@@ -47,6 +47,26 @@ describe('N4LNavbar', () => {
     expect(toggler()).toHaveAttribute('aria-expanded', 'false')
   })
 
+  test('«Tareas» enlaza a la página de cada una y se marca en la tarea en la que se está', () => {
+    renderAt('/playground/regression/dataset/AUTO_MPG')
+    const tasks = document.getElementById('tasks-nav-dropdown')!
+    expect(tasks).toHaveTextContent('header.tasks')
+    expect(tasks).toHaveClass('active')
+    fireEvent.click(tasks)
+    expect(link('pages.index.tabular-classification.1-title')).toHaveAttribute('href', '/task/tabular-classification')
+    expect(link('pages.index.clustering.1-title')).toHaveAttribute('href', '/task/clustering')
+    expect(link('pages.index.regression.1-title')).toHaveClass('active')
+    expect(screen.getAllByRole('link').filter((element) => element.getAttribute('href')?.startsWith('/task/'))).toHaveLength(5)
+
+    fireEvent.click(link('pages.index.object-detection.1-title'))
+    expect(screen.getByTestId('location')).toHaveTextContent('/task/object-detection')
+  })
+
+  test('fuera de las tareas, «Tareas» no se marca', () => {
+    renderAt('/glossary')
+    expect(document.getElementById('tasks-nav-dropdown')).not.toHaveClass('active')
+  })
+
   test('cada ajuste enseña su valor actual', () => {
     renderAt('/')
     expect(document.getElementById('change-theme-nav-dropdown')).toHaveTextContent(/header\.theme\s*header\.theme-(light|dark)/)

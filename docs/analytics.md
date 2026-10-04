@@ -41,7 +41,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 
 | Parámetro | Valores |
 |---|---|
-| `page_type` | `home`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `report`, `manual`, `glossary`, `datasets`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
+| `page_type` | `home`, `task`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `report`, `manual`, `glossary`, `datasets`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
 | `task` | `tabular-classification`, `regression`, `image-classification`, `object-detection`, `clustering` |
 | `mode` | `train` (entrenar con un conjunto de datos) o `pretrained` (probar un modelo ya entrenado) |
 | `item` | El conjunto de datos o el modelo: `CAR`, `IRIS`, `AUTO_MPG`, `UPLOAD`, `IMAGE-MNIST`… En `/analyze`, el de `?dataset=` |

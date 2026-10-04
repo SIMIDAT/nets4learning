@@ -43,12 +43,12 @@ describe('MenuSelect', () => {
 describe('N4LBreadcrumb', () => {
   const MODEL = 'datasets-models.0-tabular-classification.list-models.0-option-'
 
-  test('en el playground enlaza a la tarea en la home y a la selección, y permite cambiar de modelo', async () => {
+  test('en el playground enlaza a la página de la tarea y a la selección, y permite cambiar de modelo', async () => {
     const { getByTestId, getByText, findByText } = renderAt('/playground/tabular-classification/model/IRIS',
       <N4LBreadcrumb task={'tabular-classification'} kind={'model'} example={'IRIS'} />)
 
     expect(getByText('header.home').closest('a')).toHaveAttribute('href', '/')
-    expect(getByText('pages.index.tabular-classification.1-title').closest('a')).toHaveAttribute('href', '/?task=tabular-classification')
+    expect(getByText('pages.index.tabular-classification.1-title').closest('a')).toHaveAttribute('href', '/task/tabular-classification')
     expect(getByText('breadcrumb.models').closest('a')).toHaveAttribute('href', '/select-model/tabular-classification')
 
     // El desplegable enseña el modelo abierto y lista los demás de la tarea: son enlaces

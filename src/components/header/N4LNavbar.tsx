@@ -9,6 +9,7 @@ import IconGithub from '@assets/github.svg'
 import { changeUserLanguage, LANGUAGE_OPTIONS } from '@core/i18n/language'
 import { changeUserTheme, type Theme_t } from '@core/theme'
 import { useTheme } from '@hooks/useTheme'
+import { isTask, TASK_INFO } from '@components/task/taskInfo'
 import {
   changeUserTFBackend,
   DEFAULT_TF_BACKEND,
@@ -22,8 +23,8 @@ import {
   type WebGPUAdapter_t,
 } from '@core/tfBackend'
 
-// Páginas del menú; Inicio solo está activa en la home
-const NAV_LINKS: Array<{ to: string, i18n: string }> = [
+// Páginas del menú; Inicio solo está activa en la home. Detrás de Inicio va el desplegable de las tareas
+const [HOME_LINK, ...NAV_LINKS]: Array<{ to: string, i18n: string }> = [
   { to: '/', i18n: 'header.home' },
   { to: '/manual', i18n: 'header.manual' },
   { to: '/glossary', i18n: 'header.glossary' },
@@ -32,6 +33,13 @@ const NAV_LINKS: Array<{ to: string, i18n: string }> = [
 ]
 
 const isActivePath = (pathname: string, to: string) => (to === '/' ? pathname === '/' : pathname === to || pathname.startsWith(to + '/'))
+
+// La tarea en la que se está: su página, sus menús de modelos y conjuntos o su playground
+const TASK_PAGES = ['task', 'select-model', 'select-dataset', 'playground']
+const taskOfPath = (pathname: string) => {
+  const [page, task] = pathname.split('/').filter((part) => part !== '')
+  return TASK_PAGES.includes(page) && isTask(task) ? task : undefined
+}
 
 export default function N4LNavbar() {
   const { t, i18n } = useTranslation()
@@ -95,6 +103,19 @@ export default function N4LNavbar() {
     }
   }
 
+  const activeTask = taskOfPath(pathname)
+  const navLink = ({ to, i18n: i18nKey }: { to: string, i18n: string }) => {
+    const isActive = isActivePath(pathname, to)
+    return (
+      <Nav.Item key={to}>
+        <Nav.Link as={Link} to={to} active={isActive} aria-current={isActive ? 'page' : undefined}
+          onClick={() => setExpanded(false)}>
+          <Trans i18nKey={i18nKey} />
+        </Nav.Link>
+      </Nav.Item>
+    )
+  }
+
   const currentLanguage = LANGUAGE_OPTIONS.find(({ language }) => i18n.resolvedLanguage === language)?.label ?? i18n.language
   // Título de los desplegables de ajustes: el ajuste y, solo en el menú del móvil y la tablet, su valor actual (en
   // escritorio, solo el nombre)
@@ -127,17 +148,20 @@ export default function N4LNavbar() {
                 Tablet: dos columnas */}
             <div className={'n4l-navbar-menu'}>
               <Nav className={'me-lg-auto n4l-navbar-links'}>
-                {NAV_LINKS.map(({ to, i18n: i18nKey }) => {
-                  const isActive = isActivePath(pathname, to)
-                  return (
-                    <Nav.Item key={to}>
-                      <Nav.Link as={Link} to={to} active={isActive} aria-current={isActive ? 'page' : undefined}
-                        onClick={() => setExpanded(false)}>
-                        <Trans i18nKey={i18nKey} />
-                      </Nav.Link>
-                    </Nav.Item>
-                  )
-                })}
+                {navLink(HOME_LINK)}
+                {/* Las cinco tareas: cada una abre su página (modelos ya entrenados o diseñar una red) */}
+                <NavDropdown title={t('header.tasks')} id={'tasks-nav-dropdown'} active={activeTask !== undefined} data-testid={'Test-Navbar-Tasks'}>
+                  {Object.values(TASK_INFO).map(({ task, i18nTitle }) => {
+                    const isCurrent = pathname === `/task/${task}`
+                    return (
+                      <NavDropdown.Item key={task} as={Link} to={`/task/${task}`} active={activeTask === task}
+                        aria-current={isCurrent ? 'page' : undefined} onClick={() => setExpanded(false)}>
+                        <Trans i18nKey={i18nTitle} />
+                      </NavDropdown.Item>
+                    )
+                  })}
+                </NavDropdown>
+                {NAV_LINKS.map(navLink)}
               </Nav>
               <Nav className={'n4l-navbar-settings'}>
                 <NavDropdown align={'end'} title={settingTitle(<Translate />, t('header.language'), currentLanguage)} id="change-language-nav-dropdown">

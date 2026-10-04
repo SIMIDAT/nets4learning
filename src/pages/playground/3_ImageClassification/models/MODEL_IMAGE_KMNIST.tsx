@@ -3,6 +3,8 @@ import * as tfjs from '@tensorflow/tfjs'
 import I_MODEL_IMAGE_28X28 from './_model_28x28'
 import { KMNIST_DATASET } from './SpriteImageDataset'
 import { IC_MODEL_KEYS } from '@/MODEL_KEYS'
+import { KMNIST_CHARACTERS } from './characterForms'
+import { CharacterFormsTable } from '../components/N4LCharacterForms'
 
 // Modelo preentrenado con Scripts/train_kmnist_model.cjs y su precisión con las 10.000 imágenes de test
 // (la que guarda el script en model.json como testAccuracy)
@@ -11,7 +13,7 @@ export const KMNIST_PRETRAINED_TEST_ACCURACY = 0.9825
 
 // Cada carácter (en el orden de CLASS_LABELS) escrito con la fuente Noto Sans CJK JP; las genera
 // Scripts/build_kmnist_examples.py
-export const LIST_OF_IMAGES_KMNIST: string[] = Array.from({ length: 10 }, (_, label) => `kmnist/${label}.png`)
+export const LIST_OF_IMAGES_KMNIST: string[] = KMNIST_CHARACTERS.map(({ modern }) => modern)
 
 export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_28X28 {
   static KEY = IC_MODEL_KEYS.KMNIST
@@ -27,6 +29,7 @@ export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_28X28 {
       <p><Trans i18nKey={prefix + 'text-0'} /></p>
       <p><Trans i18nKey={prefix + 'text-1'} /></p>
       <p><Trans i18nKey={prefix + 'text-2'} /></p>
+      <CharacterFormsTable characters={KMNIST_CHARACTERS} prefix={prefix + 'forms.'} />
 
       <details>
         <summary><Trans i18nKey={prefix + 'details-input.title'} /></summary>
@@ -68,6 +71,10 @@ export default class MODEL_IMAGE_KMNIST extends I_MODEL_IMAGE_28X28 {
 
   LIST_IMAGES_EXAMPLES(): string[] {
     return LIST_OF_IMAGES_KMNIST
+  }
+
+  CHARACTER_FORMS() {
+    return KMNIST_CHARACTERS
   }
 
   async ENABLE_MODEL() {

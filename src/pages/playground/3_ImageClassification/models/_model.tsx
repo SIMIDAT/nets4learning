@@ -9,6 +9,7 @@ import type { TFunction } from 'i18next'
 import type { TrainProgress_t } from '@pages/playground/3_ImageClassification/custom/trainImageClassifier'
 import type { ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
 import type { SpriteImageDataset } from './SpriteImageDataset'
+import type { CharacterForms_t } from './characterForms'
 
 /** Modelo que clasifica las imágenes: uno entrenado con tfjs o MobileNet */
 export type ImageClassifierModel_t = _tfjs.LayersModel | MobileNet
@@ -58,6 +59,11 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
 
   LIST_IMAGES_EXAMPLES (): string[] {
     return []
+  }
+
+  /** Caracteres que se escribían de varias formas (KMNIST): los ejemplos enseñan la de hoy junto a las antiguas */
+  CHARACTER_FORMS (): CharacterForms_t[] | null {
+    return null
   }
 
   async CLASSIFY (_model: ImageClassifierModel_t, _imageData: ImageData): Promise<{predictions: unknown[], index: number}> {

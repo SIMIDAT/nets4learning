@@ -119,11 +119,13 @@
     margin-right: .375rem;
   }
 
-  .n4l-navbar-settings .dropdown-menu {
+  .n4l-navbar-settings .dropdown-menu,
+  .n4l-navbar-links .dropdown-menu {
     margin-inline: .75rem;
   }
 
-  .n4l-navbar-settings .dropdown-item {
+  .n4l-navbar-settings .dropdown-item,
+  .n4l-navbar-links .dropdown-item {
     padding-block: .5rem;
   }
 }
