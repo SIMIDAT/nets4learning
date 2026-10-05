@@ -44,6 +44,8 @@ for (const path of PAGES) {
       await expect(page.locator('main').first()).toBeVisible()
       // Lo que se carga después (datos, gráficas, la pregunta antes de descargar)
       await page.waitForTimeout(2500)
+      // El «Descargado» de un modelo recién cargado se desvanece: a medio camino axe lo ve sin contraste
+      await expect(page.getByTestId('Test-DownloadProgress')).toHaveCount(0)
       const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
       const found = violations.map(({ id, impact, nodes }) => `${id} [${impact}]: ${nodes.slice(0, 3).map(({ target }) => target.join(' ')).join(' | ')}`)
       expect(found, `${path} (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
