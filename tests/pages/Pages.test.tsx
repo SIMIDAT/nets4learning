@@ -69,7 +69,7 @@ describe('Tests for Pages', () => {
     const { getByTestId, findByRole } = render(<MemoryRouter><Datasets /></MemoryRouter>)
     fireEvent.click(getByTestId('Test-DatasetInfo-IRIS'))
     const modal = await findByRole('dialog')
-    expect(modal).toHaveTextContent('datasets-models.0-tabular-classification.list-datasets.0-option-2')
+    expect(modal).toHaveTextContent('n4l-iris:tasks.tabular-classification.name')
     expect(modal).toHaveTextContent('pages.menu.info.rows')
     expect(modal.querySelector('a[download]')).toHaveAttribute('href', expect.stringContaining('iris.csv'))
   })
@@ -93,12 +93,12 @@ describe('Tests for Pages', () => {
     expect(getByTestId('Test-DatasetTrain-IRIS')).toHaveAttribute('href', '/playground/tabular-classification/dataset/IRIS')
     expect(getByTestId('Test-DatasetModel-IRIS')).toHaveAttribute('href', '/playground/tabular-classification/model/IRIS')
     // Uno de práctica: en la página de subir datos, ya cargado (como en el AED, por su clave)
-    expect(getByTestId('Test-DatasetTrain-datasets/wine.csv')).toHaveAttribute('href', '/playground/tabular-classification/dataset/UPLOAD?dataset=wine')
-    expect(queryByTestId('Test-DatasetModel-datasets/wine.csv')).toBeNull()
-    // Salary no tiene modelo ya entrenado
+    expect(getByTestId('Test-DatasetTrain-n4l/wine.n4l/data/wine.csv')).toHaveAttribute('href', '/playground/tabular-classification/dataset/UPLOAD?dataset=wine')
+    expect(queryByTestId('Test-DatasetModel-n4l/wine.n4l/data/wine.csv')).toBeNull()
+    // Regresión: Salary, con su modelo ya entrenado (en su paquete .n4l)
     fireEvent.click(getByText('pages.index.regression.1-title'))
     expect(getByTestId('Test-DatasetTrain-SALARY')).toHaveAttribute('href', '/playground/regression/dataset/SALARY')
-    expect(queryByTestId('Test-DatasetModel-SALARY')).toBeNull()
+    expect(getByTestId('Test-DatasetModel-SALARY')).toHaveAttribute('href', '/playground/regression/model/SALARY')
   })
 
   test('Datasets: un dataset extra explica para qué sirve', async () => {
@@ -115,12 +115,12 @@ describe('Tests for Pages', () => {
     expect(queryByTestId('Test-DatasetModel-IRIS')).toBeNull()
     expect(getByText('datasets.clustering.examples-title')).toBeInTheDocument()
     // Los de práctica, en la página de subir datos del agrupamiento, con su frase de agrupamiento
-    expect(getByTestId('Test-DatasetTrain-datasets/01-regression/breast-cancer/wdbc.csv'))
+    expect(getByTestId('Test-DatasetTrain-n4l/breast-cancer.n4l/data/wdbc.csv'))
       .toHaveAttribute('href', '/playground/clustering/dataset/UPLOAD?dataset=wdbc')
     expect(getByTestId('Test-Dataset-datasets/hepatitis-c.csv')).toHaveTextContent('datasets.summary.clustering.hepatitis-c')
     fireEvent.click(getByTestId('Test-DatasetInfo-WINE'))
     const dialog = await findByRole('dialog')
-    expect(dialog).toHaveTextContent('datasets.summary.clustering.WINE')
+    expect(dialog).toHaveTextContent('n4l-wine:tasks.clustering.summary')
     expect(dialog).toHaveTextContent('datasets.clustering.examples-text')
   })
 

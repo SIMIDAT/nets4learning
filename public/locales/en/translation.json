@@ -286,22 +286,6 @@
     "try-model": "Try the model",
     "files": "Files",
     "summary": {
-      "tabular-classification": {
-        "CAR": "Whether a car is acceptable given its price, maintenance, seats, boot and safety: everything is a category.",
-        "IRIS": "The classic to start with: the species of a flower from the measurements of its petals and sepals.",
-        "LYMPHOGRAPHY": "The diagnosis of a lymphoma from the features of a lymphography: few rows and very unbalanced classes."
-      },
-      "regression": {
-        "SALARY": "The salary by years of experience (and, in the second file, also age, education and job title).",
-        "AUTO_MPG": "The fuel consumption of 70s and 80s cars, in miles per gallon, from their engine, weight and year.",
-        "HOUSING_PRICES": "The median house price in Boston neighbourhoods by crime rate, rooms or distance to the centre.",
-        "STUDENT_PERFORMANCE": "The final grade of Portuguese secondary school students, in maths and Portuguese, by their background and habits.",
-        "WINE": "The quality of Portuguese vinho verde, red and white, from its chemical analysis."
-      },
-      "image-classification": {
-        "IMAGE-MNIST": "Handwritten digits from 0 to 9: the “hello world” of convolutional networks.",
-        "IMAGE-KMNIST": "Ten handwritten hiragana characters from classical Japanese: like MNIST, but harder."
-      },
       "extra": {
         "hepatitis-c": "Blood tests of donors and patients to tell hepatitis C, fibrosis and cirrhosis apart.",
         "ecoli": "Where a protein is inside the E. coli bacterium: eight classes, some with very few cases.",
@@ -313,9 +297,6 @@
         "wdbc": "Whether a breast tumour is benign or malignant from 30 measurements of its cell nuclei in an image."
       },
       "clustering": {
-        "IRIS": "The measurements of 150 flowers, without the species: one species separates on its own and the other two touch.",
-        "WINE": "13 chemical components of 178 wines: unscaled, proline rules; scaled, the groups are almost the three cultivars.",
-        "NEW-THYROID": "Five thyroid tests: almost all are normal, so the hypo- and hyperthyroidism groups are small.",
         "breast-cancer-wisconsin": "Nine cell traits of 699 tumours, from 1 to 10: with two groups, they almost match the benign and malignant ones.",
         "wdbc": "30 measurements of the cell nuclei of 569 tumours: with two groups, k-means separates benign from malignant quite well.",
         "ecoli": "Seven scores of 336 proteins and eight places in the bacterium, some with two or three cases: those small groups get lost.",
@@ -698,7 +679,10 @@
     "backend-error": "Could not switch to {{backend}}",
     "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}.",
     "menu": "Menu",
-    "tasks": "Tasks"
+    "tasks": "Tasks",
+    "packages": ".n4l packages",
+    "packages-saved_one": "{{count}} package saved in this browser",
+    "packages-saved_other": "{{count}} packages saved in this browser"
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -753,470 +737,6 @@
           "text": "Enter separate by point and eat the values.",
           "items": "(parameter-1; parameter-2; parameter-3; ...; parameter-n)."
         }
-      },
-      "car": {
-        "title": "CAR - Car classification",
-        "description": {
-          "text-1": "The dataset <i> car evaluation </i> allows to evaluate vehicles through the following structure",
-          "text-2": "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>",
-          "details-1": {
-            "title": "Information",
-            "list": {
-              "1": "<b>buying:</b> Purchase price.",
-              "2": "<b>maint: </b> Maintenance cost.",
-              "3": "<b>doors: </b> Number of doors.",
-              "4": "<b>persons: </b> Number of places.",
-              "5": "<b>lug_boot: </b> Trunk size.",
-              "6": "<b>safety: </b> Estimated vehicle security."
-            }
-          },
-          "details-2": {
-            "title": "Input data",
-            "text-1": "Characteristics of the car",
-            "list": {
-              "1": "<b>buying: </b> vhigh, high, med, low.",
-              "2": "<b>maint: </b> vhigh, high, med, low.",
-              "3": "<b>doors: </b> 2, 3, 4, 5more.",
-              "4": "<b>persons: </b> 2, 4, more.",
-              "5": "<b>lug_boot: </b> small, med, big.",
-              "6": "<b>safety: </b> low, med, high."
-            }
-          },
-          "details-3": {
-            "title": "Output data",
-            "text-1": "Vehicle acceptance",
-            "list": {
-              "1": "<b>unacc </b>: Inaccessible",
-              "2": "<b>acc </b>: Accessible",
-              "3": "<b>good </b>: Good",
-              "4": "<b>vgood </b>: Very good"
-            }
-          },
-          "details-4": {
-            "title": "References",
-            "list": {
-              "1": "Data set"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Enter the values corresponding to the car to be evaluated:",
-          "items": "(Buying; Maint; Doors; Persons; Lug_boot; Safety)",
-          "examples": "Examples:"
-        }
-      },
-      "iris": {
-        "title": "IRIS - Iris classification",
-        "description": {
-          "text-1": "The Iris-Data dataset allows to detect what type of iris plant is from the altitude and length of its petal and sepalo.",
-          "details-1": {
-            "title": "Input data",
-            "list": {
-              "1": "<b>Sepal length</b>: continuous",
-              "2": "<b>Sepal width</b>: continuous",
-              "3": "<b>Petal length</b>: continuous",
-              "4": "<b>Petal width</b>: continuous"
-            }
-          },
-          "details-2": {
-            "title": "Output data",
-            "list": {
-              "1": "<b>0</b>: Setosa",
-              "2": "<b>1</b>: Versicolor",
-              "3": "<b>2</b>: Virginica"
-            }
-          },
-          "details-3": {
-            "title": "References",
-            "list": {
-              "1": "Data set"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Enter the values corresponding to the plant to be evaluated:",
-          "items": "(sepal length; sepalo width; petal length; petal width).",
-          "examples": "Examples:"
-        }
-      },
-      "lymphography": {
-        "title": "LYMPHOGRAPHY - Lymphoma data classification",
-        "description": {
-          "text-1": "The dataset of <i> Lymphography </i> allows to detect that possible phases of a lymphoma and in what state it is.",
-          "details-input": {
-            "title": "Input data",
-            "list": {
-              "0": "<b> lymphography</b>",
-              "1": "<b> Block of affection </b>: No, Yes",
-              "2": "<b> bl. OF LYMPH. C </b>: No, Yes",
-              "3": "<b> bl. OF LYMPH. S </b>: No, Yes",
-              "4": "<b> by pass </b>: no, yes",
-              "5": "<b> extravasates </b>: No, Yes",
-              "6": "<b> regeneration of </b>: no, yes",
-              "7": "<b> Early Uptake In </b>: No, Yes",
-              "8": "<b> lym.nodes dimin </b>: 0-3",
-              "9": "<b> Lym.Nodes enlar </b>: 1-4",
-              "10": "<b> Changes in Lym. </b>: Bean, Oval, Round",
-              "11": "<b> defect in node </b>: no, Lacunar, Lac. Marginal, Lac. central",
-              "12": "<b> Changes in node </b>: No, Lacunar, Lac. Margin, Lac. central",
-              "13": "<b> changes in strong</b>",
-              "14": "<b> Special Forms </b>: No, chalices, vesicles",
-              "15": "<b> Dislocation of </b>: No, Yes",
-              "16": "<b> exclusion of no </b>: no, yes",
-              "17": "<b> no. of nodes in </b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69,> = 70"
-            }
-          },
-          "details-output": {
-            "title": "Output data",
-            "list": {
-              "0": "<b> Normal Find </b>: Normal",
-              "1": "<b> Metastases </b>: Metastasis",
-              "2": "<b> Malign Lymph </b>: Malignant lymphoma",
-              "3": "<b> fibrosis </b>: fibrosis"
-            }
-          },
-          "details-references": {
-            "title": "References",
-            "list": {
-              "0": "Data set"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Enter the corresponding values of the patient to be evaluated:",
-          "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in).",
-          "examples": "Examples:"
-        }
-      },
-      "list-datasets": {
-        "0-option-1": "Car classification",
-        "0-option-2": "Iris classification",
-        "0-option-3": "Lymphoma classification"
-      },
-      "list-models": {
-        "0-option-1": "Car classification",
-        "0-option-2": "Iris classification",
-        "0-option-3": "Lymphomas classification"
-      }
-    },
-    "1-regression": {
-      "salary": {
-        "title": "Salary for years of experience",
-        "description": {
-          "text": {
-            "0": "The \"Salary\" data set is a collection of information that relates the number of years of work experience of an individual to their corresponding salary.",
-            "1": "Each entry in the data set consists of two main variables: \"Years of Experience\" and \"Salary.\" The \"Years of Experience\" variable represents the number of years an employee has worked in their specific field, while the \"Salary\" variable represents the amount of money that employee earns annually."
-          },
-          "link": "For more information about this data set, visit the repository <link1>www.kaggy.com</link1>",
-          "details-1-input": {
-            "title": "Input",
-            "list": {
-              "0": "Years of experience - Years of experience",
-              "1": "Salary - Salary"
-            }
-          },
-          "details-2-output": {
-            "title": "Output",
-            "list": {
-              "0": "Calculated regression (<b>Salary</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "References",
-            "list": {
-              "0": "Data set 1",
-              "1": "Data set 2"
-            }
-          }
-        }
-      },
-      "auto-mpg": {
-        "title": "Auto MPG",
-        "description": {
-          "text": {
-            "0": "The <i>AUTO MPG</i> dataset was taken from the StatLib library maintained at Carnegie Mellon University. The dataset was used at the 1983 American Statistical Association Exposition.",
-            "1": "The term \"Auto MPG\" refers to miles per gallon, a unit of fuel efficiency measurement commonly used in the United States. This measure indicates how many miles a vehicle can travel on one gallon of fuel. However, \"Auto MPG\" is an English term and there is no direct translation in Spanish.\n\nIn Spanish, terms such as \"consumo de combustible\" or \"rendimiento de combustible\" are often used to refer to the fuel efficiency of a car. These terms indicate how many kilometres or miles a vehicle can travel on one litre or gallon of fuel, respectively.\n\nIt is important to note that different countries use different units of measurement for fuel consumption. For example, in some places the litre per 100 kilometres travelled (L/100 km) is used to indicate fuel efficiency."
-          },
-          "link": "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>",
-          "details-0": {
-            "title": "Information",
-            "list": {
-              "0": "<b>MPG</b>: MPG is Miles Per Gallon. This is the amount of fuel consumed by the particular vehicle of an instance. This variable can also be used as the variable to be predicted for any car",
-              "1": "<b>cylinders</b>: This attribute describes the number of cylinders of each car. This is a discrete valued attribute",
-              "2": "<b>displacement</b>: This is another attribute of the vehicle which has a quantitative continuous value describing the engine displacement",
-              "3": "<b>horsepower</b>: This attribute tells about the horsepower of a car and is a continuous valued variable",
-              "4": "<b>weight</b>: This refers to the weight of each car which is a continuous valued quantitative variable",
-              "5": "<b>acceleration</b>: The acceleration of the car",
-              "6": "<b>model year</b>: The year the model was released is mentioned in this attribute",
-              "7": "<b>origin</b>: The origin attribute has 3 discrete values. 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
-              "8": "<b>car name</b>: This is the name of the car in string"
-            }
-          },
-          "details-1": {
-            "title": "Input data",
-            "list": {
-              "0": "<b>MPG</b>: continuous",
-              "1": "<b>cylinders</b>: multi-valued discrete, 4, 6, 8",
-              "2": "<b>displacement</b>: continuous",
-              "3": "<b>horsepower</b>: continuous",
-              "4": "<b>weight</b>: continuous",
-              "5": "<b>acceleration</b>: continuous",
-              "6": "<b>model Year</b>: multi-valued discrete",
-              "7": "<b>origin</b>: multi-valued discrete, 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
-              "8": "<b>car name</b>: string (unique for each instance)"
-            }
-          },
-          "details-2": {
-            "title": "Output data",
-            "list": {
-              "0": "Calculated regression (<b>MPG/b>)"
-            }
-          },
-          "details-3": {
-            "title": "References",
-            "list": {
-              "0": "<link1>Auto MPG</link1>"
-            }
-          }
-        }
-      },
-      "housing-prices": {
-        "title": "The Housing prices",
-        "description": {
-          "text": {
-            "0": "The Boston housing data set is derived from information collected by the U.S. Census Service concerning housing in the Boston area.",
-            "1": "The data set is designed to address house price modeling and regression problems in different neighborhoods in Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research."
-          },
-          "link": "<link1>UCI data set info</link1>",
-          "details-input": {
-            "title": "Input",
-            "california": {
-              "list": {
-                "0": "<strong>Median House Value</strong>: Median house value for households within a block (measured in US Dollars) [$]",
-                "1": "<strong>Median Income</strong>: Median income for households within a block of houses (measured in tens of thousands of US Dollars) [10k$]",
-                "2": "<strong>Median Age</strong>: Median age of a house within a block; a lower number is a newer building [years]",
-                "3": "<strong>Total Rooms</strong>: Total number of rooms within a block",
-                "4": "<strong>Total Bedrooms</strong>: Total number of bedrooms within a block",
-                "5": "<strong>Population</strong>: Total number of people residing within a block",
-                "6": "<strong>Households</strong>: Total number of households, a group of people residing within a home unit, for a block",
-                "7": "<strong>Latitude</strong>: A measure of how far north a house is; a higher value is farther north [°]",
-                "8": "<strong>Longitude</strong>: A measure of how far west a house is; a higher value is farther west [°]",
-                "9": "<strong>Distance to coast</strong>: Distance to the nearest coast point [m]",
-                "10": "<strong>Distance to Los Angeles</strong>: Distance to the centre of Los Angeles [m]",
-                "11": "<strong>Distance to San Diego</strong>: Distance to the centre of San Diego [m]",
-                "12": "<strong>Distance to San Jose</strong>: Distance to the centre of San Jose [m]",
-                "13": "<strong>Distance to San Francisco</strong>: Distance to the centre of San Francisco [m]",
-                "14": null
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<strong>CRIM</strong> per capita crime rate by town",
-                "1": "<strong>ZN</strong> proportion of residential land zoned for lots over 25,000 sq.ft.",
-                "2": "<strong>INDUS</strong> proportion of non-retail business acres per town",
-                "3": "<strong>CHAS</strong> Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)",
-                "4": "<strong>NOX</strong> nitric oxides concentration (parts per 10 million)",
-                "5": "<strong>RM</strong> average number of rooms per dwelling",
-                "6": "<strong>AGE</strong> proportion of owner-occupied units built prior to 1940",
-                "7": "<strong>DIS</strong> weighted distances to five Boston employment centres",
-                "8": "<strong>RAD</strong> index of accessibility to radial highways",
-                "9": "<strong>TAX</strong> full-value property-tax rate per $10,000",
-                "10": "<strong>PTRATIO</strong> pupil-teacher ratio by town",
-                "11": "<strong>B</strong> 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town",
-                "12": "<strong>LSTAT</strong> % lower status of the population",
-                "13": "<strong>MEDV</strong> Median value of owner-occupied homes in $1000's"
-              }
-            }
-          },
-          "details-output": {
-            "title": "Output",
-            "california": {
-              "list": {
-                "0": "Calculated regression"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "Calculated regression"
-              }
-            }
-          },
-          "details-references": {
-            "title": "References",
-            "california": {
-              "list": {
-                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<link1>UCI data set info</link1>",
-                "1": "<link1>Boston housing dataset controversy</link1>"
-              }
-            }
-          }
-        }
-      },
-      "breast-cancer": {
-        "title": "Breast Cancer Wisconsin (Diagnostic and prognostic)",
-        "description": {
-          "text": {
-            "0": "It is a data set from the University of Wisconsin Hospital related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
-            "1": "Each record represents follow-up data for a breast cancer case. These are cases treated since 1984 by Dr. Wolberg, he only includes those cases that present invasive breast cancer and without evidence of metastasis.",
-            "2": "The first 30 characteristics are calculated from a digitized image of a fine needle aspiration (FNAB) of the breast mass, these data describe the characteristics of the cell nuclei present in the image, some images can be found in <link1>cs wisc</link1>",
-            "3": "The file <kbd>wdbc.csv</kbd> corresponds to the diagnostic data set and <kbd>wpbc.csv</kbd> corresponds to the prognostic data set."
-          },
-          "link": "<link1>UCI data set input </link1>",
-          "details-1-input": {
-            "title": "Input",
-            "list": {
-              "0": "<strong>ID number</strong>",
-              "1": "<strong>Outcome</strong> (R = recur, N = nonrecur)",
-              "2": "<strong>Time</strong> (recurrence time if field 2 = R, disease-free time if field 2 = N)",
-              "3": "4-33 Ten real-valued features are computed for each cell nucleus:",
-              "4": "<strong>radius</strong> (mean of distances from center to points on the perimeter)",
-              "5": "<strong>texture</strong> (standard deviation of gray-scale values)",
-              "6": "<strong>perimeter</strong>",
-              "7": "<strong>area</strong>",
-              "8": "<strong>smoothness</strong> (local variation in radius lengths)",
-              "9": "<strong>compactness</strong> (perimeter^2 / area - 1.0)",
-              "10": "<strong>concavity</strong> (severity of concave portions of the contour)",
-              "11": "<strong>concave points</strong> (number of concave portions of the contour)",
-              "12": "<strong>symmetry</strong>",
-              "13": "<strong>fractal dimension</strong> (\"coastline approximation\" - 1)"
-            }
-          },
-          "details-2-output": {
-            "title": "Output",
-            "list": {
-              "0": "Calculated regression (<b>Salary</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "References",
-            "list": {
-              "0": "<link1>Breast Cancer Wisconsin</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
-            }
-          }
-        }
-      },
-      "student-performance": {
-        "title": "Student Performance",
-        "description": {
-          "text": {
-            "0": "The data set includes data on the academic performance of students from two Portuguese schools. The data includes demographic, social characteristics, student grades, etc. Two sets of data are included, one with the performance of two different subjects: Mathematics (mat) and Portuguese language (por).",
-            "1": "The data set contains multivariate type data, real type attributes, 649 instances, and 12 distinct attributes.",
-            "2": "Important note: The target attribute G3 has a strong correlation with the attributes G2 and G1. This occurs because G3 is the grade for the last year (issued in the 3rd period), while G1 and G2 correspond to the grades for the 1st and 2nd period. It is more difficult to predict G3 without G2 and G1, but such a prediction is much more useful.",
-            "3": "The file <kbd>student-por.csv</kbd> corresponds to the data set of Portuguese student grades and <kbd>student-mat.csv</kbd> corresponds to the data set of mathematics student grades."
-          },
-          "link": "<link1>UCI data set input</link1>",
-          "details-1-input": {
-            "title": "Input",
-            "list": {
-              "0": "<strong>school</strong> - student's school (binary: 'GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)",
-              "1": "<strong>sex</strong> - student's sex (binary: 'F' - female or 'M' - male)",
-              "2": "<strong>age</strong> - student's age (numeric: from 15 to 22)",
-              "3": "<strong>address</strong> - student's home address type (binary: 'U' - urban or 'R' - rural)",
-              "4": "<strong>famsize</strong> - family size (binary: 'LE3' - less or equal to 3 or 'GT3' - greater than 3)",
-              "5": "<strong>Pstatus</strong> - parent's cohabitation status (binary: 'T' - living together or 'A' - apart)",
-              "6": "<strong>Medu</strong> - mother's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
-              "7": "<strong>Fedu</strong> - father's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
-              "8": "<strong>Mjob</strong> - mother's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
-              "9": "<strong>Fjob</strong> - father's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
-              "10": "<strong>reason</strong> - reason to choose this school (nominal: close to 'home', school 'reputation', 'course' preference or 'other')",
-              "11": "<strong>guardian</strong> - student's guardian (nominal: 'mother', 'father' or 'other')",
-              "12": "<strong>traveltime</strong> - home to school travel time (numeric: 1 - &lt; 15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt; 1 hour)",
-              "13": "<strong>studytime</strong> - weekly study time (numeric: 1 - &lt; 2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt; 10 hours)",
-              "14": "<strong>failures</strong> - number of past class failures (numeric: n if 1 &lg;=n &lg;3, else 4)",
-              "15": "<strong>schoolsup</strong> - extra educational support (binary: yes or no)",
-              "16": "<strong>famsup</strong> - family educational support (binary: yes or no)",
-              "17": "<strong>paid</strong> - extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)",
-              "18": "<strong>activities</strong> - extra-curricular activities (binary: yes or no)",
-              "19": "<strong>nursery</strong> - attended nursery school (binary: yes or no)",
-              "20": "<strong>higher</strong> - wants to take higher education (binary: yes or no)",
-              "21": "<strong>internet</strong> - Internet access at home (binary: yes or no)",
-              "22": "<strong>romantic</strong> - with a romantic relationship (binary: yes or no)",
-              "23": "<strong>famrel</strong> - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)",
-              "24": "<strong>freetime</strong> - free time after school (numeric: from 1 - very low to 5 - very high)",
-              "25": "<strong>goout</strong> - going out with friends (numeric: from 1 - very low to 5 - very high)",
-              "26": "<strong>Dalc</strong> - workday alcohol consumption (numeric: from 1 - very low to 5 - very high)",
-              "27": "<strong>Walc</strong> - weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)",
-              "28": "<strong>health</strong> - current health status (numeric: from 1 - very bad to 5 - very good)",
-              "29": "<strong>absences</strong> - number of school absences (numeric: from 0 to 93)"
-            }
-          },
-          "details-2-output": {
-            "title": "Output",
-            "list": {
-              "0": "Calculated regression"
-            }
-          },
-          "details-3-references": {
-            "title": "References",
-            "list": {
-              "0": "<link1>Student Performance</link1>"
-            }
-          }
-        }
-      },
-      "wine": {
-        "title": "Wine Quality",
-        "description": {
-          "text": {
-            "0": "The two data sets are related, as they include the red wine and Portuguese white wine variants. Said data set only includes physicochemical (inputs) and sensory (outputs) variables, the data set does not include data on grape types, wine brand or wine sales price.",
-            "1": "The dataset contains multivariate type data, real type attributes, 4898 instances, and 12 distinct attributes.",
-            "2": "This data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
-            "3": "The <kbd> wine-qualy-red.csv </kbd> file corresponds to the red wine data set and <kbd> wine-qualy-white.csv </kbd> corresponds to the white wine data set."
-          },
-          "link": "For more information about this data set visit the repository <link1>archive.ics.uci.edu</link1>.",
-          "details-1-input": {
-            "title": "Input",
-            "list": {
-              "0": "<strong>Fixed Acidity</strong>: Fixed acidity refers to the concentration of non-volatile acids in wine, mainly tartaric acid. It contributes to the freshness and stability of the wine.",
-              "1": "<strong>Volatile Acidity</strong>: Volatile acidity refers to the concentration of volatile acids, such as acetic acid, which can give an unpleasant taste if present in excess.",
-              "2": "<strong>Citric Acid</strong>: Citric acid is one of the natural organic acids present in wine. It can influence the flavor and freshness of the wine.",
-              "3": "<strong>Residual Sugar</strong>: It is the amount of sugar that remains in the wine after fermentation. A wine can be dry (little residual sugar) or sweet (more residual sugar).",
-              "4": "<strong>Chlorides</strong>: The concentration of chlorides in wine can affect its flavor and aroma, and high levels can indicate problems in production.",
-              "5": "<strong>Free Sulfur Dioxide</strong>: Sulfur dioxide is a common preservative in wine that helps prevent oxidation and the growth of unwanted microorganisms.",
-              "6": "<strong>Total Sulfur Dioxide</strong>: Represents the sum of free sulfur dioxide and sulfur dioxide bound to other molecules in the wine. It is also related to the conservation of wine.",
-              "7": "<strong>Density</strong>: Density refers to the mass of the wine per unit of volume. It can provide information on alcohol and sugar concentration.",
-              "8": "<strong>pH</strong>: The pH measures the acidity or alkalinity of the wine. A low pH indicates acidity, while a high pH indicates alkalinity. It can influence flavor perception.",
-              "9": "<strong>Sulphates</strong>: Sulfates are additives that are sometimes used in wine production. They can influence the stability and aroma of the wine.",
-              "10": "<strong>Alcohol</strong>: The concentration of alcohol in wine can vary and affects both the flavor and mouthfeel.",
-              "11": "<strong>Quality</strong>: This is the overall quality score of the wine, generally on a scale of 0 to 10, with higher values indicating better quality wines as assessed by tasters."
-            }
-          },
-          "details-2-output": {
-            "title": "Output",
-            "list": {
-              "0": "Calculated regression"
-            }
-          },
-          "details-3-references": {
-            "title": "References",
-            "list": {
-              "0": "<link1>Wine quality</link1>"
-            }
-          }
-        }
-      },
-      "list-datasets": {
-        "salary": "Salary",
-        "auto-mpg": "Auto MPG",
-        "housing-prices": "Housing Prices",
-        "breast-cancer": "Breast cancer",
-        "student-performance": "Student performance",
-        "wine": "Wine"
-      },
-      "list-models": {
-        "salary": "Salary",
-        "auto-mpg": "Auto MPG",
-        "housing-prices": "Housing prices",
-        "breast-cancer": "Breast cancer",
-        "student-performance": "Student performance",
-        "wine": "Wine"
       }
     },
     "2-object-detection": {
@@ -1570,130 +1090,8 @@
           "loading": "Loading images…"
         }
       },
-      "mnist": {
-        "title": "MNIST - Number classification",
-        "description": {
-          "text-0": "The <strong> MNIST database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of machine learning.",
-          "text-1": "The samples of the original NIST data sets were created \"re-mixing\".",
-          "text-2": "The NIST training dataset was taken from the United States Census Office. In addition, NIST's black and white images were normalized to fit into a <strong> 28 x 28 </strong> pixels and softened, which introduced gray scale levels.",
-          "details-input": {
-            "title": "Input data",
-            "list": {
-              "0": "Gray scale image and with a <strong> 28 x 28 </strong> pixels size"
-            }
-          },
-          "details-output": {
-            "title": "Output data",
-            "list": {
-              "0": "A number between 0 and 9"
-            }
-          },
-          "details-references": {
-            "title": "References"
-          }
-        }
-      },
-      "kmnist": {
-        "title": "KMNIST - Japanese character classification",
-        "description": {
-          "text-0": "<strong>Kuzushiji-MNIST (KMNIST)</strong> is a drop-in replacement for MNIST: grayscale images of <strong>28 x 28</strong> pixels and 10 classes, but instead of digits it contains handwritten Japanese characters written in <i>kuzushiji</i> (cursive script).",
-          "text-1": "Kuzushiji was the usual way of writing Japanese for over a thousand years, but it stopped being taught after the writing reform of the early 20th century and today very few people can read it. The images come from classical books digitised by the National Institute of Japanese Literature and were prepared by the ROIS-DS Center for Open Data in the Humanities (CODH).",
-          "text-2": "Each class is a modern hiragana character, but in the dataset it appears handwritten as it used to be. Until 1900 the same syllable could be written in many ways: with the kanji today's form comes from, drawn differently, or starting from another kanji. These are the <i>hentaigana</i>; that year only one form was kept, today's. That is why one class gathers strokes that look little like each other or like the modern character, and it is harder than MNIST.",
-          "details-input": {
-            "title": "Input data",
-            "list": {
-              "0": "Grayscale image of <strong>28 x 28</strong> pixels"
-            }
-          },
-          "details-output": {
-            "title": "Output data",
-            "list": {
-              "0": "One of the 10 hiragana characters: お, き, す, つ, な, は, ま, や, れ, を"
-            }
-          },
-          "details-model": {
-            "title": "Models",
-            "list": {
-              "0": "Pre-trained model: convolutional network trained with the 55,000 training images (and 5,000 more for validation), with <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> accuracy on the 10,000 test images.",
-              "1": "Training in the browser: a balanced subset is used, with <strong>2,000</strong> training images and <strong>500</strong> test images per character."
-            }
-          },
-          "forms": {
-            "title": "The 10 characters, today and before",
-            "modern": "Today",
-            "old": "Before: other forms (hentaigana), with their kanji",
-            "old-alt": "old {{char}}, from {{origin}}",
-            "note": "Under each modern character, how it is read and the kanji it comes from; under each old form, its own. The old forms are the Unicode hentaigana, drawn with the Noto Serif Hentaigana font. In the dataset they appear handwritten: to see them like that, load the test images on the model page."
-          }
-        }
-      },
-      "mobilenet": {
-        "title": "MobileNet - Image classification",
-        "description": {
-          "text-0": "MobileNet V2 is a family of neural networks for the classification of similar images and tasks.",
-          "text-1": "This model is able to differentiate between 1001 categories, identifying the main context of the image.",
-          "details-input": {
-            "title": "Input data",
-            "list": {
-              "0": "Image with color values between [0, 1] of <strong> 224 x 224 </strong> pixels."
-            }
-          },
-          "details-output": {
-            "title": "Output data",
-            "list": {
-              "0": "A number of 0 to 1001 that are each of the categories of this <link1> list </link1>"
-            }
-          },
-          "details-references": {
-            "title": "References",
-            "text-0": "Originally it was published by Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen:",
-            "list": {
-              "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
-            }
-          }
-        }
-      },
       "face-mesh": {
         "title": "-"
-      },
-      "list-models": {
-        "3-option-1": "MNIST - Number Classification",
-        "3-option-2": "MobileNet - Image Classifier",
-        "3-option-3": "ResNet - Image classifier",
-        "3-option-4": "KMNIST - Japanese character classification"
-      },
-      "resnet": {
-        "description": {
-          "text-0": "ResNet V2 is a family of network architectures for image classification with a variable number of layers.",
-          "text-1": "They are based on the original ResNet architecture published by Kaiming He, Xiangyu Zhang, Shaoqing Ren and Jian Sun: <link1>“Deep Residual Learning for Image Recognition”</link1>, 2015.",
-          "text-2": "The “V2” variant used by this model is by the same authors: <link1>“Identity Mappings in Deep Residual Networks”</link1>, 2016.",
-          "text-3": "The difference with ResNet V1 is that it applies batch normalisation before each layer with weights. The loaded model has 50 layers.",
-          "details-input": {
-            "title": "Input data",
-            "list": [
-              "A <bold>224 × 224</bold> pixel image with colour values between 0 and 1."
-            ]
-          },
-          "details-output": {
-            "title": "Output data",
-            "list": [
-              "A number from 0 to 1001: each of the categories in this <link1>list</link1>."
-            ]
-          }
-        }
-      }
-    },
-    "3-image-classification": {
-      "list-datasets": {
-        "mnist": "MNIST",
-        "kmnist": "KMNIST"
-      }
-    },
-    "clustering": {
-      "list-datasets": {
-        "iris": "Iris flowers (without the species)",
-        "wine": "Wine cultivars (without the cultivar)",
-        "new-thyroid": "Thyroid (without the diagnosis)"
       }
     }
   },
@@ -3356,7 +2754,8 @@
         "features": "{{value}} features",
         "classes": "{{value}} classes",
         "target": "target: {{value}}",
-        "images": "{{value}} 28×28 images"
+        "images": "{{value}} {{size}} images",
+        "images-color": "{{value}} {{size}} color images"
       }
     },
     "terms": {
@@ -3722,64 +3121,6 @@
   "upload-model": "Upload model",
   "upload-model-info": "You must upload a model to perform the task.",
   "upload-dataset": "Upload dataset",
-  "00-tc": {
-    "car": {
-      "buying": "Buying price",
-      "maint": "Price of the maintenance",
-      "doors": "number of doors",
-      "persons": "Capacity in terms of persons to carry",
-      "lug_boot": "The size of luggage boot",
-      "safety": "Estimated safety of the car",
-      "result": "Result",
-      "unacc": "Unacceptable",
-      "acc": "Acceptable",
-      "good": "Good",
-      "vgood": "Very good"
-    },
-    "iris": {
-      "sepal_length": "Sepal length",
-      "sepal_width": "Sepal width",
-      "petal_length": "Petal length",
-      "petal_width": "Petal width",
-      "class": "Class",
-      "Iris-setosa": "Iris setosa",
-      "Iris-versicolor": "Iris versicolor",
-      "Iris-virginica": "Iris virginica"
-    },
-    "lymphography": {
-      "lymphatics": "lymphatics",
-      "block of affere": "block of affere",
-      "bl": {
-        " of lymph": {
-          " c": "bl. of lymph. c",
-          " s": "bl. of lymph. s"
-        }
-      },
-      "by pass": "by pass",
-      "extravasates": "extravasates",
-      "regeneration": "regeneration of",
-      "early uptake in": "early uptake in",
-      "lym": {
-        "nodes dimin": "lym.nodes dimin",
-        "nodes enlar": "lym.nodes enlar"
-      },
-      "changes in lym": "changes in lym.",
-      "defect in node": "defect in node",
-      "changes in node": "changes in node",
-      "changes in stru": "changes in stru",
-      "special forms": "special forms",
-      "dislocation of": "dislocation of",
-      "exclusion of": "exclusion of no",
-      "no": {
-        " of nodes in": "no. of nodes in"
-      },
-      "Category": "Category",
-      "normal find": "normal find",
-      "metastases": "metastases",
-      "malign lymph": "malign lymph",
-      "fibrosis": "fibrosis"
-    }
-  },
   "model-summary": "Model summary",
   "breadcrumb": {
     "label": "Breadcrumb",
@@ -4189,6 +3530,58 @@
           "title": "Your turn",
           "content": "Choose a wine, predict its quality and then raise the alcohol to see how the prediction changes. You can open this guide again whenever you like with the Guide button."
         }
+      },
+      "SALARY": {
+        "intro": {
+          "title": "Salaries",
+          "content": "On this page, an already trained neural network predicts a salary from the years of experience. I will explain what each thing is, step by step. You can move on with Next, go back, mute the voice or let the guide move on by itself."
+        },
+        "dataset-select": {
+          "title": "Dataset",
+          "content": "There are two datasets: one with only the years of experience and another with the age, gender, education and job title. The trained network is the one for the first; with the second you can look at the data, but to predict you would have to train your own network."
+        },
+        "dataset": {
+          "title": "The dataset",
+          "content": "The first one has 1000 people. The highlighted column, Salary, is the salary, which usually goes up with the years of experience (from less than one to almost fifty). It is example data, meant for practising regression."
+        },
+        "form": {
+          "title": "The person's data",
+          "content": "With the first dataset, the form has a single value: the years of experience. The more years, the higher the salary the network usually predicts."
+        },
+        "result": {
+          "title": "The result",
+          "content": "Here you see the predicted salary, in the same units as the dataset. If you used a row without changing it, you will also see the real salary and the error."
+        },
+        "end": {
+          "title": "Your turn",
+          "content": "Choose a person, predict their salary and then change the years of experience to see how the prediction changes. You can open this guide again whenever you want with the Guide button."
+        }
+      },
+      "HOUSING_PRICES": {
+        "intro": {
+          "title": "Housing prices",
+          "content": "On this page, an already trained neural network predicts the median price of the houses in a Boston neighbourhood from twelve facts about the neighbourhood. I will explain what each thing is, step by step. You can move on with Next, go back, mute the voice or let the guide move on by itself."
+        },
+        "dataset-select": {
+          "title": "Dataset",
+          "content": "This model has a single dataset, Boston Housing."
+        },
+        "dataset": {
+          "title": "The dataset",
+          "content": "Each row is one of the 506 Boston neighbourhoods of the seventies. The highlighted column, MEDV, is the median value of the houses, in thousands of dollars, from 5 to 50. This version does not have column B of the original dataset, which was removed for ethical reasons."
+        },
+        "form": {
+          "title": "The neighbourhood's data",
+          "content": "The form has twelve values: crime (CRIM), residential (ZN) and industrial (INDUS) land, whether it borders the Charles River (CHAS), pollution (NOX), rooms per house (RM), age (AGE), distance to employment centres (DIS), access to highways (RAD), taxes (TAX), pupils per teacher (PTRATIO) and the percentage of lower-status population (LSTAT). The rooms and LSTAT are what is most related to the price."
+        },
+        "result": {
+          "title": "The result",
+          "content": "Here you see the predicted median price, in thousands of dollars. If you used a row without changing it, you will also see the real value and the error."
+        },
+        "end": {
+          "title": "Your turn",
+          "content": "Choose a neighbourhood, predict its price and then raise the rooms (RM) to see how the prediction changes. You can open this guide again whenever you want with the Guide button."
+        }
       }
     },
     "2-object-detection": {
@@ -4412,6 +3805,36 @@
         "end": {
           "title": "Your turn",
           "content": "Load the test images and compare several ways of writing the same character: you will see the network get it right even with very different strokes. You can open this guide again whenever you like with the Guide button."
+        }
+      },
+      "IMAGE-CIFAR10": {
+        "intro": {
+          "title": "Photo classification",
+          "content": "On this page, an already trained convolutional neural network recognises small color photos of ten classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship and truck. I will explain what each thing is, step by step. You can move on with Next, go back, mute the voice or let the guide advance on its own."
+        },
+        "model": {
+          "title": "The model",
+          "content": "The network was trained with CIFAR-10: 50,000 color photos of 32 by 32 pixels for training and 10,000 for testing. Each photo has three channels, red, green and blue, so the network receives almost four times as many numbers as with MNIST."
+        },
+        "examples": {
+          "title": "Example images",
+          "content": "There is a test photo of each class, enlarged so that you can see its pixels. Click any of them to classify it: the result appears below."
+        },
+        "upload": {
+          "title": "Upload an image",
+          "content": "Drag a photo of yours here, or choose it from your computer, and press the button to classify it. It is reduced to 32 by 32 pixels, like the ones in the dataset: it works best if the object fills almost the whole photo."
+        },
+        "result": {
+          "title": "The result",
+          "content": "Here you see the image the network has seen, already reduced, and the probability of each class. The highest one is the prediction. If you classify a test image, you will also see its real class."
+        },
+        "explain": {
+          "title": "Explainability",
+          "content": "After classifying, here you compute a heat map over the photo: with LRP, the decision is spread backwards, layer by layer, down to the pixels; with SHAP, parts of the photo are covered and you see how much the prediction changes. That shows which areas the network looked at."
+        },
+        "end": {
+          "title": "Now you",
+          "content": "Load the test images and look for the classes where the network fails most: it often confuses cats with dogs and automobiles with trucks. You can open this guide again whenever you want with the Guide button."
         }
       },
       "IMAGE-MOBILENET": {
@@ -4836,6 +4259,31 @@
           "layer": {
             "class-name": "character"
           }
+        },
+        "IMAGE-CIFAR10": {
+          "intro": {
+            "title": "Color photos",
+            "content": "On this page you train a convolutional network that recognises color photos of ten classes, from airplanes to trucks, with the images of the CIFAR-10 dataset, and then you test it with test photos or your own. I will explain each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "predict": {
+            "title": "Test the network",
+            "content": "With a trained model, choose a test photo from the dataset or upload one of yours and press the button: the network will say what it sees, with the probability of each class. Above you choose which model to test."
+          },
+          "explain": {
+            "title": "Explainability",
+            "content": "After classifying, LRP colors the pixels according to how much they counted for the decision. That shows which parts of the photo the network looked at to decide."
+          },
+          "end": {
+            "title": "Now you",
+            "content": "Train with the starting network and see in the table how often it is right: with few photos and few epochs, quite less than the pre-trained model. Then try more epochs or another convolutional layer and compare. You can open this guide again whenever you want with the Guide button."
+          },
+          "layer": {
+            "class-name": "class",
+            "conv-first": {
+              "title": "Layer {{number}}: convolution",
+              "content": "It is the first one: it receives the photo, {{inputSize}} pixels in color, that is, {{inputChannels}} maps: red, green and blue. {{filters}} filters of {{kernel}}×{{kernel}} go over it; each one looks at the three colors at once, learns to recognise a small pattern (an edge, a patch of color, a corner) and leaves a map of where it finds it. Out come {{outputChannels}} maps of {{outputSize}}, one per filter, a bit smaller than the photo because the filter does not go past the border. It has {{params}} weights to learn."
+            }
+          }
         }
       }
     },
@@ -4939,5 +4387,30 @@
   },
   "offline": {
     "bar": "You're offline: you can keep using what you had already opened; the rest will be available when the connection is back."
+  },
+  "n4l": {
+    "download": "Download .n4l",
+    "download-title": "Download this model with its data and texts in a .n4l file, to share it or open it later",
+    "local": {
+      "title": "Your .n4l packages",
+      "text": "Open a .n4l file (a model with its data and texts): it is saved in this browser and appears here.",
+      "drop": "Drag a .n4l file here or click to choose it",
+      "files": ".n4l file",
+      "version": "Version {{version}} · {{size}}",
+      "remove": "Remove",
+      "remove-title": "Remove “{{name}}” from this browser",
+      "imported": "“{{name}}” is ready: open it from its card.",
+      "error": "The file could not be opened:",
+      "open-title": "Open a .n4l file",
+      "how": "Where do they come from? On the page of each pre-trained model, “Download .n4l” gives you its package: the model, its data and its texts. After training, each model in the table is downloaded the same way, with the dataset you trained it with. You can also open one someone sends you: it only describes what it contains and how to use it, it has no code.",
+      "saved": "Saved in this browser",
+      "empty": "None yet: open a .n4l file above."
+    },
+    "download-trained-title": "Download this model in a .n4l file, with the dataset, its preprocessing and its texts: open it later in “.n4l packages”",
+    "metrics": {
+      "title": "With data it has not seen",
+      "text": "With the 20% of the dataset set aside when training it, its average error is {{mae}}; always predicting the mean, the error would be {{baseline}}. R²: {{r2}} (1 would be always right; 0, the same as predicting the mean).",
+      "no-better": "It does not predict better than always giving the mean: with these data not much more can be known."
+    }
   }
 }

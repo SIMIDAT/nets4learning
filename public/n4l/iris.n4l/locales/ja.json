@@ -1,0 +1,60 @@
+{
+  "columns": {
+    "sepal_length": "がく片の長さ",
+    "sepal_width": "がく片の幅",
+    "petal_length": "花弁の長さ",
+    "petal_width": "花弁の幅",
+    "class": "クラス"
+  },
+  "classes": {
+    "Setosa": "ヒオウギアヤメ (setosa)",
+    "Versicolor": "ブルーフラッグ (versicolor)",
+    "Virginica": "バージニカ (virginica)"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "IRIS - アヤメ分類",
+      "name": "アヤメ分類",
+      "summary": "最初に試す定番：花びらとがく片の大きさから花の種類を当てます。",
+      "description": {
+        "text": [
+          "Iris-Data データセットは、花弁と萼の長さと幅から、アヤメのどのタイプかを検出できます。"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<b>Sepal length (萼の長さ)</b>: 連続値",
+              "<b>Sepal width (萼の幅)</b>: 連続値",
+              "<b>Petal length (花弁の長さ)</b>: 連続値",
+              "<b>Petal width (花弁の幅)</b>: 連続値"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "<b>0</b>: Iris Setosa",
+              "<b>1</b>: Iris Versicolor",
+              "<b>2</b>: Iris Virginica"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>データセット</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "評価する植物に対応する値を入力してください：",
+        "items": "(萼の長さ; 萼の幅; 花弁の長さ; 花弁の幅)。",
+        "examples": "例:"
+      }
+    },
+    "clustering": {
+      "name": "アヤメ（種類なし）",
+      "summary": "150本の花の測定値（種類なし）：1つの種類は自然に分かれ、残りの2つは接しています。"
+    }
+  }
+}

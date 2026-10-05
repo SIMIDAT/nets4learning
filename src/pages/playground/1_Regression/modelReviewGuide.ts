@@ -18,6 +18,9 @@ const GUIDES: Record<string, RegressionGuide_t> = {
   // Sin G1 ni G2 (las notas de los trimestres): en su formulario se echan en falta y un paso explica por qué
   [LR_MODEL_KEYS.STUDENT_PERFORMANCE]: { fieldSteps: false, extra: { form: [guideStep('grades', 'form')] } },
   [LR_MODEL_KEYS.WINE]               : { fieldSteps: false },
+  // Dos conjuntos con columnas distintas: un paso para todo el formulario
+  [LR_MODEL_KEYS.SALARY]             : { fieldSteps: false },
+  [LR_MODEL_KEYS.HOUSING_PRICES]     : { fieldSteps: false },
 }
 
 export const REGRESSION_REVIEW_GUIDES = Object.keys(GUIDES)

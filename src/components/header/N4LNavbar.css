@@ -38,6 +38,13 @@
   font-weight: 600;
 }
 
+/* Los paquetes .n4l del usuario: con su icono y cuántos hay guardados */
+.n4l-navbar-packages-count {
+  margin-left: .375rem;
+  font-size: .7em;
+  vertical-align: .15em;
+}
+
 /* Escritorio: páginas a la izquierda y ajustes a la derecha; la página actual, subrayada sobre el borde inferior */
 @media (min-width: 992px) {
   .n4l-navbar-menu {

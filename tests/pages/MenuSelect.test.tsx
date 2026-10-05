@@ -41,7 +41,8 @@ describe('MenuSelect', () => {
 })
 
 describe('N4LBreadcrumb', () => {
-  const MODEL = 'datasets-models.0-tabular-classification.list-models.0-option-'
+  // El nombre de cada modelo, en los textos de su paquete .n4l
+  const MODEL: Record<string, string> = { 1: 'n4l-car:tasks.tabular-classification.name', 2: 'n4l-iris:tasks.tabular-classification.name' }
 
   test('en el playground enlaza a la página de la tarea y a la selección, y permite cambiar de modelo', async () => {
     const { getByTestId, getByText, findByText } = renderAt('/playground/tabular-classification/model/IRIS',
@@ -52,22 +53,22 @@ describe('N4LBreadcrumb', () => {
     expect(getByText('breadcrumb.models').closest('a')).toHaveAttribute('href', '/select-model/tabular-classification')
 
     // El desplegable enseña el modelo abierto y lista los demás de la tarea: son enlaces
-    fireEvent.click(getByText(MODEL + '2'))
-    const car = await findByText(MODEL + '1')
+    fireEvent.click(getByText(MODEL[2]))
+    const car = await findByText(MODEL[1])
     expect(car.closest('a')).toHaveAttribute('href', '/playground/tabular-classification/model/CAR')
-    expect((await findByText(MODEL + '2', { selector: '.dropdown-item' })).closest('a')).toHaveAttribute('aria-current', 'page')
+    expect((await findByText(MODEL[2], { selector: '.dropdown-item' })).closest('a')).toHaveAttribute('aria-current', 'page')
     fireEvent.click(car)
     expect(getByTestId('location')).toHaveTextContent('/playground/tabular-classification/model/CAR')
   })
 
   test('del modelo preentrenado se puede ir a entrenar con su dataset, y al revés', async () => {
     const model = renderAt('/', <N4LBreadcrumb task={'tabular-classification'} kind={'model'} example={'IRIS'} />)
-    fireEvent.click(model.getByText(MODEL + '2'))
+    fireEvent.click(model.getByText(MODEL[2]))
     expect(await model.findByTestId('Test-Breadcrumb-OtherKind')).toHaveAttribute('href', '/playground/tabular-classification/dataset/IRIS')
     model.unmount()
 
     const dataset = renderAt('/', <N4LBreadcrumb task={'regression'} kind={'dataset'} example={'AUTO_MPG'} />)
-    fireEvent.click(dataset.getByText('datasets-models.1-regression.list-datasets.auto-mpg'))
+    fireEvent.click(dataset.getByText('n4l-auto-mpg:tasks.regression.name'))
     expect(await dataset.findByTestId('Test-Breadcrumb-OtherKind')).toHaveAttribute('href', '/playground/regression/model/AUTO_MPG')
   })
 

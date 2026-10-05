@@ -37,6 +37,14 @@ export default abstract class I_MODEL_REGRESSION {
   COMPILE() {}
 
   /**
+   * Cómo predice el modelo ya entrenado del CSV `dataset` con datos que no vio al entrenarlo (los de un paquete .n4l,
+   * medidos al entrenarlos); null si no se sabe
+   */
+  TEST_METRICS(_dataset: string): { test_r2: number, test_mae: number, test_baseline_mae: number } | null {
+    return null
+  }
+
+  /**
    *
    * @return {Promise<Array<_Types.DatasetProcessed_t>>}
    */

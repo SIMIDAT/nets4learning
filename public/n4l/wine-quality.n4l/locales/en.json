@@ -1,0 +1,62 @@
+{
+  "columns": {
+    "fixed_acidity": "fixed_acidity",
+    "volatile_acidity": "volatile_acidity",
+    "citric_acid": "citric_acid",
+    "residual_sugar": "residual_sugar",
+    "chlorides": "chlorides",
+    "free_sulfur_dioxide": "free_sulfur_dioxide",
+    "total_sulfur_dioxide": "total_sulfur_dioxide",
+    "density": "density",
+    "pH": "pH",
+    "sulphates": "sulphates",
+    "alcohol": "alcohol",
+    "quality": "quality"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Wine Quality",
+      "name": "Wine",
+      "summary": "The quality of Portuguese vinho verde, red and white, from its chemical analysis.",
+      "description": {
+        "text": [
+          "The two data sets are related, as they include the red wine and Portuguese white wine variants. Said data set only includes physicochemical (inputs) and sensory (outputs) variables, the data set does not include data on grape types, wine brand or wine sales price.",
+          "The dataset contains multivariate type data, real type attributes, 4898 instances, and 12 distinct attributes.",
+          "This data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
+          "For more information about this data set visit the repository <link1>archive.ics.uci.edu</link1>."
+        ],
+        "sections": [
+          {
+            "title": "Input",
+            "items": [
+              "<strong>Fixed Acidity</strong>: Fixed acidity refers to the concentration of non-volatile acids in wine, mainly tartaric acid. It contributes to the freshness and stability of the wine.",
+              "<strong>Volatile Acidity</strong>: Volatile acidity refers to the concentration of volatile acids, such as acetic acid, which can give an unpleasant taste if present in excess.",
+              "<strong>Citric Acid</strong>: Citric acid is one of the natural organic acids present in wine. It can influence the flavor and freshness of the wine.",
+              "<strong>Residual Sugar</strong>: It is the amount of sugar that remains in the wine after fermentation. A wine can be dry (little residual sugar) or sweet (more residual sugar).",
+              "<strong>Chlorides</strong>: The concentration of chlorides in wine can affect its flavor and aroma, and high levels can indicate problems in production.",
+              "<strong>Free Sulfur Dioxide</strong>: Sulfur dioxide is a common preservative in wine that helps prevent oxidation and the growth of unwanted microorganisms.",
+              "<strong>Total Sulfur Dioxide</strong>: Represents the sum of free sulfur dioxide and sulfur dioxide bound to other molecules in the wine. It is also related to the conservation of wine.",
+              "<strong>Density</strong>: Density refers to the mass of the wine per unit of volume. It can provide information on alcohol and sugar concentration.",
+              "<strong>pH</strong>: The pH measures the acidity or alkalinity of the wine. A low pH indicates acidity, while a high pH indicates alkalinity. It can influence flavor perception.",
+              "<strong>Sulphates</strong>: Sulfates are additives that are sometimes used in wine production. They can influence the stability and aroma of the wine.",
+              "<strong>Alcohol</strong>: The concentration of alcohol in wine can vary and affects both the flavor and mouthfeel.",
+              "<strong>Quality</strong>: This is the overall quality score of the wine, generally on a scale of 0 to 10, with higher values indicating better quality wines as assessed by tasters."
+            ]
+          },
+          {
+            "title": "Output",
+            "items": [
+              "Calculated regression"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Wine quality</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

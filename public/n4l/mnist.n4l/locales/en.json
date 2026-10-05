@@ -1,0 +1,37 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "MNIST - Number classification",
+      "name": "MNIST - Number Classification",
+      "summary": "Handwritten digits from 0 to 9: the “hello world” of convolutional networks.",
+      "description": {
+        "text": [
+          "The <strong> MNIST database </strong> is a large database of handwritten digits. The database is widely used for training and tests in the field of machine learning.",
+          "The samples of the original NIST data sets were created \"re-mixing\".",
+          "The NIST training dataset was taken from the United States Census Office. In addition, NIST's black and white images were normalized to fit into a <strong> 28 x 28 </strong> pixels and softened, which introduced gray scale levels."
+        ],
+        "sections": [
+          {
+            "title": "Input data",
+            "items": [
+              "Gray scale image and with a <strong> 28 x 28 </strong> pixels size"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "A number between 0 and 9"
+            ]
+          },
+          {
+            "title": "Models",
+            "items": [
+              "Pre-trained model: the convolutional network of the Keras example (two convolutional and two dense layers), trained with the 60,000 MNIST training images. It gets <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> of the {{test_images, number}} test images right, which it did not see during training.",
+              "Training in the browser: each training run takes <strong>11,000</strong> random images out of the 55,000 training images and <strong>2,000</strong> out of the 10,000 test images."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

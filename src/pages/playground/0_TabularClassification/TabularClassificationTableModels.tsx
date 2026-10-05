@@ -18,6 +18,7 @@ import { useTabularClassificationContext } from '@context/useTabularClassificati
 import { useParams } from 'react-router'
 import { TASKS } from '@/TASKS'
 import N4LReportButton from '@components/report/N4LReportButton'
+import N4LDownloadTrained from '@components/n4l/N4LDownloadTrained'
 import { historyNumbers } from '@core/report/trainingReport'
 import { denseLayerSummary } from '@components/neural-network/layerSummary'
 
@@ -26,7 +27,9 @@ type TabularClassificationTableModelsProps_t = {
 }
 export default function TabularClassificationTableModels(props: TabularClassificationTableModelsProps_t) {
   const { rowsPerPage = 5 } = props
-  const { generatedModels: listModels, isTraining } = useTabularClassificationContext()
+  const { generatedModels: listModels, isTraining, iModelInstance, datasets } = useTabularClassificationContext()
+  // Las clases en el orden de las salidas de los modelos (las del conjunto preparado), para descargarlos como .n4l
+  const classes = datasets.datasets[datasets.index]?.data_processed?.classes ?? []
   const prefix = 'generator.table-models.'
 
   const [activePage, setActivePage] = useState(0)
@@ -143,6 +146,10 @@ export default function TabularClassificationTableModels(props: TabularClassific
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LDownloadTrained pkg={iModelInstance?.N4L_PACKAGE() ?? null} task={TASKS.TABULAR_CLASSIFICATION}
+                              model={value.model} input={'scaled'} classes={classes} history={value.history.history as Record<string, number[]>}
+                              layers={value.layerList.map(({ units, activation }) => ({ class: 'dense', units, activation: activation ?? 'linear' }))}
+                              number={(activePage * rowsPerPage) + index + 1} />
                             <N4LReportButton getReport={() => ({
                                 version   : 1,
                                 task      : TASKS.TABULAR_CLASSIFICATION,

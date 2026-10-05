@@ -36,18 +36,20 @@ function keysOf(node: unknown, prefix: string): string[] {
   return Object.entries(node as Record<string, unknown>).flatMap(([key, value]) => keysOf(value, `${prefix}.${key}`))
 }
 
-/** Las columnas de entrada de un CSV de regresión (sin la variable objetivo) */
+/** Las columnas de entrada de un CSV de regresión (sin la variable objetivo), en su paquete .n4l */
 function csvFeatures(file: string, target: string) {
-  const header = readFileSync(path.resolve(__dirname, '../../public/datasets/01-regression/', file), 'utf8').split('\n')[0]
+  const header = readFileSync(path.resolve(__dirname, '../../public/n4l/', file), 'utf8').split('\n')[0]
   return header.trim().split(',').filter((column) => column !== target)
 }
 
 type Case_t = { task: string, prefix: string, model: string, build: (t: GuideTranslate_t) => GuideStep_t[] | null }
 
 const REGRESSION_FIELDS: Record<string, string[]> = {
-  AUTO_MPG           : csvFeatures('auto-mpg/auto-mpg.csv', 'mpg'),
-  STUDENT_PERFORMANCE: csvFeatures('student-performance/student-mat-2024.csv', 'G3'),
-  WINE               : csvFeatures('wine-quality/wine-quality-red.csv', 'quality'),
+  AUTO_MPG           : csvFeatures('auto-mpg.n4l/data/auto-mpg.csv', 'mpg'),
+  STUDENT_PERFORMANCE: csvFeatures('student-performance.n4l/data/student-mat-2024.csv', 'G3'),
+  WINE               : csvFeatures('wine-quality.n4l/data/wine-quality-red.csv', 'quality'),
+  SALARY             : csvFeatures('salary.n4l/data/salary.csv', 'Salary'),
+  HOUSING_PRICES     : csvFeatures('boston-housing.n4l/data/boston-housing-2020.csv', 'MEDV'),
 }
 
 async function cases(): Promise<Case_t[]> {
@@ -63,9 +65,11 @@ async function cases(): Promise<Case_t[]> {
     { task: 'object-detection', prefix: 'guide.2-object-detection', model, build: (t: GuideTranslate_t) => objectDetectionReviewGuide(t, model) }))
   const images = await Promise.all(IMAGE_CLASSIFICATION_REVIEW_GUIDES.map(async (model) => {
     const ModelClass = await MAP_IC_CLASSES[model]()
-    // Los de 28×28 se pueden dibujar y son LayersModel (con resumen); MobileNet, ni lo uno ni lo otro
-    const drawable = new ModelClass(((key: string) => key) as never).DRAWABLE
-    return { task: 'image-classification', prefix: 'guide.3-image-classification', model, build: (t: GuideTranslate_t) => imageClassificationReviewGuide(t, model, { drawable, summary: drawable }) }
+    // Los de gris se pueden dibujar; los de un conjunto tienen imágenes de test y son LayersModel (con resumen); MobileNet,
+    // nada de eso
+    const instance = new ModelClass(((key: string) => key) as never)
+    const options = { drawable: instance.DRAWABLE, summary: instance.TEST_IMAGES, testImages: instance.TEST_IMAGES }
+    return { task: 'image-classification', prefix: 'guide.3-image-classification', model, build: (t: GuideTranslate_t) => imageClassificationReviewGuide(t, model, options) }
   }))
   return [...tabular, ...regression, ...detection, ...images]
 }
@@ -122,11 +126,15 @@ describe('Guías de las páginas de los modelos', () => {
     expect(student.indexOf('guide.1-regression.STUDENT_PERFORMANCE.grades.title'))
       .toBe(student.indexOf('guide.1-regression.STUDENT_PERFORMANCE.form.title') + 1)
     // Sin dibujo (MobileNet), sin los pasos del dibujo ni de las imágenes de test
-    expect(targets(imageClassificationReviewGuide(t, 'IMAGE-MOBILENET', { drawable: false, summary: false })))
+    expect(targets(imageClassificationReviewGuide(t, 'IMAGE-MOBILENET', { drawable: false, summary: false, testImages: false })))
       .not.toEqual(expect.arrayContaining(['[data-guide="draw"]', '[data-guide="model-summary"]']))
-    expect(targets(imageClassificationReviewGuide(t, 'IMAGE-MNIST', { drawable: true, summary: true })))
+    expect(targets(imageClassificationReviewGuide(t, 'IMAGE-MNIST', { drawable: true, summary: true, testImages: true })))
       .toEqual(expect.arrayContaining(['[data-guide="draw"]', '[data-guide="test-images"]', '[data-guide="model-summary"]']))
+    // Fotos en color (CIFAR-10): imágenes de test, pero sin dibujo
+    const cifar = targets(imageClassificationReviewGuide(t, 'IMAGE-CIFAR10', { drawable: false, summary: true, testImages: true }))
+    expect(cifar).toContain('[data-guide="test-images"]')
+    expect(cifar).not.toContain('[data-guide="draw"]')
     expect(tabularReviewGuide(t, 'UPLOAD', [])).toBeNull()
-    expect(regressionReviewGuide(t, 'SALARY', [])).toBeNull()
+    expect(regressionReviewGuide(t, 'BREAST_CANCER', [])).toBeNull()
   })
 })

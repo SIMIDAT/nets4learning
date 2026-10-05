@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 
 import type { CharacterForms_t } from '../models/characterForms'
 
-const asset = (path: string) => import.meta.env.VITE_PATH + '/assets/' + path
-
 /**
  * Cada carácter como se escribe hoy (con cómo se lee y el kanji del que viene) junto a todas sus formas antiguas, cada
  * una con su kanji. Para la información del modelo: cabe también en la columna estrecha de la página del modelo
@@ -32,7 +30,7 @@ export function CharacterFormsTable({ characters, prefix }: { characters: Charac
                 <div className={'n4l-character-old-list'}>
                   {old.map(({ image, origin: from }) => (
                     <figure key={image} className={'n4l-character-old'}>
-                      <img src={asset(image)} width={44} height={44} loading={'lazy'} alt={t(prefix + 'old-alt', { char, origin: from })} />
+                      <img src={image} width={44} height={44} loading={'lazy'} alt={t(prefix + 'old-alt', { char, origin: from })} />
                       <figcaption lang={'ja'} aria-hidden={true}>{from}</figcaption>
                     </figure>
                   ))}
@@ -69,8 +67,8 @@ export function CharacterFormsExamples({ characters, forms, prefix, disabled, on
           <div className={'d-flex align-items-end gap-2'}>
             <div className={'text-center'}>
               <button type={'button'} className={'n4l-example-image n4l-character-example-modern'} disabled={disabled}
-                onClick={() => onClassify(asset(modern))} aria-label={t(prefix + 'classify-modern', { char })}>
-                <img src={asset(modern)} alt={''} />
+                onClick={() => onClassify(modern)} aria-label={t(prefix + 'classify-modern', { char })}>
+                <img src={modern} alt={''} />
               </button>
               <div className={'n4l-character-example-label'}>{t(prefix + 'modern')}</div>
             </div>
@@ -79,8 +77,8 @@ export function CharacterFormsExamples({ characters, forms, prefix, disabled, on
                 {old.slice(0, forms).map(({ image, origin }) => (
                   <div key={image} className={'text-center'}>
                     <button type={'button'} className={'n4l-example-image n4l-character-example-old'} disabled={disabled}
-                      onClick={() => onClassify(asset(image))} aria-label={t(prefix + 'classify-old', { char, origin })}>
-                      <img src={asset(image)} alt={''} />
+                      onClick={() => onClassify(image)} aria-label={t(prefix + 'classify-old', { char, origin })}>
+                      <img src={image} alt={''} />
                     </button>
                     <div className={'n4l-character-example-origin'} lang={'ja'} aria-hidden={true}>{origin}</div>
                   </div>

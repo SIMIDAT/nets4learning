@@ -9,9 +9,8 @@ import MLR from 'ml-regression-multivariate-linear'
 import { VERBOSE } from '@/CONSTANTS'
 import AlertHelper from '@utils/alertHelper'
 import TestComponentEasy from '@components/TestComponentEasy'
-import MODEL_1_SALARY from '@pages/playground/1_Regression/models/MODEL_1_SALARY'
-import MODEL_2_AUTO_MPG from '@pages/playground/1_Regression/models/MODEL_2_AUTO_MPG'
-import MODEL_3_HOUSING_PRICES from '@pages/playground/1_Regression/models/MODEL_3_HOUSING_PRICES'
+import { MAP_LR_CLASSES } from '@pages/playground/1_Regression/models'
+import { loadModelClass } from '@core/models/modelRegistry'
 import { createRegressionCustomModel } from '@core/controller/01-regression/RegressionModelController'
 import { DataFrameSetCellValue } from '@core/dataframe/DataFrameUtils'
 import type { IdMetric_t } from '@/types/nn-types'
@@ -23,7 +22,7 @@ export default function TestPageEasy() {
   const { t } = useTranslation()
 
   const handleClick_init = async () => {
-    // const filename = import.meta.env.VITE_PATH + '/datasets/01-regression/auto-mpg/auto-mpg.csv'
+    // const filename = import.meta.env.VITE_PATH + '/n4l/auto-mpg.n4l/data/auto-mpg.csv'
 
   }
 
@@ -203,7 +202,8 @@ export default function TestPageEasy() {
   }
 
   const handleClick_TFJSMultiple_3 = async () => {
-    const model_salary = new MODEL_1_SALARY(t, () => { })
+    // Los modelos de regresión están en paquetes .n4l (public/n4l/): su clase sale del registro
+    const model_salary = new (await loadModelClass(MAP_LR_CLASSES, 'SALARY'))(t, () => { })
     const datasets_salary = await model_salary.DATASETS()
     const salary = datasets_salary[0]
     if (!salary.data_processed) {
@@ -262,7 +262,7 @@ export default function TestPageEasy() {
 
 
   const handleClick_TFJSMultiple_4 = async () => {
-    const model_auto = new MODEL_2_AUTO_MPG(t, () => { })
+    const model_auto = new (await loadModelClass(MAP_LR_CLASSES, 'AUTO_MPG'))(t, () => { })
     const datasets_auto = await model_auto.DATASETS()
     console.log({ datasets_auto })
     const auto = datasets_auto[0]
@@ -314,10 +314,11 @@ export default function TestPageEasy() {
 
 
   const handleClick_TFJSMultiple_5 = async () => {
-    const model_housing_prices = new MODEL_3_HOUSING_PRICES(t, () => { })
+    const model_housing_prices = new (await loadModelClass(MAP_LR_CLASSES, 'HOUSING_PRICES'))(t, () => { })
     const datasets_housing_prices = await model_housing_prices.DATASETS()
     console.log({ datasets_housing_prices })
-    const housing_prices = datasets_housing_prices[1]
+    // El de Boston (el de California ya no está)
+    const housing_prices = datasets_housing_prices[0]
     if (!housing_prices.data_processed) {
       console.error('Housing Prices dataset not found')
       return

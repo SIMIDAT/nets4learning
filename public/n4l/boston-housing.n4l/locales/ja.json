@@ -1,0 +1,65 @@
+{
+  "columns": {
+    "CRIM": "CRIM",
+    "ZN": "ZN",
+    "INDUS": "INDUS",
+    "CHAS": "CHAS",
+    "NOX": "NOX",
+    "RM": "RM",
+    "AGE": "AGE",
+    "DIS": "DIS",
+    "RAD": "RAD",
+    "TAX": "TAX",
+    "PTRATIO": "PTRATIO",
+    "LSTAT": "LSTAT",
+    "MEDV": "MEDV"
+  },
+  "tasks": {
+    "regression": {
+      "title": "住宅価格",
+      "name": "住宅価格",
+      "summary": "ボストンの地区ごとの住宅価格の中央値を、犯罪率、部屋数、中心部までの距離などから予測します。",
+      "description": {
+        "text": [
+          "ボストン住宅データセットは、米国国勢調査局がボストン地域の住宅について収集した情報から派生しています。",
+          "このデータセットは、米国マサチューセッツ州ボストン地域のさまざまな近隣地域の住宅価格の回帰およびモデリングの問題に対処するように設計されています。このデータセットは、教育および研究の例や実践に一般的に使用されています。",
+          "<link1>UCIデータセットエントリ</link1>"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>CRIM</strong> 市内の一人当たりの犯罪率",
+              "<strong>ZN</strong> 25,000平方フィート以上の区画の住宅地の割合。",
+              "<strong>INDUS</strong> 市内の一人当たりの非小売業の割合",
+              "<strong>CHAS</strong> チャールズ川ダミー変数（トラクトが川と接している場合は1、それ以外の場合は0）",
+              "<strong>NOX</strong> 窒素酸化物濃度（1000万分の1）",
+              "<strong>RM</strong> 住宅あたりの平均部屋数",
+              "<strong>AGE</strong> 1940年より前に建てられた所有者居住ユニットの割合",
+              "<strong>DIS</strong> 5つのボストン雇用センターまでの加重距離",
+              "<strong>RAD</strong> ラジアル高速道路へのアクセス指数",
+              "<strong>TAX</strong> 10,000ドルあたりの固定資産税",
+              "<strong>PTRATIO</strong> 生徒と教師の比率",
+              "<strong>B</strong> 1000 (Bk - 0.63)^2 (Bkは市内の一人当たりの黒人の割合)",
+              "<strong>LSTAT</strong> 人口の低所得者層の割合",
+              "<strong>MEDV</strong> 所有者居住住宅の平均価値（1000ドル）"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "計算された回帰"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>UCIデータセット情報</link1>",
+              "<link1>ボストン住宅データセットに関する論争</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

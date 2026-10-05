@@ -48,6 +48,19 @@ describe('layersGuide: un paso de la guía por cada capa de la red de imágenes'
       expect(steps.at(-1)!.content).toContain(className)
     })
 
+  test.each(LANGUAGES)('%s / IMAGE-CIFAR10: la primera convolución recibe una foto en color (tres mapas)', async (language) => {
+    const t = await translator(language)
+    const layers: ImageLayer_t[] = [{ ...LAYERS[0], inputShape: [32, 32, 3], filters: 32 }, ...LAYERS.slice(1)]
+    const steps = layersGuide(t, language, 'IMAGE-CIFAR10', layers)
+    for (const { title, content } of steps) expect(title + content).not.toMatch(/{{|}}|guide\.train/)
+    // 32×32 en color, 3 mapas; salen 32 mapas de 30×30, con 3·3·3·32 + 32 = 896 pesos
+    expect(steps[0].content).toContain('32×32')
+    expect(steps[0].content).toContain('30×30')
+    expect(steps[0].content).toContain('896')
+    expect(steps[0].content).toMatch(/\b3\b/)
+    expect(steps[0].content).not.toBe(layersGuide(t, language, 'IMAGE-MNIST', layers)[0].content)
+  })
+
   test('los pesos con el formato del idioma, y una capa que no encaja lo dice', async () => {
     const t = await translator('es')
     const steps = layersGuide(t, 'es', 'IMAGE-MNIST', LAYERS)

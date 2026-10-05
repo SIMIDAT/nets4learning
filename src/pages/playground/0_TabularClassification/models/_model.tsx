@@ -2,6 +2,7 @@ import type * as _tfjs from '@tensorflow/tfjs'
 
 import * as _Types from '@core/types'
 import type { TFunction } from 'i18next'
+import type { N4LPackage_t } from '@core/n4l/source'
 
 /** Valores de una instancia del dataset, por nombre de columna */
 export type TabularInstance_t = Record<string, string | number>
@@ -36,10 +37,20 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
     return <></>
   }
 
+  /** El paquete .n4l del que sale el modelo (para descargarlo); null si no sale de uno */
+  N4L_PACKAGE(): N4LPackage_t | null {
+    return null
+  }
+
+  /** Lo que recibe el modelo ya entrenado: las columnas codificadas o, además, escaladas (como al entrenar aquí) */
+  MODEL_INPUT(): 'encoded' | 'scaled' {
+    return 'encoded'
+  }
+
   /**
    * Salida del modelo (posición en CLASSES) de una clase tal como aparece en el conjunto de datos; -1 si no se
    * reconoce. Por defecto, la de CLASSES con ese nombre (lo que sigue al último punto de la clave) o, si no hay, la
-   * que termina igual ("Setosa" o "0 Iris-setosa" → "00-tc.iris.Iris-setosa").
+   * que termina igual ("Setosa" o "0 Iris-setosa" → "…classes.Setosa").
    */
   CLASS_INDEX(target: unknown): number {
     const name = String(target).toLowerCase()

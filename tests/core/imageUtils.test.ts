@@ -67,7 +67,7 @@ describe('grayscaleToImageData', () => {
 describe('SpriteImageDataset: imágenes de test', () => {
 
   test('cuenta las imágenes de test y da la clase y los píxeles de cada una', () => {
-    const dataset = new SpriteImageDataset({ name: 'TEST', imagesUrl: '', labelsUrl: '', numElements: 3, numTrain: 1 })
+    const dataset = new SpriteImageDataset({ name: 'TEST', imagesUrl: '', labelsUrl: '', numElements: 3, numTrain: 1, numClasses: 10, image: { width: 28, height: 28, channels: 1 } })
     const oneHot = (label: number) => Array.from({ length: 10 }, (_, i) => (i === label ? 1 : 0))
     // Lo que deja load(): las dos imágenes de test y sus etiquetas en one-hot
     Object.assign(dataset, {

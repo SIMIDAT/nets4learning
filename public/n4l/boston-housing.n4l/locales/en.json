@@ -1,0 +1,65 @@
+{
+  "columns": {
+    "CRIM": "CRIM",
+    "ZN": "ZN",
+    "INDUS": "INDUS",
+    "CHAS": "CHAS",
+    "NOX": "NOX",
+    "RM": "RM",
+    "AGE": "AGE",
+    "DIS": "DIS",
+    "RAD": "RAD",
+    "TAX": "TAX",
+    "PTRATIO": "PTRATIO",
+    "LSTAT": "LSTAT",
+    "MEDV": "MEDV"
+  },
+  "tasks": {
+    "regression": {
+      "title": "The Housing prices",
+      "name": "Housing Prices",
+      "summary": "The median house price in Boston neighbourhoods by crime rate, rooms or distance to the centre.",
+      "description": {
+        "text": [
+          "The Boston housing data set is derived from information collected by the U.S. Census Service concerning housing in the Boston area.",
+          "The data set is designed to address house price modeling and regression problems in different neighborhoods in Boston, Massachusetts, United States. This data set is commonly used for examples and practices in education and research.",
+          "<link1>UCI data set info</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Input",
+            "items": [
+              "<strong>CRIM</strong> per capita crime rate by town",
+              "<strong>ZN</strong> proportion of residential land zoned for lots over 25,000 sq.ft.",
+              "<strong>INDUS</strong> proportion of non-retail business acres per town",
+              "<strong>CHAS</strong> Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)",
+              "<strong>NOX</strong> nitric oxides concentration (parts per 10 million)",
+              "<strong>RM</strong> average number of rooms per dwelling",
+              "<strong>AGE</strong> proportion of owner-occupied units built prior to 1940",
+              "<strong>DIS</strong> weighted distances to five Boston employment centres",
+              "<strong>RAD</strong> index of accessibility to radial highways",
+              "<strong>TAX</strong> full-value property-tax rate per $10,000",
+              "<strong>PTRATIO</strong> pupil-teacher ratio by town",
+              "<strong>B</strong> 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town",
+              "<strong>LSTAT</strong> % lower status of the population",
+              "<strong>MEDV</strong> Median value of owner-occupied homes in $1000's"
+            ]
+          },
+          {
+            "title": "Output",
+            "items": [
+              "Calculated regression"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>UCI data set info</link1>",
+              "<link1>Boston housing dataset controversy</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

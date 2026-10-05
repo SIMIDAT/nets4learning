@@ -1,0 +1,54 @@
+{
+  "classes": {
+    "airplane": "airplane",
+    "automobile": "automobile",
+    "bird": "bird",
+    "cat": "cat",
+    "deer": "deer",
+    "dog": "dog",
+    "frog": "frog",
+    "horse": "horse",
+    "ship": "ship",
+    "truck": "truck"
+  },
+  "tasks": {
+    "image-classification": {
+      "title": "CIFAR-10 - Photo classification",
+      "name": "CIFAR-10 - Photo classification",
+      "summary": "32×32 color photos of ten classes, from airplanes to trucks: the step from digits to real photos.",
+      "description": {
+        "text": [
+          "<strong>CIFAR-10</strong> is a set of 60,000 color photos of <strong>32 x 32</strong> pixels in 10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship and truck. Alex Krizhevsky, Vinod Nair and Geoffrey Hinton prepared it in 2009 from the 80 million tiny images collection.",
+          "Unlike MNIST, each image has three channels (red, green and blue) and the object can appear in any position, size, color or background. With so few pixels, it is sometimes hard even for a person: a cat and a dog, or an automobile and a truck, are easily confused."
+        ],
+        "sections": [
+          {
+            "title": "Input data",
+            "items": [
+              "Color (RGB) photo of <strong>32 x 32</strong> pixels, each value between 0 and 1"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "One of the 10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship or truck"
+            ]
+          },
+          {
+            "title": "Models",
+            "items": [
+              "Pre-trained model: convolutional network (three blocks of two convolutional layers and two dense layers) trained with the 50,000 training images, randomly flipped and shifted so that it learns more. It gets <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> of the {{test_images, number}} test images of the dataset right, which it did not see during training.",
+              "Training in the browser: a balanced subset is used, with <strong>500</strong> training images and <strong>200</strong> test images per class. With so few photos and few epochs, a small network stays far from the pre-trained model."
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Dataset</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

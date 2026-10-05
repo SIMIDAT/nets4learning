@@ -1,0 +1,645 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "breast-cancer",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/15/breast+cancer+wisconsin+original",
+    "links": {
+      "link2": "https://www.cs.wisc.edu/~street/images/",
+      "link3": "https://archive.ics.uci.edu/dataset/16/breast+cancer+wisconsin+prognostic",
+      "link4": "https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic"
+    },
+    "citation": "@misc{misc_breast_cancer_wisconsin_(prognostic)_16,\n  author       = {Wolberg,William, Street,W., and Mangasarian,Olvi},\n  title        = {{Breast Cancer Wisconsin (Prognostic)}},\n  year         = {1995},\n  howpublished = {UCI Machine Learning Repository},\n  note         = {{DOI}: https://doi.org/10.24432/C5GK50}\n}"
+  },
+  "datasets": [
+    {
+      "id": "breast-cancer-wisconsin",
+      "file": "data/breast-cancer-wisconsin.csv",
+      "info": "data/breast-cancer-wisconsin.names",
+      "rows": 699,
+      "columns": [
+        {
+          "name": "Sample_code_number",
+          "role": "ID",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "id number"
+        },
+        {
+          "name": "Clump_Thickness",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Uniformity_of_Cell_Size",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Uniformity_of_Cell_Shape",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Marginal_Adhesion",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Single_Epithelial_Cell_Size",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Bare_Nuclei",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 16,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Bland_Chromatin",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Normal_Nucleoli",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Mitoses",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "1 - 10"
+        },
+        {
+          "name": "Class",
+          "role": "Target",
+          "type": "Binary",
+          "missing": 0,
+          "description": "2 = benign, 4 = malignant"
+        }
+      ]
+    },
+    {
+      "id": "wdbc",
+      "file": "data/wdbc.csv",
+      "info": "data/wdbc.names",
+      "rows": 569,
+      "columns": [
+        {
+          "name": "ID",
+          "role": "ID",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "ID number"
+        },
+        {
+          "name": "radius1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), mean"
+        },
+        {
+          "name": "texture1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), mean"
+        },
+        {
+          "name": "perimeter1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, mean"
+        },
+        {
+          "name": "area1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "area, mean"
+        },
+        {
+          "name": "smoothness1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), mean"
+        },
+        {
+          "name": "compactness1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), mean"
+        },
+        {
+          "name": "concavity1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), mean"
+        },
+        {
+          "name": "concave_points1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), mean"
+        },
+        {
+          "name": "symmetry1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, mean"
+        },
+        {
+          "name": "fractal_dimension1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), mean"
+        },
+        {
+          "name": "radius2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), standard error"
+        },
+        {
+          "name": "texture2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), standard error"
+        },
+        {
+          "name": "perimeter2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, standard error"
+        },
+        {
+          "name": "area2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "area, standard error"
+        },
+        {
+          "name": "smoothness2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), standard error"
+        },
+        {
+          "name": "compactness2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), standard error"
+        },
+        {
+          "name": "concavity2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), standard error"
+        },
+        {
+          "name": "concave_points2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), standard error"
+        },
+        {
+          "name": "symmetry2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, standard error"
+        },
+        {
+          "name": "fractal_dimension2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), standard error"
+        },
+        {
+          "name": "radius3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), worst (mean of the three largest values)"
+        },
+        {
+          "name": "texture3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), worst (mean of the three largest values)"
+        },
+        {
+          "name": "perimeter3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, worst (mean of the three largest values)"
+        },
+        {
+          "name": "area3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "area, worst (mean of the three largest values)"
+        },
+        {
+          "name": "smoothness3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), worst (mean of the three largest values)"
+        },
+        {
+          "name": "compactness3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), worst (mean of the three largest values)"
+        },
+        {
+          "name": "concavity3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), worst (mean of the three largest values)"
+        },
+        {
+          "name": "concave_points3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), worst (mean of the three largest values)"
+        },
+        {
+          "name": "symmetry3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, worst (mean of the three largest values)"
+        },
+        {
+          "name": "fractal_dimension3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), worst (mean of the three largest values)"
+        },
+        {
+          "name": "Diagnosis",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "M = malignant, B = benign"
+        }
+      ]
+    },
+    {
+      "id": "wpbc",
+      "file": "data/wpbc.csv",
+      "info": "data/wpbc.names",
+      "rows": 198,
+      "columns": [
+        {
+          "name": "ID",
+          "role": "ID",
+          "type": "Integer",
+          "missing": 0,
+          "description": "ID number"
+        },
+        {
+          "name": "Time",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "recurrence time if Outcome = R, disease-free time if Outcome = N"
+        },
+        {
+          "name": "radius1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), mean"
+        },
+        {
+          "name": "texture1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), mean"
+        },
+        {
+          "name": "perimeter1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, mean"
+        },
+        {
+          "name": "area1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "area, mean"
+        },
+        {
+          "name": "smoothness1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), mean"
+        },
+        {
+          "name": "compactness1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), mean"
+        },
+        {
+          "name": "concavity1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), mean"
+        },
+        {
+          "name": "concave_points1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), mean"
+        },
+        {
+          "name": "symmetry1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, mean"
+        },
+        {
+          "name": "fractal_dimension1",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), mean"
+        },
+        {
+          "name": "radius2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), standard error"
+        },
+        {
+          "name": "texture2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), standard error"
+        },
+        {
+          "name": "perimeter2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, standard error"
+        },
+        {
+          "name": "area2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "area, standard error"
+        },
+        {
+          "name": "smoothness2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), standard error"
+        },
+        {
+          "name": "compactness2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), standard error"
+        },
+        {
+          "name": "concavity2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), standard error"
+        },
+        {
+          "name": "concave_points2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), standard error"
+        },
+        {
+          "name": "symmetry2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, standard error"
+        },
+        {
+          "name": "fractal_dimension2",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), standard error"
+        },
+        {
+          "name": "radius3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "radius (mean of distances from center to points on the perimeter), worst (mean of the three largest values)"
+        },
+        {
+          "name": "texture3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "texture (standard deviation of gray-scale values), worst (mean of the three largest values)"
+        },
+        {
+          "name": "perimeter3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "perimeter, worst (mean of the three largest values)"
+        },
+        {
+          "name": "area3",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "area, worst (mean of the three largest values)"
+        },
+        {
+          "name": "smoothness3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "smoothness (local variation in radius lengths), worst (mean of the three largest values)"
+        },
+        {
+          "name": "compactness3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "compactness (perimeter^2 / area - 1.0), worst (mean of the three largest values)"
+        },
+        {
+          "name": "concavity3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concavity (severity of concave portions of the contour), worst (mean of the three largest values)"
+        },
+        {
+          "name": "concave_points3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "concave points (number of concave portions of the contour), worst (mean of the three largest values)"
+        },
+        {
+          "name": "symmetry3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "symmetry, worst (mean of the three largest values)"
+        },
+        {
+          "name": "fractal_dimension3",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fractal dimension (\"coastline approximation\" - 1), worst (mean of the three largest values)"
+        },
+        {
+          "name": "tumor_size",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "cm",
+          "description": "diameter of the excised tumor"
+        },
+        {
+          "name": "lymph_node_status",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 4,
+          "description": "number of positive axillary lymph nodes observed at time of surgery"
+        },
+        {
+          "name": "Outcome",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "R = recur, N = nonrecur"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "regression",
+      "key": "BREAST_CANCER",
+      "runtime": "regression",
+      "datasets": [
+        "breast-cancer-wisconsin",
+        "wdbc",
+        "wpbc"
+      ],
+      "listed": false,
+      "preprocessing": [
+        {
+          "op": "label-encoder",
+          "columns": "categorical"
+        },
+        {
+          "op": "drop",
+          "columns": [
+            "Bare_Nuclei",
+            "lymph_node_status"
+          ]
+        },
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "models": [],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 16,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ]
+      }
+    }
+  ]
+}

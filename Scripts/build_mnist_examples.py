@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Genera las imágenes de ejemplo del modelo MNIST (public/assets/mnist/0.png … 9.png): cada dígito escrito con una
+Genera las imágenes de ejemplo del paquete de MNIST (public/n4l/mnist.n4l/examples/0.png … 9.png): cada dígito escrito con una
 fuente, en negro sobre fondo blanco, encajado como los de KMNIST (Scripts/build_kmnist_examples.py) y como MNIST
 centra sus dígitos: en un cuadrado de 20/28 de la imagen.
 
@@ -17,7 +17,7 @@ from PIL import ImageFont
 
 from build_kmnist_examples import render
 
-OUT_DIR = Path(__file__).resolve().parent.parent / 'public' / 'assets' / 'mnist'
+OUT_DIR = Path(__file__).resolve().parent.parent / 'public' / 'n4l' / 'mnist.n4l' / 'examples'
 DEFAULT_FONT = '/usr/share/fonts/truetype/lato/Lato-Bold.ttf'
 
 

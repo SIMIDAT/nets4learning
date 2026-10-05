@@ -10,11 +10,51 @@ test('la home enseña la tarjeta de la tarea elegida', async ({ page }) => {
 test('la barra de navegación lleva a cada página y marca la actual', async ({ page }) => {
   await page.goto('/')
   const navbar = page.locator('.n4l-navbar')
-  for (const [name, path] of [['Manual', '/manual'], ['Glosario', '/glossary'], ['Conjuntos de datos', '/datasets'], ['AED', '/analyze']]) {
+  for (const [name, path] of [['Manual', '/manual'], ['Glosario', '/glossary'], ['Conjuntos de datos', '/datasets'], ['AED', '/analyze'], ['Paquetes .n4l', '/packages']]) {
     await navbar.getByRole('link', { name, exact: true }).click()
     await expect(page).toHaveURL(new RegExp(path + '$'))
     await expect(navbar.getByRole('link', { name, exact: true })).toHaveAttribute('aria-current', 'page')
   }
+})
+
+test('un modelo se descarga como .n4l y se abre en «Paquetes .n4l»: se guarda en el navegador y se usa como los demás', async ({ page }, testInfo) => {
+  await page.goto('/playground/tabular-classification/model/IRIS')
+  const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('Test-N4LDownload').click()])
+  expect(download.suggestedFilename()).toBe('iris-1.0.0.n4l')
+  const file = testInfo.outputPath('iris-1.0.0.n4l')
+  await download.saveAs(file)
+
+  // Ya no está en los menús de las tareas, sino en su página (en la barra de navegación)
+  await page.goto('/select-model/tabular-classification')
+  await expect(page.getByTestId('Test-MenuSelectModel-Open-IRIS')).toBeVisible()
+  await expect(page.getByTestId('Test-N4LLocalPackages')).toHaveCount(0)
+  await page.locator('.n4l-navbar').getByTestId('Test-Navbar-Packages').click()
+  await expect(page).toHaveURL(/\/packages$/)
+  const local = page.getByTestId('Test-N4LLocalPackages')
+  await expect(local).toContainText('Todavía no hay ninguno')
+  // Un fichero que no es un .n4l se rechaza diciendo por qué
+  await local.locator('input#drop-zone-n4l').setInputFiles({ name: 'roto.n4l', mimeType: 'application/octet-stream', buffer: Buffer.from('hola') })
+  await expect(local.getByTestId('Test-N4LImportError')).toContainText('no es un fichero .n4l')
+
+  await local.locator('input#drop-zone-n4l').setInputFiles(file)
+  await expect(local.getByTestId('Test-N4LImported')).toContainText('Clasificación de flor iris')
+  // Una tarjeta con sus tareas: probar su modelo o entrenar con su conjunto; la barra cuenta los guardados
+  await expect(page.getByTestId('Test-Navbar-Packages')).toContainText('1')
+  await expect(local.getByTestId('Test-N4LLocal-iris')).toContainText('Clasificación tabular')
+  await local.getByTestId('Test-N4LLocal-iris-tabular-classification').getByRole('link', { name: 'Probar el modelo' }).click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/model\/local-iris$/)
+  // La miga de pan lleva de vuelta a los paquetes
+  await expect(page.getByTestId('Test-Breadcrumb').getByRole('link', { name: 'Tus paquetes .n4l' })).toHaveAttribute('href', /\/packages$/)
+  // Con sus textos (los del paquete abierto) y su modelo
+  await expect(page.locator('[data-guide="form"]')).toContainText('Longitud sépalo', { timeout: 30_000 })
+  await expect(page.getByTestId('Test-N4LDescription')).toContainText('Iris-Data')
+
+  // Sigue ahí al volver (IndexedDB) y se puede quitar
+  await page.goto('/packages')
+  await page.getByTestId('Test-N4LLocal-iris').getByRole('button', { name: /Quitar/ }).click()
+  await expect(page.getByTestId('Test-N4LLocal-iris')).toHaveCount(0)
+  await page.goto('/playground/tabular-classification/model/local-iris')
+  await expect(page).toHaveURL(/\/404$/)
 })
 
 test('«Tareas» en la cabecera abre la página de cada tarea: modelos ya entrenados o diseñar una red', async ({ page }) => {
@@ -52,7 +92,7 @@ test('las migas de pan cambian de modelo y llevan a entrenar con su dataset', as
 
 test('el AED analiza un conjunto de datos del proyecto', async ({ page }) => {
   await page.goto('/analyze')
-  await page.locator('#analyze-project-dataset').selectOption('models/00-tabular-classification/iris/iris.csv')
+  await page.locator('#analyze-project-dataset').selectOption('n4l/iris.n4l/data/iris.csv')
   await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('150')
   await expect(page.getByTestId('Test-AnalyzeTile-rows')).toContainText('150')
   await expect(page.getByTestId('Test-AnalyzeProblem')).toBeVisible()
@@ -89,7 +129,7 @@ test('desde /datasets un conjunto se abre en el AED', async ({ page }) => {
   await page.getByTestId('Test-DatasetAnalyze-car').click()
   await expect(page).toHaveURL(/\/analyze\?dataset=car$/)
   await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('1728')
-  await expect(page.locator('#analyze-project-dataset')).toHaveValue('models/00-tabular-classification/car/car.csv')
+  await expect(page.locator('#analyze-project-dataset')).toHaveValue('n4l/car.n4l/data/car.csv')
 })
 
 test('el modal de un conjunto de /datasets enseña sus datos y sus estadísticas', async ({ page }) => {
@@ -334,14 +374,14 @@ test('el paso a paso enseña un ejemplo hacia delante y hacia atrás, y con más
   await page.goto('/playground/tabular-classification/dataset/CAR')
   await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('234 neuronas')
 
-  // En la página de un modelo ya entrenado, con sus pesos: IRIS (4 + 10 + 3) cabe; AUTO_MPG no
+  // En la página de un modelo ya entrenado, con sus pesos: IRIS (4 + 10 + 3) cabe; WINE (11 + 128 + 64 + 32 + 1) no
   await page.goto('/playground/tabular-classification/model/IRIS')
   const model = page.getByTestId('Test-StepByStep')
   await expect(model).toContainText('Así calcula este modelo ya entrenado su respuesta')
   for (let i = 0; i < 3; i++) await model.getByTestId('Test-StepByStep-Next').click()
   await expect(model.getByTestId('Test-StepByStep-Phase')).toHaveText('El error')
-  await page.goto('/playground/regression/model/AUTO_MPG')
-  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('135 neuronas')
+  await page.goto('/playground/regression/model/WINE')
+  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('236 neuronas')
 })
 
 test('un conjunto de datos propio se prepara en tres pasos y después se puede entrenar', async ({ page }) => {
@@ -354,7 +394,7 @@ test('un conjunto de datos propio se prepara en tres pasos y después se puede e
 
   // Clasificación: la última columna es la clase; antes de procesar no se puede entrenar
   await page.goto('/playground/tabular-classification/dataset/UPLOAD')
-  await upload('models/00-tabular-classification/car/car.csv')
+  await upload('n4l/car.n4l/data/car.csv')
   await ok()
   const form = page.getByTestId('Test-DatasetProcess-Form')
   await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Result» tiene 4 clases')
@@ -368,7 +408,7 @@ test('un conjunto de datos propio se prepara en tres pasos y después se puede e
 
   // Regresión: un objetivo de texto no se puede predecir; hasta procesar, no se entrena
   await page.goto('/playground/regression/dataset/UPLOAD')
-  await upload('datasets/01-regression/auto-mpg/auto-mpg.csv')
+  await upload('n4l/auto-mpg.n4l/data/auto-mpg.csv')
   await ok()
   await expect(page.getByTestId('Test-TrainButton')).toBeDisabled()
   await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«mpg» va de')
@@ -389,7 +429,7 @@ test('con el ahorro de datos activado, se pregunta antes de descargar un modelo 
     Object.defineProperty(navigator, 'connection', { configurable: true, get: () => ({ saveData: true, effectiveType: '4g' }) })
   })
   const modelRequests: string[] = []
-  page.on('request', (request) => { if (request.url().includes('keras-mnist/model.json')) modelRequests.push(request.url()) })
+  page.on('request', (request) => { if (request.url().includes('mnist.n4l/models/cnn/model.json')) modelRequests.push(request.url()) })
 
   await page.goto('/playground/image-classification/model/IMAGE-MNIST')
   const consent = page.getByTestId('Test-DownloadConsent')
@@ -414,6 +454,25 @@ test('MNIST: cada imagen de ejemplo, un dígito escrito con una fuente, se clasi
     await page.getByRole('button', { name: `Clasificar el ejemplo ${digit + 1}`, exact: true }).click()
     await expect(page.getByText(new RegExp(`Clase predicha\\s*${digit}`))).toBeVisible({ timeout: 30_000 })
   }
+})
+
+test('CIFAR-10: fotos en color de 32×32, sin lienzo; cada ejemplo se clasifica como su clase y se ven las de prueba', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-CIFAR10')
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  // En color no se dibuja: se sube una foto
+  await expect(page.locator('[data-guide="draw"]')).toHaveCount(0)
+  await expect(page.locator('[data-guide="upload"]')).toBeVisible()
+  const classes = ['avión', 'automóvil', 'pájaro', 'gato', 'ciervo', 'perro', 'rana', 'caballo', 'barco', 'camión']
+  for (const [index, name] of classes.entries()) {
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${index + 1}`, exact: true }).click()
+    await expect(page.getByText(new RegExp(`Clase predicha\\s*${name}`))).toBeVisible({ timeout: 30_000 })
+  }
+  // Una de las de prueba, con su clase real
+  await page.getByTestId('Test-LoadTestDataset').click()
+  const testImages = page.locator('[data-guide="test-images"]')
+  await testImages.locator('.n4l-instance-select, button, input').first().click({ timeout: 60_000 })
+  await page.getByRole('listbox').getByRole('option').first().click()
+  await expect(page.locator('[data-guide="result"]')).toContainText('Clase real', { timeout: 30_000 })
 })
 
 test('KMNIST enseña cada carácter como se escribe hoy junto a sus formas antiguas, y cualquiera se clasifica', async ({ page }) => {
@@ -515,7 +574,7 @@ test('desde /datasets se entrena con un conjunto de práctica: el entrenador lo 
   await expect(page.getByRole('tab', { name: 'Regresión' })).toHaveAttribute('aria-selected', 'true')
 
   await page.getByRole('tab', { name: 'Clasificación tabular' }).click()
-  await page.getByTestId('Test-DatasetTrain-datasets/wine.csv').click()
+  await page.getByTestId('Test-DatasetTrain-n4l/wine.n4l/data/wine.csv').click()
   await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/UPLOAD$/)
   // El aviso de «subido» se cierra solo: lo que importa es que el formulario ya tiene el CSV
   await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Target» tiene 3 clases', { timeout: 30_000 })

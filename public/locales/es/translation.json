@@ -286,22 +286,6 @@
     "try-model": "Probar el modelo",
     "files": "Ficheros",
     "summary": {
-      "tabular-classification": {
-        "CAR": "Si un coche es aceptable según su precio, su mantenimiento, sus plazas, su maletero y su seguridad: todo son categorías.",
-        "IRIS": "El clásico para empezar: la especie de una flor a partir de las medidas de sus pétalos y sus sépalos.",
-        "LYMPHOGRAPHY": "El diagnóstico de un linfoma a partir de los rasgos de una linfografía: pocas filas y clases muy desequilibradas."
-      },
-      "regression": {
-        "SALARY": "El salario según los años de experiencia (y, en el segundo fichero, también la edad, la formación y el puesto).",
-        "AUTO_MPG": "El consumo de coches de los años 70 y 80, en millas por galón, a partir de su motor, su peso y su año.",
-        "HOUSING_PRICES": "El precio medio de la vivienda en los barrios de Boston según la criminalidad, las habitaciones o la distancia al centro.",
-        "STUDENT_PERFORMANCE": "La nota final de alumnos de secundaria portugueses, en matemáticas y en portugués, según su entorno y sus hábitos.",
-        "WINE": "La calidad de vinos verdes portugueses, tintos y blancos, según su análisis químico."
-      },
-      "image-classification": {
-        "IMAGE-MNIST": "Dígitos del 0 al 9 escritos a mano: el «hola mundo» de las redes convolucionales.",
-        "IMAGE-KMNIST": "Diez caracteres hiragana del japonés clásico escritos a mano: como MNIST, pero más difícil."
-      },
       "extra": {
         "hepatitis-c": "Análisis de sangre de donantes y de pacientes para distinguir la hepatitis C, la fibrosis y la cirrosis.",
         "ecoli": "Dónde está una proteína dentro de la bacteria E. coli: ocho clases, algunas con muy pocos casos.",
@@ -313,9 +297,6 @@
         "wdbc": "Si un tumor de mama es benigno o maligno a partir de 30 medidas de los núcleos de sus células en una imagen."
       },
       "clustering": {
-        "IRIS": "Las medidas de 150 flores, sin decirle la especie: una especie se separa sola y las otras dos se tocan.",
-        "WINE": "13 componentes químicos de 178 vinos: sin escalar manda la prolina; escalados, los grupos son casi las tres variedades.",
-        "NEW-THYROID": "Cinco análisis del tiroides: casi todos son normales, así que los grupos del hipo y del hipertiroidismo son pequeños.",
         "breast-cancer-wisconsin": "Nueve rasgos de las células de 699 tumores, del 1 al 10: con dos grupos, casi coinciden con los benignos y los malignos.",
         "wdbc": "30 medidas de los núcleos de las células de 569 tumores: con dos grupos, k-means separa bastante bien los benignos de los malignos.",
         "ecoli": "Siete puntuaciones de 336 proteínas y ocho lugares de la bacteria, algunos con dos o tres casos: esos grupos pequeños se pierden.",
@@ -698,7 +679,10 @@
     "backend-error": "No se ha podido cambiar a {{backend}}",
     "backend-error-fallback": "Este navegador no puede usarlo. TensorFlow.js sigue usando {{backend}}.",
     "menu": "Menú",
-    "tasks": "Tareas"
+    "tasks": "Tareas",
+    "packages": "Paquetes .n4l",
+    "packages-saved_one": "{{count}} paquete guardado en este navegador",
+    "packages-saved_other": "{{count}} paquetes guardados en este navegador"
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -753,470 +737,6 @@
           "text": "Introduce separado por punto y coma los valores.",
           "items": "(parámetro-1; parámetro-2; parámetro-3; ... ;parámetro-n)."
         }
-      },
-      "car": {
-        "title": "CAR - Clasificación de coches",
-        "description": {
-          "text-1": "El conjunto de datos <i>Car Evaluation</i> permite evaluar vehículos a través de la siguiente estructura",
-          "text-2": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>ics.uci.edu</link1>.",
-          "details-1": {
-            "title": "Información",
-            "list": {
-              "1": "<b>buying:</b> Precio de compra.",
-              "2": "<b>maint:</b> Costo del mantenimiento.",
-              "3": "<b>doors:</b> Número de puertas.",
-              "4": "<b>persons:</b> Número de plazas.",
-              "5": "<b>lug_boot:</b> Tamaño del maletero.",
-              "6": "<b>safety:</b> Seguridad estimada del vehículo."
-            }
-          },
-          "details-2": {
-            "title": "Datos de entrada",
-            "text-1": "Características del coche",
-            "list": {
-              "1": "<b>buying:</b> vhigh, high, med, low.",
-              "2": "<b>maint:</b> vhigh, high, med, low.",
-              "3": "<b>doors:</b> 2, 3, 4, 5more.",
-              "4": "<b>persons:</b> 2, 4, more.",
-              "5": "<b>lug_boot:</b> small, med, big.",
-              "6": "<b>safety:</b> low, med, high."
-            }
-          },
-          "details-3": {
-            "title": "Datos de salida",
-            "text-1": "Aceptación del vehículo",
-            "list": {
-              "1": "<b>UNACC</b>: Inaccesible",
-              "2": "<b>ACC</b>: Accesible",
-              "3": "<b>GOOD</b>: Bien",
-              "4": "<b>VGOOD</b>: Muy bien"
-            }
-          },
-          "details-4": {
-            "title": "Referencias",
-            "list": {
-              "1": "Conjunto de datos"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Introduce los valores correspondientes a el coche que se va a evaluar:",
-          "items": "(buying; maint; doors; persons; lug_boot; safety)",
-          "examples": "Ejemplos:"
-        }
-      },
-      "iris": {
-        "title": "IRIS - Clasificación de iris",
-        "description": {
-          "text-1": "El conjunto de datos de Iris-Data permite detectar que tipo de planta iris es a partir de altitud y longitud de su pétalo y sépalo.",
-          "details-1": {
-            "title": "Datos de entrada",
-            "list": {
-              "1": "<b>Longitud del sépalo</b>: continuo",
-              "2": "<b>Anchura del sépalo</b>: continuo",
-              "3": "<b>Longitud del pétalo</b>: continuo",
-              "4": "<b>Anchura del pétalo</b>: continuo"
-            }
-          },
-          "details-2": {
-            "title": "Datos de salida",
-            "list": {
-              "1": "<b>0</b>: Iris Setosa",
-              "2": "<b>1</b>: Iris Versicolor",
-              "3": "<b>2</b>: Iris Virginica"
-            }
-          },
-          "details-3": {
-            "title": "Referencias",
-            "list": {
-              "1": "Conjunto de datos"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Introduce los valores correspondientes a la flor que se va a evaluar:",
-          "items": "(longitud sépalo; anchura sépalo; longitud pétalo; anchura pétalo).",
-          "examples": "Ejemplos:"
-        }
-      },
-      "lymphography": {
-        "title": "LYMPHOGRAPHY - Clasificación por datos de linfomas",
-        "description": {
-          "text-1": "El conjunto de datos de <i>lymphography</i> permite detectar que posibles fases de un linfoma y en que estado se encuentra.",
-          "details-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "<b>lymphatics</b>: normal, arched, deformed, displaced",
-              "1": "<b>block of affere</b>: no, yes",
-              "2": "<b>bl. of lymph. c</b>: no, yes",
-              "3": "<b>bl. of lymph. s</b>: no, yes",
-              "4": "<b>by pass</b>: no, yes",
-              "5": "<b>extravasates</b>: no, yes",
-              "6": "<b>regeneration of</b>: no, yes",
-              "7": "<b>early uptake in</b>: no, yes",
-              "8": "<b>lym.nodes dimin</b>: 0-3",
-              "9": "<b>lym.nodes enlar</b>: 1-4",
-              "10": "<b>changes in lym.</b>: bean, oval, round",
-              "11": "<b>defect in node</b>: no, lacunar, lac. marginal, lac. central",
-              "12": "<b>changes in node</b>: no, lacunar, lac. margin, lac. central",
-              "13": "<b>changes in stru</b>: no, grainy, drop-like, coarse, diluted, reticular, stripped, faint,",
-              "14": "<b>special forms</b>: no, chalices, vesicles",
-              "15": "<b>dislocation of</b>: no, yes",
-              "16": "<b>exclusion of no</b>: no, yes",
-              "17": "<b>no. of nodes in</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, >=70"
-            }
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "<b>normal find</b>: normal",
-              "1": "<b>metastases</b>: metastasis",
-              "2": "<b>malign lymph</b>: linfoma maligno",
-              "3": "<b>fibrosis</b>: fibrosis"
-            }
-          },
-          "details-references": {
-            "title": "Referencias",
-            "list": {
-              "0": "Conjunto de datos"
-            }
-          }
-        },
-        "html-example": {
-          "text": "Introduce los valores correspondientes del paciente que se va a evaluar:",
-          "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in).",
-          "examples": "Ejemplos:"
-        }
-      },
-      "list-datasets": {
-        "0-option-1": "Clasificación de coches",
-        "0-option-2": "Clasificación de flor iris",
-        "0-option-3": "Clasificación de linfomas"
-      },
-      "list-models": {
-        "0-option-1": "Clasificación de coches",
-        "0-option-2": "Clasificación de flor iris",
-        "0-option-3": "Clasificación de linfomas"
-      }
-    },
-    "1-regression": {
-      "salary": {
-        "title": "Salario por años de experiencia",
-        "description": {
-          "text": {
-            "0": "El conjunto de datos \"Salary\" es una colección de información que relaciona la cantidad de años de experiencia laboral de un individuo con su salario correspondiente.",
-            "1": "Cada entrada en el conjunto de datos consta de dos variables principales: \"Years of Experience\" (Años de experiencia) y \"Salary\" (Salario). La variable \"Years of Experience\" representa la cantidad de años que un empleado ha trabajado en su campo específico, mientras que la variable \"Salary\" representa la cantidad de dinero que dicho empleado gana anualmente."
-          },
-          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>www.kaggle.com</link1>.",
-          "details-1-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "Years of experience - Años de experiencia",
-              "1": "Salary - Salario"
-            }
-          },
-          "details-2-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Regresión calculada (<b>Salary</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "Referencias",
-            "list": {
-              "0": "Conjunto de datos 1",
-              "1": "Conjunto de datos 2"
-            }
-          }
-        }
-      },
-      "auto-mpg": {
-        "title": "Rendimiento de combustible",
-        "description": {
-          "text": {
-            "0": "El conjunto de datos <i>AUTO MPG</i> se tomó de la biblioteca StatLib que se mantiene en la Universidad Carnegie Mellon. El conjunto de datos se utilizó en la Exposición de la Asociación Estadounidense de Estadística de 1983.",
-            "1": "El término \"Auto MPG\" se refiere a las millas por galón, una unidad de medida de eficiencia de combustible utilizada comúnmente en los Estados Unidos. Esta medida indica cuántas millas puede recorrer un vehículo con un galón de combustible. Sin embargo, \"Auto MPG\" es un término en inglés y no hay una traducción directa en español.\n\nEn español, para referirse a la eficiencia de combustible de un automóvil, se suelen utilizar términos como \"consumo de combustible\" o \"rendimiento de combustible\". Estos términos indican cuántos kilómetros o millas puede recorrer un vehículo con un litro o galón de combustible, respectivamente.\n\nEs importante tener en cuenta que en diferentes países se utilizan unidades de medida distintas para el consumo de combustible. Por ejemplo, en algunos lugares se utiliza el litro por cada 100 kilómetros recorridos (L/100 km) para indicar la eficiencia de combustible."
-          },
-          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>ics.uci.edu</link1>.",
-          "details-0": {
-            "title": "Información",
-            "list": {
-              "0": "<b>MPG</b>: MPG son las siglas en inglés de Millas por Galón. Es la cantidad de combustible consumido por el vehículo particular de una instancia. Esta variable también se puede utilizar como la variable a predecir para cualquier coche.",
-              "1": "<b>cylinders</b>: Este atributo describe el número de cilindros de cada coche. Se trata de un atributo de valor discreto",
-              "2": "<b>displacement</b>: Este es otro atributo del vehículo que tiene un valor cuantitativo continuo que describe el desplazamiento del motor",
-              "3": "<b>horsepower</b>: Este atributo informa sobre los caballos de un coche y es una variable de valor continuo",
-              "4": "<b>weight</b>: Se refiere al peso de cada coche que es una variable cuantitativa de valor continuo",
-              "5": "<b>acceleration</b>: La aceleración del coche",
-              "6": "<b>model year</b>: El año de lanzamiento del modelo",
-              "7": "<b>origin</b>: El atributo origen tiene 3 valores discretos. 1 se refiere a coches fabricados en EE.UU., 2 para Europa y 3 para Asia",
-              "8": "<b>car name</b>: Es el nombre del coche en cadena."
-            }
-          },
-          "details-1": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "<b>MPG</b>: continuo",
-              "1": "<b>cylinders</b>: discreto multivalor, 4, 6, 8",
-              "2": "<b>displacement</b>: continuo",
-              "3": "<b>horsepower</b>: continua",
-              "4": "<b>weight</b>: continuo",
-              "5": "<b>acceleration</b>: continua",
-              "6": "<b>model Year</b>: discreto de varios valores",
-              "7": "<b>origin</b>: discreto multivalor, 1 se refiere a automóviles fabricados en EE. UU., 2 para Europa y 3 para Asia",
-              "8": "<b>car name</b>: texto (única para cada instancia)"
-            }
-          },
-          "details-2": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Regresión calculada (<b>MPG</b>)"
-            }
-          },
-          "details-3": {
-            "title": "Referencias",
-            "list": {
-              "0": "<link1>Auto MPG</link1>"
-            }
-          }
-        }
-      },
-      "housing-prices": {
-        "title": "Precio de las viviendas",
-        "description": {
-          "text": {
-            "0": "El conjunto de datos de viviendas de Boston se deriva de la información recopilada por el Servicio del Censo de EE. UU. sobre viviendas en el área de Boston.",
-            "1": "El conjunto de datos está diseñado para abordar problemas de regresión y modelado de precios de viviendas en diferentes vecindarios de Boston, Massachusetts, Estados Unidos. Este conjunto de datos es comúnmente utilizado para ejemplos y prácticas en la educación y la investigación."
-          },
-          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
-          "details-input": {
-            "title": "Datos de entrada",
-            "california": {
-              "list": {
-                "0": "<strong>Median House Value</strong>: Valor medio de la vivienda para los hogares de un bloque (medido en dólares estadounidenses) [$].",
-                "1": "<strong>Median Income</strong>: Mediana de ingresos de los hogares de un bloque de casas (medida en decenas de miles de dólares estadounidenses) [10k$].",
-                "2": "<strong>Median Age</strong>: Edad mediana de una casa dentro de un bloque; un número más bajo corresponde a un edificio más nuevo [años].",
-                "3": "<strong>Total Rooms</strong>: Número total de habitaciones de un bloque",
-                "4": "<strong>Total Bedrooms</strong>: Número total de dormitorios en un bloque",
-                "5": "<strong>Population</strong>: Número total de personas que residen en un bloque",
-                "6": "<strong>Households</strong>: Número total de hogares, un grupo de personas que residen dentro de una unidad doméstica, para una manzana",
-                "7": "<strong>Latitude</strong>: Medida de la distancia al norte a la que se encuentra una vivienda; un valor más alto significa más al norte [°].",
-                "8": "<strong>Longitude</strong>: Medida de la distancia al oeste de una vivienda; cuanto mayor sea el valor, más al oeste [°].",
-                "9": "<strong>Distance to coast</strong>: Distancia al punto costero más cercano [m]",
-                "10": "<strong>Distance to Los Angeles</strong>: Distancia al centro de Los Ángeles [m].",
-                "11": "<strong>Distance to San Diego</strong>: Distancia al centro de San Diego [m]",
-                "12": "<strong>Distance to San Jose</strong>: Distancia al centro de San José [m]",
-                "13": "<strong>Distance to San Francisco</strong>: Distancia al centro de San Francisco [m Distancia al centro de San Francisco [m].",
-                "14": null
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<strong>CRIM</strong> Tasa de criminalidad del crimen per cápita por ciudad",
-                "1": "<strong>Zn</strong> Proporción de tierras residenciales zonas por lotes de más de 25,000 pies cuadrados.",
-                "2": "<strong>INDUS</strong> Proporción de acres comerciales no reales por ciudad",
-                "3": "<strong>CHAS</strong> Charles River Variable Dummy (= 1 if tract bounds river; 0 en otro caso)",
-                "4": "<strong>NOX</strong> Concentración de óxidos nítricos (partes por 10 millones)",
-                "5": "<strong>RM</strong> Número promedio de habitaciones por vivienda",
-                "6": "<strong>AGE</strong> Proporción de unidades ocupadas por los propietarios construidas antes de 1940",
-                "7": "<strong>DIS</strong> Distancias ponderadas a cinco centros de empleo de Boston",
-                "8": "<strong>RAD</strong> Índice de accesibilidad a carreteras radiales",
-                "9": "<strong>TAX</strong> Impuesto a la propiedad de la propiedad de valor completo por cada $ 10,000",
-                "10": "<strong>PRATIO</strong> Ratio alumnos-profesor por ciudad",
-                "11": "<strong>B</strong> 1000 (BK - 0.63)^2 donde BK es la proporción de negros por ciudad",
-                "12": "<strong>LSTAT</strong> LSTAT % más bajo estado de la población",
-                "13": "<strong>MEDV</strong>Valor mediano de las casas ocupadas por el propietario en $ 1000"
-              }
-            }
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "california": {
-              "list": {
-                "0": "Regresión calculada"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "Regresión calculada"
-              }
-            }
-          },
-          "details-references": {
-            "title": "Referencias",
-            "california": {
-              "list": {
-                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<link1>Entrada del conjunto de datos UCI</link1>",
-                "1": "<link1>Controversia sobre el conjunto de datos de vivienda de Boston</link1>"
-              }
-            }
-          }
-        }
-      },
-      "breast-cancer": {
-        "title": "Cáncer de mama Wisconsin (diagnóstico y pronóstico)",
-        "description": {
-          "text": {
-            "0": "Es un conjunto de datos del Hospital de la Universidad de Wisconsin relacionados con el cáncer de mama. Dicho conjunto de datos es útil para la predicción y discriminación de un tumor de cancer de mama, diferenciando si es benigno o no.",
-            "1": "Cada registro representa los datos de seguimiento de un caso de cáncer de mama. Estos son casos atendidos desde 1984 por el Dr. Wolberg, solo incluye aquellos casos que presentan cáncer de mama invasivo y sin evidencia de metástasis.",
-            "2": "Las primeras 30 características se calculan a partir de una imagen digitalizada de una aspiración con aguja fina (PAAF) de la masa mamaria, dichos datos describen las características de los núcleos celulares presentes en la imagen, algunas imágenes se pueden encontrar en <link1>cs wisc</link1>.",
-            "3": "El fichero <kbd>wdbc.csv</kbd> corresponde al conjunto de datos de diagnóstico y <kbd>wpbc.csv</kbd> corresponde al conjunto de datos de pronóstico."
-          },
-          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
-          "details-1-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "<strong>Número de identificación</strong>",
-              "1": "<strong>Resultado</strong> (R = recurrente, N = no recurrente)",
-              "2": "<strong>Tiempo</strong> (tiempo de recurrencia si el campo 2 = R, tiempo libre de enfermedad si el campo 2 = N)",
-              "3": "4-33 Se calculan diez características de valor real para cada núcleo celular:",
-              "4": "<strong>radio</strong> (media de distancias desde el centro a puntos del perímetro)",
-              "5": "<strong>textura</strong> (desviación estándar de los valores de escala de grises)",
-              "6": "<strong>perímetro</strong>",
-              "7": "<strong>área</strong>",
-              "8": "<strong>suavidad</strong> (variación local en la longitud del radio)",
-              "9": "<strong>compacidad</strong> (perímetro^2 / área - 1,0)",
-              "10": "<strong>concavidad</strong> (severidad de las porciones cóncavas del contorno)",
-              "11": "<strong>puntos cóncavos</strong> (número de porciones cóncavas del contorno)",
-              "12": "<strong>simetría</strong>",
-              "13": "<strong>dimensión fractal</strong> (\"aproximación de la línea costera\" - 1)"
-            }
-          },
-          "details-2-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Regresión calculada"
-            }
-          },
-          "details-3-references": {
-            "title": "Referencias",
-            "list": {
-              "0": "<link1>Breast Cancer Wisconsin</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
-            }
-          }
-        }
-      },
-      "student-performance": {
-        "title": "Rendimiento de estudiantes",
-        "description": {
-          "text": {
-            "0": "El conjunto de datos incluye datos del rendimiento académico de alumnos de dos centros escolares portugueses. Los datos incluyen características demográficas, sociales, calificaciones de los estudiantes, etc. Se incluyen dos conjuntos de datos uno con el desempeño de dos materias distintas: Matemáticas (mat) y lengua portuguesa (por).",
-            "1": "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 649 instancias y 12 atributos distintos.",
-            "2": "Nota importante: el atributo objetivo G3 tiene una fuerte correlación con los atributos G2 y G1. Esto ocurre porque G3 es la calificación del último año (emitida en el 3er período), mientras que G1 y G2 corresponden a las calificaciones del 1er y 2do período. Es más difícil predecir G3 sin G2 y G1, pero dicha predicción es mucho más útil.",
-            "3": "El fichero <kbd>student-por.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de portugués y <kbd>student-mat.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de matemáticas."
-          },
-          "link": "<link1>Entrada del conjunto de datos UCI</link1>",
-          "details-1-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "<strong>school</strong> - escuela del estudiante (binario: 'GP' - Gabriel Pereira o 'MS' - Mousinho da Silveira)",
-              "1": "<strong>sex</strong> - sexo del estudiante (binario: 'F' - femenino o 'M' - masculino)",
-              "2": "<strong>age</strong> - edad del estudiante (numérica: de 15 a 22)",
-              "3": "<strong>address</strong>: tipo de dirección particular del estudiante (binario: 'U' - urbana o 'R' - rural)",
-              "4": "<strong>famsize</strong> - tamaño de la familia (binario: 'LE3' - menor o igual a 3 o 'GT3' - mayor que 3)",
-              "5": "<strong>Pstatus</strong> - estado de convivencia de los padres (binario: 'T' - viviendo juntos o 'A' - separados)",
-              "6": "<strong>Medu</strong> - educación de la madre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
-              "7": "<strong>Fedu</strong> - educación del padre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
-              "8": "<strong>Mjob</strong> - trabajo de la madre (nominal: 'maestra', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
-              "9": "<strong>Fjob</strong> - trabajo del padre (nominal: 'maestro', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
-              "10": "<strong>razón</strong>: motivo para elegir esta escuela (nominal: cerca de \"casa\", \"reputación\" de la escuela, preferencia de \"curso\" u \"otro\")",
-              "11": "<strong>tutor</strong> - tutor del estudiante (nominal: 'madre', 'padre' u 'otro')",
-              "12": "<strong>tiempo de viaje</strong>: tiempo de viaje de casa a la escuela (numérico: 1 - <15 min., 2 - 15 a 30 min., 3 - 30 min. a 1 hora, o 4 - >1 hora)",
-              "13": "<strong>tiempo de estudio</strong>: tiempo de estudio semanal (numérico: 1 - &lt; 2 horas, 2 - 2 a 5 horas, 3 - 5 a 10 horas o 4 - &gt; 10 horas)",
-              "14": "<strong>reprobados</strong>: número de reprobados en clases anteriores (numérico: n si 1 &lg;=n &lg;3, en caso contrario 4)",
-              "15": "<strong>schoolsup</strong> - apoyo educativo adicional (binario: sí o no)",
-              "16": "<strong>famsup</strong> - apoyo educativo familiar (binario: sí o no)",
-              "17": "<strong>pagado</strong> - clases extra pagadas dentro de la materia del curso (Matemáticas o Portugués) (binario: sí o no)",
-              "18": "<strong>actividades</strong> - actividades extracurriculares (binario: sí o no)",
-              "19": "<strong>guardería</strong>: asistió a la guardería (binario: sí o no)",
-              "20": "<strong>superior</strong> - quiere cursar estudios superiores (binario: sí o no)",
-              "21": "<strong>internet</strong> - Acceso a Internet en casa (binario: sí o no)",
-              "22": "<strong>romántico</strong> - con una relación romántica (binario: sí o no)",
-              "23": "<strong>famrel</strong> - calidad de las relaciones familiares (numérica: de 1 - muy mala a 5 - excelente)",
-              "24": "<strong>tiempo libre</strong>: tiempo libre después de la escuela (numérico: de 1 - muy bajo a 5 - muy alto)",
-              "25": "<strong>goout</strong> - salir con amigos (numérico: de 1 - muy bajo a 5 - muy alto)",
-              "26": "<strong>Dalc</strong> - consumo de alcohol en jornada laboral (numérico: de 1 - muy bajo a 5 - muy alto)",
-              "27": "<strong>Walc</strong> - consumo de alcohol durante el fin de semana (numérico: de 1 - muy bajo a 5 - muy alto)",
-              "28": "<strong>salud</strong>: estado de salud actual (numérico: de 1: muy malo a 5: muy bueno)",
-              "29": "<strong>ausencias</strong> - número de ausencias escolares (numérico: de 0 a 93)"
-            }
-          },
-          "details-2-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Regresión calculada"
-            }
-          },
-          "details-3-references": {
-            "title": "Referencias",
-            "list": {
-              "0": "<link1>Student Performance</link1>"
-            }
-          }
-        }
-      },
-      "wine": {
-        "title": "Calidad del vino",
-        "description": {
-          "text": {
-            "0": "Los dos conjuntos de datos están relacionados, pues incluyen las variantes de vino tinto y vino blanco portugués. Dicho conjunto de datos solo incluye variables fisicoquímicas (entradas) y sensoriales (salidas), el conjunto de datos no incluye datos de tipos de uva, marca de vino o precio de venta del vino.",
-            "1": "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 4898 instancias y 12 atributos distintos.",
-            "2": "Dicho conjunto de datos puede ser usado para tareas de clasificación o de regresión. Las clases están ordenadas, aunque el conjunto de datos se encuentra desbalanceado.",
-            "3": "El fichero <kbd>wine-quality-red.csv</kbd> corresponde al conjunto de datos de vino tinto y <kbd>wine-quality-white.csv</kbd> corresponde al conjunto de datos de vino blanco."
-          },
-          "link": "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>archive.ics.uci.edu</link1>.",
-          "details-1-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "<strong>Fixed Acidity (Acidez Fija)</strong>: La acidez fija se refiere a la concentración de ácidos no volátiles en el vino, principalmente ácido tartárico. Contribuye a la frescura y estabilidad del vino.",
-              "1": "<strong>Volatile Acidity (Acidez Volátil)</strong>: La acidez volátil se refiere a la concentración de ácidos volátiles, como el ácido acético, que pueden dar un sabor desagradable si están presentes en exceso.",
-              "2": "<strong>Citric Acid (Ácido Cítrico)</strong>: El ácido cítrico es uno de los ácidos orgánicos naturales presentes en el vino. Puede influir en el sabor y la frescura del vino.",
-              "3": "<strong>Residual Sugar (Azúcar Residual)</strong>: Es la cantidad de azúcar que queda en el vino después de la fermentación. Un vino puede ser seco (poco azúcar residual) o dulce (más azúcar residual).",
-              "4": "<strong>Chlorides (Cloruros)</strong>: La concentración de cloruros en el vino puede afectar su sabor y aroma, y niveles altos pueden indicar problemas en la producción.",
-              "5": "<strong>Free Sulfur Dioxide (Dióxido de Azufre Libre)</strong>: El dióxido de azufre es un conservante común en el vino que ayuda a prevenir la oxidación y el crecimiento de microorganismos no deseados.",
-              "6": "<strong>Total Sulfur Dioxide (Dióxido de Azufre Total)</strong>: Representa la suma de dióxido de azufre libre y dióxido de azufre unido a otras moléculas en el vino. También se relaciona con la conservación del vino.",
-              "7": "<strong>Density (Densidad)</strong>: La densidad se refiere a la masa del vino por unidad de volumen. Puede proporcionar información sobre la concentración de alcohol y azúcar.",
-              "8": "<strong>pH</strong>: El pH mide la acidez o alcalinidad del vino. Un pH bajo indica acidez, mientras que un pH alto indica alcalinidad. Puede influir en la percepción del sabor.",
-              "9": "<strong>Sulphates (Sulfatos)</strong>: Los sulfatos son aditivos que se utilizan a veces en la producción de vino. Pueden influir en la estabilidad y el aroma del vino.",
-              "10": "<strong>Alcohol</strong>: La concentración de alcohol en el vino puede variar y afecta tanto el sabor como la sensación en boca.",
-              "11": "<strong>Quality (Calidad)</strong>: Esta es la puntuación general de calidad del vino, generalmente en una escala de 0 a 10, donde valores más altos indican vinos de mejor calidad según la evaluación de los catadores."
-            }
-          },
-          "details-2-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Regresión calculada"
-            }
-          },
-          "details-3-references": {
-            "title": "Referencias",
-            "list": {
-              "0": "<link1>Calidad del vino</link1>"
-            }
-          }
-        }
-      },
-      "list-datasets": {
-        "salary": "Salary",
-        "auto-mpg": "Auto MPG",
-        "housing-prices": "Housing Prices",
-        "breast-cancer": "Breast cancer",
-        "student-performance": "Student performance",
-        "wine": "Wine"
-      },
-      "list-models": {
-        "salary": "Salary",
-        "auto-mpg": "Auto MPG",
-        "housing-prices": "Housing prices",
-        "breast-cancer": "Breast cancer",
-        "student-performance": "Student performance",
-        "wine": "Wine"
       }
     },
     "2-object-detection": {
@@ -1570,130 +1090,8 @@
           "loading": "Cargando imágenes…"
         }
       },
-      "mnist": {
-        "title": "MNIST - Clasificación de números",
-        "description": {
-          "text-0": "La base de datos <strong>MNIST</strong> es una gran base de datos de dígitos escritos a mano. La base de datos se usa ampliamente para capacitación y pruebas en el campo del aprendizaje automático.",
-          "text-1": "Fue creado \"re-mezclando\" las muestras de los conjuntos de datos originales del NIST.",
-          "text-2": "El conjunto de datos de capacitación del NIST se tomó de la Oficina del Censo de los Estados Unidos. Además, las imágenes en blanco y negro del NIST se normalizaron para encajar en un cuadro delimitador de <strong>28 x 28</strong> píxeles y se suavizaron, lo que introdujo niveles de escala de grises.",
-          "details-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "Imagen en escala de grises y con un tamaño de <strong>28 x 28</strong> píxeles"
-            }
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Un número entre 0 y 9"
-            }
-          },
-          "details-references": {
-            "title": "Referencias"
-          }
-        }
-      },
-      "kmnist": {
-        "title": "KMNIST - Clasificación de caracteres japoneses",
-        "description": {
-          "text-0": "<strong>Kuzushiji-MNIST (KMNIST)</strong> es un sustituto directo de MNIST: imágenes en escala de grises de <strong>28 x 28</strong> píxeles y 10 clases, pero en lugar de dígitos contiene caracteres japoneses manuscritos en <i>kuzushiji</i> (escritura cursiva).",
-          "text-1": "El kuzushiji fue la forma habitual de escribir japonés durante más de mil años, pero dejó de enseñarse tras la reforma de la escritura de principios del siglo XX y hoy muy poca gente sabe leerlo. Las imágenes proceden de libros clásicos digitalizados por el Instituto Nacional de Literatura Japonesa y las preparó el ROIS-DS Center for Open Data in the Humanities (CODH).",
-          "text-2": "Cada clase es un carácter hiragana de hoy, pero en el conjunto aparece escrito a mano como se hacía antes. Hasta 1900 una misma sílaba se podía escribir de muchas formas: con el kanji del que viene la de hoy, trazado de otra manera, o partiendo de otro kanji. Son las <i>hentaigana</i>; ese año se dejó una sola forma, la de hoy. Por eso una misma clase junta trazos que se parecen poco entre sí o al carácter de hoy, y es más difícil que MNIST.",
-          "details-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "Imagen en escala de grises de <strong>28 x 28</strong> píxeles"
-            }
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Uno de los 10 caracteres hiragana: お, き, す, つ, な, は, ま, や, れ, を"
-            }
-          },
-          "details-model": {
-            "title": "Modelos",
-            "list": {
-              "0": "Modelo preentrenado: red convolucional entrenada con las 55.000 imágenes de entrenamiento (y otras 5.000 para validar), con una precisión del <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> en las 10.000 imágenes de test.",
-              "1": "Entrenamiento en el navegador: se usa un subconjunto equilibrado, con <strong>2.000</strong> imágenes de entrenamiento y <strong>500</strong> de test por carácter."
-            }
-          },
-          "forms": {
-            "title": "Los 10 caracteres, hoy y antes",
-            "modern": "Hoy",
-            "old": "Antes: otras formas (hentaigana), con su kanji",
-            "old-alt": "{{char}} antiguo, que viene de {{origin}}",
-            "note": "Debajo de cada carácter de hoy, cómo se lee y el kanji del que viene; debajo de cada forma antigua, el suyo. Las formas antiguas son las hentaigana de Unicode, dibujadas con la fuente Noto Serif Hentaigana. En el conjunto de datos aparecen escritas a mano: para verlas así, carga las imágenes de test en la página del modelo."
-          }
-        }
-      },
-      "mobilenet": {
-        "title": "MobileNet - Clasificación de imágenes",
-        "description": {
-          "text-0": "MobileNet V2 es una familia de arquitecturas de redes neuronales para la clasificación de imágenes y tareas similares.",
-          "text-1": "Este modelo es capaz de diferenciar entre 1001 categorías, identificando el contexto principal de la imagen.",
-          "details-input": {
-            "title": "Datos de entrada",
-            "list": {
-              "0": "Imagen con valores de color entre [0, 1] de <strong> 224 x 224</strong> píxeles."
-            }
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "list": {
-              "0": "Un número de 0 a 1001 que son cada una de las categorías de esta <link1>lista</link1>"
-            }
-          },
-          "details-references": {
-            "title": "Referencias",
-            "text-0": "Originalmente, fue publicado por Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen:",
-            "list": {
-              "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
-            }
-          }
-        }
-      },
       "face-mesh": {
         "title": "-"
-      },
-      "list-models": {
-        "3-option-1": "MNIST - Clasificación de números",
-        "3-option-2": "MobileNet - Clasificación de imágenes",
-        "3-option-3": "ResNet - Clasificación de imágenes",
-        "3-option-4": "KMNIST - Clasificación de caracteres japoneses"
-      },
-      "resnet": {
-        "description": {
-          "text-0": "ResNet V2 es una familia de arquitecturas de redes para la clasificación de imágenes con un número variable de capas.",
-          "text-1": "Están basadas en la arquitectura ResNet original publicada por Kaiming He, Xiangyu Zhang, Shaoqing Ren y Jian Sun: <link1>«Deep Residual Learning for Image Recognition»</link1>, 2015.",
-          "text-2": "La variante «V2» que usa este modelo es de los mismos autores: <link1>«Identity Mappings in Deep Residual Networks»</link1>, 2016.",
-          "text-3": "La diferencia con ResNet V1 es que normaliza por lotes antes de cada capa con pesos. El modelo que se carga tiene 50 capas.",
-          "details-input": {
-            "title": "Datos de entrada",
-            "list": [
-              "Una imagen de <bold>224 × 224</bold> píxeles con los colores entre 0 y 1."
-            ]
-          },
-          "details-output": {
-            "title": "Datos de salida",
-            "list": [
-              "Un número del 0 al 1001: cada una de las categorías de esta <link1>lista</link1>."
-            ]
-          }
-        }
-      }
-    },
-    "3-image-classification": {
-      "list-datasets": {
-        "mnist": "MNIST",
-        "kmnist": "KMNIST"
-      }
-    },
-    "clustering": {
-      "list-datasets": {
-        "iris": "Flores iris (sin la especie)",
-        "wine": "Variedades de vino (sin la variedad)",
-        "new-thyroid": "Tiroides (sin el diagnóstico)"
       }
     }
   },
@@ -3356,7 +2754,8 @@
         "features": "{{value}} características",
         "classes": "{{value}} clases",
         "target": "objetivo: {{value}}",
-        "images": "{{value}} imágenes de 28×28"
+        "images": "{{value}} imágenes de {{size}}",
+        "images-color": "{{value}} imágenes de {{size}} en color"
       }
     },
     "terms": {
@@ -3722,64 +3121,6 @@
   "upload-model": "Subir modelo",
   "upload-model-info": "Debes subir un modelo para realizar la tarea.",
   "upload-dataset": "Subir conjunto de datos",
-  "00-tc": {
-    "car": {
-      "buying": "Precio de compra",
-      "maint": "Precio del mantenimiento",
-      "doors": "Número de puertas",
-      "persons": "Capacidad de personas",
-      "lug_boot": "Tamaño del maletero",
-      "safety": "Seguridad estimada del coche.",
-      "result": "Resultado",
-      "unacc": "Inaceptable",
-      "acc": "Aceptable",
-      "good": "Bueno",
-      "vgood": "Muy bueno"
-    },
-    "iris": {
-      "sepal_length": "Longitud sépalo",
-      "sepal_width": "Anchura sépalo",
-      "petal_length": "Longitud pétalo",
-      "petal_width": "Anchura pétalo",
-      "class": "Clase",
-      "Iris-setosa": "Iris setosa",
-      "Iris-versicolor": "Iris versicolor",
-      "Iris-virginica": "Iris virginica"
-    },
-    "lymphography": {
-      "lymphatics": "lymphatics",
-      "block of affere": "block of affere",
-      "bl": {
-        " of lymph": {
-          " c": "bl. of lymph. c",
-          " s": "bl. of lymph. s"
-        }
-      },
-      "by pass": "by pass",
-      "extravasates": "extravasates",
-      "regeneration": "regeneration of",
-      "early uptake in": "early uptake in",
-      "lym": {
-        "nodes dimin": "lym.nodes dimin",
-        "nodes enlar": "lym.nodes enlar"
-      },
-      "changes in lym": "changes in lym.",
-      "defect in node": "defect in node",
-      "changes in node": "changes in node",
-      "changes in stru": "changes in stru",
-      "special forms": "special forms",
-      "dislocation of": "dislocation of",
-      "exclusion of": "exclusion of no",
-      "no": {
-        " of nodes in": "no. of nodes in"
-      },
-      "Category": "Category",
-      "normal find": "Normal",
-      "metastases": "Metastasis",
-      "malign lymph": "Linfoma maligno",
-      "fibrosis": "Fibrosis"
-    }
-  },
   "model-summary": "Resumen del modelo",
   "breadcrumb": {
     "label": "Ruta de navegación",
@@ -4189,6 +3530,58 @@
           "title": "Ahora tú",
           "content": "Elige un vino, predice su calidad y súbele después el alcohol para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
         }
+      },
+      "SALARY": {
+        "intro": {
+          "title": "Salarios",
+          "content": "En esta página, una red neuronal ya entrenada predice un salario a partir de los años de experiencia. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Hay dos conjuntos: uno solo con los años de experiencia y otro con la edad, el sexo, los estudios y el puesto. La red ya entrenada es la del primero; con el segundo puedes ver los datos, pero para predecir tendrías que entrenar tu propia red."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "En el primero hay 1000 personas. La columna resaltada, Salary, es el salario, que suele subir con los años de experiencia (de menos de uno a casi cincuenta). Son datos de ejemplo, pensados para practicar la regresión."
+        },
+        "form": {
+          "title": "Los datos de la persona",
+          "content": "Con el primer conjunto, el formulario tiene un solo dato: los años de experiencia. Cuantos más años, más salario suele predecir la red."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece el salario predicho, en las mismas unidades que el conjunto. Si usaste una fila sin cambiarla, también verás el salario real y el error."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige una persona, predice su salario y cambia después los años de experiencia para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "HOUSING_PRICES": {
+        "intro": {
+          "title": "Precio de las viviendas",
+          "content": "En esta página, una red neuronal ya entrenada predice el precio medio de las viviendas de un barrio de Boston a partir de doce datos del barrio. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "dataset-select": {
+          "title": "Conjunto de datos",
+          "content": "Este modelo tiene un único conjunto de datos, Boston Housing."
+        },
+        "dataset": {
+          "title": "El conjunto de datos",
+          "content": "Cada fila es uno de los 506 barrios de Boston de los años setenta. La columna resaltada, MEDV, es el valor medio de las viviendas, en miles de dólares, de 5 a 50. Esta versión no tiene la columna B del conjunto original, que se quitó por motivos éticos."
+        },
+        "form": {
+          "title": "Los datos del barrio",
+          "content": "El formulario tiene doce datos: la criminalidad (CRIM), el suelo residencial (ZN) e industrial (INDUS), si linda con el río Charles (CHAS), la contaminación (NOX), las habitaciones por vivienda (RM), la antigüedad (AGE), la distancia a los centros de empleo (DIS), el acceso a las autopistas (RAD), los impuestos (TAX), los alumnos por profesor (PTRATIO) y el porcentaje de población con menos recursos (LSTAT). Las habitaciones y LSTAT son lo que más se relaciona con el precio."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece el precio medio predicho, en miles de dólares. Si usaste una fila sin cambiarla, también verás el valor real y el error."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Elige un barrio, predice su precio y súbele después las habitaciones (RM) para ver cómo cambia la predicción. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
       }
     },
     "2-object-detection": {
@@ -4412,6 +3805,36 @@
         "end": {
           "title": "Ahora tú",
           "content": "Carga las imágenes de test y compara varias formas de escribir un mismo carácter: verás que la red acierta incluso con trazos muy diferentes. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+        }
+      },
+      "IMAGE-CIFAR10": {
+        "intro": {
+          "title": "Clasificación de fotos",
+          "content": "En esta página, una red neuronal convolucional ya entrenada reconoce fotos pequeñas en color de diez clases: avión, automóvil, pájaro, gato, ciervo, perro, rana, caballo, barco y camión. Te explico paso a paso qué es cada cosa. Puedes avanzar con Siguiente, volver atrás, silenciar la voz o dejar que la guía avance sola."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "La red se entrenó con CIFAR-10: 50.000 fotos en color de 32 por 32 píxeles para entrenar y 10.000 para probar. Cada foto tiene tres canales, rojo, verde y azul, así que la red recibe casi cuatro veces más números que con MNIST."
+        },
+        "examples": {
+          "title": "Imágenes de ejemplo",
+          "content": "Hay una foto de prueba de cada clase, ampliada para que se vean sus píxeles. Pulsa cualquiera para clasificarla: el resultado aparece más abajo."
+        },
+        "upload": {
+          "title": "Subir una imagen",
+          "content": "Arrastra aquí una foto tuya, o elígela de tu equipo, y pulsa el botón para clasificarla. Se reduce a 32 por 32 píxeles, como las del conjunto: funciona mejor si el objeto ocupa casi toda la foto."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece la imagen que ha visto la red, ya reducida, y la probabilidad de cada clase. La más alta es la predicción. Si clasificas una imagen de test, también verás cuál era su clase real."
+        },
+        "explain": {
+          "title": "Explicabilidad",
+          "content": "Después de clasificar, aquí calculas un mapa de calor sobre la foto: con LRP, la decisión se reparte hacia atrás, capa a capa, hasta los píxeles; con SHAP, se tapan trozos de la foto y se mira cuánto cambia la predicción. Así ves en qué zonas se ha fijado la red."
+        },
+        "end": {
+          "title": "Ahora tú",
+          "content": "Carga las imágenes de test y busca en qué clases se equivoca más la red: suele confundir gatos con perros y automóviles con camiones. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
         }
       },
       "IMAGE-MOBILENET": {
@@ -4836,6 +4259,31 @@
           "layer": {
             "class-name": "carácter"
           }
+        },
+        "IMAGE-CIFAR10": {
+          "intro": {
+            "title": "Fotos en color",
+            "content": "En esta página entrenas una red convolucional que reconoce fotos en color de diez clases, de aviones a camiones, con las imágenes del conjunto CIFAR-10, y después la pruebas con fotos de prueba o con las tuyas. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "predict": {
+            "title": "Probar la red",
+            "content": "Con un modelo entrenado, elige una foto de prueba del conjunto o sube una tuya y pulsa el botón: la red dirá qué ve, con la probabilidad de cada clase. Arriba eliges con qué modelo probar."
+          },
+          "explain": {
+            "title": "Explicabilidad",
+            "content": "Después de clasificar, LRP colorea los píxeles según cuánto han contado para la decisión. Así ves en qué partes de la foto se ha fijado la red para decidir."
+          },
+          "end": {
+            "title": "Ahora tú",
+            "content": "Entrena con la red de partida y mira en la tabla cuánto acierta: con pocas fotos y pocas épocas, bastante menos que el modelo ya entrenado. Después prueba con más épocas o con otra capa convolucional y compara. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
+          },
+          "layer": {
+            "class-name": "clase",
+            "conv-first": {
+              "title": "Capa {{number}}: convolución",
+              "content": "Es la primera: recibe la foto, de {{inputSize}} píxeles en color, es decir, {{inputChannels}} mapas: rojo, verde y azul. La recorren {{filters}} filtros de {{kernel}}×{{kernel}}; cada uno mira los tres colores a la vez y aprende a reconocer un patrón pequeño (un borde, una mancha de color, una esquina) y deja un mapa de dónde lo encuentra. Salen {{outputChannels}} mapas de {{outputSize}}, uno por filtro, algo más pequeños que la foto porque el filtro no se sale del borde. Tiene {{params}} pesos que aprender."
+            }
+          }
         }
       }
     },
@@ -4939,5 +4387,30 @@
   },
   "offline": {
     "bar": "Sin conexión: puedes seguir usando lo que ya habías abierto; lo demás estará disponible al volver la conexión."
+  },
+  "n4l": {
+    "download": "Descargar .n4l",
+    "download-title": "Descargar este modelo con sus datos y sus textos en un fichero .n4l, para compartirlo o abrirlo después",
+    "local": {
+      "title": "Tus paquetes .n4l",
+      "text": "Abre un fichero .n4l (un modelo con sus datos y sus textos): se guarda en este navegador y aparece aquí.",
+      "drop": "Arrastra aquí un fichero .n4l o pulsa para elegirlo",
+      "files": "Fichero .n4l",
+      "version": "Versión {{version}} · {{size}}",
+      "remove": "Quitar",
+      "remove-title": "Quitar «{{name}}» de este navegador",
+      "imported": "«{{name}}» está listo: ábrelo desde su tarjeta.",
+      "error": "No se ha podido abrir el fichero:",
+      "open-title": "Abrir un fichero .n4l",
+      "how": "¿De dónde sale uno? En la página de cada modelo ya entrenado, «Descargar .n4l» da su paquete: el modelo, sus datos y sus textos. Después de entrenar, cada modelo de la tabla se descarga igual, con el conjunto con el que lo entrenaste. También puedes abrir uno que te pasen: solo describe qué hay y cómo usarlo, no lleva código.",
+      "saved": "Guardados en este navegador",
+      "empty": "Todavía no hay ninguno: abre un fichero .n4l arriba."
+    },
+    "download-trained-title": "Descargar este modelo en un fichero .n4l, con el conjunto de datos, su preprocesado y sus textos: se abre después en «Paquetes .n4l»",
+    "metrics": {
+      "title": "Con datos que no ha visto",
+      "text": "Con el 20 % del conjunto que se apartó al entrenarlo, se equivoca de media en {{mae}}; prediciendo siempre la media, el error sería {{baseline}}. R²: {{r2}} (1 sería acertar siempre; 0, lo mismo que predecir la media).",
+      "no-better": "No predice mejor que dar siempre la media: con estos datos no se puede saber mucho más."
+    }
   }
 }

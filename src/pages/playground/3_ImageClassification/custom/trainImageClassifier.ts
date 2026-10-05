@@ -26,21 +26,26 @@ export type TrainProgress_t = {
   shouldStop?: () => boolean
 }
 
-const IMAGE_WIDTH = 28
-const IMAGE_HEIGHT = 28
 const BATCH_SIZE = 512
-// Imágenes que se usan en cada entrenamiento (se sacan barajadas del dataset)
+// Imágenes que se usan en cada entrenamiento como mucho (se sacan barajadas del dataset)
 const TRAIN_DATA_SIZE = 11000
 const TEST_DATA_SIZE = 2000
 
+/** Cuántas imágenes de entrenamiento y de validación se usan: como mucho las que tiene el conjunto */
+const dataSizes = ({ numElements, numTrain }: SpriteDatasetConfig_t) => ({
+  trainSize: Math.min(TRAIN_DATA_SIZE, numTrain),
+  testSize : Math.min(TEST_DATA_SIZE, numElements - numTrain),
+})
+
 async function showExamples(data: SpriteImageDataset) {
   const surface = tfvis.visor().surface({ name: 'Data set: Examples', tab: TAB_03_IMAGE_CLASSIFICATION })
+  const { width, height, channels } = data.image
   const examples = data.nextTestBatch(20)
   for (let i = 0; i < examples.xs.shape[0]; i++) {
-    const imageTensor = tfjs.tidy(() => examples.xs.slice([i, 0], [1, examples.xs.shape[1]]).reshape([IMAGE_HEIGHT, IMAGE_WIDTH, 1])) as tfjs.Tensor3D
+    const imageTensor = tfjs.tidy(() => examples.xs.slice([i, 0], [1, examples.xs.shape[1]]).reshape([height, width, channels])) as tfjs.Tensor3D
     const canvas = document.createElement('canvas')
-    canvas.width = IMAGE_WIDTH
-    canvas.height = IMAGE_HEIGHT
+    canvas.width = width
+    canvas.height = height
     canvas.style.margin = '4px'
     await tfjs.browser.toPixels(imageTensor, canvas)
     surface.drawArea.appendChild(canvas)
@@ -52,14 +57,15 @@ async function showExamples(data: SpriteImageDataset) {
  * Entrena y devuelve, además del historial, la clase real y la predicha de cada imagen de validación (las mismas con las
  * que se calcula val_loss): son la matriz de confusión de la tabla de modelos.
  */
-async function train(model: tfjs.Sequential, data: SpriteImageDataset, numberOfEpoch: number, progress: TrainProgress_t, fitCallbacks: VisCallbacks_t): Promise<{ history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
+async function train(model: tfjs.Sequential, data: SpriteImageDataset, sizes: ReturnType<typeof dataSizes>, numberOfEpoch: number, progress: TrainProgress_t, fitCallbacks: VisCallbacks_t): Promise<{ history: tfjs.History, evaluation: ClassificationEvaluation_t }> {
+  const { width, height, channels } = data.image
   const [trainXs, trainYs] = tfjs.tidy(() => {
-    const d = data.nextTrainBatch(TRAIN_DATA_SIZE)
-    return [d.xs.reshape([TRAIN_DATA_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH, 1]), d.labels]
+    const d = data.nextTrainBatch(sizes.trainSize)
+    return [d.xs.reshape([sizes.trainSize, height, width, channels]), d.labels]
   })
   const [testXs, testYs] = tfjs.tidy(() => {
-    const d = data.nextTestBatch(TEST_DATA_SIZE)
-    return [d.xs.reshape([TEST_DATA_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH, 1]), d.labels]
+    const d = data.nextTestBatch(sizes.testSize)
+    return [d.xs.reshape([sizes.testSize, height, width, channels]), d.labels]
   })
   const progressCallbacks: tfjs.CustomCallbackArgs = {
     onBatchEnd: async () => {
@@ -119,7 +125,7 @@ function getModel(layerList: ImageLayer_t[], idOptimizer: IdOptimizer_t, idLoss:
 }
 
 /**
- * Entrena una red convolucional con un dataset de imágenes de 28x28 guardado como sprite (MNIST, KMNIST…)
+ * Entrena una red convolucional con un dataset de imágenes guardado como sprite (MNIST, KMNIST, CIFAR-10…)
  * y muestra en el visor ejemplos, el entrenamiento y la evaluación por clase. Devuelve también la clase real y la
  * predicha de cada imagen de validación.
  */
@@ -165,11 +171,12 @@ async function trainImageClassifierInWorker(dataset: SpriteDatasetConfig_t, para
     labelsUrl    : new URL(dataset.labelsUrl, document.baseURI).href,
     numElements  : dataset.numElements,
     numTrain     : dataset.numTrain,
+    numClasses   : dataset.numClasses,
+    image        : dataset.image,
     layers,
     compile      : { idOptimizer, idLoss, idMetrics: idMetricsList, learningRate, momentum: 0.99 },
     numberOfEpoch: numberEpochs,
-    trainSize    : TRAIN_DATA_SIZE,
-    testSize     : TEST_DATA_SIZE,
+    ...dataSizes(dataset),
     batchSize    : BATCH_SIZE,
   }, {
     shouldStop: progress.shouldStop,
@@ -188,6 +195,6 @@ async function trainImageClassifierInMainThread(dataset: SpriteDatasetConfig_t, 
   const { learningRate, numberEpochs, idOptimizer, idLoss, idMetricsList, layers } = params
   const data = await loadSpriteDataset(dataset)
   const model = getModel(layers, idOptimizer, idLoss, idMetricsList, learningRate)
-  const { history, evaluation } = await train(model, data, numberEpochs, progress, fitCallbacks)
+  const { history, evaluation } = await train(model, data, dataSizes(dataset), numberEpochs, progress, fitCallbacks)
   return { model, history, evaluation }
 }

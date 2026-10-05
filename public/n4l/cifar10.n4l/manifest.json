@@ -1,0 +1,179 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "cifar10",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://www.cs.toronto.edu/~kriz/cifar.html",
+    "citation": "@techreport{krizhevsky2009learning,\n  title       = {Learning Multiple Layers of Features from Tiny Images},\n  author      = {Krizhevsky, Alex},\n  institution = {University of Toronto},\n  year        = {2009}\n}"
+  },
+  "datasets": [
+    {
+      "id": "cifar10",
+      "kind": "image-sprite",
+      "file": "data/cifar10_images.png",
+      "labels": "data/cifar10_labels_uint8",
+      "rows": 7000,
+      "train": 5000,
+      "image": {
+        "width": 32,
+        "height": 32,
+        "channels": 3
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "task": "image-classification",
+      "key": "IMAGE-CIFAR10",
+      "runtime": "image-classification",
+      "datasets": [
+        "cifar10"
+      ],
+      "order": 3,
+      "preprocessing": [],
+      "classes": [
+        {
+          "id": "airplane"
+        },
+        {
+          "id": "automobile"
+        },
+        {
+          "id": "bird"
+        },
+        {
+          "id": "cat"
+        },
+        {
+          "id": "deer"
+        },
+        {
+          "id": "dog"
+        },
+        {
+          "id": "frog"
+        },
+        {
+          "id": "horse"
+        },
+        {
+          "id": "ship"
+        },
+        {
+          "id": "truck"
+        }
+      ],
+      "models": [
+        {
+          "id": "cnn",
+          "format": "tfjs-layers",
+          "path": "models/cnn/model.json",
+          "dataset": "cifar10",
+          "metrics": {
+            "test_accuracy": 0.888,
+            "test_images": 2000
+          }
+        }
+      ],
+      "prediction": {
+        "images": [
+          {
+            "file": "examples/airplane.png",
+            "expected": "airplane"
+          },
+          {
+            "file": "examples/automobile.png",
+            "expected": "automobile"
+          },
+          {
+            "file": "examples/bird.png",
+            "expected": "bird"
+          },
+          {
+            "file": "examples/cat.png",
+            "expected": "cat"
+          },
+          {
+            "file": "examples/deer.png",
+            "expected": "deer"
+          },
+          {
+            "file": "examples/dog.png",
+            "expected": "dog"
+          },
+          {
+            "file": "examples/frog.png",
+            "expected": "frog"
+          },
+          {
+            "file": "examples/horse.png",
+            "expected": "horse"
+          },
+          {
+            "file": "examples/ship.png",
+            "expected": "ship"
+          },
+          {
+            "file": "examples/truck.png",
+            "expected": "truck"
+          }
+        ]
+      },
+      "training": {
+        "layers": [
+          {
+            "class": "conv2d",
+            "filters": 32,
+            "kernelSize": 3,
+            "activation": "relu",
+            "locked": true
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 64,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 64,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "flatten"
+          },
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "softmax"
+          }
+        ],
+        "learningRate": 0.001,
+        "epochs": 20
+      }
+    }
+  ]
+}

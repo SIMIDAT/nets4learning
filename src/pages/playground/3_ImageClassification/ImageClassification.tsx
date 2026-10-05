@@ -193,6 +193,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         const _iModelInstance = new _iModelClass(t)
         setIModelInstance(_iModelInstance)
         setLayers(_iModelInstance.DEFAULT_LAYERS())
+        // Lo que proponga el conjunto para empezar a entrenar (con CIFAR-10, una tasa menor y más épocas)
+        const { learningRate, epochs } = _iModelInstance.DEFAULT_TRAINING()
+        setLearningRate(learningRate ?? DEFAULT_LEARNING_RATE)
+        setNumberEpochs(epochs ?? DEFAULT_NUMBER_EPOCHS)
       } else {
         console.error('Error, opción not valid')
         navigate('/404')
@@ -271,21 +275,23 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   // endregion
 
   // region PRUEBA DEL MODELO
-  /** Salida del modelo para una imagen de 28×28 (lectura asíncrona: con WebGPU las síncronas detienen la GPU) */
+  /** Salida del modelo para una imagen como las del conjunto (lectura asíncrona: con WebGPU las síncronas detienen la GPU) */
   const predictImageData = async (model: tfjs.Sequential, imgData: ImageData) => {
-    const output = tfjs.tidy(() => model.predict(ImageClassificationUtils.imageDataToMnistTensor4d(imgData)) as tfjs.Tensor)
+    const channels = iModelInstance?.IMAGE?.channels ?? 1
+    const output = tfjs.tidy(() => model.predict(ImageClassificationUtils.imageDataToTensor4d(imgData, channels)) as tfjs.Tensor)
     const values = Array.from(await output.data<'float32'>())
     output.dispose()
     return values
   }
 
   /**
-   * Reduce el lienzo a 28×28 (entrada del modelo), muestra esa versión en `canvas_small` como
-   * vista previa y predice. Devuelve la ImageData usada, que también es la entrada de LRP.
+   * Reduce el lienzo al tamaño de las imágenes del conjunto (entrada del modelo), muestra esa versión en `canvas_small`
+   * como vista previa y predice. Devuelve la ImageData usada, que también es la entrada de LRP.
    */
   const predictDrawing = async (canvas: HTMLCanvasElement, canvas_small: HTMLCanvasElement, model: tfjs.Sequential) => {
     const { canvasToImageData, resampleImageData, thresholdImageData } = ImageClassificationUtils
-    const imgData = thresholdImageData(resampleImageData(canvasToImageData(canvas), 28, 28))
+    const { width = 28, height = 28 } = iModelInstance?.IMAGE ?? {}
+    const imgData = thresholdImageData(resampleImageData(canvasToImageData(canvas), width, height))
     canvas_small.getContext('2d')?.putImageData(imgData, 0, 0)
     return { imgData, values: await predictImageData(model, imgData) }
   }
@@ -328,7 +334,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   const handleChange_Instance = async (index: number) => {
     if (testDataset === null) return
     const { pixels, label } = testDataset.testExample(index)
-    const imageData = ImageClassificationUtils.grayscaleToImageData(pixels, 28, 28)
+    const imageData = ImageClassificationUtils.spriteToImageData(pixels, testDataset.image)
     setSelectedInstance(index)
     setInstanceImage(imageData)
     setActualClassIndex(label)
@@ -355,6 +361,20 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     setExplainInput(imgData, canvas)
     setPrediction(makeImagePrediction(values, selectedModelIndex))
     trackEvent('predict', { input: 'drawing' })
+  }
+
+  /** En color: la imagen de la vista previa (subida o del conjunto), reducida al tamaño de las del conjunto */
+  const handleClassify_Image = async (canvas: HTMLCanvasElement) => {
+    if (Model === null || iModelInstance === null) {
+      await alertHelper.alertWarning(t('warning.need-a-model'))
+      return
+    }
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D
+    const imgData = await iModelInstance.GET_IMAGE_DATA(canvas, context)
+    const isTestImage = selectedInstance !== null
+    setExplainInput(imgData, canvas)
+    setPrediction(makeImagePrediction(await predictImageData(Model, imgData), selectedModelIndex))
+    trackEvent('predict', { input: isTestImage ? 'test_sample' : 'image' })
   }
 
   const handleSubmit_VectorTestImageUpload = async (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => {
@@ -534,6 +554,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             <ImageClassificationTableModels
               rowsPerPage={3}
               GeneratedModels={GeneratedModels}
+              pkg={iModelInstance?.N4L_PACKAGE() ?? null}
+              classes={iModelInstance?.CLASS_IDS ?? []}
             />
           </Col>
         </Row>
@@ -559,6 +581,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
               classLabels={iModelInstance.CLASS_LABELS}
               selectedModelIndex={selectedModelIndex}
               onChangeModel={handleChange_Model}
+              drawable={iModelInstance.DRAWABLE}
+              onClassifyImage={handleClassify_Image}
             />
           </Col>
         </Row>

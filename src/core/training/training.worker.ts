@@ -6,7 +6,7 @@ import { exposeWorker } from '@core/workers/exposeWorker'
 import type { WorkerTaskContext_t } from '@core/workers/workerProtocol'
 import { activateTFBackend, type TFBackend_t } from '@core/tfBackend'
 import { trainTestSplit } from '@utils/trainTestSplit'
-import { IMAGE_SIZE, decodeSpriteRows } from '@pages/playground/3_ImageClassification/models/spriteDecode'
+import { decodeSpriteRows, spriteImageValues } from '@pages/playground/3_ImageClassification/models/spriteDecode'
 import { ModelDefinitionError, buildDenseModel, buildImageModel, compileModel, historyData, modelArtifacts } from './buildModels'
 import {
   BACKEND_ERROR_PREFIX,
@@ -17,8 +17,6 @@ import {
   type TrainingProgress_t,
   type TrainingResult_t,
 } from './trainingTypes'
-
-const NUM_CLASSES = 10
 
 let backendInUse: TFBackend_t | null = null
 
@@ -109,21 +107,22 @@ async function fetchLabels(url: string): Promise<Uint8Array> {
 
 async function trainImages(request: ImageTrainingRequest_t, context: WorkerTaskContext_t): Promise<TrainingResult_t> {
   await ensureBackend(request.backend)
-  const { imagesUrl, labelsUrl, numElements, numTrain, layers, compile, numberOfEpoch, trainSize, testSize, batchSize } = request
+  const { imagesUrl, labelsUrl, numElements, numTrain, numClasses, image, layers, compile, numberOfEpoch, trainSize, testSize, batchSize } = request
   const [images, labels] = await Promise.all([
-    decodeSpriteRows({ url: imagesUrl, firstRow: 0, numRows: numElements }),
+    decodeSpriteRows({ url: imagesUrl, firstRow: 0, numRows: numElements, image }),
     fetchLabels(labelsUrl),
   ])
+  const size = spriteImageValues(image)
   // Imágenes barajadas: las de entrenamiento salen de las primeras numTrain y las de validación del resto
   const batch = (indices: Uint32Array, offset: number, count: number) => {
-    const xs = new Float32Array(count * IMAGE_SIZE)
-    const ys = new Uint8Array(count * NUM_CLASSES)
+    const xs = new Float32Array(count * size)
+    const ys = new Uint8Array(count * numClasses)
     for (let i = 0; i < count; i++) {
       const index = offset + indices[i % indices.length]
-      xs.set(images.subarray(index * IMAGE_SIZE, (index + 1) * IMAGE_SIZE), i * IMAGE_SIZE)
-      ys.set(labels.subarray(index * NUM_CLASSES, (index + 1) * NUM_CLASSES), i * NUM_CLASSES)
+      xs.set(images.subarray(index * size, (index + 1) * size), i * size)
+      ys.set(labels.subarray(index * numClasses, (index + 1) * numClasses), i * numClasses)
     }
-    return [tfjs.tensor4d(xs, [count, 28, 28, 1]), tfjs.tensor2d(ys, [count, NUM_CLASSES])]
+    return [tfjs.tensor4d(xs, [count, image.height, image.width, image.channels]), tfjs.tensor2d(ys, [count, numClasses])]
   }
   const [trainXs, trainYs] = batch(tfjs.util.createShuffledIndices(numTrain), 0, trainSize)
   const [testXs, testYs] = batch(tfjs.util.createShuffledIndices(numElements - numTrain), numTrain, testSize)

@@ -1,17 +1,31 @@
 import I_MODEL_REGRESSION from './_model'
 import { LR_MODEL_KEYS } from '@/MODEL_KEYS'
-import type { ModelRegistry } from '@core/models/modelRegistry'
+import { TASKS } from '@/TASKS'
+import { withDynamicModels, type ModelRegistry } from '@core/models/modelRegistry'
+import { builtinN4LPackage, n4lPackagesOf } from '@core/n4l/catalog'
+import { LOCAL_KEY_PREFIX, openLocalPackage } from '@core/n4l/localPackages'
+import type { N4LPackage_t } from '@core/n4l/source'
+import type { TFunction } from 'i18next'
 
-/** Clases de modelos de regresión, cargadas bajo demanda. */
-const MAP_LR_CLASSES: ModelRegistry<I_MODEL_REGRESSION> = {
-  [LR_MODEL_KEYS.UPLOAD]             : () => import('./MODEL__UPLOAD').then((m) => m.default),
-  [LR_MODEL_KEYS.SALARY]             : () => import('./MODEL_1_SALARY').then((m) => m.default),
-  [LR_MODEL_KEYS.AUTO_MPG]           : () => import('./MODEL_2_AUTO_MPG').then((m) => m.default),
-  [LR_MODEL_KEYS.HOUSING_PRICES]     : () => import('./MODEL_3_HOUSING_PRICES').then((m) => m.default),
-  [LR_MODEL_KEYS.BREAST_CANCER]      : () => import('./MODEL_4_BREAST_CANCER').then((m) => m.default),
-  [LR_MODEL_KEYS.STUDENT_PERFORMANCE]: () => import('./MODEL_5_STUDENT_PERFORMANCE').then((m) => m.default),
-  [LR_MODEL_KEYS.WINE]               : () => import('./MODEL_6_WINE').then((m) => m.default),
+/** La clase de un paquete .n4l: MODEL_N4L con ese paquete (se descarga al usarla, como las demás) */
+const n4lModelClass = (open: () => Promise<N4LPackage_t>) => async () => {
+  const [{ default: MODEL_N4L }, pkg] = await Promise.all([import('./MODEL_N4L'), open()])
+  return class extends MODEL_N4L {
+    constructor(t: TFunction<'translation', undefined>, setAccordionActive: React.Dispatch<React.SetStateAction<string[]>>) {
+      super(t, setAccordionActive, pkg)
+    }
+  }
 }
+
+/**
+ * Clases de modelos de regresión, cargadas bajo demanda: subir un CSV propio, los paquetes .n4l de la aplicación y,
+ * como local-<id>, los que haya abierto el usuario
+ */
+const MAP_LR_CLASSES: ModelRegistry<I_MODEL_REGRESSION> = withDynamicModels<I_MODEL_REGRESSION>({
+  [LR_MODEL_KEYS.UPLOAD]: () => import('./MODEL__UPLOAD').then((m) => m.default),
+  ...Object.fromEntries(n4lPackagesOf(TASKS.REGRESSION).map(({ entry, section }) =>
+    [section.key, n4lModelClass(async () => builtinN4LPackage(entry))])),
+}, (key) => (key.startsWith(LOCAL_KEY_PREFIX) ? n4lModelClass(() => openLocalPackage(key.slice(LOCAL_KEY_PREFIX.length))) : undefined))
 
 export {
   MAP_LR_CLASSES,

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { compareWithLabels, elbow, kmeans, pca2, silhouette, standardize } from '@core/clustering/kmeans'
 
 // Iris del proyecto: 4 medidas y la especie
-const [, ...rows] = readFileSync('public/models/00-tabular-classification/iris/iris.csv', 'utf-8').trim().split(/\r?\n/).map((line) => line.split(','))
+const [, ...rows] = readFileSync('public/n4l/iris.n4l/data/iris.csv', 'utf-8').trim().split(/\r?\n/).map((line) => line.split(','))
 const irisPoints = rows.map((row) => row.slice(0, 4).map(Number))
 const irisLabels = rows.map((row) => row[4])
 

@@ -1,0 +1,102 @@
+{
+  "columns": {
+    "Sample_code_number": "Sample_code_number",
+    "Clump_Thickness": "Clump_Thickness",
+    "Uniformity_of_Cell_Size": "Uniformity_of_Cell_Size",
+    "Uniformity_of_Cell_Shape": "Uniformity_of_Cell_Shape",
+    "Marginal_Adhesion": "Marginal_Adhesion",
+    "Single_Epithelial_Cell_Size": "Single_Epithelial_Cell_Size",
+    "Bare_Nuclei": "Bare_Nuclei",
+    "Bland_Chromatin": "Bland_Chromatin",
+    "Normal_Nucleoli": "Normal_Nucleoli",
+    "Mitoses": "Mitoses",
+    "Class": "Class",
+    "ID": "ID",
+    "radius1": "radius1",
+    "texture1": "texture1",
+    "perimeter1": "perimeter1",
+    "area1": "area1",
+    "smoothness1": "smoothness1",
+    "compactness1": "compactness1",
+    "concavity1": "concavity1",
+    "concave_points1": "concave_points1",
+    "symmetry1": "symmetry1",
+    "fractal_dimension1": "fractal_dimension1",
+    "radius2": "radius2",
+    "texture2": "texture2",
+    "perimeter2": "perimeter2",
+    "area2": "area2",
+    "smoothness2": "smoothness2",
+    "compactness2": "compactness2",
+    "concavity2": "concavity2",
+    "concave_points2": "concave_points2",
+    "symmetry2": "symmetry2",
+    "fractal_dimension2": "fractal_dimension2",
+    "radius3": "radius3",
+    "texture3": "texture3",
+    "perimeter3": "perimeter3",
+    "area3": "area3",
+    "smoothness3": "smoothness3",
+    "compactness3": "compactness3",
+    "concavity3": "concavity3",
+    "concave_points3": "concave_points3",
+    "symmetry3": "symmetry3",
+    "fractal_dimension3": "fractal_dimension3",
+    "Diagnosis": "Diagnosis",
+    "Time": "Time",
+    "tumor_size": "tumor_size",
+    "lymph_node_status": "lymph_node_status",
+    "Outcome": "Outcome"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Cáncer de mama Wisconsin (diagnóstico y pronóstico)",
+      "name": "Breast cancer",
+      "summary": "Tres conjuntos de Wisconsin sobre tumores de mama: el original, el de diagnóstico (WDBC) y el de pronóstico (WPBC).",
+      "description": {
+        "text": [
+          "Es un conjunto de datos del Hospital de la Universidad de Wisconsin relacionados con el cáncer de mama. Dicho conjunto de datos es útil para la predicción y discriminación de un tumor de cancer de mama, diferenciando si es benigno o no.",
+          "Cada registro representa los datos de seguimiento de un caso de cáncer de mama. Estos son casos atendidos desde 1984 por el Dr. Wolberg, solo incluye aquellos casos que presentan cáncer de mama invasivo y sin evidencia de metástasis.",
+          "Las primeras 30 características se calculan a partir de una imagen digitalizada de una aspiración con aguja fina (PAAF) de la masa mamaria, dichos datos describen las características de los núcleos celulares presentes en la imagen, algunas imágenes se pueden encontrar en <link2>cs wisc</link2>.",
+          "El fichero <kbd>wdbc.csv</kbd> corresponde al conjunto de datos de diagnóstico y <kbd>wpbc.csv</kbd> corresponde al conjunto de datos de pronóstico.",
+          "<link1>Entrada del conjunto de datos UCI</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<strong>Número de identificación</strong>",
+              "<strong>Resultado</strong> (R = recurrente, N = no recurrente)",
+              "<strong>Tiempo</strong> (tiempo de recurrencia si el campo 2 = R, tiempo libre de enfermedad si el campo 2 = N)",
+              "4-33 Se calculan diez características de valor real para cada núcleo celular:",
+              "<strong>radio</strong> (media de distancias desde el centro a puntos del perímetro)",
+              "<strong>textura</strong> (desviación estándar de los valores de escala de grises)",
+              "<strong>perímetro</strong>",
+              "<strong>área</strong>",
+              "<strong>suavidad</strong> (variación local en la longitud del radio)",
+              "<strong>compacidad</strong> (perímetro^2 / área - 1,0)",
+              "<strong>concavidad</strong> (severidad de las porciones cóncavas del contorno)",
+              "<strong>puntos cóncavos</strong> (número de porciones cóncavas del contorno)",
+              "<strong>simetría</strong>",
+              "<strong>dimensión fractal</strong> (\"aproximación de la línea costera\" - 1)"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Breast Cancer Wisconsin</link1>",
+              "<link3>Breast Cancer Wisconsin (Prognostic)</link3>",
+              "<link4>Breast Cancer Wisconsin (Diagnostic)</link4>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

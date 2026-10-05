@@ -41,7 +41,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 
 | Parámetro | Valores |
 |---|---|
-| `page_type` | `home`, `task`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `report`, `manual`, `glossary`, `datasets`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
+| `page_type` | `home`, `task`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `report`, `manual`, `glossary`, `datasets`, `packages`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
 | `task` | `tabular-classification`, `regression`, `image-classification`, `object-detection`, `clustering` |
 | `mode` | `train` (entrenar con un conjunto de datos) o `pretrained` (probar un modelo ya entrenado) |
 | `item` | El conjunto de datos o el modelo: `CAR`, `IRIS`, `AUTO_MPG`, `UPLOAD`, `IMAGE-MNIST`… En `/analyze`, el de `?dataset=` |
@@ -72,6 +72,8 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | `report_open` | Abrir el informe de un modelo entrenado (botón «Informe» de la tabla de modelos) | — |
 | `session_share` | Compartir la configuración de una página de entrenamiento con un enlace | `action` (`open`: abrir la ventana; `copy`: copiar el enlace; `native`: compartir con otra aplicación) |
 | `cluster_run` | Agrupar con k-means (`/playground/clustering/dataset/…`) | `k`, `features` (columnas usadas), `scaled`, `rows` |
+| `n4l_import` | Abrir un fichero .n4l en «Paquetes .n4l» (/packages) | `outcome` (`ok`, `error`), `item` (su id) |
+| `n4l_download` | Descargar el .n4l de un modelo | `item` (su id) |
 | `predict` | Una predicción o clasificación | `input` (`form`, `drawing`, `image`, `sample`, `test_sample`) |
 | `webcam_start` / `webcam_end` | Activar y desactivar la cámara en tiempo real | `duration_sec` (en `webcam_end`) |
 | `explain` | Pedir la explicación de una predicción | `method` (`shap`, `lrp`), `scope` (`local`, `global`; en SHAP tabular) |

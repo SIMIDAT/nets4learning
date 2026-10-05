@@ -1,0 +1,16 @@
+{
+  "columns": {
+    "T3resin": "T3resin",
+    "thyroxin": "thyroxin",
+    "triiodothyronine": "triiodothyronine",
+    "thyroidstimulating": "thyroidstimulating",
+    "TSH_value": "TSH_value",
+    "class": "class"
+  },
+  "tasks": {
+    "clustering": {
+      "name": "Thyroid (without the diagnosis)",
+      "summary": "Five thyroid tests: almost all are normal, so the hypo- and hyperthyroidism groups are small."
+    }
+  }
+}

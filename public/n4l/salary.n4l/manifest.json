@@ -1,0 +1,146 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "salary",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://www.kaggle.com/datasets/saquib7hussain/experience-salary-dataset",
+    "links": {
+      "link2": "https://www.kaggle.com/datasets/rkiattisak/salaly-prediction-for-beginer"
+    }
+  },
+  "datasets": [
+    {
+      "id": "salary",
+      "file": "data/salary.csv",
+      "info": "data/salary.names",
+      "rows": 1000,
+      "columns": [
+        {
+          "name": "YearsExperience",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "years of experience"
+        },
+        {
+          "name": "Salary",
+          "role": "Target",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "salary"
+        }
+      ]
+    },
+    {
+      "id": "salary-extra",
+      "file": "data/salary-extra.csv",
+      "info": "data/salary-extra.names",
+      "rows": 373,
+      "columns": [
+        {
+          "name": "Age",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "units": "years"
+        },
+        {
+          "name": "Gender",
+          "role": "Feature",
+          "type": "Binary",
+          "missing": 0
+        },
+        {
+          "name": "Education Level",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0
+        },
+        {
+          "name": "Job Title",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0
+        },
+        {
+          "name": "Years of Experience",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Salary",
+          "role": "Target",
+          "type": "Integer",
+          "missing": 0
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "regression",
+      "key": "SALARY",
+      "runtime": "regression",
+      "datasets": [
+        "salary",
+        "salary-extra"
+      ],
+      "preprocessing": [
+        {
+          "op": "label-encoder",
+          "columns": [
+            "Gender",
+            "Education Level",
+            "Job Title"
+          ]
+        },
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "models": [
+        {
+          "id": "mlp",
+          "format": "tfjs-layers",
+          "path": "models/mlp/model.json",
+          "dataset": "salary",
+          "input": "scaled",
+          "metrics": {
+            "test_r2": 0.5567,
+            "test_mae": 4.3045,
+            "test_baseline_mae": 6.4404
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "sigmoid"
+          },
+          {
+            "class": "dense",
+            "units": 20,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ]
+      }
+    }
+  ]
+}

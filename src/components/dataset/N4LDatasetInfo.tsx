@@ -8,7 +8,10 @@ export default function N4LDatasetInfo({ info, className = 'card-text small text
   const format = (value: number) => new Intl.NumberFormat(i18n.language).format(value)
   const prefix = 'pages.menu.info.'
   const parts: string[] = []
-  if (info.images) parts.push(t(prefix + 'images', { value: format(info.rows[0]) }))
+  if (info.images !== undefined) {
+    const { width, height, channels } = info.images
+    parts.push(t(prefix + (channels === 1 ? 'images' : 'images-color'), { value: format(info.rows[0]), size: `${width}×${height}` }))
+  }
   else if (info.rows.length === 1) parts.push(t(prefix + 'rows', { value: format(info.rows[0]) }))
   else parts.push(t(prefix + 'rows-files', { files: info.rows.length, values: info.rows.map(format).join(' / ') }))
   if (info.features !== undefined) parts.push(t(prefix + 'features', { value: info.features }))

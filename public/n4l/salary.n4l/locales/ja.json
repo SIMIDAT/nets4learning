@@ -1,0 +1,47 @@
+{
+  "columns": {
+    "YearsExperience": "YearsExperience",
+    "Salary": "Salary",
+    "Age": "Age",
+    "Gender": "Gender",
+    "Education Level": "Education Level",
+    "Job Title": "Job Title",
+    "Years of Experience": "Years of Experience"
+  },
+  "tasks": {
+    "regression": {
+      "title": "経験年数に基づく給与",
+      "name": "給与",
+      "summary": "経験年数から給与を予測します（2つ目のファイルには年齢、学歴、職種もあります）。",
+      "description": {
+        "text": [
+          "「Salary」データセットは、個人の職務経験年数とそれに対応する給与の関係を関連付ける情報のコレクションです。",
+          "データセットの各エントリは、「Years of Experience」（経験年数）と「Salary」（給与）の2つの主要な変数で構成されています。「Years of Experience」変数は、従業員が特定の分野で働いた年数を表し、「Salary」変数は、その従業員が年間稼ぐ金額を表します。",
+          "このデータセットの詳細については、<link1>www.kaggle.com</link1>リポジトリをご覧ください。"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "Years of experience - 経験年数",
+              "Salary - 給与"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "計算された回帰 (<b>Salary</b>)"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>データセット 1</link1>",
+              "<link2>データセット 2</link2>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

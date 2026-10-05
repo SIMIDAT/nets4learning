@@ -1,5 +1,7 @@
 import * as tfjs from '@tensorflow/tfjs'
 
+import type { SpriteImage_t } from '../models/spriteDecode'
+
 export const UTILS_image = {
   failed                        : (event: Event) => console.error(event),
   /**
@@ -125,6 +127,38 @@ export function grayscaleToImageData(pixels: Float32Array, width: number, height
   }
   return result
 }
+
+/**
+ * Imagen de un sprite (sus valores 0–1) como ImageData opaca: en gris, con el trazo oscuro sobre fondo claro, como los
+ * dibujos (grayscaleToImageData); en color, tal cual. `imageDataToTensor4d` la vuelve a dar exactamente
+ */
+export function spriteToImageData(pixels: Float32Array, { width, height, channels }: SpriteImage_t): ImageData {
+  if (channels === 1) return grayscaleToImageData(pixels, width, height)
+  const result = createImageData(width, height)
+  for (let i = 0; i < width * height; i++) {
+    for (let c = 0; c < 3; c++) result.data[i * 4 + c] = Math.round(255 * pixels[i * channels + Math.min(c, channels - 1)])
+    result.data[i * 4 + 3] = 255
+  }
+  return result
+}
+
+/**
+ * Entrada de una red en color (1×alto×ancho×3): RGB entre 0 y 1. Lo transparente cuenta como blanco (sobre el fondo
+ * blanco de la página)
+ */
+export function imageDataToRgbTensor4d(imageData: ImageData): tfjs.Tensor4D {
+  const { data, width, height } = imageData
+  const values = new Float32Array(width * height * 3)
+  for (let i = 0, p = 0; p < data.length; i++, p += 4) {
+    const alpha = data[p + 3] / 255
+    for (let c = 0; c < 3; c++) values[i * 3 + c] = (data[p + c] / 255) * alpha + (1 - alpha)
+  }
+  return tfjs.tensor4d(values, [1, height, width, 3])
+}
+
+/** Entrada de una red de imágenes según sus canales: en gris, como MNIST; en color, RGB */
+export const imageDataToTensor4d = (imageData: ImageData, channels: number): tfjs.Tensor4D =>
+  (channels === 1 ? imageDataToMnistTensor4d(imageData) : imageDataToRgbTensor4d(imageData))
 
 /** ImageData ampliada (sin suavizar) como data URL, p. ej. para la imagen base de la explicación */
 export function imageDataToDataUrl(imageData: ImageData, size: number): string {

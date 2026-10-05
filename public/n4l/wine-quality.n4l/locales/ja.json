@@ -1,0 +1,62 @@
+{
+  "columns": {
+    "fixed_acidity": "fixed_acidity",
+    "volatile_acidity": "volatile_acidity",
+    "citric_acid": "citric_acid",
+    "residual_sugar": "residual_sugar",
+    "chlorides": "chlorides",
+    "free_sulfur_dioxide": "free_sulfur_dioxide",
+    "total_sulfur_dioxide": "total_sulfur_dioxide",
+    "density": "density",
+    "pH": "pH",
+    "sulphates": "sulphates",
+    "alcohol": "alcohol",
+    "quality": "quality"
+  },
+  "tasks": {
+    "regression": {
+      "title": "ワインの品質",
+      "name": "ワイン",
+      "summary": "ポルトガルのヴィーニョ・ヴェルデ（赤と白）の品質を、化学分析から予測します。",
+      "description": {
+        "text": [
+          "この2つのデータセットは関連しており、ポルトガルワインの赤ワインと白ワインのバリアントが含まれています。このデータセットには、理化学変数（入力）と感覚変数（出力）のみが含まれており、ブドウの品種、ワインのブランド、または販売価格のデータは含まれていません。",
+          "データセットには多変量データ、実数型の属性、4898インスタンス、および12個の異なる属性が含まれています。",
+          "このデータセットは、分類タスクまたは回帰タスクに使用できます。クラスは順序付けされていますが、データセットは不均衡です。",
+          "このデータセットの詳細については、<link1>archive.ics.uci.edu</link1>リポジトリをご覧ください。"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>Fixed Acidity (固定酸度)</strong>: ワイン中の非揮発性酸の濃度を指します。新鮮さと安定性に貢献します。",
+              "<strong>Volatile Acidity (揮発性酸度)</strong>: 酢酸などの揮発性酸の濃度を指します。過剰に存在すると不快な味を与える可能性があります。",
+              "<strong>Citric Acid (クエン酸)</strong>: ワインに存在する天然の有機酸の1つです。風味と新鮮さに影響を与える可能性があります。",
+              "<strong>Residual Sugar (残糖)</strong>: 発酵後にワインに残る砂糖の量です。",
+              "<strong>Chlorides (塩化物)</strong>: ワイン中の塩化物濃度は、その風味と香りに影響を与えます。",
+              "<strong>Free Sulfur Dioxide (遊離二酸化硫黄)</strong>: 酸化や不要な微生物の増殖を防ぐ一般的な防腐剤です。",
+              "<strong>Total Sulfur Dioxide (総二酸化硫黄)</strong>: 遊離二酸化硫黄と結合した二酸化硫黄の合計を表します。ワインの保存にも関連しています。",
+              "<strong>Density (密度)</strong>: 単位体積あたりのワインの質量を指します。アルコールと砂糖の濃度に関する情報を提供できます。",
+              "<strong>pH</strong>: ワインの酸性度またはアルカリ度を測定します。",
+              "<strong>Sulphates (硫酸塩)</strong>: ワインの生産で時々使用される添加剤です。安定性と香りに影響を与える可能性があります。",
+              "<strong>Alcohol (アルコール)</strong>: ワイン中のアルコール濃度。風味と口当たりに影響します。",
+              "<strong>Quality (品質)</strong>: テイスターの評価に従って、通常0から10のスケールで、ワインの全体的な品質スコア。"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "計算された回帰"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>ワインの品質</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

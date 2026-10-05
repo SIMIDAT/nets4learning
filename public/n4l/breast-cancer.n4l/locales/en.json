@@ -1,0 +1,102 @@
+{
+  "columns": {
+    "Sample_code_number": "Sample_code_number",
+    "Clump_Thickness": "Clump_Thickness",
+    "Uniformity_of_Cell_Size": "Uniformity_of_Cell_Size",
+    "Uniformity_of_Cell_Shape": "Uniformity_of_Cell_Shape",
+    "Marginal_Adhesion": "Marginal_Adhesion",
+    "Single_Epithelial_Cell_Size": "Single_Epithelial_Cell_Size",
+    "Bare_Nuclei": "Bare_Nuclei",
+    "Bland_Chromatin": "Bland_Chromatin",
+    "Normal_Nucleoli": "Normal_Nucleoli",
+    "Mitoses": "Mitoses",
+    "Class": "Class",
+    "ID": "ID",
+    "radius1": "radius1",
+    "texture1": "texture1",
+    "perimeter1": "perimeter1",
+    "area1": "area1",
+    "smoothness1": "smoothness1",
+    "compactness1": "compactness1",
+    "concavity1": "concavity1",
+    "concave_points1": "concave_points1",
+    "symmetry1": "symmetry1",
+    "fractal_dimension1": "fractal_dimension1",
+    "radius2": "radius2",
+    "texture2": "texture2",
+    "perimeter2": "perimeter2",
+    "area2": "area2",
+    "smoothness2": "smoothness2",
+    "compactness2": "compactness2",
+    "concavity2": "concavity2",
+    "concave_points2": "concave_points2",
+    "symmetry2": "symmetry2",
+    "fractal_dimension2": "fractal_dimension2",
+    "radius3": "radius3",
+    "texture3": "texture3",
+    "perimeter3": "perimeter3",
+    "area3": "area3",
+    "smoothness3": "smoothness3",
+    "compactness3": "compactness3",
+    "concavity3": "concavity3",
+    "concave_points3": "concave_points3",
+    "symmetry3": "symmetry3",
+    "fractal_dimension3": "fractal_dimension3",
+    "Diagnosis": "Diagnosis",
+    "Time": "Time",
+    "tumor_size": "tumor_size",
+    "lymph_node_status": "lymph_node_status",
+    "Outcome": "Outcome"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Breast Cancer Wisconsin (Diagnostic and prognostic)",
+      "name": "Breast cancer",
+      "summary": "Three Wisconsin datasets about breast tumours: the original, the diagnostic one (WDBC) and the prognostic one (WPBC).",
+      "description": {
+        "text": [
+          "It is a data set from the University of Wisconsin Hospital related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
+          "Each record represents follow-up data for a breast cancer case. These are cases treated since 1984 by Dr. Wolberg, he only includes those cases that present invasive breast cancer and without evidence of metastasis.",
+          "The first 30 characteristics are calculated from a digitized image of a fine needle aspiration (FNAB) of the breast mass, these data describe the characteristics of the cell nuclei present in the image, some images can be found in <link2>cs wisc</link2>",
+          "The file <kbd>wdbc.csv</kbd> corresponds to the diagnostic data set and <kbd>wpbc.csv</kbd> corresponds to the prognostic data set.",
+          "<link1>UCI data set input </link1>"
+        ],
+        "sections": [
+          {
+            "title": "Input",
+            "items": [
+              "<strong>ID number</strong>",
+              "<strong>Outcome</strong> (R = recur, N = nonrecur)",
+              "<strong>Time</strong> (recurrence time if field 2 = R, disease-free time if field 2 = N)",
+              "4-33 Ten real-valued features are computed for each cell nucleus:",
+              "<strong>radius</strong> (mean of distances from center to points on the perimeter)",
+              "<strong>texture</strong> (standard deviation of gray-scale values)",
+              "<strong>perimeter</strong>",
+              "<strong>area</strong>",
+              "<strong>smoothness</strong> (local variation in radius lengths)",
+              "<strong>compactness</strong> (perimeter^2 / area - 1.0)",
+              "<strong>concavity</strong> (severity of concave portions of the contour)",
+              "<strong>concave points</strong> (number of concave portions of the contour)",
+              "<strong>symmetry</strong>",
+              "<strong>fractal dimension</strong> (\"coastline approximation\" - 1)"
+            ]
+          },
+          {
+            "title": "Output",
+            "items": [
+              "Calculated regression (<b>Salary</b>)"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Breast Cancer Wisconsin</link1>",
+              "<link3>Breast Cancer Wisconsin (Prognostic)</link3>",
+              "<link4>Breast Cancer Wisconsin (Diagnostic)</link4>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

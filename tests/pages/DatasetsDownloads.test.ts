@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest'
 import * as fs from 'fs'
 import { TASK_DATASET_OPTIONS, type TaskOption_t } from '../../src/TASK_OPTIONS'
 import { EXTRA_DATASETS } from '../../src/pages/datasets/extraDatasets'
-import { DATASET_VARIABLES, variableTables } from '../../src/pages/datasets/datasetVariables'
+import { DATASET_VARIABLES, N4L_VARIABLES, variableTables } from '../../src/pages/datasets/datasetVariables'
 import { datasetKey } from '../../src/pages/analyze/projectDatasets'
 
 // La página de datasets descarga los mismos CSV que usan los modelos, más algunos extra: todos deben existir en public/
@@ -26,12 +26,12 @@ describe('Datasets — enlaces de descarga', () => {
       ...Object.values(TASK_DATASET_OPTIONS as Record<string, TaskOption_t[]>).flat().flatMap((option) => option.info?.files ?? []),
       ...Object.values(EXTRA_DATASETS).flat().map(({ file }) => file),
     ]
-    const covered = DATASET_VARIABLES.flatMap((table) => table.files)
-    expect(files.filter((file) => !covered.includes(file))).toStrictEqual([])
+    // Las de los paquetes .n4l, de su manifiesto
+    expect(files.filter((file) => variableTables([file]).length === 0)).toStrictEqual([])
   })
 
   test('las variables coinciden con las columnas y los valores ausentes de los CSV', () => {
-    for (const table of DATASET_VARIABLES) {
+    for (const table of [...DATASET_VARIABLES, ...N4L_VARIABLES]) {
       const columns = table.variables.map(() => ({ missing: 0 }))
       for (const file of table.files) {
         const [header, ...rows] = fs.readFileSync('public/' + file, 'utf-8').trim().split(/\r?\n/).map((line) => line.split(','))
@@ -63,12 +63,19 @@ describe('Datasets — enlaces de descarga', () => {
       key.split('.').reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], translation)
     const keys = [
       ...(['tabular-classification', 'regression', 'image-classification', 'clustering'] as const).flatMap((task) =>
-        (TASK_DATASET_OPTIONS as Record<string, TaskOption_t[]>)[task].filter(({ info }) => info !== undefined).map(({ value }) => `datasets.summary.${task}.${value}`)),
+        (TASK_DATASET_OPTIONS as Record<string, TaskOption_t[]>)[task].filter(({ info }) => info !== undefined)
+          .map(({ value, summary }) => summary ?? `datasets.summary.${task}.${value}`)),
       ...Object.values(EXTRA_DATASETS).flat().map(({ file, summary }) => summary ?? `datasets.summary.extra.${datasetKey(file)}`),
     ]
+    // n4l-<id>:clave está en los textos del paquete (public/n4l/<id>.n4l/locales/); el resto, en los de la aplicación
+    const text = (language: string, key: string) => {
+      const [, id, packageKey] = key.match(/^n4l-(.+):(.+)$/) ?? []
+      return id === undefined
+        ? lookup(JSON.parse(fs.readFileSync(`public/locales/${language}/translation.json`, 'utf-8')), key)
+        : lookup(JSON.parse(fs.readFileSync(`public/n4l/${id}.n4l/locales/${language}.json`, 'utf-8')), packageKey)
+    }
     for (const language of ['es', 'en', 'ja']) {
-      const translation = JSON.parse(fs.readFileSync(`public/locales/${language}/translation.json`, 'utf-8'))
-      expect(keys.filter((key) => typeof lookup(translation, key) !== 'string'), language).toStrictEqual([])
+      expect(keys.filter((key) => typeof text(language, key) !== 'string'), language).toStrictEqual([])
     }
   })
 })

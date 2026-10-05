@@ -18,7 +18,7 @@ import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import ModelReviewImageClassificationDraw from '@pages/playground/3_ImageClassification/ModelReviewImageClassificationDraw'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
-import { grayscaleToImageData, UTILS_image } from '@pages/playground/3_ImageClassification/utils/utils'
+import { spriteToImageData, UTILS_image } from '@pages/playground/3_ImageClassification/utils/utils'
 
 import {
   ImageExplainResults,
@@ -31,6 +31,7 @@ import N4LModelSummaryButton from '@components/neural-network/N4LModelSummaryBut
 import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LModelCard from '@components/neural-network/N4LModelCard'
 import N4LModelAside from '@components/neural-network/N4LModelAside'
+import N4LDownloadPackage from '@components/n4l/N4LDownloadPackage'
 import { imageClassificationReviewGuide } from './modelReviewGuide'
 import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
 import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
@@ -71,7 +72,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   const [imageUpload, setImageUpload] = useState<File | null>(null)
 
-  // MNIST y KMNIST: sus imágenes de test se pueden clasificar desde un selector (el dataset se descarga al pedirlo)
+  // MNIST, KMNIST, CIFAR-10…: sus imágenes de test se pueden clasificar desde un selector (se descargan al pedirlo)
   const [testDataset, setTestDataset] = useState<SpriteImageDataset | null>(null)
   const [isLoadingTestDataset, setIsLoadingTestDataset] = useState(false)
   const [selectedInstance, setSelectedInstance] = useState<number | null>(null)
@@ -119,11 +120,14 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const characterForms = iModelInstance?.CHARACTER_FORMS() ?? null
   // MNIST y KMNIST: se puede dibujar la entrada y la explicación es siempre con LRP
   const isDrawable = iModelInstance?.DRAWABLE ?? false
+  // Las imágenes de un conjunto (no MobileNet): tienen imágenes de test, y los ejemplos son pequeños
+  const spriteImage = iModelInstance?.IMAGE ?? null
+  const hasTestImages = iModelInstance?.TEST_IMAGES ?? false
   // Guía paso a paso de la página (con voz): solo con el botón "Guía"
   const hasSummary = model instanceof tfjs.LayersModel
   const guideSteps = useMemo(() => (iModelInstance === null
     ? null
-    : imageClassificationReviewGuide(t, dataset, { drawable: isDrawable, summary: hasSummary })), [t, dataset, iModelInstance, isDrawable, hasSummary])
+    : imageClassificationReviewGuide(t, dataset, { drawable: isDrawable, summary: hasSummary, testImages: hasTestImages })), [t, dataset, iModelInstance, isDrawable, hasSummary, hasTestImages])
 
   // region CLASIFICACIÓN
   /** Clasifica la entrada del modelo y la deja como entrada de la explicación */
@@ -208,15 +212,15 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
     return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index} · ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
   }, [testDataset, iModelInstance])
 
-  /** Una imagen de test tal cual (28×28, la entrada exacta del modelo), ampliada en el canvas del resultado */
+  /** Una imagen de test tal cual (la entrada exacta del modelo), ampliada en el canvas del resultado */
   const handleChange_TestImage = async (index: number) => {
     const canvas = canvas_original_image_ref.current
     if (testDataset === null || canvas === null) return
     const { pixels, label } = testDataset.testExample(index)
-    const imageData = grayscaleToImageData(pixels, 28, 28)
+    const imageData = spriteToImageData(pixels, testDataset.image)
     const small = document.createElement('canvas')
-    small.width = 28
-    small.height = 28
+    small.width = imageData.width
+    small.height = imageData.height
     small.getContext('2d')?.putImageData(imageData, 0, 0)
     canvas.width = 200
     canvas.height = 200
@@ -309,7 +313,10 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
             <N4LModelAside>
               <N4LModelCard title={iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
-                actions={<N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ''} />}>
+                actions={<>
+                  <N4LModelSummaryButton model={model} title={iModelInstance !== null ? t(iModelInstance.TITLE) : ''} />
+                  <N4LDownloadPackage pkg={iModelInstance?.N4L_PACKAGE() ?? null} />
+                </>}>
                 {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
               </N4LModelCard>
               {/* Cómo se explica la predicción (SHAP o LRP) */}
@@ -330,18 +337,18 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
             </N4LModelAside>
           </Col>
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
-            {/* IMÁGENES DE EJEMPLO (y, en MNIST y KMNIST, las del conjunto de test) */}
+            {/* IMÁGENES DE EJEMPLO (y las del conjunto de test, si son las de un conjunto) */}
             <Card className={'mt-3'} data-guide={'examples'}>
               <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
                 <h2>
                   <Trans i18nKey={prefix + 'process-examples.title'} />
                 </h2>
-                {isDrawable && testDataset === null &&
+                {hasTestImages && testDataset === null &&
                   <Button size={'sm'} variant={'outline-primary'} onClick={handleClick_LoadTestDataset} disabled={isLoadingTestDataset || model === null} data-testid={'Test-LoadTestDataset'} data-guide={'test-images'}>
                     {isLoadingTestDataset && <Spinner size={'sm'} className={'me-2'} />}
                     <Trans i18nKey={prefix + (isLoadingTestDataset ? 'test-images.loading' : 'test-images.load')} />
                   </Button>}
-                {isDrawable && testDataset !== null &&
+                {hasTestImages && testDataset !== null &&
                   <div className={'n4l-card-header-controls n4l-instance-select'} data-guide={'test-images'}>
                     <N4LVirtualSelect options={testOptions}
                       value={selectedInstance}
@@ -362,17 +369,15 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                 </>}
                 {characterForms === null && <>
                   <p className={'text-body-secondary small'}><Trans i18nKey={prefix + 'process-examples.help'} /></p>
-                  {/* Dibujos de 28×28: una fila de miniaturas; fotos (MobileNet): tres por fila */}
-                  <div className={isDrawable ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
-                    {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => {
-                      const path_image = import.meta.env.VITE_PATH + '/assets/' + image
-                      return (
-                        <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(path_image)}
-                          disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
-                          <img className={'img-fluid w-100 h-100 object-fit-cover'} src={path_image} alt={''} />
-                        </button>
-                      )
-                    })}
+                  {/* Las imágenes de un conjunto (dibujos de 28×28, fotos de 32×32): una fila de miniaturas; fotos grandes
+                      (MobileNet): tres por fila */}
+                  <div className={spriteImage !== null ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
+                    {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => (
+                      <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(image)}
+                        disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
+                        <img className={'img-fluid w-100 h-100 object-fit-cover'} src={image} alt={''} />
+                      </button>
+                    ))}
                   </div>
                 </>}
               </Card.Body>

@@ -17,6 +17,7 @@ import ModelReviewRegressionPredict from './ModelReviewRegressionPredict'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from './utils'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LTestMetrics from '@components/n4l/N4LTestMetrics'
 import N4LModelCard from '@components/neural-network/N4LModelCard'
 import N4LModelAside from '@components/neural-network/N4LModelAside'
 import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
@@ -297,6 +298,8 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                     <Trans i18nKey={'form.select-dataset.info'} />
                   </Form.Text>
                 </Form.Group>
+                  {/* Cómo predice con datos que no vio al entrenarlo (los de un paquete .n4l lo llevan medido) */}
+                  <N4LTestMetrics metrics={iModelInstance.TEST_METRICS(listDatasets.data[listDatasets.index]?.csv ?? '')} />
                   {iModelInstance.DESCRIPTION()}
                 </N4LModelCard>
               </N4LModelAside>

@@ -1,0 +1,125 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "auto-mpg",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/9/auto+mpg",
+    "citation": "@misc{misc_auto_mpg_9,\n  author       = {Quinlan,R.},\n  title        = {{Auto MPG}},\n  year         = {1993},\n  howpublished = {UCI Machine Learning Repository},\n  note         = {{DOI}: https://doi.org/10.24432/C5859H}\n}"
+  },
+  "datasets": [
+    {
+      "id": "auto-mpg",
+      "file": "data/auto-mpg.csv",
+      "info": "data/auto-mpg.names",
+      "rows": 396,
+      "columns": [
+        {
+          "name": "cylinders",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "number of cylinders (multi-valued discrete)"
+        },
+        {
+          "name": "displacement",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "engine displacement"
+        },
+        {
+          "name": "horsepower",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "engine horsepower"
+        },
+        {
+          "name": "weight",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "vehicle weight"
+        },
+        {
+          "name": "acceleration",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "acceleration"
+        },
+        {
+          "name": "model-year",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "model year (multi-valued discrete)"
+        },
+        {
+          "name": "mpg",
+          "role": "Target",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "fuel consumption in miles per gallon"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "regression",
+      "key": "AUTO_MPG",
+      "runtime": "regression",
+      "datasets": [
+        "auto-mpg"
+      ],
+      "preprocessing": [
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "models": [
+        {
+          "id": "mlp",
+          "format": "tfjs-layers",
+          "path": "models/mlp/model.json",
+          "dataset": "auto-mpg",
+          "input": "scaled",
+          "metrics": {
+            "test_r2": 0.831,
+            "test_mae": 2.0889,
+            "test_baseline_mae": 5.6724
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ]
+      }
+    }
+  ]
+}

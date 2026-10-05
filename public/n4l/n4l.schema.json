@@ -1,0 +1,661 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simidat.ujaen.es/n4l/n4l.schema.json",
+  "title": "Paquete .n4l de Nets4Learning (formato 1)",
+  "description": "manifest.json de un paquete .n4l. Especificación: docs/n4l-format.md. La aplicación lo valida con src/core/n4l/validate.ts.",
+  "type": "object",
+  "required": [
+    "format",
+    "formatVersion",
+    "id",
+    "version",
+    "locales",
+    "datasets",
+    "tasks"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "format": {
+      "const": "n4l"
+    },
+    "formatVersion": {
+      "const": 1,
+      "description": "Versión del formato. Las anteriores se migran al cargarlas; las posteriores necesitan una aplicación más nueva."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "El del conjunto: el nombre de la carpeta, sin .n4l"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$",
+      "description": "Versión del contenido (semver)"
+    },
+    "locales": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "description": "Idiomas de locales/<idioma>.json"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "citation": {
+          "type": "string",
+          "description": "Cita en BibTeX"
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "Otras direcciones, por el nombre de su etiqueta en los textos (link2…)"
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/tableDataset"
+          },
+          {
+            "$ref": "#/$defs/imageDataset"
+          },
+          {
+            "$ref": "#/$defs/externalDataset"
+          }
+        ]
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Una sección por cada tarea en la que se usa el conjunto",
+      "items": {
+        "type": "object",
+        "required": [
+          "task",
+          "key",
+          "runtime",
+          "datasets",
+          "preprocessing",
+          "models"
+        ],
+        "properties": {
+          "task": {
+            "enum": [
+              "tabular-classification",
+              "regression",
+              "image-classification",
+              "object-detection",
+              "clustering"
+            ]
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Clave en las direcciones: /playground/<tarea>/model/<key>"
+          },
+          "runtime": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Motor de la aplicación que lo interpreta (tabular-classification…)"
+          },
+          "datasets": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Los conjuntos que usa (sus id); el primero, el que se abre al entrar"
+          },
+          "listed": {
+            "type": "boolean",
+            "description": "Si sale en los menús (por defecto, sí)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Su posición en los menús de la tarea, de menor a mayor (sin ella, después de los que la tienen)"
+          },
+          "preprocessing": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "op",
+                "columns"
+              ],
+              "properties": {
+                "op": {
+                  "type": "string",
+                  "description": "label-encoder, min-max…"
+                },
+                "columns": {
+                  "oneOf": [
+                    {
+                      "enum": [
+                        "categorical",
+                        "features"
+                      ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "classes": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Salidas del modelo, en orden",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "aliases": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "reading": {
+                  "type": "string",
+                  "description": "Caracteres: cómo se lee (rōmaji)"
+                },
+                "origin": {
+                  "type": "string",
+                  "description": "Caracteres: el kanji del que viene"
+                }
+              }
+            }
+          },
+          "models": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/layersModel"
+                },
+                {
+                  "$ref": "#/$defs/mobilenetModel"
+                }
+              ]
+            }
+          },
+          "prediction": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/tablePrediction"
+              },
+              {
+                "$ref": "#/$defs/imagePrediction"
+              }
+            ]
+          },
+          "training": {
+            "type": "object",
+            "required": [
+              "layers"
+            ],
+            "properties": {
+              "layers": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "class",
+                        "units",
+                        "activation"
+                      ],
+                      "properties": {
+                        "class": {
+                          "const": "dense"
+                        },
+                        "units": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "activation": {
+                          "type": "string"
+                        },
+                        "locked": {
+                          "type": "boolean",
+                          "description": "La capa no se puede cambiar (la salida de la regresión…)"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "class",
+                        "filters",
+                        "kernelSize",
+                        "activation"
+                      ],
+                      "properties": {
+                        "class": {
+                          "const": "conv2d"
+                        },
+                        "filters": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "kernelSize": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "activation": {
+                          "type": "string"
+                        },
+                        "locked": {
+                          "type": "boolean",
+                          "description": "La capa no se puede cambiar (la salida de la regresión…)"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "class",
+                        "poolSize",
+                        "strides"
+                      ],
+                      "properties": {
+                        "class": {
+                          "const": "maxPooling2d"
+                        },
+                        "poolSize": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "strides": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "locked": {
+                          "type": "boolean",
+                          "description": "La capa no se puede cambiar (la salida de la regresión…)"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "class"
+                      ],
+                      "properties": {
+                        "class": {
+                          "const": "flatten"
+                        },
+                        "locked": {
+                          "type": "boolean",
+                          "description": "La capa no se puede cambiar (la salida de la regresión…)"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "learningRate": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "description": "La tasa de aprendizaje con la que se empieza a entrenar"
+              },
+              "epochs": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Las épocas con las que se empieza a entrenar"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "innerPath": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$))[^\\\\]+$",
+      "description": "Ruta dentro del paquete"
+    },
+    "tableDataset": {
+      "type": "object",
+      "required": [
+        "id",
+        "file",
+        "rows",
+        "columns"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "table",
+          "description": "Por defecto"
+        },
+        "file": {
+          "$ref": "#/$defs/innerPath"
+        },
+        "info": {
+          "$ref": "#/$defs/innerPath"
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "role",
+              "type",
+              "missing"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "role": {
+                "enum": [
+                  "Feature",
+                  "Target",
+                  "ID",
+                  "Other"
+                ]
+              },
+              "type": {
+                "enum": [
+                  "Continuous",
+                  "Integer",
+                  "Categorical",
+                  "Binary"
+                ]
+              },
+              "missing": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "units": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Valores posibles, en el orden del formulario"
+              }
+            }
+          }
+        }
+      },
+      "description": "Una tabla (un CSV) con la ficha de sus columnas"
+    },
+    "imageDataset": {
+      "type": "object",
+      "description": "Imágenes en un sprite: un PNG con una imagen por fila (primero las de entrenamiento) y sus clases en one-hot, un byte por clase",
+      "required": [
+        "id",
+        "kind",
+        "file",
+        "labels",
+        "rows",
+        "train",
+        "image"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "image-sprite"
+        },
+        "file": {
+          "$ref": "#/$defs/innerPath",
+          "description": "El PNG"
+        },
+        "labels": {
+          "$ref": "#/$defs/innerPath",
+          "description": "Las clases en one-hot"
+        },
+        "info": {
+          "$ref": "#/$defs/innerPath"
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Imágenes"
+        },
+        "train": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Las primeras, de entrenamiento; las demás, de prueba"
+        },
+        "image": {
+          "type": "object",
+          "required": [
+            "width",
+            "height",
+            "channels"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "channels": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "externalDataset": {
+      "type": "object",
+      "description": "Un conjunto que no va en el paquete (por su tamaño o su licencia)",
+      "required": [
+        "id",
+        "kind",
+        "url"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "external"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "info": {
+          "$ref": "#/$defs/innerPath"
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "layersModel": {
+      "type": "object",
+      "required": [
+        "id",
+        "format",
+        "path",
+        "dataset"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "format": {
+          "const": "tfjs-layers"
+        },
+        "path": {
+          "$ref": "#/$defs/innerPath"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "input": {
+          "enum": [
+            "encoded",
+            "scaled"
+          ],
+          "description": "Lo que recibe: las columnas codificadas (encoded, por defecto) o, además, escaladas con el min-max del conjunto (scaled). Las imágenes las recibe como están en su conjunto"
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "Medidas con datos que no vio al entrenar (test_…)"
+        }
+      },
+      "description": "Un modelo de TF.js (LayersModel) del paquete"
+    },
+    "mobilenetModel": {
+      "type": "object",
+      "description": "MobileNet (@tensorflow-models/mobilenet): no va en el paquete, lo descarga la librería",
+      "required": [
+        "id",
+        "format",
+        "dataset",
+        "version",
+        "alpha"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "format": {
+          "const": "tfjs-mobilenet"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "alpha": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "tablePrediction": {
+      "type": "object",
+      "required": [
+        "defaults",
+        "examples"
+      ],
+      "properties": {
+        "defaults": {
+          "type": "object"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "values",
+              "expected"
+            ],
+            "properties": {
+              "values": {
+                "type": "object"
+              },
+              "expected": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "description": "El formulario para predecir con una tabla"
+    },
+    "imagePrediction": {
+      "type": "object",
+      "description": "Las imágenes de ejemplo que se pueden clasificar",
+      "required": [
+        "images"
+      ],
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "file"
+            ],
+            "properties": {
+              "file": {
+                "$ref": "#/$defs/innerPath"
+              },
+              "expected": {
+                "type": "string",
+                "description": "Su clase, si se sabe"
+              },
+              "old": {
+                "type": "boolean",
+                "description": "Una forma antigua del carácter (KMNIST)"
+              },
+              "origin": {
+                "type": "string",
+                "description": "El kanji del que viene esa forma"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

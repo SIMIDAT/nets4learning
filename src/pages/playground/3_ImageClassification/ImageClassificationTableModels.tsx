@@ -18,10 +18,17 @@ import { TASKS } from '@/TASKS'
 import N4LReportButton from '@components/report/N4LReportButton'
 import { historyNumbers } from '@core/report/trainingReport'
 import { layerSummaryParts } from '@components/neural-network/layerSummary'
+import N4LDownloadTrained from '@components/n4l/N4LDownloadTrained'
+import type { N4LPackage_t } from '@core/n4l/source'
+import { n4lLayersOf } from './models/n4lLayers'
 
 type ImageClassificationTableModelsProps = {
   GeneratedModels: ImageClassificationGeneratedModel_t[],
   rowsPerPage    : number
+  /** El paquete .n4l del conjunto: cada modelo se puede guardar en uno (con el conjunto y sus textos) */
+  pkg?           : N4LPackage_t | null
+  /** Las clases, en el orden de las salidas */
+  classes?       : string[]
 }
 const DEFAULT_PROPS: ImageClassificationTableModelsProps = {
   GeneratedModels: [],
@@ -31,7 +38,9 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
 
   const {
     GeneratedModels,
-    rowsPerPage
+    rowsPerPage,
+    pkg = null,
+    classes = [],
   } = props
 
   const prefix = 'generator.table-models.'
@@ -151,6 +160,9 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                               onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}>
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LDownloadTrained pkg={pkg} task={TASKS.IMAGE_CLASSIFICATION} model={value.model} classes={classes}
+                              layers={n4lLayersOf(value.params.layers)} history={value.history.history as Record<string, number[]>}
+                              number={(activePage * rowsPerPage) + index + 1} />
                             <N4LReportButton getReport={() => ({
                                 version   : 1,
                                 task      : TASKS.IMAGE_CLASSIFICATION,

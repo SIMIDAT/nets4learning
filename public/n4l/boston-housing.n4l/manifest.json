@@ -1,0 +1,174 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "boston-housing",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html"
+  },
+  "datasets": [
+    {
+      "id": "boston-housing",
+      "file": "data/boston-housing-2020.csv",
+      "info": "data/boston-housing.names",
+      "rows": 506,
+      "columns": [
+        {
+          "name": "CRIM",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "per capita crime rate by town"
+        },
+        {
+          "name": "ZN",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "proportion of residential land zoned for lots over 25,000 sq.ft."
+        },
+        {
+          "name": "INDUS",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "proportion of non-retail business acres per town"
+        },
+        {
+          "name": "CHAS",
+          "role": "Feature",
+          "type": "Binary",
+          "missing": 0,
+          "description": "Charles River dummy variable (1 if tract bounds river; 0 otherwise)"
+        },
+        {
+          "name": "NOX",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "parts per 10 million",
+          "description": "nitric oxides concentration"
+        },
+        {
+          "name": "RM",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "average number of rooms per dwelling"
+        },
+        {
+          "name": "AGE",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "proportion of owner-occupied units built prior to 1940"
+        },
+        {
+          "name": "DIS",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "weighted distances to five Boston employment centres"
+        },
+        {
+          "name": "RAD",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0,
+          "description": "index of accessibility to radial highways"
+        },
+        {
+          "name": "TAX",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "full-value property-tax rate per $10,000"
+        },
+        {
+          "name": "PTRATIO",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "pupil-teacher ratio by town"
+        },
+        {
+          "name": "LSTAT",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "% lower status of the population"
+        },
+        {
+          "name": "MEDV",
+          "role": "Target",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "$1000's",
+          "description": "median value of owner-occupied homes"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "regression",
+      "key": "HOUSING_PRICES",
+      "runtime": "regression",
+      "datasets": [
+        "boston-housing"
+      ],
+      "preprocessing": [
+        {
+          "op": "label-encoder",
+          "columns": [
+            "CHAS"
+          ]
+        },
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "models": [
+        {
+          "id": "mlp",
+          "format": "tfjs-layers",
+          "path": "models/mlp/model.json",
+          "dataset": "boston-housing",
+          "input": "scaled",
+          "metrics": {
+            "test_r2": 0.7666,
+            "test_mae": 3.4892,
+            "test_baseline_mae": 7.0247
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "sigmoid"
+          },
+          {
+            "class": "dense",
+            "units": 16,
+            "activation": "sigmoid"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ]
+      }
+    }
+  ]
+}

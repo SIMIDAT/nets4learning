@@ -1,14 +1,15 @@
 import './N4LNavbar.css'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Badge, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, useLocation } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { Cpu, GpuCard, MoonStarsFill, SunFill, Translate } from 'react-bootstrap-icons'
+import { BoxSeam, Cpu, GpuCard, MoonStarsFill, SunFill, Translate } from 'react-bootstrap-icons'
 import IconGithub from '@assets/github.svg'
 import { changeUserLanguage, LANGUAGE_OPTIONS } from '@core/i18n/language'
 import { changeUserTheme, type Theme_t } from '@core/theme'
 import { useTheme } from '@hooks/useTheme'
+import { useLocalPackages } from '@hooks/useLocalPackages'
 import { isTask, TASK_INFO } from '@components/task/taskInfo'
 import {
   changeUserTFBackend,
@@ -31,6 +32,9 @@ const [HOME_LINK, ...NAV_LINKS]: Array<{ to: string, i18n: string }> = [
   { to: '/datasets', i18n: 'header.datasets' },
   { to: '/analyze', i18n: 'header.analyze' },
 ]
+
+// Los paquetes .n4l del usuario, aparte: al final de las páginas, con su icono y cuántos tiene guardados
+const PACKAGES_LINK = '/packages'
 
 const isActivePath = (pathname: string, to: string) => (to === '/' ? pathname === '/' : pathname === to || pathname.startsWith(to + '/'))
 
@@ -104,6 +108,8 @@ export default function N4LNavbar() {
   }
 
   const activeTask = taskOfPath(pathname)
+  const savedPackages = useLocalPackages().length
+  const isPackagesPage = isActivePath(pathname, PACKAGES_LINK)
   const navLink = ({ to, i18n: i18nKey }: { to: string, i18n: string }) => {
     const isActive = isActivePath(pathname, to)
     return (
@@ -162,6 +168,17 @@ export default function N4LNavbar() {
                   })}
                 </NavDropdown>
                 {NAV_LINKS.map(navLink)}
+                <Nav.Item className={'n4l-navbar-packages'}>
+                  <Nav.Link as={Link} to={PACKAGES_LINK} active={isPackagesPage} aria-current={isPackagesPage ? 'page' : undefined}
+                    onClick={() => setExpanded(false)} data-testid={'Test-Navbar-Packages'}>
+                    <span className={'n4l-navbar-icon'} aria-hidden={true}><BoxSeam /></span>
+                    <Trans i18nKey={'header.packages'} />
+                    {savedPackages > 0 &&
+                      <Badge pill bg={'primary'} className={'n4l-navbar-packages-count'} title={t('header.packages-saved', { count: savedPackages })}>
+                        {savedPackages}
+                      </Badge>}
+                  </Nav.Link>
+                </Nav.Item>
               </Nav>
               <Nav className={'n4l-navbar-settings'}>
                 <NavDropdown align={'end'} title={settingTitle(<Translate />, t('header.language'), currentLanguage)} id="change-language-nav-dropdown">

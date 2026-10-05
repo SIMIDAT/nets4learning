@@ -12,6 +12,7 @@ const PAGE_TYPES: Record<string, string> = {
   'manual'              : 'manual',
   'glossary'            : 'glossary',
   'datasets'            : 'datasets',
+  'packages'            : 'packages',
   'analyze'             : 'analyze',
   'contribute'          : 'contribute',
   'terms-and-conditions': 'terms',

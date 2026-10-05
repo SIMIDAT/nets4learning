@@ -10,6 +10,8 @@ import type { TrainProgress_t } from '@pages/playground/3_ImageClassification/cu
 import type { ClassificationEvaluation_t } from '@core/controller/trainDenseModel'
 import type { SpriteImageDataset } from './SpriteImageDataset'
 import type { CharacterForms_t } from './characterForms'
+import type { SpriteImage_t } from './spriteDecode'
+import type { N4LPackage_t } from '@core/n4l/source'
 
 /** Modelo que clasifica las imágenes: uno entrenado con tfjs o MobileNet */
 export type ImageClassifierModel_t = _tfjs.LayersModel | MobileNet
@@ -31,10 +33,16 @@ export type ImageTrainParams_t = {
 export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
   TITLE       : string = ''
   i18n_TITLE  : string = ''
-  /** Nombre de cada clase, en el orden de las salidas del modelo (p. ej. '0'…'9') */
+  /** Nombre de cada clase (en el idioma de la página), en el orden de las salidas del modelo (p. ej. '0'…'9') */
   CLASS_LABELS: string[] = []
-  /** Clasifica dibujos de 28x28 en escala de grises: la revisión del modelo ofrece el lienzo y explica con LRP */
+  /** Su identificador en el conjunto de datos (en el mismo orden), si no es el nombre: 'airplane' para «avión» */
+  CLASS_IDS   : string[] = []
+  /** Clasifica dibujos en escala de grises: la revisión del modelo ofrece el lienzo y explica con LRP */
   DRAWABLE = false
+  /** Cómo son las imágenes que recibe, si son las de un conjunto (null: cualquier foto, como MobileNet) */
+  IMAGE       : SpriteImage_t | null = null
+  /** Sus imágenes de prueba se pueden clasificar desde un selector (LOAD_DATASET) */
+  TEST_IMAGES = false
   t           : TFunction<'translation', undefined>
 
   constructor (_t: TFunction<'translation', undefined>) {
@@ -45,8 +53,18 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return <></>
   }
 
+  /** El paquete .n4l del que sale, para descargarlo (null si no sale de uno) */
+  N4L_PACKAGE (): N4LPackage_t | null {
+    return null
+  }
+
   DEFAULT_LAYERS (): ImageLayer_t[] {
     return []
+  }
+
+  /** La tasa de aprendizaje y las épocas con las que se empieza a entrenar, si el conjunto las propone */
+  DEFAULT_TRAINING (): { learningRate?: number, epochs?: number } {
+    return {}
   }
 
   /**
@@ -57,6 +75,7 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return null
   }
 
+  /** Las direcciones de las imágenes de ejemplo */
   LIST_IMAGES_EXAMPLES (): string[] {
     return []
   }

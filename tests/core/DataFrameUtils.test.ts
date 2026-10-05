@@ -9,7 +9,7 @@ import {
   LabelEncoderClasses,
 } from '../../src/core/dataframe/DataFrameUtils'
 
-const CAR_CSV = 'public/models/00-tabular-classification/car/car.csv'
+const CAR_CSV = 'public/n4l/car.n4l/data/car.csv'
 const csvFile = (path: string) => new File([fs.readFileSync(path, 'utf8')], 'data.csv', { type: 'text/csv' })
 const dtypeOf = (df: dfd.DataFrame, column: string) => df.dtypes[df.columns.indexOf(column)]
 

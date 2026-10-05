@@ -1,0 +1,47 @@
+{
+  "columns": {
+    "YearsExperience": "YearsExperience",
+    "Salary": "Salary",
+    "Age": "Age",
+    "Gender": "Gender",
+    "Education Level": "Education Level",
+    "Job Title": "Job Title",
+    "Years of Experience": "Years of Experience"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Salary for years of experience",
+      "name": "Salary",
+      "summary": "The salary by years of experience (and, in the second file, also age, education and job title).",
+      "description": {
+        "text": [
+          "The \"Salary\" data set is a collection of information that relates the number of years of work experience of an individual to their corresponding salary.",
+          "Each entry in the data set consists of two main variables: \"Years of Experience\" and \"Salary.\" The \"Years of Experience\" variable represents the number of years an employee has worked in their specific field, while the \"Salary\" variable represents the amount of money that employee earns annually.",
+          "For more information about this data set, visit the repository <link1>www.kaggy.com</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Input",
+            "items": [
+              "Years of experience - Years of experience",
+              "Salary - Salary"
+            ]
+          },
+          {
+            "title": "Output",
+            "items": [
+              "Calculated regression (<b>Salary</b>)"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Data set 1</link1>",
+              "<link2>Data set 2</link2>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

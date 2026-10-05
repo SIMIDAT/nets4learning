@@ -1,0 +1,62 @@
+{
+  "columns": {
+    "fixed_acidity": "fixed_acidity",
+    "volatile_acidity": "volatile_acidity",
+    "citric_acid": "citric_acid",
+    "residual_sugar": "residual_sugar",
+    "chlorides": "chlorides",
+    "free_sulfur_dioxide": "free_sulfur_dioxide",
+    "total_sulfur_dioxide": "total_sulfur_dioxide",
+    "density": "density",
+    "pH": "pH",
+    "sulphates": "sulphates",
+    "alcohol": "alcohol",
+    "quality": "quality"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Calidad del vino",
+      "name": "Wine",
+      "summary": "La calidad de vinos verdes portugueses, tintos y blancos, según su análisis químico.",
+      "description": {
+        "text": [
+          "Los dos conjuntos de datos están relacionados, pues incluyen las variantes de vino tinto y vino blanco portugués. Dicho conjunto de datos solo incluye variables fisicoquímicas (entradas) y sensoriales (salidas), el conjunto de datos no incluye datos de tipos de uva, marca de vino o precio de venta del vino.",
+          "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 4898 instancias y 12 atributos distintos.",
+          "Dicho conjunto de datos puede ser usado para tareas de clasificación o de regresión. Las clases están ordenadas, aunque el conjunto de datos se encuentra desbalanceado.",
+          "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>archive.ics.uci.edu</link1>."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<strong>Fixed Acidity (Acidez Fija)</strong>: La acidez fija se refiere a la concentración de ácidos no volátiles en el vino, principalmente ácido tartárico. Contribuye a la frescura y estabilidad del vino.",
+              "<strong>Volatile Acidity (Acidez Volátil)</strong>: La acidez volátil se refiere a la concentración de ácidos volátiles, como el ácido acético, que pueden dar un sabor desagradable si están presentes en exceso.",
+              "<strong>Citric Acid (Ácido Cítrico)</strong>: El ácido cítrico es uno de los ácidos orgánicos naturales presentes en el vino. Puede influir en el sabor y la frescura del vino.",
+              "<strong>Residual Sugar (Azúcar Residual)</strong>: Es la cantidad de azúcar que queda en el vino después de la fermentación. Un vino puede ser seco (poco azúcar residual) o dulce (más azúcar residual).",
+              "<strong>Chlorides (Cloruros)</strong>: La concentración de cloruros en el vino puede afectar su sabor y aroma, y niveles altos pueden indicar problemas en la producción.",
+              "<strong>Free Sulfur Dioxide (Dióxido de Azufre Libre)</strong>: El dióxido de azufre es un conservante común en el vino que ayuda a prevenir la oxidación y el crecimiento de microorganismos no deseados.",
+              "<strong>Total Sulfur Dioxide (Dióxido de Azufre Total)</strong>: Representa la suma de dióxido de azufre libre y dióxido de azufre unido a otras moléculas en el vino. También se relaciona con la conservación del vino.",
+              "<strong>Density (Densidad)</strong>: La densidad se refiere a la masa del vino por unidad de volumen. Puede proporcionar información sobre la concentración de alcohol y azúcar.",
+              "<strong>pH</strong>: El pH mide la acidez o alcalinidad del vino. Un pH bajo indica acidez, mientras que un pH alto indica alcalinidad. Puede influir en la percepción del sabor.",
+              "<strong>Sulphates (Sulfatos)</strong>: Los sulfatos son aditivos que se utilizan a veces en la producción de vino. Pueden influir en la estabilidad y el aroma del vino.",
+              "<strong>Alcohol</strong>: La concentración de alcohol en el vino puede variar y afecta tanto el sabor como la sensación en boca.",
+              "<strong>Quality (Calidad)</strong>: Esta es la puntuación general de calidad del vino, generalmente en una escala de 0 a 10, donde valores más altos indican vinos de mejor calidad según la evaluación de los catadores."
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Calidad del vino</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

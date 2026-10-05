@@ -198,8 +198,9 @@ export default function TabularClassification(props: Props) {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
       await tfjs.ready()
-      if (hasModel(MAP_TC_CLASSES, dataset)) {
-        const _iModelClass = await loadModelClass(MAP_TC_CLASSES, dataset)
+      // Un paquete .n4l abierto que ya no está guardado: como una clave que no existe
+      const _iModelClass = hasModel(MAP_TC_CLASSES, dataset) ? await loadModelClass(MAP_TC_CLASSES, dataset).catch(() => null) : null
+      if (_iModelClass !== null) {
         const _iModelInstance = new _iModelClass(t, () => {})
         setIModelInstance(_iModelInstance)
         const _datasets = await _iModelInstance.DATASETS()

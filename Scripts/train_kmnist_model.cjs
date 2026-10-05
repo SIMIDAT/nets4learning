@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /**
  * Entrena el modelo preentrenado de KMNIST (/playground/image-classification/model/IMAGE-KMNIST) y lo guarda
- * en formato TensorFlow.js (model.json + weights.bin). Las imágenes de ejemplo de esa página las genera
- * Scripts/build_kmnist_examples.py.
+ * en formato TensorFlow.js (model.json + weights.bin) en su paquete, public/n4l/kmnist.n4l/models/cnn/. Las
+ * imágenes de ejemplo de esa página las genera Scripts/build_kmnist_examples.py. Después, para que el manifiesto
+ * del paquete tenga sus métricas con las imágenes de prueba del paquete:
+ *
+ *   python3 Scripts/measure_image_models.py --package kmnist --write
  *
  * - Datos: los .npy originales de KMNIST (60.000 imágenes de entrenamiento y 10.000 de test). Se apartan
  *   5.000 de entrenamiento para validar; el test solo se usa al final para medir la precisión.
@@ -37,7 +40,7 @@ const { values: args } = util.parseArgs({
     'epochs'     : { type: 'string', default: '30' },
     'batch-size' : { type: 'string', default: '128' },
     'data-dir'   : { type: 'string', default: path.join(ROOT, 'public/datasets/03-image-classification/kmnist') },
-    'out-dir'    : { type: 'string', default: path.join(ROOT, 'public/models/03-image-classification/kmnist') },
+    'out-dir'    : { type: 'string', default: path.join(ROOT, 'public/n4l/kmnist.n4l/models/cnn') },
   },
 })
 

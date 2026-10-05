@@ -12,6 +12,7 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
     '/playground/clustering/dataset/WINE',
     '/analyze',
     '/datasets',
+    '/packages',
     '/glossary',
     '/manual',
     '/settings',

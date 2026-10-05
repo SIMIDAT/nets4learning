@@ -21,6 +21,7 @@ import N4LModelSummaryButton from '@components/neural-network/N4LModelSummaryBut
 import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LModelCard from '@components/neural-network/N4LModelCard'
+import N4LDownloadPackage from '@components/n4l/N4LDownloadPackage'
 import N4LModelAside from '@components/neural-network/N4LModelAside'
 import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
 import { trackDownloads } from '@core/downloadProgress'
@@ -87,7 +88,10 @@ export default function ModelReviewTabularClassification(props: Props) {
         dataToPredict,
         iModelInstance.DATA_DEFAULT_KEYS,
       )
-      setVectorToPredict(_vectorValuesEncoders)
+      // Un modelo entrenado en la aplicación (y descargado como .n4l) recibe además la entrada escalada, como al entrenarlo
+      setVectorToPredict(iModelInstance.MODEL_INPUT() === 'scaled'
+        ? datasets[0].data_processed.scaler.transform(_vectorValuesEncoders.map((value) => parseFloat(value.toString()))) as number[]
+        : _vectorValuesEncoders)
     }
     init().then()
   }, [dataToPredict, iModelInstance])
@@ -272,7 +276,10 @@ export default function ModelReviewTabularClassification(props: Props) {
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
             <N4LModelAside>
               <N4LModelCard title={<Trans i18nKey={iModelInstance.TITLE} />}
-                actions={<N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />}>
+                actions={<>
+                  <N4LModelSummaryButton model={model} title={t(iModelInstance.TITLE)} />
+                  <N4LDownloadPackage pkg={iModelInstance.N4L_PACKAGE()} />
+                </>}>
                 {iModelInstance.DESCRIPTION()}
               </N4LModelCard>
             </N4LModelAside>

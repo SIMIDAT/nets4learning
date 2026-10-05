@@ -1,11 +1,12 @@
 import { test, expect } from './fixtures'
 
-// Las tres tareas que se entrenan en el navegador (en un worker), con pocas épocas para que no tarde. MNIST, con una:
-// en CI (2 núcleos, WebGL por software y otra prueba a la vez) cada época tarda minutos
+// Las tres tareas que se entrenan en el navegador (en un worker), con pocas épocas para que no tarde. Las imágenes, con
+// una: en CI (2 núcleos, WebGL por software y otra prueba a la vez) cada época tarda minutos
 const TRAINERS = [
   { name: 'clasificación tabular (Iris)', path: '/playground/tabular-classification/dataset/IRIS', epochs: '2' },
   { name: 'regresión (Auto MPG)', path: '/playground/regression/dataset/AUTO_MPG', epochs: '2' },
   { name: 'clasificación de imágenes (MNIST)', path: '/playground/image-classification/dataset/IMAGE-MNIST', epochs: '1' },
+  { name: 'clasificación de fotos en color (CIFAR-10)', path: '/playground/image-classification/dataset/IMAGE-CIFAR10', epochs: '1' },
 ]
 
 for (const { name, path, epochs } of TRAINERS) {
@@ -106,4 +107,39 @@ test('el informe de un modelo entrenado se abre en otra pestaña, listo para imp
   await report.emulateMedia({ media: 'print' })
   await expect(report.locator('.n4l-navbar')).toBeHidden()
   await expect(report.getByTestId('Test-Report-Print')).toBeHidden()
+})
+
+test('un modelo entrenado con un paquete se descarga como .n4l y se abre en «Paquetes .n4l»: para probarlo y para entrenar', async ({ page }, testInfo) => {
+  test.setTimeout(480_000)
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await page.getByRole('spinbutton', { name: 'N. épocas' }).fill('2')
+  await page.getByTestId('Test-TrainButton').click()
+  await expect(page.locator('.swal2-popup')).toContainText('Modelo entrenado con éxito', { timeout: 240_000 })
+  // En escritorio el visor se abre al entrenar y tapa la derecha de la página
+  await page.locator('#tfjs-visor-container').getByRole('button', { name: 'Hide' }).click()
+
+  const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('Test-N4LDownloadTrained-1').click()])
+  expect(download.suggestedFilename()).toBe('iris-model-1-1.0.0.n4l')
+  const file = testInfo.outputPath(download.suggestedFilename())
+  await download.saveAs(file)
+
+  // Como modelo ya entrenado: con su nombre y su modelo (que recibe la entrada escalada)
+  await page.goto('/packages')
+  await page.locator('input#drop-zone-n4l').setInputFiles(file)
+  await expect(page.getByTestId('Test-N4LImported')).toContainText('Clasificación de flor iris (#1)')
+  await page.getByTestId('Test-N4LLocal-iris-model-1-tabular-classification').getByRole('link', { name: 'Probar el modelo' }).click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/model\/local-iris-model-1$/)
+  await expect(page.getByTestId('Test-Breadcrumb')).toContainText('Clasificación de flor iris (#1)', { timeout: 30_000 })
+  await expect(page.locator('.swal2-popup')).toContainText('Modelo cargado con éxito', { timeout: 30_000 })
+  const confirm = page.locator('.swal2-confirm')
+  if (await confirm.isVisible().catch(() => false)) await confirm.click()
+  await expect(page.locator('.swal2-container')).toHaveCount(0)
+  await page.locator('[data-guide="classify"] button').click()
+  await expect(page.getByText(/Clase predicha/).first()).toBeVisible({ timeout: 30_000 })
+
+  // Y para entrenar: con su conjunto y su red por defecto (la del modelo descargado)
+  await page.goto('/packages')
+  await page.getByTestId('Test-N4LLocal-iris-model-1-tabular-classification').getByRole('link', { name: 'Entrenar' }).click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/local-iris-model-1$/)
+  await expect(page.getByTestId('Test-TrainButton')).toBeEnabled({ timeout: 60_000 })
 })

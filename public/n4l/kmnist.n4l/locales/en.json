@@ -1,0 +1,44 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "KMNIST - Japanese character classification",
+      "name": "KMNIST - Japanese character classification",
+      "summary": "Ten handwritten hiragana characters from classical Japanese: like MNIST, but harder.",
+      "description": {
+        "text": [
+          "<strong>Kuzushiji-MNIST (KMNIST)</strong> is a drop-in replacement for MNIST: grayscale images of <strong>28 x 28</strong> pixels and 10 classes, but instead of digits it contains handwritten Japanese characters written in <i>kuzushiji</i> (cursive script).",
+          "Kuzushiji was the usual way of writing Japanese for over a thousand years, but it stopped being taught after the writing reform of the early 20th century and today very few people can read it. The images come from classical books digitised by the National Institute of Japanese Literature and were prepared by the ROIS-DS Center for Open Data in the Humanities (CODH).",
+          "Each class is a modern hiragana character, but in the dataset it appears handwritten as it used to be. Until 1900 the same syllable could be written in many ways: with the kanji today's form comes from, drawn differently, or starting from another kanji. These are the <i>hentaigana</i>; that year only one form was kept, today's. That is why one class gathers strokes that look little like each other or like the modern character, and it is harder than MNIST."
+        ],
+        "sections": [
+          {
+            "title": "Input data",
+            "items": [
+              "Grayscale image of <strong>28 x 28</strong> pixels"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "One of the 10 hiragana characters: お, き, す, つ, な, は, ま, や, れ, を"
+            ]
+          },
+          {
+            "title": "Models",
+            "items": [
+              "Pre-trained model: convolutional network trained with the 55,000 KMNIST training images (and 5,000 more for validation). It gets <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> of the {{test_images, number}} test images of the dataset right, which it did not see during training.",
+              "Training in the browser: a balanced subset is used, with <strong>2,000</strong> training images and <strong>500</strong> test images per character."
+            ]
+          }
+        ]
+      },
+      "forms": {
+        "title": "The 10 characters, today and before",
+        "modern": "Today",
+        "old": "Before: other forms (hentaigana), with their kanji",
+        "old-alt": "old {{char}}, from {{origin}}",
+        "note": "Under each modern character, how it is read and the kanji it comes from; under each old form, its own. The old forms are the Unicode hentaigana, drawn with the Noto Serif Hentaigana font. In the dataset they appear handwritten: to see them like that, load the test images on the model page."
+      }
+    }
+  }
+}

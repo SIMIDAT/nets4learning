@@ -4,9 +4,6 @@ import type _I_MODEL_TABULAR_CLASSIFICATION from '@pages/playground/0_TabularCla
 import type _I_MODEL_REGRESSION from '@pages/playground/1_Regression/models/_model'
 import type _I_MODEL_OBJECT_DETECTION from '@pages/playground/2_ObjectDetection/models/_model'
 import type _I_MODEL_IMAGE_CLASSIFICATION from '@pages/playground/3_ImageClassification/models/_model'
-import type MODEL_IRIS from '@pages/playground/0_TabularClassification/models/MODEL_IRIS'
-import type MODEL_CAR from '@pages/playground/0_TabularClassification/models/MODEL_CAR'
-import type MODEL_LYMPHOGRAPHY from '@pages/playground/0_TabularClassification/models/MODEL_LYMPHOGRAPHY'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 // Capas de clasificación de imágenes (conv2d, maxPooling2d, flatten, dense): distinto de Layer_t, que son capas dense
 import type { ImageLayer_t } from '@/types/types'
@@ -23,10 +20,7 @@ export type N4LDataFrameType = string | number | boolean | string[] | number[] |
  * @typedef {Object.<string, typeof _I_MODEL_TABULAR_CLASSIFICATION>} MAP_TC_CLASSES_t
  */
 export type MAP_TC_CLASSES_t = {
-  'IRIS'                          : typeof MODEL_IRIS
-  'CAR'                           : typeof MODEL_CAR
-  'LYMPHOGRAPHY'                  : typeof MODEL_LYMPHOGRAPHY
-  'I_MODEL_TABULAR_CLASSIFICATION': typeof _I_MODEL_TABULAR_CLASSIFICATION
+  [key: string]: typeof _I_MODEL_TABULAR_CLASSIFICATION
 }
 
 /**

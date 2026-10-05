@@ -1,0 +1,80 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "imagenet",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://www.image-net.org/",
+    "links": {
+      "link2": "https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt",
+      "link3": "https://arxiv.org/abs/1801.04381"
+    },
+    "citation": "@inproceedings{deng2009imagenet,\n  title={ImageNet: A large-scale hierarchical image database},\n  author={Deng, Jia and Dong, Wei and Socher, Richard and Li, Li-Jia and Li, Kai and Fei-Fei, Li},\n  booktitle={2009 IEEE Conference on Computer Vision and Pattern Recognition},\n  pages={248--255},\n  year={2009},\n  organization={IEEE}\n}\n\n@inproceedings{sandler2018mobilenetv2,\n  title={MobileNetV2: Inverted Residuals and Linear Bottlenecks},\n  author={Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},\n  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},\n  pages={4510--4520},\n  year={2018}\n}"
+  },
+  "datasets": [
+    {
+      "id": "imagenet",
+      "kind": "external",
+      "url": "https://www.image-net.org/",
+      "rows": 1281167
+    }
+  ],
+  "tasks": [
+    {
+      "task": "image-classification",
+      "key": "IMAGE-MOBILENET",
+      "runtime": "image-classification",
+      "datasets": [
+        "imagenet"
+      ],
+      "order": 4,
+      "preprocessing": [],
+      "models": [
+        {
+          "id": "mobilenet-v2",
+          "format": "tfjs-mobilenet",
+          "dataset": "imagenet",
+          "version": 2,
+          "alpha": 1
+        }
+      ],
+      "prediction": {
+        "images": [
+          {
+            "file": "examples/beef-burger.jpg"
+          },
+          {
+            "file": "examples/bulldog.jpg"
+          },
+          {
+            "file": "examples/butterfly.jpg"
+          },
+          {
+            "file": "examples/cat.jpg"
+          },
+          {
+            "file": "examples/cheetah.jpg"
+          },
+          {
+            "file": "examples/cruise.jpg"
+          },
+          {
+            "file": "examples/duck.jpg"
+          },
+          {
+            "file": "examples/elephant.jpg"
+          },
+          {
+            "file": "examples/lion.jpg"
+          }
+        ]
+      }
+    }
+  ]
+}

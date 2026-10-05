@@ -103,9 +103,9 @@ describe('leer un fichero subido (lo que hace el worker)', () => {
 
   test('el tipo de cada columna sigue las reglas de danfo, mirando todas las filas', async () => {
     const dtypesOf = async (file: string) => (await readDatasetRows(new File([fs.readFileSync(file, 'utf8')], 'datos.csv'))).dtypes
-    expect(await dtypesOf('public/models/00-tabular-classification/iris/iris.csv')).toEqual(['float32', 'float32', 'float32', 'float32', 'string'])
+    expect(await dtypesOf('public/n4l/iris.n4l/data/iris.csv')).toEqual(['float32', 'float32', 'float32', 'float32', 'string'])
     // "displacement" tiene un solo decimal (97.5, en la fila 58) y "mpg" el primero en la fila 186: decimales
-    expect(await dtypesOf('public/datasets/01-regression/auto-mpg/auto-mpg.csv'))
+    expect(await dtypesOf('public/n4l/auto-mpg.n4l/data/auto-mpg.csv'))
       .toEqual(['int32', 'float32', 'int32', 'int32', 'float32', 'int32', 'float32'])
     // Con texto más allá de las 500 primeras filas danfo diría int32; aquí es texto (lo que arreglaba FixMixedColumns)
     const rows = Array.from({ length: 600 }, (_, i) => (i === 599 ? '5more' : String(2 + (i % 3))))

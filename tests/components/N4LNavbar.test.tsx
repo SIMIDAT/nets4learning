@@ -1,7 +1,8 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, afterEach } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, useLocation } from 'react-router'
 import N4LNavbar from '@components/header/N4LNavbar'
+import { IndexedDBPackageStore, MemoryPackageStore, setN4LPackageStore, type LocalPackage_t } from '@core/n4l/localPackages'
 
 function LocationDisplay() {
   return <p data-testid={'location'}>{useLocation().pathname}</p>
@@ -18,6 +19,7 @@ const link = (name: string) => screen.getByRole('link', { name })
 const toggler = () => screen.getByRole('button', { name: 'header.menu' })
 
 describe('N4LNavbar', () => {
+  afterEach(() => setN4LPackageStore(new IndexedDBPackageStore()))
 
   test('marca la página actual (y Inicio solo en la home)', () => {
     renderAt('/manual')
@@ -65,6 +67,19 @@ describe('N4LNavbar', () => {
   test('fuera de las tareas, «Tareas» no se marca', () => {
     renderAt('/glossary')
     expect(document.getElementById('tasks-nav-dropdown')).not.toHaveClass('active')
+  })
+
+  test('«Paquetes .n4l», aparte: lleva a su página y dice cuántos hay guardados', async () => {
+    const store = new MemoryPackageStore()
+    const info = (id: string): LocalPackage_t => ({ id, version: '1.0.0', importedAt: 0, bytes: 1, tasks: [{ task: 'regression', names: {}, models: 1 }] })
+    await store.save(info('a'), new ArrayBuffer(1))
+    await store.save(info('b'), new ArrayBuffer(1))
+    setN4LPackageStore(store)
+    renderAt('/packages')
+    const packages = screen.getByTestId('Test-Navbar-Packages')
+    expect(packages).toHaveAttribute('href', '/packages')
+    expect(packages).toHaveAttribute('aria-current', 'page')
+    expect(await screen.findByTitle('header.packages-saved')).toHaveTextContent('2')
   })
 
   test('cada ajuste enseña su valor actual', () => {

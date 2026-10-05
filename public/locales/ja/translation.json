@@ -208,22 +208,6 @@
     "try-model": "モデルを試す",
     "files": "ファイル",
     "summary": {
-      "tabular-classification": {
-        "CAR": "価格、維持費、定員、荷室、安全性から、車が受け入れられるかどうかを判定します。すべてカテゴリ値です。",
-        "IRIS": "最初に試す定番：花びらとがく片の大きさから花の種類を当てます。",
-        "LYMPHOGRAPHY": "リンパ管造影の特徴からリンパ腫を診断します。行数が少なく、クラスの偏りが大きいデータです。"
-      },
-      "regression": {
-        "SALARY": "経験年数から給与を予測します（2つ目のファイルには年齢、学歴、職種もあります）。",
-        "AUTO_MPG": "70〜80年代の車の燃費（マイル/ガロン）を、エンジン、重量、年式から予測します。",
-        "HOUSING_PRICES": "ボストンの地区ごとの住宅価格の中央値を、犯罪率、部屋数、中心部までの距離などから予測します。",
-        "STUDENT_PERFORMANCE": "ポルトガルの中等学校の生徒の最終成績（数学とポルトガル語）を、環境や習慣から予測します。",
-        "WINE": "ポルトガルのヴィーニョ・ヴェルデ（赤と白）の品質を、化学分析から予測します。"
-      },
-      "image-classification": {
-        "IMAGE-MNIST": "0〜9の手書き数字：畳み込みネットワークの「Hello World」です。",
-        "IMAGE-KMNIST": "古典日本語の手書きひらがな10文字：MNISTに似ていますが、より難しいデータです。"
-      },
       "extra": {
         "hepatitis-c": "献血者と患者の血液検査から、C型肝炎、線維化、肝硬変を見分けます。",
         "ecoli": "大腸菌の中でタンパク質がどこにあるかを当てます。8クラスあり、ごく少数のクラスもあります。",
@@ -235,9 +219,6 @@
         "wdbc": "画像に写った細胞核の30の測定値から、乳房の腫瘍が良性か悪性かを判定します。"
       },
       "clustering": {
-        "IRIS": "150本の花の測定値（種類なし）：1つの種類は自然に分かれ、残りの2つは接しています。",
-        "WINE": "178本のワインの13の化学成分：スケーリングしないとプロリンが支配し、スケーリングするとグループは3品種とほぼ同じになります。",
-        "NEW-THYROID": "甲状腺の5つの検査：ほとんどが正常なので、機能低下症と亢進症のグループは小さくなります。",
         "breast-cancer-wisconsin": "699の腫瘍の細胞の9つの特徴（1〜10）：2グループにすると、良性と悪性にほぼ一致します。",
         "wdbc": "569の腫瘍の細胞核の30の測定値：2グループにすると、k-meansは良性と悪性をかなりよく分けます。",
         "ecoli": "336のタンパク質の7つのスコアと、細菌内の8つの場所（2〜3件しかないものも）：その小さなグループは埋もれてしまいます。",
@@ -614,7 +595,9 @@
     "backend-error": "{{backend}} に切り替えられませんでした",
     "backend-error-fallback": "このブラウザでは使用できません。TensorFlow.js は引き続き {{backend}} を使用します。",
     "menu": "メニュー",
-    "tasks": "タスク"
+    "tasks": "タスク",
+    "packages": ".n4l パッケージ",
+    "packages-saved_other": "このブラウザに {{count}} 個のパッケージを保存済み"
   },
   "footer": {
     "description-app": "深層学習モデルの設計と実行のためのウェブプラットフォーム。",
@@ -747,470 +730,6 @@
           "text": "値をセミコロンで区切って入力してください。",
           "items": "(パラメータ-1; パラメータ-2; パラメータ-3; ... ; パラメータ-n)。"
         }
-      },
-      "car": {
-        "title": "CAR - 車両評価分類",
-        "description": {
-          "text-1": "<i>Car Evaluation</i> データセットは、次の構造を通じて車両を評価できます",
-          "text-2": "このデータセットの詳細については、<link1>ics.uci.edu</link1>リポジトリをご覧ください。",
-          "details-1": {
-            "title": "情報",
-            "list": {
-              "1": "<b>buying:</b> 購入価格。",
-              "2": "<b>maint:</b> 維持費。",
-              "3": "<b>doors:</b> ドア数。",
-              "4": "<b>persons:</b> 乗車定員。",
-              "5": "<b>lug_boot:</b> トランクのサイズ。",
-              "6": "<b>safety:</b> 車両の推定安全性。"
-            }
-          },
-          "details-2": {
-            "title": "入力データ",
-            "text-1": "車両の特徴",
-            "list": {
-              "1": "<b>buying:</b> vhigh (非常に高い), high (高い), med (中), low (低い)。",
-              "2": "<b>maint:</b> vhigh, high, med, low。",
-              "3": "<b>doors:</b> 2, 3, 4, 5more (5以上)。",
-              "4": "<b>persons:</b> 2, 4, more (それ以上)。",
-              "5": "<b>lug_boot:</b> small (小), med (中), big (大)。",
-              "6": "<b>safety:</b> low, med, high (高)。"
-            }
-          },
-          "details-3": {
-            "title": "出力データ",
-            "text-1": "車両の受容性",
-            "list": {
-              "1": "<b>unacc</b>: 受け入れられない",
-              "2": "<b>acc</b>: 受け入れられる",
-              "3": "<b>good</b>: 良い",
-              "4": "<b>vgood</b>: 非常に良い"
-            }
-          },
-          "details-4": {
-            "title": "参照元",
-            "list": {
-              "1": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する車両の対応する値を入力してください：",
-          "items": "(buying; maint; doors; persons; lug_boot; safety)",
-          "examples": "例:"
-        }
-      },
-      "iris": {
-        "title": "IRIS - アヤメ分類",
-        "description": {
-          "text-1": "Iris-Data データセットは、花弁と萼の長さと幅から、アヤメのどのタイプかを検出できます。",
-          "details-1": {
-            "title": "入力データ",
-            "list": {
-              "1": "<b>Sepal length (萼の長さ)</b>: 連続値",
-              "2": "<b>Sepal width (萼の幅)</b>: 連続値",
-              "3": "<b>Petal length (花弁の長さ)</b>: 連続値",
-              "4": "<b>Petal width (花弁の幅)</b>: 連続値"
-            }
-          },
-          "details-2": {
-            "title": "出力データ",
-            "list": {
-              "1": "<b>0</b>: Iris Setosa",
-              "2": "<b>1</b>: Iris Versicolor",
-              "3": "<b>2</b>: Iris Virginica"
-            }
-          },
-          "details-3": {
-            "title": "参照元",
-            "list": {
-              "1": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する植物に対応する値を入力してください：",
-          "items": "(萼の長さ; 萼の幅; 花弁の長さ; 花弁の幅)。",
-          "examples": "例:"
-        }
-      },
-      "lymphography": {
-        "title": "LYMPHOGRAPHY - リンパ腫データ分類",
-        "description": {
-          "text-1": "<i>lymphography</i> データセットは、リンパ腫の可能な病期と状態を検出できます。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<b>lymphatics</b>: normal (正常), arched (アーチ状), deformed (変形), displaced (変位)",
-              "1": "<b>block of affere (流入リンパ管の閉塞)</b>: no (なし), yes (あり)",
-              "2": "<b>bl. of lymph. c (リンパ管の閉塞 C)</b>: no, yes",
-              "3": "<b>bl. of lymph. s (リンパ管の閉塞 S)</b>: no, yes",
-              "4": "<b>by pass</b>: no, yes",
-              "5": "<b>extravasates (漏出)</b>: no, yes",
-              "6": "<b>regeneration of (再生)</b>: no, yes",
-              "7": "<b>early uptake in (早期取り込み)</b>: no, yes",
-              "8": "<b>lym.nodes dimin (リンパ節の縮小)</b>: 0-3",
-              "9": "<b>lym.nodes enlar (リンパ節の肥大)</b>: 1-4",
-              "10": "<b>changes in lym. (リンパ管の変化)</b>: bean (豆状), oval (卵型), round (円形)",
-              "11": "<b>defect in node (節の欠陥)</b>: no, lacunar (空隙), lac. marginal (空隙縁), lac. central (空隙中央)",
-              "12": "<b>changes in node (節の変化)</b>: No, lacunar, lac. margin, lac. central",
-              "13": "<b>changes in stru (構造の変化)</b>: no, grainy (粒状), drop-like (滴状), coarse (粗い), diluted (希釈), reticular (網状), stripped (縞状), faint (かすか),",
-              "14": "<b>special forms (特殊な形態)</b>: no, chalices (杯状), vesicles (小胞)",
-              "15": "<b>dislocation of (転位)</b>: no, yes",
-              "16": "<b>exclusion of no (除外なし)</b>: no, yes",
-              "17": "<b>no. of nodes in (節の数)</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, >=70"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "<b>normal find (正常所見)</b>: normal",
-              "1": "<b>metastases (転移)</b>: Metastasis",
-              "2": "<b>malign lymph (悪性リンパ腫)</b>: Malignant lymphoma",
-              "3": "<b>fibrosis (線維症)</b>: fibrosis"
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "list": {
-              "0": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する患者の対応する値を入力してください：",
-          "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in)。",
-          "examples": "例:"
-        }
-      },
-      "list-datasets": {
-        "0-option-1": "車両評価分類",
-        "0-option-2": "アヤメ分類",
-        "0-option-3": "リンパ腫分類"
-      },
-      "list-models": {
-        "0-option-1": "車両評価分類",
-        "0-option-2": "アヤメ分類",
-        "0-option-3": "リンパ腫分類"
-      }
-    },
-    "1-regression": {
-      "salary": {
-        "title": "経験年数に基づく給与",
-        "description": {
-          "text": {
-            "0": "「Salary」データセットは、個人の職務経験年数とそれに対応する給与の関係を関連付ける情報のコレクションです。",
-            "1": "データセットの各エントリは、「Years of Experience」（経験年数）と「Salary」（給与）の2つの主要な変数で構成されています。「Years of Experience」変数は、従業員が特定の分野で働いた年数を表し、「Salary」変数は、その従業員が年間稼ぐ金額を表します。"
-          },
-          "link": "このデータセットの詳細については、<link1>www.kaggle.com</link1>リポジトリをご覧ください。",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "Years of experience - 経験年数",
-              "1": "Salary - 給与"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰 (<b>Salary</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "データセット 1",
-              "1": "データセット 2"
-            }
-          }
-        }
-      },
-      "auto-mpg": {
-        "title": "燃費性能",
-        "description": {
-          "text": {
-            "0": "<i>AUTO MPG</i> データセットは、カーネギーメロン大学で管理されているStatLibライブラリから取得されました。このデータセットは、1983年の米国統計学会の展示会で使用されました。",
-            "1": "「Auto MPG」（ガロンあたりのマイル）という用語は、一般的に米国で使用される燃費効率の測定単位を指します。この尺度は、車両が1ガロンの燃料で走行できるマイル数を示します。スペイン語では、通常、「consumo de combustible」（燃料消費量）または「rendimiento de combustible」（燃費性能）という用語が使用されます。国によって測定単位が異なることに注意することが重要です。"
-          },
-          "link": "このデータセットの詳細は<link1>ICS.UCI.edu リポジトリ</link1>をご覧ください。",
-          "details-0": {
-            "title": "情報",
-            "list": {
-              "0": "<b>MPG</b>: MPG は Miles Per Gallon（1ガロンあたりの走行マイル）の略で、各インスタンスの車両の燃費を表します。任意の車について予測対象の変数としても使用できます",
-              "1": "<b>cylinders</b>: 各車のシリンダー数を表す属性です。離散値の属性です",
-              "2": "<b>displacement</b>: エンジンの排気量を表す、連続値の量的属性です",
-              "3": "<b>horsepower</b>: 車の馬力を表す連続値の変数です",
-              "4": "<b>weight</b>: 各車の重量を表す連続値の量的変数です",
-              "5": "<b>acceleration</b>: 車の加速性能です",
-              "6": "<b>model year</b>: そのモデルが発売された年です",
-              "7": "<b>origin</b>: 3つの離散値をとる属性で、1 は米国製、2 は欧州製、3 はアジア製の車を表します",
-              "8": "<b>car name</b>: 車名を表す文字列です"
-            }
-          },
-          "details-1": {
-            "title": "入力データ",
-            "list": {
-              "0": "<b>MPG</b>: 連続値",
-              "1": "<b>cylinders</b>: 多値の離散値（4, 6, 8）",
-              "2": "<b>displacement</b>: 連続値",
-              "3": "<b>horsepower</b>: 連続値",
-              "4": "<b>weight</b>: 連続値",
-              "5": "<b>acceleration</b>: 連続値",
-              "6": "<b>model year</b>: 多値の離散値",
-              "7": "<b>origin</b>: 多値の離散値。1 は米国製、2 は欧州製、3 はアジア製の車を表します",
-              "8": "<b>car name</b>: 文字列（インスタンスごとに一意）"
-            }
-          },
-          "details-2": {
-            "title": "出力データ",
-            "list": {
-              "0": "回帰による計算値（<b>MPG</b>）"
-            }
-          },
-          "details-3": {
-            "title": "参考文献",
-            "list": {
-              "0": "<link1>Auto MPG</link1>"
-            }
-          }
-        }
-      },
-      "housing-prices": {
-        "title": "住宅価格",
-        "description": {
-          "text": {
-            "0": "ボストン住宅データセットは、米国国勢調査局がボストン地域の住宅について収集した情報から派生しています。",
-            "1": "このデータセットは、米国マサチューセッツ州ボストン地域のさまざまな近隣地域の住宅価格の回帰およびモデリングの問題に対処するように設計されています。このデータセットは、教育および研究の例や実践に一般的に使用されています。"
-          },
-          "link": "<link1>UCIデータセットエントリ</link1>",
-          "details-input": {
-            "title": "入力データ",
-            "california": {
-              "list": {
-                "0": "<strong>Median House Value</strong>: ブロック内の世帯の平均住宅価値（米ドル）[$]。",
-                "1": "<strong>Median Income</strong>: ブロック内の世帯の収入中央値（数万米ドル）[10k$]。",
-                "2": "<strong>Median Age</strong>: ブロック内の住宅の年齢中央値。値が低いほど新しい建物を意味します [年]。",
-                "3": "<strong>Total Rooms</strong>: ブロック内の総部屋数",
-                "4": "<strong>Total Bedrooms</strong>: ブロック内の総寝室数",
-                "5": "<strong>Population</strong>: ブロック内に居住する総人数",
-                "6": "<strong>Households</strong>: ブロック内の世帯総数",
-                "7": "<strong>Latitude</strong>: 住宅が北にある距離の測定値 [°]。",
-                "8": "<strong>Longitude</strong>: 住宅が西にある距離の測定値 [°]。",
-                "9": "<strong>Distance to coast</strong>: 最も近い海岸線までの距離 [m]",
-                "10": "<strong>Distance to Los Angeles</strong>: ロサンゼルス中心部までの距離 [m]。",
-                "11": "<strong>Distance to San Diego</strong>: サンディエゴ中心部までの距離 [m]",
-                "12": "<strong>Distance to San Jose</strong>: サンホセ中心部までの距離 [m]",
-                "13": "<strong>Distance to San Francisco</strong>: サンフランシスコ中心部までの距離 [m]",
-                "14": null
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<strong>CRIM</strong> 市内の一人当たりの犯罪率",
-                "1": "<strong>ZN</strong> 25,000平方フィート以上の区画の住宅地の割合。",
-                "2": "<strong>INDUS</strong> 市内の一人当たりの非小売業の割合",
-                "3": "<strong>CHAS</strong> チャールズ川ダミー変数（トラクトが川と接している場合は1、それ以外の場合は0）",
-                "4": "<strong>NOX</strong> 窒素酸化物濃度（1000万分の1）",
-                "5": "<strong>RM</strong> 住宅あたりの平均部屋数",
-                "6": "<strong>AGE</strong> 1940年より前に建てられた所有者居住ユニットの割合",
-                "7": "<strong>DIS</strong> 5つのボストン雇用センターまでの加重距離",
-                "8": "<strong>RAD</strong> ラジアル高速道路へのアクセス指数",
-                "9": "<strong>TAX</strong> 10,000ドルあたりの固定資産税",
-                "10": "<strong>PTRATIO</strong> 生徒と教師の比率",
-                "11": "<strong>B</strong> 1000 (Bk - 0.63)^2 (Bkは市内の一人当たりの黒人の割合)",
-                "12": "<strong>LSTAT</strong> 人口の低所得者層の割合",
-                "13": "<strong>MEDV</strong> 所有者居住住宅の平均価値（1000ドル）"
-              }
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "california": {
-              "list": {
-                "0": "計算された回帰"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "計算された回帰"
-              }
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "california": {
-              "list": {
-                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<link1>UCIデータセット情報</link1>",
-                "1": "<link1>ボストン住宅データセットに関する論争</link1>"
-              }
-            }
-          }
-        }
-      },
-      "breast-cancer": {
-        "title": "ウィスコンシン乳がん (診断と予後)",
-        "description": {
-          "text": {
-            "0": "ウィスコンシン大学病院の乳がん関連データセットです。良性か悪性かを区別し、乳がん腫瘍の予測と識別に役立ちます。",
-            "1": "各レコードは、1984年以来Dr. Wolbergによって治療された浸潤性乳がんの症例追跡データであり、転移の証拠がない症例のみが含まれます。",
-            "2": "最初の30の特徴量は、乳腺腫瘤の穿刺吸引細胞診（FNAB）のデジタル画像から計算され、画像に存在する細胞核の特徴を記述しています。いくつかの画像は<link1>cs wisc</link1>で見つけることができます。",
-            "3": "ファイル <kbd>wdbc.csv</kbd> は診断データセットに対応し、<kbd>wpbc.csv</kbd> は予後データセットに対応します。"
-          },
-          "link": "<link1>UCIデータセット入力</link1>",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>ID番号</strong>",
-              "1": "<strong>結果</strong> (R = 再発, N = 非再発)",
-              "2": "<strong>時間</strong> (フィールド 2 = R の場合は再発までの時間、フィールド 2 = N の場合は無病期間)",
-              "3": "4-33 各細胞核について10個の実数値特徴量が計算されます：",
-              "4": "<strong>半径</strong> (中心から周囲までの距離の平均)",
-              "5": "<strong>テクスチャ</strong> (グレースケール値の標準偏差)",
-              "6": "<strong>周囲長</strong>",
-              "7": "<strong>面積</strong>",
-              "8": "<strong>平滑性</strong> (半径の長さの局所的な変動)",
-              "9": "<strong>コンパクトさ</strong> (周囲長^2 / 面積 - 1.0)",
-              "10": "<strong>凹面</strong> (輪郭の凹状部分の重症度)",
-              "11": "<strong>凹点</strong> (輪郭の凹状部分の数)",
-              "12": "<strong>対称性</strong>",
-              "13": "<strong>フラクタル次元</strong> (「海岸線近似」 - 1)"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰 (<b>給与</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>Breast Cancer Wisconsin</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
-            }
-          }
-        }
-      },
-      "student-performance": {
-        "title": "学生の成績",
-        "description": {
-          "text": {
-            "0": "このデータセットには、2つのポルトガル学校の生徒の学業成績データが含まれています。データには、生徒の人口統計、社会的な特徴、成績などが含まれています。数学（mat）とポルトガル語（por）の2つの異なる科目に関する成績データセットが含まれています。",
-            "1": "データセットには多変量データ、実数型の属性、649インスタンス、および12個の異なる属性が含まれています。",
-            "2": "重要な注意: ターゲット属性G3は、G2およびG1属性と強い相関があります。これは、G3が最終学年の成績（3学期に発行）であり、G1およびG2が1学期と2学期の成績に対応しているためです。G2とG1なしでG3を予測することはより困難ですが、そのような予測はより有用です。",
-            "3": "ファイル <kbd>student-por.csv</kbd> はポルトガル語の学生成績データセットに対応し、<kbd>student-mat.csv</kbd> は数学の学生成績データセットに対応します。"
-          },
-          "link": "<link1>UCIデータセット入力</link1>",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>school</strong> - 生徒の学校（バイナリ: 'GP' - Gabriel Pereira または 'MS' - Mousinho da Silveira）",
-              "1": "<strong>sex</strong> - 生徒の性別（バイナリ: 'F' - 女性 または 'M' - 男性）",
-              "2": "<strong>age</strong> - 生徒の年齢（数値: 15歳から22歳）",
-              "3": "<strong>address</strong> - 生徒の住居の種類（バイナリ: 'U' - 都市 または 'R' - 地方）",
-              "4": "<strong>famsize</strong> - 家族のサイズ（バイナリ: 'LE3' - 3人以下 または 'GT3' - 3人以上）",
-              "5": "<strong>Pstatus</strong> - 両親の同居状況（バイナリ: 'T' - 同居 または 'A' - 別居）",
-              "6": "<strong>Medu</strong> - 母親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
-              "7": "<strong>Fedu</strong> - 父親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
-              "8": "<strong>Mjob</strong> - 母親の職業（名義尺度: 'teacher' (教師), 'health' (医療関連), 'services' (サービス業) (例: 管理職や警察), 'at_home' (主婦) または 'other' (その他)）",
-              "9": "<strong>Fjob</strong> - 父親の職業（名義尺度: 'teacher', 'health', 'services', 'at_home' または 'other'）",
-              "10": "<strong>reason</strong> - 学校を選んだ理由（名義尺度: 'home'（家が近い）, 'reputation'（評判）, 'course'（コース） または 'other'（その他）",
-              "11": "<strong>guardian</strong> - 生徒の保護者（名義尺度: 'mother' (母), 'father' (父) または 'other' (その他)）",
-              "12": "<strong>traveltime</strong> - 通学時間（数値: 1 - 15分未満, 2 - 15分から30分, 3 - 30分から1時間, または 4 - 1時間以上）",
-              "13": "<strong>studytime</strong> - 週間の学習時間（数値: 1 - 2時間未満, 2 - 2時間から5時間, 3 - 5時間から10時間, または 4 - 10時間以上）",
-              "14": "<strong>failures</strong> - 以前のクラスでの落第回数（数値: nが1 <= n <= 3の場合 n, それ以外の場合は4）",
-              "15": "<strong>schoolsup</strong> - 追加の教育サポート（バイナリ: yes または no）",
-              "16": "<strong>famsup</strong> - 家族の教育サポート（バイナリ: yes または no）",
-              "17": "<strong>paid</strong> - 有料追加クラス（科目内）の有無（バイナリ: yes または no）",
-              "18": "<strong>activities</strong> - 課外活動（バイナリ: yes または no）",
-              "19": "<strong>nursery</strong> - 幼稚園に通っていたか（バイナリ: yes または no）",
-              "20": "<strong>higher</strong> - 高等教育を希望するか（バイナリ: yes または no）",
-              "21": "<strong>internet</strong> - 自宅でのインターネットアクセス（バイナリ: yes または no）",
-              "22": "<strong>romantic</strong> - 恋愛関係にあるか（バイナリ: yes または no）",
-              "23": "<strong>famrel</strong> - 家族関係の質（数値: 1 - 非常に悪い から 5 - 非常に良い）",
-              "24": "<strong>freetime</strong> - 放課後の自由時間（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "25": "<strong>goout</strong> - 友達と外出（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "26": "<strong>Dalc</strong> - 平日のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "27": "<strong>Walc</strong> - 週末のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "28": "<strong>health</strong> - 現在の健康状態（数値: 1 - 非常に悪い から 5 - 非常に良い）",
-              "29": "<strong>absences</strong> - 学校の欠席日数（数値: 0から93）"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>Student Performance</link1>"
-            }
-          }
-        }
-      },
-      "wine": {
-        "title": "ワインの品質",
-        "description": {
-          "text": {
-            "0": "この2つのデータセットは関連しており、ポルトガルワインの赤ワインと白ワインのバリアントが含まれています。このデータセットには、理化学変数（入力）と感覚変数（出力）のみが含まれており、ブドウの品種、ワインのブランド、または販売価格のデータは含まれていません。",
-            "1": "データセットには多変量データ、実数型の属性、4898インスタンス、および12個の異なる属性が含まれています。",
-            "2": "このデータセットは、分類タスクまたは回帰タスクに使用できます。クラスは順序付けされていますが、データセットは不均衡です。",
-            "3": "ファイル <kbd>wine-quality-red.csv</kbd> は赤ワインデータセットに対応し、<kbd>wine-quality-white.csv</kbd> は白ワインデータセットに対応します。"
-          },
-          "link": "このデータセットの詳細については、<link1>archive.ics.uci.edu</link1>リポジトリをご覧ください。",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>Fixed Acidity (固定酸度)</strong>: ワイン中の非揮発性酸の濃度を指します。新鮮さと安定性に貢献します。",
-              "1": "<strong>Volatile Acidity (揮発性酸度)</strong>: 酢酸などの揮発性酸の濃度を指します。過剰に存在すると不快な味を与える可能性があります。",
-              "2": "<strong>Citric Acid (クエン酸)</strong>: ワインに存在する天然の有機酸の1つです。風味と新鮮さに影響を与える可能性があります。",
-              "3": "<strong>Residual Sugar (残糖)</strong>: 発酵後にワインに残る砂糖の量です。",
-              "4": "<strong>Chlorides (塩化物)</strong>: ワイン中の塩化物濃度は、その風味と香りに影響を与えます。",
-              "5": "<strong>Free Sulfur Dioxide (遊離二酸化硫黄)</strong>: 酸化や不要な微生物の増殖を防ぐ一般的な防腐剤です。",
-              "6": "<strong>Total Sulfur Dioxide (総二酸化硫黄)</strong>: 遊離二酸化硫黄と結合した二酸化硫黄の合計を表します。ワインの保存にも関連しています。",
-              "7": "<strong>Density (密度)</strong>: 単位体積あたりのワインの質量を指します。アルコールと砂糖の濃度に関する情報を提供できます。",
-              "8": "<strong>pH</strong>: ワインの酸性度またはアルカリ度を測定します。",
-              "9": "<strong>Sulphates (硫酸塩)</strong>: ワインの生産で時々使用される添加剤です。安定性と香りに影響を与える可能性があります。",
-              "10": "<strong>Alcohol (アルコール)</strong>: ワイン中のアルコール濃度。風味と口当たりに影響します。",
-              "11": "<strong>Quality (品質)</strong>: テイスターの評価に従って、通常0から10のスケールで、ワインの全体的な品質スコア。"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>ワインの品質</link1>"
-            }
-          }
-        }
-      },
-      "list-datasets": {
-        "salary": "給与",
-        "auto-mpg": "燃費性能",
-        "housing-prices": "住宅価格",
-        "breast-cancer": "乳がん",
-        "student-performance": "学生成績",
-        "wine": "ワイン"
-      },
-      "list-models": {
-        "salary": "給与",
-        "auto-mpg": "燃費性能",
-        "housing-prices": "住宅価格",
-        "breast-cancer": "乳がん",
-        "student-performance": "学生成績",
-        "wine": "ワイン"
       }
     },
     "2-object-detection": {
@@ -1564,130 +1083,8 @@
           "loading": "画像を読み込み中…"
         }
       },
-      "mnist": {
-        "title": "MNIST - 数字の分類",
-        "description": {
-          "text-0": "<strong>MNISTデータベース</strong>は、手書き数字の大規模なデータベースです。このデータベースは、機械学習の分野でのトレーニングとテストに広く使用されています。",
-          "text-1": "元のNISTデータセットのサンプルを「再混合」して作成されました。",
-          "text-2": "NISTトレーニングデータセットは、米国国勢調査局から取得されました。さらに、NISTの白黒画像は、<strong>28 x 28</strong>ピクセルの境界ボックスに収まるように正規化され、平滑化されました。これにより、グレースケールレベルが導入されました。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>28 x 28</strong>ピクセルサイズのグレースケール画像"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "0から9までの数字"
-            }
-          },
-          "details-references": {
-            "title": "参照元"
-          }
-        }
-      },
-      "kmnist": {
-        "title": "KMNIST - くずし字の分類",
-        "description": {
-          "text-0": "<strong>Kuzushiji-MNIST（KMNIST）</strong>は MNIST と同じ形式のデータセットです。<strong>28 x 28</strong> ピクセルのグレースケール画像で 10 クラスですが、数字の代わりに<i>くずし字</i>で書かれた手書きの日本語の文字が含まれています。",
-          "text-1": "くずし字は千年以上にわたって日本語の一般的な書き方でしたが、20 世紀初めの表記改革以降は学校で教えられなくなり、現在読める人はごくわずかです。画像は国文学研究資料館がデジタル化した古典籍から取られ、ROIS-DS 人文学オープンデータ共同利用センター（CODH）が作成しました。",
-          "text-2": "各クラスは現代のひらがな 1 文字ですが、データセットでは昔のように手書きで現れます。1900 年までは同じ音をさまざまな形で書くことができました。今の形のもとになった漢字を別のくずし方で書いたり、別の漢字から書いたりしたもので、これが<i>変体仮名</i>です。この年に 1 つの形だけが残され、それが今の形です。そのため 1 つのクラスに、互いにも今の文字にもあまり似ていない字形が集まり、MNIST より難しくなります。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>28 x 28</strong> ピクセルのグレースケール画像"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "10 種類のひらがなのいずれか：お、き、す、つ、な、は、ま、や、れ、を"
-            }
-          },
-          "details-model": {
-            "title": "モデル",
-            "list": {
-              "0": "学習済みモデル：学習用画像 55,000 枚（ほかに検証用 5,000 枚）で学習した畳み込みニューラルネットワークで、テスト画像 10,000 枚での正解率は <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> です。",
-              "1": "ブラウザでの学習：各文字について学習用 <strong>2,000</strong> 枚、テスト用 <strong>500</strong> 枚のバランスの取れたサブセットを使用します。"
-            }
-          },
-          "forms": {
-            "title": "10 文字の今と昔",
-            "modern": "今",
-            "old": "昔：ほかの字形（変体仮名）と字母",
-            "old-alt": "{{origin}}から生まれた昔の{{char}}",
-            "note": "今の文字の下に読み方と字母（もとになった漢字）を、昔の字形の下にそれぞれの字母を示します。昔の字形は Unicode の変体仮名で、Noto Serif Hentaigana フォントで描いています。データセットでは手書きで現れます。そのように見るには、モデルのページでテスト画像を読み込んでください。"
-          }
-        }
-      },
-      "mobilenet": {
-        "title": "MobileNet - 画像分類",
-        "description": {
-          "text-0": "MobileNet V2は、画像分類などに使用されるニューラルネットワークアーキテクチャのファミリーです。",
-          "text-1": "このモデルは、画像の主要なコンテキストを識別することで、1001のカテゴリを区別できます。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>224 x 224</strong>ピクセルサイズで、[0, 1]の色の値を持つ画像。"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "この<link1>リスト</link1>の各カテゴリに対応する0から1001までの数字"
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "text-0": "Mark Sandler、Andrew Howard、Menglong Zhu、Andrey Zhmoginov、Liang-Chieh Chenによって最初に公開されました：",
-            "list": {
-              "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
-            }
-          }
-        }
-      },
       "face-mesh": {
         "title": "-"
-      },
-      "list-models": {
-        "3-option-1": "MNIST - 数字の分類",
-        "3-option-2": "MobileNet - 画像分類器",
-        "3-option-3": "ResNet - 画像分類器",
-        "3-option-4": "KMNIST - くずし字の分類"
-      },
-      "resnet": {
-        "description": {
-          "text-0": "ResNet V2は、層の数を変えられる画像分類用のネットワーク構造のファミリーです。",
-          "text-1": "Kaiming He、Xiangyu Zhang、Shaoqing Ren、Jian Sunが発表した元のResNet構造に基づいています：<link1>「Deep Residual Learning for Image Recognition」</link1>、2015年。",
-          "text-2": "このモデルが使う「V2」は同じ著者によるものです：<link1>「Identity Mappings in Deep Residual Networks」</link1>、2016年。",
-          "text-3": "ResNet V1との違いは、重みを持つ各層の前でバッチ正規化を行うことです。読み込むモデルは50層です。",
-          "details-input": {
-            "title": "入力データ",
-            "list": [
-              "色の値が0〜1の<bold>224 × 224</bold>ピクセルの画像。"
-            ]
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": [
-              "0〜1001の数値：この<link1>リスト</link1>の各カテゴリに対応します。"
-            ]
-          }
-        }
-      }
-    },
-    "3-image-classification": {
-      "list-datasets": {
-        "mnist": "MNIST",
-        "kmnist": "KMNIST"
-      }
-    },
-    "clustering": {
-      "list-datasets": {
-        "iris": "アヤメ（種類なし）",
-        "wine": "ワインの品種（品種なし）",
-        "new-thyroid": "甲状腺（診断なし）"
       }
     }
   },
@@ -2889,7 +2286,8 @@
         "features": "特徴量 {{value}}",
         "classes": "{{value}} クラス",
         "target": "目的変数: {{value}}",
-        "images": "28×28 の画像 {{value}} 枚"
+        "images": "{{size}} の画像 {{value}} 枚",
+        "images-color": "{{size}} のカラー画像 {{value}} 枚"
       }
     },
     "documentation": {
@@ -3709,64 +3107,6 @@
   "upload-model": "モデルをアップロード",
   "upload-model-info": "タスクを実行するにはモデルをアップロードする必要があります。",
   "upload-dataset": "データセットをアップロード",
-  "00-tc": {
-    "car": {
-      "buying": "購入価格",
-      "maint": "メンテナンス費用",
-      "doors": "ドアの数",
-      "persons": "乗車定員",
-      "lug_boot": "トランクの大きさ",
-      "safety": "車の推定安全性",
-      "result": "結果",
-      "unacc": "不可",
-      "acc": "可",
-      "good": "良",
-      "vgood": "優"
-    },
-    "iris": {
-      "sepal_length": "がく片の長さ",
-      "sepal_width": "がく片の幅",
-      "petal_length": "花弁の長さ",
-      "petal_width": "花弁の幅",
-      "class": "クラス",
-      "Iris-setosa": "ヒオウギアヤメ (setosa)",
-      "Iris-versicolor": "ブルーフラッグ (versicolor)",
-      "Iris-virginica": "バージニカ (virginica)"
-    },
-    "lymphography": {
-      "lymphatics": "リンパ管",
-      "block of affere": "輸入リンパ管の閉塞",
-      "bl": {
-        " of lymph": {
-          " c": "リンパ管(c)の閉塞",
-          " s": "リンパ管(s)の閉塞"
-        }
-      },
-      "by pass": "バイパス",
-      "extravasates": "血管外漏出",
-      "regeneration": "再生",
-      "early uptake in": "早期取り込み",
-      "lym": {
-        "nodes dimin": "リンパ節の縮小",
-        "nodes enlar": "リンパ節の腫大"
-      },
-      "changes in lym": "リンパ管の変化",
-      "defect in node": "リンパ節の欠損",
-      "changes in node": "リンパ節の変化",
-      "changes in stru": "構造の変化",
-      "special forms": "特殊な形態",
-      "dislocation of": "転位",
-      "exclusion of": "除外",
-      "no": {
-        " of nodes in": "リンパ節の数"
-      },
-      "Category": "カテゴリ",
-      "normal find": "正常所見",
-      "metastases": "転移",
-      "malign lymph": "悪性リンパ腫",
-      "fibrosis": "線維症"
-    }
-  },
   "model-summary": "モデルの概要",
   "breadcrumb": {
     "label": "パンくずリスト",
@@ -4176,6 +3516,58 @@
           "title": "試してみよう",
           "content": "ワインを選んで品質を予測し、そのあとアルコールを上げて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
         }
+      },
+      "SALARY": {
+        "intro": {
+          "title": "給与",
+          "content": "このページでは、学習済みのニューラルネットワークが経験年数から給与を予測します。それぞれが何かを順番に説明します。「次へ」で進んだり、戻ったり、音声を消したり、ガイドを自動で進めたりできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "データセットは 2 つあります。経験年数だけのものと、年齢・性別・学歴・職種を含むものです。学習済みのネットワークは 1 つ目のものです。2 つ目ではデータを見られますが、予測するには自分でネットワークを学習させる必要があります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "1 つ目には 1000 人分のデータがあります。強調された列 Salary が給与で、経験年数（1 年未満から 50 年近くまで）とともに上がる傾向があります。回帰の練習用のサンプルデータです。"
+        },
+        "form": {
+          "title": "人のデータ",
+          "content": "1 つ目のデータセットでは、フォームの項目は経験年数だけです。年数が多いほど、ネットワークは高い給与を予測する傾向があります。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された給与が、データセットと同じ単位で表示されます。行を変更せずに使った場合は、実際の給与と誤差も表示されます。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "人を選んで給与を予測し、そのあと経験年数を変えて予測がどう変わるか見てください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "HOUSING_PRICES": {
+        "intro": {
+          "title": "住宅価格",
+          "content": "このページでは、学習済みのニューラルネットワークがボストンの地区の住宅価格の中央値を、その地区の 12 のデータから予測します。それぞれが何かを順番に説明します。「次へ」で進んだり、戻ったり、音声を消したり、ガイドを自動で進めたりできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "このモデルのデータセットは Boston Housing の 1 つだけです。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "各行は 1970 年代のボストンの 506 地区のひとつです。強調された列 MEDV が住宅価格の中央値（千ドル単位、5〜50）です。このバージョンには元のデータセットの列 B はありません。倫理的な理由で削除されました。"
+        },
+        "form": {
+          "title": "地区のデータ",
+          "content": "フォームには 12 の項目があります：犯罪率（CRIM）、住宅用地（ZN）と工業用地（INDUS）の割合、チャールズ川に面しているか（CHAS）、大気汚染（NOX）、住宅あたりの部屋数（RM）、築年数（AGE）、雇用中心地までの距離（DIS）、高速道路へのアクセス（RAD）、税金（TAX）、教師一人あたりの生徒数（PTRATIO）、低所得層の割合（LSTAT）。価格と最も関係が深いのは部屋数と LSTAT です。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された価格の中央値が千ドル単位で表示されます。行を変更せずに使った場合は、実際の値と誤差も表示されます。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "地区を選んで価格を予測し、そのあと部屋数（RM）を増やして予測がどう変わるか見てください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
       }
     },
     "2-object-detection": {
@@ -4399,6 +3791,36 @@
         "end": {
           "title": "試してみよう",
           "content": "テスト画像を読み込み、同じ文字のいろいろな書き方を比べてみましょう。まったく違う線でもネットワークが正解するのがわかります。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "IMAGE-CIFAR10": {
+        "intro": {
+          "title": "写真の分類",
+          "content": "このページでは、学習済みの畳み込みニューラルネットワークが、飛行機、自動車、鳥、猫、鹿、犬、カエル、馬、船、トラックの 10 クラスの小さなカラー写真を認識します。それぞれが何かを順番に説明します。「次へ」で進み、戻ったり、音声をミュートしたり、ガイドを自動で進めたりできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "このネットワークは CIFAR-10 で学習しました。32×32 ピクセルのカラー写真で、学習用が 50,000 枚、テスト用が 10,000 枚です。各写真には赤、緑、青の 3 つのチャンネルがあるので、ネットワークが受け取る数は MNIST のほぼ 4 倍です。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "各クラスのテスト写真が 1 枚ずつ、ピクセルが見えるように拡大して並んでいます。どれかを押すと分類され、結果は下に表示されます。"
+        },
+        "upload": {
+          "title": "画像をアップロード",
+          "content": "ここに自分の写真をドラッグするか、パソコンから選び、ボタンを押して分類します。データセットと同じ 32×32 ピクセルに縮小されるので、物が写真のほとんどを占めているとうまくいきます。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ネットワークが見た画像（縮小後）と、各クラスの確率がここに表示されます。いちばん高いものが予測です。テスト画像を分類した場合は、本当のクラスも表示されます。"
+        },
+        "explain": {
+          "title": "説明可能性",
+          "content": "分類したあと、ここで写真の上にヒートマップを計算します。LRP では判断を層ごとに後ろへピクセルまで割り振り、SHAP では写真の一部を隠して予測がどれだけ変わるかを見ます。ネットワークがどこに注目したかがわかります。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "テスト画像を読み込み、ネットワークがどのクラスでよく間違えるか探してみましょう。猫と犬、自動車とトラックをよく取り違えます。このガイドは「ガイド」ボタンでいつでも開き直せます。"
         }
       },
       "IMAGE-MOBILENET": {
@@ -4823,6 +4245,31 @@
           "layer": {
             "class-name": "文字"
           }
+        },
+        "IMAGE-CIFAR10": {
+          "intro": {
+            "title": "カラー写真",
+            "content": "このページでは、CIFAR-10 データセットの画像を使って、飛行機からトラックまで 10 クラスのカラー写真を認識する畳み込みネットワークを学習させ、そのあとテスト写真や自分の写真で試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりもできます。"
+          },
+          "predict": {
+            "title": "ネットワークを試す",
+            "content": "学習済みのモデルがあれば、データセットのテスト写真を選ぶか自分の写真をアップロードしてボタンを押すと、ネットワークが何が見えるかを各クラスの確率とともに答えます。上でどのモデルで試すかを選びます。"
+          },
+          "explain": {
+            "title": "説明可能性",
+            "content": "分類したあと、LRP は判断にどれだけ効いたかに応じてピクセルを色分けします。ネットワークが写真のどこに注目して判断したかがわかります。"
+          },
+          "end": {
+            "title": "やってみよう",
+            "content": "最初のネットワークで学習させ、表で正解率を見てみましょう。写真もエポックも少ないので、学習済みモデルよりかなり低くなります。次にエポックを増やしたり畳み込み層を追加したりして比べてみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+          },
+          "layer": {
+            "class-name": "クラス",
+            "conv-first": {
+              "title": "第 {{number}} 層：畳み込み",
+              "content": "最初の層で、{{inputSize}} ピクセルのカラー写真、つまり赤、緑、青の {{inputChannels}} 枚のマップを受け取ります。{{kernel}}×{{kernel}} のフィルター {{filters}} 個がその上をなぞり、各フィルターは 3 つの色を同時に見て小さなパターン（縁、色のまとまり、角）を見分けることを学び、それが見つかった場所のマップを残します。フィルターごとに 1 枚、{{outputSize}} のマップが {{outputChannels}} 枚出てきます。フィルターが端からはみ出さないので、写真より少し小さくなります。学習する重みは {{params}} 個です。"
+            }
+          }
         }
       }
     },
@@ -4926,5 +4373,30 @@
   },
   "offline": {
     "bar": "オフラインです。すでに開いたものは引き続き使えます。それ以外は接続が戻ると使えるようになります。"
+  },
+  "n4l": {
+    "download": ".n4l をダウンロード",
+    "download-title": "このモデルをデータとテキストごと .n4l ファイルでダウンロードし、共有したり後で開いたりできます",
+    "local": {
+      "title": "あなたの .n4l パッケージ",
+      "text": ".n4l ファイル（データとテキスト付きのモデル）を開くと、このブラウザに保存されてここに表示されます。",
+      "drop": ".n4l ファイルをここにドラッグするか、クリックして選択",
+      "files": ".n4l ファイル",
+      "version": "バージョン {{version}} · {{size}}",
+      "remove": "削除",
+      "remove-title": "「{{name}}」をこのブラウザから削除",
+      "imported": "「{{name}}」の準備ができました。カードから開いてください。",
+      "error": "ファイルを開けませんでした：",
+      "open-title": ".n4l ファイルを開く",
+      "how": "どこで手に入りますか？学習済みモデルの各ページにある「.n4l をダウンロード」で、そのパッケージ（モデル、データ、テキスト）を取得できます。学習後は、表の各モデルも学習に使ったデータセットと一緒に同じようにダウンロードできます。人から受け取ったものも開けます。中身と使い方を記述しているだけで、コードは含まれていません。",
+      "saved": "このブラウザに保存済み",
+      "empty": "まだありません。上で .n4l ファイルを開いてください。"
+    },
+    "download-trained-title": "このモデルをデータセット、前処理、テキストとともに .n4l ファイルでダウンロードします。後で「.n4l パッケージ」から開けます",
+    "metrics": {
+      "title": "見たことのないデータでは",
+      "text": "学習時に取り分けたデータセットの 20% では、平均誤差は {{mae}} です。常に平均を予測した場合の誤差は {{baseline}} です。R²：{{r2}}（1 は常に正解、0 は平均を予測するのと同じ）。",
+      "no-better": "常に平均を答えるより良い予測はできていません。このデータからはこれ以上わかりません。"
+    }
   }
 }

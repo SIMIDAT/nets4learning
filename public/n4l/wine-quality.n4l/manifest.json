@@ -1,0 +1,249 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "wine-quality",
+  "version": "1.2.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/186/wine+quality",
+    "citation": "@misc{misc_wine_quality_186,\n  author       = {Cortez,Paulo, Cerdeira,A., Almeida,F., Matos,T., and Reis,J.},\n  title        = {{Wine Quality}},\n  year         = {2009},\n  howpublished = {UCI Machine Learning Repository},\n  note         = {{DOI}: https://doi.org/10.24432/C56S3T}\n}"
+  },
+  "datasets": [
+    {
+      "id": "wine-red",
+      "file": "data/wine-quality-red.csv",
+      "info": "data/wine-quality.names",
+      "rows": 1599,
+      "columns": [
+        {
+          "name": "fixed_acidity",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "volatile_acidity",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "citric_acid",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "residual_sugar",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "chlorides",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "free_sulfur_dioxide",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "total_sulfur_dioxide",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "density",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "pH",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "sulphates",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "alcohol",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "quality",
+          "role": "Target",
+          "type": "Integer",
+          "missing": 0,
+          "description": "score between 0 and 10"
+        }
+      ]
+    },
+    {
+      "id": "wine-white",
+      "file": "data/wine-quality-white.csv",
+      "info": "data/wine-quality.names",
+      "rows": 4898,
+      "columns": [
+        {
+          "name": "fixed_acidity",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "volatile_acidity",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "citric_acid",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "residual_sugar",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "chlorides",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "free_sulfur_dioxide",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "total_sulfur_dioxide",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "density",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "pH",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "sulphates",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "alcohol",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "quality",
+          "role": "Target",
+          "type": "Integer",
+          "missing": 0,
+          "description": "score between 0 and 10"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "regression",
+      "key": "WINE",
+      "runtime": "regression",
+      "datasets": [
+        "wine-red",
+        "wine-white"
+      ],
+      "preprocessing": [
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "models": [
+        {
+          "id": "red",
+          "format": "tfjs-layers",
+          "path": "models/red/model.json",
+          "dataset": "wine-red",
+          "input": "scaled",
+          "metrics": {
+            "test_r2": 0.3639,
+            "test_mae": 0.5121,
+            "test_baseline_mae": 0.7025
+          }
+        },
+        {
+          "id": "white",
+          "format": "tfjs-layers",
+          "path": "models/white/model.json",
+          "dataset": "wine-white",
+          "input": "scaled",
+          "metrics": {
+            "test_r2": 0.3923,
+            "test_mae": 0.5461,
+            "test_baseline_mae": 0.6567
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 11,
+            "activation": "relu",
+            "locked": true
+          },
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 16,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "KMNIST - Clasificación de caracteres japoneses",
+      "name": "KMNIST - Clasificación de caracteres japoneses",
+      "summary": "Diez caracteres hiragana del japonés clásico escritos a mano: como MNIST, pero más difícil.",
+      "description": {
+        "text": [
+          "<strong>Kuzushiji-MNIST (KMNIST)</strong> es un sustituto directo de MNIST: imágenes en escala de grises de <strong>28 x 28</strong> píxeles y 10 clases, pero en lugar de dígitos contiene caracteres japoneses manuscritos en <i>kuzushiji</i> (escritura cursiva).",
+          "El kuzushiji fue la forma habitual de escribir japonés durante más de mil años, pero dejó de enseñarse tras la reforma de la escritura de principios del siglo XX y hoy muy poca gente sabe leerlo. Las imágenes proceden de libros clásicos digitalizados por el Instituto Nacional de Literatura Japonesa y las preparó el ROIS-DS Center for Open Data in the Humanities (CODH).",
+          "Cada clase es un carácter hiragana de hoy, pero en el conjunto aparece escrito a mano como se hacía antes. Hasta 1900 una misma sílaba se podía escribir de muchas formas: con el kanji del que viene la de hoy, trazado de otra manera, o partiendo de otro kanji. Son las <i>hentaigana</i>; ese año se dejó una sola forma, la de hoy. Por eso una misma clase junta trazos que se parecen poco entre sí o al carácter de hoy, y es más difícil que MNIST."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "Imagen en escala de grises de <strong>28 x 28</strong> píxeles"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Uno de los 10 caracteres hiragana: お, き, す, つ, な, は, ま, や, れ, を"
+            ]
+          },
+          {
+            "title": "Modelos",
+            "items": [
+              "Modelo ya entrenado: red convolucional entrenada con las 55.000 imágenes de entrenamiento de KMNIST (y otras 5.000 para validar). Acierta el <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> de las {{test_images, number}} imágenes de prueba del conjunto, que no vio al entrenar.",
+              "Entrenamiento en el navegador: se usa un subconjunto equilibrado, con <strong>2.000</strong> imágenes de entrenamiento y <strong>500</strong> de test por carácter."
+            ]
+          }
+        ]
+      },
+      "forms": {
+        "title": "Los 10 caracteres, hoy y antes",
+        "modern": "Hoy",
+        "old": "Antes: otras formas (hentaigana), con su kanji",
+        "old-alt": "{{char}} antiguo, que viene de {{origin}}",
+        "note": "Debajo de cada carácter de hoy, cómo se lee y el kanji del que viene; debajo de cada forma antigua, el suyo. Las formas antiguas son las hentaigana de Unicode, dibujadas con la fuente Noto Serif Hentaigana. En el conjunto de datos aparecen escritas a mano: para verlas así, carga las imágenes de test en la página del modelo."
+      }
+    }
+  }
+}

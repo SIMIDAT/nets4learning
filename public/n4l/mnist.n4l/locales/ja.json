@@ -1,0 +1,37 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "MNIST - 数字の分類",
+      "name": "MNIST - 数字の分類",
+      "summary": "0〜9の手書き数字：畳み込みネットワークの「Hello World」です。",
+      "description": {
+        "text": [
+          "<strong>MNISTデータベース</strong>は、手書き数字の大規模なデータベースです。このデータベースは、機械学習の分野でのトレーニングとテストに広く使用されています。",
+          "元のNISTデータセットのサンプルを「再混合」して作成されました。",
+          "NISTトレーニングデータセットは、米国国勢調査局から取得されました。さらに、NISTの白黒画像は、<strong>28 x 28</strong>ピクセルの境界ボックスに収まるように正規化され、平滑化されました。これにより、グレースケールレベルが導入されました。"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>28 x 28</strong>ピクセルサイズのグレースケール画像"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "0から9までの数字"
+            ]
+          },
+          {
+            "title": "モデル",
+            "items": [
+              "学習済みモデル：Keras のサンプルの畳み込みニューラルネットワーク（畳み込み層 2 つと全結合層 2 つ）で、MNIST の学習用画像 60,000 枚で学習しました。学習で見ていないテスト画像 {{test_images, number}} 枚での正解率は <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> です。",
+              "ブラウザでの学習：学習のたびに、学習用画像 55,000 枚から <strong>11,000</strong> 枚、テスト画像 10,000 枚から <strong>2,000</strong> 枚を無作為に選びます。"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

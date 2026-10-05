@@ -6,14 +6,14 @@ import { buildGuideSteps, centerStep, guideStep, type GuideTranslate_t } from '@
  * Modelos con guía en su página (/playground/image-classification/model/<KEY>). Sus textos van en
  * guide.3-image-classification.<KEY> y, lo que es igual en todos, en guide.3-image-classification.common.
  */
-export const IMAGE_CLASSIFICATION_REVIEW_GUIDES: string[] = [IC_MODEL_KEYS.MNIST, IC_MODEL_KEYS.KMNIST, IC_MODEL_KEYS.MOBILENET]
+export const IMAGE_CLASSIFICATION_REVIEW_GUIDES: string[] = [IC_MODEL_KEYS.MNIST, IC_MODEL_KEYS.KMNIST, IC_MODEL_KEYS.CIFAR10, IC_MODEL_KEYS.MOBILENET]
 
 /**
- * Los pasos de la guía de la página de un modelo de clasificación de imágenes (null si no tiene). Con los que se
- * pueden dibujar (28×28: MNIST y KMNIST), también las imágenes de test y el dibujo; el resumen del modelo, solo si lo
- * tiene (MobileNet no: no es un LayersModel).
+ * Los pasos de la guía de la página de un modelo de clasificación de imágenes (null si no tiene). Con las imágenes de
+ * un conjunto (MNIST, KMNIST, CIFAR-10), también sus imágenes de test; con las que se pueden dibujar (en gris), el
+ * dibujo; el resumen del modelo, solo si lo tiene (MobileNet no: no es un LayersModel).
  */
-export function imageClassificationReviewGuide(t: GuideTranslate_t, modelKey: string, { drawable, summary }: { drawable: boolean, summary: boolean }): GuideStep_t[] | null {
+export function imageClassificationReviewGuide(t: GuideTranslate_t, modelKey: string, { drawable, summary, testImages }: { drawable: boolean, summary: boolean, testImages: boolean }): GuideStep_t[] | null {
   if (!IMAGE_CLASSIFICATION_REVIEW_GUIDES.includes(modelKey)) return null
   return buildGuideSteps(t, 'guide.3-image-classification', modelKey, [
     centerStep('intro'),
@@ -21,7 +21,7 @@ export function imageClassificationReviewGuide(t: GuideTranslate_t, modelKey: st
     ...(summary ? [guideStep('model-summary', 'model-summary')] : []),
     guideStep('explain-about', 'explain-about'),
     guideStep('examples', 'examples'),
-    ...(drawable ? [guideStep('test-images', 'test-images', 'bottom')] : []),
+    ...(testImages ? [guideStep('test-images', 'test-images', 'bottom')] : []),
     guideStep('upload', 'upload'),
     ...(drawable ? [guideStep('draw', 'draw')] : []),
     guideStep('result', 'result'),

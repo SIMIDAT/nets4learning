@@ -1,0 +1,37 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "MNIST - Clasificación de números",
+      "name": "MNIST - Clasificación de números",
+      "summary": "Dígitos del 0 al 9 escritos a mano: el «hola mundo» de las redes convolucionales.",
+      "description": {
+        "text": [
+          "La base de datos <strong>MNIST</strong> es una gran base de datos de dígitos escritos a mano. La base de datos se usa ampliamente para capacitación y pruebas en el campo del aprendizaje automático.",
+          "Fue creado \"re-mezclando\" las muestras de los conjuntos de datos originales del NIST.",
+          "El conjunto de datos de capacitación del NIST se tomó de la Oficina del Censo de los Estados Unidos. Además, las imágenes en blanco y negro del NIST se normalizaron para encajar en un cuadro delimitador de <strong>28 x 28</strong> píxeles y se suavizaron, lo que introdujo niveles de escala de grises."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "Imagen en escala de grises y con un tamaño de <strong>28 x 28</strong> píxeles"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Un número entre 0 y 9"
+            ]
+          },
+          {
+            "title": "Modelos",
+            "items": [
+              "Modelo ya entrenado: la red convolucional del ejemplo de Keras (dos capas convolucionales y dos densas), entrenada con las 60.000 imágenes de entrenamiento de MNIST. Acierta el <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> de las {{test_images, number}} imágenes de prueba, que no vio al entrenar.",
+              "Entrenamiento en el navegador: en cada entrenamiento se toman al azar <strong>11.000</strong> de las 55.000 imágenes de entrenamiento y <strong>2.000</strong> de las 10.000 de prueba."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

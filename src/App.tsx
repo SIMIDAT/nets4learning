@@ -24,6 +24,7 @@ const PageDescriptionRegression = lazy(() => import( './pages/playground/1_Regre
 const PageManual = lazy(() => import( './pages/manual/Manual'))
 const PageGlossary = lazy(() => import( './pages/glossary/Glossary'))
 const PageDatasets = lazy(() => import( './pages/datasets/Datasets'))
+const PagePackages = lazy(() => import( './pages/packages/Packages'))
 const PageAnalyzeDataFrame = lazy(() => import( './pages/analyze/AnalyzeDataFrame'))
 const PageContribute = lazy(() => import( './pages/contribute/Contribute'))
 const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditions'))
@@ -86,6 +87,7 @@ function App() {
               <Route path={'/manual/'} element={<PageManual />}></Route>
               <Route path={'/glossary'} element={<PageGlossary />}></Route>
               <Route path={'/datasets'} element={<PageDatasets />}></Route>
+              <Route path={'/packages'} element={<PagePackages />}></Route>
               <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
               <Route path={'/contribute/'} element={<PageContribute />}></Route>
               <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>

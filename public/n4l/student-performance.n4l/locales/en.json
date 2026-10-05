@@ -1,0 +1,100 @@
+{
+  "columns": {
+    "school": "school",
+    "sex": "sex",
+    "age": "age",
+    "address": "address",
+    "famsize": "famsize",
+    "Pstatus": "Pstatus",
+    "Medu": "Medu",
+    "Fedu": "Fedu",
+    "Mjob": "Mjob",
+    "Fjob": "Fjob",
+    "reason": "reason",
+    "guardian": "guardian",
+    "traveltime": "traveltime",
+    "studytime": "studytime",
+    "failures": "failures",
+    "schoolsup": "schoolsup",
+    "famsup": "famsup",
+    "paid": "paid",
+    "activities": "activities",
+    "nursery": "nursery",
+    "higher": "higher",
+    "internet": "internet",
+    "romantic": "romantic",
+    "famrel": "famrel",
+    "freetime": "freetime",
+    "goout": "goout",
+    "Dalc": "Dalc",
+    "Walc": "Walc",
+    "health": "health",
+    "absences": "absences",
+    "G3": "G3"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Student Performance",
+      "name": "Student performance",
+      "summary": "The final grade of Portuguese secondary school students, in maths and Portuguese, by their background and habits.",
+      "description": {
+        "text": [
+          "The data set includes data on the academic performance of students from two Portuguese schools. The data includes demographic, social characteristics, student grades, etc. Two sets of data are included, one with the performance of two different subjects: Mathematics (mat) and Portuguese language (por).",
+          "The data set contains multivariate type data, real type attributes, 649 instances, and 12 distinct attributes.",
+          "Important note: The target attribute G3 has a strong correlation with the attributes G2 and G1. This occurs because G3 is the grade for the last year (issued in the 3rd period), while G1 and G2 correspond to the grades for the 1st and 2nd period. It is more difficult to predict G3 without G2 and G1, but such a prediction is much more useful.",
+          "The file <kbd>student-por.csv</kbd> corresponds to the data set of Portuguese student grades and <kbd>student-mat.csv</kbd> corresponds to the data set of mathematics student grades.",
+          "<link1>UCI data set input</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Input",
+            "items": [
+              "<strong>school</strong> - student's school (binary: 'GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)",
+              "<strong>sex</strong> - student's sex (binary: 'F' - female or 'M' - male)",
+              "<strong>age</strong> - student's age (numeric: from 15 to 22)",
+              "<strong>address</strong> - student's home address type (binary: 'U' - urban or 'R' - rural)",
+              "<strong>famsize</strong> - family size (binary: 'LE3' - less or equal to 3 or 'GT3' - greater than 3)",
+              "<strong>Pstatus</strong> - parent's cohabitation status (binary: 'T' - living together or 'A' - apart)",
+              "<strong>Medu</strong> - mother's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
+              "<strong>Fedu</strong> - father's education (numeric: 0 - none,  1 - primary education (4th grade), 2 â€“ 5th to 9th grade, 3 â€“ secondary education or 4 â€“ higher education)",
+              "<strong>Mjob</strong> - mother's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
+              "<strong>Fjob</strong> - father's job (nominal: 'teacher', 'health' care related, civil 'services' (e.g. administrative or police), 'at_home' or 'other')",
+              "<strong>reason</strong> - reason to choose this school (nominal: close to 'home', school 'reputation', 'course' preference or 'other')",
+              "<strong>guardian</strong> - student's guardian (nominal: 'mother', 'father' or 'other')",
+              "<strong>traveltime</strong> - home to school travel time (numeric: 1 - &lt; 15 min., 2 - 15 to 30 min., 3 - 30 min. to 1 hour, or 4 - &gt; 1 hour)",
+              "<strong>studytime</strong> - weekly study time (numeric: 1 - &lt; 2 hours, 2 - 2 to 5 hours, 3 - 5 to 10 hours, or 4 - &gt; 10 hours)",
+              "<strong>failures</strong> - number of past class failures (numeric: n if 1 &lg;=n &lg;3, else 4)",
+              "<strong>schoolsup</strong> - extra educational support (binary: yes or no)",
+              "<strong>famsup</strong> - family educational support (binary: yes or no)",
+              "<strong>paid</strong> - extra paid classes within the course subject (Math or Portuguese) (binary: yes or no)",
+              "<strong>activities</strong> - extra-curricular activities (binary: yes or no)",
+              "<strong>nursery</strong> - attended nursery school (binary: yes or no)",
+              "<strong>higher</strong> - wants to take higher education (binary: yes or no)",
+              "<strong>internet</strong> - Internet access at home (binary: yes or no)",
+              "<strong>romantic</strong> - with a romantic relationship (binary: yes or no)",
+              "<strong>famrel</strong> - quality of family relationships (numeric: from 1 - very bad to 5 - excellent)",
+              "<strong>freetime</strong> - free time after school (numeric: from 1 - very low to 5 - very high)",
+              "<strong>goout</strong> - going out with friends (numeric: from 1 - very low to 5 - very high)",
+              "<strong>Dalc</strong> - workday alcohol consumption (numeric: from 1 - very low to 5 - very high)",
+              "<strong>Walc</strong> - weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)",
+              "<strong>health</strong> - current health status (numeric: from 1 - very bad to 5 - very good)",
+              "<strong>absences</strong> - number of school absences (numeric: from 0 to 93)"
+            ]
+          },
+          {
+            "title": "Output",
+            "items": [
+              "Calculated regression"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Student Performance</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

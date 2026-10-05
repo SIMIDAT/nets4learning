@@ -2,6 +2,7 @@ import { useId } from 'react'
 import { Col, Form, Row } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { VERBOSE } from '@/CONSTANTS'
+import { n4lLabelKey } from '@core/n4l/format'
 import type I_MODEL_TABULAR_CLASSIFICATION from './models/_model'
 import type { TabularFormField_t, TabularInstance_t } from './models/_model'
 
@@ -11,10 +12,13 @@ type ModelReviewTabularClassificationPredictFormProps = {
   setDataToTest : React.Dispatch<React.SetStateAction<TabularInstance_t>>
 }
 
-/** Clave de TABLE_HEADER (i18n) de un atributo: la que termina en su nombre ("00-tc.car.buying" para "Buying") */
+/**
+ * Clave de TABLE_HEADER (i18n) de un atributo: la que termina en su nombre ("…columns.Buying" para "Buying"). En los
+ * paquetes .n4l, con los puntos del nombre cambiados ("…columns.bl_ of lymph_ c" para "bl. of lymph. c")
+ */
 function headerKeyOf(tableHeader: string[], name: string) {
-  const lowerName = name.toLowerCase()
-  return tableHeader.find((key) => key.toLowerCase() === lowerName || key.toLowerCase().endsWith('.' + lowerName))
+  const names = [name.toLowerCase(), n4lLabelKey(name).toLowerCase()]
+  return tableHeader.find((key) => names.some((lowerName) => key.toLowerCase() === lowerName || key.toLowerCase().endsWith('.' + lowerName)))
 }
 
 /** Un campo por atributo de entrada, con su nombre traducido y el tipo de valor que admite */

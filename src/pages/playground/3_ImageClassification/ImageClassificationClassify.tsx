@@ -8,6 +8,7 @@ import type { DropEvent, FileRejection } from 'react-dropzone'
 import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
 import N4LVirtualSelect, { type VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
 import type { ImagePrediction_t } from './utils/imagePrediction'
+import ImagePicker from './components/ImagePicker'
 
 /**
  * @typedef ImageClassificationClassifyProps_t
@@ -38,6 +39,10 @@ type ImageClassificationClassifyProps_t = {
   instanceImage?                    : ImageData | null,
   /** Clase real de la imagen clasificada, si es del dataset */
   actualClassIndex?                 : number | null,
+  /** Imágenes en gris: se dibuja en el lienzo. Si no (en color), se sube una imagen o se elige una del conjunto */
+  drawable?                         : boolean,
+  /** Sin lienzo: clasificar la imagen de la vista previa */
+  onClassifyImage?                  : (canvas: HTMLCanvasElement) => void | Promise<void>,
 }
 
 /**
@@ -62,6 +67,8 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
     onChangeInstance,
     instanceImage = null,
     actualClassIndex = null,
+    drawable = true,
+    onClassifyImage,
   } = props
   const prefixForm = 'pages.playground.generator.dynamic-form-dataset.'
   const { t } = useTranslation()
@@ -111,18 +118,24 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
         {showComponent && <>
           <Row className={'g-4'}>
             <Col lg={5}>
-              <CustomCanvasDrawer
-                submitFunction={handleSubmit_VectorTest}
-                clearFunction={() => {
-                  onResetExplain?.()
-                  onClear?.()
-                }}
-                onDrawStart={() => {
-                  onResetExplain?.()
-                  onDrawStart?.()
-                }}
-                image={instanceImage}
-              />
+              {drawable
+                ? <CustomCanvasDrawer
+                  submitFunction={handleSubmit_VectorTest}
+                  clearFunction={() => {
+                    onResetExplain?.()
+                    onClear?.()
+                  }}
+                  onDrawStart={() => {
+                    onResetExplain?.()
+                    onDrawStart?.()
+                  }}
+                  image={instanceImage}
+                />
+                : <ImagePicker image={instanceImage} onClassify={(canvas) => onClassifyImage?.(canvas)}
+                  onUpload={() => {
+                    onResetExplain?.()
+                    onDrawStart?.()
+                  }} />}
             </Col>
             <Col lg={7}>
               {prediction === null

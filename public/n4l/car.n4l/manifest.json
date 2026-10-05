@@ -1,0 +1,225 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "car",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/19/car+evaluation",
+    "citation": "@misc{misc_car_evaluation_19,\n  author       = {Bohanec,Marko},\n  title        = {{Car Evaluation}},\n  year         = {1997},\n  howpublished = {UCI Machine Learning Repository},\n  note         = {{DOI}: https://doi.org/10.24432/C5JP48}\n}"
+  },
+  "datasets": [
+    {
+      "id": "car",
+      "file": "data/car.csv",
+      "info": "data/car.names",
+      "rows": 1728,
+      "columns": [
+        {
+          "name": "Buying",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "buying price (vhigh, high, med, low)",
+          "options": [
+            "vhigh",
+            "high",
+            "med",
+            "low"
+          ]
+        },
+        {
+          "name": "Maint",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "price of the maintenance (vhigh, high, med, low)",
+          "options": [
+            "vhigh",
+            "high",
+            "med",
+            "low"
+          ]
+        },
+        {
+          "name": "Doors",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "number of doors (2, 3, 4, 5more)",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "5more"
+          ]
+        },
+        {
+          "name": "Persons",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "capacity in terms of persons to carry (2, 4, more)",
+          "options": [
+            "2",
+            "4",
+            "more"
+          ]
+        },
+        {
+          "name": "Lug_boot",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "the size of luggage boot (small, med, big)",
+          "options": [
+            "small",
+            "med",
+            "big"
+          ]
+        },
+        {
+          "name": "Safety",
+          "role": "Feature",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "estimated safety of the car (low, med, high)",
+          "options": [
+            "low",
+            "med",
+            "high"
+          ]
+        },
+        {
+          "name": "Result",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "evaluation level (unacc, acc, good, vgood)",
+          "options": [
+            "unacc",
+            "acc",
+            "vgood",
+            "good"
+          ]
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "tabular-classification",
+      "key": "CAR",
+      "runtime": "tabular-classification",
+      "datasets": [
+        "car"
+      ],
+      "preprocessing": [
+        {
+          "op": "label-encoder",
+          "columns": "categorical"
+        },
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "classes": [
+        {
+          "id": "unacc"
+        },
+        {
+          "id": "acc"
+        },
+        {
+          "id": "vgood"
+        },
+        {
+          "id": "good"
+        }
+      ],
+      "models": [
+        {
+          "id": "mlp",
+          "format": "tfjs-layers",
+          "path": "models/mlp/model.json",
+          "dataset": "car"
+        }
+      ],
+      "prediction": {
+        "defaults": {
+          "Buying": "vhigh",
+          "Maint": "vhigh",
+          "Doors": "2",
+          "Persons": "2",
+          "Lug_boot": "small",
+          "Safety": "low"
+        },
+        "examples": [
+          {
+            "values": {
+              "Buying": "low",
+              "Maint": "vhigh",
+              "Doors": "4",
+              "Persons": "2",
+              "Lug_boot": "small",
+              "Safety": "low"
+            },
+            "expected": "unacc"
+          },
+          {
+            "values": {
+              "Buying": "med",
+              "Maint": "low",
+              "Doors": "5more",
+              "Persons": "more",
+              "Lug_boot": "med",
+              "Safety": "med"
+            },
+            "expected": "acc"
+          },
+          {
+            "values": {
+              "Buying": "low",
+              "Maint": "low",
+              "Doors": "5more",
+              "Persons": "more",
+              "Lug_boot": "big",
+              "Safety": "high"
+            },
+            "expected": "vgood"
+          }
+        ]
+      },
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 128,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 4,
+            "activation": "softmax"
+          }
+        ]
+      }
+    }
+  ]
+}

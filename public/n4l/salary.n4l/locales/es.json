@@ -1,0 +1,47 @@
+{
+  "columns": {
+    "YearsExperience": "YearsExperience",
+    "Salary": "Salary",
+    "Age": "Age",
+    "Gender": "Gender",
+    "Education Level": "Education Level",
+    "Job Title": "Job Title",
+    "Years of Experience": "Years of Experience"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Salario por años de experiencia",
+      "name": "Salary",
+      "summary": "El salario según los años de experiencia (y, en el segundo fichero, también la edad, la formación y el puesto).",
+      "description": {
+        "text": [
+          "El conjunto de datos \"Salary\" es una colección de información que relaciona la cantidad de años de experiencia laboral de un individuo con su salario correspondiente.",
+          "Cada entrada en el conjunto de datos consta de dos variables principales: \"Years of Experience\" (Años de experiencia) y \"Salary\" (Salario). La variable \"Years of Experience\" representa la cantidad de años que un empleado ha trabajado en su campo específico, mientras que la variable \"Salary\" representa la cantidad de dinero que dicho empleado gana anualmente.",
+          "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>www.kaggle.com</link1>."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "Years of experience - Años de experiencia",
+              "Salary - Salario"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada (<b>Salary</b>)"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Conjunto de datos 1</link1>",
+              "<link2>Conjunto de datos 2</link2>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

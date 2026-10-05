@@ -1,0 +1,65 @@
+{
+  "columns": {
+    "CRIM": "CRIM",
+    "ZN": "ZN",
+    "INDUS": "INDUS",
+    "CHAS": "CHAS",
+    "NOX": "NOX",
+    "RM": "RM",
+    "AGE": "AGE",
+    "DIS": "DIS",
+    "RAD": "RAD",
+    "TAX": "TAX",
+    "PTRATIO": "PTRATIO",
+    "LSTAT": "LSTAT",
+    "MEDV": "MEDV"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Precio de las viviendas",
+      "name": "Housing Prices",
+      "summary": "El precio medio de la vivienda en los barrios de Boston según la criminalidad, las habitaciones o la distancia al centro.",
+      "description": {
+        "text": [
+          "El conjunto de datos de viviendas de Boston se deriva de la información recopilada por el Servicio del Censo de EE. UU. sobre viviendas en el área de Boston.",
+          "El conjunto de datos está diseñado para abordar problemas de regresión y modelado de precios de viviendas en diferentes vecindarios de Boston, Massachusetts, Estados Unidos. Este conjunto de datos es comúnmente utilizado para ejemplos y prácticas en la educación y la investigación.",
+          "<link1>Entrada del conjunto de datos UCI</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<strong>CRIM</strong> Tasa de criminalidad del crimen per cápita por ciudad",
+              "<strong>Zn</strong> Proporción de tierras residenciales zonas por lotes de más de 25,000 pies cuadrados.",
+              "<strong>INDUS</strong> Proporción de acres comerciales no reales por ciudad",
+              "<strong>CHAS</strong> Charles River Variable Dummy (= 1 if tract bounds river; 0 en otro caso)",
+              "<strong>NOX</strong> Concentración de óxidos nítricos (partes por 10 millones)",
+              "<strong>RM</strong> Número promedio de habitaciones por vivienda",
+              "<strong>AGE</strong> Proporción de unidades ocupadas por los propietarios construidas antes de 1940",
+              "<strong>DIS</strong> Distancias ponderadas a cinco centros de empleo de Boston",
+              "<strong>RAD</strong> Índice de accesibilidad a carreteras radiales",
+              "<strong>TAX</strong> Impuesto a la propiedad de la propiedad de valor completo por cada $ 10,000",
+              "<strong>PRATIO</strong> Ratio alumnos-profesor por ciudad",
+              "<strong>B</strong> 1000 (BK - 0.63)^2 donde BK es la proporción de negros por ciudad",
+              "<strong>LSTAT</strong> LSTAT % más bajo estado de la población",
+              "<strong>MEDV</strong>Valor mediano de las casas ocupadas por el propietario en $ 1000"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Entrada del conjunto de datos UCI</link1>",
+              "<link1>Controversia sobre el conjunto de datos de vivienda de Boston</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

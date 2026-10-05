@@ -2,24 +2,21 @@ import { describe, test, expect, vi } from 'vitest'
 import { useState } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import * as dfd from 'danfojs'
-import type { TFunction } from 'i18next'
 
 import type * as _Types from '@core/types'
 import { DataFrameTransformAndEncoder } from '@core/dataframe/DataFrameUtils'
 import { F_FILTER_Categorical, F_MAP_LabelEncoder } from '@core/nn-utils/utils'
-import MODEL_CAR from '@pages/playground/0_TabularClassification/models/MODEL_CAR'
-import MODEL_IRIS from '@pages/playground/0_TabularClassification/models/MODEL_IRIS'
+import type MODEL_N4L from '@pages/playground/0_TabularClassification/models/MODEL_N4L'
 import type { TabularInstance_t } from '@pages/playground/0_TabularClassification/models/_model'
 import ModelReviewTabularClassificationPredictForm from '@pages/playground/0_TabularClassification/ModelReviewTabularClassificationPredictForm'
 import ModelReviewRegressionPredictForm from '@pages/playground/1_Regression/ModelReviewRegressionPredictForm'
 import RegressionPredictionInfo from '@pages/playground/1_Regression/RegressionPredictionInfo'
 import { TRANSFORM_DATASET_PROCESSED_TO_STATE_PREDICTION } from '@pages/playground/1_Regression/utils'
-
-const t = ((key: string) => key) as unknown as TFunction<'translation', undefined>
+import { n4lTabularModel } from '../helpers/n4l'
 
 describe('ModelReviewTabularClassificationPredictForm', () => {
 
-  function TabularForm({ iModelInstance, onChange }: { iModelInstance: MODEL_CAR | MODEL_IRIS, onChange: (data: TabularInstance_t) => void }) {
+  function TabularForm({ iModelInstance, onChange }: { iModelInstance: MODEL_N4L, onChange: (data: TabularInstance_t) => void }) {
     const [data, setData] = useState<TabularInstance_t>(iModelInstance.DATA_DEFAULT)
     return <ModelReviewTabularClassificationPredictForm iModelInstance={iModelInstance}
       dataToTest={data}
@@ -31,9 +28,9 @@ describe('ModelReviewTabularClassificationPredictForm', () => {
   }
 
   test('cada campo con el nombre traducido del atributo, el del CSV y su tipo', () => {
-    render(<TabularForm iModelInstance={new MODEL_CAR(t, () => {})} onChange={() => {}} />)
+    render(<TabularForm iModelInstance={n4lTabularModel('CAR')} onChange={() => {}} />)
     // Etiqueta con la clave de TABLE_HEADER (el mock de i18n devuelve la clave) asociada a su desplegable
-    const buying = screen.getByLabelText('00-tc.car.buying')
+    const buying = screen.getByLabelText('n4l-car:columns.Buying')
     expect(buying.tagName).toBe('SELECT')
     expect(buying).toHaveValue('vhigh')
     expect(buying.parentElement).toHaveTextContent('Buying · pages.playground.form.type-categorical')
@@ -41,8 +38,8 @@ describe('ModelReviewTabularClassificationPredictForm', () => {
 
   test('los números se guardan como número y un campo vacío no muestra NaN', () => {
     const onChange = vi.fn()
-    render(<TabularForm iModelInstance={new MODEL_IRIS(t, () => {})} onChange={onChange} />)
-    const sepal = screen.getByLabelText('00-tc.iris.sepal_length')
+    render(<TabularForm iModelInstance={n4lTabularModel('IRIS')} onChange={onChange} />)
+    const sepal = screen.getByLabelText('n4l-iris:columns.sepal_length')
     expect(sepal.parentElement).toHaveTextContent('pages.playground.form.type-decimal')
     fireEvent.change(sepal, { target: { value: '6.3' } })
     expect(onChange).toHaveBeenLastCalledWith(expect.objectContaining({ sepal_length: 6.3 }))

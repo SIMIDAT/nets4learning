@@ -1,0 +1,126 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "wine",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/109/wine"
+  },
+  "datasets": [
+    {
+      "id": "wine",
+      "file": "data/wine.csv",
+      "rows": 178,
+      "columns": [
+        {
+          "name": "Alcohol",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Malic acid",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Ash",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Alcalinity of ash",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Magnesium",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0
+        },
+        {
+          "name": "Total phenols",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Flavanoids",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Nonflavanoid phenols",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Proanthocyanins",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Color intensity",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Hue",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "OD280/OD315 of diluted wines",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0
+        },
+        {
+          "name": "Proline",
+          "role": "Feature",
+          "type": "Integer",
+          "missing": 0
+        },
+        {
+          "name": "Target",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "class identifier (1-3)",
+          "options": [
+            "1",
+            "2",
+            "3"
+          ]
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "clustering",
+      "key": "WINE",
+      "runtime": "clustering",
+      "datasets": [
+        "wine"
+      ],
+      "preprocessing": [],
+      "models": []
+    }
+  ]
+}

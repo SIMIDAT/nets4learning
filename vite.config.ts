@@ -7,6 +7,8 @@ import fs from 'fs'
 import path from 'path'
 import svgrPlugin from 'vite-plugin-svgr'
 
+import { n4lPackages } from './vite/n4lPackages'
+
 // Ruta real (pnpm enlaza node_modules/@vladmandic/face-api a node_modules/.pnpm/…): así se comparan los importadores
 const FACE_API = fs.realpathSync(path.resolve(__dirname, 'node_modules/@vladmandic/face-api'))
 
@@ -69,6 +71,8 @@ export default defineConfig(({ mode, command }) => {
     plugins: [
       faceApiTfjs,
       danfoLazyDeps,
+      // Los paquetes .n4l de public/n4l/ (modelos, datos y textos de cada conjunto): import 'virtual:n4l-catalog'
+      n4lPackages(),
       react(),
       svgrPlugin({
         svgrOptions: { exportType: 'default', ref: true, svgo: false, titleProp: true },

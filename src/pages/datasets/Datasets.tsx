@@ -96,7 +96,7 @@ const datasetId = (dataset: SelectedDataset_t) => dataset.value ?? dataset.files
 function taskDatasets(task: TASKS_TYPE_V): { models: SelectedDataset_t[], extra: SelectedDataset_t[] } {
   const models = taskOptions(task, 'dataset')
     .filter(({ info }) => info !== undefined)
-    .map(({ value, i18n, info }) => ({ task, title: i18n, info: info!, files: info!.files ?? [], summary: `datasets.summary.${task}.${value}`, value }))
+    .map(({ value, i18n, info, summary }) => ({ task, title: i18n, info: info!, files: info!.files ?? [], summary: summary ?? `datasets.summary.${task}.${value}`, value }))
   // Los de práctica: columnas de entrada y objetivo según su ficha; en clasificación, las clases (no el objetivo)
   const extra = (EXTRA_DATASETS[task] ?? []).map(({ file, source, samples, classes, i18n, summary }) => {
     const { features, target } = variablesSummary([file])

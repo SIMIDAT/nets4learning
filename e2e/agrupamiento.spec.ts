@@ -62,7 +62,7 @@ test('desde /datasets se agrupa un conjunto de práctica: se carga con su ficha 
   await expect(page).toHaveURL(/\/datasets\?task=clustering$/)
   // Los de ejemplo no tienen modelo que probar
   await expect(page.getByTestId('Test-DatasetModel-IRIS')).toHaveCount(0)
-  await page.getByTestId('Test-DatasetTrain-datasets/01-regression/breast-cancer/breast-cancer-wisconsin.csv').click()
+  await page.getByTestId('Test-DatasetTrain-n4l/breast-cancer.n4l/data/breast-cancer-wisconsin.csv').click()
   await expect(page).toHaveURL(/\/playground\/clustering\/dataset\/UPLOAD$/)
 
   const controls = page.getByTestId('Test-Clustering-Controls')

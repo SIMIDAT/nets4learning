@@ -1,6 +1,7 @@
 import type * as tfjs from '@tensorflow/tfjs'
 import type { TFBackend_t } from '@core/tfBackend'
 import type { ImageLayer_t } from '@/types/types'
+import type { SpriteImage_t } from '@pages/playground/3_ImageClassification/models/spriteDecode'
 import type { CompileParams_t, DenseLayer_t, TrainingHistory_t } from './buildModels'
 
 // Lo que se intercambian el hilo principal y el worker de entrenamiento (TODO-worker.md)
@@ -30,7 +31,7 @@ export type DenseTrainingRequest_t = {
   numberOfEpoch: number
 }
 
-/** Red convolucional con un sprite de imágenes de 28×28 (MNIST, KMNIST): el worker lo descarga y lo decodifica */
+/** Red convolucional con un sprite de imágenes (MNIST, CIFAR-10…): el worker lo descarga y lo decodifica */
 export type ImageTrainingRequest_t = {
   backend      : TFBackend_t
   /** URLs absolutas (el worker no conoce la ruta de la página) */
@@ -38,6 +39,8 @@ export type ImageTrainingRequest_t = {
   labelsUrl    : string
   numElements  : number
   numTrain     : number
+  numClasses   : number
+  image        : SpriteImage_t
   layers       : ImageLayer_t[]
   compile      : CompileParams_t
   numberOfEpoch: number

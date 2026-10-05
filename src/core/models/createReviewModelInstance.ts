@@ -26,5 +26,12 @@ export async function createReviewModelInstance<T>(
     navigate('/404')
     return null
   }
-  return create(await loadModelClass(registry, key))
+  // Un paquete .n4l que ya no está guardado (o no tiene esta tarea): como una clave que no existe
+  try {
+    return create(await loadModelClass(registry, key))
+  } catch (error) {
+    console.error('Error, model not available', { key, error })
+    navigate('/404')
+    return null
+  }
 }

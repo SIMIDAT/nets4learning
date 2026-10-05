@@ -1,0 +1,177 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "mnist",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://yann.lecun.com/exdb/mnist/",
+    "citation": "@article{deng2012mnist,\n  title={The mnist database of handwritten digit images for machine learning research},\n  author={Deng, Li},\n  journal={IEEE Signal Processing Magazine},\n  volume={29},\n  number={6},\n  pages={141--142},\n  year={2012},\n  publisher={IEEE}\n}"
+  },
+  "datasets": [
+    {
+      "id": "mnist",
+      "kind": "image-sprite",
+      "file": "data/mnist_images.png",
+      "labels": "data/mnist_labels_uint8",
+      "rows": 65000,
+      "train": 55000,
+      "image": {
+        "width": 28,
+        "height": 28,
+        "channels": 1
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "task": "image-classification",
+      "key": "IMAGE-MNIST",
+      "runtime": "image-classification",
+      "datasets": [
+        "mnist"
+      ],
+      "order": 1,
+      "preprocessing": [],
+      "classes": [
+        {
+          "id": "0"
+        },
+        {
+          "id": "1"
+        },
+        {
+          "id": "2"
+        },
+        {
+          "id": "3"
+        },
+        {
+          "id": "4"
+        },
+        {
+          "id": "5"
+        },
+        {
+          "id": "6"
+        },
+        {
+          "id": "7"
+        },
+        {
+          "id": "8"
+        },
+        {
+          "id": "9"
+        }
+      ],
+      "models": [
+        {
+          "id": "cnn",
+          "format": "tfjs-layers",
+          "path": "models/cnn/model.json",
+          "dataset": "mnist",
+          "metrics": {
+            "test_accuracy": 0.9907,
+            "test_images": 10000
+          }
+        }
+      ],
+      "prediction": {
+        "images": [
+          {
+            "file": "examples/0.png",
+            "expected": "0"
+          },
+          {
+            "file": "examples/1.png",
+            "expected": "1"
+          },
+          {
+            "file": "examples/2.png",
+            "expected": "2"
+          },
+          {
+            "file": "examples/3.png",
+            "expected": "3"
+          },
+          {
+            "file": "examples/4.png",
+            "expected": "4"
+          },
+          {
+            "file": "examples/5.png",
+            "expected": "5"
+          },
+          {
+            "file": "examples/6.png",
+            "expected": "6"
+          },
+          {
+            "file": "examples/7.png",
+            "expected": "7"
+          },
+          {
+            "file": "examples/8.png",
+            "expected": "8"
+          },
+          {
+            "file": "examples/9.png",
+            "expected": "9"
+          }
+        ]
+      },
+      "training": {
+        "layers": [
+          {
+            "class": "conv2d",
+            "filters": 16,
+            "kernelSize": 3,
+            "activation": "relu",
+            "locked": true
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 32,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 32,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "flatten"
+          },
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "softmax"
+          }
+        ]
+      }
+    }
+  ]
+}

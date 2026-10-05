@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Genera las imágenes de ejemplo del modelo KMNIST, en negro sobre fondo blanco:
+Genera las imágenes de ejemplo del paquete de KMNIST (public/n4l/kmnist.n4l/examples/; su manifest.json las nombra en
+prediction.images), en negro sobre fondo blanco:
 
-  - public/assets/kmnist/0.png … 9.png: cada uno de los 10 caracteres hiragana como se escribe hoy, con una fuente.
-  - public/assets/kmnist/forms/<código>.png: sus formas antiguas, las hentaigana de Unicode (de U+1B000
+  - 0.png … 9.png: cada uno de los 10 caracteres hiragana como se escribe hoy, con una fuente.
+  - forms/<código>.png: sus formas antiguas, las hentaigana de Unicode (de U+1B000
     en adelante, p. ej. 1B09E.png es HENTAIGANA LETTER HA-1), con una fuente que las tenga. Hasta 1900
     una misma sílaba se escribía de varias formas; en KMNIST aparecen escritas a mano bajo el carácter
     de hoy. Son de 112x112 (4 veces 28): se enseñan pequeñas y pesan poco.
@@ -22,7 +23,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-OUT_DIR = Path(__file__).resolve().parent.parent / 'public' / 'assets' / 'kmnist'
+OUT_DIR = Path(__file__).resolve().parent.parent / 'public' / 'n4l' / 'kmnist.n4l' / 'examples'
 DEFAULT_FONT = '/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc'
 DEFAULT_HENTAIGANA_FONT = '/usr/share/fonts/truetype/noto/NotoSerifHentaigana[wght].ttf'
 # Los 10 caracteres de KMNIST (kmnist_classmap.csv), en el orden de las etiquetas, con su sílaba en los nombres Unicode

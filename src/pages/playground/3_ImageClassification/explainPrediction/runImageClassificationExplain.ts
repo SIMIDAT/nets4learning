@@ -256,9 +256,13 @@ export async function runImageClassificationExplainLrp(
     },
   );
 
+  // En color, la de cada píxel es la suma de la de sus tres canales: el mapa de calor tiene un valor por píxel
+  const perPixel: tfjs.Tensor = relevanceTensor.rank === 4 && relevanceTensor.shape[3]! > 1
+    ? tfjs.tidy(() => relevanceTensor.sum(-1, true))
+    : relevanceTensor;
   try {
     // Lectura asíncrona: dataSync detiene el hilo principal hasta que la GPU termina
-    const relevanceValues: number[] = Array.from(await relevanceTensor.data());
+    const relevanceValues: number[] = Array.from(await perPixel.data());
     const { index: predictedIndex, predictions } = await iModel.CLASSIFY_IMAGE(
       modelInstance,
       imageData,
@@ -273,9 +277,10 @@ export async function runImageClassificationExplainLrp(
       segmentationMapArray: null,
       numSegments         : relevanceValues.length,
       backgroundData      : [],
-      relevanceShape      : Array.from(relevanceTensor.shape),
+      relevanceShape      : Array.from(perPixel.shape),
     };
   } finally {
+    if (perPixel !== relevanceTensor) perPixel.dispose();
     if (relevanceTensor?.dispose) relevanceTensor.dispose();
   }
 }

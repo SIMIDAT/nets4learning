@@ -10,7 +10,8 @@ import { trackEvent } from '@core/analytics'
 export const MODEL_DOWNLOAD_MB: Readonly<Record<string, number>> = {
   'image-classification/IMAGE-MNIST'    : 4.6,
   'image-classification/IMAGE-KMNIST'   : 2.2,
-  'image-classification/IMAGE-MOBILENET': 16.2,
+  'image-classification/IMAGE-CIFAR10'  : 3.3,
+  'image-classification/IMAGE-MOBILENET': 14.0,
   'object-detection/FACE-DETECTOR'      : 2.2,
   'object-detection/FACE-MESH'          : 5.0,
   'object-detection/MOVE-NET--POSE-NET' : 9.3,

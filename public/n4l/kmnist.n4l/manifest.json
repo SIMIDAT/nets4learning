@@ -1,0 +1,606 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "kmnist",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://github.com/rois-codh/kmnist",
+    "citation": "@online{clanuwat2018deep,\n  author       = {Tarin Clanuwat and Mikel Bober-Irizar and Asanobu Kitamoto and Alex Lamb and Kazuaki Yamamoto and David Ha},\n  title        = {Deep Learning for Classical Japanese Literature},\n  date         = {2018-12-03},\n  year         = {2018},\n  eprintclass  = {cs.CV},\n  eprinttype   = {arXiv},\n  eprint       = {cs.CV/1812.01718},\n}"
+  },
+  "datasets": [
+    {
+      "id": "kmnist",
+      "kind": "image-sprite",
+      "file": "data/kmnist_images.png",
+      "labels": "data/kmnist_labels_uint8",
+      "info": "data/kmnist_classmap.csv",
+      "rows": 25000,
+      "train": 20000,
+      "image": {
+        "width": 28,
+        "height": 28,
+        "channels": 1
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "task": "image-classification",
+      "key": "IMAGE-KMNIST",
+      "runtime": "image-classification",
+      "datasets": [
+        "kmnist"
+      ],
+      "order": 2,
+      "preprocessing": [],
+      "classes": [
+        {
+          "id": "お",
+          "reading": "o",
+          "origin": "於"
+        },
+        {
+          "id": "き",
+          "reading": "ki",
+          "origin": "幾"
+        },
+        {
+          "id": "す",
+          "reading": "su",
+          "origin": "寸"
+        },
+        {
+          "id": "つ",
+          "reading": "tsu",
+          "origin": "川"
+        },
+        {
+          "id": "な",
+          "reading": "na",
+          "origin": "奈"
+        },
+        {
+          "id": "は",
+          "reading": "ha",
+          "origin": "波"
+        },
+        {
+          "id": "ま",
+          "reading": "ma",
+          "origin": "末"
+        },
+        {
+          "id": "や",
+          "reading": "ya",
+          "origin": "也"
+        },
+        {
+          "id": "れ",
+          "reading": "re",
+          "origin": "礼"
+        },
+        {
+          "id": "を",
+          "reading": "wo",
+          "origin": "遠"
+        }
+      ],
+      "models": [
+        {
+          "id": "cnn",
+          "format": "tfjs-layers",
+          "path": "models/cnn/model.json",
+          "dataset": "kmnist",
+          "metrics": {
+            "test_accuracy": 0.983,
+            "test_images": 5000
+          }
+        }
+      ],
+      "prediction": {
+        "images": [
+          {
+            "file": "examples/0.png",
+            "expected": "お"
+          },
+          {
+            "file": "examples/forms/1B014.png",
+            "expected": "お",
+            "old": true,
+            "origin": "於"
+          },
+          {
+            "file": "examples/forms/1B015.png",
+            "expected": "お",
+            "old": true,
+            "origin": "於"
+          },
+          {
+            "file": "examples/forms/1B016.png",
+            "expected": "お",
+            "old": true,
+            "origin": "隱"
+          },
+          {
+            "file": "examples/1.png",
+            "expected": "き"
+          },
+          {
+            "file": "examples/forms/1B025.png",
+            "expected": "き",
+            "old": true,
+            "origin": "幾"
+          },
+          {
+            "file": "examples/forms/1B02A.png",
+            "expected": "き",
+            "old": true,
+            "origin": "起"
+          },
+          {
+            "file": "examples/forms/1B026.png",
+            "expected": "き",
+            "old": true,
+            "origin": "支"
+          },
+          {
+            "file": "examples/forms/1B023.png",
+            "expected": "き",
+            "old": true,
+            "origin": "喜"
+          },
+          {
+            "file": "examples/forms/1B024.png",
+            "expected": "き",
+            "old": true,
+            "origin": "幾"
+          },
+          {
+            "file": "examples/forms/1B027.png",
+            "expected": "き",
+            "old": true,
+            "origin": "木"
+          },
+          {
+            "file": "examples/forms/1B028.png",
+            "expected": "き",
+            "old": true,
+            "origin": "祈"
+          },
+          {
+            "file": "examples/forms/1B029.png",
+            "expected": "き",
+            "old": true,
+            "origin": "貴"
+          },
+          {
+            "file": "examples/2.png",
+            "expected": "す"
+          },
+          {
+            "file": "examples/forms/1B051.png",
+            "expected": "す",
+            "old": true,
+            "origin": "須"
+          },
+          {
+            "file": "examples/forms/1B04F.png",
+            "expected": "す",
+            "old": true,
+            "origin": "春"
+          },
+          {
+            "file": "examples/forms/1B04B.png",
+            "expected": "す",
+            "old": true,
+            "origin": "壽"
+          },
+          {
+            "file": "examples/forms/1B04A.png",
+            "expected": "す",
+            "old": true,
+            "origin": "受"
+          },
+          {
+            "file": "examples/forms/1B04C.png",
+            "expected": "す",
+            "old": true,
+            "origin": "數"
+          },
+          {
+            "file": "examples/forms/1B04D.png",
+            "expected": "す",
+            "old": true,
+            "origin": "數"
+          },
+          {
+            "file": "examples/forms/1B04E.png",
+            "expected": "す",
+            "old": true,
+            "origin": "春"
+          },
+          {
+            "file": "examples/forms/1B050.png",
+            "expected": "す",
+            "old": true,
+            "origin": "須"
+          },
+          {
+            "file": "examples/3.png",
+            "expected": "つ"
+          },
+          {
+            "file": "examples/forms/1B06A.png",
+            "expected": "つ",
+            "old": true,
+            "origin": "川"
+          },
+          {
+            "file": "examples/forms/1B06B.png",
+            "expected": "つ",
+            "old": true,
+            "origin": "津"
+          },
+          {
+            "file": "examples/forms/1B06D.png",
+            "expected": "つ",
+            "old": true,
+            "origin": "徒"
+          },
+          {
+            "file": "examples/forms/1B069.png",
+            "expected": "つ",
+            "old": true,
+            "origin": "川"
+          },
+          {
+            "file": "examples/forms/1B06C.png",
+            "expected": "つ",
+            "old": true,
+            "origin": "都"
+          },
+          {
+            "file": "examples/4.png",
+            "expected": "な"
+          },
+          {
+            "file": "examples/forms/1B081.png",
+            "expected": "な",
+            "old": true,
+            "origin": "奈"
+          },
+          {
+            "file": "examples/forms/1B085.png",
+            "expected": "な",
+            "old": true,
+            "origin": "那"
+          },
+          {
+            "file": "examples/forms/1B07E.png",
+            "expected": "な",
+            "old": true,
+            "origin": "南"
+          },
+          {
+            "file": "examples/forms/1B07F.png",
+            "expected": "な",
+            "old": true,
+            "origin": "名"
+          },
+          {
+            "file": "examples/forms/1B080.png",
+            "expected": "な",
+            "old": true,
+            "origin": "奈"
+          },
+          {
+            "file": "examples/forms/1B082.png",
+            "expected": "な",
+            "old": true,
+            "origin": "奈"
+          },
+          {
+            "file": "examples/forms/1B083.png",
+            "expected": "な",
+            "old": true,
+            "origin": "菜"
+          },
+          {
+            "file": "examples/forms/1B084.png",
+            "expected": "な",
+            "old": true,
+            "origin": "那"
+          },
+          {
+            "file": "examples/forms/1B086.png",
+            "expected": "な",
+            "old": true,
+            "origin": "難"
+          },
+          {
+            "file": "examples/5.png",
+            "expected": "は"
+          },
+          {
+            "file": "examples/forms/1B09E.png",
+            "expected": "は",
+            "old": true,
+            "origin": "八"
+          },
+          {
+            "file": "examples/forms/1B0A6.png",
+            "expected": "は",
+            "old": true,
+            "origin": "者"
+          },
+          {
+            "file": "examples/forms/1B0A1.png",
+            "expected": "は",
+            "old": true,
+            "origin": "波"
+          },
+          {
+            "file": "examples/forms/1B09F.png",
+            "expected": "は",
+            "old": true,
+            "origin": "半"
+          },
+          {
+            "file": "examples/forms/1B0A0.png",
+            "expected": "は",
+            "old": true,
+            "origin": "婆"
+          },
+          {
+            "file": "examples/forms/1B0A2.png",
+            "expected": "は",
+            "old": true,
+            "origin": "盤"
+          },
+          {
+            "file": "examples/forms/1B0A3.png",
+            "expected": "は",
+            "old": true,
+            "origin": "盤"
+          },
+          {
+            "file": "examples/forms/1B0A4.png",
+            "expected": "は",
+            "old": true,
+            "origin": "破"
+          },
+          {
+            "file": "examples/forms/1B0A5.png",
+            "expected": "は",
+            "old": true,
+            "origin": "者"
+          },
+          {
+            "file": "examples/forms/1B0A7.png",
+            "expected": "は",
+            "old": true,
+            "origin": "葉"
+          },
+          {
+            "file": "examples/forms/1B0A8.png",
+            "expected": "は",
+            "old": true,
+            "origin": "頗"
+          },
+          {
+            "file": "examples/6.png",
+            "expected": "ま"
+          },
+          {
+            "file": "examples/forms/1B0C2.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "万"
+          },
+          {
+            "file": "examples/forms/1B0C5.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "滿"
+          },
+          {
+            "file": "examples/forms/1B0C4.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "末"
+          },
+          {
+            "file": "examples/forms/1B0C3.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "末"
+          },
+          {
+            "file": "examples/forms/1B0C6.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "滿"
+          },
+          {
+            "file": "examples/forms/1B0C7.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "萬"
+          },
+          {
+            "file": "examples/forms/1B0C8.png",
+            "expected": "ま",
+            "old": true,
+            "origin": "麻"
+          },
+          {
+            "file": "examples/7.png",
+            "expected": "や"
+          },
+          {
+            "file": "examples/forms/1B0DE.png",
+            "expected": "や",
+            "old": true,
+            "origin": "也"
+          },
+          {
+            "file": "examples/forms/1B0DF.png",
+            "expected": "や",
+            "old": true,
+            "origin": "屋"
+          },
+          {
+            "file": "examples/forms/1B0E2.png",
+            "expected": "や",
+            "old": true,
+            "origin": "夜"
+          },
+          {
+            "file": "examples/forms/1B0DD.png",
+            "expected": "や",
+            "old": true,
+            "origin": "也"
+          },
+          {
+            "file": "examples/forms/1B0E0.png",
+            "expected": "や",
+            "old": true,
+            "origin": "耶"
+          },
+          {
+            "file": "examples/forms/1B0E1.png",
+            "expected": "や",
+            "old": true,
+            "origin": "耶"
+          },
+          {
+            "file": "examples/8.png",
+            "expected": "れ"
+          },
+          {
+            "file": "examples/forms/1B100.png",
+            "expected": "れ",
+            "old": true,
+            "origin": "連"
+          },
+          {
+            "file": "examples/forms/1B0FF.png",
+            "expected": "れ",
+            "old": true,
+            "origin": "禮"
+          },
+          {
+            "file": "examples/forms/1B101.png",
+            "expected": "れ",
+            "old": true,
+            "origin": "麗"
+          },
+          {
+            "file": "examples/forms/1B0FE.png",
+            "expected": "れ",
+            "old": true,
+            "origin": "禮"
+          },
+          {
+            "file": "examples/9.png",
+            "expected": "を"
+          },
+          {
+            "file": "examples/forms/1B11A.png",
+            "expected": "を",
+            "old": true,
+            "origin": "越"
+          },
+          {
+            "file": "examples/forms/1B11C.png",
+            "expected": "を",
+            "old": true,
+            "origin": "遠"
+          },
+          {
+            "file": "examples/forms/1B116.png",
+            "expected": "を",
+            "old": true,
+            "origin": "乎"
+          },
+          {
+            "file": "examples/forms/1B117.png",
+            "expected": "を",
+            "old": true,
+            "origin": "乎"
+          },
+          {
+            "file": "examples/forms/1B118.png",
+            "expected": "を",
+            "old": true,
+            "origin": "尾"
+          },
+          {
+            "file": "examples/forms/1B119.png",
+            "expected": "を",
+            "old": true,
+            "origin": "緒"
+          },
+          {
+            "file": "examples/forms/1B11B.png",
+            "expected": "を",
+            "old": true,
+            "origin": "遠"
+          }
+        ]
+      },
+      "training": {
+        "layers": [
+          {
+            "class": "conv2d",
+            "filters": 16,
+            "kernelSize": 3,
+            "activation": "relu",
+            "locked": true
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 32,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "maxPooling2d",
+            "poolSize": 2,
+            "strides": 2
+          },
+          {
+            "class": "conv2d",
+            "filters": 32,
+            "kernelSize": 3,
+            "activation": "relu"
+          },
+          {
+            "class": "flatten"
+          },
+          {
+            "class": "dense",
+            "units": 64,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "softmax"
+          }
+        ]
+      }
+    }
+  ]
+}
