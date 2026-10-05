@@ -1,17 +1,19 @@
 import { test, expect } from './fixtures'
 
 // Las tres tareas que se entrenan en el navegador (en un worker), con pocas épocas para que no tarde. Las imágenes, con
-// una: en CI (2 núcleos, WebGL por software y otra prueba a la vez) cada época tarda minutos
+// una: en CI (2 núcleos, WebGL por software y otra prueba a la vez) cada época tarda minutos. La de CIFAR-10 (en color
+// y con una red más ancha) hace unas tres veces el trabajo de la de MNIST: en 2 núcleos con otra prueba a la vez, unos
+// 4,5 min frente a 3, así que espera más (`trainTimeout`, lo que se espera al aviso de éxito)
 const TRAINERS = [
   { name: 'clasificación tabular (Iris)', path: '/playground/tabular-classification/dataset/IRIS', epochs: '2' },
   { name: 'regresión (Auto MPG)', path: '/playground/regression/dataset/AUTO_MPG', epochs: '2' },
   { name: 'clasificación de imágenes (MNIST)', path: '/playground/image-classification/dataset/IMAGE-MNIST', epochs: '1' },
-  { name: 'clasificación de fotos en color (CIFAR-10)', path: '/playground/image-classification/dataset/IMAGE-CIFAR10', epochs: '1' },
+  { name: 'clasificación de fotos en color (CIFAR-10)', path: '/playground/image-classification/dataset/IMAGE-CIFAR10', epochs: '1', trainTimeout: 480_000 },
 ]
 
-for (const { name, path, epochs } of TRAINERS) {
+for (const { name, path, epochs, trainTimeout = 240_000 } of TRAINERS) {
   test(`entrena ${name}, el modelo aparece en la lista y sigue ahí al recargar`, async ({ page }) => {
-    test.setTimeout(480_000)
+    test.setTimeout(trainTimeout + 240_000)
     await page.goto(path)
     await page.getByRole('spinbutton', { name: 'N. épocas' }).fill(epochs)
     await page.getByTestId('Test-TrainButton').click()
@@ -19,7 +21,7 @@ for (const { name, path, epochs } of TRAINERS) {
     // Mientras entrena, el botón pasa a ser el progreso con "Detener"
     await expect(page.getByTestId('Test-TrainButton')).toBeHidden()
     // El aviso de éxito se cierra solo
-    await expect(page.locator('.swal2-popup')).toContainText('Modelo entrenado con éxito', { timeout: 240_000 })
+    await expect(page.locator('.swal2-popup')).toContainText('Modelo entrenado con éxito', { timeout: trainTimeout })
     await expect(page.getByText(/Lista (de )?modelos generados \| 1/)).toBeVisible()
     await expect(page.getByTestId('Test-TrainButton')).toBeVisible()
     // Debajo del botón, cómo ha ido en palabras
