@@ -45,7 +45,7 @@ export default function Version() {
   // Lo que se ejecuta de verdad (no el rango declarado en package.json)
   const runtime = useMemo(() => [
     { label: t(prefix + 'app'), value: packageInfo.version },
-    { label: t(prefix + 'environment'), value: `${import.meta.env.VITE_ENVIRONMENT ?? '—'} · ${import.meta.env.MODE}` },
+    { label: t(prefix + 'environment'), value: `${import.meta.env.VITE_ENVIRONMENT ?? '—'} (${import.meta.env.MODE})` },
     { label: 'TensorFlow.js', value: tfjs.version.tfjs },
     { label: t(prefix + 'backend'), value: TF_BACKEND_LABELS[backend] },
     { label: 'React', value: reactVersion },

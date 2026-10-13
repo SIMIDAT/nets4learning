@@ -93,6 +93,7 @@ export default function ImageClassificationClassify(props: ImageClassificationCl
                 value={selectedInstance}
                 onChange={onChangeInstance}
                 size={'sm'}
+                label={t('pages.playground.generator.classify.test-image')}
                 placeholder={t('pages.playground.generator.classify.select-image')}
                 searchPlaceholder={t(prefixForm + 'search-entity')}
                 noResultsText={t(prefixForm + 'no-entity')}

@@ -23,7 +23,7 @@ export type NumericStats_t = {
   median  : number
   q3      : number
   max     : number
-  /** Valores fuera de [q1 − 1,5·RIC, q3 + 1,5·RIC] */
+  /** Valores fuera de [q1 − 1,5 × RIC, q3 + 1,5 × RIC] */
   outliers: number
 }
 export type ValueCount_t = { value: string, count: number }
@@ -115,7 +115,7 @@ export type BoxStats_t = {
   q1        : number
   median    : number
   q3        : number
-  /** Bigotes: el menor y el mayor valor dentro de [q1 − 1,5·RIC, q3 + 1,5·RIC] */
+  /** Bigotes: el menor y el mayor valor dentro de [q1 − 1,5 × RIC, q3 + 1,5 × RIC] */
   lowerfence: number
   upperfence: number
   mean      : number

@@ -65,7 +65,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
   return <>
     <Card>
       <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
-        <h2><Trans i18nKey={prefix + 'list-models-generated'} /> | {listModels.data.length}</h2>
+        <h3><Trans i18nKey={prefix + 'list-models-generated'} /> | {listModels.data.length}</h3>
         <div className="d-flex gap-1">
           <Button 
             variant={'outline-primary'}

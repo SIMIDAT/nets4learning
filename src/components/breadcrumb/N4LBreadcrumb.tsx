@@ -2,6 +2,7 @@ import { Dropdown } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
+import { N4LDropdownLink } from '@components/dropdown/N4LDropdownItems'
 import { TASK_INFO } from '@components/task/taskInfo'
 import { taskOptions, type TaskKind_t } from '@/TASK_OPTIONS'
 import { UPLOAD, type TASKS_TYPE_V } from '@/TASKS'
@@ -65,7 +66,7 @@ function N4LBreadcrumbKind({ task, kind, example }: N4LBreadcrumbProps & { kind:
   const exampleName = (value: string) => localName ?? value
 
   const item = ({ i18n, value }: { i18n: string, value: string }) => (
-    <Dropdown.Item key={value} as={Link} to={href(value)}
+    <Dropdown.Item key={value} as={N4LDropdownLink} to={href(value)}
       active={value === example}
       aria-current={value === example ? 'page' : undefined}>
       {t(i18n)}
@@ -105,7 +106,7 @@ function N4LBreadcrumbKind({ task, kind, example }: N4LBreadcrumbProps & { kind:
                 {examples.map(item)}
                 {hasOther && <>
                   <Dropdown.Divider />
-                  <Dropdown.Item as={Link} to={href(example, other.kind)} data-testid={'Test-Breadcrumb-OtherKind'}>
+                  <Dropdown.Item as={N4LDropdownLink} to={href(example, other.kind)} data-testid={'Test-Breadcrumb-OtherKind'}>
                     <Trans i18nKey={other.i18n} /> →
                   </Dropdown.Item>
                 </>}

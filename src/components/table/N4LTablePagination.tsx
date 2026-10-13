@@ -1,7 +1,7 @@
 import './N4LTablePagination.css'
 import { useEffect, useRef, useState } from 'react'
 import { Table } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import N4LPagination from '@components/table/N4LPagination'
 
 type N4LTablePaginationProps = {
@@ -10,10 +10,13 @@ type N4LTablePaginationProps = {
   rows_per_page?   : number
   /** Posición en data_head de la columna objetivo (la que se predice o clasifica), que se resalta */
   highlight_column?: number
+  /** Nombre de la tabla (de su región, si se desplaza); por defecto «Conjunto de datos» */
+  label?           : string
 }
 
 export default function N4LTablePagination (props: N4LTablePaginationProps) {
-  const { data_head, data_body, rows_per_page = 10, highlight_column = -1 } = props
+  const { data_head, data_body, rows_per_page = 10, highlight_column = -1, label } = props
+  const { t } = useTranslation()
   const targetClass = (column: number) => (column === highlight_column ? 'n4l-table-target' : undefined)
   const [activePage, setActivePage] = useState<number>(0)
 
@@ -39,13 +42,15 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
   }, [])
 
   return <>
-    <div className={'n4l-table-paginator-table-wrapper-scroll-x'} ref={wrapper_ref}>
+    {/* Si se desplaza en horizontal, se puede enfocar para hacerlo con el teclado (WCAG 2.1.1) */}
+    <div className={'n4l-table-paginator-table-wrapper-scroll-x'} ref={wrapper_ref}
+      {...(isOverflowing && { tabIndex: 0, role: 'region', 'aria-label': label ?? t('table.dataset') })}>
       <Table className={'n4l-table-paginator-table'} striped={true} size={'sm'}>
         <thead>
         <tr>
-          <th>ID</th>
+          <th scope={'col'}>ID</th>
           {data_head.map((v: string, i: number) => {
-            return <th key={'thead_' + i} className={targetClass(i)}>{v}</th>
+            return <th key={'thead_' + i} scope={'col'} className={targetClass(i)}>{v}</th>
           })}
         </tr>
         </thead>
@@ -55,7 +60,7 @@ export default function N4LTablePagination (props: N4LTablePaginationProps) {
           .slice(activePage * rowsPerPage, (activePage * rowsPerPage) + rowsPerPage)
           .map((r_v, r_i) => {
             return <tr key={'tbody_' + r_i}>
-              <th key={'tbody_id_' + r_i}>{(activePage * rowsPerPage) + r_i}</th>
+              <th key={'tbody_id_' + r_i} scope={'row'}>{(activePage * rowsPerPage) + r_i}</th>
               {r_v.map((c_v, c_i) => {
                 return <td key={'tbody_' + r_i + '_' + c_i} className={targetClass(c_i)}>{c_v}</td>
               })}

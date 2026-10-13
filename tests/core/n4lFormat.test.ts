@@ -71,6 +71,49 @@ describe('Formato .n4l: el manifiesto', () => {
     expect(manifestProblems({ ...iris(), tasks: [] })).toStrictEqual(['tasks: al menos una tarea'])
   })
 
+  test('una serie temporal tiene su frecuencia, su fecha (type Date) y lo que se predice; la tarea solo usa series', () => {
+    const airline = () => JSON.parse(fs.readFileSync('public/n4l/airline-passengers.n4l/manifest.json', 'utf-8'))
+    expect(manifestProblems(airline())).toStrictEqual([])
+    const manifest = airline()
+    manifest.datasets[0].frequency = 'monthly'
+    manifest.datasets[0].columns[0].type = 'Categorical'
+    manifest.datasets[0].columns[1].role = 'Feature'
+    expect(manifestProblems(manifest)).toStrictEqual([
+      'datasets[0].frequency: una de hour, day, week, month, quarter, year',
+      'datasets[0].columns: una serie temporal tiene una columna con su fecha (type Date)',
+      'datasets[0].columns: una serie temporal tiene un objetivo (role Target), lo que se predice',
+    ])
+    const table = airline()
+    delete table.datasets[0].frequency
+    expect(manifestProblems(table)).toStrictEqual(['tasks[0].datasets: series temporales (con frequency)'])
+  })
+
+  test('una serie temporal propone su preparación (forecast) y su red, que puede empezar con capas recurrentes', () => {
+    const manifest = JSON.parse(fs.readFileSync('public/n4l/airline-passengers.n4l/manifest.json', 'utf-8'))
+    manifest.tasks[0].training.layers.unshift({ class: 'lstm', units: 8 }, { class: 'gru', units: 0 })
+    manifest.tasks[0].forecast = { window: 0, season: 1, difference: 'no', testSize: 100 }
+    expect(manifestProblems(manifest)).toStrictEqual([
+      'tasks[0].training.layers[1]: dense { units, activation }, conv2d { filters, kernelSize, activation }, maxPooling2d { poolSize, strides }, flatten o simpleRNN, lstm, gru { units }',
+      'tasks[0].forecast.window: los valores anteriores con los que se predice (un entero mayor que 0)',
+      'tasks[0].forecast.season: los valores que tarda en repetirse el patrón (un entero mayor que 1)',
+      'tasks[0].forecast.difference: true o false',
+      'tasks[0].forecast.testSize: un porcentaje mayor que 0 y menor que 100',
+    ])
+  })
+
+  test('las filas de una serie temporal van en orden, una por fecha', () => {
+    const series = N4L_CATALOG.flatMap((entry) => entry.datasets.filter(isTableDataset)
+      .filter(({ frequency }) => frequency !== undefined).map((dataset) => ({ entry, dataset })))
+    expect(series.map(({ dataset }) => dataset.frequency)).toEqual(['month', 'day', 'month'])
+    for (const { entry, dataset } of series) {
+      const [header, ...rows] = fs.readFileSync(`public/${n4lPublicFile(entry, dataset.file)}`, 'utf-8').trim().split('\n').map((line) => line.split(','))
+      const dates = rows.map((row) => row[header.indexOf(dataset.columns.find(({ type }) => type === 'Date')!.name)])
+      // Fechas ISO (1949-01, 1981-01-01): en orden de texto es en orden de fecha
+      expect(dates.every((date) => !Number.isNaN(Date.parse(date))), entry.id).toBe(true)
+      expect(dates.every((date, i) => i === 0 || dates[i - 1] < date), entry.id).toBe(true)
+    }
+  })
+
   test('las claves de columnas y clases en los textos: sin «.» ni «:» (separadores de i18next)', () => {
     expect(n4lLabelKey('bl. of lymph. c')).toBe('bl_ of lymph_ c')
     expect(n4lLabelKey('a:b')).toBe('a_b')
@@ -166,6 +209,20 @@ describe('Formato .n4l: en la aplicación', () => {
       summary: 'n4l-iris:tasks.tabular-classification.summary',
       info   : { files: ['n4l/iris.n4l/data/iris.csv'], rows: [150], features: 4, classes: 3 },
     })
+  })
+
+  test('las series temporales, en /datasets con su frecuencia y lo que se predicen (sin columnas de entrada)', () => {
+    const options = taskOptions('time-series', 'dataset').filter(({ value }) => value !== 'UPLOAD')
+    expect(options.map(({ value }) => value)).toEqual(['AIRLINE-PASSENGERS', 'MELBOURNE-TEMPERATURES', 'SUNSPOTS'])
+    expect(options[0].info).toStrictEqual({
+      source   : 'https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/AirPassengers.html',
+      files    : ['n4l/airline-passengers.n4l/data/airline-passengers.csv'],
+      rows     : [144],
+      frequency: 'month',
+      target   : 'Passengers',
+    })
+    // Cada una, con su modelo ya entrenado
+    expect(taskOptions('time-series', 'model').map(({ value }) => value)).toEqual(['AIRLINE-PASSENGERS', 'MELBOURNE-TEMPERATURES', 'SUNSPOTS'])
   })
 
   test('el iris se comparte: un solo CSV para clasificar y para agrupar', () => {

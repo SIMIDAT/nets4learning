@@ -2,10 +2,10 @@ import { describe, test, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/react'
 import N4LPagination from '@components/table/N4LPagination'
 
-// Texto de los números de página (sin First, Prev, Next ni Last)
+// Lo que se ve de los números de página (sin las flechas ni el nombre oculto para el lector de pantalla)
 const pageNumbers = (container: HTMLElement) => Array.from(container.querySelectorAll('.page-item'))
   .slice(2, -2)
-  .map((li) => li.textContent?.replace(/\(current\)/g, '').trim())
+  .map((li) => li.querySelector('[aria-hidden="true"]')?.textContent?.trim())
 
 describe('N4LPagination', () => {
 
@@ -28,6 +28,17 @@ describe('N4LPagination', () => {
     expect(items[items.length - 1].classList.contains('disabled')).toBe(false) // Last
     fireEvent.click(getByText('2'))
     expect(onChange).toHaveBeenCalledWith(1)
+  })
+
+  test('cada botón tiene su nombre (oculto) y la página actual se marca', () => {
+    // t devuelve la clave (tests/setupTests.ts)
+    const { container, getByRole } = render(<N4LPagination activePage={1} pageCount={3} onChange={() => {}} />)
+    expect(getByRole('navigation')).toHaveAttribute('aria-label', 'pagination.label')
+    const items = container.querySelectorAll('.page-item')
+    expect(items[0].querySelector('.visually-hidden')?.textContent).toBe('pagination.first')
+    expect(container.querySelector('[aria-current="page"]')?.textContent).toContain('2')
+    // Sin aria-label: en la página actual y en las flechas desactivadas es un <span>, que no puede llevarlo
+    expect(container.querySelector('[aria-label]:not(nav)')).toBeNull()
   })
 
   test('con una sola página no se muestra', () => {

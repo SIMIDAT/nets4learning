@@ -22,7 +22,10 @@ export const GLOSSARY_ACTIONS = {
     STEP_3_LAYERS            : 'task-03-editor-layers-open',
     STEP_4_HYPERPARAMETERS   : 'task-03-editor-hyperparameters-open',
     STEP_5_TABLE_OF_MODELS   : 'task-03-table-of-models-open'
-  }
+  },
+  TIME_SERIES: {
+    STEP_2_DATASET: 'task-05-dataset-open',
+  },
 }
 
 export const MANUAL_ACTIONS = {

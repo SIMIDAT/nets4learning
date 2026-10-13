@@ -83,7 +83,7 @@ export function ImageExplainResults({ result, formatLabel }: ImageExplainResults
               <div className="border rounded p-2 text-center">
                 <h6 className="fw-bold mb-2">
                   {target}
-                  {predicted !== undefined && <span className="fw-normal text-body-secondary"> · {percent(predicted)}</span>}
+                  {predicted !== undefined && <span className="fw-normal text-body-secondary"> ({percent(predicted)})</span>}
                 </h6>
                 <ShapHeatmap
                   imageSrc={result.imageSrc}

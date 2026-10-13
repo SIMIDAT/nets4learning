@@ -70,7 +70,15 @@
       "waiting-for-model": "Entrena un modelo para poder explicar sus predicciones.",
       "gridSide-help": "La imagen se divide en N × N trozos: con más, la explicación es más fina, pero tarda más.",
       "nSamples-help": "Cuántas veces se tapan zonas distintas para medir lo que aporta cada una (SHAP).",
-      "maskRange-help": "De 0 (negro) a 1 (blanco)."
+      "maskRange-help": "De 0 (negro) a 1 (blanco).",
+      "bar-description": "Valor SHAP de cada variable (cuánto empuja la predicción hacia arriba o hacia abajo), de la que más influye a la que menos: {{values}}.",
+      "beeswarm-description": "Valores SHAP de {{count}} ejemplos para cada variable. Las variables, de la que más influye a la que menos (media del valor absoluto): {{features}}.",
+      "bar-data": "Valor SHAP de cada variable",
+      "beeswarm-data": "Valores SHAP de cada variable en {{count}} ejemplos",
+      "variable": "Variable",
+      "mean-abs": "Media del valor absoluto",
+      "min": "Mínimo",
+      "max": "Máximo"
     },
     "take-screenshot": "Hacer una captura",
     "table-scroll-hint": "Desliza en horizontal para ver todas las columnas →",
@@ -265,7 +273,8 @@
         "Integer": "Entero",
         "Continuous": "Continuo",
         "Categorical": "Categórico",
-        "Binary": "Binario"
+        "Binary": "Binario",
+        "Date": "Fecha"
       },
       "note": "El rol, el tipo, la descripción (en inglés) y las unidades vienen de la ficha del conjunto de datos en su fuente. Los valores ausentes se cuentan en los ficheros que se descargan aquí.",
       "images": "Este conjunto de datos está formado por imágenes, así que no tiene tabla de variables."
@@ -308,6 +317,10 @@
       "examples-text": "Traen las clases reales, pero k-means no las usa: agrupa con las demás columnas y al final compara los grupos con ellas.",
       "extra-text": "Otros conjuntos del proyecto para agrupar: con «Agrupar» se cargan como si los hubieras subido. No todos se parecen igual a sus clases, y eso también enseña algo.",
       "run": "Agrupar"
+    },
+    "time-series": {
+      "examples-title": "Series temporales clásicas",
+      "examples-text": "En una serie temporal cada fila es un momento (un día, un mes…) y el orden importa: los valores pasados sirven para predecir los siguientes, así que las filas no se barajan. Cada una tiene un patrón distinto: tendencia, estaciones o ciclos."
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -549,7 +562,12 @@
     "too-small": {
       "text": "Capa {{layer}}: a esas alturas la imagen mide {{height}}×{{width}} y no cabe la ventana de {{window}}×{{window}} de {{type}}.",
       "fix": "Quitar la capa"
-    }
+    },
+    "recurrent-after-dense": {
+      "text": "Capa {{layer}}: {{type}} lee una secuencia valor a valor, pero después de una capa Dense solo queda una lista de números. Las capas recurrentes van antes que las Dense.",
+      "fix": "Poner las recurrentes al principio"
+    },
+    "all-fixed": "Las capas ya no tienen nada que revisar"
   },
   "download-consent": {
     "title": "Este modelo descarga unos {{mb}} MB",
@@ -568,7 +586,13 @@
     "select-dataset": {
       "title": "Selecciona el conjunto de datos",
       "info": "Selecciona el conjunto de datos"
-    }
+    },
+    "number": {
+      "range": "Escribe un número entero entre {{min}} y {{max}}.",
+      "at-least": "Escribe un número entero de {{min}} o más.",
+      "in-use": "Mientras tanto se usa {{value}}."
+    },
+    "cancel": "Cancelar"
   },
   "preprocessing": {
     "title": "Preprocesamiento",
@@ -659,7 +683,8 @@
     "model-train-error": "Error al entrenar el modelo",
     "prediction": "La predicción es: {{index}}",
     "file-upload-success": "Fichero cargado con éxito",
-    "file-upload-error-incorrect-format": "El fichero no se ha podido cargar, no es el formato correcto"
+    "file-upload-error-incorrect-format": "El fichero no se ha podido cargar, no es el formato correcto",
+    "close": "Cerrar el aviso"
   },
   "header": {
     "language": "Idioma",
@@ -682,7 +707,9 @@
     "tasks": "Tareas",
     "packages": "Paquetes .n4l",
     "packages-saved_one": "{{count}} paquete guardado en este navegador",
-    "packages-saved_other": "{{count}} paquetes guardados en este navegador"
+    "packages-saved_other": "{{count}} paquetes guardados en este navegador",
+    "github": "GitHub (se abre en otra pestaña)",
+    "main-navigation": "Navegación principal"
   },
   "footer": {
     "description-app": "Plataforma Web para el diseño y ejecución de modelos de aprendizaje profundo.",
@@ -697,7 +724,8 @@
     "cookies": "Preferencias de cookies",
     "links": "Enlaces",
     "institutions": "Instituciones",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "accessibility": "Accesibilidad"
   },
   "drag-and-drop": {
     "label-files-one": "Fichero:",
@@ -707,11 +735,22 @@
     "json": "Añada el fichero JSON",
     "csv": "Añada el fichero CSV",
     "csv-json": "Introduce el fichero de datos plantilla.json",
-    "dataset": "Añada el fichero de datos (CSV, ARFF, JSON, JSONL o Parquet)"
+    "dataset": "Añada el fichero de datos (CSV, ARFF, JSON, JSONL o Parquet)",
+    "choose-file": "Elegir fichero",
+    "choose-files": "Elegir ficheros",
+    "errors": {
+      "file-invalid-type": "Formato no admitido",
+      "file-too-large": "El fichero es demasiado grande",
+      "file-too-small": "El fichero es demasiado pequeño",
+      "too-many-files": "Solo se puede subir un fichero"
+    }
   },
   "custom-canvas-drawer": {
     "validate": "Clasificar",
-    "clear": "Borrar"
+    "clear": "Borrar",
+    "canvas": "Lienzo para dibujar con el ratón, un lápiz o el dedo",
+    "preview": "Lo que recibe la red: el dibujo en 28 × 28 píxeles",
+    "alternative": "Si no puedes dibujar, clasifica uno de los ejemplos o una imagen de prueba."
   },
   "table": {
     "dataset": "Conjunto de datos"
@@ -724,7 +763,8 @@
     "tabular-classification": "Clasificación tabular",
     "regression": "Regresión",
     "object-detection": "Identificación de objetos",
-    "image-classification": "Clasificador de imágenes"
+    "image-classification": "Clasificador de imágenes",
+    "time-series": "Series temporales"
   },
   "graphic-red": {
     "input": "Entrada",
@@ -808,6 +848,12 @@
           "software": "Renderizado por software",
           "yes": "Sí",
           "no": "No"
+        },
+        "detections": {
+          "nothing": "No se detecta nada",
+          "detected": "Se detecta: {{list}}",
+          "waiting": "Esperando a la primera detección…",
+          "announce": "Decir lo que se detecta"
         }
       },
       "face-detection": {
@@ -832,6 +878,16 @@
               "0": "<link1>Entrada del modelo en el repositorio de tensorflow</link1>"
             }
           }
+        },
+        "render": {
+          "face": "Cara",
+          "face-number": "Cara {{number}}",
+          "eye-right": "Ojo derecho",
+          "eye-left": "Ojo izquierdo",
+          "nose": "Nariz",
+          "mouth": "Boca",
+          "ear-right": "Oreja derecha",
+          "ear-left": "Oreja izquierda"
         }
       },
       "face-mesh": {
@@ -856,6 +912,14 @@
               "0": "<link1>Entrada del modelo en el repositorio de tensorflow</link1>"
             }
           }
+        },
+        "render": {
+          "face": "Cara",
+          "face-number": "Cara {{number}}",
+          "points": "{{count}} puntos",
+          "eye-right": "Ojo derecho",
+          "eye-left": "Ojo izquierdo",
+          "lips": "Labios"
         }
       },
       "move-net--pose-net": {
@@ -882,6 +946,23 @@
               "1": "<link1>Modelo de TFHub</link1>"
             }
           }
+        },
+        "render": {
+          "person": "Persona",
+          "person-number": "Persona {{number}}",
+          "score": "{{percent}} %",
+          "shoulder-left": "Hombro izquierdo",
+          "shoulder-right": "Hombro derecho",
+          "elbow-left": "Codo izquierdo",
+          "elbow-right": "Codo derecho",
+          "wrist-left": "Muñeca izquierda",
+          "wrist-right": "Muñeca derecha",
+          "hip-left": "Cadera izquierda",
+          "hip-right": "Cadera derecha",
+          "knee-left": "Rodilla izquierda",
+          "knee-right": "Rodilla derecha",
+          "ankle-left": "Tobillo izquierdo",
+          "ankle-right": "Tobillo derecho"
         }
       },
       "coco-ssd": {
@@ -992,7 +1073,10 @@
           "hair drier": "Secador de pelo",
           "toothbrush": "Cepillo de dientes"
         },
-        "render-label": "{{label}} con {{score}} % de confianza"
+        "render": {
+          "numbered": "{{label}} {{number}}",
+          "score": "{{percent}} %"
+        }
       },
       "face-api": {
         "title": "FaceAPI - Expresiones en cara",
@@ -1020,12 +1104,18 @@
           "details-references": {
             "title": "Referencias"
           }
+        },
+        "render": {
+          "face": "Cara",
+          "face-number": "Cara {{number}}",
+          "age": "unos {{age}} años",
+          "percent": "{{percent}} %"
         }
       },
       "hand-sign": {
         "title": "Lenguaje de signos con la mano",
         "description": {
-          "text-0": "Red neuronal para la detección de manos y puntos de referencia, utilizada en conjunto con descriptores de posiciones para clasificar posibles signos del American Sign Language (ASL) o Spanish Sign Language (SSL)",
+          "text-0": "Red neuronal que encuentra la mano y sus 21 puntos (MediaPipe Hands) y, con ellos, reconoce la letra del alfabeto dactilológico: el americano (ASL), comparando la mano con 2122 manos reales, o el español (SSL), con reglas que describen cada dedo. Funciona con la mano derecha y con la izquierda.",
           "details-input": {
             "title": "Datos de entrada",
             "list": {
@@ -1039,12 +1129,24 @@
               "1": "Letra correspondiente"
             }
           },
+          "details-movement": {
+            "title": "Letras con movimiento",
+            "list": {
+              "0": "LL y RR (SSL): haz la L o la R y desplaza la mano hacia su lado, unos centímetros.",
+              "1": "Ñ (SSL): haz la N y mueve la mano de lado a lado."
+            }
+          },
           "details-references": {
             "title": "Referencias",
             "list": {
               "0": "TFJS hand pose detection"
             }
           }
+        },
+        "render": {
+          "left": "Mano izquierda",
+          "right": "Mano derecha",
+          "movement": "Con movimiento"
         }
       },
       "list-models": {
@@ -1070,7 +1172,8 @@
           "modern": "Hoy",
           "old": "Antes",
           "classify-modern": "Clasificar {{char}} como se escribe hoy",
-          "classify-old": "Clasificar {{char}} antiguo, que viene de {{origin}}"
+          "classify-old": "Clasificar {{char}} antiguo, que viene de {{origin}}",
+          "classify-example-label": "Clasificar el ejemplo {{index}}: {{label}}"
         },
         "process-draw": {
           "title": "Dibujo"
@@ -1332,7 +1435,7 @@
     "version": {
       "title": "Versión",
       "app": "Versión de la aplicación",
-      "environment": "Entorno · modo",
+      "environment": "Entorno (modo)",
       "backend": "Backend en uso",
       "runtime": "Esta instalación",
       "changes": "Cambios",
@@ -1418,6 +1521,24 @@
         "1-description-1": "Agrupa los datos sin decir qué es cada fila (aprendizaje no supervisado): k-means busca k grupos de filas parecidas entre sí.",
         "1-description-2": "Verás cómo se forman los grupos paso a paso y, en los conjuntos que traen las clases reales, si los grupos se parecen a ellas aunque no las haya visto.",
         "1-button": "Elegir un conjunto de datos"
+      },
+      "time-series": {
+        "1-title": "Series temporales",
+        "1-description-1": "Predice los siguientes valores de una serie temporal (los pasajeros de cada mes, la temperatura de cada día…) a partir de los anteriores: la red aprende con ventanas de valores pasados.",
+        "1-description-2": "Prueba los modelos ya entrenados con tres series clásicas (los pasajeros de avión, las temperaturas de Melbourne y las manchas solares): verás cómo predicen la parte final de la serie, que no vieron al entrenar, si mejoran las predicciones más sencillas (repetir el último valor o el de hace una estación) y lo que viene después.",
+        "1-button": "Modelos pre-entrenados",
+        "2-title": "Diseñar, crear y editar una arquitectura para predecir series",
+        "2-description-1": "A través de esta herramienta podemos crear una red neuronal que predice el siguiente valor de una serie a partir de los anteriores, con una de las series de ejemplo o con una propia.",
+        "2-description-2": "Para diseñar, crear, entrenar y evaluar una arquitectura personalizada, debemos:",
+        "2-description-list": {
+          "1": "Definir la ventana: cuántos valores anteriores mira la red.",
+          "2": "Definir qué parte final de la serie se aparta para probar y si se diferencia.",
+          "3": "Definir el número de capas, su tipo (Dense o recurrentes: SimpleRNN, LSTM y GRU) y sus funciones de activación.",
+          "4": "Definir la tasa de aprendizaje.",
+          "5": "Definir el número de épocas y el tamaño del lote.",
+          "6": "Definir el optimizador y la función de pérdida."
+        },
+        "2-button": "Crear y entrenar un modelo"
       }
     },
     "contribute": {
@@ -1510,6 +1631,9 @@
       "example-datasets": "Conjuntos de datos de ejemplo",
       "clustering": {
         "csv": "Subir un CSV"
+      },
+      "time-series": {
+        "csv": "Subir una serie"
       }
     },
     "menu-selection-model": {
@@ -1531,7 +1655,7 @@
         "data-to-check": "Datos a probar",
         "vector-to-check": "Vector a probar",
         "button-check-result": "Predecir",
-        "type-categorical": "Categórica · {{count}} valores",
+        "type-categorical": "Categórica, {{count}} valores",
         "type-integer": "Número entero",
         "type-decimal": "Número decimal",
         "range": "{{min}} – {{max}} en los datos"
@@ -1683,7 +1807,11 @@
           "strides-placeholder": "Introduce el strides de la capa",
           "pool-size": "Pool size",
           "pool-size-placeholder": "Introduce el pool size de la capa",
-          "layer-class": "Tipo de capa"
+          "layer-class": "Tipo de capa",
+          "removed": "Capa {{index}} eliminada. Puedes deshacerlo con «Deshacer», encima de las capas.",
+          "removed-short": "Capa {{index}} eliminada.",
+          "restored": "Capa {{index}} recuperada.",
+          "undo": "Deshacer"
         },
         "editor-feature-selector": {
           "title": "Selector de características",
@@ -1718,7 +1846,10 @@
           "metric-id-select": "Selecciona la función de métrica",
           "metric-id-info": "Será una de las funciones de métrica",
           "loss-group-classification": "Clasificación",
-          "loss-group-regression": "Regresión"
+          "loss-group-regression": "Regresión",
+          "batch-size": "Tamaño del lote",
+          "batch-size-placeholder": "Ejemplos por lote",
+          "batch-size-info": "Cuántas ventanas se usan en cada actualización de los pesos: con lotes pequeños aprende con más ruido; con lotes grandes, cada época es más rápida."
         },
         "loaded": "Cargado",
         "load": "Cargar",
@@ -1798,7 +1929,11 @@
           "select-image": "Selecciona una imagen del conjunto de datos",
           "actual-class": "Clase real: {{label}}",
           "chart-title-top": "Las {{count}} clases más probables",
-          "chart-help-top": "El modelo distingue muchas más clases; aquí solo se muestran las más probables, con su probabilidad."
+          "chart-help-top": "El modelo distingue muchas más clases; aquí solo se muestran las más probables, con su probabilidad.",
+          "hit": "acierta",
+          "miss": "falla",
+          "test-image": "Imagen de prueba",
+          "class": "Clase"
         },
         "waiting-for-prediction": "Haz una predicción para ver aquí el resultado.",
         "training": {
@@ -1831,7 +1966,18 @@
           "confusion-total": "Total",
           "confusion-recall": "Sensibilidad",
           "confusion-precision": "Precisión",
-          "confusion-legend": "Cada celda indica cuántos ejemplos de la clase real (fila) se predijeron como la clase de la columna y qué parte de su fila son. Verde: aciertos; rojo: errores; cuanto más intenso, más ejemplos."
+          "confusion-legend": "Cada celda indica cuántos ejemplos de la clase real (fila) se predijeron como la clase de la columna y qué parte de su fila son. Verde: aciertos; rojo: errores; cuanto más intenso, más ejemplos.",
+          "curve-description": "{{name}} en {{epochs}} épocas: con los datos de entrenamiento, de {{first}} a {{last}}.",
+          "curve-description-validation": "Con los de validación, de {{first}} a {{last}}.",
+          "announce-start_one": "Entrenamiento iniciado: {{count}} época",
+          "announce-start_other": "Entrenamiento iniciado: {{count}} épocas",
+          "announce-stopped": "Entrenamiento detenido en la época {{epoch}} de {{total}}. El modelo se guarda con esas épocas",
+          "announce-error": "El entrenamiento no ha podido terminar",
+          "go-to-result": "Ir al resultado",
+          "curve-data": "{{name}} en cada época",
+          "remaining": "quedan unos {{time}}",
+          "last-run_one": "El último entrenamiento tardó {{time}} ({{count}} época, {{perEpoch}} por época). Con más épocas tardará más, y se puede detener cuando quieras.",
+          "last-run_other": "El último entrenamiento tardó {{time}} ({{count}} épocas, {{perEpoch}} por época). Con más épocas tardará más, y se puede detener cuando quieras."
         },
         "help": {
           "learning-rate": "Tamaño del paso con el que el optimizador corrige los pesos de la red después de cada lote de datos.",
@@ -1842,8 +1988,12 @@
           "metric": "Medida que se calcula durante el entrenamiento para saber cómo va el modelo (por ejemplo, la precisión). No se usa para corregir los pesos.",
           "recall": "Sensibilidad (recall): de los ejemplos que son de esta clase, la parte que el modelo acierta.",
           "precision": "Precisión: de las veces que el modelo predice esta clase, la parte en que acierta.",
-          "accuracy": "Exactitud (accuracy): ejemplos acertados sobre el total de ejemplos de validación."
-        }
+          "accuracy": "Exactitud (accuracy): ejemplos acertados sobre el total de ejemplos de validación.",
+          "batch-size": "Cuántos ejemplos ve la red antes de actualizar sus pesos.",
+          "units": "Cuántas neuronas tiene la capa. Con más, la red puede aprender relaciones más complicadas, pero tarda más en entrenar y puede aprenderse los datos de memoria.",
+          "activation": "Lo que hace cada neurona con la suma que le llega. ReLU, sigmoide o tanh dejan a la red aprender relaciones que no son líneas rectas; softmax, en la última capa, reparte la probabilidad entre las clases."
+        },
+        "example-from-dataset": "Ejemplo del conjunto de datos"
       },
       "1-regression": {
         "generator": {
@@ -1902,7 +2052,7 @@
             "details-plot-models": {
               "title": "Gráfico de predicciones",
               "text": {
-                "0": "Podemos usar un gráfico disperso para dicha tarea, de forma que representemos los datos originales en una nube de puntos y usamos una línea para trazar las predicciones del modelo, en función de la arquitectura que usemos nos dará una línea recta con cierta pendiente o una línea que se ajustará y curvará más a los datos. Para ello se hacen 100 predicciones <i>x</i> distantes, desde primer valor al último valor."
+                "0": "Para verlo se usa un gráfico de dispersión: los datos originales son una nube de puntos y las predicciones del modelo, una línea. Según la arquitectura, la línea será recta (con cierta pendiente) o se curvará para ajustarse mejor a los datos. Para ello se hacen 100 predicciones <i>x</i> distantes, desde primer valor al último valor."
               }
             }
           },
@@ -2060,7 +2210,7 @@
           "loss-regression-raw": "La red predice {{prediction}} y el valor real es {{actual}}. La pérdida es el error cuadrático: ({{output}} − {{target}})² = {{loss}}.",
           "backward-output": "Empieza el paso hacia atrás. El delta de cada neurona de salida dice cuánto cambiaría la pérdida si cambiara su suma z. El gradiente de cada peso que llega a ella es su delta por la entrada de esa conexión: son las conexiones en naranja.",
           "backward": "El error sigue hacia atrás hasta la capa {{layer}}: el delta de cada neurona es la suma de los deltas de la capa siguiente por los pesos que las unen, multiplicada por la derivada de {{activation}}. Así cada peso sabe cuánto ha contribuido al error.",
-          "update": "Cada peso se mueve un poco en contra de su gradiente: w ← w − η·g, con η = {{rate}}, la tasa de aprendizaje. Con este ejemplo, la pérdida pasa de {{before}} a {{after}}. Entrenar es repetir esto con todos los ejemplos, época tras época; el optimizador que elijas ajusta cada paso de forma más elaborada."
+          "update": "Cada peso se mueve un poco en contra de su gradiente: w ← w − η × g, con η = {{rate}}, la tasa de aprendizaje. Con este ejemplo, la pérdida pasa de {{before}} a {{after}}. Entrenar es repetir esto con todos los ejemplos, época tras época; el optimizador que elijas ajusta cada paso de forma más elaborada."
         },
         "focus": "Neurona {{index}} de la capa {{layer}}",
         "focus-input": "Entrada {{index}}",
@@ -2075,9 +2225,9 @@
         "node-input": "Entrada {{name}}: {{value}}",
         "node": "Neurona {{index}} de la capa {{layer}}: {{value}}",
         "column-input": "Entrada",
-        "column-layer": "Capa {{layer}} · {{activation}}",
-        "column-output": "Salida · {{activation}}",
-        "update-rule": "w ← w − {{rate}} · gradiente"
+        "column-layer": "Capa {{layer}} ({{activation}})",
+        "column-output": "Salida ({{activation}})",
+        "update-rule": "w ← w − {{rate}} × gradiente"
       },
       "clustering": {
         "intro": "k-means coloca k centroides, asigna cada fila al más cercano y mueve cada centroide al centro de sus filas, hasta que nadie cambia de grupo. No usa ninguna etiqueta: solo las columnas que elijas.",
@@ -2131,7 +2281,186 @@
         "majority": "Clase mayoritaria",
         "mixed": "mezcla",
         "total": "Total",
-        "comparison-legend": "Cuanto más intenso el fondo, mayor parte del grupo es de esa clase. «Mezcla»: ninguna clase llega a dos tercios del grupo."
+        "comparison-legend": "Cuanto más intenso el fondo, mayor parte del grupo es de esa clase. «Mezcla»: ninguna clase llega a dos tercios del grupo.",
+        "scatter-data": "Grupos, filas y centroides",
+        "rows-column": "Filas"
+      },
+      "time-series": {
+        "manual": {
+          "title": "Cómo funciona",
+          "windows": {
+            "title": "Ventanas",
+            "text": "La red no ve la serie entera: recibe los <b>últimos valores</b> (la ventana) y predice <b>el siguiente</b>. Cada posición de la serie da un ejemplo: con una ventana de 12 meses, los de 1949 predicen enero de 1950; los doce siguientes, febrero…"
+          },
+          "split": {
+            "title": "Entrenar con el pasado, probar con el futuro",
+            "text": "La parte de prueba es <b>la última</b> de la serie y no se baraja: si se mezclaran los meses, la red vería el futuro al entrenar. Las ventanas de entrenamiento sí se barajan, porque cada una ya lleva su historia."
+          },
+          "scale": {
+            "title": "Escalar y diferenciar",
+            "text": "Los valores se escalan entre 0 y 1 con el mínimo y el máximo del entrenamiento (la prueba no se mira). Si la serie crece, la prueba puede salirse de ese rango. <b>Diferenciar</b> hace que la red aprenda cuánto cambia cada valor respecto al anterior en lugar del valor: quita la tendencia."
+          },
+          "modes": {
+            "title": "A un paso o seguida",
+            "text": "<b>A un paso</b>, cada valor de prueba se predice con los reales de antes, como quien predice mañana sabiendo lo de hoy. <b>Seguida</b> (recursiva), desde el final del entrenamiento cada valor se predice con los ya predichos: es lo que se hace con el futuro, y los errores se acumulan."
+          },
+          "baselines": {
+            "title": "¿Mejor que lo más sencillo?",
+            "text": "Se compara con dos predicciones sin red: la <b>ingenua</b> (el valor anterior o, si se predice seguido, el último conocido) y la <b>estacional</b> (el valor de hace una estación: 12 meses, 7 días…). Una red que no las mejora no aporta nada."
+          },
+          "networks": {
+            "title": "Dense o recurrentes",
+            "text": "Una capa <b>Dense</b> recibe la ventana entera de una vez. Las <b>recurrentes</b> (SimpleRNN, LSTM y GRU) la leen valor a valor y recuerdan lo anterior: van antes que las Dense y entrenan más despacio. La salida es una neurona lineal, el valor que se predice."
+          }
+        },
+        "upload": {
+          "title": "Tu serie",
+          "text": "Sube un fichero (CSV, ARFF, JSON, JSONL o Parquet) con una fila por momento y elige la columna con los valores. Si tiene una columna de fechas, se usa para ordenar las filas y para poner fecha a lo que se predice.",
+          "no-numeric": "El fichero no tiene ninguna columna numérica: no hay valores que predecir.",
+          "value-column": "Columna con los valores",
+          "value-column-help": "La serie que se predice.",
+          "date-column": "Columna con la fecha",
+          "date-column-help": "Opcional: sin ella, los valores se numeran 1, 2, 3…",
+          "no-date": "Sin fecha (1, 2, 3…)",
+          "info": "Sube tu propia serie temporal: una columna con sus valores y, si la tiene, otra con la fecha de cada uno.",
+          "waiting": "Sube un fichero para ver aquí la serie."
+        },
+        "data": {
+          "summary_one": "1 valor ({{first}})",
+          "summary_other": "{{count}} valores, de {{first}} a {{last}}",
+          "value-column": "se predice {{column}}",
+          "dropped_one": "Se ha quitado 1 fila sin un número en la columna de los valores.",
+          "dropped_other": "Se han quitado {{count}} filas sin un número en la columna de los valores.",
+          "sorted": "Las filas no estaban en orden: se han ordenado por fecha.",
+          "range_one": "{{first}} (1 valor)",
+          "range_other": "{{first}} – {{last}} ({{count}} valores)",
+          "split": "<b>Entrenamiento:</b> {{train}}. <b>Prueba:</b> {{test}}"
+        },
+        "frequency": {
+          "hour": "un valor por hora",
+          "day": "un valor al día",
+          "week": "un valor por semana",
+          "month": "un valor al mes",
+          "quarter": "un valor por trimestre",
+          "year": "un valor al año"
+        },
+        "chart": {
+          "test": "Prueba",
+          "description": "{{name}}: {{count}} valores, de {{first}} a {{last}}.",
+          "train-prediction": "Red (entrenamiento, a un paso)",
+          "test-one-step": "Red (prueba, a un paso)",
+          "test-recursive": "Red (prueba, seguida)",
+          "future": "Lo que viene después",
+          "forecast-description": "Predicción del {{model}}: en la prueba se equivoca {{mae}} de media. Después, los {{steps}} valores siguientes."
+        },
+        "prep": {
+          "title": "Preparación",
+          "window": "Ventana (valores anteriores)",
+          "window-help": "Con cuántos valores anteriores predice la red el siguiente.",
+          "window-season": "Para ver el patrón que se repite, conviene que abarque una estación ({{season}} valores).",
+          "test-size": "Prueba (% final de la serie)",
+          "test-size-help": "Los últimos valores: la red no los ve al entrenar. No se barajan, porque en una serie el futuro se predice con el pasado.",
+          "difference": "Predecir el cambio (diferenciar)",
+          "difference-help": "La red aprende cuánto cambia cada valor respecto al anterior y, al predecir, se suma al anterior. Quita la tendencia.",
+          "season": "Estación (valores)",
+          "season-help": "Cada cuántos valores se repite el patrón (12 meses, 7 días…), para compararse con la predicción estacional. 0: sin estación.",
+          "too-short": "Con esta ventana y esta parte de prueba no quedan datos suficientes: hacen falta al menos 10 ventanas para entrenar y 2 valores para probar. Prueba con una ventana más corta o con menos prueba."
+        },
+        "windows": {
+          "title": "Lo que aprende la red",
+          "text": "Cada ejemplo son los {{window}} valores anteriores y el siguiente, que es lo que tiene que predecir. Los primeros:",
+          "text-difference": "Cada ejemplo son los {{window}} cambios anteriores (cada valor menos el anterior) y el siguiente cambio, que es lo que tiene que predecir. Los primeros:",
+          "date": "Fecha",
+          "inputs": "Valores anteriores ({{window}})",
+          "inputs-difference": "Cambios anteriores ({{window}})",
+          "output": "Valor que predice",
+          "output-difference": "Cambio que predice",
+          "scaled_one": "La red los recibe escalados entre 0 y 1. Con esta preparación hay 1 ejemplo para entrenar.",
+          "scaled_other": "La red los recibe escalados entre 0 y 1. Con esta preparación hay {{count}} ejemplos para entrenar."
+        },
+        "layers": {
+          "class": "Tipo de capa",
+          "class-help": "Dense recibe la ventana entera; SimpleRNN, LSTM y GRU la leen valor a valor (van antes que las Dense)."
+        },
+        "models": {
+          "yes": "Sí",
+          "no": "No",
+          "mae-one-step": "Error a un paso (MAE)",
+          "mae-recursive": "Error seguida (MAE)",
+          "show": "Ver",
+          "help": "El error es el error absoluto medio con los datos de prueba, en las unidades de la serie: cuánto se equivoca de media.",
+          "evaluating": "Calculando las predicciones…"
+        },
+        "forecast": {
+          "title": "Predicción: {{model}}",
+          "model": "Modelo",
+          "one-step": "A un paso",
+          "recursive": "Seguida (recursiva)",
+          "range-all": "Toda la serie",
+          "range-test": "De cerca",
+          "show-train": "Ver también el entrenamiento",
+          "one-step-help": "Cada valor de prueba se predice con los valores reales anteriores.",
+          "recursive-help": "Desde el final del entrenamiento, cada valor se predice con los ya predichos, sin ver la prueba: así se predice el futuro, y los errores se acumulan.",
+          "errors-title": "Errores con los datos de prueba",
+          "prediction": "Predicción",
+          "mae-title": "Error absoluto medio: cuánto se equivoca de media",
+          "rmse-title": "Raíz del error cuadrático medio: castiga más los errores grandes",
+          "network": "Red neuronal ({{model}})",
+          "naive-one-step": "Ingenua: el valor anterior",
+          "naive-recursive": "Ingenua: el último conocido, repetido",
+          "seasonal-one-step": "Estacional: el de hace {{season}} valores",
+          "seasonal-recursive": "Estacional: la última estación, repetida",
+          "verdict-better": "La red se equivoca un <b>{{percent}} menos</b> que la mejor predicción sencilla ({{baseline}}).",
+          "verdict-similar": "La red se equivoca más o menos lo mismo que la mejor predicción sencilla ({{baseline}}): no aporta mucho.",
+          "verdict-worse": "La red se equivoca un <b>{{percent}} más</b> que la mejor predicción sencilla ({{baseline}}). Prueba con otra ventana, más épocas, diferenciar o capas recurrentes.",
+          "baseline-naive": "la ingenua",
+          "baseline-seasonal": "la estacional",
+          "train-vs-test": "Con los datos de entrenamiento se equivoca {{train}} de media y con los de prueba (a un paso), {{test}}.",
+          "overfitting": "Con los de prueba se equivoca más del doble: puede que se haya aprendido el entrenamiento de memoria.",
+          "future-title": "Lo que viene después",
+          "future-steps": "Valores que predecir",
+          "future-help": "Seguidos, cada uno con los ya predichos: cuanto más lejos, menos fiables."
+        },
+        "model": {
+          "name": "Modelo ya entrenado",
+          "train-yours": "Entrenar tu red con esta serie"
+        },
+        "review": {
+          "tab-chart": "La serie",
+          "tab-windows": "Preparada para la red",
+          "preparation": "La red recibe los <b>{{window}} valores anteriores</b> y predice el siguiente. Se entrenó con la serie hasta {{last}}; la prueba, de {{first}} al final, no la vio. Los valores se escalan entre 0 y 1 con el mínimo ({{min}}) y el máximo ({{max}}) del entrenamiento.",
+          "preparation-difference": "La red recibe los <b>{{window}} cambios anteriores</b> (cada valor menos el anterior) y predice el siguiente cambio. Se entrenó con la serie hasta {{last}}; la prueba, de {{first}} al final, no la vio. Los cambios se escalan entre 0 y 1 con el mínimo ({{min}}) y el máximo ({{max}}) del entrenamiento.",
+          "predict-title": "Predecir",
+          "test": "prueba",
+          "model-select": "Modelo con el que predecir",
+          "choose-instance_one": "Elige un valor de la serie: el formulario se rellena con el anterior, que es lo que usa la red. Después puedes cambiarlo.",
+          "choose-instance_other": "Elige un valor de la serie: el formulario se rellena con los {{count}} anteriores, que es lo que usa la red. Después puedes cambiarlos.",
+          "vector": "Lo que recibe la red",
+          "vector-help": "Cada valor, escalado entre 0 y 1 con el mínimo y el máximo del entrenamiento.",
+          "vector-help-difference": "Cada cambio (un valor menos el anterior), escalado entre 0 y 1 con el mínimo y el máximo del entrenamiento.",
+          "button-submit": "Predecir",
+          "predicted-value": "Valor predicho de {{target}} ({{date}})",
+          "actual-value": "Valor real: {{value}}",
+          "error": "Error: {{value}} ({{percent}})",
+          "input-details": "Entrada del modelo paso a paso",
+          "step-values": {
+            "title": "Valores anteriores",
+            "text": "como en la serie"
+          },
+          "step-changes": {
+            "title": "Cambios",
+            "text": "cada valor menos el anterior"
+          },
+          "step-scaled": {
+            "title": "Escalados",
+            "text": "entre 0 y 1, como los recibe la red"
+          },
+          "metrics": "Con el último {{testSize}} % de la serie, que se apartó al entrenarlo, se equivoca de media en {{mae}} a un paso; repitiendo el valor anterior, en {{naive}}.",
+          "metrics-seasonal": "Repitiendo el de hace una estación, en {{seasonal}}.",
+          "metrics-no-better": "No mejora la predicción más sencilla: con esa ventana, esta serie no se predice mucho mejor."
+        },
+        "chart-data": "{{value}}: real y predicho en cada fecha",
+        "chart-data-series": "{{value}} en cada fecha"
       }
     },
     "dataframe": {
@@ -2164,14 +2493,14 @@
         "target": "Variable objetivo",
         "target-none": "Ninguna",
         "target-help": "La que se quiere predecir o clasificar: se resalta en todo el análisis y separa los gráficos por clases.",
-        "problem-classification": "Clasificación · {{count}} clases",
+        "problem-classification": "Clasificación, {{count}} clases",
         "problem-regression": "Regresión",
         "problem-none": "Sin variable objetivo"
       },
       "summary": {
         "rows": "Filas",
         "columns": "Columnas",
-        "columns-detail": "Numéricas: {{numeric}} · categóricas: {{categorical}}",
+        "columns-detail": "Numéricas: {{numeric}}, categóricas: {{categorical}}",
         "missing": "Valores ausentes",
         "missing-detail": "{{percent}} de las celdas",
         "duplicates": "Filas repetidas",
@@ -2738,7 +3067,43 @@
           "title": "Métricas de la matriz de confusión",
           "description": "Se calculan a partir de los aciertos y fallos de cada clase en la matriz de confusión: cuántas predicciones positivas son correctas (precisión), cuántos positivos reales se detectan (exhaustividad o sensibilidad), la media armónica de ambas (F1) y cuántos negativos reales se reconocen (especificidad)."
         }
-      }
+      },
+      "time-series": {
+        "title": "Series temporales",
+        "text-1": "Una serie temporal es una sucesión de valores medidos en orden, uno cada cierto tiempo: los pasajeros de cada mes, la temperatura de cada día, las ventas de cada semana. A diferencia de una tabla, el orden importa: cada valor depende de los anteriores.",
+        "text-2": "Predecir una serie es estimar los valores siguientes a partir de los pasados. Una red neuronal lo aprende con ventanas: recibe los últimos valores y predice el siguiente.",
+        "text-3": "Para probarla se aparta el final de la serie, sin barajar, y se compara con predicciones sencillas, como repetir el último valor o el de hace una estación.",
+        "group-title": "Series temporales",
+        "window": {
+          "title": "Ventana",
+          "text": "Los valores anteriores con los que la red predice el siguiente. Con una ventana de 12 en una serie mensual, la red ve el último año. Si es más corta que la estación, no ve el patrón que se repite; si es muy larga, quedan menos ejemplos para entrenar."
+        },
+        "trend-seasonality": {
+          "title": "Tendencia y estacionalidad",
+          "text": "La tendencia es hacia dónde va la serie a largo plazo (los pasajeros crecen año tras año). La estacionalidad es un patrón que se repite con un periodo fijo (más pasajeros cada verano). Un ciclo, como el de las manchas solares, se repite sin un periodo fijo."
+        },
+        "differencing": {
+          "title": "Diferenciar",
+          "text": "Cambiar cada valor por lo que ha cambiado respecto al anterior. Quita la tendencia: la red aprende cambios, que se parecen más en el entrenamiento y en la prueba. Para volver a los valores, se suma cada cambio al valor anterior."
+        },
+        "one-step-recursive": {
+          "title": "Predicción a un paso y recursiva",
+          "text": "A un paso, cada valor se predice con los valores reales de antes. Recursiva (o seguida), cada valor predicho se usa para predecir el siguiente: es la única forma de predecir varios pasos del futuro, y los errores se acumulan."
+        },
+        "baselines": {
+          "title": "Predicción ingenua y estacional",
+          "text": "Las predicciones más sencillas, con las que se compara un modelo: la ingenua repite el último valor conocido y la estacional, el de hace una estación (12 meses, 7 días…). Un modelo solo aporta algo si se equivoca menos que ellas."
+        },
+        "recurrent": {
+          "title": "Capas recurrentes (SimpleRNN, LSTM y GRU)",
+          "text": "Leen una secuencia valor a valor y guardan un estado que resume lo que han visto. SimpleRNN es la más sencilla y olvida pronto; LSTM y GRU tienen puertas que deciden qué recordar y qué olvidar, y aprenden dependencias más largas."
+        },
+        "mae-rmse": {
+          "title": "MAE y RMSE",
+          "text": "Dos formas de medir el error en las unidades de la serie: el MAE (error absoluto medio) es cuánto se equivoca de media; el RMSE (raíz del error cuadrático medio) castiga más los errores grandes."
+        }
+      },
+      "formula": "Fórmula de {{term}}"
     },
     "menu": {
       "select-model": {
@@ -2755,7 +3120,15 @@
         "classes": "{{value}} clases",
         "target": "objetivo: {{value}}",
         "images": "{{value}} imágenes de {{size}}",
-        "images-color": "{{value}} imágenes de {{size}} en color"
+        "images-color": "{{value}} imágenes de {{size}} en color",
+        "series": {
+          "hour": "{{value}} horas",
+          "day": "{{value}} días",
+          "week": "{{value}} semanas",
+          "month": "{{value}} meses",
+          "quarter": "{{value}} trimestres",
+          "year": "{{value}} años"
+        }
       }
     },
     "terms": {
@@ -2843,7 +3216,8 @@
         "language": "Idioma",
         "theme": "Tema",
         "theme-system": "Como el sistema",
-        "theme-help": "«Como el sistema» sigue el modo claro u oscuro de tu sistema operativo."
+        "theme-help": "«Como el sistema» sigue el modo claro u oscuro de tu sistema operativo.",
+        "summary": "Idioma y tema claro u oscuro"
       },
       "backend": {
         "title": "Backend de TensorFlow.js",
@@ -2852,7 +3226,8 @@
         "webgl": "Usa la tarjeta gráfica a través de WebGL. Es el más rápido en casi todos los equipos.",
         "webgpu": "Usa la tarjeta gráfica con WebGPU, la API más moderna. Puede ser más rápido, pero no todos los navegadores lo tienen.",
         "wasm": "Calcula en el procesador con WebAssembly. Útil si la tarjeta gráfica da problemas.",
-        "cpu": "Calcula en el procesador con JavaScript. Funciona en todas partes, pero es el más lento."
+        "cpu": "Calcula en el procesador con JavaScript. Funciona en todas partes, pero es el más lento.",
+        "summary": "Dónde calcula TensorFlow.js: tarjeta gráfica o procesador"
       },
       "downloads": {
         "title": "Descarga de modelos",
@@ -2866,10 +3241,8 @@
         "now-save-data": "Ahora mismo, el navegador tiene activado el ahorro de datos.",
         "now-slow": "Ahora mismo, la conexión parece lenta.",
         "now-normal": "Ahora mismo, ni hay ahorro de datos ni la conexión parece lenta (o el navegador no lo dice).",
-        "offline_zero": "Lo que abras se guardará para poder usarlo sin conexión. Todavía no hay nada guardado.",
-        "offline_one": "Para usar sin conexión hay guardado 1 fichero ({{size}} MB): lo que ya has abierto funciona sin internet.",
-        "offline_other": "Para usar sin conexión hay guardados {{count}} ficheros ({{size}} MB): lo que ya has abierto funciona sin internet.",
-        "offline-delete": "Borrar lo guardado para usar sin conexión"
+        "summary": "Preguntar antes de descargar modelos grandes",
+        "saved": "Los modelos descargados se guardan en este navegador para no volver a descargarlos: puedes ver cuánto ocupan y borrarlos en <link1>Datos guardados en este navegador</link1>."
       },
       "speech": {
         "title": "Voz de las guías",
@@ -2881,19 +3254,23 @@
         "rate": "Velocidad: {{rate}}×",
         "test": "Probar la voz",
         "stop": "Parar",
-        "sample": "Hola. Así sonará la guía de cada página de Nets4Learning."
+        "sample": "Hola. Así sonará la guía de cada página de Nets4Learning.",
+        "screen-reader": "Si usas un lector de pantalla, desactívalo: el lector ya lee cada paso de la guía y las dos voces a la vez no se entienden.",
+        "summary": "Leer las guías en voz alta, la voz y su velocidad"
       },
       "tutorials": {
         "title": "Guías",
         "guides-help": "Cada guía recuerda por qué paso vas. Reinícialas para que todas vuelvan a empezar desde el principio.",
         "guides-reset": "Reiniciar las guías",
-        "done": "Hecho"
+        "done": "Hecho",
+        "summary": "Volver a empezar las guías de las páginas"
       },
       "learning": {
         "title": "Para aprender",
         "help": "Herramientas que no se ven por defecto para no recargar las páginas.",
         "step-by-step": "Mostrar «Paso a paso»: cómo aprende la red, ejemplo a ejemplo, hacia delante y hacia atrás",
-        "step-by-step-help": "Aparece en las páginas de entrenamiento y en las de los modelos de clasificación tabular y regresión, con redes de menos de 64 neuronas."
+        "step-by-step-help": "Aparece en las páginas de entrenamiento y en las de los modelos de clasificación tabular y regresión, con redes de menos de 64 neuronas.",
+        "summary": "Paso a paso y otras herramientas para aprender"
       },
       "privacy": {
         "title": "Privacidad y cookies",
@@ -2902,20 +3279,78 @@
         "status-accepted": "Ahora mismo: cookies aceptadas.",
         "status-rejected": "Ahora mismo: cookies rechazadas.",
         "status-undecided": "Todavía no has decidido: de momento no se usan.",
-        "more": "Más información sobre las cookies"
+        "more": "Más información sobre las cookies",
+        "summary": "Cookies de Google Analytics"
       },
       "data": {
         "title": "Datos guardados en este navegador",
-        "help": "Borra todos los ajustes de la aplicación: idioma, tema, backend, voz y progreso de las guías, Paso a paso, los modelos entrenados guardados y tu decisión sobre las cookies. La página se recargará con los valores por defecto.",
-        "models_zero": "No hay modelos entrenados guardados.",
-        "models_one": "Hay 1 modelo entrenado guardado ({{size}}): se recupera al volver a su página.",
-        "models_other": "Hay {{count}} modelos entrenados guardados ({{size}}): cada uno se recupera al volver a su página.",
-        "models-delete": "Borrar los modelos guardados",
+        "help": "Lo que la aplicación guarda en este navegador. No sale de él y puedes borrarlo cuando quieras.",
+        "summary": "Lo que se guarda, cuánto ocupa y restablecer todo",
+        "total": "En total, esta web ocupa <strong>{{used}}</strong> en este navegador.",
+        "trained": {
+          "title": "Modelos entrenados",
+          "help": "Los que entrenas y guardas: se recuperan al volver a su página.",
+          "count_zero": "Ninguno",
+          "count_one": "1 modelo",
+          "count_other": "{{count}} modelos",
+          "delete": "Borrar los modelos entrenados",
+          "question_one": "Se borrará 1 modelo entrenado. No se puede deshacer.",
+          "question_other": "Se borrarán {{count}} modelos entrenados. No se puede deshacer."
+        },
+        "pretrained": {
+          "title": "Modelos preentrenados descargados",
+          "help": "Los de detección de objetos, MobileNet…: se guardan la primera vez que los usas para no volver a descargarlos.",
+          "count_zero": "Ninguno",
+          "count_one": "1 modelo",
+          "count_other": "{{count}} modelos",
+          "delete": "Borrar los modelos preentrenados descargados",
+          "question": "Se volverán a descargar la próxima vez que los uses.",
+          "mobilenet": "MobileNet - Clasificación de imágenes",
+          "other": "Otros ficheros"
+        },
+        "offline": {
+          "title": "Para usar sin conexión",
+          "help": "Las páginas que ya has abierto, para que funcionen sin internet.",
+          "count_zero": "Nada",
+          "count_one": "1 fichero",
+          "count_other": "{{count}} ficheros",
+          "delete": "Borrar lo guardado para usar sin conexión",
+          "question": "Lo que has abierto no funcionará sin internet hasta que lo vuelvas a abrir."
+        },
+        "settings": {
+          "title": "Ajustes y progreso",
+          "help": "Idioma, tema, accesibilidad, backend, voz y progreso de las guías, Paso a paso, el aviso de descargas y tu decisión sobre las cookies."
+        },
+        "delete": "Borrar",
+        "delete-confirm": "Sí, borrar",
         "reset": "Restablecer todos los ajustes",
+        "reset-help": "Borra todo lo anterior y vuelve a los valores por defecto. La página se recargará.",
         "confirm": "¿Seguro? Se borrarán todos los ajustes guardados en este navegador.",
         "confirm-button": "Sí, borrarlos",
         "cancel": "Cancelar"
-      }
+      },
+      "accessibility": {
+        "title": "Accesibilidad",
+        "help": "Para adaptar la aplicación a lo que necesitas. Se guarda en este navegador.",
+        "text-size": "Tamaño del texto",
+        "spacing": "Más espacio entre líneas, letras y palabras",
+        "spacing-help": "El espaciado que recomienda WCAG para leer con más facilidad.",
+        "highContrast": "Alto contraste",
+        "highContrast-help": "Texto y bordes en negro (o en blanco con el tema oscuro), sin grises.",
+        "reduceMotion": "Reducir el movimiento",
+        "reduceMotion-help": "Sin animaciones ni desplazamientos suaves, también en las gráficas.",
+        "underlineLinks": "Subrayar siempre los enlaces",
+        "underlineLinks-help": "Para distinguirlos del texto sin depender del color.",
+        "strongFocus": "Foco más grueso",
+        "strongFocus-help": "El borde que marca dónde estás al usar el teclado, más visible.",
+        "openVisor": "Abrir el visor de TensorFlow.js al entrenar",
+        "openVisor-help": "Es un panel de una librería que no se puede usar con lector de pantalla; las curvas de la página dicen lo mismo.",
+        "system-on": "Tu sistema ya lo pide, así que está activo aunque no lo marques.",
+        "guide": "La voz de las guías y que avancen solas se cambian en",
+        "summary": "Tamaño del texto, contraste, movimiento y foco"
+      },
+      "sections": "Apartados de la configuración",
+      "back": "Todos los apartados"
     },
     "learn": {
       "title": "Empieza aquí",
@@ -3060,6 +3495,92 @@
       "upload": "Subir el tuyo",
       "only-pretrained": "En esta tarea solo hay modelos ya entrenados.",
       "only-cluster": "El agrupamiento no usa una red ni modelos ya entrenados: k-means agrupa los datos directamente."
+    },
+    "accessibility": {
+      "title": "Accesibilidad",
+      "updated": "Declaración preparada el 12 de octubre de 2026 y revisada por última vez ese mismo día.",
+      "summary-title": "En resumen",
+      "summary": [
+        "Queremos que cualquier persona pueda usar Nets4Learning, también con lector de pantalla, solo con el teclado, con baja visión o con el texto grande.",
+        "La aplicación es parcialmente conforme con las WCAG 2.2 de nivel AA: casi todo cumple, salvo lo que se explica abajo.",
+        "Si encuentras una barrera, cuéntanoslo: es la mejor forma de arreglarla."
+      ],
+      "index": "Apartados",
+      "status": {
+        "title": "Situación de cumplimiento",
+        "text": "Nets4Learning es parcialmente conforme con las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2, nivel AA, debido a las excepciones del apartado «Contenido no accesible».",
+        "standard": "Las WCAG 2.2 AA incluyen lo que pide la norma UNE-EN 301 549 (WCAG 2.1 AA), que es la que aplica el Real Decreto 1112/2018 a las webs del sector público."
+      },
+      "not-accessible": {
+        "title": "Contenido no accesible",
+        "text": "Lo siguiente no cumple del todo, y esto es lo que se puede usar en su lugar:",
+        "items": [
+          {
+            "problem": "El visor de TensorFlow.js que se abre al entrenar es de una librería: no se maneja con el teclado y sus gráficas no tienen texto.",
+            "instead": "Las mismas curvas están en la página, con sus datos en una tabla, y en «Configuración» se puede elegir que el visor no se abra."
+          },
+          {
+            "problem": "Los botones de zoom de los gráficos del análisis de datos (Plotly) no se manejan con el teclado.",
+            "instead": "Los datos de cada gráfico están en su tabla («Ver los datos»)."
+          },
+          {
+            "problem": "Dibujar un número en el lienzo necesita un ratón, un lápiz o el dedo.",
+            "instead": "Clasificar los ejemplos y las imágenes de prueba de la página."
+          },
+          {
+            "problem": "El vídeo de la cámara en la detección de objetos no tiene descripción.",
+            "instead": "Lo detectado se dice en texto debajo, y un botón lo lee en voz alta. También se puede subir una foto."
+          },
+          {
+            "problem": "Las fórmulas se generan con MathML para los lectores de pantalla, pero todavía no se han probado con todos.",
+            "instead": "Si alguna no se lee bien, cuéntanoslo (apartado «Comunicar una barrera»)."
+          }
+        ],
+        "out-of-scope": "Fuera del alcance de esta declaración: los modelos y las librerías de terceros que usa la aplicación y las páginas externas a las que enlaza.",
+        "instead": "En su lugar:"
+      },
+      "use": {
+        "title": "Cómo usar la aplicación",
+        "keyboard-title": "Con el teclado",
+        "keyboard": [
+          "El <kbd>Tab</kbd> recorre la página en orden. Lo primero es «Saltar al contenido», que lleva directamente a la página sin pasar por el menú.",
+          "<kbd>Intro</kbd> o <kbd>Espacio</kbd> activan botones y enlaces. Las flechas mueven por las pestañas, los desplegables, las listas de opciones y los pasos de la guía.",
+          "<kbd>Escape</kbd> cierra los diálogos, los desplegables, el menú del móvil, la guía y la ayuda de los términos, y el foco vuelve a donde estaba.",
+          "En las páginas largas, el índice «En esta página» lleva a cada apartado."
+        ],
+        "reader-title": "Con un lector de pantalla",
+        "reader": [
+          "Cada página tiene su título, un solo encabezado principal y sus apartados con encabezados en orden.",
+          "Cada gráfica tiene una descripción y un botón «Ver los datos» con una tabla de todo lo que dibuja.",
+          "Lo que cambia sin mover el foco se anuncia: el resultado de una predicción, los datos cargados, cómo va un entrenamiento, los avisos de las capas y los cambios de idioma o de tema.",
+          "La guía de cada página se puede leer con el lector. Si la usas, desactiva la voz de la guía en «Configuración» para que no hablen los dos a la vez."
+        ],
+        "settings-title": "Ajustes de accesibilidad",
+        "settings": "Puedes agrandar el texto, separar más las líneas y las letras, usar alto contraste, reducir el movimiento, subrayar los enlaces o hacer más grueso el foco. Se guardan en tu navegador.",
+        "settings-link": "Ir a los ajustes de accesibilidad"
+      },
+      "feedback": {
+        "title": "Comunicar una barrera",
+        "text": "Si algo no puedes usar, o crees que no cumple, cuéntanoslo. Para poder arreglarlo, ayuda saber:",
+        "items": [
+          "En qué página estabas y qué querías hacer.",
+          "Qué ha pasado.",
+          "Qué navegador y, si usas alguno, qué lector de pantalla u otra ayuda técnica."
+        ],
+        "issue": "Comunicar una barrera en GitHub (con una plantilla)",
+        "simidat": "Web del grupo SIMIDAT de la Universidad de Jaén, para escribirnos",
+        "response": "Responderemos lo antes posible y te diremos si hay una forma de hacer lo que necesitabas mientras lo arreglamos."
+      },
+      "preparation": {
+        "title": "Cómo se ha preparado y cuándo se revisa",
+        "items": [
+          "Método: autoevaluación del equipo de desarrollo.",
+          "Pruebas automáticas en cada cambio: axe con WCAG 2.2 A y AA en todas las páginas y en los estados que aparecen al usarlas (en los temas claro y oscuro y con los ajustes de accesibilidad), recorridos solo con el teclado, páginas a 320 px de ancho y con el texto al 200 %, y las reglas de accesibilidad del linter.",
+          "Pendiente: la revisión manual con lectores de pantalla (NVDA, VoiceOver y TalkBack) y las pruebas con personas con distintas discapacidades."
+        ],
+        "review": "Esta declaración se revisa cada año y con cada versión mayor de la aplicación."
+      },
+      "new-tab": "(se abre en otra pestaña)"
     }
   },
   "generator": {
@@ -3077,7 +3598,10 @@
       "features": "Características",
       "open-visor": "Abrir visor",
       "close-visor": "Cerrar visor",
-      "history": "Valores finales (validación)"
+      "history": "Valores finales (validación)",
+      "window": "Ventana",
+      "difference": "Diferenciar",
+      "batch-size": "Tamaño del lote"
     }
   },
   "hr": {
@@ -3136,7 +3660,8 @@
     "kernel-size": "Kernel {{value}}",
     "filters": "{{value}} filtros",
     "pool-size": "Pool {{value}}",
-    "strides": "Paso {{value}}"
+    "strides": "Paso {{value}}",
+    "description": "Capas de la red, de la entrada a la salida"
   },
   "session": {
     "export": "Exportar configuración",
@@ -4285,6 +4810,86 @@
             }
           }
         }
+      },
+      "5-time-series": {
+        "common": {
+          "intro": {
+            "title": "Entrena tu red con una serie temporal",
+            "content": "En esta página preparas una serie, diseñas una red que predice cada valor con los anteriores, la entrenas y ves cómo predice lo que no vio. Te explico cada parte en orden. Puedes avanzar con Siguiente, saltar a un paso con el selector, silenciar la voz o dejar que la guía avance sola."
+          },
+          "session": {
+            "title": "Guardar la configuración",
+            "content": "Con estos botones guardas en un fichero la red, los hiperparámetros y la preparación (la ventana y si se diferencia), y lo cargas otro día o lo compartes. No se guardan los datos ni los modelos entrenados."
+          },
+          "manual": {
+            "title": "Cómo funciona",
+            "content": "Si es tu primera vez, despliega esta parte: explica las ventanas, por qué la prueba es el final de la serie, el escalado, la predicción a un paso y seguida, y con qué se compara la red."
+          },
+          "dataset-info": {
+            "title": "La serie",
+            "content": "Aquí se describe la serie: de dónde salen los datos y qué tiene de particular, como una tendencia, estaciones o ciclos."
+          },
+          "process": {
+            "title": "Sube tu serie",
+            "content": "Arrastra aquí tu fichero y elige la columna con los valores y, si la tiene, la de las fechas: con ella se ordenan las filas y se pone fecha a lo que se predice."
+          },
+          "dataset": {
+            "title": "Los datos",
+            "content": "La serie entera, en orden. La línea discontinua marca dónde empieza la prueba: el final de la serie, que la red no verá al entrenar."
+          },
+          "preparation": {
+            "title": "La preparación",
+            "content": "La ventana es cuántos valores anteriores mira la red; conviene que abarque una estación. La prueba es el porcentaje final que se aparta. Diferenciar hace que aprenda cambios en lugar de valores, y la estación se usa para compararse con la predicción estacional."
+          },
+          "windows": {
+            "title": "Lo que aprende la red",
+            "content": "Así se convierte la serie en ejemplos: cada fila son los valores anteriores (la ventana) y el siguiente, que es lo que tiene que predecir. Cambia la ventana o diferencia y mira cómo cambian."
+          },
+          "layers": {
+            "title": "Las capas",
+            "content": "La red termina en una neurona lineal, el valor que predice. Antes puedes poner capas Dense, que reciben la ventana entera, o recurrentes (SimpleRNN, LSTM, GRU), que la leen valor a valor y van delante."
+          },
+          "layers-add": {
+            "title": "Añadir y quitar capas",
+            "content": "Con estos botones añades una capa al principio o antes de la salida. Para quitar una, o cambiar su tipo, sus neuronas o su activación, despliégala en la lista."
+          },
+          "learning-rate": {
+            "title": "Tasa de aprendizaje",
+            "content": "Es cuánto se corrigen los pesos en cada paso. Alta, aprende deprisa pero puede no estabilizarse; baja, es más estable pero necesita más épocas."
+          },
+          "epochs": {
+            "title": "Épocas",
+            "content": "Cuántas veces ve la red todas las ventanas de entrenamiento. Con pocas no le da tiempo a aprender; con demasiadas puede aprenderse el entrenamiento de memoria. Las curvas de los modelos lo dicen."
+          },
+          "batch-size": {
+            "title": "Tamaño del lote",
+            "content": "Cuántas ventanas ve la red antes de corregir sus pesos. Con lotes pequeños corrige más a menudo y con más ruido; con lotes grandes, cada época va más rápido."
+          },
+          "optimizer": {
+            "title": "Optimizador",
+            "content": "El método que ajusta los pesos a partir del error. Adam, el que viene elegido, suele funcionar bien sin tocar nada."
+          },
+          "loss": {
+            "title": "Función de pérdida",
+            "content": "Cómo se mide el error al entrenar. El error cuadrático medio castiga más los errores grandes; el absoluto medio, a todos por igual."
+          },
+          "train": {
+            "title": "Entrenar",
+            "content": "Al pulsar, la red se entrena con las ventanas de entrenamiento y se valida con las de prueba en cada época. Puedes pararla cuando quieras: se queda con lo aprendido."
+          },
+          "models": {
+            "title": "Modelos entrenados",
+            "content": "Cada entrenamiento añade una fila con su preparación, su red y su error con la prueba, a un paso y seguida. El mejor lleva una marca. Debajo, sus curvas de entrenamiento, para compararlas."
+          },
+          "predict": {
+            "title": "La predicción",
+            "content": "Aquí ves lo que predice el modelo elegido en la prueba, a un paso o seguida, su error frente a repetir el último valor o la última estación, y lo que viene después del último valor."
+          },
+          "end": {
+            "title": "¡A predecir!",
+            "content": "Ya conoces la página. Prueba otra ventana, diferenciar o una capa LSTM, y compara: lo importante es que la red mejore las predicciones sencillas con lo que no vio."
+          }
+        }
       }
     },
     "glossary": {
@@ -4360,6 +4965,74 @@
         "title": "Ahora tú",
         "content": "Busca un término que no conozcas o baja hasta las funciones de activación y mira sus animaciones. Puedes volver a abrir esta guía cuando quieras con el botón Guía."
       }
+    },
+    "5-time-series": {
+      "common": {
+        "intro": {
+          "title": "Un modelo de una serie temporal",
+          "content": "En esta página pruebas una red ya entrenada que predice los siguientes valores de una serie con los anteriores. Verás cómo predice la parte final de la serie, que no vio al entrenar, si mejora las predicciones más sencillas y lo que viene después."
+        },
+        "model": {
+          "title": "El modelo",
+          "content": "La ficha del modelo: cómo predice la parte final de la serie, que no vio al entrenar, comparado con repetir el valor anterior o el de hace una estación. Debajo, la descripción de la serie."
+        },
+        "model-summary": {
+          "title": "Resumen del modelo",
+          "content": "Este botón abre el resumen de la red: sus capas, cuántas neuronas tiene cada una y cuántos pesos ajustó al entrenar. Debajo están el paquete .n4l, para descargarlo, y el enlace para entrenar tu propia red con esta serie."
+        },
+        "dataset": {
+          "title": "Los datos",
+          "content": "La serie tal cual: una fila por fecha, con el valor que se predice resaltado."
+        },
+        "dataset-chart": {
+          "title": "La serie",
+          "content": "En esta pestaña la ves en una gráfica. La línea discontinua marca dónde empieza la parte de prueba, que la red no vio al entrenar."
+        },
+        "dataset-windows": {
+          "title": "Preparada para la red",
+          "content": "Aquí ves cómo se preparó la serie: cuántos valores anteriores recibe la red (la ventana), cómo se escalan y los primeros ejemplos con los que aprendió."
+        },
+        "instances": {
+          "title": "Valores de la serie",
+          "content": "Con este selector eliges un valor de la serie y el formulario se rellena con los anteriores. Los marcados como «prueba» son de la parte que la red no vio."
+        },
+        "form": {
+          "title": "El formulario",
+          "content": "Estos son los valores anteriores, uno por fecha: lo que la red usa para predecir. Puedes cambiarlos para ver cómo cambia la predicción."
+        },
+        "vector": {
+          "title": "Lo que recibe la red",
+          "content": "Así le llegan a la red: escalados entre 0 y 1 con el mínimo y el máximo del entrenamiento."
+        },
+        "predict": {
+          "title": "Predecir",
+          "content": "Al pulsar este botón, la red recibe la ventana escalada y predice el valor siguiente."
+        },
+        "result": {
+          "title": "El resultado",
+          "content": "Aquí aparece el valor predicho. Si no cambiaste el formulario, también el real y el error. Debajo, la entrada de la red paso a paso."
+        },
+        "mode": {
+          "title": "A un paso o seguida",
+          "content": "A un paso, cada valor de prueba se predice con los reales de antes. Seguida, desde el final del entrenamiento, cada valor con los ya predichos: así se predice el futuro, y los errores se acumulan. Con «De cerca» ves solo la prueba."
+        },
+        "chart": {
+          "title": "La predicción",
+          "content": "En gris, la serie real; en naranja, lo que predice la red en la prueba, y en morado, lo que viene después. Puedes añadir también la predicción con los datos de entrenamiento."
+        },
+        "errors": {
+          "title": "¿Mejor que lo más sencillo?",
+          "content": "El error medio de la red (MAE y RMSE, en las unidades de la serie) junto al de repetir el último valor y el de repetir la última estación. Debajo, si la red las mejora y si se equivoca mucho más con la prueba que con el entrenamiento."
+        },
+        "future": {
+          "title": "Lo que viene después",
+          "content": "Elige cuántos valores quieres predecir después del último: se predicen seguidos, cada uno con los anteriores ya predichos, así que cuanto más lejos, menos fiables."
+        },
+        "end": {
+          "title": "¡Listo!",
+          "content": "Ya sabes leer la predicción de una serie temporal. Para entrenar tu propia red con esta serie, usa el botón «Entrenar tu red con esta serie»."
+        }
+      }
     }
   },
   "loading-status": {
@@ -4396,7 +5069,7 @@
       "text": "Abre un fichero .n4l (un modelo con sus datos y sus textos): se guarda en este navegador y aparece aquí.",
       "drop": "Arrastra aquí un fichero .n4l o pulsa para elegirlo",
       "files": "Fichero .n4l",
-      "version": "Versión {{version}} · {{size}}",
+      "version": "Versión {{version}}, {{size}}",
       "remove": "Quitar",
       "remove-title": "Quitar «{{name}}» de este navegador",
       "imported": "«{{name}}» está listo: ábrelo desde su tarjeta.",
@@ -4404,13 +5077,79 @@
       "open-title": "Abrir un fichero .n4l",
       "how": "¿De dónde sale uno? En la página de cada modelo ya entrenado, «Descargar .n4l» da su paquete: el modelo, sus datos y sus textos. Después de entrenar, cada modelo de la tabla se descarga igual, con el conjunto con el que lo entrenaste. También puedes abrir uno que te pasen: solo describe qué hay y cómo usarlo, no lleva código.",
       "saved": "Guardados en este navegador",
-      "empty": "Todavía no hay ninguno: abre un fichero .n4l arriba."
+      "empty": "Todavía no hay ninguno: abre un fichero .n4l arriba.",
+      "remove-confirm": "Se quitará «{{name}}» de este navegador; para usarlo otra vez tendrás que volver a abrir su fichero .n4l."
     },
     "download-trained-title": "Descargar este modelo en un fichero .n4l, con el conjunto de datos, su preprocesado y sus textos: se abre después en «Paquetes .n4l»",
     "metrics": {
       "title": "Con datos que no ha visto",
       "text": "Con el 20 % del conjunto que se apartó al entrenarlo, se equivoca de media en {{mae}}; prediciendo siempre la media, el error sería {{baseline}}. R²: {{r2}} (1 sería acertar siempre; 0, lo mismo que predecir la media).",
       "no-better": "No predice mejor que dar siempre la media: con estos datos no se puede saber mucho más."
+    }
+  },
+  "pagination": {
+    "label": "Páginas de la tabla",
+    "first": "Primera página",
+    "previous": "Página anterior",
+    "next": "Página siguiente",
+    "last": "Última página",
+    "page": "Página {{page}}"
+  },
+  "skip-to-content": "Saltar al contenido",
+  "modal": {
+    "close": "Cerrar"
+  },
+  "model-summary-table": {
+    "layer": "Capa",
+    "output-shape": "Forma de salida",
+    "params": "Parámetros",
+    "total": "Total de parámetros (pesos que se ajustan al entrenar)",
+    "trainable": "De ellos, entrenables",
+    "batch-note": "«—» en la forma de salida es el número de ejemplos que entran a la vez (el lote)."
+  },
+  "chart-data": {
+    "show": "Ver los datos",
+    "rows": "filas {{from}}–{{to}} de {{total}}",
+    "columns": {
+      "variable": "Variable",
+      "value": "Valor",
+      "rows": "Filas",
+      "percent": "Porcentaje",
+      "bin": "centro del intervalo",
+      "group": "Grupo",
+      "lower": "Límite inferior",
+      "q1": "Primer cuartil",
+      "median": "Mediana",
+      "q3": "Tercer cuartil",
+      "upper": "Límite superior",
+      "mean": "Media"
+    }
+  },
+  "page-intro": {
+    "train": {
+      "text": "Aquí diseñas una red neuronal y la entrenas con el conjunto de datos elegido. Puedes dejarlo todo como está y pulsar «Entrenar».",
+      "steps": [
+        "Mira el conjunto de datos: qué columnas tiene y qué hay que predecir.",
+        "Cambia las capas y los hiperparámetros, si quieres.",
+        "Pulsa «Entrenar» y mira cómo aprende la red.",
+        "Prueba el modelo con ejemplos y mira en qué se fija."
+      ]
+    },
+    "review": {
+      "text": "Este modelo ya está entrenado: aquí lo pruebas con ejemplos y ves en qué se fija.",
+      "steps": [
+        "Lee qué hace el modelo y con qué datos se entrenó.",
+        "Elige un ejemplo o escribe los valores tú.",
+        "Mira la predicción y, si quieres, su explicación."
+      ]
+    },
+    "detect": {
+      "text": "Este modelo busca cosas en una imagen. Enciende la cámara o sube una foto, y el modelo marcará lo que encuentre.",
+      "steps": [
+        "Enciende la cámara o sube una foto.",
+        "Mira lo que marca el modelo (también se dice en texto).",
+        "Si quieres, pide la explicación de lo que ha encontrado."
+      ]
     }
   }
 }

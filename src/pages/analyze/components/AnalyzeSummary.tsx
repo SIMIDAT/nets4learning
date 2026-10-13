@@ -4,7 +4,9 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { binCenters, binCounts, histogram, type ColumnProfile_t, type DataFrameProfile_t, type DataWarning_t, type ProblemType_t } from '@core/dataframe/eda'
 import type { Data } from 'plotly.js'
-import { classColor } from '@core/dataframe/plotlyTheme'
+import { classColor, targetColor } from '@core/dataframe/plotlyTheme'
+import { useTheme } from '@hooks/useTheme'
+import { barTracesTable } from '@components/chart/plotTables'
 import N4LPlot from '@components/dataframe/N4LPlot'
 
 type AnalyzeSummaryProps = {
@@ -22,6 +24,7 @@ type AnalyzeSummaryProps = {
 export default function AnalyzeSummary({ profile, targetProfile, targetNumbers, classes, problem, warnings }: AnalyzeSummaryProps) {
   const prefix = 'pages.dataframe.summary.'
   const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const format = useMemo(() => new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 }), [i18n.language])
   const percent = useMemo(() => new Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 1 }), [i18n.language])
   const numeric = profile.profiles.filter(({ kind }) => kind === 'numeric').length
@@ -39,8 +42,8 @@ export default function AnalyzeSummary({ profile, targetProfile, targetNumbers, 
     if (!targetNumbers) return []
     const { edges } = histogram(targetNumbers)
     const { centers, width } = binCenters(edges)
-    return [{ type: 'bar', x: centers, y: binCounts(targetNumbers, edges), width, marker: { color: 'rgba(214, 51, 132, 0.75)' }, hovertemplate: '%{x}: %{y}<extra></extra>' }]
-  }, [targetNumbers])
+    return [{ type: 'bar', x: centers, y: binCounts(targetNumbers, edges), width, marker: { color: targetColor(theme) }, hovertemplate: '%{x}: %{y}<extra></extra>' }]
+  }, [targetNumbers, theme])
 
   const classCounts = useMemo(() => {
     if (!targetProfile) return []
@@ -85,15 +88,20 @@ export default function AnalyzeSummary({ profile, targetProfile, targetNumbers, 
                   x            : classCounts.map(({ count }) => count),
                   text         : classCounts.map(({ count }) => `${format.format(count)} (${percent.format(count / targetProfile.count)})`),
                   textposition : 'auto',
-                  marker       : { color: classCounts.map((_, index) => classColor(index)) },
+                  marker       : { color: classCounts.map((_, index) => classColor(index, theme)) },
                   hovertemplate: '%{y}: %{x}<extra></extra>',
                 }]}
-                layout={{ yaxis: { type: 'category', autorange: 'reversed' }, xaxis: { title: { text: t(prefix + 'rows') } }, showlegend: false }} />}
+                layout={{ yaxis: { type: 'category', autorange: 'reversed' }, xaxis: { title: { text: t(prefix + 'rows') } }, showlegend: false }}
+                table={{
+                  columns: [targetProfile.name, t('chart-data.columns.rows'), t('chart-data.columns.percent')],
+                  rows   : classCounts.map(({ value, count }) => [value, count, percent.format(count / targetProfile.count)]),
+                }} />}
             {targetProfile && problem === 'regression' && targetNumbers &&
               <N4LPlot height={260}
                 label={t(prefix + 'target-distribution', { target: targetProfile.name })}
                 data={targetHistogram}
-                layout={{ xaxis: { title: { text: targetProfile.name } }, yaxis: { title: { text: t(prefix + 'rows') } }, bargap: 0.05 }} />}
+                layout={{ xaxis: { title: { text: targetProfile.name } }, yaxis: { title: { text: t(prefix + 'rows') } }, bargap: 0.05 }}
+                table={barTracesTable(targetHistogram, `${targetProfile.name} (${t('chart-data.columns.bin')})`, t('chart-data.columns.rows'))} />}
             {!targetProfile && <p className={'text-body-secondary mb-0'}>{t(prefix + 'no-target')}</p>}
           </Card.Body>
         </Card>

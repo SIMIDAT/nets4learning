@@ -77,7 +77,7 @@ export default function ModelReviewRegressionPredictForm(props: ModelReviewRegre
   const helpText = (field: Field_t) => {
     if (field.type === 'string') return t('pages.playground.form.type-categorical', { count: field.options.length })
     const type = t(field.type === 'int32' ? 'pages.playground.form.type-integer' : 'pages.playground.form.type-decimal')
-    return `${type} · ${t('pages.playground.form.range', { min: numberFormat.format(field.min), max: numberFormat.format(field.max) })}`
+    return `${type}, ${t('pages.playground.form.range', { min: numberFormat.format(field.min), max: numberFormat.format(field.max) })}`
   }
 
   if (VERBOSE) console.debug('render ModelReviewRegressionPredictForm')

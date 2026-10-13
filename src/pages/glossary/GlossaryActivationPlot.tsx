@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useTheme } from '@hooks/useTheme'
 import { ACTIVATION_DOMAIN, activationCurve, activationRange, activationX, type ActivationFunction_t } from './activationFunctions'
+import { prefersReducedMotion } from '@core/a11y/displaySettings'
 
 // Lo que tarda en dibujarse la curva de principio a fin al reproducirla
 const DURATION_MS = 3000
@@ -17,7 +18,6 @@ const COLORS = {
   dark : { line: '#6ea8fe', text: '#dee2e6', grid: 'rgba(255, 255, 255, .12)', axis: 'rgba(255, 255, 255, .5)' },
 }
 
-const prefersReducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
 /**
  * La curva de la activación se dibuja hasta la x que marca el deslizador (de 0 a 1: el principio y el final del
@@ -129,7 +129,7 @@ function ActivationAnimation({ activation }: { activation: ActivationFunction_t 
       </div>
       <p className={'small text-body-secondary mb-0 mt-1'} aria-live={'off'} data-testid={'Test-GlossaryAnimationValue'}>
         <span className={'font-monospace'}>x = {show(x)} → {name}(x) = {show(y)}</span>
-        {params !== undefined && <> · {params}</>}
+        {params !== undefined && <>, {params}</>}
       </p>
     </div>
   )

@@ -20,9 +20,9 @@
       "summary": "The quality of Portuguese vinho verde, red and white, from its chemical analysis.",
       "description": {
         "text": [
-          "The two data sets are related, as they include the red wine and Portuguese white wine variants. Said data set only includes physicochemical (inputs) and sensory (outputs) variables, the data set does not include data on grape types, wine brand or wine sales price.",
+          "There are two data sets, one of red wine and one of white wine, both Portuguese vinho verde. They only have chemical measurements of the wine (the inputs) and the score some tasters gave it (the output). They do not include the grape type, the brand or the price.",
           "The dataset contains multivariate type data, real type attributes, 4898 instances, and 12 distinct attributes.",
-          "This data set can be used for classification or regression tasks. The classes are ordered, although the data set is unbalanced.",
+          "It can be used to classify (which score a wine has) or to predict the score as a number (regression). The scores are in order, but there are not the same number of wines for each one: most have average scores.",
           "For more information about this data set visit the repository <link1>archive.ics.uci.edu</link1>."
         ],
         "sections": [

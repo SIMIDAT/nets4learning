@@ -1,6 +1,6 @@
 export type VirtualSelectOption_t = { value: number, label: string }
 
-// Para ordenar las coincidencias: "12" encuentra antes "#12 · …" que "#112 · …"
+// Para ordenar las coincidencias: "12" encuentra antes "#12: …" que "#112: …"
 const withoutLeadingSymbols = (text: string) => text.replace(/^[^\p{L}\p{N}]+/u, '')
 
 /** Opciones que contienen la búsqueda: primero las que empiezan por ella (sin contar símbolos iniciales como "#") */

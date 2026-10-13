@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://simidat.ujaen.es/n4l/"><strong>Open the app</strong></a> ·
-  <a href="https://simidat.ujaen.es/n4l/manual">Manual</a> ·
-  <a href="https://doi.org/10.3390/electronics13224378">Paper</a> ·
-  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="https://simidat.ujaen.es/n4l/"><strong>Open the app</strong></a> |
+  <a href="https://simidat.ujaen.es/n4l/manual">Manual</a> |
+  <a href="https://doi.org/10.3390/electronics13224378">Paper</a> |
+  <a href="CHANGELOG.md">Changelog</a> |
   <a href="LICENSE.md">MIT License</a>
 </p>
 

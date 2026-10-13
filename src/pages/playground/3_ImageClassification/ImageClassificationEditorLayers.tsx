@@ -98,7 +98,7 @@ export default function ImageClassificationEditorLayers({ Layers, setLayers, cla
   return (
     <N4LEditorLayers
       layers={Layers}
-      summary={(layer) => layerSummaryParts(t, layer).join(' · ')}
+      summary={(layer) => layerSummaryParts(t, layer).join(', ')}
       isLocked={(layer) => layer._protected === true}
       renderFields={(layer, index) => <>
         <Form.Group className={'mt-3'} controlId={'formClass' + index}>
@@ -114,6 +114,7 @@ export default function ImageClassificationEditorLayers({ Layers, setLayers, cla
       flagged={flaggedLayers(issues)}
       onAddEnd={handleClick_AddLayer_End}
       onRemove={handleClick_RemoveLayer}
+      onRestore={setLayers}
       footer={
         <p className={'text-muted mb-0 pb-0'}>
           <Trans i18nKey={'more-information-in-link'}

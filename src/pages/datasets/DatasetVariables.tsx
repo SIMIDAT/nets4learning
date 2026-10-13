@@ -35,7 +35,8 @@ export default function DatasetVariables({ files }: { files: string[] }) {
                 <td className={'font-monospace text-nowrap'}>{variable.name}</td>
                 <td>{t('datasets.variables.roles.' + variable.role)}</td>
                 <td>{t('datasets.variables.types.' + variable.type)}</td>
-                <td>{variable.description}</td>
+                {/* En inglés, como en su fuente (UCI…): con su idioma, el lector las pronuncia bien (WCAG 3.1.2) */}
+                <td lang={'en'}>{variable.description}</td>
                 <td className={'text-nowrap'}>{variable.units}</td>
                 <td className={'text-end'}>{variable.missing}</td>
               </tr>

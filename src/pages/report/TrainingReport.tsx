@@ -94,9 +94,9 @@ export default function TrainingReport() {
           <div>
             <h1 className={'mb-1'}>{t(prefix + 'title')}</h1>
             <p className={'lead mb-1'}>
-              {t('pages.index.' + report.task + '.1-title')} · {datasetTitle} · {t('model.__index__', { index: report.model })}
+              {t('pages.index.' + report.task + '.1-title')}, {datasetTitle}, {t('model.__index__', { index: report.model })}
             </p>
-            <p className={'small text-body-secondary'}>{t(prefix + 'created', { date })} · Nets4Learning</p>
+            <p className={'small text-body-secondary'}>{t(prefix + 'created', { date })} (Nets4Learning)</p>
           </div>
           <div className={'d-flex gap-2 d-print-none'}>
             <Button onClick={() => window.print()} data-testid={'Test-Report-Print'}>{t(prefix + 'print')}</Button>

@@ -80,7 +80,7 @@ export default function N4LDataFrameTable({
           </span>}
           {showShape && <span>
             {t('dataframe.table.shape', { rows, columns })}
-            {rows > maxRows && <> · {t('dataframe.table.scroll-rows')}</>}
+            {rows > maxRows && <>. {t('dataframe.table.scroll-rows')}</>}
           </span>}
         </p>}
     </div>

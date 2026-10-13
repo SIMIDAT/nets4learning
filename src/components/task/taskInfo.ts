@@ -12,6 +12,7 @@ export const TASK_INFO: Record<TASKS_TYPE_V, TaskInfo_t> = {
   'image-classification'  : { task: TASKS.IMAGE_CLASSIFICATION, i18nTitle: 'pages.index.image-classification.1-title' },
   'object-detection'      : { task: TASKS.OBJECT_DETECTION, i18nTitle: 'pages.index.object-detection.1-title' },
   'clustering'            : { task: TASKS.CLUSTERING, i18nTitle: 'pages.index.clustering.1-title' },
+  'time-series'           : { task: TASKS.TIME_SERIES, i18nTitle: 'pages.index.time-series.1-title' },
 }
 
 export const isTask = (value: string | undefined): value is TASKS_TYPE_V => value !== undefined && value in TASK_INFO

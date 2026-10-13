@@ -33,7 +33,7 @@ describe('ModelReviewTabularClassificationPredictForm', () => {
     const buying = screen.getByLabelText('n4l-car:columns.Buying')
     expect(buying.tagName).toBe('SELECT')
     expect(buying).toHaveValue('vhigh')
-    expect(buying.parentElement).toHaveTextContent('Buying · pages.playground.form.type-categorical')
+    expect(buying.parentElement).toHaveTextContent('Buying: pages.playground.form.type-categorical')
   })
 
   test('los números se guardan como número y un campo vacío no muestra NaN', () => {
@@ -114,7 +114,7 @@ describe('ModelReviewRegressionPredictForm', () => {
     // La variable objetivo es lo que se predice y "id" no lo usa el modelo
     expect(screen.queryByLabelText('price')).toBeNull()
     expect(screen.queryByLabelText('id')).toBeNull()
-    expect(screen.getByLabelText('rooms').parentElement).toHaveTextContent('pages.playground.form.type-integer · pages.playground.form.range')
+    expect(screen.getByLabelText('rooms').parentElement).toHaveTextContent('pages.playground.form.type-integer, pages.playground.form.range')
     expect(screen.getByLabelText('area')).toHaveValue(55.5)
     expect(screen.getByLabelText('city').parentElement).toHaveTextContent('pages.playground.form.type-categorical')
   })

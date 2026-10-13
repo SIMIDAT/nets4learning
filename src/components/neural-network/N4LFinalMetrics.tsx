@@ -3,17 +3,25 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import { historyCurves, type TrainingLogs_t } from '@core/history/trainingSummary'
 
-const format = (values: number[]) => {
-  const last = values[values.length - 1]
-  return Number.isFinite(last) ? last.toFixed(3) : '-'
-}
-
-/** Celda de la tabla de modelos: valor final de cada métrica y, entre paréntesis, el de validación */
+/**
+ * Celda de la tabla de modelos: valor final de cada métrica con los datos de entrenamiento y, si los hay, con los de
+ * validación, dicho con palabras (antes iba entre paréntesis sin decir qué era)
+ */
 export default function N4LFinalMetrics({ logs }: { logs: TrainingLogs_t }) {
+  const { t, i18n } = useTranslation()
+  const number = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 3 })
+  const format = (values: number[]) => {
+    const last = values[values.length - 1]
+    return Number.isFinite(last) ? number.format(last) : '-'
+  }
+  const prefix = 'pages.playground.generator.training.'
   return <>
     {historyCurves(logs).map(({ name, train, validation }) => (
       <span key={name} className={'n4l-table-cell d-block'}>
-        <small>{name}: {format(train)}{validation !== null && ` (${format(validation)})`}</small>
+        <small>
+          {name}: {format(train)}
+          {validation !== null && <>, {t(prefix + 'validation').toLowerCase()} {format(validation)}</>}
+        </small>
       </span>
     ))}
   </>

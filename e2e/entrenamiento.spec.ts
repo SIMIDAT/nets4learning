@@ -78,6 +78,8 @@ test('se comparan dos modelos: curvas superpuestas y qué hiperparámetro ha cam
     await page.locator('#tfjs-visor-container').getByRole('button', { name: 'Hide' }).click()
   }
 
+  // El aviso de «modelo entrenado» sale abajo a la derecha, donde está el interruptor: se espera a que se vaya
+  await expect(page.locator('.swal2-container')).toHaveCount(0, { timeout: 15_000 })
   await page.getByTestId('Test-TrainingCurves-Compare').check()
   const comparison = page.getByTestId('Test-ModelComparison')
   await expect(comparison.getByTestId('Test-ModelComparison-Summary')).toHaveText(/^Solo cambia «Tasa de aprendizaje»/)
@@ -85,7 +87,8 @@ test('se comparan dos modelos: curvas superpuestas y qué hiperparámetro ha cam
   await expect(comparison.locator('canvas').first()).toBeVisible()
 
   // Con uno solo marcado no hay nada que comparar
-  await comparison.getByLabel('Modelo 1').uncheck()
+  // La casilla (las gráficas también nombran a «Modelo 1» en su descripción)
+  await comparison.getByRole('checkbox', { name: 'Modelo 1' }).uncheck()
   await expect(comparison).toContainText('Marca al menos dos modelos')
 })
 

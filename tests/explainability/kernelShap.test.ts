@@ -3,7 +3,7 @@ import * as tfjs from '@tensorflow/tfjs'
 import { KernelSHAP } from '../../src/core/explainability/webshap'
 
 // Modelo lineal con dos salidas: para un modelo lineal y un background de una fila,
-// el valor SHAP exacto de cada variable es w_i · (x_i − bg_i).
+// el valor SHAP exacto de cada variable es w_i  ×  (x_i − bg_i).
 const W = [
   [2, -1, 0.5, 3],
   [-1, 4, 1, 0],

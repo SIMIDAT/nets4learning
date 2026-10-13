@@ -1,6 +1,6 @@
 import { Col, Container, Form, Modal, Row, Button } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import React, { useContext } from 'react'
+import React, { useContext, useId } from 'react'
 
 import { VERBOSE } from '@/CONSTANTS'
 import {
@@ -22,6 +22,8 @@ type DataFramePlotModalConfigurationProps = {
 }
 
 export default function DataFramePlotModalConfiguration(props: DataFramePlotModalConfigurationProps) {
+  // El diálogo se llama como su título (WCAG 4.1.2) y su botón de cerrar, en el idioma de la página
+  const titleId = useId()
   const { updateUI } = props
 
   const {
@@ -113,9 +115,9 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
 
   if (VERBOSE) console.debug('render DataFramePlotConfiguration')
   return <>
-    <Modal show={showOptions} onHide={() => setShowOptions(false)} size={'xl'} fullscreen={'md-down'}>
-      <Modal.Header closeButton>
-        <Modal.Title>
+    <Modal aria-labelledby={titleId} show={showOptions} onHide={() => setShowOptions(false)} size={'xl'} fullscreen={'md-down'}>
+      <Modal.Header closeButton closeLabel={t('modal.close')}>
+        <Modal.Title id={titleId}>
           <Trans i18nKey={`dataframe-plot.${dataframePlotConfig.PLOT_ENABLE}.title`} /> | <Trans i18nKey={'dataframe-plot.configuration.title'} />
         </Modal.Title>
         <div className={'d-flex'}>

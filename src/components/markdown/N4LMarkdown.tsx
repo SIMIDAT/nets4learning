@@ -121,7 +121,8 @@ export default function N4LMarkdown(props: { children: string }) {
                   thumbnail={true}
                   className={'d-block mx-auto'}
                   src={newSrc}
-                  alt={rest.alt}
+                  // {server} solo marca de dónde sale la imagen: no es parte de su descripción
+                  alt={rest.alt?.replace(/\s*\{server\}/i, '')}
                 />
               );
             } else {

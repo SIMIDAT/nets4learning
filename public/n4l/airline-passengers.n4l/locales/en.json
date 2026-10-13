@@ -1,0 +1,40 @@
+{
+  "columns": {
+    "Month": "Month",
+    "Passengers": "Passengers"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Airline passengers",
+      "summary": "International airline passengers each month, from 1949 to 1960: more every year, and even more in summer.",
+      "description": {
+        "text": [
+          "The classic Box and Jenkins series: total international airline passengers each month, in thousands, from January 1949 to December 1960 (144 months). Almost every time series forecasting method is explained with it.",
+          "It has a <b>trend</b>, because more people fly every year (in 1960, almost four times as many as in 1949), and a 12-month <b>seasonality</b>: the peaks are in July and August and the quietest months are in winter. The peaks also grow with the series (the seasonality is multiplicative), which is why its logarithm is often forecast instead."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Month</b>: the month (year-month).",
+              "<b>Passengers</b>: the passengers that month, in thousands. This is what is forecast."
+            ]
+          },
+          {
+            "title": "Pre-trained model",
+            "items": [
+              "A network with one Dense layer of 32 neurons that sees the previous 24 months. On the test part (August 1958 to December 1960, which it did not see while training) it is off by <b>{{test_mae, number(maximumFractionDigits: 1)}}</b> thousand passengers on average one step ahead and by {{test_recursive_mae, number(maximumFractionDigits: 1)}} forecasting the whole test part at once; repeating the value one year earlier is off by {{test_seasonal_mae, number(maximumFractionDigits: 1)}}."
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>AirPassengers in the R documentation</link1>, with its original source.",
+              "<link2>The CSV</link2>, from the jbrownlee/Datasets repository."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

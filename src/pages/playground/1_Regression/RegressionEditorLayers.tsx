@@ -95,8 +95,9 @@ export default function RegressionEditorLayers() {
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
+      onRestore={(params_layers) => setParams((prevState) => ({ ...prevState, params_layers }))}
       waiting={!show}
-      titleAs={'h2'}
+      titleAs={'h3'}
     />
   )
 }

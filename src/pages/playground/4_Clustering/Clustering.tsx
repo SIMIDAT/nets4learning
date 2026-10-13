@@ -16,9 +16,11 @@ import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LNumberField from '@components/form/N4LNumberField'
 import { ClusterScatter, ElbowChart } from './ClusteringCharts'
 import ClusteringComparison from './ClusteringComparison'
 import { clusterColor } from './clusterColors'
+import { useTheme } from '@hooks/useTheme'
 
 const prefix = 'pages.playground.clustering.'
 /** k del codo: de 1 a 8 grupos */
@@ -47,6 +49,7 @@ type Run_t = {
  */
 export default function Clustering({ dataset }: { dataset: string }) {
   const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const option = taskOptions(TASKS.CLUSTERING, 'dataset').find(({ value }) => value === dataset)
   const file = option?.info?.files?.[0]
   const [table, setTable] = useState<Table_t | null>(null)
@@ -216,11 +219,8 @@ export default function Clustering({ dataset }: { dataset: string }) {
               </Form.Group>
               <Form.Check type={'switch'} id={'clustering-scale'} className={'mb-1'} label={t(prefix + 'scale')} checked={scale} onChange={() => setScale(!scale)} />
               <Form.Text className={'text-muted d-block mb-3'}>{t(prefix + 'scale-help')}</Form.Text>
-              <Form.Group className={'mb-3'} controlId={'clustering-k'}>
-                <Form.Label className={'fw-semibold'}>{t(prefix + 'k')}</Form.Label>
-                <Form.Control type={'number'} min={MIN_K} max={MAX_K} value={k} onChange={(event) => setK(Math.min(MAX_K, Math.max(MIN_K, Number(event.target.value) || MIN_K)))} />
-                <Form.Text className={'text-muted'}>{t(prefix + 'k-help')}</Form.Text>
-              </Form.Group>
+              <N4LNumberField className={'mb-3'} controlId={'clustering-k'} labelClassName={'fw-semibold'}
+                label={t(prefix + 'k')} value={k} min={MIN_K} max={MAX_K} help={t(prefix + 'k-help')} onChange={setK} />
               <div className={'d-grid gap-2'}>
                 <Button size={'lg'} onClick={() => handleRun()} disabled={chosen.length === 0} data-testid={'Test-Clustering-Run'}>{t(prefix + 'run')}</Button>
                 {run !== null &&
@@ -295,7 +295,7 @@ export default function Clustering({ dataset }: { dataset: string }) {
                             <th scope={'col'}>{t(prefix + 'variable')}</th>
                             {profiles.map((_profile, cluster) => (
                               <th key={cluster} scope={'col'} className={'text-end text-nowrap'}>
-                                <span className={'n4l-compare-swatch'} style={{ backgroundColor: clusterColor(cluster) }} aria-hidden={true} />
+                                <span className={'n4l-compare-swatch'} style={{ backgroundColor: clusterColor(cluster, theme) }} aria-hidden={true} />
                                 {t(prefix + 'cluster', { number: cluster + 1 })}
                               </th>
                             ))}

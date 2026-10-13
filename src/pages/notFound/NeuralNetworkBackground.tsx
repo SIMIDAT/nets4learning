@@ -1,20 +1,12 @@
-import { useCallback, useEffect, useId, useRef, useSyncExternalStore } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { particles } from '@tsparticles/particles'
 import { tsParticles, type Container, type Particle } from '@tsparticles/engine'
 
 import { useTheme } from '@hooks/useTheme'
 import { CURSOR_OPTIONS, NETWORK_LAYOUTS, networkOptions } from './networkOptions'
 import styles from './NotFoundPage.module.css'
-
-/** Si se cumple la media query; cambia con ella (al girar el móvil, al pedir menos movimiento al sistema…) */
-function useMediaQuery(query: string) {
-  const subscribe = useCallback((onChange: () => void) => {
-    const list = window.matchMedia?.(query)
-    list?.addEventListener('change', onChange)
-    return () => list?.removeEventListener('change', onChange)
-  }, [query])
-  return useSyncExternalStore(subscribe, () => window.matchMedia?.(query).matches ?? false)
-}
+import { useDisplaySettings } from '@core/a11y/displaySettings'
+import { useMediaQuery } from '@hooks/useMediaQuery'
 
 /**
  * Fondo de la página 404: una red neuronal que sigue procesando. Lo pinta tsParticles (con los plugins del bundle
@@ -27,7 +19,10 @@ export default function NeuralNetworkBackground() {
   const theme = useTheme()
   const isDesktop = useMediaQuery('(min-width: 992px)')
   const isTablet = useMediaQuery('(min-width: 576px)')
-  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  // Menos movimiento si lo pide el sistema o se ha elegido en /settings
+  const systemReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+  const { reduceMotion } = useDisplaySettings()
+  const reducedMotion = systemReducedMotion || reduceMotion
   const layout = isDesktop ? NETWORK_LAYOUTS.desktop : isTablet ? NETWORK_LAYOUTS.tablet : NETWORK_LAYOUTS.mobile
 
   useEffect(() => {

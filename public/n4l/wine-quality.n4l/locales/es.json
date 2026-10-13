@@ -20,9 +20,9 @@
       "summary": "La calidad de vinos verdes portugueses, tintos y blancos, según su análisis químico.",
       "description": {
         "text": [
-          "Los dos conjuntos de datos están relacionados, pues incluyen las variantes de vino tinto y vino blanco portugués. Dicho conjunto de datos solo incluye variables fisicoquímicas (entradas) y sensoriales (salidas), el conjunto de datos no incluye datos de tipos de uva, marca de vino o precio de venta del vino.",
+          "Son dos conjuntos de datos, uno de vino tinto y otro de vino blanco, los dos de vino verde portugués. Solo tienen medidas químicas del vino (las entradas) y la nota que le dieron unos catadores (la salida). No dicen el tipo de uva, la marca ni el precio.",
           "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 4898 instancias y 12 atributos distintos.",
-          "Dicho conjunto de datos puede ser usado para tareas de clasificación o de regresión. Las clases están ordenadas, aunque el conjunto de datos se encuentra desbalanceado.",
+          "Sirve para clasificar (qué nota tiene un vino) o para predecir la nota como un número (regresión). Las notas van en orden, pero no hay el mismo número de vinos de cada una: casi todos tienen notas medias.",
           "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>archive.ics.uci.edu</link1>."
         ],
         "sections": [

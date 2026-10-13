@@ -1,0 +1,41 @@
+{
+  "columns": {
+    "Date": "Fecha",
+    "Temp": "Temperatura"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Temperaturas mínimas en Melbourne",
+      "summary": "La temperatura mínima de cada día en Melbourne (Australia), de 1981 a 1990: sube y baja con las estaciones, con mucho ruido de un día a otro.",
+      "description": {
+        "text": [
+          "La temperatura mínima de cada día en Melbourne (Australia), en grados Celsius, de 1981 a 1990: 3.650 días. Los datos son de la Oficina de Meteorología de Australia (<link2>Bureau of Meteorology</link2>).",
+          "No tiene tendencia, pero sí una <b>estacionalidad</b> anual muy clara: en el hemisferio sur el verano es en enero y febrero, y julio es el mes más frío. De un día a otro cambia mucho (unos 2 °C de media), así que tiene bastante ruido que ningún modelo puede predecir.",
+          "Los dos años bisiestos (1984 y 1988) no tienen el 31 de diciembre: así todos los años tienen 365 filas."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Date</b>: el día (año-mes-día).",
+              "<b>Temp</b>: la temperatura mínima de ese día, en °C. Es lo que se predice."
+            ]
+          },
+          {
+            "title": "Modelo ya entrenado",
+            "items": [
+              "Una red con una capa Dense de 16 neuronas que ve los 14 días anteriores. Con la prueba (los dos últimos años, que no vio al entrenar) se equivoca <b>{{test_mae, number(maximumFractionDigits: 2)}} °C</b> de media a un paso, menos que repetir la de ayer ({{test_naive_mae, number(maximumFractionDigits: 2)}} °C). Prediciendo los dos años seguidos se equivoca {{test_recursive_mae, number(maximumFractionDigits: 2)}} °C: con dos semanas no ve el año, y repetir el del año anterior lo hace mejor ({{test_seasonal_mae, number(maximumFractionDigits: 2)}} °C)."
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>El CSV</link1>, del repositorio jbrownlee/Datasets.",
+              "<link2>Datos climáticos de la Oficina de Meteorología de Australia</link2>."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

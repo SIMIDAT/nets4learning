@@ -7,6 +7,8 @@ describe('glossaryTarget', () => {
     expect(glossaryTarget(GLOSSARY_ACTIONS.TABULAR_CLASSIFICATION.STEP_1_UPLOAD_AND_PROCESS)).toBe('task-tabular-classification')
     expect(glossaryTarget(GLOSSARY_ACTIONS.REGRESSION.STEP_2_DATASET)).toBe('task-regression')
     expect(glossaryTarget(GLOSSARY_ACTIONS.IMAGE_CLASSIFICATION.STEP_2_DATASET)).toBe('task-image-classification')
+    // Las series temporales, a su grupo de conceptos (ventana, diferenciar, líneas base…)
+    expect(glossaryTarget(GLOSSARY_ACTIONS.TIME_SERIES.STEP_2_DATASET)).toBe('time-series')
   })
 
   test('los editores y la tabla de modelos llevan a su grupo de términos', () => {

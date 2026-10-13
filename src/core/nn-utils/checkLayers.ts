@@ -1,4 +1,5 @@
 import type { ImageLayer_t } from '@/types/types'
+import { isRecurrentLayer, SERIES_LAYER_LABELS, type SeriesLayer_t } from '@core/timeSeries/seriesLayers'
 
 // Lo que está mal (o se puede mejorar) en las capas que ha montado el usuario, antes de entrenar, con el arreglo de
 // cada cosa: las capas ya corregidas, para aplicarlas con un botón. Sin DOM ni traducciones: los textos los pone quien
@@ -14,6 +15,7 @@ export type LayerIssueKind_t =
   | 'flatten-again'
   | 'dense-before-flatten'
   | 'too-small'
+  | 'recurrent-after-dense'
 
 export type LayerIssue_t<L> = {
   kind    : LayerIssueKind_t
@@ -57,6 +59,33 @@ export function checkDenseLayers<L extends DenseLike_t>(layers: L[], output?: { 
     if (isOutput && (layer.activation || 'relu') !== output.activation) {
       issues.push({ kind: 'output-activation', severity: 'warning', layer: index, values: { activation: layer.activation || 'relu', expected: output.activation }, fixed: replaceAt(layers, index, { ...layer, activation: output.activation }) })
     }
+  }
+  return sortIssues(issues)
+}
+
+/**
+ * Capas de una serie temporal: sus neuronas y que las recurrentes vayan antes que las dense (una dense da una lista de
+ * números, no una secuencia que leer valor a valor). La salida (una neurona lineal) la fija la página
+ */
+export function checkSeriesLayers<L extends SeriesLayer_t>(layers: L[]): LayerIssue_t<L>[] {
+  const issues: LayerIssue_t<L>[] = []
+  for (const [index, layer] of layers.entries()) {
+    if (!isPositiveInteger(layer.units) || layer.units > MAX_UNITS) {
+      const value = Math.min(Math.max(Math.round(Number(layer.units)) || 10, 1), MAX_UNITS)
+      issues.push({ kind: 'param', severity: 'error', layer: index, values: { param: 'units', value }, fixed: replaceAt(layers, index, { ...layer, units: value }) })
+    }
+  }
+  const firstDense = layers.findIndex((layer) => !isRecurrentLayer(layer))
+  const misplaced = layers.findIndex((layer, index) => firstDense !== -1 && index > firstDense && isRecurrentLayer(layer))
+  if (misplaced !== -1) {
+    issues.push({
+      kind    : 'recurrent-after-dense',
+      severity: 'error',
+      layer   : misplaced,
+      values  : { type: SERIES_LAYER_LABELS[layers[misplaced]._class] },
+      // Las recurrentes, en su orden, al principio
+      fixed   : [...layers.filter(isRecurrentLayer), ...layers.filter((layer) => !isRecurrentLayer(layer))],
+    })
   }
   return sortIssues(issues)
 }

@@ -7,6 +7,10 @@ import N4LFooter from './components/footer/N4LFooter'
 import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
 import N4LAnalytics from './components/analytics/N4LAnalytics'
 import N4LScrollManager from './components/navigation/N4LScrollManager'
+import N4LPageTitle from '@components/navigation/N4LPageTitle'
+import N4LSkipLink, { SKIP_LINK_TARGET } from '@components/navigation/N4LSkipLink'
+import N4LAnnouncer from '@components/a11y/N4LAnnouncer'
+import N4LDialogFocusWrap from '@components/a11y/N4LDialogFocusWrap'
 import { readConsent, startAnalytics } from '@core/analytics'
 import { startupTFBackend } from '@core/tfBackend'
 import { trackLearningPath } from '@core/learning/learningPath'
@@ -33,6 +37,7 @@ const PageVersion = lazy(() => import( './pages/version/Version'))
 const PageSettings = lazy(() => import( './pages/settings/Settings'))
 const PageLearn = lazy(() => import( './pages/learn/Learn'))
 const PageReport = lazy(() => import( './pages/report/TrainingReport'))
+const PageAccessibility = lazy(() => import( './pages/accessibility/Accessibility'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
 // /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
 const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
@@ -67,13 +72,26 @@ function App() {
 
   return (
     <div className="body">
-      <BrowserRouter basename={VITE_PATH}>
+      {/* Sin transiciones: con ellas, React deja a la vista la página anterior mientras llega el código de la nueva y no se
+          ve que está cargando; sin ellas, se ve Loading (el fallback de Suspense) */}
+      <BrowserRouter basename={VITE_PATH} useTransitions={false}>
+        {/* Primero «Saltar al contenido» y después el aviso de cookies (aunque se vea abajo): con el teclado se llega a
+            él enseguida, no después de toda la página */}
+        <Suspense fallback={''}>
+          <N4LSkipLink />
+          <N4LCookiesBanner />
+        </Suspense>
+        <N4LPageTitle />
+        <N4LAnnouncer />
+        <N4LDialogFocusWrap />
         <N4LAnalytics />
         <N4LScrollManager />
         <Suspense fallback={''}>
           <N4LNavbar />
         </Suspense>
         <N4LOfflineBar />
+        {/* El destino de «Saltar al contenido» (N4LSkipLink): las páginas, sin la barra de navegación */}
+        <div id={SKIP_LINK_TARGET}>
         <Suspense fallback={<Loading />}>
           <TFBackendReady>
             <Routes>
@@ -95,6 +113,7 @@ function App() {
               <Route path={'/settings'} element={<PageSettings />}></Route>
               <Route path={'/learn'} element={<PageLearn />}></Route>
               <Route path={'/report'} element={<PageReport />}></Route>
+              <Route path={'/accessibility'} element={<PageAccessibility />}></Route>
 
               {SHOW_DEV_PAGES && <>
                 <Route path={'/debug'} element={<PageDebug />}></Route>
@@ -107,9 +126,9 @@ function App() {
             </Routes>
           </TFBackendReady>
         </Suspense>
+        </div>
         <Suspense fallback={''}>
           <N4LFooter />
-          <N4LCookiesBanner />
           <N4LLearningToast />
         </Suspense>
       </BrowserRouter>

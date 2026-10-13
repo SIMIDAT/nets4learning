@@ -88,6 +88,7 @@ export default function N4LFooter() {
               <li><Link to={'/contribute'} className={LINK_CLASS}><Trans i18nKey={'footer.contribute'} /></Link></li>
               <li><Link to={'/version'} className={LINK_CLASS}><Trans i18nKey={'footer.version'} /></Link></li>
               <li><Link to={'/terms-and-conditions'} className={LINK_CLASS}><Trans i18nKey={'footer.terms'} /></Link></li>
+              <li><Link to={'/accessibility'} className={LINK_CLASS}><Trans i18nKey={'footer.accessibility'} /></Link></li>
               <li>
                 <a href={VITE_PATH + '/terms-and-conditions#cookies'} className={LINK_CLASS} onClick={handleClick_CookiePreferences}>
                   <Trans i18nKey={'footer.cookies'} />

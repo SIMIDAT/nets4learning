@@ -15,7 +15,12 @@ export const N4L_PACKAGES_DIR = 'n4l'
 export const N4L_MANIFEST = 'manifest.json'
 
 export type N4LColumnRole_t = 'Feature' | 'Target' | 'ID' | 'Other'
-export type N4LColumnType_t = 'Continuous' | 'Integer' | 'Categorical' | 'Binary'
+/** Date: la fecha de cada fila de una serie temporal (1949-01, 1981-01-01…) */
+export type N4LColumnType_t = 'Continuous' | 'Integer' | 'Categorical' | 'Binary' | 'Date'
+
+/** Serie temporal: cada cuánto hay una fila */
+export const N4L_FREQUENCIES = ['hour', 'day', 'week', 'month', 'quarter', 'year'] as const
+export type N4LFrequency_t = typeof N4L_FREQUENCIES[number]
 
 /** Una columna del conjunto de datos (su ficha): las categóricas, con sus valores en el orden del formulario */
 export type N4LColumn_t = {
@@ -32,14 +37,16 @@ export type N4LColumn_t = {
 
 /** Un conjunto en una tabla (un CSV), con la ficha de cada columna. Es el tipo por defecto (sin `kind`) */
 export type N4LDataset_t = {
-  id     : string
-  kind?  : 'table'
+  id        : string
+  kind?     : 'table'
   /** Ruta dentro del paquete */
-  file   : string
+  file      : string
   /** Descripción original del conjunto (p. ej. el .names de UCI), dentro del paquete */
-  info?  : string
-  rows   : number
-  columns: N4LColumn_t[]
+  info?     : string
+  rows      : number
+  columns   : N4LColumn_t[]
+  /** Serie temporal: una fila cada tanto (`frequency`), en orden, con su fecha en la columna de tipo Date */
+  frequency?: N4LFrequency_t
 }
 
 /**
@@ -150,10 +157,24 @@ export type N4LDenseLayer_t = { class: 'dense', units: number, activation: strin
 export type N4LConv2DLayer_t = { class: 'conv2d', filters: number, kernelSize: number, activation: string, locked?: boolean }
 export type N4LMaxPooling2DLayer_t = { class: 'maxPooling2d', poolSize: number, strides: number, locked?: boolean }
 export type N4LFlattenLayer_t = { class: 'flatten', locked?: boolean }
-export type N4LLayer_t = N4LDenseLayer_t | N4LConv2DLayer_t | N4LMaxPooling2DLayer_t | N4LFlattenLayer_t
+/** Capa recurrente (series temporales): lee la ventana valor a valor; sin activación, tanh */
+export type N4LRecurrentLayer_t = { class: 'simpleRNN' | 'lstm' | 'gru', units: number, activation?: string, locked?: boolean }
+export type N4LLayer_t = N4LDenseLayer_t | N4LConv2DLayer_t | N4LMaxPooling2DLayer_t | N4LFlattenLayer_t | N4LRecurrentLayer_t
 
 /** Las capas densas (las únicas de las redes de tablas) */
 export const denseLayers = (layers: N4LLayer_t[] = []) => layers.filter((layer): layer is N4LDenseLayer_t => layer.class === 'dense')
+
+/** Series temporales: cómo se prepara la serie para la red al entrar */
+export type N4LForecast_t = {
+  /** Valores anteriores con los que se predice el siguiente */
+  window     : number
+  /** Valores que tarda en repetirse el patrón (12 meses…): con ella se compara con la predicción estacional */
+  season?    : number
+  /** Predecir el cambio respecto al valor anterior (por defecto, no) */
+  difference?: boolean
+  /** Porcentaje final de la serie que se aparta para probar (por defecto, 20) */
+  testSize?  : number
+}
 
 /** Cómo se usa el paquete en una tarea */
 export type N4LTask_t = {
@@ -175,6 +196,8 @@ export type N4LTask_t = {
   prediction?  : N4LTablePrediction_t | N4LImagePrediction_t
   /** Para entrenar: la red por defecto y, si se proponen, la tasa de aprendizaje y las épocas con las que se empieza */
   training?    : { layers: N4LLayer_t[], learningRate?: number, epochs?: number }
+  /** Series temporales: la ventana, la estación, si se diferencia y cuánto se aparta para probar */
+  forecast?    : N4LForecast_t
 }
 
 export type N4LManifest_t = {

@@ -138,8 +138,9 @@ function VariableCard({ profile, numbers, isTarget, meta, format, percent, onSho
         </div>
         {(meta?.description || meta?.units) &&
           <p className={'small text-body-secondary mb-0'}>
-            {meta.description}
-            {meta.units && <>{meta.description ? ' · ' : ''}{t(prefix + 'units', { units: meta.units })}</>}
+            {/* En inglés, como en la ficha de su fuente (WCAG 3.1.2) */}
+            {meta.description && <span lang={'en'}>{meta.description}</span>}
+            {meta.units && <>{meta.description ? ', ' : ''}{t(prefix + 'units', { units: meta.units })}</>}
           </p>}
         <div className={'small d-flex flex-wrap column-gap-3'}>
           <span className={profile.missing > 0 ? 'text-warning-emphasis' : undefined}>
@@ -193,7 +194,7 @@ function TopValues({ profile, format, percent, isTarget }: { profile: ColumnProf
           <li key={value} className={'n4l-eda-top'}>
             <span className={'text-truncate'} title={value}>{value}</span>
             <span className={'n4l-eda-top-bar' + (isTarget ? ' n4l-eda-top-bar-target' : '')} style={{ width: `${(count / profile.count) * 100}%` }} />
-            <span className={'text-body-secondary text-nowrap'}>{format.format(count)} · {percent.format(count / profile.count)}</span>
+            <span className={'text-body-secondary text-nowrap'}>{format.format(count)} ({percent.format(count / profile.count)})</span>
           </li>
         ))}
       </ul>

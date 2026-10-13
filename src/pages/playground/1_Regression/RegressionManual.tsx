@@ -97,7 +97,7 @@ export default function RegressionManual() {
 
       <details>
         <summary className={'n4l-summary'}>Info</summary>
-        <main>
+        <div>
           <strong>
             <Trans i18nKey={prefixManual + 'simple-regression'} />
             <br />
@@ -109,7 +109,7 @@ export default function RegressionManual() {
             <br />
           </strong>
           <N4LLatex>{'$$ Y(x_1, x_2, ..., x_n) = w_1 x_1 + w_2 x_2 + ... + w_n x_n + w_0 $$'}</N4LLatex>
-        </main>
+        </div>
       </details>
     </>
   )

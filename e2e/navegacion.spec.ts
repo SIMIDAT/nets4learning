@@ -1,10 +1,16 @@
 import path from 'node:path'
 import { test, expect } from './fixtures'
 
-test('la home enseña la tarjeta de la tarea elegida', async ({ page }) => {
+test('la home enseña la tarjeta de la tarea elegida y baja hasta ella', async ({ page }) => {
   await page.goto('/')
   await page.getByTestId('Test-InitialMenu-LinearRegression').click()
   await expect(page.getByTestId('Test-GoTo-SelectModel-LinearRegression')).toBeVisible()
+  // El separador de las tarjetas queda arriba, justo debajo de la barra de navegación, y con el foco
+  const divider = page.locator('.n4l-hr-row', { hasText: 'Tareas' })
+  await expect(divider).toBeFocused()
+  const navbarHeight = (await page.locator('.n4l-navbar').boundingBox())!.height
+  await expect.poll(async () => (await divider.boundingBox())!.y).toBeGreaterThanOrEqual(navbarHeight)
+  await expect.poll(async () => (await divider.boundingBox())!.y).toBeLessThan(navbarHeight + 100)
 })
 
 test('la barra de navegación lleva a cada página y marca la actual', async ({ page }) => {
@@ -52,6 +58,10 @@ test('un modelo se descarga como .n4l y se abre en «Paquetes .n4l»: se guarda 
   // Sigue ahí al volver (IndexedDB) y se puede quitar
   await page.goto('/packages')
   await page.getByTestId('Test-N4LLocal-iris').getByRole('button', { name: /Quitar/ }).click()
+  // Antes pregunta (no se puede deshacer): el foco va a «Cancelar»
+  const confirm = page.getByTestId('Test-N4LLocal-iris').getByRole('group', { name: /Se quitará/ })
+  await expect(confirm.getByRole('button', { name: 'Cancelar' })).toBeFocused()
+  await confirm.getByRole('button', { name: 'Quitar' }).click()
   await expect(page.getByTestId('Test-N4LLocal-iris')).toHaveCount(0)
   await page.goto('/playground/tabular-classification/model/local-iris')
   await expect(page).toHaveURL(/\/404$/)
@@ -130,6 +140,25 @@ test('desde /datasets un conjunto se abre en el AED', async ({ page }) => {
   await expect(page).toHaveURL(/\/analyze\?dataset=car$/)
   await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('1728')
   await expect(page.locator('#analyze-project-dataset')).toHaveValue('n4l/car.n4l/data/car.csv')
+})
+
+test('las series temporales de /datasets: su descripción, sus fechas y su análisis en el AED', async ({ page }) => {
+  await page.goto('/datasets?task=time-series')
+  await expect(page.getByTestId('Test-Dataset-AIRLINE-PASSENGERS')).toContainText('144 meses, objetivo: Passengers')
+  await expect(page.getByTestId('Test-Dataset-MELBOURNE-TEMPERATURES')).toContainText('días, objetivo: Temp')
+  // Se entrenan y tienen su modelo ya entrenado
+  await expect(page.getByTestId('Test-DatasetTrain-SUNSPOTS')).toHaveAttribute('href', '/playground/time-series/dataset/SUNSPOTS')
+  await expect(page.getByTestId('Test-DatasetModel-SUNSPOTS')).toHaveAttribute('href', '/playground/time-series/model/SUNSPOTS')
+  await page.getByTestId('Test-DatasetInfo-SUNSPOTS').click()
+  const modal = page.getByRole('dialog')
+  await expect(modal.getByTestId('Test-N4LDescription')).toContainText('mínimo de Dalton')
+  await modal.getByRole('tab', { name: 'Variables' }).click()
+  await expect(modal.getByTestId('Test-DatasetVariables')).toContainText('Fecha')
+  await modal.getByRole('tab', { name: 'Datos' }).click()
+  await expect(modal.getByText('2820 filas × 2 columnas')).toBeVisible()
+  await modal.getByRole('link', { name: 'Analizar' }).click()
+  await expect(page).toHaveURL(/\/analyze\?dataset=monthly-sunspots$/)
+  await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('2820')
 })
 
 test('el modal de un conjunto de /datasets enseña sus datos y sus estadísticas', async ({ page }) => {
@@ -252,9 +281,11 @@ const GUIDES = [
   { path: '/playground/tabular-classification/model/LYMPHOGRAPHY', ready: '[data-guide="form"]' },
   { path: '/playground/regression/model/AUTO_MPG', ready: '[data-guide="field-weight"]' },
   { path: '/playground/image-classification/model/IMAGE-MNIST', ready: '[data-guide="model-summary"]' },
+  { path: '/playground/time-series/model/AIRLINE-PASSENGERS', ready: '[data-guide="future"]' },
   { path: '/playground/tabular-classification/dataset/IRIS', ready: '[data-guide="hp-learning-rate"]' },
   { path: '/playground/regression/dataset/AUTO_MPG', ready: '[data-guide="hp-learning-rate"]' },
   { path: '/playground/image-classification/dataset/IMAGE-MNIST', ready: '[data-guide="layers"]' },
+  { path: '/playground/time-series/dataset/MELBOURNE-TEMPERATURES', ready: '[data-guide="windows"]' },
   { path: '/glossary', ready: '.n4l-glossary-search' },
 ]
 for (const { path, ready } of GUIDES) {
@@ -349,7 +380,7 @@ test('el paso a paso enseña un ejemplo hacia delante y hacia atrás, y con más
   await page.goto('/playground/tabular-classification/dataset/IRIS')
   await expect(page.getByTestId('Test-TrainButton')).toBeVisible()
   await expect(page.getByTestId('Test-StepByStep')).toHaveCount(0)
-  await page.goto('/settings')
+  await page.goto('/settings#learning')
   await page.getByTestId('Test-Settings-learning').getByRole('checkbox').check()
   await page.goto('/playground/tabular-classification/dataset/IRIS')
   const card = page.getByTestId('Test-StepByStep')
@@ -451,7 +482,8 @@ test('MNIST: cada imagen de ejemplo, un dígito escrito con una fuente, se clasi
   await page.goto('/playground/image-classification/model/IMAGE-MNIST')
   await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
   for (let digit = 0; digit < 10; digit++) {
-    await page.getByRole('button', { name: `Clasificar el ejemplo ${digit + 1}`, exact: true }).click()
+    // El botón de cada ejemplo dice qué es, lo mismo que ve quien mira la imagen
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${digit + 1}: ${digit}`, exact: true }).click()
     await expect(page.getByText(new RegExp(`Clase predicha\\s*${digit}`))).toBeVisible({ timeout: 30_000 })
   }
 })
@@ -464,7 +496,7 @@ test('CIFAR-10: fotos en color de 32×32, sin lienzo; cada ejemplo se clasifica 
   await expect(page.locator('[data-guide="upload"]')).toBeVisible()
   const classes = ['avión', 'automóvil', 'pájaro', 'gato', 'ciervo', 'perro', 'rana', 'caballo', 'barco', 'camión']
   for (const [index, name] of classes.entries()) {
-    await page.getByRole('button', { name: `Clasificar el ejemplo ${index + 1}`, exact: true }).click()
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${index + 1}: ${name}`, exact: true }).click()
     await expect(page.getByText(new RegExp(`Clase predicha\\s*${name}`))).toBeVisible({ timeout: 30_000 })
   }
   // Una de las de prueba, con su clase real
@@ -495,7 +527,7 @@ test('KMNIST enseña cada carácter como se escribe hoy junto a sus formas antig
   const forms = page.getByRole('dialog').getByTestId('Test-CharacterForms')
   await expect(forms.getByRole('row')).toHaveCount(11)
   // は se escribía de otras 11 formas, cada una con su kanji
-  await expect(forms.getByRole('row').filter({ hasText: 'ha · 波' }).getByRole('img')).toHaveCount(11)
+  await expect(forms.getByRole('row').filter({ hasText: 'ha, 波' }).getByRole('img')).toHaveCount(11)
   await expect(forms.getByRole('img', { name: 'は antiguo, que viene de 八' })).toBeVisible()
 })
 
@@ -557,6 +589,8 @@ test('al cambiar de página se empieza arriba (con el foco en el título), atrá
   await expect.poll(async () => Math.abs((await scrollY()) - position)).toBeLessThan(5)
 
   await page.goto('/settings')
+  await page.getByRole('tab', { name: 'Privacidad y cookies' }).click()
+  await expect(page).toHaveURL(/\/settings#privacy$/)
   await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }))
   await page.getByRole('link', { name: 'Más información sobre las cookies' }).click()
   await expect(page).toHaveURL(/\/terms-and-conditions#cookies$/)

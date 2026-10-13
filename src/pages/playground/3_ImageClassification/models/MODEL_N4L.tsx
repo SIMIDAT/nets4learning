@@ -82,6 +82,14 @@ export default class MODEL_N4L extends I_MODEL_IMAGE_SPRITE {
     return n4lImageExamples(this.runtime.section).filter(({ old }) => old !== true).map(({ file }) => this.urls[file])
   }
 
+  LIST_IMAGES_EXAMPLES_LABELS(): Array<string | undefined> {
+    const classes = this.runtime.section.classes ?? []
+    return n4lImageExamples(this.runtime.section).filter(({ old }) => old !== true).map(({ expected }) => {
+      const index = classes.findIndex(({ id, aliases }) => id === expected || (aliases ?? []).includes(expected ?? ''))
+      return index === -1 ? undefined : this.CLASS_LABELS[index]
+    })
+  }
+
   CHARACTER_FORMS() {
     return this.forms
   }

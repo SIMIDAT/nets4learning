@@ -3,10 +3,22 @@
   min-width: 0;
 }
 
+@media (max-width: 1199.98px) {
+  /* Pestañas de las tareas: hasta que caben las cinco, en una línea que se desliza, no en dos */
+  .n4l-datasets-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+  }
+
+  .n4l-datasets-tabs .nav-link {
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 575.98px) {
-  /* Pestañas de las tareas y del modal (información, variables, datos, estadísticas): en una línea que se desliza,
-     no en dos */
-  .n4l-datasets-tabs,
+  /* Pestañas del modal (información, variables, datos, estadísticas): en una línea que se desliza, no en dos */
   .n4l-dataset-modal-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -14,7 +26,6 @@
     scrollbar-width: thin;
   }
 
-  .n4l-datasets-tabs .nav-link,
   .n4l-dataset-modal-tabs .nav-link {
     white-space: nowrap;
   }

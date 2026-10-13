@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import N4LClassificationChart from '@components/neural-network/N4LClassificationChart'
 import { argMax, isProbabilityDistribution } from '@core/nn-utils/classificationOutput'
 import { makeImagePrediction } from '@pages/playground/3_ImageClassification/utils/imagePrediction'
+import { subscribeAnnouncements } from '@core/a11y/announce'
 
 // jsdom no tiene canvas: la gráfica se sustituye por un elemento con lo que recibiría Chart.js
 vi.mock('react-chartjs-2', () => ({
@@ -72,9 +73,21 @@ describe('N4LClassificationChart', () => {
   test('con la clase real dice si el modelo acierta', () => {
     const { getByTestId, rerender } = render(<N4LClassificationChart values={[0.1, 0.9]} classLabels={['7', '2']} actualIndex={1} />)
     expect(getByTestId('Test-ClassificationChart-actual')).toHaveClass('bg-success')
-    expect(getByTestId('Test-ClassificationChart-actual').textContent).toBe('pages.playground.generator.classify.actual-class')
+    expect(getByTestId('Test-ClassificationChart-actual').textContent).toContain('pages.playground.generator.classify.actual-class')
+    // Si acierta, también sin el color: con una marca y con palabras
+    expect(getByTestId('Test-ClassificationChart-actual').textContent).toContain('pages.playground.generator.classify.hit')
     rerender(<N4LClassificationChart values={[0.1, 0.9]} classLabels={['7', '2']} actualIndex={0} />)
     expect(getByTestId('Test-ClassificationChart-actual')).toHaveClass('bg-danger')
+  })
+
+  test('el resultado se anuncia al lector de pantalla, con la clase real si se sabe', () => {
+    const messages: string[] = []
+    const unsubscribe = subscribeAnnouncements((message) => messages.push(message))
+    render(<N4LClassificationChart values={[0.1, 0.9]} classLabels={['7', '2']} actualIndex={0} />)
+    unsubscribe()
+    expect(messages).toHaveLength(1)
+    expect(messages[0]).toContain('pages.playground.generator.classify.predicted-class: 2')
+    expect(messages[0]).toContain('pages.playground.generator.classify.miss')
   })
 
   test('una clase real sin salida en el modelo (CAR «good») se nombra y cuenta como fallo', () => {

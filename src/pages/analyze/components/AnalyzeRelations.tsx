@@ -6,6 +6,8 @@ import type { Data } from 'plotly.js'
 import { isMissing, type CorrelationMatrix_t, type ProblemType_t } from '@core/dataframe/eda'
 import { TARGET_COLOR } from '@core/dataframe/DataFrameTable'
 import { classColor } from '@core/dataframe/plotlyTheme'
+import { useTheme } from '@hooks/useTheme'
+import type { Theme_t } from '@core/theme'
 import N4LPlot from '@components/dataframe/N4LPlot'
 
 // Azul (inversa), blanco (sin relación) y rojo (directa), con la escala fija de −1 a 1
@@ -24,6 +26,7 @@ type AnalyzeRelationsProps = {
 export default function AnalyzeRelations({ correlations, columnValues, numbers, target, problem, classes }: AnalyzeRelationsProps) {
   const prefix = 'pages.dataframe.relations.'
   const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const format = useMemo(() => new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 }), [i18n.language])
   const { names, matrix } = correlations
 
@@ -47,7 +50,7 @@ export default function AnalyzeRelations({ correlations, columnValues, numbers, 
   const tick = (name: string) => (name === target ? `<b><span style="color:${TARGET_COLOR}">${name}</span></b>` : name)
   const showValues = names.length <= 14
 
-  const scatter = scatterTraces(x, y, numbers, columnValues, target, problem, classes)
+  const scatter = scatterTraces(x, y, numbers, columnValues, target, problem, classes, theme)
 
   return <>
     <Row className={'g-4'}>
@@ -67,13 +70,18 @@ export default function AnalyzeRelations({ correlations, columnValues, numbers, 
             textfont     : { size: 12 },
             xgap         : 1,
             ygap         : 1,
-            hovertemplate: '%{y} · %{x}: %{z:.3f}<extra></extra>',
+            hovertemplate: '%{y}, %{x}: %{z:.3f}<extra></extra>',
             colorbar     : { thickness: 12 },
           } as Data]}
           layout={{
             xaxis : { tickvals: names, ticktext: names.map(tick), tickangle: -40, showgrid: false },
             yaxis : { tickvals: names, ticktext: names.map(tick), autorange: 'reversed', showgrid: false },
             margin: { l: 110, r: 16, t: 16, b: 110 },
+          }}
+          // Con muchas variables las casillas no llevan su valor: en la tabla está cada uno (no solo el color, WCAG 1.4.1)
+          table={{
+            columns: [t('chart-data.columns.variable'), ...names],
+            rows   : names.map((name, row) => [name, ...matrix[row].map((value) => (Number.isNaN(value) ? null : value))]),
           }} />
         <p className={'small text-body-secondary mb-0'}>{t(prefix + 'correlation-help')}</p>
       </Col>
@@ -92,7 +100,8 @@ export default function AnalyzeRelations({ correlations, columnValues, numbers, 
               marker       : { color: withTarget.map(({ value }) => (value >= 0 ? '#b2182b' : '#2166ac')) },
               hovertemplate: '%{y}: %{x:.3f}<extra></extra>',
             } as Data]}
-            layout={{ xaxis: { range: [-1, 1], title: { text: 'r' } }, yaxis: { type: 'category', autorange: 'reversed' }, showlegend: false, margin: { l: 110, r: 16, t: 8, b: 40 } }} />
+            layout={{ xaxis: { range: [-1, 1], title: { text: 'r' } }, yaxis: { type: 'category', autorange: 'reversed' }, showlegend: false, margin: { l: 110, r: 16, t: 8, b: 40 } }}
+            table={{ columns: [t('chart-data.columns.variable'), 'r'], rows: withTarget.map(({ name, value }) => [name, value]) }} />
           <p className={'small text-body-secondary mb-0'}>{t(prefix + 'target-correlation-help')}</p>
         </Col>}
     </Row>
@@ -120,14 +129,14 @@ export default function AnalyzeRelations({ correlations, columnValues, numbers, 
         {' '}r = {format.format(matrix[names.indexOf(x)][names.indexOf(y)])}
       </Col>
     </Row>
-    <N4LPlot height={420} label={t(prefix + 'scatter')} data={scatter}
+    <N4LPlot height={420} label={`${t(prefix + 'scatter')}: ${x}, ${y} (r = ${format.format(matrix[names.indexOf(x)][names.indexOf(y)])})`} data={scatter}
       layout={{ xaxis: { title: { text: x } }, yaxis: { title: { text: y } }, showlegend: problem === 'classification' }} />
   </>
 }
 
 /** Un trazo por clase (clasificación) o uno solo con la escala de color del objetivo (regresión) */
 function scatterTraces(x: string, y: string, numbers: Map<string, number[]>, columnValues: Map<string, unknown[]>,
-  target: string | null, problem: ProblemType_t | null, classes: string[]): Data[] {
+  target: string | null, problem: ProblemType_t | null, classes: string[], theme: Theme_t): Data[] {
   const xs = numbers.get(x) ?? []
   const ys = numbers.get(y) ?? []
   const marker = { size: 7, opacity: 0.75, line: { width: 0.5, color: 'rgba(0, 0, 0, 0.25)' } }
@@ -135,7 +144,7 @@ function scatterTraces(x: string, y: string, numbers: Map<string, number[]>, col
     const targetValues = columnValues.get(target) ?? []
     return classes.map((label, index) => {
       const rows = targetValues.map((value, row) => (!isMissing(value) && String(value) === label ? row : -1)).filter((row) => row !== -1)
-      return { type: 'scattergl', mode: 'markers', name: label, x: rows.map((row) => xs[row]), y: rows.map((row) => ys[row]), marker: { ...marker, color: classColor(index) } } as Data
+      return { type: 'scattergl', mode: 'markers', name: label, x: rows.map((row) => xs[row]), y: rows.map((row) => ys[row]), marker: { ...marker, color: classColor(index, theme) } } as Data
     })
   }
   const colors = target !== null ? numbers.get(target) : undefined
@@ -146,6 +155,6 @@ function scatterTraces(x: string, y: string, numbers: Map<string, number[]>, col
     y     : ys,
     marker: colors
       ? { ...marker, color: colors, colorscale: 'Viridis', showscale: true, colorbar: { title: { text: target ?? '' }, thickness: 12 } }
-      : { ...marker, color: classColor(0) },
+      : { ...marker, color: classColor(0, theme) },
   } as Data]
 }

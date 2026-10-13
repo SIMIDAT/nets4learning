@@ -9,11 +9,15 @@ import { taskOptions, type DatasetInfo_t } from '@/TASK_OPTIONS'
 import N4LDatasetInfo from '@components/dataset/N4LDatasetInfo'
 import N4LModal from '@components/modal/N4LModal'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import { isTask } from '@components/task/taskInfo'
 import { hasMenuModel, useMenuModel } from '@hooks/useMenuModel'
 import { EXTRA_DATASETS } from '@pages/datasets/extraDatasets'
 import DatasetVariables from '@pages/datasets/DatasetVariables'
 import { variablesSummary } from '@pages/datasets/datasetVariables'
 import { datasetKey, fileName } from '@pages/analyze/projectDatasets'
+
+// En una constante: jsx-a11y no sabe leer import.meta dentro de las props
+const VITE_PATH = import.meta.env.VITE_PATH
 
 // La tabla y el describe() del CSV usan danfo.js: se descargan solo al abrir esas pestañas
 const DatasetDataFrame = lazy(() => import('@pages/datasets/DatasetDataFrame'))
@@ -29,6 +33,13 @@ const CLUSTERING_TEXTS: TabTexts_t = {
   extraText: 'datasets.clustering.extra-text',
   open     : 'datasets.clustering.run',
 }
+// En una serie temporal el orden de las filas importa: se predicen los siguientes valores con los anteriores
+const TIME_SERIES_TEXTS: TabTexts_t = {
+  mainTitle: 'datasets.time-series.examples-title',
+  mainText : 'datasets.time-series.examples-text',
+  extraText: 'datasets.extra-text',
+  open     : 'datasets.train',
+}
 
 // canAnalyze: sus conjuntos son CSV y se pueden abrir en el AED
 const TASK_TABS = [
@@ -36,6 +47,7 @@ const TASK_TABS = [
   { task: TASKS.REGRESSION, title: 'pages.index.regression.1-title', canAnalyze: true, texts: TRAIN_TEXTS },
   { task: TASKS.IMAGE_CLASSIFICATION, title: 'pages.index.image-classification.1-title', canAnalyze: false, texts: TRAIN_TEXTS },
   { task: TASKS.CLUSTERING, title: 'pages.index.clustering.1-title', canAnalyze: true, texts: CLUSTERING_TEXTS },
+  { task: TASKS.TIME_SERIES, title: 'pages.index.time-series.1-title', canAnalyze: true, texts: TIME_SERIES_TEXTS },
 ]
 
 const tabTexts = (task: TASKS_TYPE_V) => TASK_TABS.find((tab) => tab.task === task)?.texts ?? TRAIN_TEXTS
@@ -46,7 +58,7 @@ const isCSV = (file: string) => file.toLowerCase().endsWith('.csv')
 /** Enlace de descarga de un fichero de public/ */
 function DownloadLink({ file, label }: { file: string, label: React.ReactNode }) {
   return (
-    <a href={import.meta.env.VITE_PATH + '/' + file} className={'btn btn-outline-secondary btn-sm text-nowrap'} download>
+    <a href={VITE_PATH + '/' + file} className={'btn btn-outline-secondary btn-sm text-nowrap'} download>
       {label}
     </a>
   )
@@ -126,9 +138,10 @@ function DatasetCard({ dataset, canAnalyze, openLabel, onInfo }: DatasetCardProp
   const name = t(dataset.title)
   const csvFiles = dataset.files.filter(isCSV)
   const isExtra = dataset.value === undefined
-  const trainTo = !isExtra
-    ? `/playground/${dataset.task}/dataset/${dataset.value}`
-    : csvFiles.length > 0 ? `/playground/${dataset.task}/dataset/${UPLOAD}?dataset=${datasetKey(csvFiles[0])}` : null
+  // Sin las páginas de su tarea, no hay dónde entrenar
+  const trainTo = !isTask(dataset.task) ? null
+    : !isExtra ? `/playground/${dataset.task}/dataset/${dataset.value}`
+      : csvFiles.length > 0 ? `/playground/${dataset.task}/dataset/${UPLOAD}?dataset=${datasetKey(csvFiles[0])}` : null
   const hasModel = !isExtra && taskOptions(dataset.task, 'model').some(({ value }) => value === dataset.value)
   const isMultiple = dataset.files.length > 1
 
@@ -203,7 +216,7 @@ export default function Datasets() {
         <Card className={'mt-3'}>
           <Card.Body>
             {/* Solo la pestaña abierta: un mismo conjunto puede estar en varias (el iris se clasifica y se agrupa) */}
-            <Tabs activeKey={activeTask} justify className={'n4l-datasets-tabs'} mountOnEnter={true} unmountOnExit={true}
+            <Tabs activeKey={activeTask} fill className={'n4l-datasets-tabs'} mountOnEnter={true} unmountOnExit={true}
               onSelect={(task) => setSearchParams(task === null || task === TASKS.TABULAR_CLASSIFICATION ? {} : { task }, { replace: true })}>
               {TASK_TABS.map(({ task, title, canAnalyze, texts }) => {
                 const { models, extra } = taskDatasets(task)
@@ -267,7 +280,7 @@ export default function Datasets() {
         ComponentFooter={selected !== null && <div className={'d-flex flex-wrap justify-content-end gap-2'}>
           {selected.files.filter(isCSV).map((file) => (
             <AnalyzeLink key={'analyze-' + file} file={file} name={t(selected.title)}
-              label={selected.files.length > 1 ? `${t('datasets.analyze-action')} · ${datasetKey(file)}` : t('datasets.analyze-action')} />
+              label={selected.files.length > 1 ? `${t('datasets.analyze-action')}: ${datasetKey(file)}` : t('datasets.analyze-action')} />
           ))}
           {selected.files.map((file) => (
             <DownloadLink key={file} file={file} label={selected.files.length > 1 ? fileName(file) : t('download')} />

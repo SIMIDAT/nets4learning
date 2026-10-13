@@ -2,6 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { Scatter } from 'react-chartjs-2'
 
 import { beeswarmLayout, shapColor } from './beeswarmLayout'
+import { chartColor } from '@core/chartColors'
+import { useTheme } from '@hooks/useTheme'
+import N4LChartData from '@components/chart/N4LChartData'
 
 interface ShapBeeswarmChartProps {
   /** Matriz de valores SHAP: shap[instancia][feature] */
@@ -20,14 +23,23 @@ const withAlpha = (rgb: string) => rgb.replace('rgb(', 'rgba(').replace(')', ', 
 /** Beeswarm de SHAP (summary plot): una fila por feature y un punto por instancia, coloreado por el valor */
 export default function ShapBeeswarmChart({ shap, featureValues, featureDisplay, features }: ShapBeeswarmChartProps) {
   const { t } = useTranslation()
+  const theme = useTheme()
   const prefix = 'pages.playground.0-tabular-classification.general.'
   const nFeatures = features.length
   const { points, order } = beeswarmLayout(shap, featureValues, featureDisplay, features)
+  // Para quien no ve la gráfica: las variables de la que más influye a la que menos (media del valor absoluto de SHAP)
+  const importance = features.map((name, f) => ({ name, mean: shap.reduce((sum, row) => sum + Math.abs(row[f] ?? 0), 0) / Math.max(1, shap.length) }))
+  const description = t('ui.explain.beeswarm-description', {
+    count   : shap.length,
+    features: importance.sort((a, b) => b.mean - a.mean).map(({ name, mean }) => `${name} (${mean.toFixed(3)})`).join(', '),
+  })
 
   return (
     <div style={{ width: '100%' }}>
       <div style={{ position: 'relative', width: '100%', maxWidth: '700px', height: `${Math.max(260, nFeatures * 64)}px` }}>
         <Scatter
+          role={'img'}
+          aria-label={description}
           options={{
             responsive         : true,
             maintainAspectRatio: false,
@@ -62,7 +74,9 @@ export default function ShapBeeswarmChart({ shap, featureValues, featureDisplay,
               {
                 data                : points.map(({ x, y }) => ({ x, y })),
                 pointBackgroundColor: points.map(({ color }) => withAlpha(color)),
-                pointBorderWidth    : 0,
+                // El borde, del color entero: el punto se distingue del fondo aunque el relleno sea translúcido
+                pointBorderColor    : points.map(({ color }) => color),
+                pointBorderWidth    : 1,
                 pointRadius         : 3.5,
                 pointHoverRadius    : 5,
               },
@@ -71,7 +85,7 @@ export default function ShapBeeswarmChart({ shap, featureValues, featureDisplay,
                 data       : [{ x: 0, y: -0.5 }, { x: 0, y: nFeatures - 0.5 }],
                 showLine   : true,
                 pointRadius: 0,
-                borderColor: 'rgba(108, 117, 125, 0.8)',
+                borderColor: chartColor('gray', theme),
                 borderWidth: 1,
               },
             ],
@@ -101,6 +115,13 @@ export default function ShapBeeswarmChart({ shap, featureValues, featureDisplay,
           })}
         </small>
       </div>
+      {/* Cada variable: cuánto influye de media y entre qué valores SHAP están sus puntos */}
+      <N4LChartData caption={t('ui.explain.beeswarm-data', { count: shap.length })}
+        columns={[t('ui.explain.variable'), t('ui.explain.mean-abs'), t('ui.explain.min'), t('ui.explain.max')]}
+        rows={importance.map(({ name, mean }) => {
+          const values = shap.map((row) => row[features.indexOf(name)] ?? 0)
+          return [name, mean, Math.min(...values), Math.max(...values)]
+        })} />
     </div>
   )
 }

@@ -1,8 +1,10 @@
+import { useEffect, useEffectEvent, useRef } from 'react'
 import { Alert, Button } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
 import type { LayerIssue_t } from '@core/nn-utils/checkLayers'
 import { trackEvent } from '@core/analytics'
+import { announce } from '@core/a11y/announce'
 import { issueValues, LAYER_CHECK_PREFIX as prefix } from '@components/neural-network/layerCheckText'
 
 /** La marca de una capa con algo que revisar, en la cabecera de su acordeón */
@@ -28,11 +30,27 @@ type N4LLayerCheckProps<L> = {
  */
 export default function N4LLayerCheck<L>({ issues, onFix }: N4LLayerCheckProps<L>) {
   const { t } = useTranslation()
+
+  // Al cambiar una capa, el lector de pantalla oye lo que acaba de aparecer y cuándo ya no queda nada (WCAG 4.1.3). El
+  // aviso aparece a la vez que su texto: como región aria-live no siempre se anunciaría
+  const texts = issues.map((issue) => ({ key: issue.kind + issue.layer, text: `${t(prefix + issue.severity)}: ${t(prefix + issue.kind + '.text', issueValues(t, issue))}` }))
+  const announcedKeys = useRef<string[]>([])
+  const announceChanges = useEffectEvent(() => {
+    const previous = announcedKeys.current
+    announcedKeys.current = texts.map(({ key }) => key)
+    const added = texts.filter(({ key }) => !previous.includes(key))
+    if (added.length > 0) announce(added.map(({ text }) => text).join('. '))
+    else if (texts.length === 0 && previous.length > 0) announce(t(prefix + 'all-fixed'))
+  })
+  // Solo cuando cambian los problemas (no, p. ej., al cambiar de idioma)
+  const textsKey = texts.map(({ key }) => key).join('|')
+  useEffect(() => announceChanges(), [textsKey])
+
   if (issues.length === 0) return null
   const hasErrors = issues.some(({ severity }) => severity === 'error')
 
   return (
-    <Alert variant={hasErrors ? 'danger' : 'warning'} className={'py-2'} role={'status'} data-testid={'Test-LayerCheck'}>
+    <Alert variant={hasErrors ? 'danger' : 'warning'} className={'py-2'} role={undefined} data-testid={'Test-LayerCheck'}>
       <p className={'fw-semibold mb-2'}>{t(prefix + (hasErrors ? 'title-error' : 'title-warning'))}</p>
       <ul className={'list-unstyled mb-0 d-grid gap-2'}>
         {issues.map((issue) => {

@@ -1,7 +1,7 @@
 import './customCanvasDrawer.css'
 import { useEffect, useRef, type PointerEvent } from 'react'
 import { Button } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
 // El dibujo va en coordenadas de 0 a 200 (el grosor del trazo, 20, es una décima parte del lienzo) sobre un lienzo de
 // 600×600 píxeles, que se muestra con el tamaño que quepa en la pantalla
@@ -33,6 +33,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
     onDrawStart,
     image,
   } = props
+  const { t } = useTranslation()
   /**
    *
    * @type {React.MutableRefObject<null| HTMLCanvasElement>}
@@ -135,10 +136,15 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
   return (
     <>
       <div className={'d-flex justify-content-center align-items-start gap-2 mt-3'}>
+        {/* Dibujar exige arrastrar (WCAG 2.5.7): la alternativa, con un clic o el teclado, son los ejemplos y las
+            imágenes de prueba de la página, y lo dice el texto de debajo */}
         <canvas
           id="canvas"
           ref={canvas_ref}
           className={'n4l-draw-canvas'}
+          role={'img'}
+          aria-label={t('custom-canvas-drawer.canvas')}
+          aria-describedby={'canvas-alternative'}
           onPointerDown={startDrawing}
           onPointerMove={draw}
           onPointerUp={finishDrawing}
@@ -147,6 +153,8 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
         <canvas
           id="canvas_small"
           ref={canvas_small_ref}
+          role={'img'}
+          aria-label={t('custom-canvas-drawer.preview')}
           style={{
             border        : '1px solid black',
             background    : 'white',
@@ -160,6 +168,7 @@ export default function CustomCanvasDrawer(props: CustomCanvasDrawerProps) {
           height={28}
         ></canvas>
       </div>
+      <p id={'canvas-alternative'} className={'small text-body-secondary text-center mt-2 mb-0'}>{t('custom-canvas-drawer.alternative')}</p>
       <div className="d-flex gap-2 justify-content-center mx-auto mt-3">
         <Button
           variant={'primary'}

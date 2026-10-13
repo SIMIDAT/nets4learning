@@ -1,0 +1,41 @@
+{
+  "columns": {
+    "Date": "Date",
+    "Temp": "Temperature"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Minimum temperatures in Melbourne",
+      "summary": "The minimum temperature of each day in Melbourne (Australia), from 1981 to 1990: it rises and falls with the seasons, with a lot of noise from one day to the next.",
+      "description": {
+        "text": [
+          "The minimum temperature of each day in Melbourne (Australia), in degrees Celsius, from 1981 to 1990: 3,650 days. The data come from the Australian <link2>Bureau of Meteorology</link2>.",
+          "It has no trend, but a very clear yearly <b>seasonality</b>: in the southern hemisphere summer is in January and February, and July is the coldest month. It changes a lot from one day to the next (about 2 °C on average), so it has plenty of noise that no model can predict.",
+          "The two leap years (1984 and 1988) have no 31 December, so every year has 365 rows."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Date</b>: the day (year-month-day).",
+              "<b>Temp</b>: the minimum temperature that day, in °C. This is what is forecast."
+            ]
+          },
+          {
+            "title": "Pre-trained model",
+            "items": [
+              "A network with one Dense layer of 16 neurons that sees the previous 14 days. On the test part (the last two years, which it did not see while training) it is off by <b>{{test_mae, number(maximumFractionDigits: 2)}} °C</b> on average one step ahead, less than repeating yesterday ({{test_naive_mae, number(maximumFractionDigits: 2)}} °C). Forecasting both years at once it is off by {{test_recursive_mae, number(maximumFractionDigits: 2)}} °C: with two weeks it cannot see the year, and repeating the previous year does better ({{test_seasonal_mae, number(maximumFractionDigits: 2)}} °C)."
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>The CSV</link1>, from the jbrownlee/Datasets repository.",
+              "<link2>Climate data from the Australian Bureau of Meteorology</link2>."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

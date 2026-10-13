@@ -8,7 +8,7 @@ const report: TrainingReport_t = {
   dataset   : 'IRIS',
   model     : 2,
   createdAt : '2026-10-03T10:00:00.000Z',
-  layers    : ['Dense · 10 neuronas · ReLU', 'Dense · 3 neuronas · Softmax'],
+  layers    : ['Dense, 10 neuronas, ReLU', 'Dense, 3 neuronas, Softmax'],
   parameters: { 'learning-rate': '0.01', 'n-of-epochs': '20' },
   history   : { loss: [1, 0.5], val_loss: [1.1, 0.6] },
   evaluation: { classes: ['a', 'b'], labels: [0, 1], predictions: [0, 0] },

@@ -126,6 +126,7 @@ export default function TabularClassificationEditorLayers() {
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
+      onRestore={setLayers}
       footer={<>
         <p className={'text-muted mb-0 pb-0'}>
           <Trans

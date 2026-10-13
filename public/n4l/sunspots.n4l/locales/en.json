@@ -1,0 +1,42 @@
+{
+  "columns": {
+    "Month": "Month",
+    "Sunspots": "Sunspots"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Sunspots",
+      "summary": "The mean number of sunspots each month, from 1749 to 1983: it rises and falls in cycles of about 11 years that do not always last the same.",
+      "description": {
+        "text": [
+          "The monthly mean relative sunspot number (the Wolf number), from January 1749 to December 1983: 2,820 months. It was measured at the Swiss Federal Observatory in Zurich until 1960 and then at the Tokyo Astronomical Observatory. Sunspots are the series with which Yule proposed autoregressive models in 1927.",
+          "It rises and falls in <b>cycles</b> of about 11 years (the solar cycle), but this is not a seasonality: each cycle lasts a different time (from 9 to 14 years) and reaches a different height, so it is harder to forecast than a series with a fixed period. The maximum is in October 1957, and between 1790 and 1830 the cycles are much lower (the Dalton minimum).",
+          "The series is still being measured: the Royal Observatory of Belgium publishes the current version at <link3>SILSO</link3>. It was revised in 2015, so its numbers are somewhat different."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Month</b>: the month (year-month).",
+              "<b>Sunspots</b>: the mean number of sunspots that month. This is what is forecast."
+            ]
+          },
+          {
+            "title": "Pre-trained model",
+            "items": [
+              "A network with one Dense layer of 32 neurons that sees the previous 24 months. On the test part (the last 47 years, which it did not see while training) it is off by <b>{{test_mae, number(maximumFractionDigits: 1)}}</b> sunspots on average one step ahead, a little less than repeating the previous month ({{test_naive_mae, number(maximumFractionDigits: 1)}}). Forecasting the whole test part at once it is off by {{test_recursive_mae, number(maximumFractionDigits: 1)}}: two years are not enough to follow an eleven-year cycle."
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>sunspots in the R documentation</link1>, with its original source.",
+              "<link2>The CSV</link2>, from the jbrownlee/Datasets repository.",
+              "<link3>The current SILSO data</link3>."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

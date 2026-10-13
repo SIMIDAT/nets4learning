@@ -187,7 +187,7 @@ export default function WebcamDeviceInfo(props: WebcamDeviceInfoProps) {
           [t(prefix + 'prediction-time'), live.ms === null ? '—' : `${format.format(live.ms)} ms`],
           [t(prefix + 'limit'), t(prefix + 'limit-value', { fps: fpsLimit })],
           [t(prefix + 'backend'), live.backend],
-          [t(prefix + 'tensors'), `${format.format(live.tensors)} · ${format.format(live.bytes / 1024 / 1024)} MB`],
+          [t(prefix + 'tensors'), `${format.format(live.tensors)} (${format.format(live.bytes / 1024 / 1024)} MB)`],
         ]} />
 
         <InfoList title={t(prefix + 'devices')} items={devices.map((device, index): Item_t => [

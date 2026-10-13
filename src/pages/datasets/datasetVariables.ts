@@ -3,7 +3,7 @@ import { isTableDataset } from '@core/n4l/format'
 
 /** Rol de la variable, como en la tabla de variables de UCI */
 export type VariableRole_t = 'ID' | 'Feature' | 'Target' | 'Other'
-export type VariableType_t = 'Integer' | 'Continuous' | 'Categorical' | 'Binary'
+export type VariableType_t = 'Integer' | 'Continuous' | 'Categorical' | 'Binary' | 'Date'
 
 export type DatasetVariable_t = {
   name        : string

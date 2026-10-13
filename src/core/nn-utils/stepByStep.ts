@@ -171,7 +171,7 @@ export function backward(network: StepNetwork_t, trace: ForwardTrace_t, target: 
   return { deltas, gradWeights, gradBiases: deltas.map((delta) => [...delta]) }
 }
 
-/** Descenso del gradiente: cada peso se mueve un poco en contra de su gradiente (w ← w − η·g) */
+/** Descenso del gradiente: cada peso se mueve un poco en contra de su gradiente (w ← w − η × g) */
 export function update(network: StepNetwork_t, gradients: BackwardTrace_t, learningRate: number): StepNetwork_t {
   return {
     ...network,

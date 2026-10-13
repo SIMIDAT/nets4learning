@@ -1,4 +1,5 @@
 import { Col, Row } from 'react-bootstrap'
+import { useTranslation } from 'react-i18next'
 
 import N4LGuide, { type GuideStep_t } from '@components/guide/N4LGuide'
 import N4LSessionButtons from '@components/session/N4LSessionButtons'
@@ -13,11 +14,16 @@ type N4LPageHeaderProps = {
   /** Entrenadores: exportar, importar y compartir la configuración */
   getSession?: () => TrainingSession_t
   onImport?  : (text: string) => void
+  /** Qué se hace en la página, en una frase y sus pasos: entrenar una red, probar un modelo ya entrenado o detectar */
+  intro?     : 'train' | 'review' | 'detect'
   className? : string
 }
 
 /** La cabecera de las páginas del playground (entrenar y probar modelos): el título, la guía y, al entrenar, la configuración */
-export default function N4LPageHeader({ title, guideId, guideSteps, getSession, onImport, className = 'mt-3 mb-3' }: N4LPageHeaderProps) {
+export default function N4LPageHeader({ title, guideId, guideSteps, getSession, onImport, intro, className = 'mt-3 mb-3' }: N4LPageHeaderProps) {
+  const { t } = useTranslation()
+  // Varios pasos por clave; sin traducciones (cargando, en las pruebas) i18next devuelve la clave: nada que listar
+  const steps: unknown = intro === undefined ? [] : t('page-intro.' + intro + '.steps', { returnObjects: true })
   return (
     <Row className={className}>
       <Col xl={12}>
@@ -31,6 +37,12 @@ export default function N4LPageHeader({ title, guideId, guideSteps, getSession, 
               </div>}
           </div>
         </div>
+        {/* Lo primero que se lee: qué se hace aquí y en qué orden (sin tener que abrir la guía) */}
+        {intro !== undefined && <div className={'n4l-page-intro'} data-testid={'Test-PageIntro'}>
+          <p className={'mb-1'}>{t('page-intro.' + intro + '.text')}</p>
+          {Array.isArray(steps) && steps.length > 0 &&
+            <ol className={'small mb-0'}>{steps.map((step) => <li key={String(step)}>{String(step)}</li>)}</ol>}
+        </div>}
       </Col>
     </Row>
   )

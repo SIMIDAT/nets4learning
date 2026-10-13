@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { sectionId } from './sectionId'
 import { goToSection } from './useActiveSection'
+import { prefersReducedMotion } from '@core/a11y/displaySettings'
 
 type N4LSectionNavProps = {
   /** Secciones de la página en orden (las i18nKey de sus N4LDivider) */
@@ -53,7 +54,7 @@ export function N4LSectionBar({ steps, activeId }: N4LSectionNavProps) {
     const active = list?.querySelector<HTMLElement>('.active')
     if (!list || !active) return
     const left = active.offsetLeft - (list.clientWidth - active.offsetWidth) / 2
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const reduceMotion = prefersReducedMotion()
     list.scrollTo?.({ left: Math.max(0, left), behavior: reduceMotion ? 'auto' : 'smooth' })
   }, [activeId])
 

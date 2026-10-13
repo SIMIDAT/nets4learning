@@ -59,7 +59,7 @@ Los tipos de conjunto (`kind`):
 
 | `kind` | |
 |---|---|
-| `table` (por defecto) | una tabla: `file` (el CSV), `info` (descripción original), `rows` y su ficha (`columns`) |
+| `table` (por defecto) | una tabla: `file` (el CSV), `info` (descripción original), `rows` y su ficha (`columns`). Una serie temporal lleva además `frequency`, cada cuánto hay una fila (`hour`, `day`, `week`, `month`, `quarter` o `year`): sus filas van en orden, con su fecha en la única columna de tipo `Date`, y tiene un objetivo, el valor que se predice |
 | `image-sprite` | imágenes: `file` es un PNG con una imagen aplanada por fila (alto × ancho píxeles; en gris o en RGB), primero las de entrenamiento; `labels`, sus clases en one-hot (un byte por clase); `rows`, cuántas hay; `train`, cuántas son de entrenamiento (las demás, de prueba); `image`, su `width`, `height` y `channels` (1, gris; 3, color) |
 | `external` | uno que no va en el paquete por su tamaño o su licencia (ImageNet): su `url` y, si se sabe, `rows` |
 
@@ -68,15 +68,16 @@ Cada sección de `tasks`:
 | Campo | |
 |---|---|
 | `task`, `key` | la tarea y su clave en las direcciones (`/playground/<tarea>/model/<key>`) |
-| `runtime` | el motor que la interpreta (`tabular-classification`, `regression`, `clustering`, `image-classification`) |
-| `datasets` | los conjuntos que usa (sus `id`); el primero, el que se abre al entrar |
+| `runtime` | el motor que la interpreta (`tabular-classification`, `regression`, `clustering`, `image-classification`, `time-series`) |
+| `datasets` | los conjuntos que usa (sus `id`); el primero, el que se abre al entrar. Los de `time-series` tienen que ser series temporales (con `frequency`) |
 | `listed` | si sale en los menús (por defecto, sí): `false` deja la tarea preparada sin enseñarla |
 | `order` | su posición en los menús de la tarea, de menor a mayor; sin ella, después, por el nombre de la carpeta |
 | `preprocessing` | pasos por nombre: `label-encoder` (codificar), `drop` (columnas de entrada que no entran en la red, p. ej. con «?») y `min-max` (escalar la entrada). `columns`: `"categorical"`, `"features"` o una lista |
 | `classes` | clasificación: las salidas del modelo en orden; cada una, su `id` en el conjunto y otros nombres (`aliases`). Si son caracteres (KMNIST), cómo se leen (`reading`) y el kanji del que vienen (`origin`) |
 | `models` | cada modelo, de un formato (`format`, ver abajo), con el `dataset` con el que se entrenó y sus `metrics` con datos que no vio al entrenar (`test_…`) |
 | `prediction` | con una tabla, `defaults` del formulario y `examples` (valores y la clase que tienen); con imágenes, `images`: cada una, su `file` y su clase (`expected`), si se sabe. Las formas antiguas de un carácter llevan `old: true` y el kanji del que vienen (`origin`) |
-| `training` | `learningRate` y `epochs`, si se proponen, para empezar a entrenar; `layers`: la red por defecto al entrenar, con capas `dense` (`units`, `activation`), `conv2d` (`filters`, `kernelSize`, `activation`), `maxPooling2d` (`poolSize`, `strides`) y `flatten`; `locked: true`, una capa que no se puede cambiar (la salida de la regresión, la entrada de una red de imágenes…) |
+| `training` | `learningRate` y `epochs`, si se proponen, para empezar a entrenar; `layers`: la red por defecto al entrenar, con capas `dense` (`units`, `activation`), `conv2d` (`filters`, `kernelSize`, `activation`), `maxPooling2d` (`poolSize`, `strides`), `flatten` y, en las series temporales, las recurrentes `simpleRNN`, `lstm` y `gru` (`units` y, si no es tanh, `activation`), que van antes que las `dense`; `locked: true`, una capa que no se puede cambiar (la salida de la regresión o de una serie, la entrada de una red de imágenes…) |
+| `forecast` | series temporales: cómo se prepara la serie al entrar. `window`, los valores anteriores con los que se predice el siguiente; `season`, cada cuántos valores se repite el patrón (12 meses…), para compararse con la predicción estacional; `difference`, si se predice el cambio respecto al valor anterior (por defecto, no); `testSize`, el porcentaje final que se aparta para probar (por defecto, 20) |
 
 Los formatos de modelo (`format`):
 
@@ -86,7 +87,7 @@ Los formatos de modelo (`format`):
 | `tfjs-mobilenet` | MobileNet (`@tensorflow-models/mobilenet`): no va en el paquete, lo descarga la librería en la `version` (1 o 2) y el ancho (`alpha`) dados |
 
 Cada columna de la ficha lleva `name`, `role` (`Feature`, `Target`, `ID`, `Other`), `type` (`Continuous`, `Integer`,
-`Categorical`, `Binary`) y `missing` (valores ausentes). Opcionalmente, `units`, `description` (en inglés, como en la
+`Categorical`, `Binary` o `Date`, la fecha de cada fila de una serie temporal) y `missing` (valores ausentes). Opcionalmente, `units`, `description` (en inglés, como en la
 ficha original) y `options` (los valores posibles, en el orden del formulario).
 
 Todas las rutas son relativas al paquete y no pueden salir de él. El esquema completo está en
@@ -135,6 +136,7 @@ En la aplicación, los textos de cada paquete son el espacio de nombres `n4l-<id
 | Regresión | en paquetes: Salarios, Auto MPG, Viviendas de Boston, Rendimiento de estudiantes, Calidad del vino y Cáncer de mama (este, con `listed: false`) |
 | Agrupamiento | en paquetes: Iris (compartido con la clasificación tabular), Vino y Tiroides |
 | Clasificación de imágenes | en paquetes: MNIST, KMNIST (con las formas antiguas de sus caracteres), CIFAR-10 (fotos en color) e ImageNet (MobileNet V2) |
+| Series temporales | en paquetes: Pasajeros de avión (mensual), Temperaturas mínimas en Melbourne (diaria) y Manchas solares (mensual), cada uno con su preparación (`forecast`), su red por defecto y un modelo ya entrenado. Se entrena y se prueba en el navegador (`src/pages/playground/5_TimeSeries/`); los paquetes abiertos por el usuario, todavía no |
 | Detección | todavía en clases de TypeScript |
 
 La clasificación de imágenes (`src/core/n4l/imageClassification.ts`) sabe usar un modelo de TF.js con un sprite de
@@ -144,8 +146,8 @@ explica con LRP (y SHAP, las de color), o MobileNet con un conjunto externo.
 ## Calidad de los modelos
 
 `tests/models/N4L_QUALITY.test.ts` pasa cada modelo ya entrenado de cada paquete por su conjunto, preparado según el
-manifiesto como lo hace la página del modelo: en clasificación tabular exige más del 90 % de aciertos y en regresión,
-las métricas de prueba de su manifiesto. `tests/models/N4L_IMAGES.test.ts` clasifica imágenes de prueba de MNIST y
+manifiesto como lo hace la página del modelo: en clasificación tabular exige más del 90 % de aciertos y en regresión y
+en las series temporales, las métricas de prueba de su manifiesto. `tests/models/N4L_IMAGES.test.ts` clasifica imágenes de prueba de MNIST y
 KMNIST como la página del modelo (desde el lienzo).
 
 ## Medir un modelo de imágenes
@@ -175,3 +177,14 @@ validación. Solo si mejora el R² de prueba del modelo actual lo guarda en el p
 sus pesos, sus métricas de prueba en `metrics` (`test_r2`, `test_mae`, `test_baseline_mae`) y la versión del paquete
 subida. `--force` lo guarda aunque no mejore: cuando el modelo actual pudo entrenarse con esas filas de prueba, su
 nota sale inflada.
+
+## Entrenar el modelo de una serie temporal
+
+`Scripts/train_time_series_models.mjs --package <id> [--write] [--runs 5]` prepara la serie con el mismo código que la
+aplicación (`src/core/timeSeries/series.ts`) y la preparación del paquete (`forecast`): la ventana, la prueba (el final
+de la serie, sin barajar) y el escalado con el entrenamiento. Aparta las últimas ventanas del entrenamiento (un 15 %)
+para validar, entrena varias veces la red de `training` parando cuando la validación deja de mejorar y elige la que
+menos se equivoca. Solo entonces mide la prueba: con `--write` guarda el modelo en `models/forecast/`, sus métricas en
+el manifiesto (`test_mae`, `test_rmse` y `test_recursive_mae`, a un paso y seguida, y para compararse `test_naive_mae`
+y, con estación, `test_seasonal_mae`) y sube la versión del paquete. Los textos del paquete las enseñan en su
+descripción (`{{test_mae, number(maximumFractionDigits: 1)}}`).

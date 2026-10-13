@@ -50,4 +50,17 @@ describe('Página de una tarea (/task/<tarea>)', () => {
     const { getByText } = renderTask('no-existe')
     expect(getByText('404')).toBeInTheDocument()
   })
+
+  test('las series temporales: sus modelos ya entrenados y entrenar con una serie de ejemplo o con una propia', () => {
+    const { getByTestId } = renderTask('time-series')
+    expect(within(getByTestId('Test-Task-Pretrained')).getAllByRole('link').map((link) => link.getAttribute('href')))
+      .toContain('/playground/time-series/model/MELBOURNE-TEMPERATURES')
+    const hrefs = within(getByTestId('Test-Task-Design')).getAllByRole('link').map((link) => link.getAttribute('href'))
+    expect(hrefs).toEqual(expect.arrayContaining([
+      '/playground/time-series/dataset/AIRLINE-PASSENGERS',
+      '/playground/time-series/dataset/SUNSPOTS',
+      '/playground/time-series/dataset/UPLOAD',
+      '/select-dataset/time-series',
+    ]))
+  })
 })

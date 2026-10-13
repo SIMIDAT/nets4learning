@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { AxeBuilder } from '@axe-core/playwright'
 import { test, expect } from './fixtures'
+import { axeViolations, expandChartData } from './axe'
 
 // Agrupamiento (k-means): sin red ni entrenamiento, todo en el navegador y al momento
 
@@ -25,7 +25,7 @@ test('desde la portada se agrupan las flores iris y los grupos se parecen a las 
   await expect(comparison).toContainText('Setosa')
   await expect(page.getByTestId('Test-Clustering-Agreement')).toContainText('Los grupos se parecen bastante a las clases')
   // Cada grupo con su clase mayoritaria; uno es todo Setosa
-  await expect(comparison.getByRole('row').filter({ hasText: 'Setosa · 100 %' })).toHaveCount(1)
+  await expect(comparison.getByRole('row').filter({ hasText: 'Setosa (100 %)' })).toHaveCount(1)
   await expect(comparison.getByRole('row').last()).toContainText('Pureza: 85,3 %')
   await expect(page.getByTestId('Test-Clustering-Elbow').locator('canvas')).toBeVisible()
   await expect(page.getByTestId('Test-Clustering-Profiles')).toContainText('petal_length')
@@ -81,8 +81,7 @@ test('los resultados del agrupamiento no tienen problemas de accesibilidad (tema
     await page.goto('/playground/clustering/dataset/WINE')
     await page.getByTestId('Test-Clustering-Run').click()
     await expect(page.getByTestId('Test-Clustering-Profiles')).toBeVisible()
-    const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
-    const found = violations.map(({ id, impact, nodes }) => `${id} [${impact}]: ${nodes.slice(0, 3).map(({ target }) => target.join(' ')).join(' | ')}`)
-    expect(found, `tema ${colorScheme === 'light' ? 'claro' : 'oscuro'}`).toEqual([])
+    await expandChartData(page)
+    expect(await axeViolations(page), `tema ${colorScheme === 'light' ? 'claro' : 'oscuro'}`).toEqual([])
   }
 })

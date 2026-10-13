@@ -325,7 +325,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
   return (
     <>
       <N4LSectionLayout steps={steps}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.' + param_id} />} guideId={'train.regression.' + dataset} guideSteps={guideSteps}
+        <N4LPageHeader intro={'train'} title={<Trans i18nKey={'modality.' + param_id} />} guideId={'train.regression.' + dataset} guideSteps={guideSteps}
           getSession={currentSession} onImport={importSession} className={'mt-2 mb-3'} />
 
         {/* INFORMATION */}
@@ -334,7 +334,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
           <Col>
             <Accordion defaultActiveKey={[]} activeKey={accordionActive}>
               <Accordion.Item data-guide={'manual'} eventKey={'manual'}>
-                <Accordion.Header onClick={() => accordionToggle('manual')} as={'h2'} className={'n4l-accordion-h2'}>
+                <Accordion.Header onClick={() => accordionToggle('manual')} as={'h3'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={'pages.playground.1-regression.generator.manual.title'} />
                 </Accordion.Header>
                 <Accordion.Body>
@@ -343,7 +343,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
               </Accordion.Item>
 
               <Accordion.Item data-guide={'dataset-info'} eventKey={'dataset_info'}>
-                <Accordion.Header onClick={() => accordionToggle('dataset_info')} as={'h2'} className={'n4l-accordion-h2'}>
+                <Accordion.Header onClick={() => accordionToggle('dataset_info')} as={'h3'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.i18n_TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
                 <Accordion.Body id={'info-dataset'}>
@@ -406,7 +406,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
 
           <Row className={'mt-3'}>
             <Col xl={12} data-guide={'train'}>
-              <N4LTrainButton isTraining={training.isTraining}
+              <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                 progress={training.progress}
                 isStopping={training.isStopping}
                 onStop={training.stop}
@@ -455,7 +455,7 @@ export default function Regression({ dataset }: RegressionProps_t) {
             <Col>
               <Card>
                 <Card.Header>
-                  <h2>Debug</h2>
+                  <h3>Debug</h3>
                 </Card.Header>
                 <Card.Body>
                   <Row lg={2}>

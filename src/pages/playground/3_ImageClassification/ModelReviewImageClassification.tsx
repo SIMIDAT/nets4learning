@@ -40,6 +40,7 @@ import { trackEvent } from '@core/analytics'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { CharacterFormsExamples } from '@pages/playground/3_ImageClassification/components/N4LCharacterForms'
 import { FEATURED_FORMS } from '@pages/playground/3_ImageClassification/models/characterForms'
+import { prefersReducedMotion } from '@core/a11y/displaySettings'
 import {
   runImageClassificationExplain,
   runImageClassificationExplainLrp,
@@ -122,6 +123,8 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   const isDrawable = iModelInstance?.DRAWABLE ?? false
   // Las imágenes de un conjunto (no MobileNet): tienen imágenes de test, y los ejemplos son pequeños
   const spriteImage = iModelInstance?.IMAGE ?? null
+  // La clase de cada ejemplo, para que su botón diga lo mismo que ve quien mira la imagen
+  const exampleLabels = iModelInstance?.LIST_IMAGES_EXAMPLES_LABELS() ?? []
   const hasTestImages = iModelInstance?.TEST_IMAGES ?? false
   // Guía paso a paso de la página (con voz): solo con el botón "Guía"
   const hasSummary = model instanceof tfjs.LayersModel
@@ -140,7 +143,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   // El resultado queda debajo de las imágenes de ejemplo: se lleva a la vista al clasificar desde ahí
   const scrollToResult = () => {
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const reduceMotion = prefersReducedMotion()
     result_ref.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' })
   }
 
@@ -209,7 +212,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
 
   const testOptions = useMemo<VirtualSelectOption_t[]>(() => {
     if (testDataset === null || iModelInstance === null) return []
-    return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index} · ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
+    return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index}: ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
   }, [testDataset, iModelInstance])
 
   /** Una imagen de test tal cual (la entrada exacta del modelo), ampliada en el canvas del resultado */
@@ -303,7 +306,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
   return (
     <>
       <Container className={'n4l-container-wide'} id={'ModelReviewImageClassification'} data-testid={'Test-ModelReviewImageClassification'}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.3'} />} guideId={'image-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
+        <N4LPageHeader intro={'review'} title={<Trans i18nKey={'modality.3'} />} guideId={'image-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
         <Row>
           <Col>
             <N4LDownloadProgress isLoading={isLoading} />
@@ -354,6 +357,7 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                       value={selectedInstance}
                       onChange={handleChange_TestImage}
                       size={'sm'}
+                      label={t('pages.playground.generator.classify.test-image')}
                       placeholder={t('pages.playground.generator.classify.select-image')}
                       searchPlaceholder={t(prefixForm + 'search-entity')}
                       noResultsText={t(prefixForm + 'no-entity')}
@@ -374,7 +378,9 @@ export default function ModelReviewImageClassification({ dataset }: ModelReviewI
                   <div className={spriteImage !== null ? 'n4l-example-grid n4l-example-grid-small' : 'n4l-example-grid'}>
                     {(iModelInstance?.LIST_IMAGES_EXAMPLES() ?? []).map((image, index) => (
                       <button key={index} type={'button'} className={'n4l-example-image'} onClick={() => handleClick_Example(image)}
-                        disabled={model === null} aria-label={t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
+                        disabled={model === null} aria-label={exampleLabels[index] !== undefined
+                          ? t(prefix + 'process-examples.classify-example-label', { index: index + 1, label: exampleLabels[index] })
+                          : t(prefix + 'process-examples.classify-example', { index: index + 1 })}>
                         <img className={'img-fluid w-100 h-100 object-fit-cover'} src={image} alt={''} />
                       </button>
                     ))}

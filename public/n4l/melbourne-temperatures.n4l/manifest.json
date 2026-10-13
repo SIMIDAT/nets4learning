@@ -1,0 +1,94 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "melbourne-temperatures",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://github.com/jbrownlee/Datasets/blob/master/daily-min-temperatures.csv",
+    "links": {
+      "link2": "http://www.bom.gov.au/climate/data/"
+    }
+  },
+  "datasets": [
+    {
+      "id": "melbourne-temperatures",
+      "file": "data/daily-min-temperatures.csv",
+      "rows": 3650,
+      "frequency": "day",
+      "columns": [
+        {
+          "name": "Date",
+          "role": "ID",
+          "type": "Date",
+          "missing": 0,
+          "description": "day (YYYY-MM-DD)"
+        },
+        {
+          "name": "Temp",
+          "role": "Target",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "°C",
+          "description": "daily minimum temperature in Melbourne, Australia"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "time-series",
+      "key": "MELBOURNE-TEMPERATURES",
+      "runtime": "time-series",
+      "datasets": [
+        "melbourne-temperatures"
+      ],
+      "order": 2,
+      "preprocessing": [],
+      "models": [
+        {
+          "id": "forecast",
+          "format": "tfjs-layers",
+          "path": "models/forecast/model.json",
+          "dataset": "melbourne-temperatures",
+          "input": "scaled",
+          "metrics": {
+            "test_mae": 1.7514,
+            "test_rmse": 2.2207,
+            "test_recursive_mae": 3.7806,
+            "test_naive_mae": 1.9527,
+            "test_seasonal_mae": 2.9655
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 16,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ],
+        "learningRate": 0.001,
+        "epochs": 20
+      },
+      "forecast": {
+        "window": 14,
+        "season": 365,
+        "difference": false,
+        "testSize": 20
+      }
+    }
+  ]
+}

@@ -58,7 +58,8 @@ describe('N4LNavbar', () => {
     expect(link('pages.index.tabular-classification.1-title')).toHaveAttribute('href', '/task/tabular-classification')
     expect(link('pages.index.clustering.1-title')).toHaveAttribute('href', '/task/clustering')
     expect(link('pages.index.regression.1-title')).toHaveClass('active')
-    expect(screen.getAllByRole('link').filter((element) => element.getAttribute('href')?.startsWith('/task/'))).toHaveLength(5)
+    expect(link('pages.index.time-series.1-title')).toHaveAttribute('href', '/task/time-series')
+    expect(screen.getAllByRole('link').filter((element) => element.getAttribute('href')?.startsWith('/task/'))).toHaveLength(6)
 
     fireEvent.click(link('pages.index.object-detection.1-title'))
     expect(screen.getByTestId('location')).toHaveTextContent('/task/object-detection')
@@ -86,7 +87,10 @@ describe('N4LNavbar', () => {
     renderAt('/')
     expect(document.getElementById('change-theme-nav-dropdown')).toHaveTextContent(/header\.theme\s*header\.theme-(light|dark)/)
     expect(document.getElementById('change-tf-backend-nav-dropdown')).toHaveTextContent(/header\.backend\s*(WebGL|WebGPU|WebAssembly|CPU)/)
-    // GitHub con su nombre (en el menú del móvil el icono solo no se entiende)
-    expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute('href', 'https://github.com/SIMIDAT/nets4learning')
+    // GitHub con su nombre (en el menú del móvil el icono solo no se entiende) y diciendo que abre otra pestaña
+    const github = screen.getByRole('link', { name: 'header.github' })
+    expect(github).toHaveAttribute('href', 'https://github.com/SIMIDAT/nets4learning')
+    expect(github).toHaveAttribute('target', '_blank')
+    expect(github).toHaveTextContent('GitHub')
   })
 })

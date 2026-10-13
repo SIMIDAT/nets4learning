@@ -12,6 +12,9 @@ Qué se mide, dónde está en el código y cómo configurar la propiedad de GA4 
   dibujos o las imágenes de la cámara. Tampoco el texto de los formularios ni los textos de la interfaz (dependen del
   idioma). Solo se envían identificadores estables (`data-testid`, claves de modelos y conjuntos de datos), números
   (épocas, tiempos, tamaños) y categorías.
+- **Nada sobre accesibilidad.** No se registran los ajustes de accesibilidad de `/settings` (tamaño del texto, alto
+  contraste, menos movimiento…) ni nada que diga si se usa un lector de pantalla u otra ayuda técnica: diría qué
+  necesidades tiene quien usa la aplicación (`src/core/a11y/displaySettings.ts` no llama a `trackEvent`).
 - **Sin publicidad.** `allow_google_signals` y `allow_ad_personalization_signals` están desactivados y el modo de
   consentimiento deniega `ad_storage`, `ad_user_data` y `ad_personalization`.
 - **Solo tráfico real.** Solo se envía en producción (`VITE_ENVIRONMENT=production`). En desarrollo, con las cookies
@@ -26,7 +29,7 @@ Qué se mide, dónde está en el código y cómo configurar la propiedad de GA4 
 | `src/core/analytics.ts` | Consentimiento, carga de GA, `trackEvent`, contexto de la página, propiedades del usuario |
 | `src/core/analyticsPage.ts` | De la URL al contexto de la página (`page_type`, `task`, `mode`, `item`) y el identificador de un clic |
 | `src/components/analytics/N4LAnalytics.tsx` | Lo automático: páginas vistas, tiempo en cada página, clics, cambios de idioma, tema y backend, errores y tiempos de carga |
-| `src/hooks/useTrainingProgress.ts` | `train_start` / `train_end` de las tres tareas que entrenan |
+| `src/hooks/useTrainingProgress.ts` | `train_start` / `train_end` de las tareas que entrenan |
 | `src/core/downloadProgress.ts` | `model_load`: lo que tarda en cargar un modelo y cuánto descarga |
 | `src/core/models/downloadConsent.ts` | `download_consent`: la pregunta antes de descargar un modelo grande |
 | `src/components/dragAndDrop/DragAndDrop.tsx` | `file_upload` / `file_rejected` de todas las zonas de subida |
@@ -42,7 +45,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | Parámetro | Valores |
 |---|---|
 | `page_type` | `home`, `task`, `select_dataset`, `select_model`, `playground`, `regression_description`, `learn`, `report`, `manual`, `glossary`, `datasets`, `packages`, `analyze`, `contribute`, `terms`, `version`, `settings`, `not_found`, `dev` |
-| `task` | `tabular-classification`, `regression`, `image-classification`, `object-detection`, `clustering` |
+| `task` | `tabular-classification`, `regression`, `image-classification`, `object-detection`, `clustering`, `time-series` |
 | `mode` | `train` (entrenar con un conjunto de datos) o `pretrained` (probar un modelo ya entrenado) |
 | `item` | El conjunto de datos o el modelo: `CAR`, `IRIS`, `AUTO_MPG`, `UPLOAD`, `IMAGE-MNIST`… En `/analyze`, el de `?dataset=` |
 
@@ -74,7 +77,7 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | `cluster_run` | Agrupar con k-means (`/playground/clustering/dataset/…`) | `k`, `features` (columnas usadas), `scaled`, `rows` |
 | `n4l_import` | Abrir un fichero .n4l en «Paquetes .n4l» (/packages) | `outcome` (`ok`, `error`), `item` (su id) |
 | `n4l_download` | Descargar el .n4l de un modelo | `item` (su id) |
-| `predict` | Una predicción o clasificación | `input` (`form`, `drawing`, `image`, `sample`, `test_sample`) |
+| `predict` | Una predicción o clasificación | `input` (`form`, `drawing`, `image`, `sample`, `test_sample`; `forecast`: cambiar cuántos valores futuros predice una serie temporal) |
 | `webcam_start` / `webcam_end` | Activar y desactivar la cámara en tiempo real | `duration_sec` (en `webcam_end`) |
 | `explain` | Pedir la explicación de una predicción | `method` (`shap`, `lrp`), `scope` (`local`, `global`; en SHAP tabular) |
 | `file_upload` | Fichero aceptado en una zona de subida | `zone`, `format` (la extensión: `csv`, `parquet`, `png`…), `size_kb` |

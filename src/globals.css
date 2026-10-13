@@ -37,10 +37,28 @@ body {
   min-height: 100vh;
 }
 
-.n4l-hr-title {
+/*
+ * El encabezado de una sección (N4LDivider): el título centrado con una línea a cada lado. Las líneas son ::before y
+ * ::after de una fila flexible (antes, el borde de una fila de 20 px tapado por el fondo del título): así un título
+ * largo pasa a la línea siguiente sin montarse sobre lo de abajo y queda bien sobre cualquier fondo
+ */
+.n4l-hr-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
   font-size: 1.5rem;
-  background-color: #e7e9ec;
-  padding: 0 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: center;
+  color: inherit;
+}
+
+.n4l-hr-heading::before,
+.n4l-hr-heading::after {
+  content: '';
+  flex: 1 0 1.5rem;
+  border-top: 1px solid var(--bs-body-color);
 }
 
 /*
@@ -334,12 +352,15 @@ body {
 
 /* Al saltar desde el índice, el título no queda pegado al borde (ni debajo de la barra del índice en pantallas
    estrechas); el foco del salto con ratón no se dibuja */
-.n4l-hr-row {
+/* Las secciones con ancla propia (/accessibility#feedback) llegan igual que su encabezado: sin quedar bajo las barras */
+.n4l-hr-row,
+.n4l-a11y-section {
   scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 3.75rem);
 }
 
 @media (min-width: 1200px) {
-  .n4l-hr-row {
+  .n4l-hr-row,
+  .n4l-a11y-section {
     scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 1rem);
   }
 }
@@ -358,12 +379,34 @@ body {
   --bc-drag-and-drop: var(--bs-dark)
 }
 
-/* Color de cada tarea: los mismos que sus botones en la home (primary, danger, info y warning) */
+/* Color de cada tarea: los mismos que sus botones en la home (primary, danger, info, warning, success y el morado) */
 [data-task="tabular-classification"] { --n4l-task-color: var(--bs-primary); }
 [data-task="regression"] { --n4l-task-color: var(--bs-danger); }
 [data-task="image-classification"] { --n4l-task-color: var(--bs-info); }
 [data-task="object-detection"] { --n4l-task-color: var(--bs-warning); }
 [data-task="clustering"] { --n4l-task-color: var(--bs-success); }
+[data-task="time-series"] { --n4l-task-color: var(--bs-purple); }
+
+/* Bootstrap no tiene una variante morada: la de las series temporales (blanco sobre morado, 6,6:1) */
+.btn-purple {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--bs-purple);
+  --bs-btn-border-color: var(--bs-purple);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #5e38a4;
+  --bs-btn-hover-border-color: #59359a;
+  --bs-btn-focus-shadow-rgb: 133, 94, 202;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #59359a;
+  --bs-btn-active-border-color: #533291;
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--bs-purple);
+  --bs-btn-disabled-border-color: var(--bs-purple);
+}
+
+.border-purple {
+  border-color: var(--bs-purple) !important;
+}
 
 .n4l-task-card {
   border-top: 4px solid var(--n4l-task-color);
@@ -510,6 +553,11 @@ html[data-theme="dark"] .n4l-footer {
 .n4l-confusion-percent {
   display: block;
   font-size: 0.75rem;
+}
+
+/* Sin color de fondo, el porcentaje va en gris; sobre el verde o el rojo, con el color del texto (el gris no llegaba a
+   4,5:1 sobre ellos) */
+.n4l-confusion-matrix td:not([style*="background"]) .n4l-confusion-percent {
   color: var(--bs-secondary-color);
 }
 /* "Clase real" en vertical, a la izquierda de las filas */
@@ -548,6 +596,16 @@ html[data-theme="dark"] .n4l-footer {
   cursor: help;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
+}
+
+/* Es un botón (N4LHelpTerm), pero se ve como el texto que lo rodea */
+button.n4l-help-term {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
 }
 
 /* Aviso de que falta un paso del usuario (N4LEmptyState) */
@@ -742,8 +800,11 @@ html[data-theme="dark"] .body {
  * la aplicación se queda en 3,7:1: los enlaces, el texto de los botones de contorno y la sección activa del índice usan
  * el azul más oscuro de Bootstrap (#0a58ca, el de pasar el ratón por un enlace: 5,3:1). Los botones rellenos no cambian.
  * El gris de los enlaces secundarios (#6c757d: 4,4:1 en el pie, 3,9:1 sobre el fondo) pasa a #565e64 (más de 5,4:1).
+ * El rosa del código (#d63384: 4,5:1 sobre blanco, menos sobre una cabecera o una fila resaltada) pasa a #ab296a (5,3:1
+ * sobre el fondo gris).
  */
 html:not([data-theme="dark"]) {
+  --bs-code-color: #ab296a;
   --bs-link-color: #0a58ca;
   --bs-link-color-rgb: 10, 88, 202;
   --bs-link-hover-color: #084298;
@@ -762,6 +823,11 @@ html:not([data-theme="dark"]) .n4l-section-nav-link.active {
 
 html:not([data-theme="dark"]) .link-secondary {
   --bs-secondary-rgb: 86, 94, 100;
+}
+
+/* Los enlaces de color primario (.link-primary), con el mismo azul que los demás enlaces: 4,2:1 sobre gris claro */
+html:not([data-theme="dark"]) .link-primary {
+  --bs-primary-rgb: 10, 88, 202;
 }
 
 /*
@@ -793,15 +859,13 @@ html[data-theme="dark"] .link-secondary {
   --bs-secondary-rgb: 167, 172, 177;
 }
 
+html[data-theme="dark"] .link-primary {
+  --bs-primary-rgb: 110, 168, 254;
+}
+
 html[data-theme="dark"] .n4l-section-nav-link.active {
   color: #6ea8fe;
   border-left-color: #6ea8fe;
-}
-
-html[data-theme="dark"] .n4l-hr-title {
-  font-size: 1.5rem;
-  background-color: #212529;
-  padding: 0 10px;
 }
 
 
@@ -862,13 +926,6 @@ code {
 }
 
 .n4l-hr-container {
-  width: 100%;
-  height: 20px;
-  border-bottom: 1px solid var(--bs-body-color);
-  text-align: center;
-}
-
-.n4l-hr-row {
   width: 100%;
   height: 20px;
   border-bottom: 1px solid var(--bs-body-color);
@@ -1145,6 +1202,11 @@ h6 {
   overflow-y: auto;
 }
 
+/* Mientras se ve el aviso de cookies (fijo abajo), la página deja libre su alto al final */
+.body {
+  padding-bottom: var(--n4l-cookies-height, 0px);
+}
+
 /* Aceptar y rechazar, del mismo tamaño; en pantallas estrechas se reparten el ancho */
 .n4l-cookies-button {
   min-width: 8.5rem;
@@ -1307,4 +1369,408 @@ details > pre {
   position: sticky;
   top: var(--n4l-navbar-height, 0px);
   z-index: 1010;
+}
+
+/* Los botones de la paginación, de al menos 32 × 32 px (WCAG 2.5.8 pide 24): con size="sm" una flecha medía 23 px */
+.n4l-pagination-nav .page-link {
+  min-width: 2rem;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* «Saltar al contenido»: oculto hasta recibir el foco, entonces arriba a la izquierda y por encima de la barra */
+.n4l-skip-link:focus {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.5rem 1rem;
+  background: var(--bs-body-bg);
+  color: var(--bs-link-color);
+  border: 2px solid currentColor;
+  border-radius: var(--bs-border-radius);
+}
+
+/*
+ * Foco (WCAG 2.4.7): un anillo de 3 px bien visible en los dos temas en todo lo que se maneja con el teclado. El de
+ * Bootstrap (una sombra al 25 %) se pierde sobre algunos fondos. Solo con :focus-visible: al pulsar con el ratón no sale.
+ * Lo que recibe el foco desde el código (tabindex -1: el título de la página nueva, el <main>…) no lleva anillo
+ */
+:root {
+  --n4l-focus-color: #0a58ca;
+}
+
+html[data-theme="dark"] {
+  --n4l-focus-color: #8bb9fe;
+}
+
+:is(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), .btn, .page-link, .nav-link, .dropdown-item,
+.accordion-button, .form-check-input):focus-visible {
+  outline: var(--n4l-focus-width, 3px) solid var(--n4l-focus-color) !important;
+  outline-offset: 2px;
+}
+
+/* Los que van pegados a su contenedor: el anillo, por dentro (si no, el borde del contenedor lo corta) */
+:is(.accordion-button, .dropdown-item, .list-group-item):focus-visible {
+  outline-offset: -3px;
+}
+
+/*
+ * Que la barra de navegación fija (y, en pantallas estrechas, el índice de secciones debajo) no tape lo que recibe el
+ * foco (WCAG 2.4.11): al tabular, el navegador deja este margen. Sin especificidad, para no cambiar los saltos de las
+ * secciones, que tienen el suyo
+ */
+:where(a, button, input, select, textarea, summary, [tabindex]) {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 4rem);
+  scroll-margin-bottom: calc(var(--n4l-cookies-height, 0px) + 2rem);
+}
+
+/*
+ * Salvo en lo que ya está siempre a la vista (barras fijas o pegadas al borde): con ese margen, al pulsar un enlace de
+ * la barra de navegación el navegador movía la página para «enseñarlo», y al volver atrás se perdía la posición
+ */
+:is(.n4l-navbar, .n4l-section-nav, .n4l-section-bar, .n4l-cookies-banner, .n4l-skip-link, .swal2-container)
+:where(a, button, input, select, textarea, summary, [tabindex]),
+.n4l-skip-link {
+  scroll-margin: 0;
+}
+
+/*
+ * Los bordes de los campos (WCAG 1.4.11): el gris claro de Bootstrap (1,3:1 sobre blanco) apenas se ve y no deja
+ * saber dónde se escribe o qué se marca. Con estos, al menos 3:1 sobre el fondo de la página y de las tarjetas en los
+ * dos temas. Al recibir el foco, al marcarse o con error siguen los colores de Bootstrap (reglas más concretas)
+ */
+:root {
+  --n4l-input-border-color: #858d94;
+}
+
+html[data-theme="dark"] {
+  --n4l-input-border-color: #7d848b;
+}
+
+.form-control,
+.form-select,
+.form-check-input {
+  border-color: var(--n4l-input-border-color);
+}
+
+/*
+ * /settings: las pestañas de los apartados (en pantallas anchas), en una tarjeta como la del apartado (sin ella, sobre
+ * el fondo de la página, parecían enlaces sueltos). La abierta, con su fondo y una raya a la izquierda; las demás, del
+ * color del texto y con fondo al pasar por encima
+ */
+.n4l-settings-tabs {
+  gap: 0.125rem;
+  padding: 0.5rem;
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.n4l-settings-tabs .nav-link {
+  position: relative;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  color: var(--bs-body-color);
+  text-align: start;
+  border-radius: var(--bs-border-radius);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.n4l-settings-tabs .nav-link:hover {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.n4l-settings-tabs .nav-link.active {
+  color: var(--bs-primary-text-emphasis);
+  font-weight: 600;
+  background-color: var(--bs-primary-bg-subtle);
+}
+
+.n4l-settings-tabs .nav-link.active::before {
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.25rem;
+  width: 3px;
+  content: "";
+  background-color: var(--bs-primary);
+  border-radius: 3px;
+}
+
+/* «Datos guardados en este navegador»: cada cosa guardada con lo que ocupa y su botón (debajo, si no cabe al lado) */
+.n4l-stored-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.875rem 1rem;
+}
+
+.n4l-stored-item-text {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.n4l-stored-item-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem 1rem;
+  margin-left: auto;
+}
+
+.n4l-stored-amount {
+  line-height: 1.25;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Lo que hay dentro de una cosa guardada (los modelos descargados), debajo, cada uno con lo que ocupa */
+.n4l-stored-list {
+  flex-basis: 100%;
+  padding: 0.25rem 0.75rem;
+  margin: 0;
+  font-size: 0.875em;
+  list-style: none;
+  background-color: var(--bs-tertiary-bg);
+  border-radius: var(--bs-border-radius);
+}
+
+.n4l-stored-list > li {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+}
+
+/* El nombre se parte en varias líneas si no cabe; lo que ocupa, siempre a la derecha */
+.n4l-stored-list > li > :first-child {
+  min-width: 0;
+}
+
+.n4l-stored-list > li + li {
+  border-top: var(--bs-border-width) dashed var(--bs-border-color);
+}
+
+.n4l-stored-list-size {
+  color: var(--bs-secondary-color);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Restablecer todo, aparte y con el borde rojo: no se puede deshacer */
+.n4l-danger-zone {
+  padding: 1rem;
+  border: var(--bs-border-width) solid var(--bs-danger-border-subtle);
+  border-radius: var(--bs-border-radius-lg);
+}
+
+/* /settings en el móvil y el índice de /accessibility: filas cómodas para el dedo con una flecha */
+.n4l-settings-list-link,
+.n4l-a11y-index-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 1rem;
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.n4l-settings-list-link:focus-visible,
+.n4l-a11y-index-link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* /accessibility: listas con aire entre elementos (frases largas) */
+.n4l-a11y-list {
+  padding-left: 1.25rem;
+}
+
+.n4l-a11y-list > li + li {
+  margin-top: 0.5rem;
+}
+
+/* Cada contenido no accesible y su alternativa, separados por una raya a la izquierda */
+.n4l-a11y-problems > li {
+  padding: 0.25rem 0 0.25rem 0.875rem;
+  border-left: 3px solid var(--n4l-input-border-color);
+}
+
+.n4l-a11y-problems > li + li {
+  margin-top: 1rem;
+}
+
+/* Las teclas, como teclas en los dos temas */
+.n4l-a11y-section kbd {
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  /* La columna de pestañas se queda a la vista al bajar por un apartado largo */
+  .n4l-settings-tabs {
+    position: sticky;
+    top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  }
+}
+
+/*
+ * Ajustes de accesibilidad de /settings (src/core/a11y/displaySettings.ts), en <html>
+ */
+
+/* Tamaño del texto: todo lo que se mide en rem (casi todo en Bootstrap) crece con él */
+html[data-n4l-text-size="125"] {
+  font-size: 125%;
+}
+
+html[data-n4l-text-size="150"] {
+  font-size: 150%;
+}
+
+html[data-n4l-text-size="200"] {
+  font-size: 200%;
+}
+
+/* El espaciado máximo que pide WCAG 1.4.12: interlineado 1,5, párrafos separados el doble y letras y palabras más */
+html.n4l-text-spacing body,
+html.n4l-text-spacing body * {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+html.n4l-text-spacing p {
+  margin-bottom: 2em !important;
+}
+
+/* Enlaces siempre subrayados (no solo al pasar el ratón); los botones y los menús no */
+html.n4l-underline-links a:not(.btn, .nav-link, .navbar-brand, .dropdown-item, .page-link, .n4l-skip-link) {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
+/* Un anillo de foco más grueso, con un halo del color del fondo para que se vea sobre cualquier cosa */
+html.n4l-strong-focus {
+  --n4l-focus-width: 5px;
+}
+
+html.n4l-strong-focus :is(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), .btn, .page-link, .nav-link,
+.dropdown-item, .accordion-button, .form-check-input):focus-visible {
+  box-shadow: 0 0 0 calc(var(--n4l-focus-width) + 4px) var(--bs-body-bg) !important;
+}
+
+/* Menos movimiento aunque el sistema no lo pida: sin animaciones, transiciones ni desplazamiento suave */
+html.n4l-reduce-motion,
+html.n4l-reduce-motion *,
+html.n4l-reduce-motion *::before,
+html.n4l-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Y si lo pide el sistema: también lo de las librerías que no lo miran (los avisos de SweetAlert2, la guía…) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Alto contraste (elegido en /settings o pedido por el sistema con prefers-contrast: more): texto y bordes negros en
+ * el tema claro y blancos en el oscuro, sin grises, el fondo de la página como el de las tarjetas y enlaces más oscuros
+ */
+html.n4l-high-contrast:not([data-theme="dark"]) {
+  --bs-body-color: #000;
+  --bs-body-color-rgb: 0, 0, 0;
+  --bs-emphasis-color: #000;
+  --bs-secondary-color: #000;
+  --bs-secondary-color-rgb: 0, 0, 0;
+  --bs-tertiary-color: #000;
+  --bs-border-color: #000;
+  --n4l-input-border-color: #000;
+  --bs-link-color: #052c65;
+  --bs-link-color-rgb: 5, 44, 101;
+  --bs-link-hover-color: #031633;
+  --n4l-focus-color: #000;
+}
+
+html.n4l-high-contrast[data-theme="dark"] {
+  --bs-body-bg: #000;
+  --bs-body-bg-rgb: 0, 0, 0;
+  --bs-body-color: #fff;
+  --bs-body-color-rgb: 255, 255, 255;
+  --bs-emphasis-color: #fff;
+  --bs-secondary-color: #fff;
+  --bs-secondary-color-rgb: 255, 255, 255;
+  --bs-tertiary-color: #fff;
+  --bs-tertiary-bg: #000;
+  --bs-tertiary-bg-rgb: 0, 0, 0;
+  --bs-secondary-bg: #000;
+  --bs-secondary-bg-rgb: 0, 0, 0;
+  --bs-border-color: #fff;
+  --n4l-input-border-color: #fff;
+  --bs-link-color: #9ec5fe;
+  --bs-link-color-rgb: 158, 197, 254;
+  --bs-link-hover-color: #cfe2ff;
+  --n4l-focus-color: #fff;
+}
+
+html.n4l-high-contrast .body {
+  --n4l-page-bg: var(--bs-body-bg);
+}
+
+html.n4l-high-contrast :is(.card, .navbar, .n4l-footer, .modal-content, .dropdown-menu, .alert, .n4l-cookies-banner) {
+  border: 1px solid var(--bs-border-color);
+}
+
+html.n4l-high-contrast :is(.text-body-secondary, .text-muted, .form-text, .small) {
+  color: var(--bs-body-color) !important;
+}
+
+/*
+ * Colores forzados (alto contraste de Windows): el sistema pone sus colores y quita fondos y sombras. Lo que solo se
+ * distinguía por el fondo (insignias, barras de progreso, las casillas de la matriz de confusión, la zona para soltar
+ * ficheros) lleva un borde, y el foco usa el color de resaltado del sistema
+ */
+@media (forced-colors: active) {
+  :root {
+    --n4l-focus-color: Highlight;
+  }
+
+  .badge,
+  .progress,
+  .n4l-confusion-matrix td,
+  .n4l-eda-swatch,
+  .n4l-compare-swatch,
+  .alert {
+    border: 1px solid CanvasText;
+  }
+
+  .progress-bar {
+    background-color: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .n4l-eda-swatch,
+  .n4l-compare-swatch {
+    forced-color-adjust: none;
+  }
+
+  .form-check-input:checked {
+    background-color: Highlight;
+  }
 }

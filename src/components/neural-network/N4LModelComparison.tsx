@@ -5,11 +5,16 @@ import { Line } from 'react-chartjs-2'
 
 import { bestModelIndex, changedParameters, historyCurves, type ModelParameters_t, type TrainingLogs_t } from '@core/history/trainingSummary'
 import { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
+import { categoryColor, type ChartColor_t } from '@core/chartColors'
+import { useTheme } from '@hooks/useTheme'
+import N4LChartData from '@components/chart/N4LChartData'
 
 /** Como mucho se comparan tantos modelos a la vez (con más, las gráficas no se leen) */
 const MAX_COMPARED = 4
 // Un color por modelo: entrenamiento con línea continua y validación discontinua, como en las curvas de uno
-const COLORS = ['#0d6efd', '#fd7e14', '#198754', '#d63384']
+const COLORS: readonly ChartColor_t[] = ['blue', 'orange', 'green', 'pink']
+// Y una forma de punto por modelo: no solo el color los distingue (WCAG 1.4.1)
+const POINT_STYLES = ['circle', 'triangle', 'rect', 'rectRot'] as const
 
 type N4LModelComparisonProps = {
   histories : TrainingLogs_t[]
@@ -28,6 +33,7 @@ type N4LModelComparisonProps = {
 export default function N4LModelComparison({ histories, parameters, compared, onChange }: N4LModelComparisonProps) {
   const { t, i18n } = useTranslation()
   const prefix = 'pages.playground.generator.training.'
+  const theme = useTheme()
   const number = useMemo(() => new Intl.NumberFormat(i18n.language, { maximumSignificantDigits: 3 }), [i18n.language])
 
   const models = compared.filter((index) => index < histories.length).sort((a, b) => a - b)
@@ -75,6 +81,18 @@ export default function N4LModelComparison({ histories, parameters, compared, on
                 <div className={'n4l-training-curve'}>
                   <p className={'small fw-semibold mb-1'}>{name}</p>
                   <Line
+                    role={'img'}
+                    aria-label={models.map((index, position) => {
+                      // Para quien no ve la gráfica: cómo empieza y acaba la curva de cada modelo
+                      const curve = curves[position].find((item) => item.name === name)
+                      if (curve === undefined || curve.train.length === 0) return ''
+                      const range = (values: number[]) => ({ first: number.format(values[0]), last: number.format(values[values.length - 1]) })
+                      return [
+                        t('model.__index__', { index: index + 1 }) + ':',
+                        t(prefix + 'curve-description', { name, epochs: curve.train.length, ...range(curve.train) }),
+                        ...(curve.validation === null || curve.validation.length === 0 ? [] : [t(prefix + 'curve-description-validation', range(curve.validation))]),
+                      ].join(' ')
+                    }).join(' ')}
                     options={{
                       responsive : true,
                       animation  : false,
@@ -86,22 +104,32 @@ export default function N4LModelComparison({ histories, parameters, compared, on
                       datasets: models.flatMap((index, position) => {
                         const curve = curves[position].find((item) => item.name === name)
                         if (curve === undefined) return []
-                        const color = COLORS[position % COLORS.length]
+                        const color = categoryColor(COLORS, position, theme)
                         const model = t('model.__index__', { index: index + 1 })
                         return [
-                          { label: model + ' · ' + t(prefix + 'train'), data: curve.train, borderColor: color, backgroundColor: color, pointRadius: 1 },
+                          { label: model + ', ' + t(prefix + 'train'), data: curve.train, borderColor: color, backgroundColor: color, pointRadius: 3, pointStyle: POINT_STYLES[position % POINT_STYLES.length] },
                           ...(curve.validation === null ? [] : [{
-                            label          : model + ' · ' + t(prefix + 'validation'),
+                            label          : model + ', ' + t(prefix + 'validation'),
                             data           : curve.validation,
                             borderColor    : color,
                             backgroundColor: color,
                             borderDash     : [6, 4],
-                            pointRadius    : 1,
+                            pointRadius    : 3,
+                            pointStyle     : POINT_STYLES[position % POINT_STYLES.length],
                           }]),
                         ]
                       }),
                     }}
                   />
+                  <N4LChartData caption={t(prefix + 'curve-data', { name })}
+                    columns={[t(prefix + 'epoch-axis'), ...models.flatMap((index, position) => {
+                      const model = t('model.__index__', { index: index + 1 })
+                      return [model + ', ' + t(prefix + 'train'), ...(curves[position].find((item) => item.name === name)?.validation ? [model + ', ' + t(prefix + 'validation')] : [])]
+                    })]}
+                    rows={Array.from({ length: epochs }, (_value, epoch) => [epoch + 1, ...models.flatMap((_index, position) => {
+                      const curve = curves[position].find((item) => item.name === name)
+                      return [curve?.train[epoch], ...(curve?.validation ? [curve.validation[epoch]] : [])]
+                    })])} />
                 </div>
               </Col>
             )
@@ -115,7 +143,7 @@ export default function N4LModelComparison({ histories, parameters, compared, on
               <th scope={'col'}>{t(prefix + 'compare-parameter')}</th>
               {models.map((index, position) => (
                 <th key={index} scope={'col'} className={'text-nowrap'}>
-                  <span className={'n4l-compare-swatch'} style={{ backgroundColor: COLORS[position % COLORS.length] }} aria-hidden={true} />
+                  <span className={'n4l-compare-swatch'} style={{ backgroundColor: categoryColor(COLORS, position, theme) }} aria-hidden={true} />
                   {t('model.__index__', { index: index + 1 })}
                   {index === best && <N4LBestBadge />}
                 </th>

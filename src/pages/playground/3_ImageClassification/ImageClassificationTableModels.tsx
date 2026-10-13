@@ -169,7 +169,7 @@ export default function ImageClassificationTableModels(props: ImageClassificatio
                                 dataset   : example ?? '',
                                 model     : (activePage * rowsPerPage) + index + 1,
                                 createdAt : new Date().toISOString(),
-                                layers    : value.params.layers.map((layer) => layerSummaryParts(t, layer).join(' · ')),
+                                layers    : value.params.layers.map((layer) => layerSummaryParts(t, layer).join(', ')),
                                 parameters: parameters[(activePage * rowsPerPage) + index],
                                 history   : historyNumbers(value.history.history),
                                 ...(value.evaluation !== undefined) && { evaluation: value.evaluation },

@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { announce } from '@core/a11y/announce'
 import * as _Types from '@core/types'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
 import N4LSummary from '@components/summary/N4LSummary'
@@ -18,10 +20,20 @@ export default function RegressionPredictionInfo({ prediction, targetName, actua
   const numberFormat = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 3 })
   const percentFormat = new Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 1 })
 
-  if (prediction.result.length === 0) return <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-prediction'} />
-
   const [value] = prediction.result
-  const error = actual === null ? null : value - actual
+  const error = actual === null || value === undefined ? null : value - actual
+  const label = targetName ? t(prefix + 'predicted-value', { target: targetName }) : t('prediction-result')
+  const errorText = actual === null || error === null ? null : t(prefix + 'error', {
+    value  : (error > 0 ? '+' : '') + numberFormat.format(error),
+    percent: actual === 0 ? '—' : percentFormat.format(Math.abs(error / actual)),
+  })
+  // El resultado, también para el lector de pantalla, sin mover el foco del botón que lo ha pedido (WCAG 4.1.3)
+  const result = value === undefined ? ''
+    : [`${label}: ${numberFormat.format(value)}`, ...(actual !== null && errorText !== null ? [t(prefix + 'actual-value', { value: numberFormat.format(actual) }), errorText] : [])].join('. ')
+  useEffect(() => announce(result), [result])
+
+  if (value === undefined) return <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-prediction'} />
+
   const steps: Array<[string, string, unknown[] | undefined]> = [
     ['prediction-input', 'prediction-input-description', prediction.input_1_dataframe_original.values[0] as unknown[]],
     ['prediction-input-encoding', 'prediction-input-encoding-description', prediction.input_2_dataframe_encoding.values[0] as unknown[]],
@@ -32,20 +44,13 @@ export default function RegressionPredictionInfo({ prediction, targetName, actua
   return (
     <div data-testid={'Test-RegressionPredictionInfo'}>
       <div className={'d-flex flex-wrap align-items-baseline column-gap-3 row-gap-1'}>
-        <span className={'text-body-secondary'}>
-          {targetName ? t(prefix + 'predicted-value', { target: targetName }) : t('prediction-result')}
-        </span>
+        <span className={'text-body-secondary'}>{label}</span>
         <span className={'display-6'} data-testid={'Test-RegressionPrediction-value'}>{numberFormat.format(value)}</span>
         {actual !== null && error !== null && <>
           <span data-testid={'Test-RegressionPrediction-actual'}>
             {t(prefix + 'actual-value', { value: numberFormat.format(actual) })}
           </span>
-          <span className={'text-body-secondary'} data-testid={'Test-RegressionPrediction-error'}>
-            {t(prefix + 'error', {
-              value  : (error > 0 ? '+' : '') + numberFormat.format(error),
-              percent: actual === 0 ? '—' : percentFormat.format(Math.abs(error / actual)),
-            })}
-          </span>
+          <span className={'text-body-secondary'} data-testid={'Test-RegressionPrediction-error'}>{errorText}</span>
         </>}
       </div>
       <div className={'mt-3'}>

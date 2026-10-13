@@ -4,19 +4,18 @@ import { Container } from 'react-bootstrap'
 
 import NotFoundPage from '../notFound/NotFoundPage'
 import Loading from '../Loading'
-import { RegressionProvider } from '@context/RegressionContext'
-import { TabularClassificationProvider } from '@context/TabularClassificationContext'
 import { TASKS } from '@/TASKS'
 import N4LBreadcrumb from '@components/breadcrumb/N4LBreadcrumb'
 import { isTask } from '@components/task/taskInfo'
 
 // Cada vista se carga bajo demanda: así una tarea no descarga los modelos y librerías
-// de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe).
+// de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe). Las de entrenar de la clasificación
+// tabular y la regresión llevan su contexto, que importa danfo.js: tampoco va con el playground
 // Tabular Classification
-const TabularClassification = lazy(() => import('./0_TabularClassification/TabularClassification'))
+const TabularClassification = lazy(() => import('./0_TabularClassification/TabularClassificationPage'))
 const ModelReviewTabularClassification = lazy(() => import('./0_TabularClassification/ModelReviewTabularClassification'))
 // Regression
-const Regression = lazy(() => import('./1_Regression/Regression'))
+const Regression = lazy(() => import('./1_Regression/RegressionPage'))
 const ModelReviewRegression = lazy(() => import('./1_Regression/ModelReviewRegression'))
 // Object Detection
 const ModelReviewObjectDetection = lazy(() => import('./2_ObjectDetection/ModelReviewObjectDetection'))
@@ -25,6 +24,9 @@ const ImageClassification = lazy(() => import('./3_ImageClassification/ImageClas
 const ModelReviewImageClassification = lazy(() => import('./3_ImageClassification/ModelReviewImageClassification'))
 
 const Clustering = lazy(() => import('./4_Clustering/Clustering'))
+// Time series
+const TimeSeries = lazy(() => import('./5_TimeSeries/TimeSeries'))
+const ModelReviewTimeSeries = lazy(() => import('./5_TimeSeries/ModelReviewTimeSeries'))
 
 
 type MisParams = {
@@ -39,12 +41,8 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       if (option === 'model') {
         return <ModelReviewTabularClassification dataset={example} />
       } else if (option === 'dataset') {
-        return (
-          // key: cada dataset empieza con su propio estado (modelos entrenados, predicción…)
-          <TabularClassificationProvider key={example}>
-            <TabularClassification dataset={example} />
-          </TabularClassificationProvider>
-        )
+        // key: cada dataset empieza con su propio estado (modelos entrenados, predicción…)
+        return <TabularClassification key={example} dataset={example} />
       }
       break
     }
@@ -52,11 +50,7 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       if (option === 'model') {
         return <ModelReviewRegression dataset={example} />
       } else if (option === 'dataset') {
-        return <>
-          <RegressionProvider key={example}>
-            <Regression dataset={example} />
-          </RegressionProvider>
-        </>
+        return <Regression key={example} dataset={example} />
       }
       break
     }
@@ -78,6 +72,11 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
     case TASKS.CLUSTERING: {
       // Se agrupa al momento: no hay modelos preentrenados
       if (option === 'dataset') return <Clustering key={example} dataset={example} />
+      break
+    }
+    case TASKS.TIME_SERIES: {
+      if (option === 'model') return <ModelReviewTimeSeries key={example} dataset={example} />
+      if (option === 'dataset') return <TimeSeries key={example} dataset={example} />
       break
     }
   }

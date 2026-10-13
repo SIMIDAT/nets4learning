@@ -73,7 +73,8 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
             <Col key={value}>
               <Card className={'n4l-task-card h-100'} data-task={id} data-testid={`${testId}-Option-${value}`}>
                 <Card.Body>
-                  <Card.Title as={'h3'} className={'h5'}>{t(i18n)}</Card.Title>
+                  {/* Debajo de «Conjuntos de ejemplo» (h2) si se puede subir uno propio; si no, justo debajo del título */}
+                  <Card.Title as={uploadOption !== undefined ? 'h3' : 'h2'} className={'h5'}>{t(i18n)}</Card.Title>
                   {datasetInfo(value) !== undefined && <N4LDatasetInfo info={datasetInfo(value)!} />}
                 </Card.Body>
                 <Card.Footer className={'bg-transparent border-0 d-flex gap-2 pb-3'}>
@@ -81,9 +82,13 @@ export default function MenuSelect({ kind }: { kind: MenuKind_t }) {
                     to={`/playground/${id}/${kind}/${value}`}
                     data-testid={`${testId}-Open-${value}`}>
                     <Trans i18nKey={'pages.menu.open'} />
+                    {/* Para el lector de pantalla, de qué es cada «Abrir» y cada «Descripción» (en la lista de enlaces
+                        no se ve la tarjeta); el nombre empieza por lo que se ve, para el control por voz */}
+                    <span className={'visually-hidden'}>: {t(i18n)}</span>
                   </Link>
                   {hasMenuModel(id, value) && <Button variant={'outline-secondary'} onClick={() => setDescriptionKey(value)}>
                     <Trans i18nKey={`pages.menu.select-${kind}.description`} />
+                    <span className={'visually-hidden'}>: {t(i18n)}</span>
                   </Button>}
                 </Card.Footer>
               </Card>

@@ -90,7 +90,7 @@ export default function DataFrameQuery({ dataframe, target }: DataFrameQueryProp
       <p className={'small mb-2'}>
         <code>df[{JSON.stringify(columnOf(applied.column))}]{applied.query}</code>
       </p>
-      {'error' in result && <p className={'text-danger small'}>{t('dataframe.query.error', { message: result.error })}</p>}
+      {'error' in result && <p className={'text-danger-emphasis small'}>{t('dataframe.query.error', { message: result.error })}</p>}
       {'dataframe' in result && (result.dataframe.shape[0] === 0
         ? <p className={'text-body-secondary'}>{t('dataframe.query.no-rows')}</p>
         : <N4LDataFrameTable dataframe={result.dataframe} target={target} />)}

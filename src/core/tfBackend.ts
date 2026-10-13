@@ -7,7 +7,10 @@ import wasmPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm?
 import wasmSimdPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-simd.wasm?url'
 import wasmThreadedSimdPath from '@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-threaded-simd.wasm?url'
 
+import i18next from 'i18next'
+
 import { trackEvent } from '@core/analytics'
+import { announce } from '@core/a11y/announce'
 
 export const TF_BACKENDS = ['webgl', 'webgpu', 'wasm', 'cpu'] as const
 export type TFBackend_t = typeof TF_BACKENDS[number]
@@ -176,6 +179,8 @@ export function changeUserTFBackend(backend: TFBackend_t): Promise<boolean> {
       // Sin almacenamiento: el backend solo dura esta visita
     }
     setActiveBackend(backend)
+    // El cambio, también para el lector de pantalla (WCAG 4.1.3): «Backend: WebGL»
+    announce(`${i18next.t('header.backend')}: ${TF_BACKEND_LABELS[backend]}`)
     trackEvent('settings_change', { setting: 'tf_backend', value: backend, outcome: 'completed' })
     return true
   })

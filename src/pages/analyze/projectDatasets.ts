@@ -13,7 +13,7 @@ export type ProjectDataset_t = {
   source?: string
 }
 
-const TASKS_WITH_CSV = [TASKS.TABULAR_CLASSIFICATION, TASKS.REGRESSION] as const
+const TASKS_WITH_CSV = [TASKS.TABULAR_CLASSIFICATION, TASKS.REGRESSION, TASKS.TIME_SERIES] as const
 
 /** Los CSV de los modelos y los de práctica de /datasets, por tarea */
 export const PROJECT_DATASETS: ProjectDataset_t[] = TASKS_WITH_CSV.flatMap((task) => [

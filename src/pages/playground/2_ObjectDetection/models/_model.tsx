@@ -1,7 +1,18 @@
 import type { TFunction } from 'i18next'
+import type { Smoothing_t } from './smoothing'
 
 /** Lo que se puede pasar a un detector: una imagen subida, un fotograma de la webcam o un canvas */
 export type DetectionInput_t = ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
+
+/** El ancho en píxeles de una entrada: el del vídeo o la imagen originales, en el que dan sus puntos los detectores */
+export const inputWidth = (input: DetectionInput_t) =>
+  'videoWidth' in input ? input.videoWidth : 'naturalWidth' in input ? input.naturalWidth : input.width
+
+/**
+ * La x de un recuadro reflejado en horizontal: para los detectores que no saben reflejar (MoveNet, COCO-SSD, face-api),
+ * para que caigan sobre el vídeo de la webcam en espejo
+ */
+export const mirrorBoxX = (x: number, boxWidth: number, imageWidth: number) => imageWidth - x - boxWidth
 
 export default abstract class I_MODEL_OBJECT_DETECTION {
   TITLE                  : string = ''
@@ -30,6 +41,17 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
 
   /** Dibuja las detecciones sobre el canvas */
   RENDER(_ctx: CanvasRenderingContext2D, _predictions?: unknown[]) {}
+
+  /**
+   * Cómo seguir y suavizar las detecciones de la webcam de un fotograma al siguiente, para que no tiemblen ni parpadeen
+   * (DetectionSmoother); null: se dibujan tal cual
+   */
+  SMOOTHING: Smoothing_t<unknown> | null = null
+  /**
+   * Si RENDER solo dibuja y se puede llamar en cada fotograma de la pantalla (lo dibujado se mueve con suavidad entre
+   * una predicción y la siguiente). Si RENDER además sigue algo fotograma a fotograma, solo se llama con cada predicción
+   */
+  RENDER_EVERY_FRAME = true
 
   // region EXPLICABILIDAD
   // SHAP explica un número por cada "etiqueta": tapa trozos de la imagen, vuelve a predecir y
@@ -74,89 +96,4 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
   /** Clave de i18n de una nota sobre cómo leer la explicación de este modelo (o null). */
   EXPLAIN_NOTE_KEY: string | null = null
   // endregion
-
-  /**
-   *
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} x
-   * @param {number} y
-   * @param {number} w
-   * @param {number} h
-   */
-  _drawRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-    ctx.lineWidth = 3
-    ctx.strokeStyle = 'rgba(0,255,21,0.84)'
-    ctx.strokeRect(x, y, w, h)
-  }
-  /**
-   *
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {string} txt
-   * @param {string} font
-   * @param {number} x
-   * @param {number} y
-   * @param {number} padding
-   */
-  _drawTextBG(ctx: CanvasRenderingContext2D, txt: string, font: string, x: number, y: number, padding: number) {
-    ctx.font = font
-    ctx.textBaseline = 'top'
-    ctx.fillStyle = '#fff'
-
-    const width = ctx.measureText(txt).width
-    ctx.fillRect(x, y, width + padding, parseInt(font, 10) + padding)
-
-    ctx.lineWidth = 2
-    ctx.strokeStyle = '#009ddf'
-    ctx.strokeRect(x, y, width + padding, parseInt(font, 10) + padding)
-
-    ctx.fillStyle = '#000000'
-    ctx.fillText(txt, x + padding / 2, y + padding / 2)
-  }
-
-  /**
-   *
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {string} txt
-   * @param {string} font
-   * @param {number} x
-   * @param {number} y
-   * @param {number} padding
-   * @param {boolean} threshold
-   */
-  _drawTextBG_Opacity(
-    ctx: CanvasRenderingContext2D,
-    txt: string,
-    font: string,
-    x: number,
-    y: number,
-    padding: number,
-    threshold: boolean
-  ) {
-    ctx.font = font
-    ctx.textBaseline = 'top'
-    ctx.fillStyle = '#fff'
-
-    const width = ctx.measureText(txt).width
-
-    if (threshold) ctx.globalAlpha = 0.4
-    ctx.fillRect(x, y, width + padding, parseInt(font, 10) + padding)
-    if (threshold) ctx.globalAlpha = 1.0
-
-    ctx.lineWidth = 2
-    ctx.strokeStyle = '#009ddf'
-    if (threshold) ctx.globalAlpha = 0.4
-    ctx.strokeRect(x, y, width + padding, parseInt(font, 10) + padding)
-    if (threshold) ctx.globalAlpha = 1.0
-
-    ctx.fillStyle = '#000000'
-    if (threshold) ctx.globalAlpha = 0.8
-    ctx.fillText(txt, x + padding / 2, y + padding / 2)
-    if (threshold) ctx.globalAlpha = 1.0
-  }
-
-  _drawPoint(ctx: CanvasRenderingContext2D, x: number, y: number, r = 3) {
-    ctx.beginPath()
-    ctx.arc(x, y, r, 1, 3 * Math.PI)
-    ctx.fill()
-  }
 }

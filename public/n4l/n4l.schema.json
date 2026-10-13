@@ -100,7 +100,8 @@
               "regression",
               "image-classification",
               "object-detection",
-              "clustering"
+              "clustering",
+              "time-series"
             ]
           },
           "key": {
@@ -317,6 +318,34 @@
                           "description": "La capa no se puede cambiar (la salida de la regresión…)"
                         }
                       }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "class",
+                        "units"
+                      ],
+                      "properties": {
+                        "class": {
+                          "enum": [
+                            "simpleRNN",
+                            "lstm",
+                            "gru"
+                          ],
+                          "description": "Series temporales: capa recurrente, que lee la ventana valor a valor"
+                        },
+                        "units": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "activation": {
+                          "type": "string",
+                          "description": "Por defecto, tanh"
+                        },
+                        "locked": {
+                          "type": "boolean"
+                        }
+                      }
                     }
                   ]
                 }
@@ -330,6 +359,35 @@
                 "type": "integer",
                 "minimum": 1,
                 "description": "Las épocas con las que se empieza a entrenar"
+              }
+            }
+          },
+          "forecast": {
+            "type": "object",
+            "required": [
+              "window"
+            ],
+            "description": "Series temporales: cómo se prepara la serie para la red al entrar",
+            "properties": {
+              "window": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Valores anteriores con los que se predice el siguiente"
+              },
+              "season": {
+                "type": "integer",
+                "minimum": 2,
+                "description": "Valores que tarda en repetirse el patrón (12 meses…): con ella se compara con la predicción estacional"
+              },
+              "difference": {
+                "type": "boolean",
+                "description": "Predecir el cambio respecto al valor anterior (por defecto, no)"
+              },
+              "testSize": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "exclusiveMaximum": 100,
+                "description": "Porcentaje final de la serie que se aparta para probar (por defecto, 20)"
               }
             }
           }
@@ -397,8 +455,10 @@
                   "Continuous",
                   "Integer",
                   "Categorical",
-                  "Binary"
-                ]
+                  "Binary",
+                  "Date"
+                ],
+                "description": "Date: la fecha de cada fila de una serie temporal"
               },
               "missing": {
                 "type": "integer",
@@ -419,6 +479,17 @@
               }
             }
           }
+        },
+        "frequency": {
+          "enum": [
+            "hour",
+            "day",
+            "week",
+            "month",
+            "quarter",
+            "year"
+          ],
+          "description": "Serie temporal: cada cuánto hay una fila (en orden, con su fecha en la columna de tipo Date)"
         }
       },
       "description": "Una tabla (un CSV) con la ficha de sus columnas"

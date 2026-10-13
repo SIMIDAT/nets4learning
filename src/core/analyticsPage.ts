@@ -18,6 +18,7 @@ const PAGE_TYPES: Record<string, string> = {
   'terms-and-conditions': 'terms',
   'version'             : 'version',
   'settings'            : 'settings',
+  'accessibility'       : 'accessibility',
   'learn'               : 'learn',
   'report'              : 'report',
   '404'                 : 'not_found',
@@ -76,6 +77,8 @@ const CLICKABLE = [
  */
 export function clickTargetName(target: EventTarget | null, basename = ''): string | null {
   if (!(target instanceof Element)) return null
+  // Lo marcado como privado no se registra: los ajustes de accesibilidad dirían qué necesidades tiene quien los usa
+  if (target.closest('[data-analytics-private]') !== null) return null
   const element = target.closest(CLICKABLE)
   if (element === null) return null
   const name = element.getAttribute('data-analytics') ?? element.getAttribute('data-testid')

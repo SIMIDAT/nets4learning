@@ -1,4 +1,5 @@
 import { test, expect } from './fixtures'
+import { axeViolations } from './axe'
 
 test('ninguna página se sale de la pantalla en horizontal', async ({ page }) => {
   test.setTimeout(180_000)
@@ -10,12 +11,15 @@ test('ninguna página se sale de la pantalla en horizontal', async ({ page }) =>
     '/playground/regression/model/AUTO_MPG',
     '/playground/image-classification/model/IMAGE-MNIST',
     '/playground/clustering/dataset/WINE',
+    '/playground/time-series/dataset/MELBOURNE-TEMPERATURES',
+    '/playground/time-series/model/AIRLINE-PASSENGERS',
     '/analyze',
     '/datasets',
     '/packages',
     '/glossary',
     '/manual',
     '/settings',
+    '/accessibility',
     '/learn',
     '/contribute',
     '/version',
@@ -146,4 +150,128 @@ test('al recargar la página (como al desbloquear el móvil), la guía sigue en 
   await expect(page.getByTestId('Test-GuideButton')).toHaveText('Continuar la guía (paso 4 de 18)')
   await page.waitForTimeout(1500)
   await expect(tooltip).toHaveCount(0)
+})
+
+test('el menú abierto en el móvil no tiene problemas de accesibilidad (temas claro y oscuro)', async ({ page }) => {
+  for (const colorScheme of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme })
+    await page.goto('/')
+    const toggler = page.locator('.navbar-toggler')
+    await toggler.click()
+    await expect(toggler).toHaveAttribute('aria-expanded', 'true')
+    await page.locator('.n4l-navbar').getByRole('button', { name: 'Tareas' }).click()
+    await expect(page.locator('.n4l-navbar .dropdown-menu.show')).toBeVisible()
+    expect(await axeViolations(page), `menú móvil (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+    // Con un ajuste abierto: la opción elegida, con el fondo suave y la marca
+    await page.locator('.n4l-navbar').getByRole('button', { name: /Idioma/ }).click()
+    await expect(page.locator('.n4l-navbar .dropdown-menu.show [aria-current="true"] .n4l-navbar-check')).toBeVisible()
+    expect(await axeViolations(page), `menú móvil con el idioma (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+  }
+})
+
+test('el menú se abre sobre la página sin moverla, y tocar fuera de él o salir con el tabulador lo cierra', async ({ page }) => {
+  await page.goto('/glossary')
+  const heading = page.getByRole('heading', { level: 1 })
+  await expect(heading).toBeVisible()
+  const before = (await heading.boundingBox())!.y
+  const toggler = page.locator('.navbar-toggler')
+  await toggler.click()
+  await expect(page.locator('.navbar-collapse')).toHaveClass(/show/)
+  // La página sigue en su sitio, oscurecida detrás del menú
+  expect((await heading.boundingBox())!.y).toBe(before)
+  const backdrop = page.getByTestId('Test-Navbar-Backdrop')
+  await expect(backdrop).toBeVisible()
+  // Al tocar la página (debajo del menú), se cierra
+  const viewport = page.viewportSize()!
+  await page.mouse.click(viewport.width / 2, viewport.height - 20)
+  await expect(toggler).toHaveAttribute('aria-expanded', 'false')
+  await expect(backdrop).toHaveCount(0)
+
+  // Con el teclado: después del último enlace (GitHub), el foco sale del menú y este se cierra
+  await toggler.focus()
+  await page.keyboard.press('Enter')
+  await expect(toggler).toHaveAttribute('aria-expanded', 'true')
+  await page.getByRole('link', { name: 'GitHub (se abre en otra pestaña)' }).focus()
+  await page.keyboard.press('Tab')
+  await expect(toggler).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('el menú del móvil con el teclado: dice si está abierto, lo de dentro va después del botón y Escape lo cierra', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByTestId('Test-InitialMenu')).toBeVisible()
+  const toggler = page.locator('.navbar-toggler')
+  await toggler.focus()
+  await page.keyboard.press('Enter')
+  await expect(toggler).toHaveAttribute('aria-expanded', 'true')
+  // Lo siguiente con el tabulador ya es del menú
+  await page.keyboard.press('Tab')
+  expect(await page.evaluate(() => document.querySelector('#n4l-navbar-menu')?.contains(document.activeElement))).toBe(true)
+  // Con un desplegable abierto, Escape cierra el desplegable, no el menú
+  const tasks = page.locator('.n4l-navbar').getByRole('button', { name: 'Tareas' })
+  await tasks.focus()
+  await page.keyboard.press('Enter')
+  await expect(tasks).toHaveAttribute('aria-expanded', 'true')
+  await page.keyboard.press('Escape')
+  await expect(tasks).toHaveAttribute('aria-expanded', 'false')
+  await expect(toggler).toHaveAttribute('aria-expanded', 'true')
+  // Y otra vez Escape cierra el menú, con el foco en su botón
+  await page.keyboard.press('Escape')
+  await expect(toggler).toHaveAttribute('aria-expanded', 'false')
+  await expect(toggler).toBeFocused()
+})
+
+test('/settings en el móvil: la lista de apartados y cada uno solo, con el foco donde toca y sin problemas de accesibilidad', async ({ page }) => {
+  for (const colorScheme of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme })
+    await page.goto('/settings')
+    const list = page.getByRole('navigation', { name: 'Apartados de la configuración' })
+    await expect(list.getByRole('link')).toHaveCount(9)
+    expect(await axeViolations(page), `lista (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+
+    // Al tocar un apartado se abre solo, arriba y con el foco en su título
+    await list.getByRole('link', { name: /Privacidad y cookies/ }).click()
+    await expect(page).toHaveURL(/\/settings#privacy$/)
+    await expect(page.getByTestId('Test-Settings-privacy').getByRole('heading', { name: 'Privacidad y cookies' })).toBeFocused()
+    await expect(list).toHaveCount(0)
+    expect(await page.evaluate(() => window.scrollY)).toBe(0)
+    expect(await axeViolations(page), `apartado (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+
+    // «Todos los apartados» (o el botón atrás del teléfono) vuelve a la lista, con el foco en el apartado del que se viene
+    await page.getByTestId('Test-Settings-Back').click()
+    await expect(page).toHaveURL(/\/settings$/)
+    await expect(page.getByTestId('Test-Settings-Item-privacy')).toBeFocused()
+    await page.getByTestId('Test-Settings-Item-data').click()
+    await page.goBack()
+    await expect(page.getByTestId('Test-Settings-Item-data')).toBeFocused()
+  }
+})
+
+test('/accessibility en el móvil: el índice de arriba lleva a cada apartado sin taparlo, y los botones dicen que abren otra pestaña', async ({ page }) => {
+  for (const colorScheme of ['light', 'dark'] as const) {
+    await page.emulateMedia({ colorScheme })
+    await page.goto('/accessibility')
+    const index = page.getByTestId('Test-Accessibility-Index')
+    await expect(index.getByRole('link')).toHaveCount(5)
+    expect(await axeViolations(page), `arriba (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+
+    // Al tocar un apartado, su título queda debajo de las barras (la de navegación y la del índice) y con el foco
+    await index.getByRole('link', { name: '4. Comunicar una barrera' }).click()
+    const heading = page.getByRole('heading', { level: 2, name: '4. Comunicar una barrera' })
+    await expect(page.locator('#' + (await heading.locator('..').getAttribute('id')))).toBeFocused()
+    const bar = page.locator('.n4l-section-bar-wrapper')
+    await expect(bar).toHaveClass(/is-visible/)
+    await expect.poll(async () => (await heading.boundingBox())!.y).toBeGreaterThanOrEqual((await bar.boundingBox())!.y + (await bar.boundingBox())!.height)
+    expect(await axeViolations(page), `apartado (tema ${colorScheme === 'light' ? 'claro' : 'oscuro'})`).toEqual([])
+  }
+
+  // Los botones de contacto, a todo el ancho y con «(se abre en otra pestaña)» en su nombre
+  const issue = page.getByRole('link', { name: 'Comunicar una barrera en GitHub (con una plantilla) (se abre en otra pestaña)' })
+  await expect(issue).toHaveAttribute('target', '_blank')
+  const width = await page.evaluate(() => document.querySelector('#feedback')!.getBoundingClientRect().width)
+  expect((await issue.boundingBox())!.width).toBeCloseTo(width, 0)
+
+  // Con el ancla en la dirección (un enlace desde fuera), el título del apartado tampoco queda bajo las barras
+  await page.goto('/accessibility#preparation')
+  const preparation = page.getByRole('heading', { level: 2, name: /^5\. / })
+  await expect.poll(async () => (await preparation.boundingBox())!.y).toBeGreaterThanOrEqual((await page.locator('.n4l-navbar').boundingBox())!.height)
 })

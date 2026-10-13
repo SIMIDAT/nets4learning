@@ -19,6 +19,7 @@ import { createReviewModelInstance } from '@core/models/createReviewModelInstanc
 import { restoreTFBackend } from '@core/tfBackend'
 import alertHelper from '@utils/alertHelper'
 import type I_MODEL_OBJECT_DETECTION from './models/_model'
+import { DetectionSmoother } from './models/smoothing'
 import { delay } from '@utils/utils'
 import {
   ImageExplainResults,
@@ -34,6 +35,11 @@ import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LModelCard from '@components/neural-network/N4LModelCard'
 import N4LModelAside from '@components/neural-network/N4LModelAside'
 import { objectDetectionReviewGuide } from './modelReviewGuide'
+import { detectionSummary, detectionText, type DetectedItem_t } from './detectionSummary'
+import { announce } from '@core/a11y/announce'
+
+// Cada cuánto se actualiza el texto de lo que ve la cámara
+const LIVE_SUMMARY_MS = 2000
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
@@ -57,7 +63,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const { dataset } = props
   const isWebView = navigator.userAgent.toLowerCase().indexOf('wv') !== -1
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
 
   const [isLoading, setLoading] = useState(true)
@@ -116,6 +122,10 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
   // === Explicabilidad (SHAP) ===
   const imgData_ref = useRef<ImageData | null>(null)
+  // Lo detectado en texto: en la foto subida, al terminar; con la cámara, cada pocos segundos (sin anunciarlo solo:
+  // saturaría el lector), y se anuncia al pulsar «Decir lo que se detecta»
+  const [imageDetections, setImageDetections] = useState<DetectedItem_t[] | null>(null)
+  const [liveDetections, setLiveDetections] = useState<DetectedItem_t[] | null>(null)
   const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
   const [isCalculo, setIsCalculo] = useState(false)
@@ -247,9 +257,10 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     input_img_or_video: ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
     config: { flipHorizontal: boolean }
   ) => {
-    if (iModelInstance === null) return
+    if (iModelInstance === null) return []
     const predictions = await iModelInstance.PREDICTION(input_img_or_video, config)
     iModelInstance.RENDER(ctx, predictions)
+    return predictions
   }, [iModelInstance])
 
   useEffect(() => {
@@ -269,9 +280,19 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       // Una predicción cada vez: si la anterior no ha terminado se salta el fotograma. Si no, mientras el modelo
       // espera a la GPU (lecturas asíncronas) empezaban predicciones nuevas que se pisaban y el vídeo iba a saltos.
       let isPredicting = false
+      let summarizedAt = 0
+      // Las detecciones, seguidas de un fotograma al siguiente y suavizadas (si el modelo dice cómo): sin temblar ni
+      // parpadear. Si su RENDER solo dibuja, se dibujan en cada fotograma de la pantalla, acercándose a la última
+      // predicción, en vez de a saltos con cada una
+      const smoother = iModelInstance?.SMOOTHING ? new DetectionSmoother(iModelInstance.SMOOTHING) : null
+      const renderEveryFrame = iModelInstance?.RENDER_EVERY_FRAME ?? false
       const animate = async () => {
         if (isCameraEnable) {
           requestAnimation_ref.current = requestAnimationFrame(animate)
+          if (smoother !== null && renderEveryFrame && iModelInstance !== null) {
+            const _processWebcam = processWebcam()
+            if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, smoother.frame(performance.now()))
+          }
           now = Date.now()
           elapsed = now - then
           const video = WebCam_ref.current?.video
@@ -284,9 +305,18 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
               detectionStats_ref.current.predictions += 1
               detectionStats_ref.current.totalMs += performance.now() - start
               if (isCancelled) return
-              // El canvas se limpia justo antes de pintar: limpiarlo antes de predecir lo dejaba vacío mientras tanto
-              const _processWebcam = processWebcam()
-              if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, predictions)
+              smoother?.update(predictions, performance.now())
+              // Lo que se ve: el texto de lo detectado dice lo mismo que la pantalla
+              const shown = smoother === null ? predictions : smoother.latest()
+              if (smoother === null || !renderEveryFrame) {
+                // El canvas se limpia justo antes de pintar: limpiarlo antes de predecir lo dejaba vacío mientras tanto
+                const _processWebcam = processWebcam()
+                if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, shown)
+              }
+              if (now - summarizedAt >= LIVE_SUMMARY_MS) {
+                summarizedAt = now
+                setLiveDetections(detectionSummary(iModelInstance, shown))
+              }
             } catch (error) {
               console.error(error)
             } finally {
@@ -331,6 +361,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const handleChange_Camera = (e: React.ChangeEvent<HTMLInputElement>) => {
     const webcamChecked = e.target.checked
     setCameraEnable(!!webcamChecked)
+    setLiveDetections(null)
   }
 
   const handleChange_Device = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -445,8 +476,11 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         // Process detection
         // Una imagen subida no se muestra en espejo (la webcam sí): nunca se refleja.
-        await processData(resultCtx, imgData, { flipHorizontal: false });
+        const predictions = await processData(resultCtx, imgData, { flipHorizontal: false });
         trackEvent('predict', { input: 'image' })
+        const detected = detectionSummary(iModelInstance, predictions)
+        setImageDetections(detected)
+        announce(detectionText(t, detected, i18n.language))
 
         await delay(2000); // Artificial delay if needed for UI/UX
 
@@ -533,7 +567,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   return (
     <>
       <Container className={'n4l-container-wide'} id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.2'} />} guideId={'object-detection.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
+        <N4LPageHeader intro={'detect'} title={<Trans i18nKey={'modality.2'} />} guideId={'object-detection.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
 
         <Row>
           <Col>
@@ -690,9 +724,19 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         mirrored={iModelInstance?.mirror ?? false}
                         style={WEBCAM_LAYER_STYLE}
                       />
-                      <canvas ref={canvas_ref} style={WEBCAM_LAYER_STYLE}></canvas>
+                      <canvas ref={canvas_ref} style={WEBCAM_LAYER_STYLE} aria-hidden={true}></canvas>
                     </div>
                   )}
+                  {isCameraEnable &&
+                    <div className={'d-flex flex-wrap align-items-center gap-2 mt-2'}>
+                      <p className={'mb-0 flex-grow-1'} data-testid={'Test-WebcamDetections'}>
+                        {liveDetections === null ? t('datasets-models.2-object-detection.interface.detections.waiting') : detectionText(t, liveDetections, i18n.language)}
+                      </p>
+                      <Button size={'sm'} variant={'outline-primary'} disabled={liveDetections === null}
+                        onClick={() => liveDetections !== null && announce(detectionText(t, liveDetections, i18n.language))}>
+                        {t('datasets-models.2-object-detection.interface.detections.announce')}
+                      </Button>
+                    </div>}
                 </Card.Body>
                 <Card.Footer data-guide={'device-info'}>
                   <WebcamDeviceInfo getVideo={() => WebCam_ref.current?.video}
@@ -778,6 +822,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         <canvas
                           id="resultCanvas"
                           ref={canvasImage_ref}
+                          role={'img'}
+                          aria-label={imageDetections === null ? undefined : detectionText(t, imageDetections, i18n.language)}
                           className={'ratio'}
                           style={{
                             //position: 'absolute',
@@ -787,6 +833,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         ></canvas>
                       </Col>
                     </Row>
+                    {processImage.isProcessed && imageDetections !== null &&
+                      <p className={'mt-2 mb-0'} data-testid={'Test-ImageDetections'}>{detectionText(t, imageDetections, i18n.language)}</p>}
                   </Container>
                 </Card.Body>
               </Card>

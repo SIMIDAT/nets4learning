@@ -2,11 +2,11 @@
 // problemas a la vez, cada uno con dónde está, para poder arreglarlos de una pasada. Sin alias de importación (también
 // lo usa el plugin de Vite).
 
-import { N4L_FORMAT, N4L_FORMAT_VERSION } from './format'
+import { N4L_FORMAT, N4L_FORMAT_VERSION, N4L_FREQUENCIES } from './format'
 
-const TASKS = ['tabular-classification', 'regression', 'image-classification', 'object-detection', 'clustering']
+const TASKS = ['tabular-classification', 'regression', 'image-classification', 'object-detection', 'clustering', 'time-series']
 const ROLES = ['Feature', 'Target', 'ID', 'Other']
-const TYPES = ['Continuous', 'Integer', 'Categorical', 'Binary']
+const TYPES = ['Continuous', 'Integer', 'Categorical', 'Binary', 'Date']
 const KINDS = ['table', 'image-sprite', 'external']
 const MODEL_FORMATS = ['tfjs-layers', 'tfjs-mobilenet']
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/
@@ -37,6 +37,10 @@ const LAYERS: Record<string, (layer: Json_t) => boolean> = {
   conv2d      : (layer) => isCount(layer.filters) && isCount(layer.kernelSize) && isString(layer.activation),
   maxPooling2d: (layer) => isCount(layer.poolSize) && isCount(layer.strides),
   flatten     : () => true,
+  // Las recurrentes de las series temporales: sin activación, tanh
+  simpleRNN   : (layer) => isCount(layer.units) && (layer.activation === undefined || isString(layer.activation)),
+  lstm        : (layer) => isCount(layer.units) && (layer.activation === undefined || isString(layer.activation)),
+  gru         : (layer) => isCount(layer.units) && (layer.activation === undefined || isString(layer.activation)),
 }
 
 /** Los problemas del manifiesto; vacío si es válido */
@@ -60,6 +64,8 @@ export function manifestProblems(raw: unknown): string[] {
   // Los conjuntos y sus fichas: tablas (por defecto), sprites de imágenes o externos (no van en el paquete)
   check(Array.isArray(manifest.datasets) && manifest.datasets.length > 0, 'datasets: al menos un conjunto')
   const columnsOf = new Map<string, Json_t[]>()
+  // Las series temporales (con frequency): las únicas que puede usar esa tarea
+  const series = new Set<string>()
   list(manifest.datasets).forEach((dataset, i) => {
     const at = `datasets[${i}]`
     if (!isObject(dataset)) return problems.push(`${at}: no es un objeto`)
@@ -95,6 +101,12 @@ export function manifestProblems(raw: unknown): string[] {
       check(Number.isInteger(column.missing) && (column.missing as number) >= 0, `${atColumn}.missing: número de valores ausentes`)
       if (column.options !== undefined) check(Array.isArray(column.options) && column.options.every(isString), `${atColumn}.options: lista de valores`)
     })
+    if (dataset.frequency !== undefined) {
+      check((N4L_FREQUENCIES as readonly unknown[]).includes(dataset.frequency), `${at}.frequency: una de ${N4L_FREQUENCIES.join(', ')}`)
+      check(columns.filter((column) => column.type === 'Date').length === 1, `${at}.columns: una serie temporal tiene una columna con su fecha (type Date)`)
+      check(columns.some((column) => column.role === 'Target'), `${at}.columns: una serie temporal tiene un objetivo (role Target), lo que se predice`)
+      series.add(dataset.id as string)
+    }
   })
 
   // Cada tarea: una sección por tarea, con su clave, su motor y lo que usa del paquete
@@ -110,6 +122,7 @@ export function manifestProblems(raw: unknown): string[] {
     check(isString(section.runtime), `${at}.runtime: el motor que lo interpreta`)
     const used = list(section.datasets)
     check(used.length > 0 && used.every((id) => columnsOf.has(id as string)), `${at}.datasets: al menos uno, de los conjuntos del paquete`)
+    if (section.task === 'time-series') check(used.every((id) => series.has(id as string)), `${at}.datasets: series temporales (con frequency)`)
     if (section.listed !== undefined) check(typeof section.listed === 'boolean', `${at}.listed: true o false`)
     if (section.order !== undefined) check(Number.isInteger(section.order), `${at}.order: un número entero`)
     // Una columna de un paso tiene que estar en alguno de sus conjuntos
@@ -194,10 +207,21 @@ export function manifestProblems(raw: unknown): string[] {
         const valid = LAYERS[layer.class as string]
         check(valid !== undefined, `${atLayer}.class: una de ${Object.keys(LAYERS).join(', ')}`)
         if (valid !== undefined) {
-          check(valid(layer), `${atLayer}: dense { units, activation }, conv2d { filters, kernelSize, activation }, maxPooling2d { poolSize, strides } o flatten`)
+          check(valid(layer), `${atLayer}: dense { units, activation }, conv2d { filters, kernelSize, activation }, maxPooling2d { poolSize, strides }, flatten o simpleRNN, lstm, gru { units }`)
         }
         check(layer.locked === undefined || typeof layer.locked === 'boolean', `${atLayer}.locked: true o false`)
       })
+    }
+
+    // Series temporales: la ventana, la estación, si se diferencia y el porcentaje de prueba con que se empieza
+    if (section.forecast !== undefined) {
+      const forecast = isObject(section.forecast) ? section.forecast : {}
+      check(isCount(forecast.window), `${at}.forecast.window: los valores anteriores con los que se predice (un entero mayor que 0)`)
+      if (forecast.season !== undefined) check(isCount(forecast.season) && forecast.season > 1, `${at}.forecast.season: los valores que tarda en repetirse el patrón (un entero mayor que 1)`)
+      if (forecast.difference !== undefined) check(typeof forecast.difference === 'boolean', `${at}.forecast.difference: true o false`)
+      if (forecast.testSize !== undefined) {
+        check(typeof forecast.testSize === 'number' && forecast.testSize > 0 && forecast.testSize < 100, `${at}.forecast.testSize: un porcentaje mayor que 0 y menor que 100`)
+      }
     }
   })
   return problems

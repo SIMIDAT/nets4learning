@@ -8,8 +8,13 @@ type N4LVirtualSelectProps = {
   /** Valor elegido (null si todavía no se ha elegido nada) */
   value            : number | null
   onChange         : (value: number) => void
-  /** Texto del botón mientras no hay nada elegido; también es el nombre accesible de la lista */
+  /** Texto del botón mientras no hay nada elegido */
   placeholder      : string
+  /**
+   * Qué se elige («Ejemplo del conjunto de datos»): el lector de pantalla lo dice antes de la opción elegida (el botón
+   * solo enseña la opción) y es el nombre de la lista. Sin él, el de la lista es `placeholder`
+   */
+  label?           : string
   searchPlaceholder: string
   noResultsText    : string
   /** Texto con cuántas opciones coinciden con la búsqueda ("12 de 1728") */
@@ -36,6 +41,7 @@ export default function N4LVirtualSelect(props: N4LVirtualSelectProps) {
     value,
     onChange,
     placeholder,
+    label,
     searchPlaceholder,
     noResultsText,
     countText,
@@ -176,6 +182,7 @@ export default function N4LVirtualSelect(props: N4LVirtualSelectProps) {
         aria-controls={isOpen ? listId : undefined}
         onClick={() => (isOpen ? close(false) : open())}
         onKeyDown={handleKeyDown_Trigger}>
+        {label !== undefined && <span className={'visually-hidden'}>{label}: </span>}
         {selected ? selected.label : <span className={'text-body-secondary'}>{placeholder}</span>}
       </button>
 
@@ -199,7 +206,7 @@ export default function N4LVirtualSelect(props: N4LVirtualSelectProps) {
           <div ref={list_ref}
             id={listId}
             role={'listbox'}
-            aria-label={placeholder}
+            aria-label={label ?? placeholder}
             className={'overflow-auto'}
             style={{ height: listHeight }}
             onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)}>
@@ -208,7 +215,10 @@ export default function N4LVirtualSelect(props: N4LVirtualSelectProps) {
               <div className={'position-relative'} style={{ height: filtered.length * rowHeight }}>
                 {filtered.slice(first, last).map((option, offset) => {
                   const index = first + offset
+                  // Las opciones no reciben el foco: se queda en el buscador, que las recorre con las flechas y elige con
+                  // Enter (aria-activedescendant); el clic es para el ratón
                   return (
+                    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/interactive-supports-focus
                     <div key={option.value}
                       id={optionId(index)}
                       role={'option'}

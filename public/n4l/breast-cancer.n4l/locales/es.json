@@ -55,7 +55,7 @@
       "summary": "Tres conjuntos de Wisconsin sobre tumores de mama: el original, el de diagnóstico (WDBC) y el de pronóstico (WPBC).",
       "description": {
         "text": [
-          "Es un conjunto de datos del Hospital de la Universidad de Wisconsin relacionados con el cáncer de mama. Dicho conjunto de datos es útil para la predicción y discriminación de un tumor de cancer de mama, diferenciando si es benigno o no.",
+          "Son datos del Hospital de la Universidad de Wisconsin sobre cáncer de mama. Sirven para predecir si un tumor de mama es benigno o maligno.",
           "Cada registro representa los datos de seguimiento de un caso de cáncer de mama. Estos son casos atendidos desde 1984 por el Dr. Wolberg, solo incluye aquellos casos que presentan cáncer de mama invasivo y sin evidencia de metástasis.",
           "Las primeras 30 características se calculan a partir de una imagen digitalizada de una aspiración con aguja fina (PAAF) de la masa mamaria, dichos datos describen las características de los núcleos celulares presentes en la imagen, algunas imágenes se pueden encontrar en <link2>cs wisc</link2>.",
           "El fichero <kbd>wdbc.csv</kbd> corresponde al conjunto de datos de diagnóstico y <kbd>wpbc.csv</kbd> corresponde al conjunto de datos de pronóstico.",

@@ -266,7 +266,7 @@ export default function DataFramePlot(props: DataFramePlotProps_t) {
   return <>
     <Card className={'mt-3'}>
       <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
-        <h2><Trans i18nKey={'dataframe-plot.title'} /></h2>
+        <h3><Trans i18nKey={'dataframe-plot.title'} /></h3>
         <div className={'d-flex flex-wrap gap-2'}>
           <Form.Group controlId={'plot'}>
             <Form.Select size={'sm'}

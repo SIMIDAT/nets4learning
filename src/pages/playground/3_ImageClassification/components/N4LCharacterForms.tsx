@@ -24,7 +24,7 @@ export function CharacterFormsTable({ characters, prefix }: { characters: Charac
             <tr key={char}>
               <th scope={'row'} className={'n4l-character-modern'}>
                 <span lang={'ja'} className={'n4l-character-glyph'}>{char}</span>
-                <span className={'n4l-character-reading'}>{reading} · <span lang={'ja'}>{origin}</span></span>
+                <span className={'n4l-character-reading'}>{reading}, <span lang={'ja'}>{origin}</span></span>
               </th>
               <td>
                 <div className={'n4l-character-old-list'}>
@@ -62,7 +62,7 @@ export function CharacterFormsExamples({ characters, forms, prefix, disabled, on
       {characters.map(({ char, reading, modern, old }) => (
         <div key={char} className={'n4l-character-example'} role={'group'} aria-label={`${char} (${reading})`}>
           <div className={'n4l-character-example-title'}>
-            <span lang={'ja'}>{char}</span><span className={'n4l-character-example-separator'}> · </span><span>{reading}</span>
+            <span lang={'ja'}>{char}</span><span className={'n4l-character-example-separator'}>, </span><span>{reading}</span>
           </div>
           <div className={'d-flex align-items-end gap-2'}>
             <div className={'text-center'}>

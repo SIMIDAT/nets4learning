@@ -1,5 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import { sectionId } from './sectionId'
+import { prefersReducedMotion } from '@core/a11y/displaySettings'
 
 // Una sección pasa a ser la actual cuando su título sube por encima de esta parte de la ventana
 const ACTIVE_LINE = 0.25
@@ -51,13 +52,20 @@ export function useActiveSection(steps: string[]) {
   return { activeId, started }
 }
 
+/**
+ * Baja (o sube) hasta la sección, sin quedar bajo las barras fijas (su scroll-margin), con un desplazamiento suave
+ * salvo si se pide menos movimiento, y le da el foco, para seguir con el teclado o el lector de pantalla desde ahí.
+ * Dice si la ha encontrado
+ */
+export function scrollToSection(id: string) {
+  const element = document.getElementById(id)
+  if (element === null) return false
+  element.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
+  element.focus({ preventScroll: true })
+  return true
+}
+
 /** Lleva a la sección (y le da el foco) en vez de saltar al ancla */
 export function goToSection(event: MouseEvent<HTMLAnchorElement>, id: string) {
-  const element = document.getElementById(id)
-  if (element === null) return
-  event.preventDefault()
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-  element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-  // El foco va a la sección, para seguir con el teclado desde ahí
-  element.focus({ preventScroll: true })
+  if (scrollToSection(id)) event.preventDefault()
 }

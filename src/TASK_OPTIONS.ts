@@ -1,7 +1,7 @@
 import { TASKS, UPLOAD, type TASKS_TYPE_V } from '@/TASKS'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 import { n4lPackagesOf, n4lPublicFile } from '@core/n4l/catalog'
-import { isImageDataset, isTableDataset, n4lNamespace, n4lTaskText } from '@core/n4l/format'
+import { isImageDataset, isTableDataset, n4lNamespace, n4lTaskText, type N4LFrequency_t } from '@core/n4l/format'
 
 // Modelos preentrenados y datasets de cada tarea (clave y etiqueta). Separado de DATA_MODEL, que importa los
 // registros de modelos, para que la home o las migas de pan puedan usar estas listas sin cargarlos.
@@ -27,6 +27,8 @@ const n4lDatasetOptions = (task: TASKS_TYPE_V): TaskOption_t[] => listedPackages
     const tables = datasets.filter(isTableDataset)
     const features = new Set(tables.map(({ columns }) => columns.filter(({ role }) => role === 'Feature').length))
     const target = isTableDataset(dataset) ? dataset.columns.find(({ role }) => role === 'Target') : undefined
+    // Una serie se predice con sus valores anteriores: no tiene columnas de entrada, y sus filas son meses, días…
+    const isSeries = task === TASKS.TIME_SERIES
     return {
       i18n   : n4lTaskText(n4lNamespace(entry.id), task) + 'name',
       value  : section.key,
@@ -38,9 +40,10 @@ const n4lDatasetOptions = (task: TASKS_TYPE_V): TaskOption_t[] => listedPackages
         rows  : datasets.map(({ rows }) => rows ?? 0),
         ...(isImageDataset(dataset) && { images: dataset.image }),
         // Las de entrada, solo si todos sus ficheros tienen las mismas
-        ...(tables.length > 0 && features.size === 1 && { features: [...features][0] }),
-        // Regresión: lo que se predice; si no, las clases (las salidas del modelo o los valores distintos del objetivo)
-        ...(task === TASKS.REGRESSION
+        ...(tables.length > 0 && features.size === 1 && !isSeries && { features: [...features][0] }),
+        ...(isSeries && isTableDataset(dataset) && { frequency: dataset.frequency }),
+        // Regresión y series: lo que se predice; si no, las clases (las salidas del modelo o los valores distintos del objetivo)
+        ...(task === TASKS.REGRESSION || isSeries
           ? { target: target?.name }
           : { classes: section.classes?.length ?? target?.options?.length }),
       },
@@ -61,6 +64,7 @@ const TASK_MODEL_OPTIONS = {
   [TASKS.IMAGE_CLASSIFICATION]: n4lModelOptions(TASKS.IMAGE_CLASSIFICATION),
   // Agrupar no necesita un modelo entrenado antes: se hace al momento con los datos
   [TASKS.CLUSTERING]          : [],
+  [TASKS.TIME_SERIES]         : n4lModelOptions(TASKS.TIME_SERIES),
 }
 export type TASK_MODEL_OPTIONS_TYPE = typeof TASK_MODEL_OPTIONS
 export type MODEL_OPTIONS_TYPE = TASK_MODEL_OPTIONS_TYPE[keyof TASK_MODEL_OPTIONS_TYPE]
@@ -81,6 +85,11 @@ const TASK_DATASET_OPTIONS = {
     { i18n: 'pages.menu-selection-dataset.clustering.csv', value: UPLOAD },
     ...n4lDatasetOptions(TASKS.CLUSTERING),
   ],
+  // Series temporales: las de ejemplo o una propia (con su columna de fechas y la de sus valores)
+  [TASKS.TIME_SERIES]: [
+    { i18n: 'pages.menu-selection-dataset.time-series.csv', value: UPLOAD },
+    ...n4lDatasetOptions(TASKS.TIME_SERIES),
+  ],
 }
 export type TASK_DATASET_OPTIONS_TYPE = typeof TASK_DATASET_OPTIONS
 export type DATASET_OPTIONS_TYPE = TASK_DATASET_OPTIONS_TYPE[keyof TASK_DATASET_OPTIONS_TYPE]
@@ -88,19 +97,21 @@ export type DATASET_OPTIONS_TYPE = TASK_DATASET_OPTIONS_TYPE[keyof TASK_DATASET_
 /** Lo que se cuenta de un dataset en su tarjeta (los números salen de sus CSV; un test lo comprueba) */
 export type DatasetInfo_t = {
   /** CSV del dataset, relativos a public/ (los mismos que carga la clase del modelo) */
-  files?   : string[]
+  files?    : string[]
   /** Filas de cada CSV, o imágenes del dataset */
-  rows     : number[]
+  rows      : number[]
   /** Columnas de entrada (sin la variable objetivo); solo si todos los CSV tienen las mismas */
-  features?: number
+  features? : number
   /** Clasificación: número de clases */
-  classes? : number
-  /** Regresión: variable que se predice */
-  target?  : string
+  classes?  : number
+  /** Regresión y series temporales: variable que se predice */
+  target?   : string
+  /** Serie temporal: cada cuánto hay una fila (las filas se cuentan en meses, días…) */
+  frequency?: N4LFrequency_t
   /** Imágenes en lugar de filas de un CSV: cómo son (tamaño y canales: 1 gris, 3 color) */
-  images?  : { width: number, height: number, channels: number }
+  images?   : { width: number, height: number, channels: number }
   /** Página original del dataset (UCI, Kaggle…) */
-  source?  : string
+  source?   : string
 }
 
 /** Un modelo o un conjunto de un menú: su título (i18n), su clave en la dirección y, si la tiene, su frase en /datasets */

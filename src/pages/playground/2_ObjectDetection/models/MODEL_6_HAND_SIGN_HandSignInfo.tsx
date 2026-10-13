@@ -4,6 +4,9 @@ import { Container, Row, Col, Button, ButtonGroup, Tabs, Tab } from 'react-boots
 import { Trans, useTranslation } from 'react-i18next'
 import { ASL_bibtex, SSL_bibtex } from './MODEL_6_HAND_SIGN_INFO'
 
+// En una constante: jsx-a11y no sabe leer import.meta dentro de las props
+const VITE_PATH = import.meta.env.VITE_PATH
+
 export function HandSignInfo() {
   const [showModal, setShowModal] = useState(false)
   const { i18n } = useTranslation()
@@ -42,11 +45,11 @@ export function HandSignInfo() {
           <Row>
             <Col xs={12} md={8}>
               <div className="d-flex justify-content-center">
-                <img className="w-100 object-fit-cover border rounded" src={import.meta.env.VITE_PATH + '/assets/handsign/ASL.png'} alt="ASL" />
+                <img className="w-100 object-fit-cover border rounded" src={VITE_PATH + '/assets/handsign/ASL.png'} alt="ASL" />
               </div>
             </Col>
             <Col xs={12} md={4}>
-              <pre>{ASL_bibtex}</pre>
+              <pre lang={'en'}>{ASL_bibtex}</pre>
             </Col>
           </Row>
         </Container>
@@ -56,11 +59,11 @@ export function HandSignInfo() {
           <Row>
             <Col xs={12} md={8}>
               <div className="d-flex justify-content-center">
-                <img className="w-100 object-fit-cover border rounded" src={import.meta.env.VITE_PATH + '/assets/handsign/SSL.png'} alt="SSL" />
+                <img className="w-100 object-fit-cover border rounded" src={VITE_PATH + '/assets/handsign/SSL.png'} alt="SSL" />
               </div>
             </Col>
             <Col xs={12} md={4}>
-              <pre>{SSL_bibtex}</pre>
+              <pre lang={'en'}>{SSL_bibtex}</pre>
             </Col>
           </Row>
         </Container>

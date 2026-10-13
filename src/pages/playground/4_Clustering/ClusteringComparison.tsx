@@ -6,6 +6,7 @@ import type { LabelComparison_t } from '@core/clustering/kmeans'
 import HelpTerm from '@components/helpLink/N4LHelpTerm'
 
 import { clusterColor } from './clusterColors'
+import { useTheme } from '@hooks/useTheme'
 
 const prefix = 'pages.playground.clustering.'
 
@@ -29,6 +30,7 @@ type ClusteringComparisonProps = {
  */
 export default function ClusteringComparison({ comparison, labelColumn }: ClusteringComparisonProps) {
   const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const percent = useMemo(() => new Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 }), [i18n.language])
   const percentPrecise = useMemo(() => new Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 1 }), [i18n.language])
   const number = useMemo(() => new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 3 }), [i18n.language])
@@ -73,7 +75,7 @@ export default function ClusteringComparison({ comparison, labelColumn }: Cluste
                 return (
                   <tr key={cluster} data-testid={`Test-Clustering-Comparison-Group-${cluster + 1}`}>
                     <th scope={'row'} className={'text-start text-nowrap'}>
-                      <span className={'n4l-compare-swatch'} style={{ backgroundColor: clusterColor(cluster) }} aria-hidden={true} />
+                      <span className={'n4l-compare-swatch'} style={{ backgroundColor: clusterColor(cluster, theme) }} aria-hidden={true} />
                       {t(prefix + 'cluster', { number: cluster + 1 })}
                     </th>
                     {row.map((count, column) => (
@@ -85,7 +87,7 @@ export default function ClusteringComparison({ comparison, labelColumn }: Cluste
                     <td className={'text-body-secondary'}>{size}</td>
                     <td className={'text-start text-nowrap'}>
                       {size === 0 ? '—' : <>
-                        <span className={'fw-semibold'}>{classes[majority]}</span> · {percent.format(share)}
+                        <span className={'fw-semibold'}>{classes[majority]}</span> ({percent.format(share)})
                         {isMixed && <Badge bg={'warning'} text={'dark'} className={'ms-2'}>{t(prefix + 'mixed')}</Badge>}
                       </>}
                     </td>

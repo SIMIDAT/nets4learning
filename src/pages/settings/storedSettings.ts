@@ -9,6 +9,7 @@ import { deleteTrainedModels } from '@core/training/modelStore'
 import { resetDownloadConsent } from '@core/models/downloadConsent'
 import { resetLearningPath } from '@core/learning/learningPath'
 import { clearOfflineData } from '@core/offline/offline'
+import { resetDisplaySettings } from '@core/a11y/displaySettings'
 
 // Lo que la aplicación guarda en el navegador (localStorage y la cookie del consentimiento), para borrarlo desde
 // /settings.
@@ -26,7 +27,7 @@ function removeLegacyTutorialKeys() {
 }
 
 /**
- * Borra todos los ajustes: idioma, tema, backend, voz y progreso de las guías, Paso a paso, el aviso de descargas, el
+ * Borra todos los ajustes: idioma, tema, accesibilidad, backend, voz y progreso de las guías, Paso a paso, el aviso de descargas, el
  * progreso de «Empieza aquí», modelos guardados, lo guardado para usar sin conexión y cookies
  */
 export async function resetAllSettings() {
@@ -36,6 +37,7 @@ export async function resetAllSettings() {
     // Sin almacenamiento no había nada guardado
   }
   resetGuideSettings()
+  resetDisplaySettings()
   clearAllGuideProgress()
   resetStepByStep()
   resetDownloadConsent()

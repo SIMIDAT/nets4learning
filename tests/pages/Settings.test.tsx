@@ -18,6 +18,11 @@ const synth = { speak: vi.fn(), cancel: vi.fn(), getVoices: (): SpeechSynthesisV
 
 const section = (id: string) => within(screen.getByTestId('Test-Settings-' + id))
 
+// El ancho de la pantalla: en las pantallas anchas, pestañas; en el móvil, la lista de apartados (jsdom no tiene matchMedia)
+const setWide = (wide: boolean) => vi.stubGlobal('matchMedia', (query: string) => ({
+  matches: wide && query.includes('min-width'), media: query, addEventListener: () => {}, removeEventListener: () => {},
+}))
+
 function renderSettings() {
   render(<MemoryRouter><Settings /></MemoryRouter>)
 }
@@ -27,6 +32,7 @@ describe('Settings', () => {
     localStorage.clear()
     resetGuideSettings()
     document.cookie = 'n4l-accept-cookies=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'
+    setWide(true)
     vi.stubGlobal('speechSynthesis', synth)
     vi.stubGlobal('SpeechSynthesisUtterance', FakeUtterance)
   })
@@ -93,6 +99,34 @@ describe('Settings', () => {
     expect(readConsent()).toBe('rejected')
   })
 
+  test('los apartados son pestañas verticales: la abierta sale de la dirección (#privacy) y al cambiarla se apunta', () => {
+    render(<MemoryRouter initialEntries={['/settings#privacy']}><Settings /></MemoryRouter>)
+    const tablist = screen.getByRole('tablist', { name: 'pages.settings.sections' })
+    expect(within(tablist).getAllByRole('tab')).toHaveLength(9)
+    expect(screen.getByRole('tab', { name: 'pages.settings.privacy.title' })).toHaveAttribute('aria-selected', 'true')
+    fireEvent.click(screen.getByRole('tab', { name: 'pages.settings.learning.title' }))
+    expect(screen.getByRole('tab', { name: 'pages.settings.learning.title' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'pages.settings.privacy.title' })).toHaveAttribute('aria-selected', 'false')
+  })
+
+  test('en el móvil, la lista de apartados con su resumen; al tocar uno se abre solo y se vuelve a la lista', () => {
+    setWide(false)
+    render(<MemoryRouter initialEntries={['/settings']}><Settings /></MemoryRouter>)
+    const list = screen.getByRole('navigation', { name: 'pages.settings.sections' })
+    expect(within(list).getAllByRole('link')).toHaveLength(9)
+    expect(screen.queryByTestId('Test-Settings-appearance')).toBeNull()
+    fireEvent.click(screen.getByRole('link', { name: /pages\.settings\.privacy\.title/ }))
+    expect(screen.getByTestId('Test-Settings-privacy')).toBeInTheDocument()
+    expect(screen.queryByTestId('Test-Settings-List')).toBeNull()
+    fireEvent.click(screen.getByTestId('Test-Settings-Back'))
+    expect(screen.getByTestId('Test-Settings-List')).toBeInTheDocument()
+  })
+
+  test('sin un apartado en la dirección (o con uno que no existe), el primero', () => {
+    render(<MemoryRouter initialEntries={['/settings#no-existe']}><Settings /></MemoryRouter>)
+    expect(screen.getByRole('tab', { name: 'pages.settings.appearance.title' })).toHaveAttribute('aria-selected', 'true')
+  })
+
   test('restablecer todo borra los ajustes de la aplicación y nada más', async () => {
     localStorage.setItem('theme', 'dark')
     localStorage.setItem('language', 'ja')
@@ -112,5 +146,30 @@ describe('Settings', () => {
     expect(isStepByStepEnabled()).toBe(false)
     expect(getGuideSettings().auto).toBe(false)
     expect(readConsent()).toBeNull()
+  })
+
+  test('los datos guardados: los modelos descargados, cada uno con lo que ocupa, y borrarlos (preguntando antes)', async () => {
+    // Cache Storage de mentira, con FaceMesh descargado (3 MB)
+    const models = new Map([['https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/a.data', new Response('x', { headers: { 'content-length': String(3 * 1024 * 1024) } })]])
+    vi.stubGlobal('caches', {
+      keys  : async () => (models.size > 0 ? ['n4l-models-v1'] : []),
+      open  : async () => ({ keys: async () => [...models.keys()].map((url) => new Request(url)), match: async (request: Request) => models.get(request.url) }),
+      delete: async () => models.clear(),
+    })
+    render(<MemoryRouter initialEntries={['/settings#data']}><Settings /></MemoryRouter>)
+    const row = within(await screen.findByTestId('Test-Settings-Stored-pretrained'))
+    // En total y en la lista, con un enlace a su página
+    expect(row.getAllByText('3 MB')).toHaveLength(2)
+    expect(row.getByRole('link', { name: 'datasets-models.2-object-detection.face-mesh.title' }))
+      .toHaveAttribute('href', '/playground/object-detection/model/FACE-MESH')
+
+    fireEvent.click(row.getByRole('button', { name: 'pages.settings.data.pretrained.delete' }))
+    expect(row.getByText('pages.settings.data.pretrained.question')).toBeInTheDocument()
+    fireEvent.click(row.getByRole('button', { name: 'pages.settings.data.delete-confirm' }))
+    await act(async () => {})
+    expect(models.size).toBe(0)
+    expect(row.queryByText('3 MB')).toBeNull()
+    expect(row.queryByRole('link')).toBeNull()
+    expect(row.queryByRole('button')).toBeNull()
   })
 })

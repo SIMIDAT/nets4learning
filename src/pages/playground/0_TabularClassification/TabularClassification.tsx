@@ -289,7 +289,8 @@ export default function TabularClassification(props: Props) {
       reportTrainResult({ history: history.history, layers: _layerList, evaluation })
       setGeneratedModelsIndex(generatedModels.length)
       training.complete()
-      await alertHelper.alertSuccess(t('alert.model-train-success'))
+      // Sin esperar a que se cierre el aviso: el botón de entrenar vuelve a estar disponible enseguida
+      void alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
     } finally {
@@ -351,7 +352,7 @@ export default function TabularClassification(props: Props) {
   return (
     <>
       <N4LSectionLayout steps={steps} className={'mb-3'}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.0'} />} guideId={'train.tabular-classification.' + dataset} guideSteps={guideSteps}
+        <N4LPageHeader intro={'train'} title={<Trans i18nKey={'modality.0'} />} guideId={'train.tabular-classification.' + dataset} guideSteps={guideSteps}
           getSession={currentSession} onImport={importSession} />
 
         {/* INFORMATION */}
@@ -360,7 +361,7 @@ export default function TabularClassification(props: Props) {
           <Col>
             <Accordion defaultActiveKey={dataset === UPLOAD ? ['dataset_info'] : []}>
               <Accordion.Item data-guide={'manual'} key={UPLOAD} eventKey={'manual'}>
-                <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={prefixManual + 'manual.title'} />
                 </Accordion.Header>
                 <Accordion.Body>
@@ -368,7 +369,7 @@ export default function TabularClassification(props: Props) {
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item data-guide={'dataset-info'} key={'1'} eventKey={'dataset_info'}>
-                <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
                 <Accordion.Body>
@@ -437,10 +438,11 @@ export default function TabularClassification(props: Props) {
             {/* BLOCK BUTTON SUBMIT */}
             <Row className={'mt-3'}>
               <Col xl={12} data-guide={'train'}>
-                <N4LTrainButton isTraining={training.isTraining}
+                <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                   progress={training.progress}
                   isStopping={training.isStopping}
                   onStop={training.stop}
+                  resultSection={'hr.generated-models'}
                   disabled={isTraining || !datasets.datasets[datasets.index] || (!datasets.datasets[datasets.index].is_dataset_processed)}>
                   <Trans i18nKey={prefix + 'models.button-submit'} />
                 </N4LTrainButton>

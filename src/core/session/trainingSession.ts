@@ -21,6 +21,8 @@ export type TrainingSession_t = {
     loss        : string
     metrics     : string[]
   }
+  /** Series temporales: la ventana, si se diferencia y el tamaño del lote */
+  series?: { window: number, difference: boolean, batchSize?: number }
 }
 
 /** Error de un fichero que no se puede importar; `i18nKey` es el mensaje para el usuario */

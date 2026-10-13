@@ -1,15 +1,18 @@
 import './N4LNavbar.css'
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type FocusEvent } from 'react'
 import { Badge, Container, Nav, Navbar, NavDropdown } from 'react-bootstrap'
 import { Link, useLocation } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { BoxSeam, Cpu, GpuCard, MoonStarsFill, SunFill, Translate } from 'react-bootstrap-icons'
+import { BoxArrowUpRight, BoxSeam, Check2, Cpu, GpuCard, MoonStarsFill, SunFill, Translate } from 'react-bootstrap-icons'
 import IconGithub from '@assets/github.svg'
 import { changeUserLanguage, LANGUAGE_OPTIONS } from '@core/i18n/language'
 import { changeUserTheme, type Theme_t } from '@core/theme'
 import { useTheme } from '@hooks/useTheme'
+import { useMediaQuery } from '@hooks/useMediaQuery'
+import { useDisplaySettings } from '@core/a11y/displaySettings'
 import { useLocalPackages } from '@hooks/useLocalPackages'
+import { N4LDropdownButton, N4LDropdownLink } from '@components/dropdown/N4LDropdownItems'
 import { isTask, TASK_INFO } from '@components/task/taskInfo'
 import {
   changeUserTFBackend,
@@ -23,6 +26,9 @@ import {
   type TFBackend_t,
   type WebGPUAdapter_t,
 } from '@core/tfBackend'
+
+// En una constante: jsx-a11y no sabe leer import.meta dentro de las props
+const VITE_PATH = import.meta.env.VITE_PATH
 
 // Páginas del menú; Inicio solo está activa en la home. Detrás de Inicio va el desplegable de las tareas
 const [HOME_LINK, ...NAV_LINKS]: Array<{ to: string, i18n: string }> = [
@@ -51,6 +57,14 @@ export default function N4LNavbar() {
   // main.tsx ya ha aplicado el tema inicial (el guardado o el del sistema)
   // También cambia si se elige desde /settings
   const theme = useTheme()
+  // Con el texto agrandado en /settings, la barra del escritorio no cabe: la del móvil (con el menú desplegable) también
+  // en pantallas anchas. Al 125 % cabe desde 1400 px; al 150 % o más, nunca
+  const { textSize } = useDisplaySettings()
+  const isVeryWide = useMediaQuery('(min-width: 1400px)')
+  const isCompact = textSize >= 150 || (textSize === 125 && !isVeryWide)
+  // El menú va en el botón: en el móvil y la tablet (por debajo de lg) y, con el texto agrandado, en cualquier pantalla
+  const isDesktop = useMediaQuery('(min-width: 992px)')
+  const isCollapsed = isCompact || !isDesktop
 
   // Menú desplegado en móvil y tablet. Al cambiar de página se cierra: si no, tapa la página nueva
   const [expanded, setExpanded] = useState(false)
@@ -75,6 +89,30 @@ export default function N4LNavbar() {
     update()
     return () => observer.disconnect()
   }, [])
+
+  // Con el menú del móvil abierto, Escape lo cierra y deja el foco en su botón (si no hay un desplegable abierto dentro:
+  // entonces Escape es para él). El botón dice si está abierto o cerrado (aria-expanded), y lo de dentro va justo
+  // después de él con el tabulador
+  useEffect(() => {
+    if (!expanded) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const navbar = navbar_ref.current
+      if (event.key !== 'Escape' || navbar === null || navbar.querySelector('.dropdown-menu.show') !== null) return
+      setExpanded(false)
+      navbar.querySelector<HTMLElement>('.navbar-toggler')?.focus()
+    }
+    // En la captura: antes de que el desplegable se cierre con el mismo Escape (después ya no se vería abierto)
+    document.addEventListener('keydown', handleKeyDown, true)
+    return () => document.removeEventListener('keydown', handleKeyDown, true)
+  }, [expanded])
+
+  // Y si el foco sale de la barra (con el tabulador, después del último enlace), también se cierra: lo de detrás está
+  // oscurecido. Salvo si va a un aviso (un error al cambiar el backend), que al cerrarse lo devuelve al menú
+  const handleBlur = (event: FocusEvent<HTMLElement>) => {
+    const next = event.relatedTarget
+    if (!expanded || next === null || event.currentTarget.contains(next) || next.closest('[role="dialog"]') !== null) return
+    setExpanded(false)
+  }
 
   const handleClick_ChangeTheme = (newTheme: Theme_t) => {
     changeUserTheme(newTheme)
@@ -123,24 +161,28 @@ export default function N4LNavbar() {
   }
 
   const currentLanguage = LANGUAGE_OPTIONS.find(({ language }) => i18n.resolvedLanguage === language)?.label ?? i18n.language
-  // Título de los desplegables de ajustes: el ajuste y, solo en el menú del móvil y la tablet, su valor actual (en
-  // escritorio, solo el nombre)
-  // Un ajuste: su icono (Bootstrap Icons, decorativo), su nombre y, en el menú del móvil, su valor
+  // Título de los desplegables de ajustes: su icono (Bootstrap Icons, decorativo), su nombre y, solo en el menú del
+  // botón, su valor actual (en la barra del escritorio no cabe: ahí, solo el nombre)
   const settingTitle = (icon: React.ReactNode, label: string, value: string) => <>
     <span className={'n4l-navbar-icon'} aria-hidden={true}>{icon}</span>
     {label}
-    <span className={'n4l-navbar-value d-lg-none'}>{value}</span>
+    {isCollapsed && <span className={'n4l-navbar-value'}>{value}</span>}
   </>
+  // En el menú del botón, la opción elegida de un ajuste lleva una marca (además del color y la negrita)
+  const checked = (isActive: boolean) => isCollapsed && isActive && <Check2 aria-hidden={true} className={'n4l-navbar-check'} />
   // El backend calcula en la tarjeta gráfica (WebGL, WebGPU) o en el procesador (WASM, CPU)
   const backendIcon = (backend: TFBackend_t) => (backend === 'webgl' || backend === 'webgpu' ? <GpuCard /> : <Cpu />)
 
   return (
     <>
-      <Navbar ref={navbar_ref} expand="lg" sticky={'top'} className={'bg-body-tertiary n4l-navbar'} expanded={expanded} onToggle={setExpanded}>
+      <Navbar ref={navbar_ref} expand={isCompact ? false : 'lg'} sticky={'top'}
+        className={'bg-body-tertiary n4l-navbar' + (isCompact ? ' n4l-navbar-compact' : '') + (isCollapsed ? ' n4l-navbar-collapsed' : '')}
+        expanded={expanded} onToggle={setExpanded} onBlur={handleBlur}
+        aria-label={t('header.main-navigation')}>
         <Container className={'n4l-container-wide'}>
           <Navbar.Brand as={Link} to={'/'}>
             <img
-              src={import.meta.env.VITE_PATH + '/logo-64.png'}
+              src={VITE_PATH + '/logo-64.png'}
               width="30"
               height="30"
               className="d-inline-block align-top me-1"
@@ -153,14 +195,14 @@ export default function N4LNavbar() {
             {/* Escritorio: páginas a la izquierda y ajustes a la derecha. Móvil: una lista, con los ajustes aparte.
                 Tablet: dos columnas */}
             <div className={'n4l-navbar-menu'}>
-              <Nav className={'me-lg-auto n4l-navbar-links'}>
+              <Nav className={(isCollapsed ? '' : 'me-lg-auto ') + 'n4l-navbar-links'}>
                 {navLink(HOME_LINK)}
-                {/* Las cinco tareas: cada una abre su página (modelos ya entrenados o diseñar una red) */}
+                {/* Las seis tareas: cada una abre su página (modelos ya entrenados o diseñar una red) */}
                 <NavDropdown title={t('header.tasks')} id={'tasks-nav-dropdown'} active={activeTask !== undefined} data-testid={'Test-Navbar-Tasks'}>
                   {Object.values(TASK_INFO).map(({ task, i18nTitle }) => {
                     const isCurrent = pathname === `/task/${task}`
                     return (
-                      <NavDropdown.Item key={task} as={Link} to={`/task/${task}`} active={activeTask === task}
+                      <NavDropdown.Item key={task} as={N4LDropdownLink} to={`/task/${task}`} active={activeTask === task}
                         aria-current={isCurrent ? 'page' : undefined} onClick={() => setExpanded(false)}>
                         <Trans i18nKey={i18nTitle} />
                       </NavDropdown.Item>
@@ -183,27 +225,34 @@ export default function N4LNavbar() {
               <Nav className={'n4l-navbar-settings'}>
                 <NavDropdown align={'end'} title={settingTitle(<Translate />, t('header.language'), currentLanguage)} id="change-language-nav-dropdown">
                   {LANGUAGE_OPTIONS.map(({ language, label }) => (
-                    <NavDropdown.Item key={language} lang={language} active={i18n.language === language} onClick={() => changeUserLanguage(i18n, language)}>
+                    <NavDropdown.Item key={language} as={N4LDropdownButton} lang={language} active={i18n.language === language}
+                      aria-current={i18n.language === language ? 'true' : undefined} onClick={() => changeUserLanguage(i18n, language)}>
                       {label}
+                      {checked(i18n.language === language)}
                     </NavDropdown.Item>
                   ))}
                 </NavDropdown>
                 <NavDropdown align={'end'} title={settingTitle(theme === 'dark' ? <MoonStarsFill /> : <SunFill />, t('header.theme'), t(theme === 'dark' ? 'header.theme-dark' : 'header.theme-light'))} id="change-theme-nav-dropdown">
-                  <NavDropdown.Item active={theme === 'light'} onClick={() => handleClick_ChangeTheme('light')}>
+                  <NavDropdown.Item as={N4LDropdownButton} active={theme === 'light'} aria-current={theme === 'light' ? 'true' : undefined}
+                    onClick={() => handleClick_ChangeTheme('light')}>
                     <span className={'n4l-navbar-icon'} aria-hidden={true}><SunFill /></span>
                     <Trans i18nKey={'header.theme-light'} />
+                    {checked(theme === 'light')}
                   </NavDropdown.Item>
-                  <NavDropdown.Item active={theme === 'dark'} onClick={() => handleClick_ChangeTheme('dark')}>
+                  <NavDropdown.Item as={N4LDropdownButton} active={theme === 'dark'} aria-current={theme === 'dark' ? 'true' : undefined}
+                    onClick={() => handleClick_ChangeTheme('dark')}>
                     <span className={'n4l-navbar-icon'} aria-hidden={true}><MoonStarsFill /></span>
                     <Trans i18nKey={'header.theme-dark'} />
+                    {checked(theme === 'dark')}
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown align={'end'} title={settingTitle(backendIcon(tfBackend), t('header.backend'), TF_BACKEND_LABELS[tfBackend])} id="change-tf-backend-nav-dropdown" onToggle={handleToggle_TFBackend}>
                   {TF_BACKENDS.map((backend) => {
                     const isAvailable = isTFBackendAvailable(backend) && (backend !== 'webgpu' || webgpuAdapter !== null)
                     return (
-                      <NavDropdown.Item key={backend}
+                      <NavDropdown.Item key={backend} as={N4LDropdownButton}
                         active={tfBackend === backend}
+                        aria-current={tfBackend === backend ? 'true' : undefined}
                         disabled={!isAvailable || isChangingTFBackend}
                         onClick={() => handleClick_ChangeTFBackend(backend)}>
                         <span className={'n4l-navbar-icon'} aria-hidden={true}>{backendIcon(backend)}</span>
@@ -211,6 +260,7 @@ export default function N4LNavbar() {
                         {backend === DEFAULT_TF_BACKEND && <small className={'ms-2 opacity-75'}>({t('header.backend-default')})</small>}
                         {!isAvailable && <small className={'ms-2'}>({t('header.backend-unavailable')})</small>}
                         {backend === 'webgpu' && webgpuAdapter === 'software' && <small className={'ms-2'}>({t('header.backend-software')})</small>}
+                        {checked(tfBackend === backend)}
                       </NavDropdown.Item>
                     )
                   })}
@@ -219,13 +269,16 @@ export default function N4LNavbar() {
                   <Nav.Link href={'https://github.com/SIMIDAT/nets4learning'}
                     target={'_blank'}
                     rel={'noreferrer'}
-                    aria-label={'GitHub'}
+                    aria-label={t('header.github')}
                     title={'GitHub'}>
                     <span className={'n4l-icon-1rem'} aria-hidden={true}>
                       <IconGithub />
                     </span>
-                    {/* En el menú del móvil el icono solo no se entiende */}
-                    <span className={'d-lg-none ms-2'} aria-hidden={true}>GitHub</span>
+                    {/* En el menú del botón el icono solo no se entiende; y que se abre en otra pestaña */}
+                    {isCollapsed && <>
+                      <span className={'ms-2'} aria-hidden={true}>GitHub</span>
+                      <BoxArrowUpRight aria-hidden={true} className={'n4l-navbar-external'} />
+                    </>}
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
@@ -233,6 +286,10 @@ export default function N4LNavbar() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      {/* Con el menú del botón abierto, la página se oscurece detrás y tocarla lo cierra. Solo para el dedo o el ratón:
+          con el teclado, Escape o salir del menú con el tabulador */}
+      {isCollapsed && expanded &&
+        <div className={'n4l-navbar-backdrop'} aria-hidden={true} onClick={() => setExpanded(false)} data-testid={'Test-Navbar-Backdrop'} />}
     </>
   )
 }

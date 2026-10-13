@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Card, Col, Form, Row, Spinner } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import type { DropEvent, FileRejection } from 'react-dropzone'
@@ -19,12 +20,24 @@ type AnalyzeDatasetPickerProps = {
 const GROUPS = [
   { task: TASKS.TABULAR_CLASSIFICATION, i18n: 'modality.0' },
   { task: TASKS.REGRESSION, i18n: 'modality.1' },
+  { task: TASKS.TIME_SERIES, i18n: 'modality.time-series' },
 ]
 
 /** Elegir qué analizar: uno de los CSV del proyecto (con la ficha de sus variables) o uno propio */
 export default function AnalyzeDatasetPicker({ selectedFile, isLoading, onProject, onUpload, onRejected }: AnalyzeDatasetPickerProps) {
   const prefix = 'pages.dataframe.picker.'
   const { t } = useTranslation()
+
+  // Mientras carga, el selector se desactiva y el navegador le quita el foco: al terminar vuelve a él, para seguir desde
+  // donde se estaba y no desde el principio de la página (WCAG 2.4.3)
+  const select_ref = useRef<HTMLSelectElement>(null)
+  const restoreFocus = useRef(false)
+  useEffect(() => {
+    if (isLoading || !restoreFocus.current) return
+    restoreFocus.current = false
+    const active = document.activeElement
+    if (active === null || active === document.body) select_ref.current?.focus()
+  }, [isLoading])
 
   return (
     <Card data-testid={'Test-AnalyzePicker'}>
@@ -34,16 +47,17 @@ export default function AnalyzeDatasetPicker({ selectedFile, isLoading, onProjec
             <Form.Group controlId={'analyze-project-dataset'}>
               <Form.Label className={'fw-semibold'}>{t(prefix + 'project')}</Form.Label>
               <div className={'d-flex align-items-center gap-2'}>
-                <Form.Select value={selectedFile ?? ''} disabled={isLoading}
+                <Form.Select ref={select_ref} value={selectedFile ?? ''} disabled={isLoading}
                   onChange={(e) => {
                     const dataset = PROJECT_DATASETS.find(({ file }) => file === e.target.value)
+                    restoreFocus.current = true
                     if (dataset) onProject(dataset)
                   }}>
                   <option value={''} disabled={true}>{t(prefix + 'placeholder')}</option>
                   {GROUPS.map(({ task, i18n }) => (
                     <optgroup key={task} label={t(i18n)}>
                       {PROJECT_DATASETS.filter((dataset) => dataset.task === task).map(({ file, i18n: label }) => (
-                        <option key={file} value={file}>{t(label)} · {fileName(file)}</option>
+                        <option key={file} value={file}>{t(label)} ({fileName(file)})</option>
                       ))}
                     </optgroup>
                   ))}

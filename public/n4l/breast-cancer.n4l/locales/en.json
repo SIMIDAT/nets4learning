@@ -55,7 +55,7 @@
       "summary": "Three Wisconsin datasets about breast tumours: the original, the diagnostic one (WDBC) and the prognostic one (WPBC).",
       "description": {
         "text": [
-          "It is a data set from the University of Wisconsin Hospital related to breast cancer. This data set is useful for the prediction and discrimination of a breast cancer tumor, differentiating whether it is benign or not.",
+          "These are data from the University of Wisconsin Hospital about breast cancer. They are used to predict whether a breast tumour is benign or malignant.",
           "Each record represents follow-up data for a breast cancer case. These are cases treated since 1984 by Dr. Wolberg, he only includes those cases that present invasive breast cancer and without evidence of metastasis.",
           "The first 30 characteristics are calculated from a digitized image of a fine needle aspiration (FNAB) of the breast mass, these data describe the characteristics of the cell nuclei present in the image, some images can be found in <link2>cs wisc</link2>",
           "The file <kbd>wdbc.csv</kbd> corresponds to the diagnostic data set and <kbd>wpbc.csv</kbd> corresponds to the prognostic data set.",

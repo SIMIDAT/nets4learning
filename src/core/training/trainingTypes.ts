@@ -2,7 +2,7 @@ import type * as tfjs from '@tensorflow/tfjs'
 import type { TFBackend_t } from '@core/tfBackend'
 import type { ImageLayer_t } from '@/types/types'
 import type { SpriteImage_t } from '@pages/playground/3_ImageClassification/models/spriteDecode'
-import type { CompileParams_t, DenseLayer_t, TrainingHistory_t } from './buildModels'
+import type { CompileParams_t, DenseLayer_t, SeriesLayer_t, TrainingHistory_t } from './buildModels'
 
 // Lo que se intercambian el hilo principal y el worker de entrenamiento (TODO-worker.md)
 
@@ -29,6 +29,23 @@ export type DenseTrainingRequest_t = {
   testSize     : number
   seed?        : number
   numberOfEpoch: number
+}
+
+/** Red de una serie temporal: las ventanas de entrenamiento y las de prueba, ya separadas (sin barajar la serie) */
+export type SeriesTrainingRequest_t = {
+  backend      : TFBackend_t
+  /** Valores de cada ventana */
+  window       : number
+  /** Ventanas de entrenamiento, una tras otra (filas × window), y el valor que predice cada una */
+  X            : Float32Array
+  y            : Float32Array
+  /** Las de prueba: su pérdida es la de validación */
+  XTest        : Float32Array
+  yTest        : Float32Array
+  layerList    : SeriesLayer_t[]
+  compile      : CompileParams_t
+  numberOfEpoch: number
+  batchSize    : number
 }
 
 /** Red convolucional con un sprite de imágenes (MNIST, CIFAR-10…): el worker lo descarga y lo decodifica */

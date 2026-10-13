@@ -81,7 +81,7 @@ export function buildShapBackground(pool: number[][], nFeatures: number, nRows =
 
 /**
  * KernelSHAP resuelve una regresión con una incógnita por segmento: con menos muestras que
- * ~2·segmentos el sistema queda indeterminado y los valores salen arbitrarios. Garantiza ese
+ * ~2 × segmentos el sistema queda indeterminado y los valores salen arbitrarios. Garantiza ese
  * mínimo aunque el usuario pida menos.
  */
 export function minShapSamples(numSegments: number, requested: number): number {

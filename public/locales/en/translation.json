@@ -70,7 +70,15 @@
       "waiting-for-model": "Train a model to be able to explain its predictions.",
       "gridSide-help": "The image is split into N × N pieces: with more, the explanation is finer but takes longer.",
       "nSamples-help": "How many times different zones are covered to measure what each one contributes (SHAP).",
-      "maskRange-help": "From 0 (black) to 1 (white)."
+      "maskRange-help": "From 0 (black) to 1 (white).",
+      "bar-description": "SHAP value of each variable (how much it pushes the prediction up or down), from the most to the least influential: {{values}}.",
+      "beeswarm-description": "SHAP values of {{count}} examples for each variable. The variables, from the most to the least influential (mean absolute value): {{features}}.",
+      "bar-data": "SHAP value of each variable",
+      "beeswarm-data": "SHAP values of each variable over {{count}} examples",
+      "variable": "Variable",
+      "mean-abs": "Mean absolute value",
+      "min": "Minimum",
+      "max": "Maximum"
     },
     "take-screenshot": "Take a screenshot",
     "table-scroll-hint": "Scroll horizontally to see all the columns →",
@@ -265,7 +273,8 @@
         "Integer": "Integer",
         "Continuous": "Continuous",
         "Categorical": "Categorical",
-        "Binary": "Binary"
+        "Binary": "Binary",
+        "Date": "Date"
       },
       "note": "Role, type, description and units come from the dataset page at its source. Missing values are counted in the files you can download here.",
       "images": "This dataset is made of images, so it has no variables table."
@@ -308,6 +317,10 @@
       "examples-text": "They include the real classes, but k-means doesn't use them: it clusters with the other columns and compares the groups with them at the end.",
       "extra-text": "Other project datasets to cluster: “Cluster” loads them as if you had uploaded them. Not all of them resemble their classes equally, and that teaches something too.",
       "run": "Cluster"
+    },
+    "time-series": {
+      "examples-title": "Classic time series",
+      "examples-text": "In a time series each row is a moment in time (a day, a month…) and the order matters: past values are used to forecast the next ones, so the rows are not shuffled. Each one has a different pattern: trend, seasons or cycles."
     }
   },
   "dataframe-original": "DataFrame | Original",
@@ -549,7 +562,12 @@
     "too-small": {
       "text": "Layer {{layer}}: at this point the image is {{height}}×{{width}} and the {{window}}×{{window}} window of {{type}} doesn't fit.",
       "fix": "Remove the layer"
-    }
+    },
+    "recurrent-after-dense": {
+      "text": "Layer {{layer}}: {{type}} reads a sequence value by value, but after a Dense layer there is only a list of numbers left. Recurrent layers go before the Dense ones.",
+      "fix": "Move the recurrent layers to the start"
+    },
+    "all-fixed": "The layers have nothing left to review"
   },
   "download-consent": {
     "title": "This model downloads about {{mb}} MB",
@@ -568,7 +586,13 @@
     "select-dataset": {
       "title": "Select the data set",
       "info": "Select the data set"
-    }
+    },
+    "number": {
+      "range": "Enter a whole number between {{min}} and {{max}}.",
+      "at-least": "Enter a whole number of {{min}} or more.",
+      "in-use": "Meanwhile, {{value}} is used."
+    },
+    "cancel": "Cancel"
   },
   "preprocessing": {
     "title": "Preprocessing",
@@ -659,7 +683,8 @@
     "model-train-error": "Error training the model",
     "prediction": "The prediction is: {{index}}",
     "file-upload-success": "Successfully loaded file",
-    "file-upload-error-incorrect-format": "The file could not be loaded, it is not the correct format"
+    "file-upload-error-incorrect-format": "The file could not be loaded, it is not the correct format",
+    "close": "Close the notice"
   },
   "header": {
     "language": "Language",
@@ -682,7 +707,9 @@
     "tasks": "Tasks",
     "packages": ".n4l packages",
     "packages-saved_one": "{{count}} package saved in this browser",
-    "packages-saved_other": "{{count}} packages saved in this browser"
+    "packages-saved_other": "{{count}} packages saved in this browser",
+    "github": "GitHub (opens in a new tab)",
+    "main-navigation": "Main navigation"
   },
   "footer": {
     "description-app": "Web platform for the design and testing of deep learning models.",
@@ -697,7 +724,8 @@
     "cookies": "Cookie preferences",
     "links": "Links",
     "institutions": "Institutions",
-    "settings": "Settings"
+    "settings": "Settings",
+    "accessibility": "Accessibility"
   },
   "drag-and-drop": {
     "label-files-one": "File:",
@@ -707,11 +735,22 @@
     "json": "Add the JSON file",
     "csv": "Add the CSV file",
     "csv-json": "Enter the template data file.json",
-    "dataset": "Add the data file (CSV, ARFF, JSON, JSONL or Parquet)"
+    "dataset": "Add the data file (CSV, ARFF, JSON, JSONL or Parquet)",
+    "choose-file": "Choose file",
+    "choose-files": "Choose files",
+    "errors": {
+      "file-invalid-type": "Format not supported",
+      "file-too-large": "The file is too large",
+      "file-too-small": "The file is too small",
+      "too-many-files": "Only one file can be uploaded"
+    }
   },
   "custom-canvas-drawer": {
     "validate": "Classify",
-    "clear": "Clear"
+    "clear": "Clear",
+    "canvas": "Canvas to draw on with the mouse, a pen or your finger",
+    "preview": "What the network receives: the drawing at 28 × 28 pixels",
+    "alternative": "If you cannot draw, classify one of the examples or a test image."
   },
   "table": {
     "dataset": "Dataset"
@@ -724,7 +763,8 @@
     "tabular-classification": "Tabular classification",
     "regression": "Regression",
     "object-detection": "Object identification",
-    "image-classification": "Image classifier"
+    "image-classification": "Image classifier",
+    "time-series": "Time series"
   },
   "graphic-red": {
     "input": "Input",
@@ -808,6 +848,12 @@
           "software": "Software rendering",
           "yes": "Yes",
           "no": "No"
+        },
+        "detections": {
+          "nothing": "Nothing is detected",
+          "detected": "Detected: {{list}}",
+          "waiting": "Waiting for the first detection…",
+          "announce": "Say what is detected"
         }
       },
       "face-detection": {
@@ -832,6 +878,16 @@
               "0": "<link1> Model entry into the tensorflow repository </link1>"
             }
           }
+        },
+        "render": {
+          "face": "Face",
+          "face-number": "Face {{number}}",
+          "eye-right": "Right eye",
+          "eye-left": "Left eye",
+          "nose": "Nose",
+          "mouth": "Mouth",
+          "ear-right": "Right ear",
+          "ear-left": "Left ear"
         }
       },
       "face-mesh": {
@@ -856,6 +912,14 @@
               "0": "<link1> Model entry into the tensorflow repository </link1>"
             }
           }
+        },
+        "render": {
+          "face": "Face",
+          "face-number": "Face {{number}}",
+          "points": "{{count}} points",
+          "eye-right": "Right eye",
+          "eye-left": "Left eye",
+          "lips": "Lips"
         }
       },
       "move-net--pose-net": {
@@ -882,6 +946,23 @@
               "1": "<link1>TFHub model</link1>"
             }
           }
+        },
+        "render": {
+          "person": "Person",
+          "person-number": "Person {{number}}",
+          "score": "{{percent}}%",
+          "shoulder-left": "Left shoulder",
+          "shoulder-right": "Right shoulder",
+          "elbow-left": "Left elbow",
+          "elbow-right": "Right elbow",
+          "wrist-left": "Left wrist",
+          "wrist-right": "Right wrist",
+          "hip-left": "Left hip",
+          "hip-right": "Right hip",
+          "knee-left": "Left knee",
+          "knee-right": "Right knee",
+          "ankle-left": "Left ankle",
+          "ankle-right": "Right ankle"
         }
       },
       "coco-ssd": {
@@ -992,7 +1073,10 @@
           "hair drier": "Hair drier",
           "toothbrush": "Toothbrush"
         },
-        "render-label": "{{label}} with {{score}}% confidence"
+        "render": {
+          "numbered": "{{label}} {{number}}",
+          "score": "{{percent}}%"
+        }
       },
       "face-api": {
         "title": "FaceAPI - Face Expressions",
@@ -1020,12 +1104,18 @@
           "details-references": {
             "title": "References"
           }
+        },
+        "render": {
+          "face": "Face",
+          "face-number": "Face {{number}}",
+          "age": "about {{age}} years",
+          "percent": "{{percent}}%"
         }
       },
       "hand-sign": {
         "title": "Sign language with Hand sign",
         "description": {
-          "text-0": "Neural network for hand and landmark detection, used in conjunction with position descriptors to classify possible American Sign Language (ASL) or Spanish Sign Language (SSL) signs.",
+          "text-0": "Neural network that finds the hand and its 21 points (MediaPipe Hands) and, with them, recognises the letter of the fingerspelling alphabet: the American one (ASL), comparing the hand with 2122 real hands, or the Spanish one (SSL), with rules that describe each finger. It works with the right hand and with the left one.",
           "details-input": {
             "title": "Input data",
             "list": {
@@ -1039,12 +1129,24 @@
               "1": "Corresponding letter"
             }
           },
+          "details-movement": {
+            "title": "Letters with movement",
+            "list": {
+              "0": "LL and RR (SSL): make the L or the R and move the hand a few centimetres to its own side.",
+              "1": "Ñ (SSL): make the N and move the hand from side to side."
+            }
+          },
           "details-references": {
             "title": "References",
             "list": {
               "0": "TFJS hand pose detection"
             }
           }
+        },
+        "render": {
+          "left": "Left hand",
+          "right": "Right hand",
+          "movement": "With movement"
         }
       },
       "list-models": {
@@ -1070,7 +1172,8 @@
           "modern": "Today",
           "old": "Before",
           "classify-modern": "Classify {{char}} as written today",
-          "classify-old": "Classify old {{char}}, from {{origin}}"
+          "classify-old": "Classify old {{char}}, from {{origin}}",
+          "classify-example-label": "Classify example {{index}}: {{label}}"
         },
         "process-draw": {
           "title": "Drawing"
@@ -1332,7 +1435,7 @@
     "version": {
       "title": "Version",
       "app": "Application version",
-      "environment": "Environment · mode",
+      "environment": "Environment (mode)",
       "backend": "Backend in use",
       "runtime": "This installation",
       "changes": "Changes",
@@ -1418,6 +1521,24 @@
         "1-description-1": "Group the data without saying what each row is (unsupervised learning): k-means looks for k groups of rows similar to each other.",
         "1-description-2": "You'll see how the groups form step by step and, in datasets with the real classes, whether the groups resemble them even though it never saw them.",
         "1-button": "Choose a dataset"
+      },
+      "time-series": {
+        "1-title": "Time series",
+        "1-description-1": "Forecast the next values of a time series (passengers each month, the temperature each day…) from the previous ones: the network learns from windows of past values.",
+        "1-description-2": "Try the models already trained with three classic series (airline passengers, Melbourne temperatures and sunspots): you will see how they forecast the end of the series, which they did not see while training, whether they beat the simplest forecasts (repeating the last value or the one a season ago) and what comes next.",
+        "1-button": "Pre-trained models",
+        "2-title": "Design, create and edit an architecture to forecast series",
+        "2-description-1": "With this tool we can create a neural network that predicts the next value of a series from the previous ones, with one of the example series or with your own.",
+        "2-description-2": "To design, create, train and evaluate a custom architecture, we must:",
+        "2-description-list": {
+          "1": "Define the window: how many previous values the network looks at.",
+          "2": "Define how much of the end of the series is set aside for testing and whether to difference it.",
+          "3": "Define the number of layers, their type (Dense or recurrent: SimpleRNN, LSTM and GRU) and their activation functions.",
+          "4": "Define the learning rate.",
+          "5": "Define the number of epochs and the batch size.",
+          "6": "Define the optimizer and the loss function."
+        },
+        "2-button": "Create and train a model"
       }
     },
     "contribute": {
@@ -1510,6 +1631,9 @@
       "example-datasets": "Example datasets",
       "clustering": {
         "csv": "Upload a CSV"
+      },
+      "time-series": {
+        "csv": "Upload a series"
       }
     },
     "menu-selection-model": {
@@ -1531,7 +1655,7 @@
         "data-to-check": "Data to test",
         "vector-to-check": "Vector to test",
         "button-check-result": "Predict",
-        "type-categorical": "Categorical · {{count}} values",
+        "type-categorical": "Categorical, {{count}} values",
         "type-integer": "Whole number",
         "type-decimal": "Decimal number",
         "range": "{{min}} – {{max}} in the data"
@@ -1683,7 +1807,11 @@
           "strides-placeholder": "Enter the strides of the layer",
           "pool-size": "Pool size",
           "pool-size-placeholder": "Enter the pool size of the layer",
-          "layer-class": "Layer type"
+          "layer-class": "Layer type",
+          "removed": "Layer {{index}} deleted. You can undo it with “Undo”, above the layers.",
+          "removed-short": "Layer {{index}} deleted.",
+          "restored": "Layer {{index}} restored.",
+          "undo": "Undo"
         },
         "editor-feature-selector": {
           "title": "Feature selector",
@@ -1718,7 +1846,10 @@
           "metric-id-select": "Select the metric function",
           "metric-id-info": "It will be one of the metric functions",
           "loss-group-classification": "Classification",
-          "loss-group-regression": "Regression"
+          "loss-group-regression": "Regression",
+          "batch-size": "Batch size",
+          "batch-size-placeholder": "Examples per batch",
+          "batch-size-info": "How many windows are used in each weight update: with small batches it learns with more noise; with large ones, each epoch is faster."
         },
         "loaded": "Loaded",
         "load": "Load",
@@ -1798,7 +1929,11 @@
           "select-image": "Select an image from the dataset",
           "actual-class": "Actual class: {{label}}",
           "chart-title-top": "The {{count}} most likely classes",
-          "chart-help-top": "The model tells apart many more classes; only the most likely ones are shown here, with their probability."
+          "chart-help-top": "The model tells apart many more classes; only the most likely ones are shown here, with their probability.",
+          "hit": "correct",
+          "miss": "wrong",
+          "test-image": "Test image",
+          "class": "Class"
         },
         "waiting-for-prediction": "Make a prediction to see the result here.",
         "training": {
@@ -1831,7 +1966,18 @@
           "confusion-total": "Total",
           "confusion-recall": "Recall",
           "confusion-precision": "Precision",
-          "confusion-legend": "Each cell shows how many examples of the actual class (row) were predicted as the column's class, and what share of their row they are. Green: correct; red: errors; the stronger the colour, the more examples."
+          "confusion-legend": "Each cell shows how many examples of the actual class (row) were predicted as the column's class, and what share of their row they are. Green: correct; red: errors; the stronger the colour, the more examples.",
+          "curve-description": "{{name}} over {{epochs}} epochs: on the training data, from {{first}} to {{last}}.",
+          "curve-description-validation": "On the validation data, from {{first}} to {{last}}.",
+          "announce-start_one": "Training started: {{count}} epoch",
+          "announce-start_other": "Training started: {{count}} epochs",
+          "announce-stopped": "Training stopped at epoch {{epoch}} of {{total}}. The model is saved with those epochs",
+          "announce-error": "Training could not finish",
+          "go-to-result": "Go to the result",
+          "curve-data": "{{name}} at each epoch",
+          "remaining": "about {{time}} left",
+          "last-run_one": "The last training took {{time}} ({{count}} epoch, {{perEpoch}} per epoch). With more epochs it will take longer, and you can stop it whenever you want.",
+          "last-run_other": "The last training took {{time}} ({{count}} epochs, {{perEpoch}} per epoch). With more epochs it will take longer, and you can stop it whenever you want."
         },
         "help": {
           "learning-rate": "Size of the step with which the optimizer corrects the network weights after each batch of data.",
@@ -1842,8 +1988,12 @@
           "metric": "Measure computed during training to see how the model is doing (for example, accuracy). It is not used to correct the weights.",
           "recall": "Recall: of the examples that belong to this class, the share the model gets right.",
           "precision": "Precision: of the times the model predicts this class, the share that is right.",
-          "accuracy": "Accuracy: correct examples out of all the validation examples."
-        }
+          "accuracy": "Accuracy: correct examples out of all the validation examples.",
+          "batch-size": "How many examples the network sees before updating its weights.",
+          "units": "How many neurons the layer has. With more, the network can learn more complicated relationships, but it takes longer to train and can learn the data by heart.",
+          "activation": "What each neuron does with the sum it receives. ReLU, sigmoid or tanh let the network learn relationships that are not straight lines; softmax, in the last layer, shares the probability among the classes."
+        },
+        "example-from-dataset": "Example from the dataset"
       },
       "1-regression": {
         "generator": {
@@ -2060,7 +2210,7 @@
           "loss-regression-raw": "The network predicts {{prediction}} and the real value is {{actual}}. The loss is the squared error: ({{output}} − {{target}})² = {{loss}}.",
           "backward-output": "The backward pass starts. The delta of each output neuron says how much the loss would change if its sum z changed. The gradient of each weight reaching it is its delta times the input of that connection: they are the orange connections.",
           "backward": "The error keeps going back to layer {{layer}}: the delta of each neuron is the sum of the deltas of the next layer times the weights joining them, multiplied by the derivative of {{activation}}. That way each weight knows how much it contributed to the error.",
-          "update": "Each weight moves a little against its gradient: w ← w − η·g, with η = {{rate}}, the learning rate. With this example, the loss goes from {{before}} to {{after}}. Training is repeating this with all the examples, epoch after epoch; the optimizer you choose adjusts each step in a more elaborate way."
+          "update": "Each weight moves a little against its gradient: w ← w − η × g, with η = {{rate}}, the learning rate. With this example, the loss goes from {{before}} to {{after}}. Training is repeating this with all the examples, epoch after epoch; the optimizer you choose adjusts each step in a more elaborate way."
         },
         "focus": "Neuron {{index}} of layer {{layer}}",
         "focus-input": "Input {{index}}",
@@ -2075,9 +2225,9 @@
         "node-input": "Input {{name}}: {{value}}",
         "node": "Neuron {{index}} of layer {{layer}}: {{value}}",
         "column-input": "Input",
-        "column-layer": "Layer {{layer}} · {{activation}}",
-        "column-output": "Output · {{activation}}",
-        "update-rule": "w ← w − {{rate}} · gradient"
+        "column-layer": "Layer {{layer}} ({{activation}})",
+        "column-output": "Output ({{activation}})",
+        "update-rule": "w ← w − {{rate}} × gradient"
       },
       "clustering": {
         "intro": "k-means places k centroids, assigns each row to the closest one and moves each centroid to the centre of its rows, until no row changes group. It uses no labels: only the columns you choose.",
@@ -2131,7 +2281,186 @@
         "majority": "Majority class",
         "mixed": "mixed",
         "total": "Total",
-        "comparison-legend": "The stronger the background, the larger the share of the group from that class. “Mixed”: no class reaches two thirds of the group."
+        "comparison-legend": "The stronger the background, the larger the share of the group from that class. “Mixed”: no class reaches two thirds of the group.",
+        "scatter-data": "Groups, rows and centroids",
+        "rows-column": "Rows"
+      },
+      "time-series": {
+        "manual": {
+          "title": "How it works",
+          "windows": {
+            "title": "Windows",
+            "text": "The network does not see the whole series: it receives the <b>last values</b> (the window) and predicts <b>the next one</b>. Each position of the series is one example: with a 12-month window, the months of 1949 predict January 1950; the next twelve, February…"
+          },
+          "split": {
+            "title": "Train with the past, test with the future",
+            "text": "The test part is <b>the end</b> of the series and is not shuffled: if the months were mixed, the network would see the future while training. The training windows are shuffled, because each one already carries its history."
+          },
+          "scale": {
+            "title": "Scaling and differencing",
+            "text": "Values are scaled between 0 and 1 with the training minimum and maximum (the test part is not looked at). If the series grows, the test part may fall outside that range. <b>Differencing</b> makes the network learn how much each value changes from the previous one instead of the value: it removes the trend."
+          },
+          "modes": {
+            "title": "One step or all at once",
+            "text": "<b>One step ahead</b>, each test value is predicted with the real values before it, like forecasting tomorrow knowing today. <b>All at once</b> (recursive), from the end of training each value is predicted with the ones already predicted: that is how the future is forecast, and errors add up."
+          },
+          "baselines": {
+            "title": "Better than the simplest thing?",
+            "text": "It is compared with two forecasts without a network: the <b>naive</b> one (the previous value or, when forecasting all at once, the last known one) and the <b>seasonal</b> one (the value one season ago: 12 months, 7 days…). A network that does not beat them adds nothing."
+          },
+          "networks": {
+            "title": "Dense or recurrent",
+            "text": "A <b>Dense</b> layer receives the whole window at once. <b>Recurrent</b> layers (SimpleRNN, LSTM and GRU) read it value by value and remember what came before: they go before the Dense layers and train more slowly. The output is one linear neuron, the predicted value."
+          }
+        },
+        "upload": {
+          "title": "Your series",
+          "text": "Upload a file (CSV, ARFF, JSON, JSONL or Parquet) with one row per moment and choose the column with the values. If it has a date column, it is used to sort the rows and to date the forecasts.",
+          "no-numeric": "The file has no numeric column: there are no values to forecast.",
+          "value-column": "Column with the values",
+          "value-column-help": "The series that is forecast.",
+          "date-column": "Column with the date",
+          "date-column-help": "Optional: without it, the values are numbered 1, 2, 3…",
+          "no-date": "No date (1, 2, 3…)",
+          "info": "Upload your own time series: one column with its values and, if it has one, another with the date of each.",
+          "waiting": "Upload a file to see the series here."
+        },
+        "data": {
+          "summary_one": "1 value ({{first}})",
+          "summary_other": "{{count}} values, from {{first}} to {{last}}",
+          "value-column": "forecasting {{column}}",
+          "dropped_one": "1 row without a number in the values column has been removed.",
+          "dropped_other": "{{count}} rows without a number in the values column have been removed.",
+          "sorted": "The rows were not in order: they have been sorted by date.",
+          "range_one": "{{first}} (1 value)",
+          "range_other": "{{first}} – {{last}} ({{count}} values)",
+          "split": "<b>Training:</b> {{train}}. <b>Test:</b> {{test}}"
+        },
+        "frequency": {
+          "hour": "one value per hour",
+          "day": "one value per day",
+          "week": "one value per week",
+          "month": "one value per month",
+          "quarter": "one value per quarter",
+          "year": "one value per year"
+        },
+        "chart": {
+          "test": "Test",
+          "description": "{{name}}: {{count}} values, from {{first}} to {{last}}.",
+          "train-prediction": "Network (training, one step)",
+          "test-one-step": "Network (test, one step)",
+          "test-recursive": "Network (test, all at once)",
+          "future": "What comes next",
+          "forecast-description": "Forecast of {{model}}: on the test part it is off by {{mae}} on average. Then, the next {{steps}} values."
+        },
+        "prep": {
+          "title": "Preparation",
+          "window": "Window (previous values)",
+          "window-help": "How many previous values the network uses to predict the next one.",
+          "window-season": "To see the repeating pattern, it should cover a season ({{season}} values).",
+          "test-size": "Test (% at the end of the series)",
+          "test-size-help": "The last values: the network does not see them while training. They are not shuffled, because in a series the future is predicted with the past.",
+          "difference": "Predict the change (differencing)",
+          "difference-help": "The network learns how much each value changes from the previous one and, when predicting, it is added to the previous one. It removes the trend.",
+          "season": "Season (values)",
+          "season-help": "Every how many values the pattern repeats (12 months, 7 days…), to compare with the seasonal forecast. 0: no season.",
+          "too-short": "With this window and this test part there is not enough data: at least 10 windows are needed to train and 2 values to test. Try a shorter window or a smaller test part."
+        },
+        "windows": {
+          "title": "What the network learns",
+          "text": "Each example is the {{window}} previous values and the next one, which is what it has to predict. The first ones:",
+          "text-difference": "Each example is the {{window}} previous changes (each value minus the previous one) and the next change, which is what it has to predict. The first ones:",
+          "date": "Date",
+          "inputs": "Previous values ({{window}})",
+          "inputs-difference": "Previous changes ({{window}})",
+          "output": "Value to predict",
+          "output-difference": "Change to predict",
+          "scaled_one": "The network receives them scaled between 0 and 1. With this preparation there is 1 example to train with.",
+          "scaled_other": "The network receives them scaled between 0 and 1. With this preparation there are {{count}} examples to train with."
+        },
+        "layers": {
+          "class": "Layer type",
+          "class-help": "Dense receives the whole window; SimpleRNN, LSTM and GRU read it value by value (they go before the Dense layers)."
+        },
+        "models": {
+          "yes": "Yes",
+          "no": "No",
+          "mae-one-step": "One-step error (MAE)",
+          "mae-recursive": "All-at-once error (MAE)",
+          "show": "Show",
+          "help": "The error is the mean absolute error on the test data, in the units of the series: how far off it is on average.",
+          "evaluating": "Computing the forecasts…"
+        },
+        "forecast": {
+          "title": "Forecast: {{model}}",
+          "model": "Model",
+          "one-step": "One step",
+          "recursive": "All at once (recursive)",
+          "range-all": "Whole series",
+          "range-test": "Close-up",
+          "show-train": "Also show training",
+          "one-step-help": "Each test value is predicted with the real values before it.",
+          "recursive-help": "From the end of training, each value is predicted with the ones already predicted, without seeing the test part: that is how the future is forecast, and errors add up.",
+          "errors-title": "Errors on the test data",
+          "prediction": "Forecast",
+          "mae-title": "Mean absolute error: how far off it is on average",
+          "rmse-title": "Root mean squared error: penalises large errors more",
+          "network": "Neural network ({{model}})",
+          "naive-one-step": "Naive: the previous value",
+          "naive-recursive": "Naive: the last known value, repeated",
+          "seasonal-one-step": "Seasonal: the value {{season}} values ago",
+          "seasonal-recursive": "Seasonal: the last season, repeated",
+          "verdict-better": "The network is off <b>{{percent}} less</b> than the best simple forecast ({{baseline}}).",
+          "verdict-similar": "The network is off about as much as the best simple forecast ({{baseline}}): it does not add much.",
+          "verdict-worse": "The network is off <b>{{percent}} more</b> than the best simple forecast ({{baseline}}). Try another window, more epochs, differencing or recurrent layers.",
+          "baseline-naive": "the naive one",
+          "baseline-seasonal": "the seasonal one",
+          "train-vs-test": "On the training data it is off by {{train}} on average, and on the test data (one step), by {{test}}.",
+          "overfitting": "On the test data it is off by more than twice as much: it may have memorised the training data.",
+          "future-title": "What comes next",
+          "future-steps": "Values to forecast",
+          "future-help": "One after another, each with the ones already predicted: the further away, the less reliable."
+        },
+        "model": {
+          "name": "Pre-trained model",
+          "train-yours": "Train your network with this series"
+        },
+        "review": {
+          "tab-chart": "The series",
+          "tab-windows": "Prepared for the network",
+          "preparation": "The network receives the <b>{{window}} previous values</b> and predicts the next one. It was trained with the series up to {{last}}; it did not see the test part, from {{first}} to the end. Values are scaled between 0 and 1 with the training minimum ({{min}}) and maximum ({{max}}).",
+          "preparation-difference": "The network receives the <b>{{window}} previous changes</b> (each value minus the previous one) and predicts the next change. It was trained with the series up to {{last}}; it did not see the test part, from {{first}} to the end. Changes are scaled between 0 and 1 with the training minimum ({{min}}) and maximum ({{max}}).",
+          "predict-title": "Predict",
+          "test": "test",
+          "model-select": "Model to predict with",
+          "choose-instance_one": "Choose a value of the series: the form is filled with the previous one, which is what the network uses. Then you can change it.",
+          "choose-instance_other": "Choose a value of the series: the form is filled with the {{count}} previous ones, which is what the network uses. Then you can change them.",
+          "vector": "What the network receives",
+          "vector-help": "Each value, scaled between 0 and 1 with the training minimum and maximum.",
+          "vector-help-difference": "Each change (a value minus the previous one), scaled between 0 and 1 with the training minimum and maximum.",
+          "button-submit": "Predict",
+          "predicted-value": "Predicted value of {{target}} ({{date}})",
+          "actual-value": "Actual value: {{value}}",
+          "error": "Error: {{value}} ({{percent}})",
+          "input-details": "Model input step by step",
+          "step-values": {
+            "title": "Previous values",
+            "text": "as in the series"
+          },
+          "step-changes": {
+            "title": "Changes",
+            "text": "each value minus the previous one"
+          },
+          "step-scaled": {
+            "title": "Scaled",
+            "text": "between 0 and 1, as the network receives them"
+          },
+          "metrics": "On the last {{testSize}} % of the series, set aside when it was trained, it is off by {{mae}} on average one step ahead; repeating the previous value, by {{naive}}.",
+          "metrics-seasonal": "Repeating the value one season earlier, by {{seasonal}}.",
+          "metrics-no-better": "It does not beat the simplest forecast: with that window, this series cannot be predicted much better."
+        },
+        "chart-data": "{{value}}: actual and predicted at each date",
+        "chart-data-series": "{{value}} at each date"
       }
     },
     "dataframe": {
@@ -2164,14 +2493,14 @@
         "target": "Target variable",
         "target-none": "None",
         "target-help": "The one to predict or classify: it is highlighted throughout the analysis and splits the charts by class.",
-        "problem-classification": "Classification · {{count}} classes",
+        "problem-classification": "Classification, {{count}} classes",
         "problem-regression": "Regression",
         "problem-none": "No target variable"
       },
       "summary": {
         "rows": "Rows",
         "columns": "Columns",
-        "columns-detail": "Numeric: {{numeric}} · categorical: {{categorical}}",
+        "columns-detail": "Numeric: {{numeric}}, categorical: {{categorical}}",
         "missing": "Missing values",
         "missing-detail": "{{percent}} of the cells",
         "duplicates": "Duplicate rows",
@@ -2738,7 +3067,43 @@
           "title": "Confusion matrix metrics",
           "description": "They are computed from the hits and misses of each class in the confusion matrix: how many positive predictions are correct (precision), how many real positives are found (recall or sensitivity), the harmonic mean of both (F1) and how many real negatives are recognised (specificity)."
         }
-      }
+      },
+      "time-series": {
+        "title": "Time series",
+        "text-1": "A time series is a sequence of values measured in order, one every so often: the passengers each month, the temperature each day, the sales each week. Unlike a table, order matters: each value depends on the previous ones.",
+        "text-2": "Forecasting a series means estimating the next values from the past ones. A neural network learns it with windows: it receives the last values and predicts the next one.",
+        "text-3": "To test it, the end of the series is set aside, without shuffling, and it is compared with simple forecasts, such as repeating the last value or the one a season ago.",
+        "group-title": "Time series",
+        "window": {
+          "title": "Window",
+          "text": "The previous values the network uses to predict the next one. With a window of 12 in a monthly series, the network sees the last year. If it is shorter than the season, it cannot see the repeating pattern; if it is very long, fewer examples are left to train with."
+        },
+        "trend-seasonality": {
+          "title": "Trend and seasonality",
+          "text": "The trend is where the series goes in the long run (passengers grow year after year). Seasonality is a pattern that repeats with a fixed period (more passengers every summer). A cycle, like the sunspot cycle, repeats without a fixed period."
+        },
+        "differencing": {
+          "title": "Differencing",
+          "text": "Replacing each value by how much it changed from the previous one. It removes the trend: the network learns changes, which look more alike in training and in testing. To get the values back, each change is added to the previous value."
+        },
+        "one-step-recursive": {
+          "title": "One-step and recursive forecasts",
+          "text": "One step ahead, each value is predicted with the real values before it. Recursive (or all at once), each predicted value is used to predict the next: it is the only way to forecast several steps into the future, and errors add up."
+        },
+        "baselines": {
+          "title": "Naive and seasonal forecasts",
+          "text": "The simplest forecasts, which a model is compared with: the naive one repeats the last known value and the seasonal one, the value one season ago (12 months, 7 days…). A model only adds something if it is off by less than them."
+        },
+        "recurrent": {
+          "title": "Recurrent layers (SimpleRNN, LSTM and GRU)",
+          "text": "They read a sequence value by value and keep a state that summarises what they have seen. SimpleRNN is the simplest and forgets quickly; LSTM and GRU have gates that decide what to remember and what to forget, and learn longer dependencies."
+        },
+        "mae-rmse": {
+          "title": "MAE and RMSE",
+          "text": "Two ways of measuring the error in the units of the series: the MAE (mean absolute error) is how far off it is on average; the RMSE (root mean squared error) penalises large errors more."
+        }
+      },
+      "formula": "{{term}} formula"
     },
     "menu": {
       "select-model": {
@@ -2755,7 +3120,15 @@
         "classes": "{{value}} classes",
         "target": "target: {{value}}",
         "images": "{{value}} {{size}} images",
-        "images-color": "{{value}} {{size}} color images"
+        "images-color": "{{value}} {{size}} color images",
+        "series": {
+          "hour": "{{value}} hours",
+          "day": "{{value}} days",
+          "week": "{{value}} weeks",
+          "month": "{{value}} months",
+          "quarter": "{{value}} quarters",
+          "year": "{{value}} years"
+        }
       }
     },
     "terms": {
@@ -2843,7 +3216,8 @@
         "language": "Language",
         "theme": "Theme",
         "theme-system": "Same as the system",
-        "theme-help": "\"Same as the system\" follows the light or dark mode of your operating system."
+        "theme-help": "\"Same as the system\" follows the light or dark mode of your operating system.",
+        "summary": "Language and light or dark theme"
       },
       "backend": {
         "title": "TensorFlow.js backend",
@@ -2852,7 +3226,8 @@
         "webgl": "Uses the graphics card through WebGL. It is the fastest on almost every computer.",
         "webgpu": "Uses the graphics card with WebGPU, the most modern API. It can be faster, but not every browser has it.",
         "wasm": "Computes on the processor with WebAssembly. Useful if the graphics card causes problems.",
-        "cpu": "Computes on the processor with JavaScript. It works everywhere, but it is the slowest."
+        "cpu": "Computes on the processor with JavaScript. It works everywhere, but it is the slowest.",
+        "summary": "Where TensorFlow.js computes: graphics card or processor"
       },
       "downloads": {
         "title": "Model downloads",
@@ -2866,10 +3241,8 @@
         "now-save-data": "Right now, the browser has data saving on.",
         "now-slow": "Right now, the connection seems slow.",
         "now-normal": "Right now, there's no data saving and the connection doesn't seem slow (or the browser doesn't say).",
-        "offline_zero": "What you open is saved so you can use it offline. Nothing is saved yet.",
-        "offline_one": "For offline use, 1 file is saved ({{size}} MB): what you have already opened works without internet.",
-        "offline_other": "For offline use, {{count}} files are saved ({{size}} MB): what you have already opened works without internet.",
-        "offline-delete": "Delete what is saved for offline use"
+        "summary": "Ask before downloading large models",
+        "saved": "Downloaded models are saved in this browser so they are not downloaded again: you can see how much space they take up and delete them in <link1>Data saved in this browser</link1>."
       },
       "speech": {
         "title": "Guide voice",
@@ -2881,19 +3254,23 @@
         "rate": "Speed: {{rate}}×",
         "test": "Try the voice",
         "stop": "Stop",
-        "sample": "Hello. This is how the guide of each Nets4Learning page will sound."
+        "sample": "Hello. This is how the guide of each Nets4Learning page will sound.",
+        "screen-reader": "If you use a screen reader, turn this off: the screen reader already reads each step of the guide, and two voices at once cannot be understood.",
+        "summary": "Read the guides aloud, the voice and its speed"
       },
       "tutorials": {
         "title": "Guides",
         "guides-help": "Each guide remembers which step you are on. Reset them so that they all start again from the beginning.",
         "guides-reset": "Reset the guides",
-        "done": "Done"
+        "done": "Done",
+        "summary": "Start the page guides again"
       },
       "learning": {
         "title": "For learning",
         "help": "Tools that are hidden by default so as not to overload the pages.",
         "step-by-step": "Show “Step by step”: how the network learns, example by example, forwards and backwards",
-        "step-by-step-help": "It appears on the training pages and on the tabular classification and regression model pages, with networks of fewer than 64 neurons."
+        "step-by-step-help": "It appears on the training pages and on the tabular classification and regression model pages, with networks of fewer than 64 neurons.",
+        "summary": "Step by step and other tools for learning"
       },
       "privacy": {
         "title": "Privacy and cookies",
@@ -2902,20 +3279,78 @@
         "status-accepted": "Right now: cookies accepted.",
         "status-rejected": "Right now: cookies rejected.",
         "status-undecided": "You have not decided yet: for now they are not used.",
-        "more": "More information about cookies"
+        "more": "More information about cookies",
+        "summary": "Google Analytics cookies"
       },
       "data": {
         "title": "Data saved in this browser",
-        "help": "Deletes all the application settings: language, theme, backend, guide voice and progress, Step by step, the saved trained models and your cookie decision. The page will reload with the default values.",
-        "models_zero": "There are no saved trained models.",
-        "models_one": "There is 1 saved trained model ({{size}}): it is recovered when you go back to its page.",
-        "models_other": "There are {{count}} saved trained models ({{size}}): each one is recovered when you go back to its page.",
-        "models-delete": "Delete the saved models",
+        "help": "What the application saves in this browser. It never leaves it, and you can delete it whenever you want.",
+        "summary": "What is saved, how much space it takes up and reset everything",
+        "total": "In total, this website takes up <strong>{{used}}</strong> in this browser.",
+        "trained": {
+          "title": "Trained models",
+          "help": "The ones you train and save: they are recovered when you go back to their page.",
+          "count_zero": "None",
+          "count_one": "1 model",
+          "count_other": "{{count}} models",
+          "delete": "Delete the trained models",
+          "question_one": "1 trained model will be deleted. This cannot be undone.",
+          "question_other": "{{count}} trained models will be deleted. This cannot be undone."
+        },
+        "pretrained": {
+          "title": "Downloaded pretrained models",
+          "help": "Object detection, MobileNet…: saved the first time you use them so they are not downloaded again.",
+          "count_zero": "None",
+          "count_one": "1 model",
+          "count_other": "{{count}} models",
+          "delete": "Delete the downloaded pretrained models",
+          "question": "They will be downloaded again the next time you use them.",
+          "mobilenet": "MobileNet - Image classification",
+          "other": "Other files"
+        },
+        "offline": {
+          "title": "For offline use",
+          "help": "The pages you have already opened, so they work without internet.",
+          "count_zero": "Nothing",
+          "count_one": "1 file",
+          "count_other": "{{count}} files",
+          "delete": "Delete what is saved for offline use",
+          "question": "What you have opened will not work without internet until you open it again."
+        },
+        "settings": {
+          "title": "Settings and progress",
+          "help": "Language, theme, accessibility, backend, guide voice and progress, Step by step, the download warning and your cookie decision."
+        },
+        "delete": "Delete",
+        "delete-confirm": "Yes, delete",
         "reset": "Reset all settings",
+        "reset-help": "Deletes all of the above and goes back to the default values. The page will reload.",
         "confirm": "Are you sure? All the settings saved in this browser will be deleted.",
         "confirm-button": "Yes, delete them",
         "cancel": "Cancel"
-      }
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "help": "To adapt the application to what you need. Saved in this browser.",
+        "text-size": "Text size",
+        "spacing": "More space between lines, letters and words",
+        "spacing-help": "The spacing WCAG recommends for easier reading.",
+        "highContrast": "High contrast",
+        "highContrast-help": "Black text and borders (white with the dark theme), without greys.",
+        "reduceMotion": "Reduce motion",
+        "reduceMotion-help": "No animations or smooth scrolling, also in the charts.",
+        "underlineLinks": "Always underline links",
+        "underlineLinks-help": "To tell them apart from text without relying on colour.",
+        "strongFocus": "Thicker focus",
+        "strongFocus-help": "The outline showing where you are when using the keyboard, more visible.",
+        "openVisor": "Open the TensorFlow.js visor when training",
+        "openVisor-help": "It is a library panel that cannot be used with a screen reader; the charts on the page say the same.",
+        "system-on": "Your system already asks for it, so it is on even if you do not tick it.",
+        "guide": "The voice of the guides and whether they advance on their own are changed in",
+        "summary": "Text size, contrast, motion and focus"
+      },
+      "sections": "Settings sections",
+      "back": "All sections"
     },
     "learn": {
       "title": "Start here",
@@ -3060,6 +3495,92 @@
       "upload": "Upload yours",
       "only-pretrained": "This task only has pre-trained models.",
       "only-cluster": "Clustering uses neither a network nor pre-trained models: k-means groups the data directly."
+    },
+    "accessibility": {
+      "title": "Accessibility",
+      "updated": "Statement prepared on 12 October 2026 and last reviewed on the same day.",
+      "summary-title": "In short",
+      "summary": [
+        "We want anyone to be able to use Nets4Learning, also with a screen reader, with the keyboard only, with low vision or with large text.",
+        "The application is partially conformant with WCAG 2.2 level AA: almost everything conforms, except what is explained below.",
+        "If you find a barrier, tell us: it is the best way to fix it."
+      ],
+      "index": "Sections",
+      "status": {
+        "title": "Compliance status",
+        "text": "Nets4Learning is partially conformant with the Web Content Accessibility Guidelines (WCAG) 2.2, level AA, due to the exceptions in the “Non-accessible content” section.",
+        "standard": "WCAG 2.2 AA includes what the EN 301 549 standard requires (WCAG 2.1 AA), which is the one Spanish Royal Decree 1112/2018 applies to public sector websites."
+      },
+      "not-accessible": {
+        "title": "Non-accessible content",
+        "text": "The following does not fully conform, and this is what can be used instead:",
+        "items": [
+          {
+            "problem": "The TensorFlow.js visor that opens when training belongs to a library: it cannot be used with the keyboard and its charts have no text.",
+            "instead": "The same curves are on the page, with their data in a table, and in “Settings” you can choose not to open the visor."
+          },
+          {
+            "problem": "The zoom buttons of the data analysis charts (Plotly) cannot be used with the keyboard.",
+            "instead": "The data of each chart is in its table (“View the data”)."
+          },
+          {
+            "problem": "Drawing a number on the canvas needs a mouse, a pen or a finger.",
+            "instead": "Classify the examples and the test images on the page."
+          },
+          {
+            "problem": "The camera video in object detection has no description.",
+            "instead": "What is detected is written below it, and a button reads it aloud. You can also upload a photo."
+          },
+          {
+            "problem": "Formulas are generated with MathML for screen readers, but they have not been tested with all of them yet.",
+            "instead": "If one does not read well, tell us (“Report a barrier” section)."
+          }
+        ],
+        "out-of-scope": "Outside the scope of this statement: the third-party models and libraries the application uses and the external pages it links to.",
+        "instead": "Instead:"
+      },
+      "use": {
+        "title": "How to use the application",
+        "keyboard-title": "With the keyboard",
+        "keyboard": [
+          "<kbd>Tab</kbd> moves through the page in order. The first stop is “Skip to content”, which goes straight to the page without going through the menu.",
+          "<kbd>Enter</kbd> or <kbd>Space</kbd> activate buttons and links. The arrow keys move through tabs, dropdowns, option lists and the steps of the guide.",
+          "<kbd>Escape</kbd> closes dialogs, dropdowns, the mobile menu, the guide and the help of terms, and the focus goes back to where it was.",
+          "On long pages, the “On this page” index takes you to each section."
+        ],
+        "reader-title": "With a screen reader",
+        "reader": [
+          "Each page has its title, a single main heading and its sections with headings in order.",
+          "Each chart has a description and a “View the data” button with a table of everything it draws.",
+          "What changes without moving the focus is announced: the result of a prediction, the loaded data, how a training is going, the layer warnings and changes of language or theme.",
+          "The guide of each page can be read with the screen reader. If you use it, turn off the guide voice in “Settings” so that both do not speak at the same time."
+        ],
+        "settings-title": "Accessibility settings",
+        "settings": "You can make text larger, add more space between lines and letters, use high contrast, reduce motion, underline links or make the focus thicker. They are saved in your browser.",
+        "settings-link": "Go to the accessibility settings"
+      },
+      "feedback": {
+        "title": "Report a barrier",
+        "text": "If there is something you cannot use, or you think it does not conform, tell us. To fix it, it helps to know:",
+        "items": [
+          "Which page you were on and what you wanted to do.",
+          "What happened.",
+          "Which browser and, if you use one, which screen reader or other assistive technology."
+        ],
+        "issue": "Report a barrier on GitHub (with a template)",
+        "simidat": "Website of the SIMIDAT group of the University of Jaén, to write to us",
+        "response": "We will answer as soon as possible and tell you whether there is a way to do what you needed while we fix it."
+      },
+      "preparation": {
+        "title": "How it was prepared and when it is reviewed",
+        "items": [
+          "Method: self-assessment by the development team.",
+          "Automated tests on every change: axe with WCAG 2.2 A and AA on every page and on the states that appear when using them (in the light and dark themes and with the accessibility settings), keyboard-only walkthroughs, pages at 320 px wide and with text at 200 %, and the accessibility rules of the linter.",
+          "Pending: the manual review with screen readers (NVDA, VoiceOver and TalkBack) and tests with people with different disabilities."
+        ],
+        "review": "This statement is reviewed every year and with each major version of the application."
+      },
+      "new-tab": "(opens in a new tab)"
     }
   },
   "generator": {
@@ -3077,7 +3598,10 @@
       "features": "Features",
       "open-visor": "Open visor",
       "close-visor": "Close visor",
-      "history": "Final values (validation)"
+      "history": "Final values (validation)",
+      "window": "Window",
+      "difference": "Differencing",
+      "batch-size": "Batch size"
     }
   },
   "hr": {
@@ -3136,7 +3660,8 @@
     "kernel-size": "Kernel {{value}}",
     "filters": "{{value}} filters",
     "pool-size": "Pool {{value}}",
-    "strides": "Stride {{value}}"
+    "strides": "Stride {{value}}",
+    "description": "Network layers, from input to output"
   },
   "session": {
     "export": "Export settings",
@@ -4285,6 +4810,86 @@
             }
           }
         }
+      },
+      "5-time-series": {
+        "common": {
+          "intro": {
+            "title": "Train your network with a time series",
+            "content": "On this page you prepare a series, design a network that predicts each value from the previous ones, train it and see how it forecasts what it did not see. I explain each part in order. You can move on with Next, jump to a step with the selector, mute the voice or let the guide advance on its own."
+          },
+          "session": {
+            "title": "Save the configuration",
+            "content": "With these buttons you save the network, the hyperparameters and the preparation (the window and whether to difference) to a file, and load it another day or share it. The data and the trained models are not saved."
+          },
+          "manual": {
+            "title": "How it works",
+            "content": "If it is your first time, open this part: it explains windows, why the test part is the end of the series, scaling, one-step and all-at-once forecasts, and what the network is compared with."
+          },
+          "dataset-info": {
+            "title": "The series",
+            "content": "Here the series is described: where the data come from and what makes it special, such as a trend, seasons or cycles."
+          },
+          "process": {
+            "title": "Upload your series",
+            "content": "Drop your file here and choose the column with the values and, if it has one, the date column: it is used to sort the rows and to date the forecasts."
+          },
+          "dataset": {
+            "title": "The data",
+            "content": "The whole series, in order. The dashed line marks where the test part starts: the end of the series, which the network will not see while training."
+          },
+          "preparation": {
+            "title": "The preparation",
+            "content": "The window is how many previous values the network looks at; it should cover a season. The test part is the percentage set aside at the end. Differencing makes it learn changes instead of values, and the season is used to compare with the seasonal forecast."
+          },
+          "windows": {
+            "title": "What the network learns",
+            "content": "This is how the series becomes examples: each row is the previous values (the window) and the next one, which is what it has to predict. Change the window or difference and see how they change."
+          },
+          "layers": {
+            "title": "The layers",
+            "content": "The network ends in one linear neuron, the value it predicts. Before it you can add Dense layers, which receive the whole window, or recurrent ones (SimpleRNN, LSTM, GRU), which read it value by value and go first."
+          },
+          "layers-add": {
+            "title": "Adding and removing layers",
+            "content": "With these buttons you add a layer at the start or before the output. To remove one, or change its type, neurons or activation, open it in the list."
+          },
+          "learning-rate": {
+            "title": "Learning rate",
+            "content": "How much the weights are corrected at each step. High, it learns fast but may not settle; low, it is more stable but needs more epochs."
+          },
+          "epochs": {
+            "title": "Epochs",
+            "content": "How many times the network sees all the training windows. With few it has no time to learn; with too many it may memorise the training data. The model curves tell you."
+          },
+          "batch-size": {
+            "title": "Batch size",
+            "content": "How many windows the network sees before correcting its weights. With small batches it corrects more often and with more noise; with large ones, each epoch is faster."
+          },
+          "optimizer": {
+            "title": "Optimizer",
+            "content": "The method that adjusts the weights from the error. Adam, the one selected, usually works well out of the box."
+          },
+          "loss": {
+            "title": "Loss function",
+            "content": "How the error is measured while training. Mean squared error penalises large errors more; mean absolute error treats all errors the same."
+          },
+          "train": {
+            "title": "Train",
+            "content": "When you press it, the network is trained with the training windows and validated with the test ones every epoch. You can stop it whenever you want: it keeps what it has learned."
+          },
+          "models": {
+            "title": "Trained models",
+            "content": "Each training adds a row with its preparation, its network and its error on the test part, one step ahead and all at once. The best one is marked. Below, its training curves, to compare them."
+          },
+          "predict": {
+            "title": "The forecast",
+            "content": "Here you see what the chosen model forecasts on the test part, one step ahead or all at once, its error compared with repeating the last value or the last season, and what comes after the last value."
+          },
+          "end": {
+            "title": "Let’s forecast!",
+            "content": "You now know the page. Try another window, differencing or an LSTM layer, and compare: what matters is that the network beats the simple forecasts on what it did not see."
+          }
+        }
       }
     },
     "glossary": {
@@ -4360,6 +4965,74 @@
         "title": "Your turn",
         "content": "Search for a term you do not know or scroll down to the activation functions and watch their animations. You can open this guide again whenever you want with the Guide button."
       }
+    },
+    "5-time-series": {
+      "common": {
+        "intro": {
+          "title": "A time series model",
+          "content": "On this page you try a trained network that forecasts the next values of a series from the previous ones. You will see how it forecasts the end of the series, which it did not see while training, whether it beats the simplest forecasts and what comes next."
+        },
+        "model": {
+          "title": "The model",
+          "content": "The model card: how it forecasts the end of the series, which it did not see while training, compared with repeating the previous value or the one a season ago. Below, the description of the series."
+        },
+        "model-summary": {
+          "title": "Model summary",
+          "content": "This button opens the summary of the network: its layers, how many neurons each one has and how many weights it adjusted while training. Below are the .n4l package, to download it, and the link to train your own network with this series."
+        },
+        "dataset": {
+          "title": "The data",
+          "content": "The series as it is: one row per date, with the value that is predicted highlighted."
+        },
+        "dataset-chart": {
+          "title": "The series",
+          "content": "In this tab you see it in a chart. The dashed line marks where the test part starts, which the network did not see while training."
+        },
+        "dataset-windows": {
+          "title": "Prepared for the network",
+          "content": "Here you see how the series was prepared: how many previous values the network receives (the window), how they are scaled and the first examples it learned with."
+        },
+        "instances": {
+          "title": "Values of the series",
+          "content": "With this selector you choose a value of the series and the form is filled with the previous ones. Those marked «test» belong to the part the network did not see."
+        },
+        "form": {
+          "title": "The form",
+          "content": "These are the previous values, one per date: what the network uses to predict. You can change them to see how the forecast changes."
+        },
+        "vector": {
+          "title": "What the network receives",
+          "content": "This is how they reach the network: scaled between 0 and 1 with the training minimum and maximum."
+        },
+        "predict": {
+          "title": "Predict",
+          "content": "When you press this button, the network receives the scaled window and predicts the next value."
+        },
+        "result": {
+          "title": "The result",
+          "content": "Here the predicted value appears. If you did not change the form, also the actual value and the error. Below, the network input step by step."
+        },
+        "mode": {
+          "title": "One step or all at once",
+          "content": "One step ahead, each test value is predicted with the real values before it. All at once, from the end of training, each value is predicted with the ones already predicted: that is how the future is forecast, and errors add up. With «Close-up» you see only the test part."
+        },
+        "chart": {
+          "title": "The forecast",
+          "content": "In grey, the real series; in orange, what the network predicts on the test part; and in purple, what comes next. You can also add the forecast on the training data."
+        },
+        "errors": {
+          "title": "Better than the simplest thing?",
+          "content": "The network's average error (MAE and RMSE, in the units of the series) next to repeating the last value and repeating the last season. Below, whether the network beats them and whether it is off by much more on the test data than on the training data."
+        },
+        "future": {
+          "title": "What comes next",
+          "content": "Choose how many values you want to forecast after the last one: they are forecast one after another, each with the ones already predicted, so the further away, the less reliable."
+        },
+        "end": {
+          "title": "Done!",
+          "content": "You now know how to read a time series forecast. To train your own network with this series, use the «Train your network with this series» button."
+        }
+      }
     }
   },
   "loading-status": {
@@ -4396,7 +5069,7 @@
       "text": "Open a .n4l file (a model with its data and texts): it is saved in this browser and appears here.",
       "drop": "Drag a .n4l file here or click to choose it",
       "files": ".n4l file",
-      "version": "Version {{version}} · {{size}}",
+      "version": "Version {{version}}, {{size}}",
       "remove": "Remove",
       "remove-title": "Remove “{{name}}” from this browser",
       "imported": "“{{name}}” is ready: open it from its card.",
@@ -4404,13 +5077,79 @@
       "open-title": "Open a .n4l file",
       "how": "Where do they come from? On the page of each pre-trained model, “Download .n4l” gives you its package: the model, its data and its texts. After training, each model in the table is downloaded the same way, with the dataset you trained it with. You can also open one someone sends you: it only describes what it contains and how to use it, it has no code.",
       "saved": "Saved in this browser",
-      "empty": "None yet: open a .n4l file above."
+      "empty": "None yet: open a .n4l file above.",
+      "remove-confirm": "«{{name}}» will be removed from this browser; to use it again you will have to open its .n4l file again."
     },
     "download-trained-title": "Download this model in a .n4l file, with the dataset, its preprocessing and its texts: open it later in “.n4l packages”",
     "metrics": {
       "title": "With data it has not seen",
       "text": "With the 20% of the dataset set aside when training it, its average error is {{mae}}; always predicting the mean, the error would be {{baseline}}. R²: {{r2}} (1 would be always right; 0, the same as predicting the mean).",
       "no-better": "It does not predict better than always giving the mean: with these data not much more can be known."
+    }
+  },
+  "pagination": {
+    "label": "Table pages",
+    "first": "First page",
+    "previous": "Previous page",
+    "next": "Next page",
+    "last": "Last page",
+    "page": "Page {{page}}"
+  },
+  "skip-to-content": "Skip to content",
+  "modal": {
+    "close": "Close"
+  },
+  "model-summary-table": {
+    "layer": "Layer",
+    "output-shape": "Output shape",
+    "params": "Parameters",
+    "total": "Total parameters (weights adjusted during training)",
+    "trainable": "Of which trainable",
+    "batch-note": "“—” in the output shape is the number of examples that go in at once (the batch)."
+  },
+  "chart-data": {
+    "show": "View the data",
+    "rows": "rows {{from}}–{{to}} of {{total}}",
+    "columns": {
+      "variable": "Variable",
+      "value": "Value",
+      "rows": "Rows",
+      "percent": "Percentage",
+      "bin": "interval centre",
+      "group": "Group",
+      "lower": "Lower fence",
+      "q1": "First quartile",
+      "median": "Median",
+      "q3": "Third quartile",
+      "upper": "Upper fence",
+      "mean": "Mean"
+    }
+  },
+  "page-intro": {
+    "train": {
+      "text": "Here you design a neural network and train it with the chosen dataset. You can leave everything as it is and press “Train”.",
+      "steps": [
+        "Look at the dataset: which columns it has and what has to be predicted.",
+        "Change the layers and the hyperparameters, if you want.",
+        "Press “Train” and watch how the network learns.",
+        "Try the model with examples and see what it pays attention to."
+      ]
+    },
+    "review": {
+      "text": "This model is already trained: here you try it with examples and see what it pays attention to.",
+      "steps": [
+        "Read what the model does and which data it was trained with.",
+        "Choose an example or type the values yourself.",
+        "Look at the prediction and, if you want, its explanation."
+      ]
+    },
+    "detect": {
+      "text": "This model looks for things in an image. Turn on the camera or upload a photo, and the model will mark what it finds.",
+      "steps": [
+        "Turn on the camera or upload a photo.",
+        "Look at what the model marks (it is also said in text).",
+        "If you want, ask for the explanation of what it found."
+      ]
     }
   }
 }

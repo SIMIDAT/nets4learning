@@ -42,7 +42,7 @@ export const lstsq = (
 
   // Nets4Learning: X'WX y X'WY en JavaScript, sin pasar por tensores. Antes se construía W como matriz diagonal m×m
   // (con 500 muestras, 250 000 elementos), se multiplicaba con TF.js, se leía con arraySync (que detiene el hilo
-  // principal hasta que la GPU termina) y no se liberaba ningún tensor. Con W diagonal basta O(m·n²).
+  // principal hasta que la GPU termina) y no se liberaba ningún tensor. Con W diagonal basta O(m × n²).
   const X = x.toArray() as number[][];
   const Y = y.toArray() as number[][];
   const W = w.toArray() as number[][];

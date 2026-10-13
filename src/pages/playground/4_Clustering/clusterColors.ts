@@ -1,4 +1,7 @@
-/** Un color por grupo (los mismos en todas las gráficas y tablas del agrupamiento) */
-export const CLUSTER_COLORS = ['#0d6efd', '#fd7e14', '#198754', '#d63384', '#6f42c1', '#20c997', '#dc3545', '#ffc107', '#0dcaf0', '#6c757d']
+import { categoryColor, type ChartColor_t } from '@core/chartColors'
+import type { Theme_t } from '@core/theme'
 
-export const clusterColor = (cluster: number) => CLUSTER_COLORS[cluster % CLUSTER_COLORS.length]
+/** Un color por grupo (los mismos en todas las gráficas y tablas del agrupamiento), en el tono del tema */
+const CLUSTER_ORDER: readonly ChartColor_t[] = ['blue', 'orange', 'green', 'pink', 'purple', 'teal', 'red', 'yellow', 'cyan', 'gray']
+
+export const clusterColor = (cluster: number, theme: Theme_t) => categoryColor(CLUSTER_ORDER, cluster, theme)

@@ -16,7 +16,7 @@ export default function N4LSummary({ title, info = <></>, children = <></> }: N4
   return (
     <details onToggle={(event) => event.currentTarget.open && setOpened(true)}>
       <summary className={'n4l-summary-1-25'}>{title}</summary>
-      <main>{opened && <Suspense fallback={<WaitingPlaceholder />}>{info} {children}</Suspense>}</main>
+      <div>{opened && <Suspense fallback={<WaitingPlaceholder />}>{info} {children}</Suspense>}</div>
     </details>
   )
 }

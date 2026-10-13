@@ -7,14 +7,26 @@ import { scrollAction, type Place_t, type ScrollAction_t } from '@components/nav
 // la anterior y parece que no se ha cambiado. Las navegaciones dentro de la misma página (secciones, ?task=…) no son
 // cosa de este componente: las lleva cada página.
 
-/** Lo que se espera a que la página (que se carga aparte) tenga el alto o la sección a la que se va */
-const WAIT_MS = 3000
+/**
+ * Lo que se espera a que la página (que se carga aparte) tenga el alto o la sección a la que se va. La primera vez su
+ * código y sus librerías pueden tardar: si quien usa la página se mueve antes, se deja de esperar
+ */
+const WAIT_MS = 15_000
 
 const scrollToY = (top: number) => window.scrollTo({ top, left: 0, behavior: 'instant' })
 
+/**
+ * El <main> de la página que se ve. Mientras llega el código de la nueva, React deja la anterior oculta (display: none)
+ * y enseña el aviso de carga: esa no cuenta
+ */
+const visibleMain = () => Array.from(document.querySelectorAll('main')).find((main) => main.getClientRects().length > 0) ?? null
+
+/** La página nueva ya está: se ve su <main> y tiene su título */
+const isPageReady = () => visibleMain()?.querySelector('h1') != null
+
 /** El foco, al título de la página nueva (los lectores de pantalla la anuncian), si la página no lo ha puesto en otro sitio */
 function focusPage(target: HTMLElement | null) {
-  const main = document.querySelector('main')
+  const main = visibleMain()
   if (main === null || main.contains(document.activeElement)) return
   const element = target ?? main.querySelector<HTMLElement>('h1') ?? main
   if (!element.hasAttribute('tabindex')) element.setAttribute('tabindex', '-1')
@@ -69,20 +81,24 @@ export default function N4LScrollManager() {
       if (isCancelled) return
       const isLate = performance.now() - startedAt > WAIT_MS
       if (action.type === 'hash') {
-        const element = document.getElementById(action.id)
+        // Una sección (su id) o algo marcado con data-hash-target: las pestañas de /settings, que ya se ven al cargar la
+        // página. Con ellas la página se queda arriba, con su título, y el foco va a la pestaña. No llevan el id del
+        // ancla para que el navegador no baje solo hasta ellas al cargar
+        const element = document.getElementById(action.id) ?? document.querySelector<HTMLElement>(`[data-hash-target="${CSS.escape(action.id)}"]`)
         if (element !== null) {
-          element.scrollIntoView({ block: 'start', behavior: 'instant' })
+          if (element.dataset.hashTarget !== undefined) scrollToY(0)
+          else element.scrollIntoView({ block: 'start', behavior: 'instant' })
           if (isPageChange) focusPage(element)
           return
         }
       } else if (action.type === 'restore') {
         const maxY = document.documentElement.scrollHeight - window.innerHeight
-        if (maxY >= action.y || isLate) {
+        if ((maxY >= action.y && isPageReady()) || isLate) {
           scrollToY(Math.min(action.y, Math.max(0, maxY)))
           focusPage(null)
           return
         }
-      } else if (document.querySelector('main') !== null || isLate) {
+      } else if (isPageReady() || isLate) {
         focusPage(null)
         return
       }

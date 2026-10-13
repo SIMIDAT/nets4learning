@@ -265,7 +265,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       // El entrenamiento ya lo ha descargado: sus imágenes de test pasan al selector
       setTestDataset(await iModelInstance.LOAD_DATASET())
       training.complete()
-      await alertHelper.alertSuccess(t('alert.model-train-success'))
+      // Sin esperar a que se cierre el aviso: el botón de entrenar vuelve a estar disponible enseguida
+      void alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
     } finally {
@@ -327,7 +328,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
   const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => {
     if (testDataset === null || iModelInstance === null) return []
-    return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index} · ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
+    return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index}: ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
   }, [testDataset, iModelInstance])
 
   /** Pinta en el lienzo una imagen de test y la clasifica tal cual (sin pasar por el lienzo: es la entrada exacta) */
@@ -459,7 +460,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     <>
       {/* MANUAL */}
       <N4LSectionLayout steps={steps}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.3'} />} guideId={'train.image-classification.' + dataset} guideSteps={guideSteps}
+        <N4LPageHeader intro={'train'} title={<Trans i18nKey={'modality.3'} />} guideId={'train.image-classification.' + dataset} guideSteps={guideSteps}
           getSession={currentSession} onImport={importSession} className={'mt-3'} />
 
         <N4LDivider i18nKey={'hr.information'} steps={steps} />
@@ -469,7 +470,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
             <Accordion>
               <Accordion.Item eventKey={'manual'} data-guide={'manual'}>
-                <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                   <Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} />
                 </Accordion.Header>
                 <Accordion.Body>
@@ -532,10 +533,11 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           <Row className={'mt-3'}>
             <Col data-guide={'train'}>
               {/* BLOCK  BUTTON */}
-              <N4LTrainButton isTraining={training.isTraining}
+              <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                 progress={training.progress}
                 isStopping={training.isStopping}
-                onStop={training.stop}>
+                onStop={training.stop}
+                resultSection={'hr.generated-models'}>
                 <Trans i18nKey={prefix + 'models.button-submit'} />
               </N4LTrainButton>
               {!training.isTraining &&

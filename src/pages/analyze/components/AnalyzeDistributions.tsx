@@ -4,7 +4,9 @@ import { Trans, useTranslation } from 'react-i18next'
 import type { Data } from 'plotly.js'
 
 import { binCenters, binCounts, boxStats, countValues, histogram, isMissing, profileColumn, valueCounts, type ColumnProfile_t, type ProblemType_t } from '@core/dataframe/eda'
-import { classColor } from '@core/dataframe/plotlyTheme'
+import { classColor, targetColor } from '@core/dataframe/plotlyTheme'
+import { useTheme } from '@hooks/useTheme'
+import { barTracesTable, boxTracesTable } from '@components/chart/plotTables'
 import N4LPlot from '@components/dataframe/N4LPlot'
 
 const BINS = [0, 10, 20, 30, 50]
@@ -25,6 +27,7 @@ type AnalyzeDistributionsProps = {
 export default function AnalyzeDistributions({ profiles, columnValues, numbers, target, problem, classes, variable, onVariable }: AnalyzeDistributionsProps) {
   const prefix = 'pages.dataframe.distributions.'
   const { t, i18n } = useTranslation()
+  const theme = useTheme()
   const format = useMemo(() => new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 3 }), [i18n.language])
   const [byClass, setByClass] = useState(true)
   const [bins, setBins] = useState(0)
@@ -54,8 +57,8 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
     const nums = profile ? numbers.get(profile.name) : undefined
     if (!profile || profile.kind !== 'numeric' || !nums) return null
     const groups = canSplit && byClass
-      ? rowsByClass.map((rows, index) => ({ name: classes[index], color: classColor(index), values: rows.map((row) => nums[row]) }))
-      : [{ name: profile.name, color: profile.name === target ? 'rgba(214, 51, 132, 0.75)' : classColor(0), values: nums }]
+      ? rowsByClass.map((rows, index) => ({ name: classes[index], color: classColor(index, theme), values: rows.map((row) => nums[row]) }))
+      : [{ name: profile.name, color: profile.name === target ? targetColor(theme) : classColor(0, theme), values: nums }]
     // Los mismos intervalos para todas las clases, para poder compararlas
     const { edges } = histogram(nums, bins > 0 ? bins : undefined)
     const { centers, width } = binCenters(edges)
@@ -82,7 +85,7 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
       ]
     })
     return { distribution, box }
-  }, [profile, numbers, canSplit, byClass, rowsByClass, classes, target, bins])
+  }, [profile, numbers, canSplit, byClass, rowsByClass, classes, target, bins, theme])
 
   if (!profile) return null
   const values = columnValues.get(profile.name) ?? []
@@ -99,9 +102,9 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
     distribution = split
       ? rowsByClass.map((rows, index) => {
         const counts = countValues(rows.map((row) => values[row]))
-        return { type: 'bar', name: classes[index], x: categories, y: categories.map((value) => counts.get(value) ?? 0), marker: { color: classColor(index) } } as Data
+        return { type: 'bar', name: classes[index], x: categories, y: categories.map((value) => counts.get(value) ?? 0), marker: { color: classColor(index, theme) } } as Data
       })
-      : [{ type: 'bar', name: profile.name, x: categories, y: frequencies.map(({ count }) => count), marker: { color: profile.name === target ? 'rgba(214, 51, 132, 0.75)' : classColor(0) } } as Data]
+      : [{ type: 'bar', name: profile.name, x: categories, y: frequencies.map(({ count }) => count), marker: { color: profile.name === target ? targetColor(theme) : classColor(0, theme) } } as Data]
   }
 
   return <>
@@ -111,7 +114,7 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
           <Form.Label className={'small fw-semibold mb-1'}>{t(prefix + 'variable')}</Form.Label>
           <Form.Select size={'sm'} value={profile.name} onChange={(e) => onVariable(e.target.value)}>
             {profiles.map(({ name, kind }) => (
-              <option key={name} value={name}>{name} · {t('pages.dataframe.variables.kind-' + kind)}</option>
+              <option key={name} value={name}>{name} ({t('pages.dataframe.variables.kind-' + kind)})</option>
             ))}
           </Form.Select>
         </Form.Group>
@@ -143,14 +146,20 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
             bargap    : 0.05,
             xaxis     : { title: { text: profile.name }, type: profile.kind === 'categorical' ? 'category' : undefined },
             yaxis     : { title: { text: t(prefix + 'count') } },
-          }} />
+          }}
+          table={barTracesTable(distribution, profile.kind === 'numeric' ? `${profile.name} (${t('chart-data.columns.bin')})` : profile.name, t(prefix + 'count'))} />
         <p className={'small text-body-secondary mb-0'}>{t(prefix + (profile.kind === 'numeric' ? 'help-histogram' : 'help-frequencies'))}</p>
       </Col>
       {box &&
         <Col xl={5}>
           <h4 className={'h6'}>{t(prefix + 'boxplot')}</h4>
           <N4LPlot data={box} height={340} label={t(prefix + 'boxplot')}
-            layout={{ showlegend: false, xaxis: { title: { text: profile.name } }, yaxis: { type: 'category', automargin: true } }} />
+            layout={{ showlegend: false, xaxis: { title: { text: profile.name } }, yaxis: { type: 'category', automargin: true } }}
+            table={boxTracesTable(box, {
+              group : t('chart-data.columns.group'), lower : t('chart-data.columns.lower'), q1    : t('chart-data.columns.q1'),
+              median: t('chart-data.columns.median'), q3    : t('chart-data.columns.q3'), upper : t('chart-data.columns.upper'),
+              mean  : t('chart-data.columns.mean'),
+            })} />
           <p className={'small text-body-secondary mb-0'}>{t(prefix + 'help-boxplot')}</p>
         </Col>}
     </Row>
@@ -173,7 +182,7 @@ export default function AnalyzeDistributions({ profiles, columnValues, numbers, 
           <tbody>
             {perClass.map(({ label, profile: classProfile }, index) => (
               <tr key={label}>
-                <th scope={'row'}><span className={'n4l-eda-swatch'} style={{ backgroundColor: classColor(index) }} />{label}</th>
+                <th scope={'row'}><span className={'n4l-eda-swatch'} style={{ backgroundColor: classColor(index, theme) }} />{label}</th>
                 <td className={'text-end'}>{format.format(classProfile.count)}</td>
                 {(['mean', 'std', 'min', 'median', 'max'] as const).map((stat) => (
                   <td key={stat} className={'text-end'}>{classProfile.numeric ? format.format(classProfile.numeric[stat]) : '—'}</td>

@@ -62,7 +62,7 @@ describe('Datasets — enlaces de descarga', () => {
     const lookup = (translation: unknown, key: string) =>
       key.split('.').reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], translation)
     const keys = [
-      ...(['tabular-classification', 'regression', 'image-classification', 'clustering'] as const).flatMap((task) =>
+      ...(['tabular-classification', 'regression', 'image-classification', 'clustering', 'time-series'] as const).flatMap((task) =>
         (TASK_DATASET_OPTIONS as Record<string, TaskOption_t[]>)[task].filter(({ info }) => info !== undefined)
           .map(({ value, summary }) => summary ?? `datasets.summary.${task}.${value}`)),
       ...Object.values(EXTRA_DATASETS).flat().map(({ file, summary }) => summary ?? `datasets.summary.extra.${datasetKey(file)}`),

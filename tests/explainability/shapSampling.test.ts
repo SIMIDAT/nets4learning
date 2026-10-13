@@ -89,7 +89,7 @@ describe('shapSampling — utilidades de muestreo para explicabilidad SHAP', () 
   })
 
   describe('minShapSamples', () => {
-    test('garantiza al menos 2·segmentos + 2 muestras', () => {
+    test('garantiza al menos 2 × segmentos + 2 muestras', () => {
       expect(minShapSamples(36, 50)).toBe(74)
       expect(minShapSamples(14, 150)).toBe(150)
     })

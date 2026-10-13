@@ -11,7 +11,7 @@ import GlossaryActivationPlot from './GlossaryActivationPlot'
  * Una fórmula, que en pantallas estrechas puede no caber y desplazarse en horizontal: entonces se puede enfocar, para
  * recorrerla también con el teclado (solo entonces: con todas, habría decenas de paradas al tabular).
  */
-function GlossaryFormula({ children }: { children: string }) {
+function GlossaryFormula({ label, children }: { label: string, children: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [isScrollable, setIsScrollable] = useState(false)
   useEffect(() => {
@@ -28,7 +28,7 @@ function GlossaryFormula({ children }: { children: string }) {
     return () => observer.disconnect()
   }, [])
   return (
-    <div ref={ref} className={'n4l-glossary-formula'} tabIndex={isScrollable ? 0 : undefined}>
+    <div ref={ref} className={'n4l-glossary-formula'} {...(isScrollable && { tabIndex: 0, role: 'region', 'aria-label': label })}>
       <N4LLatex>{children}</N4LLatex>
     </div>
   )
@@ -70,6 +70,12 @@ function ConfusionLegend() {
 export default function GlossaryTerm({ term, headingLevel = 3 }: { term: GlossaryTerm_t, headingLevel?: 3 | 4 }) {
   const { t } = useTranslation()
   const title = termTitle(term, t)
+  // El nombre de cada fórmula, distinto en cada término (y numerado si tiene varias)
+  const formulaCount = (term.math ?? []).filter((item) => typeof item === 'string').length
+  const formulaLabel = (index: number) => {
+    const number = (term.math ?? []).slice(0, index).filter((item) => typeof item === 'string').length + 1
+    return t('pages.glossary.formula', { term: title }) + (formulaCount > 1 ? ` (${number})` : '')
+  }
   const characteristics = termCharacteristics(term, t)
   const activation = term.activation === undefined ? undefined : ACTIVATION_FUNCTIONS[term.activation]
   const Heading = headingLevel === 3 ? 'h3' : 'h4'
@@ -90,7 +96,7 @@ export default function GlossaryTerm({ term, headingLevel = 3 }: { term: Glossar
         {term.math !== undefined &&
           <div className={'n4l-glossary-math'}>
             {term.math.map((item, index) => typeof item === 'string'
-              ? <GlossaryFormula key={index}>{item}</GlossaryFormula>
+              ? <GlossaryFormula key={index} label={formulaLabel(index)}>{item}</GlossaryFormula>
               : <div key={index} className={'small text-body-secondary'}><N4LLatex>{t(item.noteKey)}</N4LLatex></div>)}
           </div>}
         {term.confusionLegend && <ConfusionLegend />}

@@ -53,7 +53,7 @@ describe('layersGuide: un paso de la guía por cada capa de la red de imágenes'
     const layers: ImageLayer_t[] = [{ ...LAYERS[0], inputShape: [32, 32, 3], filters: 32 }, ...LAYERS.slice(1)]
     const steps = layersGuide(t, language, 'IMAGE-CIFAR10', layers)
     for (const { title, content } of steps) expect(title + content).not.toMatch(/{{|}}|guide\.train/)
-    // 32×32 en color, 3 mapas; salen 32 mapas de 30×30, con 3·3·3·32 + 32 = 896 pesos
+    // 32×32 en color, 3 mapas; salen 32 mapas de 30×30, con 3 × 3 × 3 × 32 + 32 = 896 pesos
     expect(steps[0].content).toContain('32×32')
     expect(steps[0].content).toContain('30×30')
     expect(steps[0].content).toContain('896')
@@ -64,7 +64,7 @@ describe('layersGuide: un paso de la guía por cada capa de la red de imágenes'
   test('los pesos con el formato del idioma, y una capa que no encaja lo dice', async () => {
     const t = await translator('es')
     const steps = layersGuide(t, 'es', 'IMAGE-MNIST', LAYERS)
-    // La segunda convolución, 3·3·16·32 + 32 pesos; la densa de 64 recibe 3×3×32 = 288 valores: 288·64 + 64
+    // La segunda convolución, 3 × 3 × 16 × 32 + 32 pesos; la densa de 64 recibe 3×3×32 = 288 valores: 288 × 64 + 64
     expect(steps[2].content).toContain('4640 pesos')
     expect(steps[6].content).toContain('288 valores')
     expect(steps[6].content).toContain('18.496 pesos')

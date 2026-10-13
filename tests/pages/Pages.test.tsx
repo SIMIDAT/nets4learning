@@ -124,6 +124,24 @@ describe('Tests for Pages', () => {
     expect(dialog).toHaveTextContent('datasets.clustering.examples-text')
   })
 
+  test('Datasets: las series temporales se entrenan, se analizan y se descargan', async () => {
+    const { getByTestId, getByText, findByRole } = render(<MemoryRouter initialEntries={['/datasets?task=time-series']}><Datasets /></MemoryRouter>)
+    expect(getByText('datasets.time-series.examples-title')).toBeInTheDocument()
+    for (const key of ['AIRLINE-PASSENGERS', 'MELBOURNE-TEMPERATURES', 'SUNSPOTS']) {
+      expect(getByTestId('Test-Dataset-' + key)).toHaveTextContent(`n4l-${key.toLowerCase()}:tasks.time-series.summary`)
+      expect(getByTestId('Test-DatasetTrain-' + key)).toHaveAttribute('href', '/playground/time-series/dataset/' + key)
+      expect(getByTestId('Test-DatasetModel-' + key)).toHaveAttribute('href', '/playground/time-series/model/' + key)
+    }
+    expect(getByTestId('Test-DatasetAnalyze-airline-passengers')).toHaveAttribute('href', '/analyze?dataset=airline-passengers')
+    // Sus filas son meses o días, y no tienen columnas de entrada: se predicen con sus valores anteriores
+    expect(getByTestId('Test-Dataset-AIRLINE-PASSENGERS')).toHaveTextContent('pages.menu.info.series.month, pages.menu.info.target')
+    expect(getByTestId('Test-Dataset-MELBOURNE-TEMPERATURES')).toHaveTextContent('pages.menu.info.series.day, pages.menu.info.target')
+    fireEvent.click(getByTestId('Test-DatasetInfo-SUNSPOTS'))
+    const dialog = await findByRole('dialog')
+    expect(within(dialog).getAllByRole('tab').map((tab) => tab.textContent))
+      .toEqual(['datasets.dataset-details', 'datasets.variables.title', 'datasets.data.title', 'datasets.data.describe'])
+  })
+
   test('Datasets: la pestaña de variables enseña las columnas del CSV', async () => {
     const { getByTestId, findByRole, findByTestId } = render(<MemoryRouter><Datasets /></MemoryRouter>)
     fireEvent.click(getByTestId('Test-DatasetInfo-datasets/hepatitis-c.csv'))

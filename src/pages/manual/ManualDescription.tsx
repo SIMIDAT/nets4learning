@@ -8,9 +8,9 @@ export default function ManualDescription() {
     <>
       <Card border={'primary'}>
         <Card.Header>
-          <h3>
+          <h2 className={'h3'}>
             <Trans i18nKey={'pages.manual.app.title'} />
-          </h3>
+          </h2>
         </Card.Header>
         <Card.Body>
           <Card.Text>

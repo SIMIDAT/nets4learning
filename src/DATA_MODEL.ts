@@ -2,6 +2,7 @@ import { MAP_TC_CLASSES } from '@pages/playground/0_TabularClassification/models
 import { MAP_LR_CLASSES } from '@pages/playground/1_Regression/models'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
+import { MAP_TS_CLASSES } from '@pages/playground/5_TimeSeries/models'
 import type { ModelRegistry } from '@core/models/modelRegistry'
 
 import { TASKS, UPLOAD, type TASKS_TYPE_K, type TASKS_TYPE_V } from '@/TASKS'
@@ -23,6 +24,7 @@ const TASK_MODEL_REGISTRY: Record<string, ModelRegistry<MenuModel_t>> = {
   [TASKS.REGRESSION]            : MAP_LR_CLASSES,
   [TASKS.OBJECT_DETECTION]      : MAP_OD_CLASSES,
   [TASKS.IMAGE_CLASSIFICATION]  : MAP_IC_CLASSES,
+  [TASKS.TIME_SERIES]           : MAP_TS_CLASSES,
 }
 
 export {

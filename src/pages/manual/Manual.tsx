@@ -9,6 +9,9 @@ import N4LDivider from '@components/divider/N4LDivider'
 import N4LMarkdownDownloader from '@components/markdown/N4LMarkdownDownloader'
 import ManualDescription from '@pages/manual/ManualDescription'
 
+// En una constante: jsx-a11y no sabe leer import.meta dentro de las props
+const VITE_PATH = import.meta.env.VITE_PATH
+
 const DEFAULT_LAYOUT = [
   {
     i18n_hr: 'hr.tutorial-00-tabular-classification',
@@ -127,7 +130,7 @@ export default function Manual() {
               <N4LDivider i18nKey={'hr.tasks'} />
               <Accordion className={'mt-3'}>
                 <Accordion.Item eventKey={'manual-0-tabular-classification'}>
-                  <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                  <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                     <Trans i18nKey={'pages.manual.0-tabular-classification.title'} />
                   </Accordion.Header>
                   <Accordion.Body>
@@ -165,7 +168,7 @@ export default function Manual() {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={'manual-1-regression'}>
-                  <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                  <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                     <Trans i18nKey={'pages.manual.1-regression.title'} />
                   </Accordion.Header>
                   <Accordion.Body>
@@ -213,7 +216,7 @@ export default function Manual() {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={'manual-2-object-identification'}>
-                  <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                  <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                     <Trans i18nKey={'pages.manual.2-object-identification.title'} />
                   </Accordion.Header>
                   <Accordion.Body>
@@ -246,7 +249,7 @@ export default function Manual() {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey={'manual-3-image-classification'}>
-                  <Accordion.Header as={'h2'} className={'n4l-accordion-h2'}>
+                  <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
                     <Trans i18nKey={'pages.manual.3-image-classification.title'} />
                   </Accordion.Header>
                   <Accordion.Body>
@@ -286,13 +289,13 @@ export default function Manual() {
                         {files.map(({ key, file }, index_2) => {
                           return (
                             <Accordion.Item key={index_2} eventKey={key}>
-                              <Accordion.Header onClick={() => toggleAccordionActiveManual(key)} as={'h2'} className={'n4l-accordion-h2'}>
+                              <Accordion.Header onClick={() => toggleAccordionActiveManual(key)} as={'h3'} className={'n4l-accordion-h2'}>
                                 <Trans i18nKey={file.i18n_title} />
                               </Accordion.Header>
                               <Accordion.Body>
                                 <N4LMarkdownDownloader
-                                  base={`${import.meta.env.VITE_PATH}/docs/${i18n.language}/`}
-                                  fallbackBase={`${import.meta.env.VITE_PATH}/docs/en/`}
+                                  base={`${VITE_PATH}/docs/${i18n.language}/`}
+                                  fallbackBase={`${VITE_PATH}/docs/en/`}
                                   file_name={file.file_name}
                                 />
                               </Accordion.Body>

@@ -5,6 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 import stylistic from '@stylistic/eslint-plugin'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 export default defineConfig([
   globalIgnores(['dist', 'playwright-report', 'test-results']),
@@ -18,6 +19,8 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
+      // Accesibilidad del JSX (docs/accessibility.md): textos alternativos, nombres de los controles, ARIA válido…
+      jsxA11y.flatConfigs.recommended,
     ],
     languageOptions: {
       ecmaVersion: 2020,

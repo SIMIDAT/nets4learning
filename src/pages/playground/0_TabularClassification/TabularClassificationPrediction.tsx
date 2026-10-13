@@ -55,7 +55,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
     const data_processed = dataset_selected?.data_processed
     if (data_processed === undefined) return []
     const targets = dataset_selected.dataframe_original[data_processed.column_name_target].$data as Array<unknown>
-    return targets.map((target, index) => ({ value: index, label: `#${index} · ${String(target)}` }))
+    return targets.map((target, index) => ({ value: index, label: `#${index}: ${String(target)}` }))
   }, [dataset_selected])
 
   const handleChange_Row = (row_index: number) => {
@@ -111,6 +111,7 @@ export default function TabularClassificationPrediction(props: TabularClassifica
                 value={selectedRow}
                 onChange={handleChange_Row}
                 size={'sm'}
+                label={t('pages.playground.generator.example-from-dataset')}
                 placeholder={t(prefix + 'selector-entity')}
                 searchPlaceholder={t(prefix + 'search-entity')}
                 noResultsText={t(prefix + 'no-entity')}

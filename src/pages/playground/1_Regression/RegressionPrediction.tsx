@@ -98,7 +98,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
   const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => {
     if (dataProcessed === undefined) return []
     const targets = dataProcessed.dataframe_y.values as unknown[]
-    return targets.map((target, index) => ({ value: index, label: `#${index} · ${formatTarget(target)}` }))
+    return targets.map((target, index) => ({ value: index, label: `#${index}: ${formatTarget(target)}` }))
   }, [dataProcessed])
 
   // El valor real solo se enseña si el formulario sigue siendo la instancia elegida (sin editar)
@@ -121,7 +121,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
   return <>
     <Card>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
-        <h2><Trans i18nKey={prefix + 'title'} /></h2>
+        <h3><Trans i18nKey={prefix + 'title'} /></h3>
         <div className={'d-flex flex-wrap gap-2 n4l-card-header-controls'}>
           <div className={'n4l-instance-select'}>
             <N4LVirtualSelect options={instanceOptions}
@@ -129,6 +129,7 @@ export default function RegressionPrediction({ steps }: RegressionPredictionProp
               onChange={handleChange_Instance_Index}
               disabled={!showPrediction}
               size={'sm'}
+              label={t('pages.playground.generator.example-from-dataset')}
               placeholder={t(prefix + 'list-instances')}
               searchPlaceholder={t(prefixForm + 'search-entity')}
               noResultsText={t(prefixForm + 'no-entity')}

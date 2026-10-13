@@ -54,7 +54,7 @@ export default function DatasetDataFrame({ file, view }: DatasetDataFrameProps) 
 
   // Mientras llega el fichero pedido (también al cambiar de fichero)
   if (loaded === null || loaded.file !== file) return <WaitingPlaceholder />
-  if ('error' in loaded) return <p className={'text-danger mb-0'}>{t('datasets.data.error')}</p>
+  if ('error' in loaded) return <p className={'text-danger-emphasis mb-0'}>{t('datasets.data.error')}</p>
 
   const { dataframe } = loaded
   const target = defaultTarget(dataframe.columns, datasetVariables(file))

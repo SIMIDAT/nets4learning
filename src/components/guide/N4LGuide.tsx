@@ -1,11 +1,12 @@
 import './N4LGuide.css'
-import { createContext, useContext, useEffect, useEffectEvent, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useEffectEvent, useId, useMemo, useRef, useState } from 'react'
 import { Button, CloseButton, Form, ProgressBar } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 import { ArrowRepeat, PauseFill, PlayFill, Signpost2Fill, SkipStartFill, VolumeMuteFill, VolumeUpFill } from 'react-bootstrap-icons'
 import Joyride, { ACTIONS, EVENTS, STATUS, type CallBackProps, type Step, type TooltipRenderProps } from 'react-joyride'
 
 import { trackEvent } from '@core/analytics'
+import { announce } from '@core/a11y/announce'
 
 import { clearGuideProgress, readGuideProgress, saveGuideProgress, shouldRestore } from './guideProgress'
 import { setGuideVoice, updateGuideSettings, useGuideSettings } from './guideSettings'
@@ -89,6 +90,14 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
   // Lo que se lee: el título y la explicación, con un punto entre los dos si el título no termina ya en uno (o en "?")
   const text = step ? `${step.title}${/[.!?:。！？]$/u.test(step.title) ? '' : '.'} ${step.content}` : ''
 
+  // Al cerrar la guía, el foco vuelve a su botón (si estaba en el bocadillo, que desaparece): WCAG 2.4.3
+  const button_ref = useRef<HTMLButtonElement>(null)
+  const returnFocus = () => {
+    const active = document.activeElement
+    if (active !== null && active !== document.body && active.closest('.n4l-guide-tooltip') === null) return
+    window.requestAnimationFrame(() => button_ref.current?.focus())
+  }
+
   const start = (index: number) => {
     const navbar = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--n4l-navbar-height')) || 60
     setLayout({ arrow: getComputedStyle(document.body).backgroundColor, scrollOffset: navbar + 24 })
@@ -105,6 +114,7 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
     setStepIndex(0)
     setSpoken(null)
     cancel()
+    returnFocus()
     clearGuideProgress(id)
     trackEvent('guide_end', { guide_id: id, step: steps.length, steps: steps.length, outcome: 'completed' })
   }
@@ -114,6 +124,7 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
     setRun(false)
     setSpoken(null)
     cancel()
+    returnFocus()
     saveGuideProgress(id, index, false)
     trackEvent('guide_end', { guide_id: id, step: index + 1, steps: steps.length, outcome: 'closed' })
   }
@@ -189,6 +200,11 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
     }
   }, [run, voiceActive, text, stepIndex, repeats, speak, cancel])
 
+  // Cada paso, también para el lector de pantalla (que no lo oye por la voz de la guía si está desactivada): WCAG 4.1.3
+  useEffect(() => {
+    if (run && text !== '') announce(`${t('guide.step', { current: stepIndex + 1, total: steps.length })}. ${text}`)
+  }, [run, text, stepIndex, steps.length, t])
+
   // Avanzar solo: con voz, al terminar de leer el paso (y, por si el navegador no avisa, como mucho el doble de lo que
   // se tarda en leerlo); sin voz, lo que se tarda en leerlo. En el último paso se queda, y tras recargar espera a que
   // se toque la página (hasta entonces no se ha leído nada)
@@ -236,7 +252,7 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
   })), [steps])
 
   const button = (
-    <Button size={'sm'} variant={compact ? 'primary' : 'outline-primary'} className={compact ? 'text-nowrap' : undefined}
+    <Button ref={button_ref} size={'sm'} variant={compact ? 'primary' : 'outline-primary'} className={compact ? 'text-nowrap' : undefined}
       onClick={() => start(stepIndex)} title={t('guide.button-title')} data-testid={'Test-GuideButton'}>
       {compact && <Signpost2Fill className={'me-1'} aria-hidden={true} />}
       {/* Cerrada a medias, sigue desde ese paso; abierta, el paso ya se ve en el bocadillo */}
@@ -268,6 +284,42 @@ export default function N4LGuide({ id, steps, compact = false }: N4LGuideProps) 
 function GuideTooltip({ index, size, step, backProps, primaryProps, closeProps, tooltipProps }: TooltipRenderProps) {
   const controls = useContext(GuideControls)
   const { t } = useTranslation()
+  // El diálogo de la guía se llama como el título del paso (WCAG 4.1.2)
+  const titleId = useId()
+  // Al abrirse, el foco entra en el bocadillo, en el título del paso (se sigue leyendo desde ahí). Al cambiar de paso
+  // el bocadillo es el mismo y el foco se queda donde estaba (en «Siguiente»)
+  // react-joyride lo pinta oculto mientras lo coloca, y lo oculto no recibe el foco: se intenta hasta que se ve (1 s)
+  useEffect(() => {
+    let frame = 0
+    let tries = 0
+    const attempt = () => {
+      const title = document.getElementById(titleId)
+      const tooltip = title?.closest('.n4l-guide-tooltip')
+      if (title === null || tooltip === null || tooltip === undefined || tooltip.contains(document.activeElement)) return
+      if (getComputedStyle(title).visibility === 'visible') title.focus({ preventScroll: true })
+      if (document.activeElement !== title && tries++ < 60) frame = window.requestAnimationFrame(attempt)
+    }
+    attempt()
+    return () => window.cancelAnimationFrame(frame)
+  }, [titleId])
+  // Las flechas también pasan de paso (salvo en el desplegable de los pasos y en el de las voces, que las usan)
+  const handleKeyDown = useEffectEvent((event: globalThis.KeyboardEvent) => {
+    if (controls === null || event.target instanceof HTMLSelectElement || event.target instanceof HTMLInputElement) return
+    if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      controls.goTo(index + 1)
+    } else if (event.key === 'ArrowLeft' && index > 0) {
+      event.preventDefault()
+      controls.goTo(index - 1)
+    }
+  })
+  useEffect(() => {
+    const tooltip = document.getElementById(titleId)?.closest<HTMLElement>('.n4l-guide-tooltip')
+    if (tooltip === null || tooltip === undefined) return
+    const listener = (event: globalThis.KeyboardEvent) => handleKeyDown(event)
+    tooltip.addEventListener('keydown', listener)
+    return () => tooltip.removeEventListener('keydown', listener)
+  }, [titleId])
   if (controls === null) return null
 
   const voiceLabel = !controls.voiceSupported ? t('guide.no-voice') : t(controls.voice ? 'guide.voice-off' : 'guide.voice-on')
@@ -276,12 +328,12 @@ function GuideTooltip({ index, size, step, backProps, primaryProps, closeProps, 
   const AutoIcon = controls.auto ? PauseFill : PlayFill
 
   return (
-    <div {...tooltipProps} className={'n4l-guide-tooltip'} data-testid={'Test-GuideTooltip'}>
+    <div {...tooltipProps} aria-labelledby={titleId} className={'n4l-guide-tooltip'} data-testid={'Test-GuideTooltip'}>
       <ProgressBar now={((index + 1) / size) * 100} className={'n4l-guide-progress'} aria-hidden={true} />
       <div className={'d-flex align-items-start justify-content-between gap-2'}>
         <div>
           <div className={'small text-body-secondary'}>{t('guide.step', { current: index + 1, total: size })}</div>
-          <h2 className={'h5 mb-2'}>{step.title}</h2>
+          <h2 id={titleId} className={'h5 mb-2'} tabIndex={-1}>{step.title}</h2>
         </div>
         {/* Sin el resto de closeProps: react-joyride también le pasa el texto (children) y se veía junto a la X */}
         <CloseButton aria-label={closeProps['aria-label']} title={closeProps.title}
@@ -342,7 +394,7 @@ function GuideTooltip({ index, size, step, backProps, primaryProps, closeProps, 
               {controls.voices.map((voice) => (
                 <option key={voice.voiceURI} value={voice.voiceURI}>
                   {/* Las que no son del sistema funcionan en un servidor del navegador: el texto se envía allí */}
-                  {voice.localService ? voice.name : `${voice.name} · ${t('guide.voice-online')}`}
+                  {voice.localService ? voice.name : `${voice.name} (${t('guide.voice-online')})`}
                 </option>
               ))}
             </Form.Select>

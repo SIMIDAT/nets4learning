@@ -7,6 +7,7 @@ import { TABULAR_REVIEW_GUIDES, tabularReviewGuide } from '@pages/playground/0_T
 import { REGRESSION_REVIEW_GUIDES, regressionReviewGuide } from '@pages/playground/1_Regression/modelReviewGuide'
 import { OBJECT_DETECTION_REVIEW_GUIDES, objectDetectionReviewGuide } from '@pages/playground/2_ObjectDetection/modelReviewGuide'
 import { IMAGE_CLASSIFICATION_REVIEW_GUIDES, imageClassificationReviewGuide } from '@pages/playground/3_ImageClassification/modelReviewGuide'
+import { TIME_SERIES_REVIEW_GUIDES, timeSeriesReviewGuide } from '@pages/playground/5_TimeSeries/modelReviewGuide'
 import { MAP_TC_CLASSES } from '@pages/playground/0_TabularClassification/models'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { TASK_MODEL_OPTIONS } from '@/TASK_OPTIONS'
@@ -71,7 +72,9 @@ async function cases(): Promise<Case_t[]> {
     const options = { drawable: instance.DRAWABLE, summary: instance.TEST_IMAGES, testImages: instance.TEST_IMAGES }
     return { task: 'image-classification', prefix: 'guide.3-image-classification', model, build: (t: GuideTranslate_t) => imageClassificationReviewGuide(t, model, options) }
   }))
-  return [...tabular, ...regression, ...detection, ...images]
+  const series = TIME_SERIES_REVIEW_GUIDES.map((model) => (
+    { task: 'time-series', prefix: 'guide.5-time-series', model, build: (t: GuideTranslate_t) => timeSeriesReviewGuide(t, model) }))
+  return [...tabular, ...regression, ...detection, ...images, ...series]
 }
 
 describe('Guías de las páginas de los modelos', () => {
@@ -108,6 +111,7 @@ describe('Guías de las páginas de los modelos', () => {
       [TASKS.REGRESSION]            : REGRESSION_REVIEW_GUIDES,
       [TASKS.OBJECT_DETECTION]      : OBJECT_DETECTION_REVIEW_GUIDES,
       [TASKS.IMAGE_CLASSIFICATION]  : IMAGE_CLASSIFICATION_REVIEW_GUIDES,
+      [TASKS.TIME_SERIES]           : TIME_SERIES_REVIEW_GUIDES,
     }
     for (const [task, options] of Object.entries(TASK_MODEL_OPTIONS)) {
       for (const { value } of options as Array<{ value: string }>) expect(guides[task], `${task} ${value}`).toContain(value)

@@ -8,6 +8,7 @@ import type { DropEvent, FileRejection } from 'react-dropzone'
 import AlertHelper from '@utils/alertHelper'
 import { VERBOSE } from '@/CONSTANTS'
 import { TASKS } from '@/TASKS'
+import { announce } from '@core/a11y/announce'
 import { DataFrameReadCSV } from '@core/dataframe/DataFrameUtils'
 import {
   dataWarnings,
@@ -63,14 +64,14 @@ const STEPS = [
 /**
  * Clasificación o regresión. Manda la ficha del conjunto: categórica o binaria, clasificación; continua, regresión;
  * entera, la tarea del conjunto en el proyecto (la clase de lymphography es una clasificación y la calidad del vino una
- * regresión). Sin ficha, se deduce de los valores
+ * regresión, como los pasajeros de una serie temporal). Sin ficha, se deduce de los valores
  */
 function inferProblem(target: ColumnProfile_t, variables?: DatasetVariable_t[], project?: ProjectDataset_t): ProblemType_t {
   if (target.kind === 'categorical') return 'classification'
   const type = variableOf(variables, target.name)?.type
   if (type === 'Categorical' || type === 'Binary') return 'classification'
   if (type === 'Continuous') return 'regression'
-  if (type === 'Integer' && project) return project.task === TASKS.REGRESSION ? 'regression' : 'classification'
+  if (type === 'Integer' && project) return project.task === TASKS.REGRESSION || project.task === TASKS.TIME_SERIES ? 'regression' : 'classification'
   return problemType(target)
 }
 
@@ -183,6 +184,11 @@ export default function AnalyzeDataFrame() {
 
   const steps = loaded ? STEPS : [STEP_DATA]
   const format = new Intl.NumberFormat(i18n.language)
+  // Conjunto ya analizado: cuál y su tamaño, también para el lector de pantalla (WCAG 4.1.3)
+  const loadedSummary = loaded && profile
+    ? `${loaded.project ? t(loaded.project.i18n) : loaded.name}: ${t(prefix + 'info.shape', { rows: format.format(profile.rows), columns: profile.columns })}`
+    : ''
+  useEffect(() => announce(loadedSummary), [loadedSummary])
 
   if (VERBOSE) console.debug('render AnalyzeDataFrame')
   return (
@@ -211,9 +217,9 @@ export default function AnalyzeDataFrame() {
                     {loaded.project ? t(loaded.project.i18n) : loaded.name}
                   </div>
                   <div className={'text-body-secondary small'}>
-                    <code>{loaded.name}</code> · {t(prefix + 'info.shape', { rows: format.format(profile.rows), columns: profile.columns })}
-                    {loaded.project?.source && <> · <a href={loaded.project.source} target={'_blank'} rel={'noreferrer'}>{t(prefix + 'info.source')}</a></>}
-                    {loaded.variables && <> · {t(prefix + 'info.variables-sheet')}</>}
+                    <code>{loaded.name}</code>, {t(prefix + 'info.shape', { rows: format.format(profile.rows), columns: profile.columns })}
+                    {loaded.project?.source && <>, <a href={loaded.project.source} target={'_blank'} rel={'noreferrer'}>{t(prefix + 'info.source')}</a></>}
+                    {loaded.variables && <>, {t(prefix + 'info.variables-sheet')}</>}
                   </div>
                 </Col>
                 <Col md={6}>

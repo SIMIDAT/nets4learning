@@ -232,7 +232,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
     ? datasetSelected.dataframe_original.columns.indexOf(datasetSelected.data_processed.column_name_target)
     : -1
   const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => (
-    instances.data.map((row, index) => ({ value: index, label: `#${index} · ${targetIndex >= 0 ? formatTarget(row[targetIndex]) : ''}` }))
+    instances.data.map((row, index) => ({ value: index, label: `#${index}: ${targetIndex >= 0 ? formatTarget(row[targetIndex]) : ''}` }))
   ), [instances.data, targetIndex])
   // El selector solo muestra la instancia mientras el formulario no se cambie: si no, ya no es esa
   const selectedRow = instances.index >= 0 ? instances.data[instances.index] : undefined
@@ -260,7 +260,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
   return (
     <>
       <Container className={'n4l-container-wide'} id={'ModelReviewRegression'} data-testid="Test-ModelReviewRegression">
-        <N4LPageHeader title={<Trans i18nKey={'modality.' + id} />} guideId={'regression.' + dataset} guideSteps={guideSteps} />
+        <N4LPageHeader intro={'review'} title={<Trans i18nKey={'modality.' + id} />} guideId={'regression.' + dataset} guideSteps={guideSteps} />
         <Row>
           <Col>
             <N4LDownloadProgress isLoading={isLoading} />
@@ -321,6 +321,7 @@ export default function ModelReviewRegression({ dataset }: ModelReviewRegression
                         onChange={handleChange_Instance_Index}
                         disabled={instances.data.length === 0 || hasNoModels}
                         size={'sm'}
+                        label={t('pages.playground.generator.example-from-dataset')}
                         placeholder={t(instances.index >= 0 ? 'example-custom' : prefix + 'predict.list-instances')}
                         searchPlaceholder={t('pages.playground.generator.dynamic-form-dataset.search-entity')}
                         noResultsText={t('pages.playground.generator.dynamic-form-dataset.no-entity')}

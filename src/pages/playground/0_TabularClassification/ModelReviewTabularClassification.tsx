@@ -214,7 +214,7 @@ export default function ModelReviewTabularClassification(props: Props) {
       label: `★ ${t('example-i', { i: classText(iModelInstance.LIST_EXAMPLES_RESULTS[index]) })}`,
     }))
     const targets = targetColumn ? datasetProcessed?.dataframe_original[targetColumn].values as unknown[] : []
-    const rows = (targets ?? []).map((target, index) => ({ value: index, label: `#${index} · ${classText(target)}` }))
+    const rows = (targets ?? []).map((target, index) => ({ value: index, label: `#${index}: ${classText(target)}` }))
     return [...examples, ...rows]
   }, [iModelInstance, datasetProcessed, targetColumn, t])
 
@@ -263,7 +263,7 @@ export default function ModelReviewTabularClassification(props: Props) {
   return (
     <>
       <Container className={'n4l-container-wide'}>
-        <N4LPageHeader title={<Trans i18nKey={'modality.0'} />} guideId={'tabular-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
+        <N4LPageHeader intro={'review'} title={<Trans i18nKey={'modality.0'} />} guideId={'tabular-classification.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
       </Container>
 
       <Container className={'n4l-container-wide'} id={'ModelReviewTabularClassification'} data-testid={'Test-ModelReviewTabularClassification'}>
@@ -298,6 +298,7 @@ export default function ModelReviewTabularClassification(props: Props) {
                     value={instanceMatches ? selectedInstance : null}
                     onChange={handleChange_Instance}
                     size={'sm'}
+                    label={t('pages.playground.generator.example-from-dataset')}
                     placeholder={t('example-custom')}
                     searchPlaceholder={t('pages.playground.generator.dynamic-form-dataset.search-entity')}
                     noResultsText={t('pages.playground.generator.dynamic-form-dataset.no-entity')}

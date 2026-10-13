@@ -59,3 +59,10 @@ describe('analyticsPage: el nombre de lo que se pulsa', () => {
     expect(clickTargetName(body.querySelector('p'))).toBeNull()
   })
 })
+
+describe('analyticsPage: lo privado no se registra', () => {
+  test('un clic dentro de [data-analytics-private] (los ajustes de accesibilidad) no tiene nombre', () => {
+    document.body.innerHTML = '<div data-analytics-private="true"><input type="checkbox" id="settings-display-highContrast"></div>'
+    expect(clickTargetName(document.getElementById('settings-display-highContrast'))).toBeNull()
+  })
+})

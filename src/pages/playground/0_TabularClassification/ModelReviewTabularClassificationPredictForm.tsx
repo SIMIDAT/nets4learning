@@ -75,7 +75,7 @@ export default function ModelReviewTabularClassificationPredictForm(
                   onChange={($event) => handleChange_Parameter(field, $event.target.value)} />}
               <Form.Text className={'text-body-secondary'}>
                 {/* El nombre del atributo en el conjunto de datos, si la traducción lo cambia */}
-                {label.toLowerCase() !== field.name.toLowerCase() && <><code>{field.name}</code> · </>}
+                {label.toLowerCase() !== field.name.toLowerCase() && <><code>{field.name}</code>: </>}
                 {typeText(field)}
               </Form.Text>
             </Form.Group>

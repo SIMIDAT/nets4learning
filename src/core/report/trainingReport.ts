@@ -12,7 +12,7 @@ export type TrainingReport_t = {
   /** El número del modelo en la tabla (desde 1) */
   model      : number
   createdAt  : string
-  /** Cada capa en una línea («Dense · 10 neuronas · ReLU») */
+  /** Cada capa en una línea («Dense, 10 neuronas, ReLU») */
   layers     : string[]
   /** Hiperparámetros, con las claves de generator.table-models.* (como al comparar modelos) */
   parameters : ModelParameters_t

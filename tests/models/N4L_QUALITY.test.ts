@@ -8,6 +8,10 @@ import MODEL_TABULAR from '@pages/playground/0_TabularClassification/models/MODE
 import MODEL_REGRESSION from '@pages/playground/1_Regression/models/MODEL_N4L'
 import { seededRandom } from '@core/clustering/kmeans'
 import { isTableDataset, n4lLayersModels } from '@core/n4l/format'
+import { loadN4LLayersModel } from '@core/n4l/tfjsModel'
+import { prepareSeries, readSeries } from '@core/timeSeries/series'
+import { evaluateSeriesModel } from '@core/timeSeries/seriesModel'
+import { initialPrep } from '@pages/playground/5_TimeSeries/timeSeriesConfig'
 import { keyT, stubPublicFetch, toPublicPath } from '../helpers/n4l'
 
 // Cada modelo ya entrenado de los paquetes de public/n4l/, con su conjunto preparado según el manifiesto (como lo
@@ -98,5 +102,31 @@ describe('Paquetes .n4l: los modelos de regresión dan, con la configuración de
     expect(predictions.every(Number.isFinite)).toBe(true)
     expect(r2).toBeCloseTo(entryModel.metrics!.test_r2, 2)
     expect(mae).toBeCloseTo(entryModel.metrics!.test_mae, 2)
+  }, 60_000)
+})
+
+describe('Paquetes .n4l: los modelos de series temporales dan, con la preparación del paquete, las métricas de su manifiesto', () => {
+  const cases = withTask('time-series').map(({ entry, section }) => [entry.id, entry, section] as const)
+
+  test('cada serie tiene su modelo ya entrenado', () => {
+    expect(cases.map(([id]) => id)).toEqual(['airline-passengers', 'melbourne-temperatures', 'sunspots'])
+  })
+
+  test.each(cases)('%s', async (_id, entry, section) => {
+    const [model] = n4lLayersModels(section)
+    const dataset = entry.datasets.filter(isTableDataset).find(({ id }) => id === section.datasets[0])!
+    const column = (is: (role: string, type: string) => boolean) => dataset.columns.find(({ role, type }) => is(role, type))!.name
+    const [header, ...rows] = fs.readFileSync(`public/${entry.path}/${dataset.file}`, 'utf-8').trim().split(/\r?\n/).map((line) => line.split(','))
+    const { values } = readSeries(header, rows, column((role) => role === 'Target'), column((_role, type) => type === 'Date'))
+    // Como la página del modelo: la ventana, la prueba y la diferencia de `forecast`
+    const prepared = prepareSeries(values, initialPrep(values.length, dataset.frequency, section.forecast).prep)
+    const network = await loadN4LLayersModel(builtinN4LPackage(entry).source, model.path)
+    const { errors } = await evaluateSeriesModel(network, values, prepared)
+    expect(errors.oneStep.mae).toBeCloseTo(model.metrics!.test_mae, 2)
+    expect(errors.oneStep.rmse).toBeCloseTo(model.metrics!.test_rmse, 2)
+    expect(errors.recursive.mae).toBeCloseTo(model.metrics!.test_recursive_mae, 1)
+    // A un paso, mejor que repetir el valor anterior
+    expect(errors.oneStep.mae).toBeLessThan(model.metrics!.test_naive_mae)
+    network.dispose()
   }, 60_000)
 })

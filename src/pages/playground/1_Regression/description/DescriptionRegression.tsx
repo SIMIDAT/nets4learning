@@ -15,7 +15,7 @@ export default function DescriptionRegression() {
   }
 
   return <>
-    <Container className={'mt-3 mb-3'} data-testid={'Test-DescriptionLinearRegression'}>
+    <Container as={'main'} className={'mt-3 mb-3'} data-title={'DescriptionRegression'} data-testid={'Test-DescriptionLinearRegression'}>
       <Row>
         <Col>
           <h1>{t(prefix + 'title')}</h1>

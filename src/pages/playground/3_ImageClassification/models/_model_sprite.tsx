@@ -109,7 +109,7 @@ export default abstract class I_MODEL_IMAGE_SPRITE extends I_MODEL_IMAGE_CLASSIF
 
       // LRP se inicializa con el LOGIT pre-softmax de la clase objetivo,
       // no con las probabilidades (Montavon et al. 2019, §10.2.1).
-      // Como la softmax va fusionada en la última Dense, recalculamos z = x·W + b.
+      // Como la softmax va fusionada en la última Dense, recalculamos z = x × W + b.
       const lastLayer = model.getLayer(lastLayerName)
       const prevData = activations.layers[orderReversed[1]]
       const xLast = tfjs.tensor(prevData.data, prevData.shape)

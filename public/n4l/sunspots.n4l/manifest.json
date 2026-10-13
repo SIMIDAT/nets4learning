@@ -1,0 +1,93 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "sunspots",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/sunspots.html",
+    "links": {
+      "link2": "https://github.com/jbrownlee/Datasets/blob/master/monthly-sunspots.csv",
+      "link3": "https://www.sidc.be/SILSO/datafiles"
+    },
+    "citation": "@book{andrews1985data,\n  author    = {Andrews, David F. and Herzberg, Agnes M.},\n  title     = {Data: A Collection of Problems from Many Fields for the Student and Research Worker},\n  publisher = {Springer},\n  address   = {New York, NY},\n  year      = {1985},\n  doi       = {10.1007/978-1-4612-5098-2}\n}"
+  },
+  "datasets": [
+    {
+      "id": "sunspots",
+      "file": "data/monthly-sunspots.csv",
+      "rows": 2820,
+      "frequency": "month",
+      "columns": [
+        {
+          "name": "Month",
+          "role": "ID",
+          "type": "Date",
+          "missing": 0,
+          "description": "month (YYYY-MM)"
+        },
+        {
+          "name": "Sunspots",
+          "role": "Target",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "monthly mean relative sunspot number"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "time-series",
+      "key": "SUNSPOTS",
+      "runtime": "time-series",
+      "datasets": [
+        "sunspots"
+      ],
+      "order": 3,
+      "preprocessing": [],
+      "models": [
+        {
+          "id": "forecast",
+          "format": "tfjs-layers",
+          "path": "models/forecast/model.json",
+          "dataset": "sunspots",
+          "input": "scaled",
+          "metrics": {
+            "test_mae": 13.2534,
+            "test_rmse": 18.0343,
+            "test_recursive_mae": 49.971,
+            "test_naive_mae": 14.8369
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ],
+        "learningRate": 0.001,
+        "epochs": 30
+      },
+      "forecast": {
+        "window": 24,
+        "difference": false,
+        "testSize": 20
+      }
+    }
+  ]
+}

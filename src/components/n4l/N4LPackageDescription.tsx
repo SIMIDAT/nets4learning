@@ -27,6 +27,8 @@ export default function N4LPackageDescription({ manifest, namespace: ns, task, c
   const prefix = `tasks.${task}.description`
   const description = t(prefix, { ns, returnObjects: true }) as Description_t | string
   // <link1>: la fuente; <link2>…, las otras direcciones del paquete
+  // El texto del enlace lo pone <Trans> (el de la traducción entre <link1> y </link1>)
+  // eslint-disable-next-line jsx-a11y/anchor-has-content
   const link = (href: string | undefined) => (href === undefined ? <span /> : <a href={href} target={'_blank'} rel={'noreferrer'} />)
   const components = {
     link1: link(manifest.source?.url),
@@ -51,7 +53,7 @@ export default function N4LPackageDescription({ manifest, namespace: ns, task, c
       {manifest.source?.citation !== undefined &&
         <details>
           <summary>BibTeX</summary>
-          <pre>{manifest.source.citation}</pre>
+          <pre lang={'en'}>{manifest.source.citation}</pre>
         </details>}
     </div>
   )

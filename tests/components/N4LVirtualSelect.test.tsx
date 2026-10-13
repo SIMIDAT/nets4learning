@@ -4,8 +4,8 @@ import N4LVirtualSelect from '@components/select/N4LVirtualSelect'
 import { filterVirtualSelectOptions } from '@components/select/filterVirtualSelectOptions'
 
 const CLASSES = ['unacc', 'acc', 'good', 'vgood']
-// Como las filas de un conjunto de datos grande: "#número · clase"
-const OPTIONS = Array.from({ length: 5000 }, (_, index) => ({ value: index, label: `#${index} · ${CLASSES[index % 4]}` }))
+// Como las filas de un conjunto de datos grande: "#número: clase"
+const OPTIONS = Array.from({ length: 5000 }, (_, index) => ({ value: index, label: `#${index}: ${CLASSES[index % 4]}` }))
 
 function renderSelect(onChange = vi.fn(), value: number | null = null) {
   render(<N4LVirtualSelect options={OPTIONS} value={value} onChange={onChange}
@@ -21,9 +21,9 @@ describe('filterVirtualSelectOptions', () => {
   test('sin búsqueda, todas; con búsqueda, primero las que empiezan por ella (sin contar el "#")', () => {
     expect(filterVirtualSelectOptions(OPTIONS, '  ')).toBe(OPTIONS)
     const found = filterVirtualSelectOptions(OPTIONS, '12')
-    expect(found.slice(0, 3).map((o) => o.label)).toEqual(['#12 · unacc', '#120 · unacc', '#121 · acc'])
-    expect(found.some((o) => o.label === '#112 · unacc')).toBe(true)
-    expect(found.findIndex((o) => o.label === '#112 · unacc')).toBeGreaterThan(found.findIndex((o) => o.label === '#1299 · vgood'))
+    expect(found.slice(0, 3).map((o) => o.label)).toEqual(['#12: unacc', '#120: unacc', '#121: acc'])
+    expect(found.some((o) => o.label === '#112: unacc')).toBe(true)
+    expect(found.findIndex((o) => o.label === '#112: unacc')).toBeGreaterThan(found.findIndex((o) => o.label === '#1299: vgood'))
   })
 
   test('también busca por la clase, sin distinguir mayúsculas', () => {
@@ -51,8 +51,8 @@ describe('N4LVirtualSelect', () => {
     const list = screen.getByRole('listbox')
     list.scrollTop = 32 * 4000
     fireEvent.scroll(list)
-    expect(screen.getByText('#4000 · unacc')).toBeInTheDocument()
-    expect(screen.queryByText('#0 · unacc')).toBeNull()
+    expect(screen.getByText('#4000: unacc')).toBeInTheDocument()
+    expect(screen.queryByText('#0: unacc')).toBeNull()
   })
 
   test('se busca y se elige con el teclado', () => {
@@ -73,7 +73,7 @@ describe('N4LVirtualSelect', () => {
     const search = screen.getByRole('combobox')
     fireEvent.keyDown(search, { key: 'ArrowDown' })
     fireEvent.keyDown(search, { key: 'ArrowDown' })
-    expect(search.getAttribute('aria-activedescendant')).toBe(screen.getByText('#2 · good').id)
+    expect(search.getAttribute('aria-activedescendant')).toBe(screen.getByText('#2: good').id)
     fireEvent.keyDown(search, { key: 'Escape' })
     expect(screen.queryByRole('listbox')).toBeNull()
     expect(onChange).not.toHaveBeenCalled()
@@ -82,10 +82,10 @@ describe('N4LVirtualSelect', () => {
 
   test('se elige con el ratón, y abre en la opción elegida', () => {
     const onChange = renderSelect(vi.fn(), 2500)
-    expect(screen.getByRole('button')).toHaveTextContent('#2500 · unacc')
+    expect(screen.getByRole('button')).toHaveTextContent('#2500: unacc')
     open()
-    expect(screen.getByRole('option', { name: '#2500 · unacc' })).toHaveAttribute('aria-selected', 'true')
-    fireEvent.click(screen.getByRole('option', { name: '#2501 · acc' }))
+    expect(screen.getByRole('option', { name: '#2500: unacc' })).toHaveAttribute('aria-selected', 'true')
+    fireEvent.click(screen.getByRole('option', { name: '#2501: acc' }))
     expect(onChange).toHaveBeenCalledWith(2501)
   })
 

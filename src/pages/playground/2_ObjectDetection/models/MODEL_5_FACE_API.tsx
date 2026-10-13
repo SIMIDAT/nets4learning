@@ -5,7 +5,7 @@
 // lecturas síncronas lo hacían muy lento.
 import * as faceapi from '@vladmandic/face-api'
 import { Trans } from 'react-i18next'
-import I_MODEL_OBJECT_DETECTION from './_model'
+import I_MODEL_OBJECT_DETECTION, { inputWidth, mirrorBoxX } from './_model'
 import {
   MT_CNN_BIBTEX,
   SSD_BIBTEX,
@@ -14,15 +14,47 @@ import {
   FACE_RECOGNITION_MODEL_BIBTEX,
 } from './MODEL_5_FACE_API_INFO'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
+import type { Smoothing_t } from './smoothing'
+import { type Box_t, clamp, drawBox, drawingScale, drawTag, font, roundedRect } from './drawing'
+
+// Las expresiones que da face-api, en su orden, y el color de cada una
+const EXPRESSIONS = ['neutral', 'happy', 'sad', 'angry', 'fearful', 'disgusted', 'surprised']
+const EXPRESSION_COLORS: Record<string, string> = {
+  neutral  : '#94a3b8',
+  happy    : '#facc15',
+  sad      : '#60a5fa',
+  angry    : '#ef4444',
+  fearful  : '#a78bfa',
+  disgusted: '#22c55e',
+  surprised: '#f97316',
+}
+// Lo que se usa de cada cara, en objetos simples (se pueden copiar, suavizar y reflejar)
+type FaceApiFace_t = {
+  detection  : { score?: number, box: { x: number, y: number, width: number, height: number } }
+  age        : number
+  expressions: Record<string, number>
+}
 
 export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.FACE_API
   TITLE = 'datasets-models.2-object-detection.face-api.title'
   i18n_TITLE = 'datasets-models.2-object-detection.face-api.title'
   URL = 'https://justadudewhohacks.github.io/face-api.js/docs/index.html'
-  mirror = false
+  // La webcam, en espejo, como en el resto de modelos: face-api no sabe reflejar, así que PREDICTION refleja los recuadros
+  mirror = true
   usesTensorForPrediction = false
   faces = true
+  // El recuadro, la edad y la probabilidad de cada expresión, que si no saltan de un fotograma al siguiente
+  SMOOTHING: Smoothing_t<FaceApiFace_t> = {
+    positions: ({ detection: { box } }) => [box.x, box.y, box.x + box.width, box.y + box.height],
+    extras   : ({ age, expressions }) => [age, ...EXPRESSIONS.map((expression) => expressions[expression] ?? 0)],
+    update   : (face, [xMin, yMin, xMax, yMax], [age, ...scores]) => ({
+      ...face,
+      detection  : { score: face.detection.score, box: { x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin } },
+      age,
+      expressions: Object.fromEntries(EXPRESSIONS.map((expression, index) => [expression, scores[index]])),
+    }),
+  }
 
   i18n_face_api: Record<string, string> = {
     years    : 'face-api.years',
@@ -212,7 +244,7 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     }
   }
 
-  async PREDICTION(input_image_or_video: any, config: { minConfidence?: number } = {}) {
+  async PREDICTION(input_image_or_video: any, config: { minConfidence?: number, flipHorizontal?: boolean } = {}): Promise<FaceApiFace_t[]> {
     let _input = input_image_or_video
     if (input_image_or_video instanceof ImageData) {
       // Canvas (síncrono): con una <img> habría que esperar a que cargue antes de detectar.
@@ -225,48 +257,97 @@ export default class MODEL_5_FACE_API extends I_MODEL_OBJECT_DETECTION {
     const minConfidence = config.minConfidence ?? 0.8
     const maxResults = 10
     const optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({ minConfidence, maxResults })
-    const predictions = await faceapi
+    const faces = await faceapi
       .detectAllFaces(_input, optionsSSDMobileNet)
       .withAgeAndGender()
       .withFaceExpressions()
     // .withFaceLandmarks()
     // .withFaceDescriptors()
-    return predictions
+    const width = inputWidth(_input)
+    return faces.map(({ detection, age, expressions }) => {
+      const { x, y, width: boxWidth, height: boxHeight } = detection.box
+      const probabilities = expressions as unknown as Record<string, number>
+      return {
+        detection: {
+          score: detection.score,
+          // Reflejado, con la webcam en espejo, para que caiga sobre el vídeo
+          box  : { x: config.flipHorizontal ? mirrorBoxX(x, boxWidth, width) : x, y, width: boxWidth, height: boxHeight },
+        },
+        age,
+        expressions: Object.fromEntries(EXPRESSIONS.map((expression) => [expression, probabilities[expression] ?? 0])),
+      }
+    })
   }
 
   /**
-   *
+   * Cada cara: un recuadro con las esquinas marcadas, su nombre encima («Cara» o, si hay varias, «Cara 1», «Cara 2»…)
+   * con la edad estimada y, a su derecha, sus siete expresiones con su porcentaje y su barra
    * @param {CanvasRenderingContext2D} ctx
-   * @param {faceapi.WithFaceExpressions<faceapi.WithAge<faceapi.WithGender<{detection: faceapi.FaceDetection;}>>>[]} predictions
+   * @param {FaceApiFace_t[]} faces
    */
-  RENDER(
-    ctx: CanvasRenderingContext2D,
-    predictions: faceapi.WithFaceExpressions<
-      faceapi.WithAge<
-        faceapi.WithGender<{
-          detection: faceapi.FaceDetection
-        }>
-      >
-    >[] = []
-  ) {
-    const font = '32px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-    const font2 = '24px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+  RENDER(ctx: CanvasRenderingContext2D, faces: FaceApiFace_t[] = []) {
+    const scale = drawingScale(ctx)
+    faces.forEach((face, index) => this._drawFace(ctx, face, faces.length > 1 ? index + 1 : null, scale))
+  }
 
-    for (const { detection, expressions, age } of predictions) {
-      const { x, y, width, height } = detection.box
-      this._drawRect(ctx, x, y, width, height)
+  _drawFace(ctx: CanvasRenderingContext2D, { detection: { box: { x, y, width, height } }, age, expressions }: FaceApiFace_t,
+    number: number | null, scale: number) {
+    const prefix = 'datasets-models.2-object-detection.face-api.render.'
+    const box: Box_t = { xMin: x, yMin: y, xMax: x + width, yMax: y + height, width, height }
+    drawBox(ctx, box, scale)
+    this._drawExpressions(ctx, box, EXPRESSIONS.map((name) => ({ name, score: expressions[name] ?? 0 })), scale)
+    const tag = number === null ? this.t(prefix + 'face') : this.t(prefix + 'face-number', { number })
+    drawTag(ctx, box, tag, this.t(prefix + 'age', { age: Math.round(age) }), scale)
+  }
 
-      let i = 0
-      for (const [expression, score] of Object.entries(expressions)) {
-        const scoreParsed = Math.round(parseFloat(score) * 100)
-        const txt_expression = `${this.i18n_face_api[expression]} ${scoreParsed}%`
-        this._drawTextBG_Opacity(ctx, txt_expression, font2, x + width, y + 38 * i, 12, scoreParsed < 20)
-        i++
+  /**
+   * Las expresiones, en un panel a la derecha de la cara (pegado al borde del dibujo si no cabe), siempre en el mismo
+   * orden para que las filas no salten al cambiar las probabilidades, con la más probable resaltada
+   */
+  _drawExpressions(ctx: CanvasRenderingContext2D, box: Box_t, expressions: Array<{ name: string, score: number }>, scale: number) {
+    const prefix = 'datasets-models.2-object-detection.face-api.render.'
+    const rows = expressions.map(({ name, score }) => ({
+      name   : this.t('face-api.' + name),
+      color  : EXPRESSION_COLORS[name],
+      score,
+      percent: this.t(prefix + 'percent', { percent: Math.round(score * 100) }),
+    }))
+    ctx.save()
+    ctx.font = font(11, scale, 700)
+    const nameWidth = Math.max(...rows.map(({ name }) => ctx.measureText(name).width))
+    const percentWidth = Math.max(...rows.map(({ percent }) => ctx.measureText(percent).width))
+    const [padding, gap, rowHeight, barWidth, margin] = [8 * scale, 8 * scale, 18 * scale, 56 * scale, 2 * scale]
+    const width = padding * 2 + nameWidth + gap + barWidth + gap + percentWidth
+    const height = padding * 2 + rowHeight * rows.length
+    const x = clamp(box.xMax + 10 * scale, margin, ctx.canvas.width - width - margin)
+    const y = clamp(box.yMin, margin, ctx.canvas.height - height - margin)
+    const top = rows.reduce((best, row, index) => (row.score > rows[best].score ? index : best), 0)
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.78)'
+    roundedRect(ctx, x, y, width, height, 10 * scale)
+    ctx.fill()
+    ctx.textBaseline = 'middle'
+    rows.forEach(({ name, color, score, percent }, index) => {
+      const middle = y + padding + index * rowHeight + rowHeight / 2
+      const barX = x + padding + nameWidth + gap
+      // La más probable, más marcada
+      ctx.globalAlpha = index === top ? 1 : 0.75
+      ctx.font = font(11, scale, index === top ? 700 : 500)
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'left'
+      ctx.fillText(name, x + padding, middle + 0.5 * scale)
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)'
+      roundedRect(ctx, barX, middle - 3 * scale, barWidth, 6 * scale, 3 * scale)
+      ctx.fill()
+      if (score >= 0.005) {
+        ctx.fillStyle = color
+        roundedRect(ctx, barX, middle - 3 * scale, Math.max(6 * scale, barWidth * score), 6 * scale, 3 * scale)
+        ctx.fill()
       }
-
-      const ageParsed = Math.round(age)
-      const txt = `${ageParsed} ${this.i18n_face_api['years']}`
-      this._drawTextBG(ctx, txt, font, x, y - 48, 16)
-    }
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'right'
+      ctx.fillText(percent, x + width - padding, middle + 0.5 * scale)
+    })
+    ctx.restore()
   }
 }

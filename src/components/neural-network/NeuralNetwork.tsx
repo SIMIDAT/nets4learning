@@ -138,7 +138,11 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
   }, [mode, modeCompact, modeExtend])
 
   return <>
-    <Row className={'mt-3' + (fill ? ' n4l-maximized-fill' : '')}>
+    {/* El grafo es un canvas sin texto: para el lector de pantalla, las capas en una lista, de la entrada a la salida */}
+    <ol className={'visually-hidden'} aria-label={t('neural-network.description')} data-testid={'Test-NeuralNetwork-Description'}>
+      {layers.map((layer, index) => <li key={index}>{[t('neural-network.layer', { index: index + 1 }), ...layerSummaryParts(t, layer)].join(', ')}</li>)}
+    </ol>
+    <Row className={'mt-3' + (fill ? ' n4l-maximized-fill' : '')} aria-hidden={true}>
       <Col xs={2} className={'n4l-nn-side'}>
         <span className={'n4l-nn-side-label'}><Trans i18nKey={'graphic-red.input'} /></span>
         <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
@@ -176,7 +180,12 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
               height: `${height}px`,
             }}
             events={events}
-            getNetwork={(instance: Network) => { network.current = instance }}
+            getNetwork={(instance: Network) => {
+              network.current = instance
+              // vis-network hace enfocable su lienzo (para sus atajos de teclado, que no se usan): fuera del orden del
+              // tabulador, porque al lector se le dan las capas en la lista de arriba
+              document.getElementById(id_parent)?.querySelectorAll<HTMLElement>('.vis-network').forEach((frame) => { frame.tabIndex = -1 })
+            }}
             ref={networkRef} />
         </div>
       </Col>

@@ -165,7 +165,7 @@ function stabilize(z: tfjs.Tensor, epsilon: number): tfjs.Tensor {
  * (Montavon et al. 2019, §10.2.2):
  *
  *   z = forward(x)          s = R_out / z (constante)
- *   c = ∇_x Σ(forward(x) · s)
+ *   c = ∇_x Σ(forward(x) × s)
  *   R_in = x ⊙ c
  *
  * Sirve para cualquier capa lineal (Dense, Conv2D, AvgPool) y, con MaxPool,
@@ -181,7 +181,7 @@ function lrpBackward(
   return x.mul(c);
 }
 
-/** Regla epsilon genérica: R_i = Σ_j x_i·w_ij / (z_j + ε·sign(z_j)) · R_j */
+/** Regla epsilon genérica: R_i = Σ_j x_i × w_ij / (z_j + ε × sign(z_j)) × R_j */
 function lrpEpsilon(
   forward: Forward,
   x: tfjs.Tensor,
@@ -196,7 +196,7 @@ function lrpEpsilon(
 
 /**
  * Regla alpha-beta genérica (con α − β = 1):
- *   R_i = Σ_j ( α · (x_i·w⁺_ij)/z⁺_j − β · (x_i·w⁻_ij)/z⁻_j ) · R_j
+ *   R_i = Σ_j ( α × (x_i × w⁺_ij)/z⁺_j − β × (x_i × w⁻_ij)/z⁻_j ) × R_j
  * Supone entradas no negativas (salida de ReLU o píxeles en [0, 1]).
  */
 function lrpAlphaBeta(

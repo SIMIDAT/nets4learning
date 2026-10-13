@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Alert, Badge, Button, Card, Col, Row } from 'react-bootstrap'
+import { Alert, Badge, Card, Col, Row } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
@@ -9,6 +9,7 @@ import { N4LError } from '@core/n4l/validate'
 import { useLocalPackages } from '@hooks/useLocalPackages'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
+import N4LConfirmButton from '@components/form/N4LConfirmButton'
 import { isTask, TASK_INFO } from '@components/task/taskInfo'
 
 const prefix = 'n4l.local.'
@@ -45,9 +46,9 @@ function LocalPackageCard({ info }: { info: LocalPackage_t }) {
         </ul>
       </Card.Body>
       <Card.Footer className={'bg-transparent border-0 pb-3'}>
-        <Button size={'sm'} variant={'outline-danger'} onClick={() => removeLocalPackage(info.id)} aria-label={t(prefix + 'remove-title', { name })}>
-          {t(prefix + 'remove')}
-        </Button>
+        <N4LConfirmButton label={t(prefix + 'remove')} ariaLabel={t(prefix + 'remove-title', { name })}
+          question={t(prefix + 'remove-confirm', { name })} confirmLabel={t(prefix + 'remove')}
+          onConfirm={() => removeLocalPackage(info.id)} />
       </Card.Footer>
     </Card>
   )

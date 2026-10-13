@@ -11,6 +11,7 @@ import { showTrainingVisor } from '@core/nn-utils/trainingVisor'
 import { ModelDefinitionError, buildDenseModel, compileModel, modelFromArtifacts, type DenseLayer_t } from '@core/training/buildModels'
 import { TrainingWorkerUnavailableError, trainInWorker } from '@core/training/trainingClient'
 import type { ClassificationEvaluation_t, TrainingProgress_t } from '@core/training/trainingTypes'
+import { shouldOpenVisor } from '@core/a11y/displaySettings'
 
 export type { ClassificationEvaluation_t } from '@core/training/trainingTypes'
 
@@ -76,6 +77,8 @@ export async function trainDenseModel(params: TrainDenseModelParams_t): Promise<
   await tfvis.show.modelSummary({ name: 'Model Summary', tab: name_model }, summaryModel)
   summaryModel.dispose()
   tfvis.visor().setActiveTab(name_model)
+  // Se abre al crearlo: si se ha elegido en /settings, se cierra (sus gráficas siguen ahí, por si se abre a mano)
+  if (!shouldOpenVisor()) tfvis.visor().close()
   const visCallbacks = tfvis.show.fitCallbacks({ name: 'Training', tab: name_model }, FIT_CALLBACKS_METRICS_LABELS, fitCallbacks)
 
   try {

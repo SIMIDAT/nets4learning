@@ -1,0 +1,41 @@
+{
+  "columns": {
+    "Date": "日付",
+    "Temp": "気温"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "メルボルンの最低気温",
+      "summary": "1981 年から 1990 年までのメルボルン（オーストラリア）の毎日の最低気温です。季節とともに上下し、日ごとの変動（ノイズ）が大きい系列です。",
+      "description": {
+        "text": [
+          "1981 年から 1990 年までのメルボルン（オーストラリア）の毎日の最低気温（摂氏、3,650 日）です。データはオーストラリア気象局（<link2>Bureau of Meteorology</link2>）のものです。",
+          "トレンドはありませんが、1 年周期のはっきりした<b>季節性</b>があります。南半球なので夏は 1 月と 2 月で、いちばん寒いのは 7 月です。日ごとの変化が大きい（平均で約 2 °C）ため、どのモデルにも予測できないノイズがかなり含まれます。",
+          "うるう年の 2 年（1984 年と 1988 年）には 12 月 31 日がないため、どの年も 365 行です。"
+        ],
+        "sections": [
+          {
+            "title": "変数",
+            "items": [
+              "<b>Date</b>：日付（年-月-日）。",
+              "<b>Temp</b>：その日の最低気温（°C）。予測する値です。"
+            ]
+          },
+          {
+            "title": "学習済みモデル",
+            "items": [
+              "16 ニューロンの Dense 層 1 つで、直前の 14 日を見るネットワークです。学習で見ていないテスト部分（最後の 2 年）での誤差は、1 ステップ先で平均 <b>{{test_mae, number(maximumFractionDigits: 2)}} °C</b> で、前日の値を繰り返す場合（{{test_naive_mae, number(maximumFractionDigits: 2)}} °C）より小さくなります。2 年分を続けて予測すると {{test_recursive_mae, number(maximumFractionDigits: 2)}} °C です。2 週間では 1 年の周期が見えず、前年の値を繰り返すほうが良い結果になります（{{test_seasonal_mae, number(maximumFractionDigits: 2)}} °C）。"
+            ]
+          },
+          {
+            "title": "参考文献",
+            "items": [
+              "<link1>CSV ファイル</link1>（jbrownlee/Datasets リポジトリ）。",
+              "<link2>オーストラリア気象局の気候データ</link2>。"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

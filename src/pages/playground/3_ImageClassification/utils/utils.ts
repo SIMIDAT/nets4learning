@@ -177,7 +177,7 @@ export function imageDataToDataUrl(imageData: ImageData, size: number): string {
 
 /**
  * Entrada de los modelos MNIST/KMNIST (1×28×28×1), sin modificar `imageData`.
- * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) · alfa.
+ * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) × alfa.
  * - Imagen opaca con dígito oscuro sobre fondo claro → 1 − rojo.
  * - Dibujo en el lienzo (trazo negro sobre fondo transparente) → alfa.
  */

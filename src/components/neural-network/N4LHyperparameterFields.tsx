@@ -1,6 +1,9 @@
-import React from 'react'
-import { Accordion, Button, Form, OverlayTrigger, Popover } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Accordion, Button, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
+
+import N4LNumberField from '@components/form/N4LNumberField'
+import N4LHelpTerm from '@components/helpLink/N4LHelpTerm'
 
 import { TYPE_LOSSES_CLASSIFICATION, TYPE_LOSSES_REGRESSION, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
 
@@ -11,6 +14,7 @@ const prefix = 'pages.playground.generator.general-parameters.'
 const HELP_KEYS: Record<string, string> = {
   'learning-rate'   : 'learning-rate',
   'number-of-epochs': 'epochs',
+  'batch-size'      : 'batch-size',
   'train-rate'      : 'test-size',
   'test-size'       : 'test-size',
   'optimizer-id'    : 'optimizer',
@@ -19,19 +23,17 @@ const HELP_KEYS: Record<string, string> = {
   'metric-id-select': 'metric',
 }
 
-/** Etiqueta de un campo; si el término tiene definición, se ve al pasar el ratón o al llegar con el teclado */
-function FieldLabel({ name }: { name: string }) {
+/** Lo que dice la etiqueta de un campo; si el término tiene definición, se ve al pasar el ratón o al llegar con el teclado */
+function FieldLabelContent({ name }: { name: string }) {
   const { t } = useTranslation()
   const help = HELP_KEYS[name]
-  if (help === undefined) return <Form.Label><Trans i18nKey={prefix + name} /></Form.Label>
-  return (
-    <Form.Label>
-      <OverlayTrigger trigger={['hover', 'focus']} placement={'top'}
-        overlay={<Popover><Popover.Body>{t('pages.playground.generator.help.' + help)}</Popover.Body></Popover>}>
-        <span className={'n4l-help-term'} tabIndex={0}><Trans i18nKey={prefix + name} /></span>
-      </OverlayTrigger>
-    </Form.Label>
-  )
+  if (help === undefined) return <Trans i18nKey={prefix + name} />
+  return <N4LHelpTerm label={<Trans i18nKey={prefix + name} />} help={t('pages.playground.generator.help.' + help)} />
+}
+
+/** Etiqueta de un campo */
+function FieldLabel({ name }: { name: string }) {
+  return <Form.Label><FieldLabelContent name={name} /></Form.Label>
 }
 
 type HyperparameterNumberProps = {
@@ -44,27 +46,19 @@ type HyperparameterNumberProps = {
   onChange    : (value: number) => void
 }
 
-/** Campo numérico de un hiperparámetro. El valor se ajusta a [min, max] (vacío → min). */
+/**
+ * Campo numérico de un hiperparámetro, entre min y max. Lo que no vale se dice junto al campo (y se sigue usando el
+ * último valor bueno) en vez de recortarlo en silencio
+ */
 export function HyperparameterNumber({ controlId, name, min, max, defaultValue, onChange }: HyperparameterNumberProps) {
-  const { t } = useTranslation()
+  const [value, setValue] = useState(defaultValue)
   return (
-    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-' + name}>
-      <FieldLabel name={name} />
-      <Form.Control
-        type="number"
-        inputMode={'numeric'}
-        min={min}
-        max={max}
-        step={1}
-        required={true}
-        placeholder={t(prefix + name + '-placeholder')}
-        defaultValue={defaultValue}
-        onChange={(e) => {
-          const value = parseInt(e.target.value)
-          onChange(Number.isNaN(value) ? min : Math.min(max, Math.max(min, value)))
-        }} />
-      <Form.Text className="text-muted"><Trans i18nKey={prefix + name + '-info'} /></Form.Text>
-    </Form.Group>
+    <N4LNumberField className={'mb-3'} controlId={controlId} guide={'hp-' + name} label={<FieldLabelContent name={name} />}
+      help={<Trans i18nKey={prefix + name + '-info'} />} value={value} min={min} max={max}
+      onChange={(next) => {
+        setValue(next)
+        onChange(next)
+      }} />
   )
 }
 
@@ -106,19 +100,19 @@ type HyperparameterSelectProps = {
 }
 
 export function HyperparameterSelect({ controlId, label, info, value, defaultValue, disabled, onChange, children }: HyperparameterSelectProps) {
-  const { t } = useTranslation()
+  // El nombre es la etiqueta que se ve (WCAG 2.5.3); la ayuda, su descripción
   return (
     <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-' + label.replace(/-id$/, '')}>
       <FieldLabel name={label} />
       <Form.Select
-        aria-label={t(prefix + info)}
+        aria-describedby={controlId + '-info'}
         value={value}
         defaultValue={defaultValue}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}>
         {children}
       </Form.Select>
-      <Form.Text className="text-muted"><Trans i18nKey={prefix + info} /></Form.Text>
+      <Form.Text id={controlId + '-info'} className="text-muted"><Trans i18nKey={prefix + info} /></Form.Text>
     </Form.Group>
   )
 }
@@ -162,7 +156,7 @@ export function MetricsList({ metrics, onChange, onRemove, valuePrefix = '' }: M
     <Accordion className={'mt-2'} data-guide={'hp-metrics'}>
       {metrics.map((metric, index) => (
         <Accordion.Item key={index} eventKey={index.toString()}>
-          <Accordion.Header>
+          <Accordion.Header as={'h4'}>
             <Trans i18nKey={prefix + 'metric-id-__index__'} values={{ index: index + 1 }} />
           </Accordion.Header>
           <Accordion.Body>

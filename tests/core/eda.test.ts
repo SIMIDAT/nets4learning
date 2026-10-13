@@ -183,7 +183,7 @@ describe('preprocesado', () => {
     expect(result.dataframe.column('color').values).toEqual([0, 1, 0, NaN, 0])
     expect(result.dataframe.column('class').values).toEqual([0, 1, 0, 1, 0])
     expect(result.dataframe.column('size').values).toEqual([0, 1 / 3, NaN, 1, 0])
-    expect(result.applied.size).toBe('float32 · min-max')
+    expect(result.applied.size).toBe('float32, min-max')
   })
 
   test('quita filas repetidas o incompletas, o rellena los ausentes con la media y el valor más frecuente', () => {

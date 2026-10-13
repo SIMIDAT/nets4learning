@@ -4,6 +4,9 @@ import { isActivation } from '@core/nn-utils/ArchitectureTypesHelper'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import type { ImageLayer_t } from '@/types/types'
 import type * as _Types from '@core/types'
+import { isRecurrentLayer, type SeriesLayer_t } from '@core/timeSeries/seriesLayers'
+
+export type { SeriesLayer_t } from '@core/timeSeries/seriesLayers'
 
 // Construcción de las redes de los tres entrenadores. Sin DOM ni avisos: la usan igual el worker de entrenamiento y el
 // hilo principal (el resumen del visor de tfjs-vis y el entrenamiento sin worker).
@@ -34,6 +37,52 @@ export function buildDenseModel(layerList: DenseLayer_t[], inputSize: number): t
     }))
   }
   return model
+}
+
+/**
+ * Red de una serie temporal: recibe los `window` valores anteriores y predice el siguiente. Si empieza con capas
+ * recurrentes, la ventana se les da como una secuencia ([window, 1]) y cada una, salvo la última, pasa la suya a la
+ * siguiente; las recurrentes van antes que las dense
+ */
+export function buildSeriesModel(layerList: SeriesLayer_t[], window: number): tfjs.Sequential {
+  const lastRecurrent = layerList.reduce((last, layer, index) => (isRecurrentLayer(layer) ? index : last), -1)
+  const firstDense = layerList.findIndex((layer) => !isRecurrentLayer(layer))
+  if (lastRecurrent !== -1 && firstDense !== -1 && firstDense < lastRecurrent) {
+    throw new ModelDefinitionError(`Layer ${lastRecurrent + 1}: recurrent layers must come before the dense ones`, 'activation')
+  }
+  const model = tfjs.sequential()
+  if (lastRecurrent !== -1) model.add(tfjs.layers.reshape({ targetShape: [window, 1], inputShape: [window] }))
+  for (const [index, layer] of layerList.entries()) {
+    if (layer.activation === null || layer.activation === undefined || !isActivation(layer.activation)) {
+      throw new ModelDefinitionError(`Layer ${index + 1} activation is not valid (${layer.activation}). Please select an activation function.`, 'activation')
+    }
+    const config = { units: layer.units, activation: layer.activation }
+    switch (layer._class) {
+      case 'dense':
+        model.add(tfjs.layers.dense({ ...config, ...(index === 0) && { inputShape: [window] } }))
+        break
+      case 'simpleRNN':
+        model.add(tfjs.layers.simpleRNN({ ...config, returnSequences: index < lastRecurrent }))
+        break
+      case 'lstm':
+        model.add(tfjs.layers.lstm({ ...config, returnSequences: index < lastRecurrent }))
+        break
+      case 'gru':
+        model.add(tfjs.layers.gru({ ...config, returnSequences: index < lastRecurrent }))
+        break
+    }
+  }
+  return model
+}
+
+/** Los tensores de un entrenamiento de una serie: ventanas [filas, window] y valores [filas, 1] */
+export function seriesTensors({ window, X, y, XTest, yTest }: { window: number, X: Float32Array, y: Float32Array, XTest: Float32Array, yTest: Float32Array }) {
+  return {
+    X    : tfjs.tensor2d(X, [y.length, window]),
+    y    : tfjs.tensor2d(y, [y.length, 1]),
+    XTest: tfjs.tensor2d(XTest, [yTest.length, window]),
+    yTest: tfjs.tensor2d(yTest, [yTest.length, 1]),
+  }
 }
 
 /** Red convolucional (clasificación de imágenes de 28×28) */

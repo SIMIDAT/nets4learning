@@ -1,4 +1,7 @@
+import i18next from 'i18next'
+
 import { trackEvent } from '@core/analytics'
+import { announce } from '@core/a11y/announce'
 
 export const THEMES = ['light', 'dark'] as const
 export type Theme_t = typeof THEMES[number]
@@ -40,6 +43,8 @@ export function changeUserTheme(theme: Theme_t) {
     // Sin almacenamiento: el tema solo dura esta visita
   }
   applyTheme(theme)
+  // El cambio, también para el lector de pantalla (WCAG 4.1.3): «Tema: Oscuro»
+  announce(`${i18next.t('header.theme')}: ${i18next.t('header.theme-' + theme)}`)
   trackEvent('settings_change', { setting: 'theme', value: theme })
 }
 

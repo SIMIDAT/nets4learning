@@ -9,6 +9,7 @@ import { showTrainingVisor } from '@core/nn-utils/trainingVisor'
 import { ModelDefinitionError, buildImageModel, compileModel, modelFromArtifacts } from '@core/training/buildModels'
 import { TrainingWorkerUnavailableError, trainInWorker } from '@core/training/trainingClient'
 import { loadSpriteDataset, type SpriteImageDataset, type SpriteDatasetConfig_t } from '../models/SpriteImageDataset'
+import { shouldOpenVisor } from '@core/a11y/displaySettings'
 
 export type ParamsTrainImage_t = {
   learningRate : number,
@@ -142,6 +143,8 @@ export async function trainImageClassifier(dataset: SpriteDatasetConfig_t, class
   await tfvis.show.modelSummary({ name: 'Model summary', tab: TAB_03_IMAGE_CLASSIFICATION }, summaryModel)
   summaryModel.dispose()
   tfvis.visor().setActiveTab(TAB_03_IMAGE_CLASSIFICATION)
+  // Se abre al crearlo: si se ha elegido en /settings, se cierra (sus gráficas siguen ahí, por si se abre a mano)
+  if (!shouldOpenVisor()) tfvis.visor().close()
   const fitCallbacks = tfvis.show.fitCallbacks(
     { name: 'Training: Train Model', tab: TAB_03_IMAGE_CLASSIFICATION },
     ['loss', 'val_loss', 'acc', 'val_acc'],

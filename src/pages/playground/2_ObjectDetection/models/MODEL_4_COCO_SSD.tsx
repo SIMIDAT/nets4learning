@@ -1,7 +1,17 @@
 import { Trans } from 'react-i18next'
-import I_MODEL_OBJECT_DETECTION from './_model'
+import I_MODEL_OBJECT_DETECTION, { inputWidth, mirrorBoxX } from './_model'
 import * as coCoSsdDetection from '@tensorflow-models/coco-ssd'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
+import type { Smoothing_t } from './smoothing'
+import { type Box_t, drawBox, drawingScale, drawTag, type Rect_t, roundedRect } from './drawing'
+
+// El color de cada clase, siempre el mismo (todas las personas de un color, todos los coches de otro…)
+const CLASS_COLORS = ['#4f46e5', '#db2777', '#0d9488', '#d97706', '#7c3aed', '#0284c7', '#16a34a', '#dc2626', '#9333ea', '#ca8a04']
+function classColor(name: string) {
+  let hash = 0
+  for (const character of name) hash = (hash * 31 + character.charCodeAt(0)) >>> 0
+  return CLASS_COLORS[hash % CLASS_COLORS.length]
+}
 
 export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   static KEY = OD_MODEL_KEYS.COCO_SSD
@@ -9,12 +19,19 @@ export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   static URL_MODEL = ''
   TITLE = 'datasets-models.2-object-detection.coco-ssd.title'
   i18n_TITLE = 'datasets-models.2-object-detection.coco-ssd.title'
-  mirror = false
+  // La webcam, en espejo, como en el resto de modelos: COCO-SSD no sabe reflejar, así que PREDICTION refleja los recuadros
+  mirror = true
 
   /**
    * @type {coCoSsdDetection.ObjectDetection}
    */
   _modelDetector: coCoSsdDetection.ObjectDetection | null = null
+  // El recuadro y la confianza de cada objeto (la clase, la última)
+  SMOOTHING: Smoothing_t<coCoSsdDetection.DetectedObject> = {
+    positions: ({ bbox: [x, y, width, height] }) => [x, y, x + width, y + height],
+    extras   : ({ score }) => [score],
+    update   : (object, [xMin, yMin, xMax, yMax], [score]) => ({ ...object, bbox: [xMin, yMin, xMax - xMin, yMax - yMin], score }),
+  }
 
   DESCRIPTION() {
     const prefix = 'datasets-models.2-object-detection.coco-ssd.description.'
@@ -58,7 +75,7 @@ export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
       </details>
       <details>
         <summary>BibTeX</summary>
-        <pre>
+        <pre lang={'en'}>
           {`
 @article{DBLP:journals/corr/LiuAESR15,
   author       = {Wei Liu and
@@ -89,12 +106,22 @@ export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
     this._modelDetector = await coCoSsdDetection.load()
   }
 
-  async PREDICTION (input_image_or_video: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement, config: { minScore?: number } = {}) {
+  async PREDICTION (
+    input_image_or_video: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+    config: { minScore?: number, flipHorizontal?: boolean } = {}
+  ) {
     if (this._modelDetector === null) return []
     const maxNumBoxes = 20
     // 0.5 para mostrar detecciones; la explicabilidad pasa un umbral más bajo.
     const minScore = config.minScore ?? 0.5
-    return await this._modelDetector.detect(input_image_or_video, maxNumBoxes, minScore)
+    const objects = await this._modelDetector.detect(input_image_or_video, maxNumBoxes, minScore)
+    if (!config.flipHorizontal) return objects
+    // Reflejados, para que caigan sobre el vídeo en espejo
+    const width = inputWidth(input_image_or_video)
+    return objects.map((object): coCoSsdDetection.DetectedObject => {
+      const [x, y, boxWidth, boxHeight] = object.bbox
+      return { ...object, bbox: [mirrorBoxX(x, boxWidth, width), y, boxWidth, boxHeight] }
+    })
   }
 
   // Al explicar, umbral bajo: la puntuación de la clase varía de forma gradual en vez de caer a 0.
@@ -106,19 +133,42 @@ export default class MODEL_4_COCO_SSD extends I_MODEL_OBJECT_DETECTION {
   }
 
   /**
-   *
+   * Cada objeto: un recuadro con las esquinas marcadas, del color de su clase y relleno muy suave, con su nombre y la
+   * confianza encima (numerados si hay varios de la misma clase, de izquierda a derecha). Las etiquetas no se tapan
+   * entre sí: si chocan, van dentro del recuadro o debajo
    * @param {CanvasRenderingContext2D} ctx
-   * @param {coCoSsdDetection.DetectedObject[]} predictions
+   * @param {coCoSsdDetection.DetectedObject[]} objects
    */
-  RENDER(ctx: CanvasRenderingContext2D, predictions: coCoSsdDetection.DetectedObject[]) {
-    let scoreParsed = 0
-    const font = '16px Barlow-SemiBold, Barlow-Regular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-
-    predictions.forEach(({ score, class: _class, bbox }) => {
-      scoreParsed = Math.round(parseFloat(score.toFixed(2)) * 100)
-      this._drawRect(ctx, bbox[0], bbox[1], bbox[2], bbox[3])
-      const label = this.t('datasets-models.2-object-detection.coco-ssd.render-label', { label: this.EXPLAIN_LABEL_TEXT(_class), score: scoreParsed })
-      this._drawTextBG(ctx, label, font, bbox[0], bbox[1], 20)
+  RENDER(ctx: CanvasRenderingContext2D, objects: coCoSsdDetection.DetectedObject[]) {
+    const prefix = 'datasets-models.2-object-detection.coco-ssd.render.'
+    const scale = drawingScale(ctx)
+    const items = objects.map((object) => {
+      const [x, y, width, height] = object.bbox
+      const box: Box_t = { xMin: x, yMin: y, xMax: x + width, yMax: y + height, width, height }
+      return { object, box, color: classColor(object.class), number: null as number | null }
     })
+    for (const item of items) {
+      const same = items.filter(({ object }) => object.class === item.object.class)
+      if (same.length > 1) item.number = same.filter(({ box }) => box.xMin < item.box.xMin).length + 1
+    }
+
+    // Los recuadros: primero los grandes, para que los pequeños queden encima
+    for (const { box, color } of [...items].sort((a, b) => b.box.width * b.box.height - a.box.width * a.box.height)) {
+      ctx.save()
+      ctx.globalAlpha = 0.1
+      ctx.fillStyle = color
+      roundedRect(ctx, box.xMin, box.yMin, box.width, box.height, 10 * scale)
+      ctx.fill()
+      ctx.restore()
+      drawBox(ctx, box, scale, color)
+    }
+    // Las etiquetas, encima de todos los recuadros: primero las de más confianza, que se quedan el mejor sitio
+    const placed: Rect_t[] = []
+    for (const { object, box, color, number } of [...items].sort((a, b) => b.object.score - a.object.score)) {
+      const name = this.EXPLAIN_LABEL_TEXT(object.class)
+      const text = number === null ? name : this.t(prefix + 'numbered', { label: name, number })
+      const score = this.t(prefix + 'score', { percent: Math.round(object.score * 100) })
+      placed.push(drawTag(ctx, box, text, score, scale, color, placed))
+    }
   }
 }

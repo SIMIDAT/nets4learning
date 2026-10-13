@@ -37,7 +37,8 @@ export default function N4LConfusionMatrix({ classes, labels, predictions }: N4L
       <Table bordered={true} responsive={true} className={'n4l-confusion-matrix w-auto mx-auto'}>
         <thead>
           <tr>
-            <th colSpan={2} rowSpan={2} className={'n4l-confusion-corner'} />
+            {/* La esquina no es el encabezado de nada: una celda vacía */}
+            <td colSpan={2} rowSpan={2} className={'n4l-confusion-corner'} />
             <th colSpan={classes.length} scope={'colgroup'}>{t(prefix + 'confusion-predicted')}</th>
             <th rowSpan={2} scope={'col'}>{t(prefix + 'confusion-total')}</th>
             <th rowSpan={2} scope={'col'}>

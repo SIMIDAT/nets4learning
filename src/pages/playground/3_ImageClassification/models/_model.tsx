@@ -80,6 +80,14 @@ export default abstract class I_MODEL_IMAGE_CLASSIFICATION {
     return []
   }
 
+  /**
+   * La clase de cada imagen de ejemplo (en el mismo orden), ya traducida, si se sabe: con ella el botón del ejemplo dice
+   * qué es («Clasificar el ejemplo 3: 7»), lo mismo que ve quien mira la imagen
+   */
+  LIST_IMAGES_EXAMPLES_LABELS (): Array<string | undefined> {
+    return []
+  }
+
   /** Caracteres que se escribían de varias formas (KMNIST): los ejemplos enseñan la de hoy junto a las antiguas */
   CHARACTER_FORMS (): CharacterForms_t[] | null {
     return null

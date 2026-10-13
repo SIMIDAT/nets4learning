@@ -107,7 +107,7 @@ export default function RegressionEditorFeaturesSelector() {
         {show && <>
           <Accordion defaultActiveKey="Target">
             <Accordion.Item eventKey="Target">
-              <Accordion.Header><Trans i18nKey={prefix + 'feature-selector-y'} /></Accordion.Header>
+              <Accordion.Header as={'h4'}><Trans i18nKey={prefix + 'feature-selector-y'} /></Accordion.Header>
               <Accordion.Body>
                 <Form.Group controlId={'feature-selector-y'}>
                   <Form.Label>
@@ -131,7 +131,7 @@ export default function RegressionEditorFeaturesSelector() {
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="Features">
-              <Accordion.Header><Trans i18nKey={prefix + 'feature-selector-x'} /></Accordion.Header>
+              <Accordion.Header as={'h4'}><Trans i18nKey={prefix + 'feature-selector-x'} /></Accordion.Header>
               <Accordion.Body>
                 {datasets
                   .data[datasets.index]

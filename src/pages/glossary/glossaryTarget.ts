@@ -1,8 +1,10 @@
-// Término de la tarea según el prefijo de la acción (task-00 tabular, task-01 regresión, task-03 imágenes)
+// Término de la tarea según el prefijo de la acción (task-00 tabular, task-01 regresión, task-03 imágenes); en las
+// series temporales (task-05), su grupo de conceptos
 const TASK_SECTIONS: Record<string, string> = {
   'task-00': 'task-tabular-classification',
   'task-01': 'task-regression',
   'task-03': 'task-image-classification',
+  'task-05': 'time-series',
 }
 
 // Grupo de términos según el paso del playground desde el que se abre la ayuda

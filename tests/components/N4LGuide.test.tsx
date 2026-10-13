@@ -195,7 +195,7 @@ describe('N4LGuide', () => {
       expect(await screen.findByText('El primer paso.')).toBeInTheDocument()
       const select = screen.getByTestId('Test-GuideVoiceSelect') as HTMLSelectElement
       // Automática, las dos de español (la de España primero) y la que funciona en un servidor, marcada
-      expect(Array.from(select.options).map(({ text }) => text)).toEqual(['guide.voice-auto', 'Laura', 'Jorge · guide.voice-online'])
+      expect(Array.from(select.options).map(({ text }) => text)).toEqual(['guide.voice-auto', 'Laura', 'Jorge (guide.voice-online)'])
 
       spoken.length = 0
       await act(async () => {

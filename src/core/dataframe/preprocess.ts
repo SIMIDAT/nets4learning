@@ -94,7 +94,7 @@ export function preprocessDataFrame(dataframe: dfd.DataFrame, options: Preproces
     }
     if (options.scaler !== 'none' && name !== options.target && (kind === 'numeric' || action === 'label-encoder')) {
       values = scale(values as number[], options.scaler)
-      applied[name] += ` · ${options.scaler}`
+      applied[name] += `, ${options.scaler}`
     }
     data[name] = values
   }

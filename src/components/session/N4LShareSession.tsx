@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap'
 import { useTranslation } from 'react-i18next'
 
@@ -39,6 +39,8 @@ type N4LShareSessionProps = {
  * Quien lo abre los tiene listos para entrenar con el mismo conjunto de datos (useSharedSession).
  */
 export default function N4LShareSession({ getSession }: N4LShareSessionProps) {
+  // El diálogo se llama como su título (WCAG 4.1.2) y su botón de cerrar, en el idioma de la página
+  const titleId = useId()
   const { t } = useTranslation()
   const prefix = 'session.share.'
   const [link, setLink] = useState<string | null>(null)
@@ -85,9 +87,9 @@ export default function N4LShareSession({ getSession }: N4LShareSessionProps) {
       <Button size={'sm'} variant={'outline-primary'} className={'text-nowrap'} onClick={handleClick_Open} data-testid={'Test-SessionShare'}>
         {t(prefix + 'button')}
       </Button>
-      <Modal show={link !== null} onHide={() => setLink(null)} centered={true} data-testid={'Test-SessionShare-Modal'}>
+      <Modal aria-labelledby={titleId} show={link !== null} onHide={() => setLink(null)} centered={true} data-testid={'Test-SessionShare-Modal'}>
         <Modal.Header closeButton={true} closeLabel={t(prefix + 'close')}>
-          <Modal.Title as={'h2'} className={'h5'}>{t(prefix + 'title')}</Modal.Title>
+          <Modal.Title id={titleId} as={'h2'} className={'h5'}>{t(prefix + 'title')}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>{t(prefix + 'text')}</p>

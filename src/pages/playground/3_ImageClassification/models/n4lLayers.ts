@@ -7,17 +7,19 @@ import type { SpriteImage_t } from './spriteDecode'
  * «locked», protegidas
  */
 export function imageLayersOf(layers: N4LLayer_t[], { width, height, channels }: SpriteImage_t): ImageLayer_t[] {
-  return layers.map((layer, index): ImageLayer_t => {
+  return layers.flatMap((layer, index): ImageLayer_t[] => {
+    // Las recurrentes son de las series temporales: una red de imágenes no las tiene
+    if (layer.class === 'simpleRNN' || layer.class === 'lstm' || layer.class === 'gru') return []
     const base: ImageLayer_t = { _class: layer.class, _protected: layer.locked ?? false, ...(index === 0 && { inputShape: [height, width, channels] }) }
     switch (layer.class) {
       case 'conv2d':
-        return { ...base, filters: layer.filters, kernelSize: layer.kernelSize, activation: layer.activation }
+        return [{ ...base, filters: layer.filters, kernelSize: layer.kernelSize, activation: layer.activation }]
       case 'maxPooling2d':
-        return { ...base, poolSize: layer.poolSize, strides: layer.strides }
+        return [{ ...base, poolSize: layer.poolSize, strides: layer.strides }]
       case 'dense':
-        return { ...base, units: layer.units, activation: layer.activation }
+        return [{ ...base, units: layer.units, activation: layer.activation }]
       default:
-        return base
+        return [base]
     }
   })
 }

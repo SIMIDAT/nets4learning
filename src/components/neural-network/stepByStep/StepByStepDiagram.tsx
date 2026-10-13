@@ -112,7 +112,7 @@ export default function StepByStepDiagram(props: StepByStepDiagramProps) {
         {isSelected && <circle cx={x(column)} cy={y(column, index)} r={radius + 4.5} className={'n4l-sbs-selected'} />}
         <circle cx={x(column)} cy={y(column, index)} r={radius}
           fill={computed ? tint(signColor(value), 0.15 + 0.7 * Math.abs(value) / maxAbs(columnValues)) : 'var(--bs-body-bg)'}
-          stroke={delta !== null ? 'var(--n4l-sbs-gradient)' : 'var(--bs-border-color)'}
+          stroke={delta !== null ? 'var(--n4l-sbs-gradient)' : 'var(--n4l-input-border-color)'}
           strokeWidth={delta !== null ? 1.5 + 3 * Math.abs(delta) / maxDelta : 1.2} />
         {showValues && computed &&
           <text x={x(column)} y={y(column, index)} className={'n4l-sbs-value'} dominantBaseline={'central'} textAnchor={'middle'}>{format(value)}</text>}
@@ -122,7 +122,7 @@ export default function StepByStepDiagram(props: StepByStepDiagramProps) {
 
   const outputLabel = (index: number) => {
     const name = truncate(outputNames[index] ?? String(index + 1), 14)
-    const probability = forwardUntil === L - 1 ? ' · ' + format(trace.a[L - 1][index]) : ''
+    const probability = forwardUntil === L - 1 ? ': ' + format(trace.a[L - 1][index]) : ''
     return (index === targetIndex ? '✓ ' : '') + name + probability
   }
 

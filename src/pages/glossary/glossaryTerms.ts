@@ -101,7 +101,7 @@ const lossTerm = ({ key, label }: { key: string, label: string }): GlossaryTerm_
 })
 
 const ACTIVATION = 'pages.glossary.activation-functions.table.'
-const PYTORCH = (name: string) => ({ href: `https://pytorch.org/docs/stable/generated/torch.nn.${name}.html`, label: `PyTorch · nn.${name}` })
+const PYTORCH = (name: string) => ({ href: `https://pytorch.org/docs/stable/generated/torch.nn.${name}.html`, label: `PyTorch: nn.${name}` })
 
 const activationTerm = (key: string, math: string, image: string | undefined, pytorch: string): GlossaryTerm_t => ({
   id                : 'activation-' + key,
@@ -150,7 +150,17 @@ export const GLOSSARY_SECTIONS: GlossarySection_t[] = [
         { id: 'task-regression', titleKey: 'pages.glossary.regression.title', paragraphKeys: range('pages.glossary.regression.text.', 0, 3) },
         { id: 'task-image-classification', titleKey: 'pages.glossary.image-classification.title', paragraphKeys: range('pages.glossary.image-classification.text-', 1, 5) },
         { id: 'task-object-identification', titleKey: 'pages.glossary.object-identification.title', paragraphKeys: range('pages.glossary.object-identification.text-', 1, 4) },
+        { id: 'task-time-series', titleKey: 'pages.glossary.time-series.title', paragraphKeys: range('pages.glossary.time-series.text-', 1, 3) },
       ],
+    }, {
+      // Lo propio de las series temporales: cómo se preparan, cómo se predicen y con qué se comparan
+      id      : 'time-series',
+      titleKey: 'pages.glossary.time-series.group-title',
+      terms   : ['window', 'trend-seasonality', 'differencing', 'one-step-recursive', 'baselines', 'recurrent', 'mae-rmse'].map((key) => ({
+        id           : 'time-series-' + key,
+        titleKey     : `pages.glossary.time-series.${key}.title`,
+        paragraphKeys: [`pages.glossary.time-series.${key}.text`],
+      })),
     }],
   },
   {
@@ -183,7 +193,7 @@ export const GLOSSARY_SECTIONS: GlossarySection_t[] = [
         optimizerTerm('adamax', 'Adamax'),
       ],
     }],
-    references: [{ href: 'https://js.tensorflow.org/api/latest/#Training-Optimizers', label: 'TensorFlow.js · Training / Optimizers' }],
+    references: [{ href: 'https://js.tensorflow.org/api/latest/#Training-Optimizers', label: 'TensorFlow.js: Training / Optimizers' }],
   },
   {
     step     : 'hr.activation-functions',
@@ -213,7 +223,7 @@ export const GLOSSARY_SECTIONS: GlossarySection_t[] = [
         terms   : [activationTerm('softmax', '$$ \\sigma(z_i) = \\frac{e^{z_{i}}}{\\sum_{j=1}^K e^{z_{j}}} \\quad i = 1, 2, \\dots, K $$', undefined, 'Softmax')],
       },
     ],
-    references: [{ href: 'https://js.tensorflow.org/api/latest/#Layers-Advanced%20Activation', label: 'TensorFlow.js · Layers / Advanced Activation' }],
+    references: [{ href: 'https://js.tensorflow.org/api/latest/#Layers-Advanced%20Activation', label: 'TensorFlow.js: Layers / Advanced Activation' }],
   },
   {
     step     : 'hr.loss-functions',
@@ -250,7 +260,7 @@ export const GLOSSARY_SECTIONS: GlossarySection_t[] = [
         ],
       },
     ],
-    references: [{ href: 'https://js.tensorflow.org/api/latest/#tf.LayersModel.compile', label: 'TensorFlow.js · tf.LayersModel.compile (loss)' }],
+    references: [{ href: 'https://js.tensorflow.org/api/latest/#tf.LayersModel.compile', label: 'TensorFlow.js: tf.LayersModel.compile (loss)' }],
   },
   {
     step     : 'hr.metric-function',
@@ -283,7 +293,7 @@ export const GLOSSARY_SECTIONS: GlossarySection_t[] = [
       ],
     }],
     references: [
-      { href: 'https://js.tensorflow.org/api/latest/#Metrics', label: 'TensorFlow.js · Metrics' },
+      { href: 'https://js.tensorflow.org/api/latest/#Metrics', label: 'TensorFlow.js: Metrics' },
       { href: 'https://www.iartificial.net/precision-recall-f1-accuracy-en-clasificacion/', label: 'Precision, Recall, F1, Accuracy en clasificación' },
     ],
   },

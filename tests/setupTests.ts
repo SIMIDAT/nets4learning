@@ -10,6 +10,10 @@ import { vi } from 'vitest';
 // segundo que esperan por defecto waitFor y findBy se quedaba justo (TestPage tardaba 1045 ms) y fallaban al azar
 configure({ asyncUtilTimeout: 5000 })
 
+// jsdom no desplaza la página y no tiene scrollIntoView (lo usan los saltos a una sección, como al elegir una tarea en
+// la home): uno vacío, que las pruebas pueden espiar
+if (typeof Element.prototype.scrollIntoView !== 'function') Element.prototype.scrollIntoView = vi.fn()
+
 vi.mock('react-i18next', async () => {
   const actual = await vi.importActual<any>('react-i18next');
 

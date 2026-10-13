@@ -1,5 +1,5 @@
-// Worker de entrenamiento: entrena las redes de los tres entrenadores (clasificación tabular, regresión y clasificación
-// de imágenes) fuera del hilo principal, con el backend de TF.js elegido en la página. Manda el progreso de cada lote
+// Worker de entrenamiento: entrena las redes de los entrenadores (clasificación tabular, regresión, clasificación de
+// imágenes y series temporales) fuera del hilo principal, con el backend de TF.js elegido en la página. Manda el progreso de cada lote
 // y cada época, para cuando se le pide y devuelve el modelo serializado, el historial y la evaluación.
 import * as tfjs from '@tensorflow/tfjs'
 import { exposeWorker } from '@core/workers/exposeWorker'
@@ -7,13 +7,14 @@ import type { WorkerTaskContext_t } from '@core/workers/workerProtocol'
 import { activateTFBackend, type TFBackend_t } from '@core/tfBackend'
 import { trainTestSplit } from '@utils/trainTestSplit'
 import { decodeSpriteRows, spriteImageValues } from '@pages/playground/3_ImageClassification/models/spriteDecode'
-import { ModelDefinitionError, buildDenseModel, buildImageModel, compileModel, historyData, modelArtifacts } from './buildModels'
+import { ModelDefinitionError, buildDenseModel, buildImageModel, buildSeriesModel, compileModel, historyData, modelArtifacts, seriesTensors } from './buildModels'
 import {
   BACKEND_ERROR_PREFIX,
   DEFINITION_ERROR_PREFIX,
   type ClassificationEvaluation_t,
   type DenseTrainingRequest_t,
   type ImageTrainingRequest_t,
+  type SeriesTrainingRequest_t,
   type TrainingProgress_t,
   type TrainingResult_t,
 } from './trainingTypes'
@@ -148,7 +149,33 @@ async function trainImages(request: ImageTrainingRequest_t, context: WorkerTaskC
   }
 }
 
-export const trainingWorkerApi = { trainDense, trainImages }
+async function trainSeries(request: SeriesTrainingRequest_t, context: WorkerTaskContext_t): Promise<TrainingResult_t> {
+  await ensureBackend(request.backend)
+  const { window, layerList, compile, numberOfEpoch, batchSize } = request
+  const tensors = seriesTensors(request)
+  try {
+    const model = await withDefinitionErrors(async () => {
+      const built = buildSeriesModel(layerList, window)
+      compileModel(built, compile)
+      return built
+    })
+    // Se barajan las ventanas de entrenamiento (cada una ya lleva su historia); la serie se partió sin barajar
+    const history = await model.fit(tensors.X, tensors.y, {
+      batchSize,
+      shuffle       : true,
+      validationData: [tensors.XTest, tensors.yTest],
+      epochs        : numberOfEpoch,
+      callbacks     : progressCallbacks(model, context, numberOfEpoch),
+    })
+    const artifacts = await modelArtifacts(model)
+    model.dispose()
+    return { artifacts, history: historyData(history) }
+  } finally {
+    tfjs.dispose(Object.values(tensors))
+  }
+}
+
+export const trainingWorkerApi = { trainDense, trainImages, trainSeries }
 export type TrainingWorkerApi_t = typeof trainingWorkerApi
 
 exposeWorker(trainingWorkerApi)

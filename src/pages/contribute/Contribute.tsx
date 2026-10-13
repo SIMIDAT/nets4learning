@@ -102,7 +102,10 @@ export default function Contribute() {
               <Card.Header><h2 className={'h5 mb-0'}>{t(prefix + 'setup.title')}</h2></Card.Header>
               <Card.Body>
                 <p>{t(prefix + 'setup.requirements')}</p>
-                <pre className={'n4l-code bg-body-tertiary border rounded p-3'}><code>{'corepack enable\npnpm install\npnpm dev'}</code></pre>
+                {/* Con el foco (tabIndex) se puede desplazar con el teclado cuando no cabe (WCAG 2.1.1) */}
+                <pre className={'n4l-code bg-body-tertiary border rounded p-3'} tabIndex={0} role={'region'} aria-label={t(prefix + 'setup.title')}>
+                  <code>{'corepack enable\npnpm install\npnpm dev'}</code>
+                </pre>
                 <p className={'small'}>{t(prefix + 'setup.url')} <code>http://localhost:5173/n4l/</code></p>
                 <Table size={'sm'} className={'mb-0 small'}>
                   <tbody>
@@ -143,7 +146,9 @@ export default function Contribute() {
               (2024). Nets4Learning: A Web Platform for Designing and Testing ANN/DNN Models. <i>Electronics</i>, 13(22), 4378.{' '}
               <a href={'https://doi.org/10.3390/electronics13224378'} target={'_blank'} rel={'noreferrer'}>doi:10.3390/electronics13224378</a>
             </p>
-            <pre className={'n4l-code bg-body-tertiary border rounded p-3 mb-0'}><code>{BIBTEX}</code></pre>
+            <pre className={'n4l-code bg-body-tertiary border rounded p-3 mb-0'} tabIndex={0} role={'region'} aria-label={'BibTeX'} lang={'en'}>
+              <code>{BIBTEX}</code>
+            </pre>
           </Card.Body>
         </Card>
 

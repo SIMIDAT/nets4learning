@@ -103,7 +103,7 @@ export default function Glossary() {
 
             {section.groups.filter((group) => group.terms.length > 0).map((group, index) => (
               <div key={group.id ?? index} id={group.id === undefined ? undefined : 'glossary-' + group.id} className={'n4l-glossary-group'}>
-                {group.titleKey !== undefined && <h2 className={'h5 n4l-glossary-group-title'}>{t(group.titleKey)}</h2>}
+                {group.titleKey !== undefined && <h3 className={'h5 n4l-glossary-group-title'}>{t(group.titleKey)}</h3>}
                 <Row xs={1} lg={2} className={'g-3'}>
                   {group.terms.map((term) => (
                     <Col key={term.id}>
@@ -119,7 +119,7 @@ export default function Glossary() {
                 <span className={'text-body-secondary'}>{t('pages.glossary.references-title')}:</span>{' '}
                 {section.references.map((reference, index) => (
                   <span key={reference.href}>
-                    {index > 0 && ' · '}
+                    {index > 0 && ', '}
                     <a href={reference.href} target={'_blank'} rel={'noreferrer'} className={'link-secondary'}>{reference.label}</a>
                   </span>
                 ))}

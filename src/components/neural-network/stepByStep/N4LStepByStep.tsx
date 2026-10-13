@@ -110,7 +110,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
   // Con el signo menos de verdad (−) en vez del guion
   const format = (value: number) => formatter.format(Math.abs(value) < 0.005 ? 0 : value).replace('-', '−')
   const formatPrecise = (value: number) => precise.format(value).replace('-', '−')
-  // En una suma, los negativos entre paréntesis: 0,13·0,22 + (−0,07)·0,63
+  // En una suma, los negativos entre paréntesis: 0,13 × 0,22 + (−0,07) × 0,63
   const term = (value: number) => (value < -0.005 ? `(${format(value)})` : format(value))
   const formatRate = (value: number) => value.toLocaleString(i18n.language, { maximumSignificantDigits: 3 })
 
@@ -204,7 +204,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
 
   const rowOptions = useMemo(() => y.map((row, index) => ({
     value: index,
-    label: `#${rowNumbers?.[index] ?? index} · ${kind === 'classification' ? outputNames[argMax(row)] : `${outputNames[0]}: ${formatter.format(row[0])}`}`,
+    label: `#${rowNumbers?.[index] ?? index}: ${kind === 'classification' ? outputNames[argMax(row)] : `${outputNames[0]}: ${formatter.format(row[0])}`}`,
   })), [kind, y, rowNumbers, outputNames, formatter])
 
   // Avanza solo, fase a fase, a la velocidad elegida
@@ -280,7 +280,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
     if (layer === -1) return t(prefix + 'formula-input', { name: featureNames[index] ?? index + 1, value: format(trace.input[index]) })
     const previous = layer === 0 ? trace.input : trace.a[layer - 1]
     const weights = run.network.weights[layer][index]
-    const terms = weights.slice(0, TERMS).map((w, i) => `${term(w)}·${term(previous[i])}`).join(' + ')
+    const terms = weights.slice(0, TERMS).map((w, i) => `${term(w)} × ${term(previous[i])}`).join(' + ')
     const sum = `z = ${terms}${weights.length > TERMS ? ' + …' : ''} + ${term(run.network.biases[layer][index])} = ${format(trace.z[layer][index])}`
     const computed = phase.kind !== 'input' && !(phase.kind === 'forward' && layer > phase.layer)
     if (!computed) return t(prefix + 'formula-pending', { index: index + 1, layer: layer + 1 })
@@ -299,7 +299,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
       const derivative = act === 'softmax' ? null : activationBackward(act, [trace.z[layer][index]], [trace.a[layer][index]], [1])[0]
       deltaPart = derivative === null
         ? `δ = ${format(delta)}`
-        : `δ = (Σ w·δ) · ${act}′(z) = ${term(back)} · ${term(derivative)} = ${format(delta)}`
+        : `δ = (Σ w × δ) × ${act}′(z) = ${term(back)} × ${term(derivative)} = ${format(delta)}`
     }
     if (phase.kind !== 'update') return `${forwardPart}\n${deltaPart}`
     const bias = run.network.biases[layer][index]
@@ -329,7 +329,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
                 setRun({ ...run, example: row, phase: 0 })
                 setPlaying(false)
               }}
-              placeholder={t(prefix + 'example')} searchPlaceholder={t(prefix + 'search')} noResultsText={t(prefix + 'no-results')} />
+              label={t(prefix + 'example')} placeholder={t(prefix + 'example')} searchPlaceholder={t(prefix + 'search')} noResultsText={t(prefix + 'no-results')} />
           </div>
           <ButtonGroup size={'sm'}>
             <Button variant={'outline-primary'} disabled={run.phase === 0} onClick={() => setRun({ ...run, phase: run.phase - 1 })}
