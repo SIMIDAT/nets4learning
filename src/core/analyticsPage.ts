@@ -20,6 +20,7 @@ const PAGE_TYPES: Record<string, string> = {
   'settings'            : 'settings',
   'accessibility'       : 'accessibility',
   'learn'               : 'learn',
+  'lab'                 : 'lab',
   'report'              : 'report',
   '404'                 : 'not_found',
   'debug'               : 'dev',

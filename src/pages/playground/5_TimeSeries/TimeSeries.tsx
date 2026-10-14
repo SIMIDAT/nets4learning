@@ -23,6 +23,7 @@ import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LPageHeader from '@components/neural-network/N4LPageHeader'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
 import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
 import N4LPackageDescription from '@components/n4l/N4LPackageDescription'
@@ -38,6 +39,9 @@ import TimeSeriesForecast from './TimeSeriesForecast'
 import { usePackageSeries } from './usePackageSeries'
 import { timeSeriesTrainerGuide } from './trainerGuide'
 import { TimeSeriesEditorLayers, TimeSeriesHyperparameters } from './TimeSeriesEditor'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { seriesCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 import {
   DEFAULT_HYPER,
   DEFAULT_LAYERS,
@@ -78,6 +82,18 @@ export default function TimeSeries({ dataset }: { dataset: string }) {
     ...(pkg?.section.training?.learningRate !== undefined && { learningRate: pkg.section.training.learningRate }),
     ...(pkg?.section.training?.epochs !== undefined && { epochs: pkg.section.training.epochs }),
   }))
+  // El código equivalente de la red (Ver el código): recibe la ventana de valores anteriores
+  const codeSpec = useMemo((): ModelCode_t => ({
+    inputShape  : [prep.window],
+    layers      : seriesCodeLayers(layers, prep.window),
+    optimizer   : hyper.optimizer,
+    learningRate: hyper.learningRate,
+    loss        : createLoss(hyper.loss, {}),
+    metrics     : createMetricsList(SERIES_METRICS, {}),
+    epochs      : hyper.epochs,
+    batchSize   : hyper.batchSize,
+    dataComment : t('model-code.data-series', { window: prep.window }),
+  }), [layers, prep.window, hyper, t])
   const [models, setModels] = useState<TrainedSeriesModel_t[]>([])
   // El modelo que se enseña en «Predecir»; null, el último entrenado
   const [chosen, setChosen] = useState<number | null>(null)
@@ -266,8 +282,15 @@ export default function TimeSeries({ dataset }: { dataset: string }) {
               <TimeSeriesHyperparameters key={sessionVersion} hyper={hyper} onChange={setHyper} waiting={series === null} />
             </Col>
           </Row>
+          {/* El código equivalente de la red */}
+          <Row className={'mt-3'}>
+            <Col xl={12}>
+              <N4LModelCode spec={codeSpec} task={'time-series'} />
+            </Col>
+          </Row>
           <Row className={'mt-3'}>
             <Col xl={12} data-guide={'train'}>
+              <N4LTrainingPrediction nextModel={models.length + 1} disabled={training.isTraining} />
               <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining} progress={training.progress} isStopping={training.isStopping} onStop={training.stop}
                 disabled={!isValid || training.isTraining}>
                 <Trans i18nKey={'pages.playground.generator.models.button-submit'} />

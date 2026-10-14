@@ -705,6 +705,7 @@
     "backend-error-fallback": "Este navegador no puede usarlo. TensorFlow.js sigue usando {{backend}}.",
     "menu": "Menú",
     "tasks": "Tareas",
+    "lab": "Laboratorio 2D",
     "packages": "Paquetes .n4l",
     "packages-saved_one": "{{count}} paquete guardado en este navegador",
     "packages-saved_other": "{{count}} paquetes guardados en este navegador",
@@ -1795,6 +1796,12 @@
           "add-layer-start": "Añadir capa al principio",
           "add-layer-end": "Añadir capa al final",
           "delete-layer": "Eliminar capa {{index}}",
+          "move-up": "Subir la capa {{index}}",
+          "move-down": "Bajar la capa {{index}}",
+          "move-group": "Orden de la capa {{index}}",
+          "moved": "Capa {{index}} movida al puesto {{position}}.",
+          "drag": "Arrastra para mover la capa {{index}}",
+          "drag-help": "Para cambiar el orden, arrastra cada capa por el asa de su izquierda, o ábrela y usa «Subir» y «Bajar».",
           "layer-id": "Capa {{index}}",
           "kernel-size": "Tamaño del Kernel",
           "kernel-size-placeholder": "Introduce el tamaño del kernel de la capa",
@@ -3375,6 +3382,10 @@
         "text": "Ya sabes entrenar, comparar, arreglar y explicar redes neuronales. Ahora prueba con tus propios datos: sube un CSV en clasificación tabular o en regresión, o analízalo antes en el AED."
       },
       "steps": {
+        "lab": {
+          "title": "Juega con una red",
+          "text": "En el laboratorio, una red pequeña separa puntos en un plano y ves su frontera mientras aprende. Prueba los ejemplos de «Prueba esto»."
+        },
         "glossary": {
           "title": "Las palabras clave",
           "text": "Lee en el glosario qué son una red neuronal, una capa, una neurona y una época: salen en todas las páginas."
@@ -3386,6 +3397,10 @@
         "train": {
           "title": "Entrena tu primera red",
           "text": "Con las flores Iris: pulsa «Entrenar modelo» y mira cómo baja la pérdida época a época. Debajo verás en palabras cómo ha ido."
+        },
+        "step-by-step": {
+          "title": "Mira cómo aprende tu red",
+          "text": "Con las flores Iris, Paso a paso enseña un ejemplo recorriendo la red: hacia delante, el error y hacia atrás, y cómo cambia cada peso. Avanza al menos un paso."
         },
         "compare": {
           "title": "Cambia una cosa y compara",
@@ -3584,6 +3599,100 @@
         "review": "Esta declaración se revisa cada año y con cada versión mayor de la aplicación."
       },
       "new-tab": "(se abre en otra pestaña)"
+    },
+    "lab": {
+      "title": "Laboratorio: una red en 2D",
+      "intro": "Una red neuronal pequeña aprende a separar los puntos naranjas de los azules. Cambia los datos, lo que entra en la red o sus capas y mira cómo cambia la frontera mientras entrena.",
+      "data": {
+        "title": "Datos",
+        "dataset": "Conjunto",
+        "noise": "Ruido: {{value}}",
+        "count": "Puntos",
+        "new": "Otros puntos"
+      },
+      "datasets": {
+        "blobs": "Dos nubes",
+        "circles": "Círculos",
+        "xor": "XOR (cuadrantes)",
+        "spiral": "Espirales"
+      },
+      "features": {
+        "title": "Lo que entra en la red",
+        "help": "Las coordenadas de cada punto y, si quieres, otras calculadas con ellas.",
+        "x": "x",
+        "y": "y",
+        "x2": "x²",
+        "y2": "y²",
+        "xy": "x × y"
+      },
+      "network": {
+        "title": "La red",
+        "help": "Capas ocultas entre la entrada y la salida, cada una con sus neuronas.",
+        "none": "Sin capas ocultas: la entrada va directa a la salida.",
+        "layer": "Capa {{number}}: {{units}} neuronas",
+        "fewer": "Quitar una neurona a la capa {{number}}",
+        "more": "Añadir una neurona a la capa {{number}}",
+        "add": "Añadir una capa",
+        "remove": "Quitar la última capa",
+        "activation": "Función de activación"
+      },
+      "training": {
+        "title": "Cómo aprende",
+        "learning-rate": "Tasa de aprendizaje",
+        "speed": "Velocidad",
+        "speeds": {
+          "slow": "Despacio (para ver la frontera)",
+          "normal": "Normal",
+          "fast": "Lo más rápido posible"
+        },
+        "batch-size": "Puntos por lote"
+      },
+      "train": "Entrenar",
+      "pause": "Pausar",
+      "step": "Una época",
+      "restart": "Empezar de cero",
+      "restarted": "La red empieza de cero, con pesos nuevos al azar.",
+      "show-test": "Ver los de prueba",
+      "canvas": "El plano con los puntos de {{dataset}} y, de fondo, la clase que predice la red en cada zona",
+      "legend": "Naranja (círculos) y azul (cuadrados): las dos clases. Rellenos, los puntos con los que aprende; blancos, los de prueba, que no ve al entrenar. El fondo es lo que predice la red: cuanto más intenso, más segura.",
+      "not-trained": "Aún sin entrenar: pulsa «Entrenar» o «Una época».",
+      "summary": "Época {{epoch}}: acierta el {{testAccuracy}} de los puntos de prueba y el {{trainAccuracy}} de los de entrenamiento. Pérdida: {{trainLoss}} con los de entrenamiento y {{testLoss}} con los de prueba.",
+      "diverged": "La pérdida se ha disparado y la red ya no aprende: baja la tasa de aprendizaje y empieza de cero.",
+      "loss": {
+        "title": "La pérdida",
+        "empty": "Aquí verás cómo baja la pérdida al entrenar.",
+        "train": "entrenamiento",
+        "test": "prueba",
+        "help": "Si la de prueba sube mientras la de entrenamiento baja, se está aprendiendo los puntos de memoria (sobreajuste)."
+      },
+      "experiments": {
+        "title": "Prueba esto",
+        "xor-line": {
+          "title": "XOR sin capas ocultas",
+          "lesson": "Sin capas ocultas, la red solo puede trazar una línea recta: con el XOR no llega ni a la mitad de aciertos."
+        },
+        "xor-hidden": {
+          "title": "XOR con una capa de 4 neuronas",
+          "lesson": "Con una capa oculta combina varias rectas y ya separa el XOR: para eso sirven las capas ocultas."
+        },
+        "circles-features": {
+          "title": "Círculos con x² e y²",
+          "lesson": "Con x² e y² como entrada, los círculos se separan sin capas ocultas: elegir bien lo que entra en la red ahorra capas."
+        },
+        "spiral": {
+          "title": "La espiral, la más difícil",
+          "lesson": "La espiral necesita más neuronas, más características y paciencia: deja que entrene unos cientos de épocas."
+        },
+        "learning-rate": {
+          "title": "Una tasa de aprendizaje enorme",
+          "lesson": "Con una tasa de 3, cada paso se pasa de largo: la pérdida va a saltos en vez de bajar. Prueba con 0,1."
+        },
+        "overfitting": {
+          "title": "Pocos puntos, mucho ruido y una red grande",
+          "lesson": "Se aprende los puntos de memoria: la pérdida de entrenamiento baja y la de prueba sube. Es el sobreajuste."
+        }
+      },
+      "next": "Cuando tengas la idea, sigue con"
     }
   },
   "generator": {
@@ -5154,5 +5263,36 @@
         "Si quieres, pide la explicación de lo que ha encontrado."
       ]
     }
+  },
+  "model-code": {
+    "title": "Ver el código",
+    "summary": "La red que has diseñado, escrita en TensorFlow.js o en Keras (Python): la misma que entrena la aplicación.",
+    "language": "Lenguaje del código",
+    "copy": "Copiar el código",
+    "copied": "Código copiado",
+    "code": "El código en {{language}}",
+    "help-tfjs": "Para usarlo en tu proyecto, instala TensorFlow.js (npm install @tensorflow/tfjs) y prepara XTrain, yTrain, XTest e yTest como tensores, con los datos ya procesados como en esta página.",
+    "help-keras": "Para usarlo en Python, instala Keras (pip install keras tensorflow) y prepara X_train, y_train, X_test e y_test como matrices de NumPy, con los datos ya procesados como en esta página.",
+    "data-classification": "X: los atributos de cada fila, ya procesados (escalados); y: su clase en one-hot",
+    "data-regression": "X: los atributos de cada fila, ya procesados (escalados); y: el valor que hay que predecir",
+    "data-image": "X: las imágenes, con valores de 0 a 1; y: su clase en one-hot",
+    "data-series": "X: las ventanas con los {{window}} valores anteriores; y: el valor siguiente de cada ventana"
+  },
+  "training-prediction": {
+    "title": "Antes de entrenar, ¿qué crees que pasará?",
+    "optional": "(opcional)",
+    "chosen": "Tu predicción: {{prediction}}",
+    "help": "Elige lo que esperas: al terminar lo compararemos con lo que ha pasado de verdad.",
+    "none": "No lo sé",
+    "options": {
+      "good": "Aprenderá bien",
+      "still-improving": "Le faltarán épocas: seguirá mejorando al acabar",
+      "overfitting": "Se aprenderá los datos de memoria (sobreajuste)",
+      "not-learning": "Apenas aprenderá",
+      "unstable": "Irá a saltos (inestable)",
+      "diverged": "La pérdida se disparará"
+    },
+    "right": "Predijiste: «{{prediction}}». ¡Acertaste!",
+    "wrong": "Predijiste: «{{prediction}}». Esta vez ha pasado otra cosa: aquí debajo verás qué y por qué."
   }
 }

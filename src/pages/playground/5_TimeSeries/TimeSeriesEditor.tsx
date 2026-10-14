@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import alertHelper from '@utils/alertHelper'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import { moveLayer } from '@components/neural-network/moveLayer'
 import N4LDenseLayerFields from '@components/neural-network/N4LDenseLayerFields'
 import N4LLayerCheck from '@components/neural-network/N4LLayerCheck'
 import N4LEmptyState from '@components/loading/N4LEmptyState'
@@ -69,6 +70,7 @@ export function TimeSeriesEditorLayers({ layers, onChange, waiting }: TimeSeries
       onAddStart={() => add({ _class: 'dense', units: 16, activation: 'relu' }, true)}
       onAddEnd={() => add({ _class: 'dense', units: 16, activation: 'relu' }, false)}
       onRemove={(index) => onChange(layers.filter((_layer, i) => i !== index))}
+      onMove={(from, to) => onChange(moveLayer(layers, from, to))}
       onRestore={onChange}
       waiting={waiting}
       titleAs={'h3'}

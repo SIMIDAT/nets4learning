@@ -534,20 +534,23 @@ test('KMNIST enseña cada carácter como se escribe hoy junto a sus formas antig
 test('«Empieza aquí»: los pasos se marcan solos al hacerlos y se avisa del siguiente', async ({ page }) => {
   await page.goto('/')
   await page.getByTestId('Test-StartHere').getByRole('link', { name: 'Empieza aquí' }).click()
-  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('0 de 8 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('0 de 10 pasos hechos')
   await expect(page.getByTestId('Test-Learn-Challenges-Progress')).toHaveText('0 de 5 retos superados')
 
-  await page.getByTestId('Test-Learn-Go-glossary').click()
-  await expect(page).toHaveURL(/\/glossary$/)
+  // El primero: entrenar una red en el laboratorio
+  await page.getByTestId('Test-Learn-Go-lab').click()
+  await expect(page).toHaveURL(/\/lab$/)
+  await page.getByTestId('Test-Lab-Run').click()
   const toast = page.getByTestId('Test-LearningToast')
-  await expect(toast).toContainText('Paso 1 de 8 hecho')
-  await expect(toast).toContainText('Siguiente: Prueba una red ya entrenada')
+  await expect(toast).toContainText('Paso 1 de 10 hecho')
+  await expect(toast).toContainText('Siguiente: Las palabras clave')
+  await page.getByTestId('Test-Lab-Run').click()
 
   await toast.getByRole('link').click()
-  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 8 pasos hechos')
-  await expect(page.getByTestId('Test-Learn-Step-glossary')).toHaveAttribute('data-done', 'true')
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 10 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Step-lab')).toHaveAttribute('data-done', 'true')
   await page.reload()
-  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 8 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 10 pasos hechos')
 })
 
 test('un ejercicio se comparte con un enlace (y su QR): quien lo abre tiene la misma red e hiperparámetros', async ({ page, context }) => {

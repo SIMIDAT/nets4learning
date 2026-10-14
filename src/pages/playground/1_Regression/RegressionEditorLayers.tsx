@@ -6,6 +6,7 @@ import type { CustomParamsLayerModel_t } from '@core/types'
 import alertHelper from '@utils/alertHelper'
 import { useRegressionContext } from '@context/useRegressionContext'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import { moveLayer } from '@components/neural-network/moveLayer'
 import N4LDenseLayerFields from '@components/neural-network/N4LDenseLayerFields'
 import { denseLayerSummary } from '@components/neural-network/layerSummary'
 import N4LLayerCheck from '@components/neural-network/N4LLayerCheck'
@@ -95,6 +96,7 @@ export default function RegressionEditorLayers() {
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
+      onMove={(from, to) => setParams((prevState) => ({ ...prevState, params_layers: moveLayer(prevState.params_layers, from, to) }))}
       onRestore={(params_layers) => setParams((prevState) => ({ ...prevState, params_layers }))}
       waiting={!show}
       titleAs={'h3'}

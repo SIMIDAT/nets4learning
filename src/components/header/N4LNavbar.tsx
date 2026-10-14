@@ -41,6 +41,8 @@ const [HOME_LINK, ...NAV_LINKS]: Array<{ to: string, i18n: string }> = [
 
 // Los paquetes .n4l del usuario, aparte: al final de las páginas, con su icono y cuántos tiene guardados
 const PACKAGES_LINK = '/packages'
+/** El laboratorio 2D, en el desplegable de las tareas */
+const LAB_LINK = '/lab'
 
 const isActivePath = (pathname: string, to: string) => (to === '/' ? pathname === '/' : pathname === to || pathname.startsWith(to + '/'))
 
@@ -148,6 +150,7 @@ export default function N4LNavbar() {
   const activeTask = taskOfPath(pathname)
   const savedPackages = useLocalPackages().length
   const isPackagesPage = isActivePath(pathname, PACKAGES_LINK)
+  const isLabPage = isActivePath(pathname, LAB_LINK)
   const navLink = ({ to, i18n: i18nKey }: { to: string, i18n: string }) => {
     const isActive = isActivePath(pathname, to)
     return (
@@ -197,8 +200,9 @@ export default function N4LNavbar() {
             <div className={'n4l-navbar-menu'}>
               <Nav className={(isCollapsed ? '' : 'me-lg-auto ') + 'n4l-navbar-links'}>
                 {navLink(HOME_LINK)}
-                {/* Las seis tareas: cada una abre su página (modelos ya entrenados o diseñar una red) */}
-                <NavDropdown title={t('header.tasks')} id={'tasks-nav-dropdown'} active={activeTask !== undefined} data-testid={'Test-Navbar-Tasks'}>
+                {/* Las seis tareas: cada una abre su página (modelos ya entrenados o diseñar una red); y, aparte, el
+                    laboratorio 2D, para jugar con una red antes de entrar en ellas */}
+                <NavDropdown title={t('header.tasks')} id={'tasks-nav-dropdown'} active={activeTask !== undefined || isLabPage} data-testid={'Test-Navbar-Tasks'}>
                   {Object.values(TASK_INFO).map(({ task, i18nTitle }) => {
                     const isCurrent = pathname === `/task/${task}`
                     return (
@@ -208,6 +212,11 @@ export default function N4LNavbar() {
                       </NavDropdown.Item>
                     )
                   })}
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={N4LDropdownLink} to={LAB_LINK} active={isLabPage} aria-current={isLabPage ? 'page' : undefined}
+                    onClick={() => setExpanded(false)} data-testid={'Test-Navbar-Lab'}>
+                    <Trans i18nKey={'header.lab'} />
+                  </NavDropdown.Item>
                 </NavDropdown>
                 {NAV_LINKS.map(navLink)}
                 <Nav.Item className={'n4l-navbar-packages'}>

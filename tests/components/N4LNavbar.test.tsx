@@ -65,6 +65,17 @@ describe('N4LNavbar', () => {
     expect(screen.getByTestId('location')).toHaveTextContent('/task/object-detection')
   })
 
+  test('«Tareas» también lleva al laboratorio 2D, aparte de las seis tareas, y se marca en él', () => {
+    renderAt('/lab')
+    const tasks = document.getElementById('tasks-nav-dropdown')!
+    expect(tasks).toHaveClass('active')
+    fireEvent.click(tasks)
+    const lab = screen.getByTestId('Test-Navbar-Lab')
+    expect(lab).toHaveAttribute('href', '/lab')
+    expect(lab).toHaveTextContent('header.lab')
+    expect(lab).toHaveAttribute('aria-current', 'page')
+  })
+
   test('fuera de las tareas, «Tareas» no se marca', () => {
     renderAt('/glossary')
     expect(document.getElementById('tasks-nav-dropdown')).not.toHaveClass('active')

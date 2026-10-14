@@ -34,8 +34,17 @@ describe('learningPath: el recorrido «Empieza aquí»', () => {
 
     act(() => trackEvent('layer_fix', { kind: 'output-units' }))
     expect(result.current.done).toContain('fix-layers')
-    expect(nextStep(result.current.done)?.id).toBe('pretrained')
+    // El primero que falta es el laboratorio
+    expect(nextStep(result.current.done)?.id).toBe('lab')
     expect(JSON.parse(localStorage.getItem(LEARNING_STORAGE_KEY)!).done).toEqual(['glossary', 'regression', 'fix-layers'])
+  })
+
+  test('el laboratorio y Paso a paso: se marcan al entrenar en el laboratorio y al avanzar en Paso a paso', () => {
+    const { result } = renderHook(() => useLearningPath())
+    act(() => trackEvent('lab_train', { dataset: 'xor', layers: 1, features: 2 }))
+    act(() => trackEvent('step_by_step', { action: 'step' }))
+    expect(result.current.done).toEqual(expect.arrayContaining(['lab', 'step-by-step']))
+    expect(nextStep(result.current.done)?.id).toBe('glossary')
   })
 
   test('solo se avisa del paso completado si ya se ha entrado en /learn', () => {

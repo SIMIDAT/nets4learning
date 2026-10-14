@@ -9,6 +9,7 @@ import { checkImageLayers } from '@core/nn-utils/checkLayers'
 import alertHelper from '@utils/alertHelper'
 import type { ImageLayer_t } from 'src/types/types'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import { moveLayer } from '@components/neural-network/moveLayer'
 import N4LLayerCheck from '@components/neural-network/N4LLayerCheck'
 import { flaggedLayers } from '@components/neural-network/layerCheckText'
 import { layerSummaryParts } from '@components/neural-network/layerSummary'
@@ -114,6 +115,7 @@ export default function ImageClassificationEditorLayers({ Layers, setLayers, cla
       flagged={flaggedLayers(issues)}
       onAddEnd={handleClick_AddLayer_End}
       onRemove={handleClick_RemoveLayer}
+      onMove={(from, to) => setLayers((current) => moveLayer(current, from, to))}
       onRestore={setLayers}
       footer={
         <p className={'text-muted mb-0 pb-0'}>

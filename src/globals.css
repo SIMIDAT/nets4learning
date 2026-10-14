@@ -1500,6 +1500,84 @@ html[data-theme="dark"] {
   border-radius: 3px;
 }
 
+/*
+ * El editor de capas (N4LEditorLayers): el asa de cada capa para arrastrarla, la capa que se arrastra, más tenue, y una
+ * raya donde caerá. touch-action: none, para que con el dedo se arrastre la capa y no la página
+ */
+.n4l-layer-handle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 0.5rem;
+  color: var(--bs-secondary-color);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  border-inline-end: var(--bs-border-width) solid var(--bs-border-color-translucent);
+}
+
+.n4l-layer-handle:hover {
+  color: var(--bs-primary);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.n4l-layer-handle:active {
+  cursor: grabbing;
+}
+
+.n4l-layer-handle-locked {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.n4l-layer-handle-locked:hover {
+  color: var(--bs-secondary-color);
+  background-color: transparent;
+}
+
+.n4l-layer-dragging {
+  opacity: 0.55;
+}
+
+/* La raya, por encima de la cabecera de la capa (su fondo la taparía) y a todo su ancho */
+.n4l-layer-drop-before,
+.n4l-layer-drop-after {
+  position: relative;
+}
+
+.n4l-layer-drop-before::before,
+.n4l-layer-drop-after::after {
+  position: absolute;
+  inset-inline: 0;
+  z-index: 5;
+  height: 4px;
+  pointer-events: none;
+  content: "";
+  background-color: var(--bs-primary);
+  border-radius: 2px;
+}
+
+.n4l-layer-drop-before::before {
+  top: -2px;
+}
+
+.n4l-layer-drop-after::after {
+  bottom: -2px;
+}
+
+/* «Ver el código» (N4LModelCode): la cabecera de la tarjeta abre y cierra el código */
+.n4l-model-code-summary {
+  cursor: pointer;
+}
+
+.n4l-model-code-summary::marker {
+  color: var(--bs-secondary-color);
+}
+
+details:not([open]) > .n4l-model-code-summary {
+  border-bottom: 0;
+}
+
 /* «Datos guardados en este navegador»: cada cosa guardada con lo que ocupa y su botón (debajo, si no cabe al lado) */
 .n4l-stored-item {
   display: flex;

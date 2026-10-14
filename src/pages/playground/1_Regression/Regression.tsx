@@ -10,10 +10,14 @@ import { GLOSSARY_ACTIONS } from '@/CONSTANTS_ACTIONS'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
 import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { denseCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 import { reportTrainResult } from '@core/training/trainResult'
 import { checkDenseLayers } from '@core/nn-utils/checkLayers'
 import { historyFromData } from '@core/training/modelStore'
@@ -104,6 +108,18 @@ export default function Regression({ dataset }: RegressionProps_t) {
   // El paso a paso (N4LStepByStep): las capas del editor y las filas ya procesadas, como las recibe la red
   const stepLayers = useMemo(() => params.params_layers.map(({ units, activation }) => ({ units, activation: activation ?? 'linear' })), [params.params_layers])
   const stepProcessed = datasets.data[datasets.index]?.data_processed
+  // El código equivalente de la red (Ver el código): sus entradas son las columnas de los datos ya procesados
+  const codeSpec = useMemo((): ModelCode_t | null => (stepProcessed?.X === undefined ? null : {
+    inputShape  : [stepProcessed.X.shape[1]],
+    layers      : denseCodeLayers(params.params_layers),
+    optimizer   : params.params_training.id_optimizer,
+    learningRate: params.params_training.learning_rate,
+    loss        : createLoss(params.params_training.id_loss, {}),
+    metrics     : createMetricsList(params.params_training.list_id_metrics, {}),
+    epochs      : params.params_training.n_of_epochs,
+    batchSize   : 32,
+    dataComment : t('model-code.data-regression'),
+  }), [stepProcessed, params, t])
   const stepData = useMemo(() => ({
     X       : dataframeRowsToNumbers(stepProcessed?.X.values),
     y       : ((stepProcessed?.y.values ?? []) as number[]).map((value) => [Number(value)]),
@@ -404,8 +420,16 @@ export default function Regression({ dataset }: RegressionProps_t) {
             </Col>
           </Row>
 
+          {/* El código equivalente de la red */}
+          <Row className={'mt-3'}>
+            <Col xl={12}>
+              <N4LModelCode spec={codeSpec} task={'regression'} />
+            </Col>
+          </Row>
+
           <Row className={'mt-3'}>
             <Col xl={12} data-guide={'train'}>
+              <N4LTrainingPrediction nextModel={listModels.data.length + 1} disabled={training.isTraining} />
               <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                 progress={training.progress}
                 isStopping={training.isStopping}

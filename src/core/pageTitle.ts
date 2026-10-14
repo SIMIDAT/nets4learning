@@ -25,6 +25,7 @@ const PAGE_TITLES: Record<string, string> = {
   settings              : 'pages.settings.title',
   accessibility         : 'pages.accessibility.title',
   learn                 : 'pages.learn.title',
+  lab                   : 'pages.lab.title',
   report                : 'report.title',
   not_found             : 'pages.not-found.title',
   regression_description: 'pages.regression-description.title',

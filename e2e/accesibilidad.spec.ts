@@ -11,6 +11,7 @@ import { axeViolations } from './axe'
 const PAGES = [
   '/',
   '/learn',
+  '/lab',
   '/glossary',
   '/manual',
   '/datasets',

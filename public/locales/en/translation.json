@@ -705,6 +705,7 @@
     "backend-error-fallback": "This browser cannot use it. TensorFlow.js keeps using {{backend}}.",
     "menu": "Menu",
     "tasks": "Tasks",
+    "lab": "2D lab",
     "packages": ".n4l packages",
     "packages-saved_one": "{{count}} package saved in this browser",
     "packages-saved_other": "{{count}} packages saved in this browser",
@@ -1795,6 +1796,12 @@
           "add-layer-start": "Add a layer to the start",
           "add-layer-end": "Add a layer to the end",
           "delete-layer": "Delete layer {{index}}",
+          "move-up": "Move layer {{index}} up",
+          "move-down": "Move layer {{index}} down",
+          "move-group": "Order of layer {{index}}",
+          "moved": "Layer {{index}} moved to position {{position}}.",
+          "drag": "Drag to move layer {{index}}",
+          "drag-help": "To change the order, drag each layer by the handle on its left, or open it and use \"Move up\" and \"Move down\".",
           "layer-id": "Layer {{index}}",
           "kernel-size": "Kernel size",
           "kernel-size-placeholder": "Enter the kernel size of the layer.",
@@ -3375,6 +3382,10 @@
         "text": "You can now train, compare, fix and explain neural networks. Now try your own data: upload a CSV in tabular classification or regression, or explore it first in the EDA."
       },
       "steps": {
+        "lab": {
+          "title": "Play with a network",
+          "text": "In the lab, a small network separates points on a plane and you see its boundary while it learns. Try the examples in “Try this”."
+        },
         "glossary": {
           "title": "The key words",
           "text": "Read in the glossary what a neural network, a layer, a neuron and an epoch are: they appear on every page."
@@ -3386,6 +3397,10 @@
         "train": {
           "title": "Train your first network",
           "text": "With the Iris flowers: press “Train model” and watch the loss go down epoch by epoch. Below, you'll see in words how it went."
+        },
+        "step-by-step": {
+          "title": "Watch your network learn",
+          "text": "With the Iris flowers, Step by step shows an example going through the network: forwards, the error and backwards, and how each weight changes. Move at least one step."
         },
         "compare": {
           "title": "Change one thing and compare",
@@ -3584,6 +3599,100 @@
         "review": "This statement is reviewed every year and with each major version of the application."
       },
       "new-tab": "(opens in a new tab)"
+    },
+    "lab": {
+      "title": "Lab: a network in 2D",
+      "intro": "A small neural network learns to separate the orange points from the blue ones. Change the data, what goes into the network or its layers and watch the boundary change while it trains.",
+      "data": {
+        "title": "Data",
+        "dataset": "Dataset",
+        "noise": "Noise: {{value}}",
+        "count": "Points",
+        "new": "Other points"
+      },
+      "datasets": {
+        "blobs": "Two clouds",
+        "circles": "Circles",
+        "xor": "XOR (quadrants)",
+        "spiral": "Spirals"
+      },
+      "features": {
+        "title": "What goes into the network",
+        "help": "The coordinates of each point and, if you like, others computed from them.",
+        "x": "x",
+        "y": "y",
+        "x2": "x²",
+        "y2": "y²",
+        "xy": "x × y"
+      },
+      "network": {
+        "title": "The network",
+        "help": "Hidden layers between the input and the output, each one with its neurons.",
+        "none": "No hidden layers: the input goes straight to the output.",
+        "layer": "Layer {{number}}: {{units}} neurons",
+        "fewer": "Remove a neuron from layer {{number}}",
+        "more": "Add a neuron to layer {{number}}",
+        "add": "Add a layer",
+        "remove": "Remove the last layer",
+        "activation": "Activation function"
+      },
+      "training": {
+        "title": "How it learns",
+        "learning-rate": "Learning rate",
+        "speed": "Speed",
+        "speeds": {
+          "slow": "Slow (to watch the boundary)",
+          "normal": "Normal",
+          "fast": "As fast as possible"
+        },
+        "batch-size": "Points per batch"
+      },
+      "train": "Train",
+      "pause": "Pause",
+      "step": "One epoch",
+      "restart": "Start over",
+      "restarted": "The network starts over, with new random weights.",
+      "show-test": "Show the test points",
+      "canvas": "The plane with the points of {{dataset}} and, in the background, the class the network predicts in each area",
+      "legend": "Orange (circles) and blue (squares): the two classes. Filled, the points it learns from; white, the test points, which it does not see while training. The background is what the network predicts: the stronger, the surer.",
+      "not-trained": "Not trained yet: press \"Train\" or \"One epoch\".",
+      "summary": "Epoch {{epoch}}: it gets {{testAccuracy}} of the test points and {{trainAccuracy}} of the training points right. Loss: {{trainLoss}} on the training points and {{testLoss}} on the test points.",
+      "diverged": "The loss has blown up and the network no longer learns: lower the learning rate and start over.",
+      "loss": {
+        "title": "The loss",
+        "empty": "Here you will see the loss go down while it trains.",
+        "train": "training",
+        "test": "test",
+        "help": "If the test loss goes up while the training loss goes down, it is learning the points by heart (overfitting)."
+      },
+      "experiments": {
+        "title": "Try this",
+        "xor-line": {
+          "title": "XOR without hidden layers",
+          "lesson": "Without hidden layers, the network can only draw a straight line: with XOR it does not even get half right."
+        },
+        "xor-hidden": {
+          "title": "XOR with a layer of 4 neurons",
+          "lesson": "With a hidden layer it combines several lines and separates XOR: that is what hidden layers are for."
+        },
+        "circles-features": {
+          "title": "Circles with x² and y²",
+          "lesson": "With x² and y² as input, the circles are separated without hidden layers: choosing well what goes into the network saves layers."
+        },
+        "spiral": {
+          "title": "The spiral, the hardest one",
+          "lesson": "The spiral needs more neurons, more features and patience: let it train for a few hundred epochs."
+        },
+        "learning-rate": {
+          "title": "A huge learning rate",
+          "lesson": "With a rate of 3, every step overshoots: the loss jumps up and down instead of going down. Try 0.1."
+        },
+        "overfitting": {
+          "title": "Few points, lots of noise and a big network",
+          "lesson": "It learns the points by heart: the training loss goes down and the test loss goes up. That is overfitting."
+        }
+      },
+      "next": "Once you get the idea, go on with"
     }
   },
   "generator": {
@@ -5154,5 +5263,36 @@
         "If you want, ask for the explanation of what it found."
       ]
     }
+  },
+  "model-code": {
+    "title": "See the code",
+    "summary": "The network you have designed, written in TensorFlow.js or in Keras (Python): the same one the application trains.",
+    "language": "Language of the code",
+    "copy": "Copy the code",
+    "copied": "Code copied",
+    "code": "The code in {{language}}",
+    "help-tfjs": "To use it in your project, install TensorFlow.js (npm install @tensorflow/tfjs) and prepare XTrain, yTrain, XTest and yTest as tensors, with the data already processed as on this page.",
+    "help-keras": "To use it in Python, install Keras (pip install keras tensorflow) and prepare X_train, y_train, X_test and y_test as NumPy arrays, with the data already processed as on this page.",
+    "data-classification": "X: the attributes of each row, already processed (scaled); y: its class in one-hot",
+    "data-regression": "X: the attributes of each row, already processed (scaled); y: the value to predict",
+    "data-image": "X: the images, with values from 0 to 1; y: their class in one-hot",
+    "data-series": "X: the windows with the {{window}} previous values; y: the next value of each window"
+  },
+  "training-prediction": {
+    "title": "Before training, what do you think will happen?",
+    "optional": "(optional)",
+    "chosen": "Your prediction: {{prediction}}",
+    "help": "Choose what you expect: when it finishes, we will compare it with what really happened.",
+    "none": "I don't know",
+    "options": {
+      "good": "It will learn well",
+      "still-improving": "It will need more epochs: it will still be improving at the end",
+      "overfitting": "It will learn the data by heart (overfitting)",
+      "not-learning": "It will hardly learn",
+      "unstable": "It will jump up and down (unstable)",
+      "diverged": "The loss will blow up"
+    },
+    "right": "You predicted: \"{{prediction}}\". You got it right!",
+    "wrong": "You predicted: \"{{prediction}}\". This time something else happened: you will see what and why below."
   }
 }

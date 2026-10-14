@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import N4LEditorLayers from '@components/neural-network/N4LEditorLayers'
+import { moveLayer } from '@components/neural-network/moveLayer'
 import N4LDenseLayerFields from '@components/neural-network/N4LDenseLayerFields'
 import { denseLayerSummary } from '@components/neural-network/layerSummary'
 import alertHelper from '@utils/alertHelper'
@@ -126,6 +127,7 @@ export default function TabularClassificationEditorLayers() {
       onAddStart={handlerClick_AddLayer_Start}
       onAddEnd={handlerClick_AddLayer_End}
       onRemove={handlerClick_RemoveLayer}
+      onMove={(from, to) => setLayers((current) => moveLayer(current, from, to))}
       onRestore={setLayers}
       footer={<>
         <p className={'text-muted mb-0 pb-0'}>

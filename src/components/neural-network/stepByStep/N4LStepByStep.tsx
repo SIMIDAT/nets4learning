@@ -1,5 +1,5 @@
 import './N4LStepByStep.css'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, ButtonGroup, Card, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { ArrowCounterclockwise, ChevronLeft, ChevronRight, FastForwardFill, PauseFill, PlayFill } from 'react-bootstrap-icons'
@@ -13,6 +13,7 @@ import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
 import { useMaximize } from '@components/maximize/useMaximize'
 import N4LVirtualSelect from '@components/select/N4LVirtualSelect'
 import StepByStepDiagram, { type StepNode_t } from './StepByStepDiagram'
+import { trackEvent } from '@core/analytics'
 
 type N4LStepByStepProps = {
   /** Clasificación (softmax y entropía cruzada) o regresión (un número y error cuadrático) */
@@ -183,8 +184,17 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
     example   : sameExample ? current.example : order[(position[current.example] + 1) % order.length],
   })
 
+  // Se avisa la primera vez que se avanza (completa el paso del recorrido «Empieza aquí»)
+  const used = useRef(false)
+  const markUsed = () => {
+    if (used.current) return
+    used.current = true
+    trackEvent('step_by_step', { action: 'step' })
+  }
+
   const next = () => {
     if (step === null) return
+    markUsed()
     if (run.phase < phases.length - 1) setRun({ ...run, phase: run.phase + 1 })
     else setRun(finishExample(run, step.next))
   }
@@ -192,6 +202,7 @@ export default function N4LStepByStep({ kind, layers: editorLayers, initialNetwo
   /** 10 ejemplos de golpe, sin enseñar cada fase: para ver cómo baja la pérdida */
   const nextTen = () => {
     if (step === null) return
+    markUsed()
     let current = run
     for (let i = 0; i < 10; i++) {
       const target = targetOf(y, range, current.example)

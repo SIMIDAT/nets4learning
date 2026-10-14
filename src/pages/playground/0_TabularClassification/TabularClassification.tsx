@@ -20,6 +20,7 @@ import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import { argMax } from '@core/nn-utils/classificationOutput'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
@@ -44,6 +45,9 @@ import TabularClassificationDataset from '@pages/playground/0_TabularClassificat
 import TabularClassificationDatasetShow from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShow'
 import TabularClassificationEditorHyperparameters from '@pages/playground/0_TabularClassification/TabularClassificationEditorHyperparameters'
 import TabularClassificationEditorLayers from '@pages/playground/0_TabularClassification/TabularClassificationEditorLayers'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { denseCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 import TabularClassificationTableModels from '@pages/playground/0_TabularClassification/TabularClassificationTableModels'
 import TabularClassificationPrediction from '@pages/playground/0_TabularClassification/TabularClassificationPrediction'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
@@ -187,6 +191,18 @@ export default function TabularClassification(props: Props) {
   // El paso a paso (N4LStepByStep): las capas del editor y las filas ya procesadas, como las recibe la red
   const stepLayers = useMemo(() => layers.map(({ units, activation }) => ({ units, activation: activation ?? 'linear' })), [layers])
   const stepProcessed = datasets.datasets[datasets.index]?.data_processed
+  // El código equivalente de la red (Ver el código): sus entradas son las columnas de los datos ya procesados
+  const codeSpec = useMemo((): ModelCode_t | null => (stepProcessed?.X === undefined ? null : {
+    inputShape : [stepProcessed.X.shape[1]],
+    layers     : denseCodeLayers(layers),
+    optimizer  : idOptimizer,
+    learningRate,
+    loss       : createLoss(idLoss, {}),
+    metrics    : createMetricsList([idMetrics], {}),
+    epochs     : numberEpochs,
+    batchSize  : 32,
+    dataComment: t('model-code.data-classification'),
+  }), [stepProcessed, layers, idOptimizer, learningRate, idLoss, idMetrics, numberEpochs, t])
   const stepData = useMemo(() => ({
     X       : dataframeRowsToNumbers(stepProcessed?.X.values),
     y       : (stepProcessed?.y.values ?? []) as number[][],
@@ -435,9 +451,17 @@ export default function TabularClassification(props: Props) {
               </Col>
             </Row>
 
+            {/* El código equivalente de la red */}
+            <Row className={'mt-3'}>
+              <Col xl={12}>
+                <N4LModelCode spec={codeSpec} task={'tabular-classification'} />
+              </Col>
+            </Row>
+
             {/* BLOCK BUTTON SUBMIT */}
             <Row className={'mt-3'}>
               <Col xl={12} data-guide={'train'}>
+                <N4LTrainingPrediction nextModel={generatedModels.length + 1} disabled={isTraining} />
                 <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                   progress={training.progress}
                   isStopping={training.isStopping}

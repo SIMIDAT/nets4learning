@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import N4LProgressBar from '@components/loading/N4LProgressBar'
 import { LEARNING_CHALLENGES, LEARNING_STEPS, nextStep, resetLearningPath, setStepDone, startLearningPath, useLearningPath } from '@core/learning/learningPath'
+import { setStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 
 const prefix = 'pages.learn.'
 
@@ -45,7 +46,7 @@ export default function Learn() {
         )}
 
         <ol className={'list-unstyled d-grid gap-3'}>
-          {LEARNING_STEPS.map(({ id, to }, index) => {
+          {LEARNING_STEPS.map(({ id, to, showsStepByStep }, index) => {
             const isDone = done.includes(id)
             const isNext = next?.id === id
             return (
@@ -64,7 +65,8 @@ export default function Learn() {
                       </h2>
                       <p className={'mb-2'}>{t(prefix + 'steps.' + id + '.text')}</p>
                       <div className={'d-flex flex-wrap align-items-center gap-2'}>
-                        <Link to={to} className={'btn btn-sm ' + (isNext ? 'btn-primary' : 'btn-outline-primary')} data-testid={'Test-Learn-Go-' + id}>
+                        <Link to={to} className={'btn btn-sm ' + (isNext ? 'btn-primary' : 'btn-outline-primary')} data-testid={'Test-Learn-Go-' + id}
+                          onClick={showsStepByStep ? () => setStepByStepEnabled(true) : undefined}>
                           {t(prefix + (isDone ? 'again' : 'go'))}
                         </Link>
                         <Button variant={'link'} size={'sm'} className={'p-0'} onClick={() => setStepDone(id, !isDone)}>

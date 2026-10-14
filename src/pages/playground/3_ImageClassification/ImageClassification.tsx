@@ -12,6 +12,7 @@ import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
 import N4LDivider from '@components/divider/N4LDivider'
 import N4LSectionLayout from '@components/divider/N4LSectionLayout'
 import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
 import { useTrainingProgress } from '@hooks/useTrainingProgress'
 import { useStoredModels } from '@hooks/useStoredModels'
 import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
@@ -59,6 +60,9 @@ import { useNavigate } from 'react-router'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import type { SpriteImageDataset } from '@pages/playground/3_ImageClassification/models/SpriteImageDataset'
 import type { VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { imageCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 
 /**
  * @typedef {Object} ImageClassificationProps_t
@@ -103,6 +107,21 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
   const [LearningRate, setLearningRate] = useState(DEFAULT_LEARNING_RATE)
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
+  // El código equivalente de la red (Ver el código), entrenada en lotes de 512 como la aplicación
+  const codeSpec = useMemo((): ModelCode_t => {
+    const { inputShape, layers } = imageCodeLayers(Layers)
+    return {
+      inputShape,
+      layers,
+      optimizer   : idOptimizer,
+      learningRate: LearningRate,
+      loss        : createLoss(idLoss as IdLoss_t, {}),
+      metrics     : createMetricsList(idMetricsList as IdMetric_t[], {}),
+      epochs      : NumberEpochs,
+      batchSize   : 512,
+      dataComment : t('model-code.data-image'),
+    }
+  }, [Layers, idOptimizer, LearningRate, idLoss, idMetricsList, NumberEpochs, t])
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
 
   // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
@@ -530,9 +549,17 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             </Col>
           </Row>
 
+          {/* El código equivalente de la red */}
+          <Row className={'mt-3'}>
+            <Col xl={12}>
+              <N4LModelCode spec={codeSpec} task={'image-classification'} />
+            </Col>
+          </Row>
+
           <Row className={'mt-3'}>
             <Col data-guide={'train'}>
               {/* BLOCK  BUTTON */}
+              <N4LTrainingPrediction nextModel={GeneratedModels.length + 1} disabled={training.isTraining} />
               <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
                 progress={training.progress}
                 isStopping={training.isStopping}

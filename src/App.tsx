@@ -36,6 +36,7 @@ const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
 const PageSettings = lazy(() => import( './pages/settings/Settings'))
 const PageLearn = lazy(() => import( './pages/learn/Learn'))
+const PageLab = lazy(() => import( './pages/lab/Lab'))
 const PageReport = lazy(() => import( './pages/report/TrainingReport'))
 const PageAccessibility = lazy(() => import( './pages/accessibility/Accessibility'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
@@ -112,6 +113,7 @@ function App() {
               <Route path={'/version'} element={<PageVersion />}></Route>
               <Route path={'/settings'} element={<PageSettings />}></Route>
               <Route path={'/learn'} element={<PageLearn />}></Route>
+              <Route path={'/lab'} element={<PageLab />}></Route>
               <Route path={'/report'} element={<PageReport />}></Route>
               <Route path={'/accessibility'} element={<PageAccessibility />}></Route>
 

@@ -79,6 +79,11 @@ Todos los eventos llevan el **contexto de la página** en la que ocurren:
 | `n4l_download` | Descargar el .n4l de un modelo | `item` (su id) |
 | `predict` | Una predicción o clasificación | `input` (`form`, `drawing`, `image`, `sample`, `test_sample`; `forecast`: cambiar cuántos valores futuros predice una serie temporal) |
 | `webcam_start` / `webcam_end` | Activar y desactivar la cámara en tiempo real | `duration_sec` (en `webcam_end`) |
+| `model_code` | Abrir «Ver el código» de un entrenador o copiar el código | `action` (`open`, `copy`), `language` (`tfjs`, `keras`), `task` |
+| `training_prediction` | Al terminar un entrenamiento, comparar lo que se predijo antes («Antes de entrenar, ¿qué crees que pasará?») con su diagnóstico | `prediction` (`good`, `overfitting`, `not-learning`…), `outcome` (`right`, `wrong`) |
+| `lab_train` | Empezar a entrenar en el laboratorio 2D (`/lab`); completa su paso de `/learn` | `dataset` (`blobs`, `circles`, `xor`, `spiral`), `layers` (capas ocultas), `features` (cuántas entradas) |
+| `lab_experiment` | Elegir un ejemplo de «Prueba esto» en el laboratorio | `id` (`xor-line`, `xor-hidden`, `circles-features`, `spiral`, `learning-rate`, `overfitting`) |
+| `step_by_step` | Avanzar por primera vez en Paso a paso (en cada visita a la página); completa su paso de `/learn` | `action` (`step`) |
 | `explain` | Pedir la explicación de una predicción | `method` (`shap`, `lrp`), `scope` (`local`, `global`; en SHAP tabular) |
 | `file_upload` | Fichero aceptado en una zona de subida | `zone`, `format` (la extensión: `csv`, `parquet`, `png`…), `size_kb` |
 | `file_rejected` | Fichero rechazado (formato no admitido) | `zone`, `format` |

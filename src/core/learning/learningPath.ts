@@ -6,19 +6,23 @@ import { onAppEvent, type AnalyticsParams_t } from '@core/analytics'
 // paso se marca solo al hacerlo, con los eventos que ya avisa la aplicación (onAppEvent), y se guarda en el navegador.
 
 export type LearningStep_t = {
-  id  : string
+  id              : string
   /** Adónde lleva el paso */
-  to  : string
+  to              : string
   /** Si un evento de la aplicación (con el contexto de su página) completa el paso */
-  done: (name: string, event: AnalyticsParams_t) => boolean
+  done            : (name: string, event: AnalyticsParams_t) => boolean
+  /** Si el paso enseña Paso a paso (oculto por defecto): se muestra al ir a él */
+  showsStepByStep?: boolean
 }
 
 const trained = (task: string) => (name: string, event: AnalyticsParams_t) => name === 'train_end' && event.task === task && event.outcome !== 'error'
 
 export const LEARNING_STEPS: readonly LearningStep_t[] = [
+  { id: 'lab', to: '/lab', done: (name) => name === 'lab_train' },
   { id: 'glossary', to: '/glossary', done: (name, event) => name === 'page_view' && event.page_type === 'glossary' },
   { id: 'pretrained', to: '/playground/image-classification/model/IMAGE-MNIST', done: (name, event) => name === 'predict' && event.mode === 'pretrained' },
   { id: 'train', to: '/playground/tabular-classification/dataset/IRIS', done: trained('tabular-classification') },
+  { id: 'step-by-step', to: '/playground/tabular-classification/dataset/IRIS', done: (name) => name === 'step_by_step', showsStepByStep: true },
   { id: 'compare', to: '/playground/tabular-classification/dataset/IRIS', done: (name) => name === 'models_compare' },
   { id: 'fix-layers', to: '/playground/tabular-classification/dataset/IRIS', done: (name) => name === 'layer_fix' },
   { id: 'regression', to: '/playground/regression/dataset/AUTO_MPG', done: trained('regression') },
