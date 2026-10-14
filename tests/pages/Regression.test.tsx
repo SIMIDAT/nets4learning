@@ -27,6 +27,7 @@ describe('Regression', () => {
 
     await waitFor(() => expect(getByTestId('Test-ModelReviewRegression')).toBeInTheDocument())
     // debug_ModelReviewRegression()
-  })
+    // Carga cuatro páginas perezosas seguidas: con todos los ficheros de tests en paralelo (en CI) pasaba de los 5 s
+  }, 30_000)
 
 })
