@@ -172,4 +172,33 @@ describe('Settings', () => {
     expect(row.queryByRole('link')).toBeNull()
     expect(row.queryByRole('button')).toBeNull()
   })
+
+  test('los datos guardados: borrar un modelo descargado deja los demás', async () => {
+    const megas = (count: number) => new Response('x', { headers: { 'content-length': String(count * 1024 * 1024) } })
+    // FaceMesh (3 MB, en dos ficheros) y COCO-SSD (2 MB)
+    const models = new Map([
+      ['https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/a.data', megas(2)],
+      ['https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/b.wasm', megas(1)],
+      ['https://storage.googleapis.com/tfjs-models/savedmodel/ssdlite_mobilenet_v2/model.json', megas(2)],
+    ])
+    vi.stubGlobal('caches', {
+      keys: async () => (models.size > 0 ? ['n4l-models-v1'] : []),
+      open: async () => ({
+        keys  : async () => [...models.keys()].map((url) => new Request(url)),
+        match : async (request: Request) => models.get(request.url),
+        delete: async (request: Request) => models.delete(request.url),
+      }),
+    })
+    render(<MemoryRouter initialEntries={['/settings#data']}><Settings /></MemoryRouter>)
+    const list = within(await screen.findByTestId('Test-Settings-SavedModels'))
+    const faceMesh = within(list.getByRole('link', { name: 'datasets-models.2-object-detection.face-mesh.title' }).closest('li')!)
+    fireEvent.click(faceMesh.getByRole('button', { name: 'pages.settings.data.pretrained.delete-one' }))
+    expect(faceMesh.getByText('pages.settings.data.pretrained.question-one')).toBeInTheDocument()
+    fireEvent.click(faceMesh.getByRole('button', { name: 'pages.settings.data.delete-confirm' }))
+    await act(async () => {})
+    expect([...models.keys()]).toEqual(['https://storage.googleapis.com/tfjs-models/savedmodel/ssdlite_mobilenet_v2/model.json'])
+    const rest = within(screen.getByTestId('Test-Settings-SavedModels'))
+    expect(rest.queryByRole('link', { name: 'datasets-models.2-object-detection.face-mesh.title' })).toBeNull()
+    expect(rest.getByRole('link', { name: 'datasets-models.2-object-detection.coco-ssd.title' })).toBeInTheDocument()
+  })
 })

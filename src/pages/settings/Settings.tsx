@@ -25,7 +25,7 @@ import { isSpeechSupported, useSpeech, useVoices, voicesForLanguage } from '@com
 import { setStepByStepEnabled, useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
 import { deleteTrainedModels, storedModelsUsage } from '@core/training/modelStore'
 import { downloadReason, setDownloadWarning, useDownloadWarning, type DownloadWarning_t } from '@core/models/downloadConsent'
-import { clearOfflinePages, clearSavedModels, offlineUsage, type SavedModel_t } from '@core/offline/offline'
+import { clearOfflinePages, clearSavedModel, clearSavedModels, offlineUsage, type SavedModel_t } from '@core/offline/offline'
 import { resetAllSettings } from './storedSettings'
 import N4LConfirmButton from '@components/form/N4LConfirmButton'
 import { useMediaQuery } from '@hooks/useMediaQuery'
@@ -511,19 +511,27 @@ function StoredItem({ id, usage, action, children }: { id: string, usage?: Usage
   )
 }
 
-/** Los modelos preentrenados guardados, cada uno con lo que ocupa y un enlace a su página */
-function SavedModelsList({ list }: { list: SavedModel_t[] }) {
+/** Los modelos preentrenados guardados, cada uno con lo que ocupa, un enlace a su página y un botón para borrarlo */
+function SavedModelsList({ list, onDelete }: { list: SavedModel_t[], onDelete: (model: SavedModel_t['model']) => Promise<void> }) {
   const { t, i18n } = useTranslation()
   return (
     <ul className={'n4l-stored-list'} data-testid={'Test-Settings-SavedModels'}>
-      {list.map(({ model, bytes }) => (
-        <li key={model === null ? '' : model.task + '/' + model.key}>
-          {model === null
-            ? <span>{t(prefix + 'data.pretrained.other')}</span>
-            : <Link to={`/playground/${model.task}/model/${model.key}`}>{t(model.title)}</Link>}
-          <span className={'n4l-stored-list-size'}>{formatBytes(bytes, i18n.language)}</span>
-        </li>
-      ))}
+      {list.map(({ model, bytes }) => {
+        const name = model === null ? t(prefix + 'data.pretrained.other') : t(model.title)
+        return (
+          <li key={model === null ? '' : model.task + '/' + model.key}>
+            {model === null
+              ? <span className={'n4l-stored-list-name'}>{name}</span>
+              : <Link className={'n4l-stored-list-name'} to={`/playground/${model.task}/model/${model.key}`}>{name}</Link>}
+            <span className={'n4l-stored-list-side'}>
+              <span className={'n4l-stored-list-size'}>{formatBytes(bytes, i18n.language)}</span>
+              <N4LConfirmButton label={t(prefix + 'data.delete')} ariaLabel={t(prefix + 'data.pretrained.delete-one', { model: name })}
+                question={t(prefix + 'data.pretrained.question-one', { model: name })} confirmLabel={t(prefix + 'data.delete-confirm')}
+                onConfirm={() => onDelete(model)} />
+            </span>
+          </li>
+        )
+      })}
     </ul>
   )
 }
@@ -574,7 +582,8 @@ function StoredDataSettings() {
             action={<N4LConfirmButton label={t(prefix + 'data.delete')} ariaLabel={t(prefix + 'data.pretrained.delete')}
               question={t(prefix + 'data.pretrained.question')} confirmLabel={confirmLabel}
               onConfirm={() => deleteAndRefresh(clearSavedModels)} />}>
-            {usage.pretrained.list.length > 0 && <SavedModelsList list={usage.pretrained.list} />}
+            {usage.pretrained.list.length > 0 &&
+              <SavedModelsList list={usage.pretrained.list} onDelete={(model) => deleteAndRefresh(() => clearSavedModel(model))} />}
           </StoredItem>}
         {import.meta.env.PROD && usage?.offline &&
           <StoredItem id={'offline'} usage={usage.offline}

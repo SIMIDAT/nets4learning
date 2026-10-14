@@ -96,3 +96,16 @@ export const clearOfflinePages = () => deleteCaches((name) => name.startsWith(CA
 
 /** Borra solo los modelos preentrenados guardados (se volverán a descargar al usarlos) */
 export const clearSavedModels = () => deleteCaches((name) => name.startsWith(MODELS_PREFIX))
+
+/** Borra los ficheros guardados de un modelo preentrenado (null: los que no son de ninguno conocido) */
+export async function clearSavedModel(model: PretrainedModel_t | null) {
+  if (typeof caches === 'undefined') return
+  const isIt = (other: PretrainedModel_t | null) =>
+    model === null ? other === null : other !== null && other.task === model.task && other.key === model.key
+  for (const name of (await caches.keys()).filter((key) => key.startsWith(MODELS_PREFIX))) {
+    const cache = await caches.open(name)
+    for (const request of await cache.keys()) {
+      if (isIt(pretrainedModelOf(request.url))) await cache.delete(request)
+    }
+  }
+}

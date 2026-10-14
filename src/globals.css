@@ -1543,15 +1543,26 @@ html[data-theme="dark"] {
 
 .n4l-stored-list > li {
   display: flex;
-  gap: 1rem;
-  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: center;
   justify-content: space-between;
   padding: 0.375rem 0;
 }
 
-/* El nombre se parte en varias líneas si no cabe; lo que ocupa, siempre a la derecha */
-.n4l-stored-list > li > :first-child {
+/* El nombre se parte en varias líneas si no cabe; lo que ocupa y su botón, a la derecha (debajo, si no caben) */
+.n4l-stored-list-name {
+  flex: 1 1 12rem;
   min-width: 0;
+}
+
+.n4l-stored-list-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
 }
 
 .n4l-stored-list > li + li {

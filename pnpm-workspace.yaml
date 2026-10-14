@@ -15,6 +15,10 @@ allowBuilds:
 # Necesario porque danfojs depende de xlsx servido desde el CDN de SheetJS
 # (https://cdn.sheetjs.com/...), que pnpm ≥ 11 bloquea por defecto (blockExoticSubdeps).
 blockExoticSubdeps: false
+# Paquetes que se pueden instalar aunque se acaben de publicar (pnpm espera un tiempo mínimo desde su publicación):
+# handsign-multilingual es nuestro (https://github.com/nonodev96/handsign-multilingual): todas sus versiones.
+minimumReleaseAgeExclude:
+  - handsign-multilingual
 # danfojs 1.2 declara @tensorflow/tfjs ^3 y mathjs 9.4.4; los forzamos a las versiones del proyecto
 # para que solo haya una copia de cada una (ver el alias de "danfojs" en vite.config.ts).
 # De mathjs, danfojs solo usa mean, median, mode, std y variance, que no cambian entre la 9 y la 12.

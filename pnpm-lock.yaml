@@ -242,12 +242,9 @@ importers:
       danfojs:
         specifier: ^1.2.0
         version: 1.2.0(encoding@0.1.13)(seedrandom@3.0.5)
-      fingerpose:
-        specifier: ^0.1.0
-        version: 0.1.0
       handsign-multilingual:
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.5.0
+        version: 0.5.0
       hyparquet:
         specifier: ^1.31.2
         version: 1.31.2
@@ -393,9 +390,6 @@ importers:
       '@types/d3-random':
         specifier: ^3.0.4
         version: 3.0.4
-      '@types/fingerpose':
-        specifier: ^0.1.1
-        version: 0.1.1
       '@types/node':
         specifier: ^24.10.4
         version: 24.13.2
@@ -414,6 +408,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      '@vitejs/plugin-basic-ssl':
+        specifier: ^2.3.0
+        version: 2.3.0(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0))
       '@vitejs/plugin-react':
         specifier: ^5.1.1
         version: 5.2.0(supports-color@7.2.0)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0))
@@ -1588,9 +1585,6 @@ packages:
     resolution: {integrity: sha512-vsxcbfLDdjytnCnHXtinE40Xl46Wr7l/VGRGt7ewJwCPMKEHOdEsTxXX8xwgoR7cbc+6dE8SB4jlMrOV2zAg7g==}
     deprecated: This is a stub types definition. fast-json-stable-stringify provides its own type definitions, so you do not need this installed.
 
-  '@types/fingerpose@0.1.1':
-    resolution: {integrity: sha512-GUyd2r2lszaderkJY/WhVB9DkfU2QuVKmJ0w+5EL17QOA3DYBO3JtYZfwijLYO0vUBuDbbifJ5a+s4onXHCwlA==}
-
   '@types/geojson-vt@3.2.5':
     resolution: {integrity: sha512-qDO7wqtprzlpe8FfQ//ClPV9xiuoh2nkIgiouIptON9w5jvD/fA4szvP9GBlDVdJ5dldAl0kX/sy3URbWwLx0g==}
 
@@ -1752,6 +1746,12 @@ packages:
 
   '@ungap/structured-clone@1.3.1':
     resolution: {integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==}
+
+  '@vitejs/plugin-basic-ssl@2.3.0':
+    resolution: {integrity: sha512-bdyo8rB3NnQbikdMpHaML9Z1OZPBu6fFOBo+OtxsBlvMJtysWskmBcnbIDhUqgC8tcxNv/a+BcV5U+2nQMm1OQ==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    peerDependencies:
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0
 
   '@vitejs/plugin-react@5.2.0':
     resolution: {integrity: sha512-YmKkfhOAi3wsB1PhJq5Scj3GXMn3WvtQ/JC0xoopuHoXSdmtdStOpFrYaT1kie2YgFBcIe64ROzMYRjCrYOdYw==}
@@ -2932,9 +2932,6 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  fingerpose@0.1.0:
-    resolution: {integrity: sha512-OXIRuRTgukBOo4xUO+vPchzHftZOPxO7VRh4HDjTg5NGr4gSkiY+LQShjsKAzmpRiRdmTgDh0dNsGpWa1Jsx3Q==}
-
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
     engines: {node: '>=16'}
@@ -3160,8 +3157,8 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  handsign-multilingual@0.3.0:
-    resolution: {integrity: sha512-UbSyiYAAcI3squisXWS77nzICTXV1V9+DVzQ12Yij1b74HWhXYDsI3bDyyHsN9gnuoAGdRlILvByUNQ249mNqw==}
+  handsign-multilingual@0.5.0:
+    resolution: {integrity: sha512-/gp/0GqRVjYDT4gVQjCIj9zJLC2fRi8xXSHFqow5nqchNrdxUhOudIFORLa/kdOfyrQIL3uTjwKB03jWKTxBoQ==}
 
   has-bigints@1.1.0:
     resolution: {integrity: sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg==}
@@ -6717,8 +6714,6 @@ snapshots:
     dependencies:
       fast-json-stable-stringify: 2.1.0
 
-  '@types/fingerpose@0.1.1': {}
-
   '@types/geojson-vt@3.2.5':
     dependencies:
       '@types/geojson': 7946.0.16
@@ -6905,6 +6900,10 @@ snapshots:
       eslint-visitor-keys: 5.0.1
 
   '@ungap/structured-clone@1.3.1': {}
+
+  '@vitejs/plugin-basic-ssl@2.3.0(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0))':
+    dependencies:
+      vite: 7.3.5(@types/node@24.13.2)(jiti@2.7.0)
 
   '@vitejs/plugin-react@5.2.0(supports-color@7.2.0)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0))':
     dependencies:
@@ -8215,8 +8214,6 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  fingerpose@0.1.0: {}
-
   flat-cache@4.0.1:
     dependencies:
       flatted: 3.4.2
@@ -8526,7 +8523,7 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  handsign-multilingual@0.3.0: {}
+  handsign-multilingual@0.5.0: {}
 
   has-bigints@1.1.0: {}
 

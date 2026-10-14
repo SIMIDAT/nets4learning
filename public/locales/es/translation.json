@@ -1132,8 +1132,9 @@
           "details-movement": {
             "title": "Letras con movimiento",
             "list": {
-              "0": "LL y RR (SSL): haz la L o la R y desplaza la mano hacia su lado, unos centímetros.",
-              "1": "Ñ (SSL): haz la N y mueve la mano de lado a lado."
+              "0": "LL y RR (SSL): haz la L o la R, desplaza la mano hacia su lado (medio palmo o más) y párala: la letra sale en cuanto se para.",
+              "1": "Ñ (SSL): haz la N y mueve la mano de lado a lado, o gira la muñeca, dos o tres veces.",
+              "2": "Mantén la letra mientras te mueves. Si la imagen sale movida no pasa nada: cuenta lo que se ve antes y después del movimiento."
             }
           },
           "details-references": {
@@ -3304,7 +3305,9 @@
           "count_one": "1 modelo",
           "count_other": "{{count}} modelos",
           "delete": "Borrar los modelos preentrenados descargados",
+          "delete-one": "Borrar {{model}}",
           "question": "Se volverán a descargar la próxima vez que los uses.",
+          "question-one": "Se borrará {{model}} de este navegador: se volverá a descargar la próxima vez que lo uses.",
           "mobilenet": "MobileNet - Clasificación de imágenes",
           "other": "Otros ficheros"
         },

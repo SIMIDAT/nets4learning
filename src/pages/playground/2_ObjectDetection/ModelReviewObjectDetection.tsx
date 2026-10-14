@@ -88,6 +88,8 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const webcamMaximize = useMaximize()
   // Predicciones hechas con la cámara y lo que han tardado: los lee la información del dispositivo
   const detectionStats_ref = useRef<DetectionStats_t>({ predictions: 0, totalMs: 0 })
+  // La carga del modelo (ENABLE_MODEL), para esperarla si se sube una imagen antes de que termine
+  const modelReady_ref = useRef<Promise<void> | null>(null)
   // Guía paso a paso de la página (con voz): solo con el botón "Guía"
   const guideSteps = useMemo(() => (iModelInstance === null ? null : objectDetectionReviewGuide(t, dataset)), [t, dataset, iModelInstance])
 
@@ -204,7 +206,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
         setIModelInstance(_iModelInstance)
         // Con ahorro de datos o conexión lenta, antes se pregunta; luego, con el progreso real (COCO-SSD pesa unos 18 MB)
         await askBeforeDownload(TASKS.OBJECT_DETECTION, dataset)
-        await trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load')
+        const ready = trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load')
+        modelReady_ref.current = ready
+        await ready
         setLoading(false)
         await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } catch (error) {
@@ -442,8 +446,11 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       return;
     }
 
-    // 2. Reload Model
-    await iModelInstance.ENABLE_MODEL();
+    // 2. El modelo de la página, cuando termine de cargarse si aún se está cargando, sin lo que siguió en la webcam. No se
+    // vuelve a cargar: se creaba otro detector en cada imagen (sin liberar el anterior) y, si se subía mientras el de la
+    // página aún se cargaba, los dos de MediaPipe se pisaban y abortaba (Module.arguments has been replaced…)
+    await modelReady_ref.current
+    iModelInstance.RESET();
 
     const objectUrl = URL.createObjectURL(_files[0]);
     const img = new Image();

@@ -9,6 +9,7 @@ import {
   signingHand,
   type HandSignEstimator,
   type HandSignLang,
+  type LetterScore,
 } from 'handsign-multilingual'
 import { Trans } from 'react-i18next'
 import { Container, Row, Col } from 'react-bootstrap'
@@ -22,7 +23,12 @@ import { TFJS_handpose_bibtex } from './MODEL_6_HAND_SIGN_INFO'
 import { OD_MODEL_KEYS } from '@/MODEL_KEYS'
 
 /** La letra de una mano en un fotograma: la que llega al mínimo (null: ninguna) y la puntuación de cada una (0-1) */
-type Recognition_t = { letter: string | null, score: number, scores: Record<string, number> }
+/**
+ * La letra de una mano en un fotograma (null: ninguna llega al mínimo) y su puntuación; las letras que llegan al mínimo,
+ * de la mejor a la peor (las que recibe HandMotionTracker: la base de una letra de movimiento vale aunque vaya segunda,
+ * si va casi empatada), y la puntuación de cada letra
+ */
+type Recognition_t = { letter: string | null, score: number, letters: LetterScore[], scores: Record<string, number> }
 
 /** Lo que se dibuja de cada mano */
 type HandView_t = {
@@ -140,6 +146,7 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
               <ol>
                 <li><Trans i18nKey={prefix + 'details-movement.list.0'} /></li>
                 <li><Trans i18nKey={prefix + 'details-movement.list.1'} /></li>
+                <li><Trans i18nKey={prefix + 'details-movement.list.2'} /></li>
               </ol>
             </details>
             <details>
@@ -205,6 +212,11 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
     return await this._modelDetector.estimateHands(input_image_or_video, { flipHorizontal })
   }
 
+  RESET() {
+    super.RESET()
+    this._resetTracking()
+  }
+
   _resetTracking() {
     this._steady.clear()
     this._trackers.clear()
@@ -215,15 +227,16 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
 
   /** La letra de una mano en este fotograma: con los ejemplos si los hay y, si no, con las reglas */
   _recognize(hand: handPoseDetection.Hand): Recognition_t {
-    if (this.signEstimator === null || !hand.keypoints3D) return { letter: null, score: 0, scores: {} }
+    if (this.signEstimator === null || !hand.keypoints3D) return { letter: null, score: 0, letters: [], scores: {} }
     const [letters, minimum] = this.classifier !== null
       ? [this.classifier.predict(hand), MODEL_6_HAND_SIGN.MIN_SHARE]
       : [this.signEstimator.estimate(hand).letters, MODEL_6_HAND_SIGN.MIN_SCORE]
     const best = letters[0]
     return {
-      letter: best !== undefined && best.score >= minimum ? best.letter : null,
-      score : best?.score ?? 0,
-      scores: Object.fromEntries(letters.map(({ letter, score }) => [letter, score])),
+      letter : best !== undefined && best.score >= minimum ? best.letter : null,
+      score  : best?.score ?? 0,
+      letters: letters.filter(({ score }) => score >= minimum),
+      scores : Object.fromEntries(letters.map(({ letter, score }) => [letter, score])),
     }
   }
 
@@ -248,7 +261,7 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
 
     return hands.map((hand, index) => {
       const key = keys[index]
-      const { letter, score, scores } = this._recognize(hand)
+      const { letter, score, letters, scores } = this._recognize(hand)
       const history = [...(this._steady.get(key) ?? []), letter].slice(-STEADY_FRAMES)
       this._steady.set(key, history)
       // Con pocos fotogramas (una imagen, o la mano recién aparecida) vale la de este
@@ -259,7 +272,7 @@ export default class MODEL_6_HAND_SIGN extends I_MODEL_OBJECT_DETECTION {
         tracker = new HandMotionTracker(this.signLanguage.motions ?? [])
         this._trackers.set(key, tracker)
       }
-      const moved = tracker.update(hand, letter, now)
+      const moved = tracker.update(hand, letters, now)
       if (moved !== null) this._motions.set(key, { letter: moved, until: now + MOTION_SHOWN_MS })
       const motion = this._motions.get(key)
       const moving = motion !== undefined && motion.until > now

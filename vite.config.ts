@@ -3,6 +3,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import { configDefaults } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import fs from 'fs'
 import path from 'path'
 import svgrPlugin from 'vite-plugin-svgr'
@@ -78,6 +79,9 @@ export default defineConfig(({ mode, command }) => {
         svgrOptions: { exportType: 'default', ref: true, svgo: false, titleProp: true },
         include    : '**/*.svg',
       }),
+      // `vite --mode https` (pnpm dev:https): un certificado de desarrollo, para que la cámara funcione también desde
+      // otros dispositivos (por la IP de la red local o de Tailscale; el navegador solo da la cámara con HTTPS)
+      ...(mode === 'https' ? [basicSsl()] : []),
     ],
     optimizeDeps: {
       include: [

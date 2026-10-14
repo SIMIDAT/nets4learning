@@ -1132,8 +1132,9 @@
           "details-movement": {
             "title": "Letters with movement",
             "list": {
-              "0": "LL and RR (SSL): make the L or the R and move the hand a few centimetres to its own side.",
-              "1": "Ñ (SSL): make the N and move the hand from side to side."
+              "0": "LL and RR (SSL): make the L or the R, move the hand to its own side (half a palm or more) and stop: the letter appears as soon as it stops.",
+              "1": "Ñ (SSL): make the N and move the hand from side to side, or turn the wrist, two or three times.",
+              "2": "Keep the letter while you move. A blurred image is fine: what is seen before and after the movement counts."
             }
           },
           "details-references": {
@@ -3304,7 +3305,9 @@
           "count_one": "1 model",
           "count_other": "{{count}} models",
           "delete": "Delete the downloaded pretrained models",
+          "delete-one": "Delete {{model}}",
           "question": "They will be downloaded again the next time you use them.",
+          "question-one": "{{model}} will be deleted from this browser: it will be downloaded again the next time you use it.",
           "mobilenet": "MobileNet - Image classification",
           "other": "Other files"
         },

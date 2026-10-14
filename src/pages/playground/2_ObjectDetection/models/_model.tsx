@@ -34,6 +34,15 @@ export default abstract class I_MODEL_OBJECT_DETECTION {
 
   async ENABLE_MODEL() {}
 
+  /**
+   * Olvida lo que el detector sigue de un fotograma al siguiente (MediaPipe y MoveNet siguen la cara, la mano o la
+   * persona del fotograma anterior): para que una imagen subida no dependa de lo que se vio antes en la webcam
+   */
+  RESET() {
+    const detector = this._modelDetector as { reset?: () => void } | null
+    detector?.reset?.()
+  }
+
   /** Detecciones sobre la entrada; cada modelo concreta el tipo de sus detecciones */
   async PREDICTION(_input_image_or_video: DetectionInput_t, _config?: Record<string, unknown>): Promise<unknown[]> {
     return []

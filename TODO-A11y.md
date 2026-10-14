@@ -180,9 +180,11 @@ Que todo lo que se hace con el ratón se pueda hacer con el teclado, en un orden
       predicción no recortaba nada.*
 - [x] **Subir ficheros.** El área de arrastrar y soltar con un botón visible «Elegir fichero», que se anuncie qué
       formatos admite y qué fichero se ha aceptado o rechazado.
-- [~] **Visor de tfjs-vis.** No es accesible y es de una librería:
-  - [ ] Que no se abra solo al entrenar (ajuste en la fase 4); las curvas propias (`N4LTrainingCurves`) ya lo
+- [x] **Visor de tfjs-vis.** No es accesible y es de una librería:
+  - [x] Que no se abra solo al entrenar (ajuste en la fase 4); las curvas propias (`N4LTrainingCurves`) ya lo
         cubren.
+        *«Abrir el visor de TensorFlow.js al entrenar», en `/settings` → Accesibilidad: lo respetan los entrenamientos
+        densos, de series temporales y de imágenes (`shouldOpenVisor`).*
   - [x] El resumen del modelo como tabla propia y accesible (capas, forma de salida, pesos), en vez de abrir el visor.
 - [x] **Guía.** Que se maneje entera con el teclado (Escape, flechas), que se anuncie el paso y que no hable a la vez
       que el lector de pantalla: avisar en `/settings` de que conviene desactivar la voz si se usa un lector.
