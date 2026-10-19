@@ -1,6 +1,6 @@
 import { Modal } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import { useContext, useMemo } from 'react'
+import { useContext, useId, useMemo } from 'react'
 import DataFramePlotContext from '../_context/DataFramePlotContext'
 import { VERBOSE } from '@/CONSTANTS'
 
@@ -10,6 +10,8 @@ type PlotDescriptionType = {
   plot_end  : string[]
 }
 export default function DataFramePlotModalDescription() {
+  // El diálogo se llama como su título (WCAG 4.1.2) y su botón de cerrar, en el idioma de la página
+  const titleId = useId()
   const {
     dataframePlotConfig,
 
@@ -31,9 +33,9 @@ export default function DataFramePlotModalDescription() {
   }, [dataframePlotConfig.PLOT_ENABLE, t])
 
   return <>
-    <Modal show={showDescription} onHide={() => setShowDescription(false)} size={'xl'} fullscreen={'md-down'}>
-      <Modal.Header closeButton>
-        <Modal.Title><Trans i18nKey={`dataframe-plot.${dataframePlotConfig.PLOT_ENABLE}.title`} /></Modal.Title>
+    <Modal aria-labelledby={titleId} show={showDescription} onHide={() => setShowDescription(false)} size={'xl'} fullscreen={'md-down'}>
+      <Modal.Header closeButton closeLabel={t('modal.close')}>
+        <Modal.Title id={titleId}><Trans i18nKey={`dataframe-plot.${dataframePlotConfig.PLOT_ENABLE}.title`} /></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <>
@@ -56,7 +58,7 @@ export default function DataFramePlotModalDescription() {
         <p className={'text-muted'}>
           <Trans i18nKey={'dataframe.plot.link'}
             components={{
-              link1: <a href={URL} target={'_blank'} rel="noreferrer" className={'text-info'}>link</a>
+              link1: <a href={URL} target={'_blank'} rel="noreferrer">link</a>
             }} />
         </p>
       </Modal.Footer>

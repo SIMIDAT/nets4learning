@@ -1,5 +1,7 @@
 import * as tfjs from '@tensorflow/tfjs'
 
+import type { SpriteImage_t } from '../models/spriteDecode'
+
 export const UTILS_image = {
   failed                        : (event: Event) => console.error(event),
   /**
@@ -114,8 +116,68 @@ export function thresholdImageData(image: ImageData, threshold = 100): ImageData
 }
 
 /**
+ * Imagen de un dataset de 28×28 (valores 0 fondo, 1 trazo) como ImageData opaca con el trazo oscuro sobre fondo
+ * claro, como los dibujos: `imageDataToMnistTensor4d` la vuelve a dar exactamente con esos valores.
+ */
+export function grayscaleToImageData(pixels: Float32Array, width: number, height: number): ImageData {
+  const result = createImageData(width, height)
+  for (let i = 0; i < pixels.length; i++) {
+    const value = Math.round(255 * (1 - pixels[i]))
+    result.data.set([value, value, value, 255], i * 4)
+  }
+  return result
+}
+
+/**
+ * Imagen de un sprite (sus valores 0–1) como ImageData opaca: en gris, con el trazo oscuro sobre fondo claro, como los
+ * dibujos (grayscaleToImageData); en color, tal cual. `imageDataToTensor4d` la vuelve a dar exactamente
+ */
+export function spriteToImageData(pixels: Float32Array, { width, height, channels }: SpriteImage_t): ImageData {
+  if (channels === 1) return grayscaleToImageData(pixels, width, height)
+  const result = createImageData(width, height)
+  for (let i = 0; i < width * height; i++) {
+    for (let c = 0; c < 3; c++) result.data[i * 4 + c] = Math.round(255 * pixels[i * channels + Math.min(c, channels - 1)])
+    result.data[i * 4 + 3] = 255
+  }
+  return result
+}
+
+/**
+ * Entrada de una red en color (1×alto×ancho×3): RGB entre 0 y 1. Lo transparente cuenta como blanco (sobre el fondo
+ * blanco de la página)
+ */
+export function imageDataToRgbTensor4d(imageData: ImageData): tfjs.Tensor4D {
+  const { data, width, height } = imageData
+  const values = new Float32Array(width * height * 3)
+  for (let i = 0, p = 0; p < data.length; i++, p += 4) {
+    const alpha = data[p + 3] / 255
+    for (let c = 0; c < 3; c++) values[i * 3 + c] = (data[p + c] / 255) * alpha + (1 - alpha)
+  }
+  return tfjs.tensor4d(values, [1, height, width, 3])
+}
+
+/** Entrada de una red de imágenes según sus canales: en gris, como MNIST; en color, RGB */
+export const imageDataToTensor4d = (imageData: ImageData, channels: number): tfjs.Tensor4D =>
+  (channels === 1 ? imageDataToMnistTensor4d(imageData) : imageDataToRgbTensor4d(imageData))
+
+/** ImageData ampliada (sin suavizar) como data URL, p. ej. para la imagen base de la explicación */
+export function imageDataToDataUrl(imageData: ImageData, size: number): string {
+  const source = document.createElement('canvas')
+  source.width = imageData.width
+  source.height = imageData.height
+  source.getContext('2d')?.putImageData(imageData, 0, 0)
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+  ctx.imageSmoothingEnabled = false
+  ctx.drawImage(source, 0, 0, size, size)
+  return canvas.toDataURL()
+}
+
+/**
  * Entrada de los modelos MNIST/KMNIST (1×28×28×1), sin modificar `imageData`.
- * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) · alfa.
+ * El modelo espera el trazo en blanco (1) sobre fondo negro (0): valor = (1 − rojo) × alfa.
  * - Imagen opaca con dígito oscuro sobre fondo claro → 1 − rojo.
  * - Dibujo en el lienzo (trazo negro sobre fondo transparente) → alfa.
  */

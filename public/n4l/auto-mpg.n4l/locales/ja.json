@@ -1,0 +1,67 @@
+{
+  "columns": {
+    "cylinders": "cylinders",
+    "displacement": "displacement",
+    "horsepower": "horsepower",
+    "weight": "weight",
+    "acceleration": "acceleration",
+    "model-year": "model-year",
+    "mpg": "mpg"
+  },
+  "tasks": {
+    "regression": {
+      "title": "燃費性能",
+      "name": "燃費性能",
+      "summary": "70〜80年代の車の燃費（マイル/ガロン）を、エンジン、重量、年式から予測します。",
+      "description": {
+        "text": [
+          "<i>AUTO MPG</i> データセットは、カーネギーメロン大学で管理されているStatLibライブラリから取得されました。このデータセットは、1983年の米国統計学会の展示会で使用されました。",
+          "「Auto MPG」（ガロンあたりのマイル）という用語は、一般的に米国で使用される燃費効率の測定単位を指します。この尺度は、車両が1ガロンの燃料で走行できるマイル数を示します。スペイン語では、通常、「consumo de combustible」（燃料消費量）または「rendimiento de combustible」（燃費性能）という用語が使用されます。国によって測定単位が異なることに注意することが重要です。",
+          "このデータセットの詳細は<link1>ICS.UCI.edu リポジトリ</link1>をご覧ください。"
+        ],
+        "sections": [
+          {
+            "title": "情報",
+            "items": [
+              "<b>MPG</b>: MPG は Miles Per Gallon（1ガロンあたりの走行マイル）の略で、各インスタンスの車両の燃費を表します。任意の車について予測対象の変数としても使用できます",
+              "<b>cylinders</b>: 各車のシリンダー数を表す属性です。離散値の属性です",
+              "<b>displacement</b>: エンジンの排気量を表す、連続値の量的属性です",
+              "<b>horsepower</b>: 車の馬力を表す連続値の変数です",
+              "<b>weight</b>: 各車の重量を表す連続値の量的変数です",
+              "<b>acceleration</b>: 車の加速性能です",
+              "<b>model year</b>: そのモデルが発売された年です",
+              "<b>origin</b>: 3つの離散値をとる属性で、1 は米国製、2 は欧州製、3 はアジア製の車を表します",
+              "<b>car name</b>: 車名を表す文字列です"
+            ]
+          },
+          {
+            "title": "入力データ",
+            "items": [
+              "<b>MPG</b>: 連続値",
+              "<b>cylinders</b>: 多値の離散値（4, 6, 8）",
+              "<b>displacement</b>: 連続値",
+              "<b>horsepower</b>: 連続値",
+              "<b>weight</b>: 連続値",
+              "<b>acceleration</b>: 連続値",
+              "<b>model year</b>: 多値の離散値",
+              "<b>origin</b>: 多値の離散値。1 は米国製、2 は欧州製、3 はアジア製の車を表します",
+              "<b>car name</b>: 文字列（インスタンスごとに一意）"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "回帰による計算値（<b>MPG</b>）"
+            ]
+          },
+          {
+            "title": "参考文献",
+            "items": [
+              "<link1>Auto MPG</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

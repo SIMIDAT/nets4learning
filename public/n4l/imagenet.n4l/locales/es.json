@@ -1,0 +1,39 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "MobileNet - Clasificación de imágenes",
+      "name": "MobileNet - Clasificación de imágenes",
+      "summary": "Fotos de todo tipo: MobileNet V2, ya entrenado con ImageNet, reconoce mil categorías de animales, objetos y comida.",
+      "description": {
+        "text": [
+          "MobileNet V2 es una familia de arquitecturas de redes neuronales para la clasificación de imágenes y tareas similares.",
+          "Este modelo es capaz de diferenciar entre 1001 categorías, identificando el contexto principal de la imagen."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "Imagen con valores de color entre [0, 1] de <strong> 224 x 224</strong> píxeles."
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Un número de 0 a 1001 que son cada una de las categorías de esta <link2>lista</link2>"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "text": [
+              "Originalmente, fue publicado por Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen:"
+            ],
+            "items": [
+              "<link3>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link3> 2018",
+              "<link1>ImageNet</link1>: el conjunto con el que se entrenó. No va en el paquete: son más de un millón de fotos."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

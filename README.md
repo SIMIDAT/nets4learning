@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <a href="https://simidat.ujaen.es/n4l/"><strong>Open the app</strong></a> ·
-  <a href="https://simidat.ujaen.es/n4l/manual">Manual</a> ·
-  <a href="https://doi.org/10.3390/electronics13224378">Paper</a> ·
-  <a href="CHANGELOG.md">Changelog</a> ·
+  <a href="https://simidat.ujaen.es/n4l/"><strong>Open the app</strong></a> |
+  <a href="https://simidat.ujaen.es/n4l/manual">Manual</a> |
+  <a href="https://doi.org/10.3390/electronics13224378">Paper</a> |
+  <a href="CHANGELOG.md">Changelog</a> |
   <a href="LICENSE.md">MIT License</a>
 </p>
 
@@ -34,7 +34,9 @@ Models*](https://doi.org/10.3390/electronics13224378) (Electronics, 2024). If yo
 - **Four tasks:** tabular classification, regression, object detection and image classification.
 - **Training in the browser:** layer editor, optimizers, loss functions, metrics and live training charts
   (tfjs-vis). You can train several models and compare them.
-- **Your own data:** upload a CSV, then clean, encode and scale its columns before training.
+- **Your own data:** upload a CSV (comma or semicolon separated, with decimal commas too), ARFF, JSON, JSONL or
+  Parquet file, then clean, encode and scale its columns before training. Every format is converted to CSV in the
+  browser and read the same way.
 - **Pre-trained models** for each task, ready to try with examples, your own images, a drawing canvas or the webcam.
 - **Explainability:** SHAP for tabular data, regression and images, and LRP (layer-wise relevance propagation) for the
   handwriting models.
@@ -61,7 +63,7 @@ React 19, TypeScript 5.9 and Vite 7, with:
 - React-Bootstrap for the interface;
 - Chart.js and Plotly for charts;
 - i18next for translations;
-- Vitest and Testing Library for tests.
+- Vitest and Testing Library for unit tests, Playwright for browser tests.
 
 ## Getting started
 
@@ -85,11 +87,14 @@ The app is served at <http://localhost:5173/n4l/>.
 | `pnpm preview`                        | Serve the last build locally                                                                         |
 | `pnpm test`                           | Run the tests in watch mode (`pnpm test run` runs them once)                                         |
 | `pnpm test:ui` / `pnpm test:coverage` | Tests in the Vitest UI / with coverage                                                               |
+| `pnpm test:e2e`                       | Browser tests (Playwright, `e2e/`) against the Netlify build                                         |
 | `pnpm lint`                           | ESLint                                                                                               |
 | `pnpm version`                        | Update `CHANGELOG.md` from the commit history                                                        |
 
 The build is memory-hungry. If it runs out of memory, run it with
 `NODE_OPTIONS="--max-old-space-size=8192"`, as the Docker image does.
+
+The first time you run `pnpm test:e2e`, install its browser with `pnpm exec playwright install chromium`.
 
 ### Environment variables
 
@@ -106,9 +111,14 @@ The app uses these variables:
 | `VITE_PATH`              | Path the app is served under: `"/n4l"` or `""` for the domain root. It also sets Vite's `base`.                                                                                                    |
 | `VITE_ENVIRONMENT`       | `development` enables i18next debug logs, shorter default training and development panels. Any value other than `production` also enables the development-only pages, `/debug` and the test pages. |
 | `VITE_GA_MEASUREMENT_ID` | Google Analytics 4 measurement ID.                                                                                                                                                                 |
-| `VITE_SHOW_NEW_FEATURE`  | `"true"` shows sections that are still in progress (glossary, datasets page).                                                                                                                      |
 
 ## Deployment
+
+### Netlify
+
+[`deploy.yaml`](.github/workflows/deploy.yaml) publishes to Netlify on every `v*` tag (and on pushes to the
+`mejoras-ui` branch). It first runs [`checks.yaml`](.github/workflows/checks.yaml) (lint, types, unit tests and
+browser tests), the same checks every pull request gets: if any of them fails, nothing is published.
 
 ### Docker
 
@@ -136,6 +146,7 @@ src/
   MODEL_KEYS.ts                     Dataset and model identifiers
 Scripts/                            Dataset and model generation
 tests/                              Vitest tests
+e2e/                                Playwright tests
 ```
 
 To add a dataset or a pre-trained model:
@@ -148,7 +159,7 @@ To add a dataset or a pre-trained model:
 
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org/); commitlint checks them.
 - Before opening a pull request, run `pnpm lint`, `pnpm test run` and `pnpm build:simidat`. The build also
-  type-checks the project.
+  type-checks the project. CI also runs `pnpm test:e2e`.
 - New interface texts go into the three translation files. Manual pages go into `public/docs/{en,es,ja}`.
 
 ## Team

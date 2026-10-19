@@ -1,8 +1,8 @@
 import type * as _tfjs from '@tensorflow/tfjs'
-import { buildJoyride } from '@components/joyride/buildJoyride'
 
 import * as _Types from '@core/types'
 import type { TFunction } from 'i18next'
+import type { N4LPackage_t } from '@core/n4l/source'
 
 /** Valores de una instancia del dataset, por nombre de columna */
 export type TabularInstance_t = Record<string, string | number>
@@ -12,7 +12,7 @@ export type TabularFormField_t =
   | { type: 'int32' | 'float32', name: string }
   | { type: 'label-encoder', name: string, options: Array<{ value: string, text: string }> }
 
-export type LoadModelCallbacks_t = { onProgress: (fraction: number) => void }
+export type LoadModelCallbacks_t = { onProgress?: (fraction: number) => void }
 
 export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   KEY                  : string = 'I_MODEL_TABULAR_CLASSIFICATION'
@@ -25,16 +25,38 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
   FORM                 : TabularFormField_t[] = []
   DATA_DEFAULT_KEYS    : string[] = []
   DATA_DEFAULT         : TabularInstance_t = {}
-  t                    : TFunction<"translation", undefined>
+  t                    : TFunction<'translation', undefined>
   callbacks            : () => void
 
-  constructor(t: TFunction<"translation", undefined>, callbacks: () => void) {
+  constructor(t: TFunction<'translation', undefined>, callbacks: () => void) {
     this.t = t
     this.callbacks = callbacks
   }
 
   DESCRIPTION(): React.ReactNode {
     return <></>
+  }
+
+  /** El paquete .n4l del que sale el modelo (para descargarlo); null si no sale de uno */
+  N4L_PACKAGE(): N4LPackage_t | null {
+    return null
+  }
+
+  /** Lo que recibe el modelo ya entrenado: las columnas codificadas o, además, escaladas (como al entrenar aquí) */
+  MODEL_INPUT(): 'encoded' | 'scaled' {
+    return 'encoded'
+  }
+
+  /**
+   * Salida del modelo (posición en CLASSES) de una clase tal como aparece en el conjunto de datos; -1 si no se
+   * reconoce. Por defecto, la de CLASSES con ese nombre (lo que sigue al último punto de la clave) o, si no hay, la
+   * que termina igual ("Setosa" o "0 Iris-setosa" → "…classes.Setosa").
+   */
+  CLASS_INDEX(target: unknown): number {
+    const name = String(target).toLowerCase()
+    const names = this.CLASSES.map((key) => key.slice(key.lastIndexOf('.') + 1).toLowerCase())
+    const exact = names.indexOf(name)
+    return exact !== -1 ? exact : names.findIndex((className) => className.endsWith(name) || name.endsWith(className))
   }
 
   /**
@@ -55,19 +77,6 @@ export default abstract class I_MODEL_TABULAR_CLASSIFICATION {
 
   HTML_EXAMPLE() {
     return <></>
-  }
-
-  JOYRIDE(): _Types.Joyride_t {
-    return buildJoyride(this.t, 'datasets-models.0-tabular-classification.joyride.steps.', [
-      { key: 'manual', target: '.joyride-step-manual', placement: 'top' },
-      { key: 'dataset-info', target: '.joyride-step-dataset-info', placement: 'top' },
-      { key: 'dataset', target: '.joyride-step-dataset', placement: 'top' },
-      { key: 'layer-visualizer', target: '.joyride-step-layer', placement: 'top' },
-      { key: 'layer-editor', target: '.joyride-step-editor-layers', placement: 'right' },
-      { key: 'params-editor', target: '.joyride-step-editor-trainer', placement: 'left-start' },
-      { key: 'list-of-models', target: '.joyride-step-list-of-models', placement: 'bottom' },
-      { key: 'classify-and-visualizer', target: '.joyride-step-classify-visualization', placement: 'top' },
-    ])
   }
 
 }

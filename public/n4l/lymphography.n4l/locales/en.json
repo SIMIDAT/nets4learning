@@ -1,0 +1,172 @@
+{
+  "columns": {
+    "lymphatics": "Lymphatics",
+    "block of affere": "Block of afferent vessels",
+    "bl_ of lymph_ c": "Block of lymphatics (c)",
+    "bl_ of lymph_ s": "Block of lymphatics (s)",
+    "by pass": "Bypass",
+    "extravasates": "Extravasates",
+    "regeneration of": "Regeneration",
+    "early uptake in": "Early uptake",
+    "lym_nodes dimin": "Diminished lymph nodes",
+    "lym_nodes enlar": "Enlarged lymph nodes",
+    "changes in lym_": "Changes in lymphatics",
+    "defect in node": "Defect in node",
+    "changes in node": "Changes in node",
+    "changes in stru": "Changes in structure",
+    "special forms": "Special forms",
+    "dislocation of": "Dislocation",
+    "exclusion of no": "Exclusion of nodes",
+    "no_ of nodes in": "Number of nodes",
+    "class": "Diagnosis"
+  },
+  "classes": {
+    "1": "Normal find",
+    "2": "Metastases",
+    "3": "Malignant lymphoma",
+    "4": "Fibrosis"
+  },
+  "options": {
+    "lymphatics": {
+      "1": "normal",
+      "2": "arched",
+      "3": "deformed",
+      "4": "displaced"
+    },
+    "block of affere": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "bl_ of lymph_ c": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "bl_ of lymph_ s": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "by pass": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "extravasates": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "regeneration of": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "early uptake in": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "changes in lym_": {
+      "1": "bean",
+      "2": "oval",
+      "3": "round"
+    },
+    "defect in node": {
+      "1": "no",
+      "2": "lacunar",
+      "3": "lacunar marginal",
+      "4": "lacunar central"
+    },
+    "changes in node": {
+      "1": "no",
+      "2": "lacunar",
+      "3": "lacunar marginal",
+      "4": "lacunar central"
+    },
+    "changes in stru": {
+      "1": "no",
+      "2": "grainy",
+      "3": "drop-like",
+      "4": "coarse",
+      "5": "diluted",
+      "6": "reticular",
+      "7": "stripped",
+      "8": "faint"
+    },
+    "special forms": {
+      "1": "no",
+      "2": "chalices",
+      "3": "vesicles"
+    },
+    "dislocation of": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "exclusion of no": {
+      "1": "No",
+      "2": "Yes"
+    },
+    "no_ of nodes in": {
+      "1": "0-9",
+      "2": "10-19",
+      "3": "20-29",
+      "4": "30-39",
+      "5": "40-49",
+      "6": "50-59",
+      "7": "60-69",
+      "8": "≥ 70"
+    }
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "LYMPHOGRAPHY - Lymphoma data classification",
+      "name": "Lymphomas classification",
+      "summary": "The diagnosis of a lymphoma from the features of a lymphography: few rows and very unbalanced classes.",
+      "description": {
+        "text": [
+          "The <i>Lymphography</i> dataset gathers the features of the lymphography of 148 patients and their diagnosis: normal find, metastases, malignant lymphoma or fibrosis."
+        ],
+        "sections": [
+          {
+            "title": "Input data",
+            "items": [
+              "<b>Lymphatics</b>: normal, arched, deformed, displaced",
+              "<b>Block of afferent vessels</b>: No, Yes",
+              "<b>Block of lymphatics (c)</b>: No, Yes",
+              "<b>Block of lymphatics (s)</b>: No, Yes",
+              "<b>Bypass</b>: No, Yes",
+              "<b>Extravasates</b>: No, Yes",
+              "<b>Regeneration</b>: No, Yes",
+              "<b>Early uptake</b>: No, Yes",
+              "<b>Diminished lymph nodes</b>: 0-3",
+              "<b>Enlarged lymph nodes</b>: 1-4",
+              "<b>Changes in lymphatics</b>: bean, oval, round",
+              "<b>Defect in node</b>: no, lacunar, lacunar marginal, lacunar central",
+              "<b>Changes in node</b>: no, lacunar, lacunar marginal, lacunar central",
+              "<b>Changes in structure</b>: no, grainy, drop-like, coarse, diluted, reticular, stripped, faint",
+              "<b>Special forms</b>: no, chalices, vesicles",
+              "<b>Dislocation</b>: No, Yes",
+              "<b>Exclusion of nodes</b>: No, Yes",
+              "<b>Number of nodes</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, ≥ 70"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "<b>Normal find</b>",
+              "<b>Metastases</b>",
+              "<b>Malignant lymphoma</b>",
+              "<b>Fibrosis</b>"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Data set</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Enter the corresponding values of the patient to be evaluated:",
+        "items": "(Lymphatics, Block of afferent vessels, Block of lymphatics (c), Block of lymphatics (s), Bypass, Extravasates, Regeneration, Early uptake, Diminished lymph nodes, Enlarged lymph nodes, Changes in lymphatics, Defect in node, Changes in node, Changes in structure, Special forms, Dislocation, Exclusion of nodes, Number of nodes).",
+        "examples": "Examples:"
+      }
+    }
+  }
+}

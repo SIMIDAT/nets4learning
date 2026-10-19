@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Convierte KMNIST (ficheros .npy de NumPy) al formato que usa la app para MNIST:
+Convierte KMNIST (los .npy de NumPy de public/datasets/03-image-classification/kmnist/) en el conjunto de su paquete
+.n4l (public/n4l/kmnist.n4l/data/, kind image-sprite en su manifest.json), con el mismo formato que el de MNIST:
 
   - kmnist_images.png : sprite en escala de grises, una imagen de 28x28 por fila (784 px de ancho).
                         Primero las filas de entrenamiento y después las de test.
@@ -9,6 +10,9 @@ Convierte KMNIST (ficheros .npy de NumPy) al formato que usa la app para MNIST:
 Se toma un subconjunto equilibrado (el mismo número de imágenes de cada carácter): cada entrenamiento
 en el navegador usa 11.000 imágenes de entrenamiento y 2.000 de test, así que no hace falta descargar
 las 70.000 (unos 21 MB). Con los valores por defecto el sprite pesa ~7 MB.
+
+Si cambia el número de imágenes, hay que cambiar también rows y train en el manifiesto (y medir de nuevo el modelo con
+Scripts/measure_image_models.py --package kmnist --write).
 
 Uso:  python3 Scripts/build_kmnist_sprite.py [--train-per-class 2000] [--test-per-class 500]
 Requiere numpy y Pillow.
@@ -20,6 +24,7 @@ import numpy as np
 from PIL import Image
 
 KMNIST_DIR = Path(__file__).resolve().parent.parent / 'public' / 'datasets' / '03-image-classification' / 'kmnist'
+OUT_DIR = Path(__file__).resolve().parent.parent / 'public' / 'n4l' / 'kmnist.n4l' / 'data'
 NUM_CLASSES = 10
 
 
@@ -46,10 +51,10 @@ def main():
     images = np.concatenate([p[0] for p in parts]).reshape(-1, 28 * 28).astype(np.uint8)
     labels = np.concatenate([p[1] for p in parts])
 
-    sprite_path = KMNIST_DIR / 'kmnist_images.png'
+    sprite_path = OUT_DIR / 'kmnist_images.png'
     Image.fromarray(images, mode='L').save(sprite_path, format='PNG', optimize=True)
 
-    labels_path = KMNIST_DIR / 'kmnist_labels_uint8'
+    labels_path = OUT_DIR / 'kmnist_labels_uint8'
     np.eye(NUM_CLASSES, dtype=np.uint8)[labels].tofile(labels_path)
 
     print(f'{sprite_path.name}: {images.shape[1]}x{images.shape[0]}, {sprite_path.stat().st_size / 1e6:.1f} MB')

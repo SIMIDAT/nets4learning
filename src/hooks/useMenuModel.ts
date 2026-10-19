@@ -4,6 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { TASK_MODEL_REGISTRY, type MenuModel_t } from '@/DATA_MODEL'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 
+/** Si la tarea tiene una descripción para esa clave (agrupamiento, por ejemplo, no tiene modelos) */
+export const hasMenuModel = (task: string | undefined, modelKey: string) => {
+  const registry = task ? TASK_MODEL_REGISTRY[task] : undefined
+  return registry !== undefined && hasModel(registry, modelKey)
+}
+
 /**
  * Instancia del modelo `modelKey` de la tarea `task`, cargada bajo demanda (solo se descarga
  * el modelo seleccionado). Devuelve `null` mientras se carga o si la clave no es un modelo.

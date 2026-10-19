@@ -1,0 +1,638 @@
+import path from 'node:path'
+import { test, expect } from './fixtures'
+
+test('la home enseña la tarjeta de la tarea elegida y baja hasta ella', async ({ page }) => {
+  await page.goto('/')
+  await page.getByTestId('Test-InitialMenu-LinearRegression').click()
+  await expect(page.getByTestId('Test-GoTo-SelectModel-LinearRegression')).toBeVisible()
+  // El separador de las tarjetas queda arriba, justo debajo de la barra de navegación, y con el foco
+  const divider = page.locator('.n4l-hr-row', { hasText: 'Tareas' })
+  await expect(divider).toBeFocused()
+  const navbarHeight = (await page.locator('.n4l-navbar').boundingBox())!.height
+  await expect.poll(async () => (await divider.boundingBox())!.y).toBeGreaterThanOrEqual(navbarHeight)
+  await expect.poll(async () => (await divider.boundingBox())!.y).toBeLessThan(navbarHeight + 100)
+})
+
+test('la barra de navegación lleva a cada página y marca la actual', async ({ page }) => {
+  await page.goto('/')
+  const navbar = page.locator('.n4l-navbar')
+  for (const [name, path] of [['Manual', '/manual'], ['Glosario', '/glossary'], ['Conjuntos de datos', '/datasets'], ['AED', '/analyze'], ['Paquetes .n4l', '/packages']]) {
+    await navbar.getByRole('link', { name, exact: true }).click()
+    await expect(page).toHaveURL(new RegExp(path + '$'))
+    await expect(navbar.getByRole('link', { name, exact: true })).toHaveAttribute('aria-current', 'page')
+  }
+})
+
+test('un modelo se descarga como .n4l y se abre en «Paquetes .n4l»: se guarda en el navegador y se usa como los demás', async ({ page }, testInfo) => {
+  await page.goto('/playground/tabular-classification/model/IRIS')
+  const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('Test-N4LDownload').click()])
+  expect(download.suggestedFilename()).toBe('iris-1.0.0.n4l')
+  const file = testInfo.outputPath('iris-1.0.0.n4l')
+  await download.saveAs(file)
+
+  // Ya no está en los menús de las tareas, sino en su página (en la barra de navegación)
+  await page.goto('/select-model/tabular-classification')
+  await expect(page.getByTestId('Test-MenuSelectModel-Open-IRIS')).toBeVisible()
+  await expect(page.getByTestId('Test-N4LLocalPackages')).toHaveCount(0)
+  await page.locator('.n4l-navbar').getByTestId('Test-Navbar-Packages').click()
+  await expect(page).toHaveURL(/\/packages$/)
+  const local = page.getByTestId('Test-N4LLocalPackages')
+  await expect(local).toContainText('Todavía no hay ninguno')
+  // Un fichero que no es un .n4l se rechaza diciendo por qué
+  await local.locator('input#drop-zone-n4l').setInputFiles({ name: 'roto.n4l', mimeType: 'application/octet-stream', buffer: Buffer.from('hola') })
+  await expect(local.getByTestId('Test-N4LImportError')).toContainText('no es un fichero .n4l')
+
+  await local.locator('input#drop-zone-n4l').setInputFiles(file)
+  await expect(local.getByTestId('Test-N4LImported')).toContainText('Clasificación de flor iris')
+  // Una tarjeta con sus tareas: probar su modelo o entrenar con su conjunto; la barra cuenta los guardados
+  await expect(page.getByTestId('Test-Navbar-Packages')).toContainText('1')
+  await expect(local.getByTestId('Test-N4LLocal-iris')).toContainText('Clasificación tabular')
+  await local.getByTestId('Test-N4LLocal-iris-tabular-classification').getByRole('link', { name: 'Probar el modelo' }).click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/model\/local-iris$/)
+  // La miga de pan lleva de vuelta a los paquetes
+  await expect(page.getByTestId('Test-Breadcrumb').getByRole('link', { name: 'Tus paquetes .n4l' })).toHaveAttribute('href', /\/packages$/)
+  // Con sus textos (los del paquete abierto) y su modelo
+  await expect(page.locator('[data-guide="form"]')).toContainText('Longitud sépalo', { timeout: 30_000 })
+  await expect(page.getByTestId('Test-N4LDescription')).toContainText('Iris-Data')
+
+  // Sigue ahí al volver (IndexedDB) y se puede quitar
+  await page.goto('/packages')
+  await page.getByTestId('Test-N4LLocal-iris').getByRole('button', { name: /Quitar/ }).click()
+  // Antes pregunta (no se puede deshacer): el foco va a «Cancelar»
+  const confirm = page.getByTestId('Test-N4LLocal-iris').getByRole('group', { name: /Se quitará/ })
+  await expect(confirm.getByRole('button', { name: 'Cancelar' })).toBeFocused()
+  await confirm.getByRole('button', { name: 'Quitar' }).click()
+  await expect(page.getByTestId('Test-N4LLocal-iris')).toHaveCount(0)
+  await page.goto('/playground/tabular-classification/model/local-iris')
+  await expect(page).toHaveURL(/\/404$/)
+})
+
+test('«Tareas» en la cabecera abre la página de cada tarea: modelos ya entrenados o diseñar una red', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.n4l-navbar').getByRole('button', { name: 'Tareas' }).click()
+  await page.locator('.n4l-navbar').getByRole('link', { name: 'Clasificación de imágenes' }).click()
+  await expect(page).toHaveURL(/\/task\/image-classification$/)
+  await expect(page.locator('#tasks-nav-dropdown')).toHaveClass(/active/)
+  await expect(page.getByTestId('Test-Task-Pretrained')).toContainText('Modelos ya entrenados')
+  await expect(page.getByTestId('Test-Task-Design')).toContainText('Diseñar, crear y editar una arquitectura')
+  await page.getByTestId('Test-Task-Choose-dataset').click()
+  await expect(page).toHaveURL(/\/select-dataset\/image-classification$/)
+  // Y de vuelta, con la miga de pan de la tarea
+  await page.getByTestId('Test-Breadcrumb').getByRole('link', { name: 'Clasificación de imágenes' }).click()
+  await page.getByTestId('Test-Task-Choose-model').click()
+  await expect(page).toHaveURL(/\/select-model\/image-classification$/)
+})
+
+test('las migas de pan cambian de modelo y llevan a entrenar con su dataset', async ({ page }) => {
+  await page.goto('/playground/tabular-classification/model/IRIS')
+  const breadcrumb = page.getByTestId('Test-Breadcrumb')
+  await breadcrumb.locator('.n4l-breadcrumb-toggle').click()
+  await breadcrumb.locator('.dropdown-item', { hasText: 'Clasificación de coches' }).click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/model\/CAR$/)
+  await expect(breadcrumb.locator('.n4l-breadcrumb-toggle')).toContainText('Clasificación de coches')
+
+  await breadcrumb.locator('.n4l-breadcrumb-toggle').click()
+  await breadcrumb.getByTestId('Test-Breadcrumb-OtherKind').click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/CAR$/)
+
+  // La tarea lleva a su página: modelos ya entrenados o diseñar una red
+  await breadcrumb.locator('.n4l-breadcrumb-task a').click()
+  await expect(page).toHaveURL(/\/task\/tabular-classification$/)
+})
+
+test('el AED analiza un conjunto de datos del proyecto', async ({ page }) => {
+  await page.goto('/analyze')
+  await page.locator('#analyze-project-dataset').selectOption('n4l/iris.n4l/data/iris.csv')
+  await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('150')
+  await expect(page.getByTestId('Test-AnalyzeTile-rows')).toContainText('150')
+  await expect(page.getByTestId('Test-AnalyzeProblem')).toBeVisible()
+  // El conjunto queda en la dirección y el resumen trae la distribución del objetivo y los avisos en sus tarjetas
+  await expect(page).toHaveURL(/\/analyze\?dataset=iris$/)
+  await expect(page.getByTestId('Test-AnalyzeTargetCard')).toContainText('class')
+  await expect(page.getByTestId('Test-AnalyzeWarningsCard')).toBeVisible()
+})
+
+// Ficheros propios en otros formatos o con otro separador: todos acaban siendo el mismo dataframe
+const UPLOADS = [
+  { file: 'iris.arff', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  { file: 'iris.json', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  { file: 'iris-pandas.json', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  { file: 'iris.jsonl', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  { file: 'iris.parquet', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  { file: 'iris-zstd.parquet', shape: '150 filas × 5 columnas', numeric: 'Numéricas: 4' },
+  // ";" y coma decimal (Excel en español), y el mismo alineado con comas: sin las columnas vacías del final
+  { file: 'aire-punto-y-coma.csv', shape: '6 filas × 7 columnas', numeric: 'Numéricas: 4' },
+  { file: 'aire-alineado.csv', shape: '6 filas × 7 columnas', numeric: 'Numéricas: 4' },
+]
+
+for (const { file, shape, numeric } of UPLOADS) {
+  test(`el AED lee ${file}`, async ({ page }) => {
+    await page.goto('/analyze')
+    await page.locator('input[type=file][accept*=".parquet"]').setInputFiles(path.join(__dirname, 'files', file))
+    await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText(shape)
+    await expect(page.getByTestId('Test-AnalyzeTile-columns')).toContainText(numeric)
+  })
+}
+
+test('desde /datasets un conjunto se abre en el AED', async ({ page }) => {
+  await page.goto('/datasets')
+  await page.getByTestId('Test-DatasetAnalyze-car').click()
+  await expect(page).toHaveURL(/\/analyze\?dataset=car$/)
+  await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('1728')
+  await expect(page.locator('#analyze-project-dataset')).toHaveValue('n4l/car.n4l/data/car.csv')
+})
+
+test('las series temporales de /datasets: su descripción, sus fechas y su análisis en el AED', async ({ page }) => {
+  await page.goto('/datasets?task=time-series')
+  await expect(page.getByTestId('Test-Dataset-AIRLINE-PASSENGERS')).toContainText('144 meses, objetivo: Passengers')
+  await expect(page.getByTestId('Test-Dataset-MELBOURNE-TEMPERATURES')).toContainText('días, objetivo: Temp')
+  // Se entrenan y tienen su modelo ya entrenado
+  await expect(page.getByTestId('Test-DatasetTrain-SUNSPOTS')).toHaveAttribute('href', '/playground/time-series/dataset/SUNSPOTS')
+  await expect(page.getByTestId('Test-DatasetModel-SUNSPOTS')).toHaveAttribute('href', '/playground/time-series/model/SUNSPOTS')
+  await page.getByTestId('Test-DatasetInfo-SUNSPOTS').click()
+  const modal = page.getByRole('dialog')
+  await expect(modal.getByTestId('Test-N4LDescription')).toContainText('mínimo de Dalton')
+  await modal.getByRole('tab', { name: 'Variables' }).click()
+  await expect(modal.getByTestId('Test-DatasetVariables')).toContainText('Fecha')
+  await modal.getByRole('tab', { name: 'Datos' }).click()
+  await expect(modal.getByText('2820 filas × 2 columnas')).toBeVisible()
+  await modal.getByRole('link', { name: 'Analizar' }).click()
+  await expect(page).toHaveURL(/\/analyze\?dataset=monthly-sunspots$/)
+  await expect(page.getByTestId('Test-AnalyzeInfo')).toContainText('2820')
+})
+
+test('el modal de un conjunto de /datasets enseña sus datos y sus estadísticas', async ({ page }) => {
+  await page.goto('/datasets')
+  await page.getByTestId('Test-DatasetInfo-IRIS').click()
+  const modal = page.getByRole('dialog')
+  await modal.getByRole('tab', { name: 'Datos' }).click()
+  await expect(modal.getByText('150 filas × 5 columnas')).toBeVisible()
+  await expect(modal.locator('.js-plotly-plot')).toBeVisible()
+  await modal.getByRole('tab', { name: 'Estadísticas' }).click()
+  await expect(modal.locator('.tab-pane.active .js-plotly-plot')).toBeVisible()
+  await page.keyboard.press('Escape')
+
+  // Con varios ficheros se elige cuál (el vino: tinto y blanco)
+  await page.getByRole('tab', { name: 'Regresión' }).click()
+  await page.getByTestId('Test-DatasetInfo-WINE').click()
+  await modal.getByRole('tab', { name: 'Datos' }).click()
+  await expect(modal.getByText('1599 filas × 12 columnas')).toBeVisible()
+  await modal.locator('.tab-pane.active select').selectOption({ label: 'wine-quality-white.csv' })
+  await expect(modal.getByText('4898 filas × 12 columnas')).toBeVisible()
+})
+
+test('la barra de navegación se queda fija arriba al bajar', async ({ page }) => {
+  await page.goto('/glossary')
+  // Se insiste hasta que la página es larga y baja de verdad
+  await expect.poll(async () => {
+    await page.evaluate(() => window.scrollTo(0, 3000))
+    return page.evaluate(() => window.scrollY)
+  }).toBeGreaterThan(500)
+  const box = await page.locator('.n4l-navbar').boundingBox()
+  expect(box?.y).toBe(0)
+  await expect(page.locator('.n4l-navbar').getByRole('link', { name: 'Glosario', exact: true })).toBeInViewport()
+})
+
+test('el glosario busca términos y cada uno tiene su enlace', async ({ page }) => {
+  await page.goto('/glossary')
+  await page.getByRole('searchbox').fill('relu')
+  await expect(page.getByTestId('Test-GlossaryResults')).toContainText('términos')
+  await expect(page.locator('#glossary-activation-relu')).toBeVisible()
+  await expect(page.locator('#glossary-optimizer-adam')).toHaveCount(0)
+
+  // Un enlace directo lleva al término (con su fórmula y su gráfica)
+  await page.goto('/')
+  await page.goto('/glossary#glossary-activation-sigmoid')
+  const sigmoid = page.locator('#glossary-activation-sigmoid')
+  await expect(sigmoid).toBeInViewport()
+  await expect(sigmoid.locator('.katex')).toBeVisible()
+  await expect(sigmoid.locator('img')).toHaveJSProperty('complete', true)
+})
+
+test('el diseño de capas se maximiza a pantalla completa y Escape lo devuelve a su sitio', async ({ page }) => {
+  await page.goto('/playground/regression/dataset/AUTO_MPG')
+  const card = page.locator('.card', { has: page.getByRole('heading', { name: 'Diseño de capas' }) })
+  const graph = card.locator('#vis-network canvas')
+  await expect(graph).toBeVisible()
+  expect((await graph.boundingBox())?.height).toBe(250)
+
+  await card.getByRole('button', { name: 'Maximizar' }).click()
+  const viewport = page.viewportSize()!
+  await expect.poll(() => card.boundingBox()).toEqual({ x: 0, y: 0, width: viewport.width, height: viewport.height })
+  // El grafo crece con la tarjeta
+  await expect.poll(async () => (await graph.boundingBox())?.height ?? 0).toBeGreaterThan(400)
+
+  await page.keyboard.press('Escape')
+  await expect(card.getByRole('button', { name: 'Maximizar' })).toBeVisible()
+  await expect.poll(async () => (await graph.boundingBox())?.height).toBe(250)
+})
+
+test('la revisión de un modelo de regresión enseña el análisis de su conjunto de datos', async ({ page }) => {
+  await page.goto('/playground/regression/model/AUTO_MPG')
+  await page.getByTestId('Test-ModelReviewDataset-AnalysisTab').click()
+  await expect(page.getByTestId('Test-AnalyzeTile-rows')).toContainText('396')
+  await expect(page.getByTestId('Test-AnalyzeTargetCard')).toContainText('mpg')
+  await expect(page.getByTestId('Test-AnalyzeWarningsCard')).toBeVisible()
+  await expect(page.getByTestId('Test-AnalyzeEssentialsLink')).toHaveAttribute('href', '/analyze?dataset=auto-mpg')
+  // La tarjeta del gráfico de dispersión ya no está: la dispersión va en el análisis
+  await expect(page.getByRole('heading', { name: 'Gráfico de dispersión' })).toHaveCount(0)
+})
+
+test('la guía del modelo CAR solo empieza con su botón y explica la página paso a paso en voz alta', async ({ page }) => {
+  // Lo que se leería en voz alta
+  await page.addInitScript(() => {
+    const spoken: string[] = []
+    Object.assign(window, { spoken })
+    window.speechSynthesis.speak = (utterance) => { spoken.push(utterance.text) }
+  })
+  await page.goto('/playground/tabular-classification/model/CAR')
+  const button = page.getByTestId('Test-GuideButton')
+  await expect(button).toBeVisible()
+  // Encima de "Resumen del modelo" y sin arrancar sola
+  const summary = page.locator('[data-guide="model-summary"]')
+  expect((await button.boundingBox())!.y).toBeLessThan((await summary.boundingBox())!.y)
+  const tooltip = page.getByTestId('Test-GuideTooltip')
+  await page.waitForTimeout(1500)
+  await expect(tooltip).toHaveCount(0)
+
+  await button.click()
+  await expect(tooltip).toContainText('Paso 1 de 18')
+  await expect(tooltip).toContainText('Clasificación de coches')
+  const spoken = () => page.evaluate(() => (window as unknown as { spoken: string[] }).spoken.join(' '))
+  await expect.poll(spoken).toContain('Clasificación de coches.')
+
+  // Paso a paso hasta la seguridad, que se señala en la página
+  for (let step = 2; step <= 13; step++) {
+    await tooltip.getByRole('button', { name: 'Siguiente' }).click()
+    await expect(tooltip).toContainText(`Paso ${step} de 18`)
+  }
+  await expect(tooltip).toContainText('Seguridad')
+  await expect(page.locator('[data-guide="field-Safety"]')).toBeInViewport()
+  await expect.poll(spoken).toContain('con seguridad baja, el coche siempre es inaceptable.')
+
+  await page.keyboard.press('Escape')
+  await expect(tooltip).toHaveCount(0)
+})
+
+// Una guía de cada tarea, entera, en la página de un modelo y en la de entrenar: cada paso encuentra su elemento (si no,
+// se saltaría y el contador daría un salto). Los modelos de detección y MobileNet se descargan de internet: sus guías
+// las prueban modelReviewGuide.test.ts
+const GUIDES = [
+  { path: '/playground/tabular-classification/model/LYMPHOGRAPHY', ready: '[data-guide="form"]' },
+  { path: '/playground/regression/model/AUTO_MPG', ready: '[data-guide="field-weight"]' },
+  { path: '/playground/image-classification/model/IMAGE-MNIST', ready: '[data-guide="model-summary"]' },
+  { path: '/playground/time-series/model/AIRLINE-PASSENGERS', ready: '[data-guide="future"]' },
+  { path: '/playground/tabular-classification/dataset/IRIS', ready: '[data-guide="hp-learning-rate"]' },
+  { path: '/playground/regression/dataset/AUTO_MPG', ready: '[data-guide="hp-learning-rate"]' },
+  { path: '/playground/image-classification/dataset/IMAGE-MNIST', ready: '[data-guide="layers"]' },
+  { path: '/playground/time-series/dataset/MELBOURNE-TEMPERATURES', ready: '[data-guide="windows"]' },
+  { path: '/glossary', ready: '.n4l-glossary-search' },
+]
+for (const { path, ready } of GUIDES) {
+  test(`la guía de ${path.split('/').slice(-2).join('/')} recorre todos sus pasos en orden`, async ({ page }) => {
+    test.setTimeout(120_000)
+    await page.addInitScript(() => { window.speechSynthesis.speak = () => {} })
+    await page.goto(path)
+    // Con los datos ya cargados: los pasos de cada atributo dependen de ellos
+    await expect(page.locator(ready)).toBeVisible({ timeout: 60_000 })
+    await page.getByTestId('Test-GuideButton').click()
+    const tooltip = page.getByTestId('Test-GuideTooltip')
+    await expect(tooltip).toContainText(/Paso 1 de \d+/)
+    const total = Number((await tooltip.innerText()).match(/Paso 1 de (\d+)/)![1])
+    for (let step = 2; step <= total; step++) {
+      await tooltip.getByRole('button', { name: 'Siguiente' }).click()
+      await expect(tooltip).toContainText(`Paso ${step} de ${total}`)
+    }
+    await tooltip.getByRole('button', { name: 'Terminar', exact: true }).click()
+    await expect(tooltip).toHaveCount(0)
+    await expect(page.getByTestId('Test-GuideButton')).toHaveText('Guía')
+  })
+}
+
+test('el pie lleva a la configuración, y el tema elegido allí se mantiene al recargar', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('footer').getByRole('link', { name: 'Configuración', exact: true }).click()
+  await expect(page).toHaveURL(/\/settings$/)
+  const theme = page.getByTestId('Test-Settings-appearance').getByLabel('Tema')
+  await theme.selectOption('dark')
+  await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark')
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-bs-theme', 'dark')
+  await expect(page.getByTestId('Test-Settings-appearance').getByLabel('Tema')).toHaveValue('dark')
+  // La barra de navegación también lo sabe
+  await page.locator('.n4l-navbar').getByRole('button', { name: 'Tema' }).click()
+  await expect(page.locator('.n4l-navbar .dropdown-item.active')).toContainText('Oscuro')
+})
+
+test('el modelo CAR enseña el análisis de su conjunto de datos', async ({ page }) => {
+  await page.goto('/playground/tabular-classification/model/CAR')
+  await page.getByTestId('Test-ModelReviewDataset-AnalysisTab').click()
+  await expect(page.getByTestId('Test-AnalyzeTile-rows')).toContainText('1728')
+  // Clasificación: el reparto de las clases y los avisos (las clases de car.csv están muy desequilibradas)
+  await expect(page.getByTestId('Test-AnalyzeTargetCard')).toBeVisible()
+  await expect(page.getByTestId('Test-AnalyzeWarningsCard')).toBeVisible()
+  await expect(page.getByTestId('Test-AnalyzeEssentialsLink')).toHaveAttribute('href', '/analyze?dataset=car')
+})
+
+test('la 404 tiene de fondo una red neuronal, que se quita al volver al inicio', async ({ page }) => {
+  await page.goto('/esta-ruta-no-existe')
+  await expect(page).toHaveURL(/\/404$/)
+  const network = page.getByTestId('Test-NotFoundNetwork')
+  await expect(network).toBeAttached()
+  // Ocupa todo el fondo de la página, detrás del contenido (que sigue pudiéndose pulsar)
+  const [canvasBox, pageBox] = await Promise.all([network.boundingBox(), page.getByTestId('Test-NotFoundPage').boundingBox()])
+  expect(canvasBox).toEqual(pageBox)
+  await page.mouse.move(200, 300)
+  await page.getByRole('link', { name: 'Volver al inicio' }).click()
+  await expect(page.getByTestId('Test-InitialMenu-LinearRegression')).toBeVisible()
+  await expect(network).not.toBeAttached()
+})
+
+test('el aviso de cookies explica qué se mide, rechazar es tan fácil como aceptar y sin aceptar no se carga Google Analytics', async ({ page }) => {
+  // Sin la decisión que ponen las pruebas; lo que vaya a Google se intercepta: nada sale de la prueba
+  await page.context().clearCookies()
+  const google: string[] = []
+  await page.route(/googletagmanager\.com|google-analytics\.com/, (route) => {
+    google.push(route.request().url())
+    return route.fulfill({ status: 204, body: '' })
+  })
+  await page.goto('/playground/tabular-classification/model/CAR')
+  const banner = page.getByTestId('Test-CookiesBanner')
+  await expect(banner).toBeVisible()
+  await banner.getByText('Qué se mide y qué no').click()
+  await expect(banner.getByTestId('Test-AnalyticsDisclosure')).toContainText('Nunca se envía')
+  const [reject, accept] = await Promise.all([page.getByTestId('Test-CookiesReject').boundingBox(), page.getByTestId('Test-CookiesAccept').boundingBox()])
+  expect(reject!.width).toBe(accept!.width)
+  expect(reject!.height).toBe(accept!.height)
+  expect(google).toEqual([])
+
+  await page.getByTestId('Test-CookiesAccept').click()
+  await expect(banner).toBeHidden()
+  await expect.poll(() => google.some((url) => url.includes('googletagmanager.com/gtag/js'))).toBe(true)
+  // La página en la que se aceptó queda registrada, con su contexto y sin publicidad
+  const dataLayer = await page.evaluate(() => (window as unknown as { dataLayer: unknown[][] }).dataLayer.map((args) => Array.from(args)))
+  expect(dataLayer).toContainEqual(['consent', 'default', expect.objectContaining({ ad_storage: 'denied', analytics_storage: 'granted' })])
+  expect(dataLayer).toContainEqual(['event', 'page_view', expect.objectContaining({ page_type: 'playground', task: 'tabular-classification', mode: 'pretrained', item: 'CAR' })])
+})
+
+test('el paso a paso enseña un ejemplo hacia delante y hacia atrás, y con más ejemplos la pérdida baja', async ({ page }) => {
+  // Oculto por defecto: se activa en /settings
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible()
+  await expect(page.getByTestId('Test-StepByStep')).toHaveCount(0)
+  await page.goto('/settings#learning')
+  await page.getByTestId('Test-Settings-learning').getByRole('checkbox').check()
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  const card = page.getByTestId('Test-StepByStep')
+  const phase = card.getByTestId('Test-StepByStep-Phase')
+  await expect(phase).toHaveText('La entrada')
+  // 4 + 10 + 10 + 3 neuronas: entrada, tres capas hacia delante, error, tres hacia atrás y actualización
+  const titles = [await phase.innerText()]
+  for (let i = 0; i < 8; i++) {
+    await card.getByTestId('Test-StepByStep-Next').click()
+    titles.push(await phase.innerText())
+  }
+  expect(titles).toEqual(['La entrada', 'Hacia delante: capa 1', 'Hacia delante: capa 2', 'Hacia delante: capa 3', 'El error',
+    'Hacia atrás: capa 3', 'Hacia atrás: capa 2', 'Hacia atrás: capa 1', 'Actualizar los pesos'])
+  // En la actualización, cuánto cambian el sesgo y el peso que más se mueve
+  await expect(card.getByTestId('Test-StepByStep-Formula')).toContainText('El peso que más cambia')
+  for (let i = 0; i < 5; i++) await card.getByTestId('Test-StepByStep-Ten').click()
+  const history = await card.getByTestId('Test-StepByStep-History').innerText()
+  const [, first, last] = history.match(/de ([\d,]+) a ([\d,]+)/)!.map((value) => Number(value.replace(',', '.')))
+  expect(last).toBeLessThan(first)
+
+  // CAR, con su red por defecto, es demasiado grande para seguirla
+  await page.goto('/playground/tabular-classification/dataset/CAR')
+  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('234 neuronas')
+
+  // En la página de un modelo ya entrenado, con sus pesos: IRIS (4 + 10 + 3) cabe; WINE (11 + 128 + 64 + 32 + 1) no
+  await page.goto('/playground/tabular-classification/model/IRIS')
+  const model = page.getByTestId('Test-StepByStep')
+  await expect(model).toContainText('Así calcula este modelo ya entrenado su respuesta')
+  for (let i = 0; i < 3; i++) await model.getByTestId('Test-StepByStep-Next').click()
+  await expect(model.getByTestId('Test-StepByStep-Phase')).toHaveText('El error')
+  await page.goto('/playground/regression/model/WINE')
+  await expect(page.getByTestId('Test-StepByStep-TooBig')).toContainText('236 neuronas')
+})
+
+test('un conjunto de datos propio se prepara en tres pasos y después se puede entrenar', async ({ page }) => {
+  const upload = (file: string) => page.locator('input[type=file]:not([data-testid="Test-SessionImport"])').first()
+    .setInputFiles(path.join(__dirname, '..', 'public', file))
+  const ok = async () => {
+    const confirm = page.locator('.swal2-confirm')
+    if (await confirm.isVisible().catch(() => false)) await confirm.click()
+  }
+
+  // Clasificación: la última columna es la clase; antes de procesar no se puede entrenar
+  await page.goto('/playground/tabular-classification/dataset/UPLOAD')
+  await upload('n4l/car.n4l/data/car.csv')
+  await ok()
+  const form = page.getByTestId('Test-DatasetProcess-Form')
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Result» tiene 4 clases')
+  await expect(page.getByTestId('Test-DatasetProcess-Summary')).toContainText('Entrarán 6 columnas')
+  await form.getByTestId('Test-DatasetProcess-Column-Doors').getByRole('checkbox').uncheck()
+  await expect(page.getByTestId('Test-DatasetProcess-Summary')).toContainText('Entrarán 5 columnas')
+  await form.getByTestId('Test-DatasetProcess-Submit').click()
+  await ok()
+  await expect(page.getByTestId('Test-DatasetProcess-Done')).toContainText('1728 filas, 5 columnas de entrada')
+  await expect(page.getByTestId('Test-TrainButton')).toBeEnabled()
+
+  // Regresión: un objetivo de texto no se puede predecir; hasta procesar, no se entrena
+  await page.goto('/playground/regression/dataset/UPLOAD')
+  await upload('n4l/auto-mpg.n4l/data/auto-mpg.csv')
+  await ok()
+  await expect(page.getByTestId('Test-TrainButton')).toBeDisabled()
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«mpg» va de')
+  await page.getByTestId('Test-DatasetProcess-Submit').click()
+  await ok()
+  await expect(page.getByTestId('Test-DatasetProcess-Done')).toContainText('396 filas, 6 columnas de entrada y «mpg»')
+  await expect(page.getByTestId('Test-TrainButton')).toBeEnabled()
+  // El conjunto se actualiza en su sitio: no sale repetido en el selector de fichero, y se ve lo que recibe la red
+  await expect(page.locator('#regression-dataset-file')).toHaveCount(0)
+  const views = page.locator('[data-guide="dataset"]')
+  await views.getByTestId('Test-DatasetViews').getByText('Escalado (entrada de la red)').click()
+  await expect(views.getByTestId('Test-DatasetViews-Help')).toContainText('exactamente lo que recibe la red')
+})
+
+test('con el ahorro de datos activado, se pregunta antes de descargar un modelo grande (y solo la primera vez)', async ({ page }) => {
+  // Lo que diría Chrome con "Ahorro de datos" (Network Information API)
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'connection', { configurable: true, get: () => ({ saveData: true, effectiveType: '4g' }) })
+  })
+  const modelRequests: string[] = []
+  page.on('request', (request) => { if (request.url().includes('mnist.n4l/models/cnn/model.json')) modelRequests.push(request.url()) })
+
+  await page.goto('/playground/image-classification/model/IMAGE-MNIST')
+  const consent = page.getByTestId('Test-DownloadConsent')
+  await expect(consent).toContainText('Este modelo descarga unos 4,6 MB')
+  await expect(consent).toContainText('ahorro de datos')
+  await page.waitForTimeout(1000)
+  expect(modelRequests).toEqual([])
+
+  await consent.getByTestId('Test-DownloadConsent-Accept').click()
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  expect(modelRequests.length).toBeGreaterThan(0)
+
+  await page.reload()
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  await expect(consent).toHaveCount(0)
+})
+
+test('MNIST: cada imagen de ejemplo, un dígito escrito con una fuente, se clasifica como ese dígito', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-MNIST')
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  for (let digit = 0; digit < 10; digit++) {
+    // El botón de cada ejemplo dice qué es, lo mismo que ve quien mira la imagen
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${digit + 1}: ${digit}`, exact: true }).click()
+    await expect(page.getByText(new RegExp(`Clase predicha\\s*${digit}`))).toBeVisible({ timeout: 30_000 })
+  }
+})
+
+test('CIFAR-10: fotos en color de 32×32, sin lienzo; cada ejemplo se clasifica como su clase y se ven las de prueba', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-CIFAR10')
+  await expect(page.getByTestId('Test-LoadTestDataset')).toBeEnabled({ timeout: 60_000 })
+  // En color no se dibuja: se sube una foto
+  await expect(page.locator('[data-guide="draw"]')).toHaveCount(0)
+  await expect(page.locator('[data-guide="upload"]')).toBeVisible()
+  const classes = ['avión', 'automóvil', 'pájaro', 'gato', 'ciervo', 'perro', 'rana', 'caballo', 'barco', 'camión']
+  for (const [index, name] of classes.entries()) {
+    await page.getByRole('button', { name: `Clasificar el ejemplo ${index + 1}: ${name}`, exact: true }).click()
+    await expect(page.getByText(new RegExp(`Clase predicha\\s*${name}`))).toBeVisible({ timeout: 30_000 })
+  }
+  // Una de las de prueba, con su clase real
+  await page.getByTestId('Test-LoadTestDataset').click()
+  const testImages = page.locator('[data-guide="test-images"]')
+  await testImages.locator('.n4l-instance-select, button, input').first().click({ timeout: 60_000 })
+  await page.getByRole('listbox').getByRole('option').first().click()
+  await expect(page.locator('[data-guide="result"]')).toContainText('Clase real', { timeout: 30_000 })
+})
+
+test('KMNIST enseña cada carácter como se escribe hoy junto a sus formas antiguas, y cualquiera se clasifica', async ({ page }) => {
+  await page.goto('/playground/image-classification/model/IMAGE-KMNIST')
+  const su = page.getByTestId('Test-CharacterExamples').getByRole('group', { name: 'す (su)' })
+  await expect(su).toContainText('Hoy')
+  await expect(su).toContainText('Antes')
+  await expect(su.getByRole('button', { name: /^Clasificar す antiguo, que viene de/ })).toHaveCount(3)
+  // La de hoy y una antigua que no se le parece: la red aprendió las dos
+  await expect(su.getByRole('button', { name: 'Clasificar す como se escribe hoy' })).toBeEnabled({ timeout: 60_000 })
+  await su.getByRole('button', { name: 'Clasificar す como se escribe hoy' }).click()
+  await expect(page.getByText(/Clase predicha\s*す/)).toBeVisible({ timeout: 30_000 })
+  // は escrito a partir de 者: no se parece en nada al de hoy
+  await page.getByTestId('Test-CharacterExamples').getByRole('button', { name: 'Clasificar は antiguo, que viene de 者' }).click()
+  await expect(page.getByText(/Clase predicha\s*は/)).toBeVisible({ timeout: 30_000 })
+
+  // En la información del conjunto: los diez, con su lectura, el kanji del que vienen y sus formas antiguas
+  await page.goto('/datasets?task=image-classification')
+  await page.getByTestId('Test-DatasetInfo-IMAGE-KMNIST').click()
+  const forms = page.getByRole('dialog').getByTestId('Test-CharacterForms')
+  await expect(forms.getByRole('row')).toHaveCount(11)
+  // は se escribía de otras 11 formas, cada una con su kanji
+  await expect(forms.getByRole('row').filter({ hasText: 'ha, 波' }).getByRole('img')).toHaveCount(11)
+  await expect(forms.getByRole('img', { name: 'は antiguo, que viene de 八' })).toBeVisible()
+})
+
+test('«Empieza aquí»: los pasos se marcan solos al hacerlos y se avisa del siguiente', async ({ page }) => {
+  await page.goto('/')
+  await page.getByTestId('Test-StartHere').getByRole('link', { name: 'Empieza aquí' }).click()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('0 de 10 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Challenges-Progress')).toHaveText('0 de 5 retos superados')
+
+  // El primero: entrenar una red en el laboratorio
+  await page.getByTestId('Test-Learn-Go-lab').click()
+  await expect(page).toHaveURL(/\/lab$/)
+  await page.getByTestId('Test-Lab-Run').click()
+  const toast = page.getByTestId('Test-LearningToast')
+  await expect(toast).toContainText('Paso 1 de 10 hecho')
+  await expect(toast).toContainText('Siguiente: Las palabras clave')
+  await page.getByTestId('Test-Lab-Run').click()
+
+  await toast.getByRole('link').click()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 10 pasos hechos')
+  await expect(page.getByTestId('Test-Learn-Step-lab')).toHaveAttribute('data-done', 'true')
+  await page.reload()
+  await expect(page.getByTestId('Test-Learn-Progress')).toHaveText('1 de 10 pasos hechos')
+})
+
+test('un ejercicio se comparte con un enlace (y su QR): quien lo abre tiene la misma red e hiperparámetros', async ({ page, context }) => {
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await page.getByRole('spinbutton', { name: 'N. épocas' }).fill('7')
+  await page.locator('[data-guide="hp-learning-rate"] select').selectOption('0.1')
+
+  await page.getByTestId('Test-SessionShare').click()
+  const modal = page.getByTestId('Test-SessionShare-Modal')
+  await expect(modal.getByTestId('Test-SessionShare-QR')).toBeVisible()
+  const link = await modal.getByTestId('Test-SessionShare-Link').inputValue()
+  expect(link).toMatch(/\/playground\/tabular-classification\/dataset\/IRIS#n4z=/)
+
+  const other = await context.newPage()
+  await other.goto(link)
+  await expect(other.locator('.swal2-popup')).toContainText('Configuración importada', { timeout: 60_000 })
+  await expect(other.getByRole('spinbutton', { name: 'N. épocas' })).toHaveValue('7')
+  await expect(other.locator('[data-guide="hp-learning-rate"] select')).toHaveValue('0.1')
+  // Se quita de la dirección: al recargar no se vuelve a aplicar
+  await expect(other).toHaveURL(/\/IRIS$/)
+})
+
+test('al cambiar de página se empieza arriba (con el foco en el título), atrás vuelve a donde se estaba y un enlace a una sección lleva a ella', async ({ page }) => {
+  const scrollY = () => page.evaluate(() => window.scrollY)
+  await page.goto('/glossary')
+  await expect(page.locator('main h1')).toBeVisible()
+  await page.evaluate(() => window.scrollTo({ top: 2000, behavior: 'instant' }))
+  await expect.poll(scrollY).toBeGreaterThan(1500)
+  const position = await scrollY()
+
+  await page.locator('.n4l-navbar').getByRole('link', { name: 'Manual', exact: true }).click()
+  await expect(page).toHaveURL(/\/manual\/?$/)
+  await expect.poll(scrollY).toBe(0)
+  await expect(page.locator('main h1').first()).toBeFocused()
+
+  await page.goBack()
+  await expect(page).toHaveURL(/\/glossary$/)
+  await expect.poll(async () => Math.abs((await scrollY()) - position)).toBeLessThan(5)
+
+  await page.goto('/settings')
+  await page.getByRole('tab', { name: 'Privacidad y cookies' }).click()
+  await expect(page).toHaveURL(/\/settings#privacy$/)
+  await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }))
+  await page.getByRole('link', { name: 'Más información sobre las cookies' }).click()
+  await expect(page).toHaveURL(/\/terms-and-conditions#cookies$/)
+  // La sección, arriba y debajo de la barra de navegación
+  await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeGreaterThan(0)
+  await expect.poll(async () => page.locator('#cookies').evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBeLessThan(200)
+})
+
+test('desde /datasets se entrena con un conjunto de práctica: el entrenador lo carga como si se hubiera subido', async ({ page }) => {
+  await page.goto('/datasets')
+  // La pestaña va en la dirección: se puede enlazar y se mantiene al recargar
+  await page.getByRole('tab', { name: 'Regresión' }).click()
+  await expect(page).toHaveURL(/\/datasets\?task=regression$/)
+  await page.reload()
+  await expect(page.getByRole('tab', { name: 'Regresión' })).toHaveAttribute('aria-selected', 'true')
+
+  await page.getByRole('tab', { name: 'Clasificación tabular' }).click()
+  await page.getByTestId('Test-DatasetTrain-n4l/wine.n4l/data/wine.csv').click()
+  await expect(page).toHaveURL(/\/playground\/tabular-classification\/dataset\/UPLOAD$/)
+  // El aviso de «subido» se cierra solo: lo que importa es que el formulario ya tiene el CSV
+  await expect(page.getByTestId('Test-DatasetProcess-TargetInfo')).toContainText('«Target» tiene 3 clases', { timeout: 30_000 })
+})
+
+test('sin conexión se sigue usando lo que ya se había abierto (service worker)', async ({ page, context }) => {
+  test.setTimeout(180_000)
+  await page.goto('/playground/tabular-classification/dataset/IRIS')
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  // Con el service worker ya activo, se recarga para que todo pase por él (y se guarde)
+  await page.evaluate(async () => { await navigator.serviceWorker.ready })
+  await page.reload()
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await page.waitForTimeout(2000)
+
+  // Al perder la conexión se avisa
+  await context.setOffline(true)
+  await expect(page.getByTestId('Test-OfflineBar')).toBeVisible()
+  // Y la página se vuelve a abrir sin conexión, con sus datos
+  await page.reload()
+  await expect(page.getByTestId('Test-TrainButton')).toBeVisible({ timeout: 60_000 })
+  await expect(page.locator('[data-guide="dataset"]')).toContainText('sepal_length')
+  await context.setOffline(false)
+})

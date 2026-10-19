@@ -1,0 +1,63 @@
+/* El laboratorio 2D (/lab) */
+
+/* El plano: cuadrado y tan ancho como su tarjeta */
+.n4l-lab-canvas {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 1;
+  margin-inline: auto;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+
+/* Las curvas de pérdida: entrenamiento continua y prueba discontinua (se distinguen también sin color) */
+.n4l-lab-chart {
+  display: block;
+  width: 100%;
+  height: 120px;
+  background-color: var(--bs-tertiary-bg);
+  border-radius: var(--bs-border-radius);
+}
+
+.n4l-lab-chart polyline {
+  fill: none;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.n4l-lab-chart-train {
+  stroke: #2563eb;
+}
+
+.n4l-lab-chart-test {
+  stroke: #f59e0b;
+  stroke-dasharray: 6 4;
+}
+
+.n4l-lab-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  padding: 0.5rem;
+  text-align: center;
+  background-color: var(--bs-tertiary-bg);
+  border-radius: var(--bs-border-radius);
+}
+
+/* La leyenda de las curvas */
+.n4l-lab-key {
+  display: inline-block;
+  width: 1.25rem;
+  height: 0;
+  margin-inline-end: 0.25rem;
+  vertical-align: middle;
+  border-top: 2px solid #2563eb;
+}
+
+.n4l-lab-key-test {
+  margin-inline-start: 0.5rem;
+  border-top: 2px dashed #f59e0b;
+}

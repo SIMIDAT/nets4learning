@@ -1,23 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import './NeuralNetwork.css'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ArrowRight } from 'react-bootstrap-icons'
 import VisGraph, { type GraphData, type Network } from 'react-vis-graph-wrapper'
 import { VERBOSE } from '@/CONSTANTS'
 import { NEURAL_NETWORK_MODES, type NEURAL_NETWORK_MODES_t } from './neural_network'
+import { layerSummaryParts, type DrawableLayer_t } from './layerSummary'
+import { useTheme } from '@hooks/useTheme'
 
 
-
-/** Lo que se dibuja de una capa; vale para las dense (tabular, regresión) y las de imágenes */
-type DrawableLayer_t = {
-  _class?    : string
-  units?     : number
-  activation?: string | null
-  kernelSize?: number
-  filters?   : number
-  poolSize?  : number
-  strides?   : number
-}
 
 type NeuralNetworkProps = {
   layers     : DrawableLayer_t[]
@@ -25,12 +17,21 @@ type NeuralNetworkProps = {
   id_parent  : string
   networkRef?: React.Ref<Network | undefined>
   mode?      : NEURAL_NETWORK_MODES_t
+  /** Ocupa todo el alto que le dé su contenedor (la tarjeta maximizada), no los 250 px de siempre */
+  fill?      : boolean
 }
 
-export default function NeuralNetwork(props: NeuralNetworkProps) {
-  const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT } = props
+const HEIGHT = 250
 
-  const [options, setOptions] = useState({ height: 250, width: 300 })
+export default function NeuralNetwork(props: NeuralNetworkProps) {
+  const { layers, id_parent, networkRef, mode = NEURAL_NETWORK_MODES.COMPACT, fill = false } = props
+  const { t } = useTranslation()
+  // vis-network pinta en un canvas: el color de las aristas no sale del CSS
+  const theme = useTheme()
+
+  const [fillHeight, setFillHeight] = useState(HEIGHT)
+  const height = fill ? fillHeight : HEIGHT
+  const network = useRef<Network | null>(null)
 
   const events = {
     afterDrawing: (_e: unknown) => {
@@ -46,67 +47,40 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       if (VERBOSE) console.debug('resize', { _e })
     },
     zoom: (_e: unknown) => {
-      // e.preventDefault()
-      // e.stopPropagation()
-      // e.stopImmediatePropagation()
     }
   }
 
-  const getElementText = (index: number, element: DrawableLayer_t) => {
-    let label = ''
-    let title = ''
-    if (element?._class && element?._class === 'flatten') {
-      label = `Layer: ${index}\n\nFlatten`
-      title = `Layer: ${index} {flatten}`
-    } else if (element?._class && element?._class === 'dense') {
-      label = `Layer: ${index}\n\nDense\nU: ${element.units} F.A:  ${element.activation}`
-      title = `Layer: ${index} {dense}\nUnits: ${element.units} F.Activation: ${element.activation}`
-    } else if (element?._class && element?._class === 'conv2d') {
-      label = `Layer: ${index}\n\nConv 2D\nK: ${element.kernelSize}\nF: ${element.filters}\nF.A: ${element.activation}`
-      title = `Layer: ${index} {conv2d}\nKernelSize: ${element.kernelSize}\nFilters: ${element.filters}\nF. Activation: ${element.activation}`
-    } else if (element?._class && element?._class === 'maxPooling2d') {
-      label = `Layer: ${index}\n\nMax Pooling 2D\nP.S: ${element.poolSize}\nS: ${element.strides}`
-      title = `Layer: ${index} {maxPooling2d}\nPool Size: ${element.poolSize}\nStrides: ${element.strides}`
-    } else {
-      label = `Layer: ${index}\nU: ${element.units}\nF.A: ${element.activation}`
-      title = `Layer: ${index} {dense}\nUnits: ${element.units}\nF.Activation: ${element.activation}`
-    }
-    return { label, title }
-  }
+  // Texto de cada nodo (y de su tooltip). Las capas se numeran desde 1, como en los editores de capas
+  const getElementText = useCallback((index: number, element: DrawableLayer_t) => {
+    const layer = t('neural-network.layer', { index: index + 1 })
+    const parts = layerSummaryParts(t, element)
+    const lines = element?._class ? [layer, '', ...parts] : [layer, ...parts]
+    return { label: lines.join('\n'), title: [layer, ...parts].join('\n') }
+  }, [t])
 
-  // Ajusta el grafo al tamaño del contenedor, también cuando este cambia (p. ej. al redimensionar la ventana)
+  // Con fill, el alto del contenedor, también cuando cambia (p. ej. al girar el móvil). El grafo va encima (absolute):
+  // así el contenedor no crece con él y el alto que se mide es el que le da la tarjeta
   useEffect(() => {
+    if (!fill) return
     const element = document.getElementById(id_parent)
     if (element === null) return
     const observer = new ResizeObserver(() => {
       const cs = getComputedStyle(element)
-      const paddingX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight)
       const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
-      const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth)
       const borderY = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
-      const height = Math.max(250, element.offsetHeight - paddingY - borderY)
-      const width = Math.max(350, element.offsetWidth - paddingX - borderX)
-      // Mismo tamaño → mismo objeto, para no volver a renderizar
-      setOptions((prevState) => (prevState.height === height && prevState.width === width ? prevState : { height, width }))
+      setFillHeight(Math.max(HEIGHT, element.offsetHeight - paddingY - borderY))
     })
     observer.observe(element)
-
-
-    // Quita el evento de zoom para que no moleste al usar el scroll
-    // Deprecated by zoomView
-    // const dom = document.querySelectorAll('#vis-network canvas')[0]
-    // if (dom) {
-    //   const wheel = dom.getEventListeners('wheel')
-    //   if (wheel) {
-    //     const listener = wheel[0].listener
-    //     dom.removeEventListener('wheel', listener)
-    //   }
-    // }
-
     return () => {
       observer.disconnect()
     }
-  }, [id_parent])
+  }, [fill, id_parent])
+
+  // Con otro alto, el grafo se vuelve a encuadrar (vis-network solo cambia el tamaño del canvas). El efecto de VisGraph,
+  // que le pasa el alto nuevo, ya ha corrido: los de los hijos van antes
+  useEffect(() => {
+    network.current?.fit()
+  }, [height])
 
   const modeCompact = useCallback(() => {
     const nodes = [], edges = []
@@ -123,13 +97,16 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       edges.push({ from: index - 1, to: index })
     }
     return { edges, nodes }
-  }, [layers])
+  }, [layers, getElementText])
 
   const modeExtend = useCallback(() => {
     const nodes = [], edges = []
     for (let index = 0; index < layers.length; index++) {
       const element = layers[index]
-      const { label, title } = getElementText(index, element)
+      // Cada neurona es un nodo: solo lleva el nombre de su capa (con todo el texto los nodos se pisan); el
+      // detalle de la capa sale al pasar el ratón
+      const { title } = getElementText(index, element)
+      const label = t('neural-network.layer', { index: index + 1 })
       for (let unit = 0; unit < (layers[index].units ?? 0); unit++) {
         const key_id = index + ' - ' + unit
         nodes.push({
@@ -146,7 +123,7 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
       }
     }
     return { nodes, edges }
-  }, [layers])
+  }, [layers, getElementText, t])
 
   const graphState = useMemo<GraphData>(() => {
     switch (mode) {
@@ -161,24 +138,17 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
   }, [mode, modeCompact, modeExtend])
 
   return <>
-    <Row className={'mt-3'}>
-      <Col xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}
-        style={{
-          display     : 'flex',
-          alignItems  : 'center',
-          marginBottom: '2rem'
-        }}>
-        <div className="col-md-6"
-          style={{ writingMode: 'vertical-rl' }}>
-          <Trans i18nKey={'graphic-red.input'} />
-        </div>
-        <div className="col-md-6"
-          style={{ textAlign: 'center' }}>
-          <ArrowRight style={{ 'fontSize': 'xxx-large' }} />
-        </div>
+    {/* El grafo es un canvas sin texto: para el lector de pantalla, las capas en una lista, de la entrada a la salida */}
+    <ol className={'visually-hidden'} aria-label={t('neural-network.description')} data-testid={'Test-NeuralNetwork-Description'}>
+      {layers.map((layer, index) => <li key={index}>{[t('neural-network.layer', { index: index + 1 }), ...layerSummaryParts(t, layer)].join(', ')}</li>)}
+    </ol>
+    <Row className={'mt-3' + (fill ? ' n4l-maximized-fill' : '')} aria-hidden={true}>
+      <Col xs={2} className={'n4l-nn-side'}>
+        <span className={'n4l-nn-side-label'}><Trans i18nKey={'graphic-red.input'} /></span>
+        <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
       </Col>
-      <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8}>
-        <div style={{ 'position': 'relative', height: '100%', width: '100%' }}>
+      <Col id={id_parent} xs={8} sm={8} md={8} lg={8} xl={8} xxl={8} className={fill ? 'position-relative' : undefined}>
+        <div className={fill ? 'n4l-nn-fill' : undefined} style={fill ? undefined : { position: 'relative', height: '100%', width: '100%' }}>
           <VisGraph
             graph={graphState}
             options={{
@@ -205,30 +175,23 @@ export default function NeuralNetwork(props: NeuralNetworkProps) {
                 }
               },
               edges: {
-                color: '#000000',
+                color: theme === 'dark' ? '#dee2e6' : '#000000',
               },
-              height: `${options.height}px`,
-              // width : `${options.width}px`
+              height: `${height}px`,
             }}
             events={events}
+            getNetwork={(instance: Network) => {
+              network.current = instance
+              // vis-network hace enfocable su lienzo (para sus atajos de teclado, que no se usan): fuera del orden del
+              // tabulador, porque al lector se le dan las capas en la lista de arriba
+              document.getElementById(id_parent)?.querySelectorAll<HTMLElement>('.vis-network').forEach((frame) => { frame.tabIndex = -1 })
+            }}
             ref={networkRef} />
         </div>
       </Col>
-      <Col 
-        xs={2} sm={2} md={2} lg={2} xl={2} xxl={2}
-        style={{
-          display     : 'flex',
-          alignItems  : 'center',
-          marginBottom: '2rem'
-        }}>
-        <div className="col-md-6"
-          style={{ textAlign: 'center' }}>
-          <ArrowRight style={{ 'fontSize': 'xxx-large' }} />
-        </div>
-        <div className="col-md-6"
-          style={{ writingMode: 'vertical-lr', textAlign: 'left' }}>
-          <Trans i18nKey={'graphic-red.output'} />
-        </div>
+      <Col xs={2} className={'n4l-nn-side'}>
+        <ArrowRight className={'n4l-nn-arrow'} aria-hidden={true} />
+        <span className={'n4l-nn-side-label n4l-nn-side-label-output'}><Trans i18nKey={'graphic-red.output'} /></span>
       </Col>
     </Row>
   </>

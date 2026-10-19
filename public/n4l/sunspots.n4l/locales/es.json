@@ -1,0 +1,42 @@
+{
+  "columns": {
+    "Month": "Mes",
+    "Sunspots": "Manchas solares"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Manchas solares",
+      "summary": "El número medio de manchas solares de cada mes, de 1749 a 1983: sube y baja en ciclos de unos 11 años que no duran siempre lo mismo.",
+      "description": {
+        "text": [
+          "El número relativo medio de manchas solares (el número de Wolf) de cada mes, de enero de 1749 a diciembre de 1983: 2.820 meses. Se midió en el Observatorio Federal Suizo de Zúrich hasta 1960 y después, en el Observatorio Astronómico de Tokio. Con las manchas solares propuso Yule en 1927 los modelos autorregresivos.",
+          "Sube y baja en <b>ciclos</b> de unos 11 años (el ciclo solar), pero no es una estacionalidad: cada ciclo dura algo distinto (de 9 a 14 años) y llega a una altura diferente, así que es más difícil de predecir que una serie con un periodo fijo. El máximo es de octubre de 1957, y entre 1790 y 1830 los ciclos son mucho más bajos (el mínimo de Dalton).",
+          "La serie se sigue midiendo: el Observatorio Real de Bélgica publica la versión actual en <link3>SILSO</link3>. Se revisó en 2015, así que sus números son algo distintos."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Month</b>: el mes (año-mes).",
+              "<b>Sunspots</b>: el número medio de manchas solares de ese mes. Es lo que se predice."
+            ]
+          },
+          {
+            "title": "Modelo ya entrenado",
+            "items": [
+              "Una red con una capa Dense de 32 neuronas que ve los 24 meses anteriores. Con la prueba (los últimos 47 años, que no vio al entrenar) se equivoca <b>{{test_mae, number(maximumFractionDigits: 1)}}</b> manchas de media a un paso, algo menos que repetir el mes anterior ({{test_naive_mae, number(maximumFractionDigits: 1)}}). Prediciendo toda la prueba seguida se equivoca {{test_recursive_mae, number(maximumFractionDigits: 1)}}: dos años no bastan para seguir un ciclo de once."
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>sunspots en la documentación de R</link1>, con su fuente original.",
+              "<link2>El CSV</link2>, del repositorio jbrownlee/Datasets.",
+              "<link3>Los datos actuales de SILSO</link3>."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

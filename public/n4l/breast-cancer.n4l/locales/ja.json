@@ -1,0 +1,102 @@
+{
+  "columns": {
+    "Sample_code_number": "Sample_code_number",
+    "Clump_Thickness": "Clump_Thickness",
+    "Uniformity_of_Cell_Size": "Uniformity_of_Cell_Size",
+    "Uniformity_of_Cell_Shape": "Uniformity_of_Cell_Shape",
+    "Marginal_Adhesion": "Marginal_Adhesion",
+    "Single_Epithelial_Cell_Size": "Single_Epithelial_Cell_Size",
+    "Bare_Nuclei": "Bare_Nuclei",
+    "Bland_Chromatin": "Bland_Chromatin",
+    "Normal_Nucleoli": "Normal_Nucleoli",
+    "Mitoses": "Mitoses",
+    "Class": "Class",
+    "ID": "ID",
+    "radius1": "radius1",
+    "texture1": "texture1",
+    "perimeter1": "perimeter1",
+    "area1": "area1",
+    "smoothness1": "smoothness1",
+    "compactness1": "compactness1",
+    "concavity1": "concavity1",
+    "concave_points1": "concave_points1",
+    "symmetry1": "symmetry1",
+    "fractal_dimension1": "fractal_dimension1",
+    "radius2": "radius2",
+    "texture2": "texture2",
+    "perimeter2": "perimeter2",
+    "area2": "area2",
+    "smoothness2": "smoothness2",
+    "compactness2": "compactness2",
+    "concavity2": "concavity2",
+    "concave_points2": "concave_points2",
+    "symmetry2": "symmetry2",
+    "fractal_dimension2": "fractal_dimension2",
+    "radius3": "radius3",
+    "texture3": "texture3",
+    "perimeter3": "perimeter3",
+    "area3": "area3",
+    "smoothness3": "smoothness3",
+    "compactness3": "compactness3",
+    "concavity3": "concavity3",
+    "concave_points3": "concave_points3",
+    "symmetry3": "symmetry3",
+    "fractal_dimension3": "fractal_dimension3",
+    "Diagnosis": "Diagnosis",
+    "Time": "Time",
+    "tumor_size": "tumor_size",
+    "lymph_node_status": "lymph_node_status",
+    "Outcome": "Outcome"
+  },
+  "tasks": {
+    "regression": {
+      "title": "ウィスコンシン乳がん (診断と予後)",
+      "name": "乳がん",
+      "summary": "乳腺腫瘍に関するウィスコンシンの 3 つのデータセット：オリジナル、診断（WDBC）、予後（WPBC）。",
+      "description": {
+        "text": [
+          "ウィスコンシン大学病院の乳がん関連データセットです。良性か悪性かを区別し、乳がん腫瘍の予測と識別に役立ちます。",
+          "各レコードは、1984年以来Dr. Wolbergによって治療された浸潤性乳がんの症例追跡データであり、転移の証拠がない症例のみが含まれます。",
+          "最初の30の特徴量は、乳腺腫瘤の穿刺吸引細胞診（FNAB）のデジタル画像から計算され、画像に存在する細胞核の特徴を記述しています。いくつかの画像は<link2>cs wisc</link2>で見つけることができます。",
+          "ファイル <kbd>wdbc.csv</kbd> は診断データセットに対応し、<kbd>wpbc.csv</kbd> は予後データセットに対応します。",
+          "<link1>UCIデータセット入力</link1>"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>ID番号</strong>",
+              "<strong>結果</strong> (R = 再発, N = 非再発)",
+              "<strong>時間</strong> (フィールド 2 = R の場合は再発までの時間、フィールド 2 = N の場合は無病期間)",
+              "4-33 各細胞核について10個の実数値特徴量が計算されます：",
+              "<strong>半径</strong> (中心から周囲までの距離の平均)",
+              "<strong>テクスチャ</strong> (グレースケール値の標準偏差)",
+              "<strong>周囲長</strong>",
+              "<strong>面積</strong>",
+              "<strong>平滑性</strong> (半径の長さの局所的な変動)",
+              "<strong>コンパクトさ</strong> (周囲長^2 / 面積 - 1.0)",
+              "<strong>凹面</strong> (輪郭の凹状部分の重症度)",
+              "<strong>凹点</strong> (輪郭の凹状部分の数)",
+              "<strong>対称性</strong>",
+              "<strong>フラクタル次元</strong> (「海岸線近似」 - 1)"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "計算された回帰 (<b>給与</b>)"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>Breast Cancer Wisconsin</link1>",
+              "<link3>Breast Cancer Wisconsin (Prognostic)</link3>",
+              "<link4>Breast Cancer Wisconsin (Diagnostic)</link4>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

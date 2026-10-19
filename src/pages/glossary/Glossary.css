@@ -1,21 +1,119 @@
-.img-n4l-glossary {
+/* Buscador del glosario */
+.n4l-glossary-search .form-control {
+  max-width: 36rem;
+}
+
+/* Grupo de términos de un apartado (capas e hiperparámetros, tipos de activación…) */
+.n4l-glossary-group + .n4l-glossary-group {
+  margin-top: 1.5rem;
+}
+
+.n4l-glossary-group-title {
+  margin-bottom: .75rem;
+  color: var(--bs-secondary-color);
+}
+
+/* Al llegar con un enlace a un término (#glossary-…): no queda pegado arriba ni bajo la barra del índice del móvil, y
+   se marca */
+.n4l-glossary-term,
+.n4l-glossary-group {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 4rem);
+}
+
+.n4l-glossary-term:target {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb), .25);
+}
+
+.n4l-glossary-term-title {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+}
+
+/* Enlace al término: discreto, a la vista al pasar por encima o con el teclado (siempre en pantallas táctiles) */
+.n4l-glossary-anchor {
+  color: var(--bs-secondary-color);
+  font-weight: normal;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.n4l-glossary-term:hover .n4l-glossary-anchor,
+.n4l-glossary-anchor:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .n4l-glossary-anchor {
+    opacity: .6;
+  }
+}
+
+.n4l-glossary-characteristics {
+  padding-left: 1.25rem;
+}
+
+/* Fórmulas: las largas (SELU, coseno…) se deslizan en horizontal en vez de salirse de la tarjeta */
+.n4l-glossary-math {
+  margin: .5rem 0;
+}
+
+.n4l-glossary-formula {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.n4l-glossary-formula .katex-display {
+  margin: .5rem 0;
+}
+
+/* Gráfica de la activación: sobre fondo claro también en tema oscuro (las imágenes son de fondo blanco) */
+.n4l-glossary-plot {
+  margin-top: .5rem;
+  padding: .5rem;
+  text-align: center;
+  background-color: #fff;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+
+/* Alto fijo: al cargar la imagen (perezosa) no se mueve lo que hay debajo, y los enlaces a un término caen en su sitio */
+.n4l-glossary-plot img {
+  display: block;
   width: 100%;
   height: 200px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
-.n4l-glossary-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+/* Pestañas de la gráfica de una activación (imagen y animación): más pequeñas que las de la página */
+.n4l-glossary-plot-tabs .nav-link {
+  padding: .25rem .75rem;
+  font-size: .875rem;
 }
 
-.n4l-glossary-body {
-  display: flex;
-  flex-direction: column;
+.n4l-glossary-animation {
+  margin-top: .5rem;
 }
 
-.n4l-glossary-bottom {
-  /* nothing needed for the outer layout */
+/* El mismo alto que la imagen: al cambiar de pestaña la tarjeta no salta */
+.n4l-glossary-animation-chart {
+  position: relative;
+  height: 216px;
+}
+
+/* En el móvil, fórmulas algo más pequeñas: así caben casi todas sin deslizar */
+@media (max-width: 575.98px) {
+  .n4l-glossary-formula .katex-display > .katex {
+    font-size: 1em;
+  }
+
+  .n4l-glossary-plot img {
+    height: 160px;
+  }
+
+  .n4l-glossary-animation-chart {
+    height: 176px;
+  }
 }

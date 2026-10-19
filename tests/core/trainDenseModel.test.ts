@@ -36,17 +36,35 @@ describe('trainDenseModel', () => {
 
   test('entrena con y en one-hot (clasificación) y devuelve modelo e historial', async () => {
     const y = new dfd.DataFrame({ c0: [1, 1, 1, 0, 0, 0, 1, 0, 1, 0], c1: [0, 0, 0, 1, 1, 1, 0, 1, 0, 1] })
-    const { model, history } = await trainDenseModel(params(dataset(y)))
+    const { model, history, evaluation } = await trainDenseModel(params(dataset(y)))
     expect(model.layers).toHaveLength(2)
     expect(history.epoch).toStrictEqual([0, 1])
+    // Clase real y predicha de cada ejemplo de validación (el 20 % de 10 filas)
+    expect(evaluation?.labels).toHaveLength(2)
+    expect(evaluation?.predictions).toHaveLength(2)
   })
 
   test('entrena con y numérica (regresión)', async () => {
     const y = new dfd.Series([1, 2, 3, 4, 5, 6, 1.5, 5.5, 2.5, 4.5])
     const p = params(dataset(y))
     p.layerList = [{ units: 4, activation: 'relu' }, { units: 1, activation: 'linear' }]
-    const { history } = await trainDenseModel(p)
+    const { history, evaluation } = await trainDenseModel(p)
     expect(history.history.loss).toHaveLength(2)
+    expect(evaluation).toBeUndefined()
+  })
+
+  test('avisa al acabar cada época y se detiene cuando se le pide', async () => {
+    const y = new dfd.Series([1, 2, 3, 4, 5, 6, 1.5, 5.5, 2.5, 4.5])
+    const p = params(dataset(y))
+    p.layerList = [{ units: 4, activation: 'relu' }, { units: 1, activation: 'linear' }]
+    p.numberOfEpoch = 10
+    const onEpochEnd = vi.fn()
+    // Se pide parar al acabar la tercera época
+    p.onEpochEnd = onEpochEnd
+    p.shouldStop = () => onEpochEnd.mock.calls.length >= 3
+    const { history } = await trainDenseModel(p)
+    expect(onEpochEnd.mock.calls.slice(0, 3)).toStrictEqual([[1, 10], [2, 10], [3, 10]])
+    expect(history.epoch).toHaveLength(3)
   })
 
   test('rechaza una capa sin activación válida', async () => {

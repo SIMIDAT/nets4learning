@@ -1,13 +1,16 @@
-@import url(https://fonts.googleapis.com/css?family=Bangers);
 
+/* WOFF2 pesa un tercio que el TTF (que queda para navegadores antiguos). Con swap, el texto se ve desde el principio
+   con la fuente del sistema y cambia a Barlow cuando llega, en vez de quedarse invisible mientras se descarga */
 @font-face {
-  font-family: "Barlow-Regular";   /*Can be any text*/
-  src: local("Barlow-Regular"), url("./styles/fonts/Barlow-Regular.ttf") format("truetype");
+  font-family: "Barlow-Regular";
+  font-display: swap;
+  src: local("Barlow-Regular"), url("./styles/fonts/Barlow-Regular.woff2") format("woff2"), url("./styles/fonts/Barlow-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: "Barlow-SemiBold";   /*Can be any text*/
-  src: local("Barlow-SemiBold"), url("./styles/fonts/Barlow-SemiBold.ttf") format("truetype");
+  font-family: "Barlow-SemiBold";
+  font-display: swap;
+  src: local("Barlow-SemiBold"), url("./styles/fonts/Barlow-SemiBold.woff2") format("woff2"), url("./styles/fonts/Barlow-SemiBold.ttf") format("truetype");
 }
 
 #root {
@@ -26,35 +29,843 @@ body {
 }
 
 .body {
-  background-color: #E8EaEd;
+  /* El fondo de la aplicación; también lo usa lo que se funde con él (el halo detrás del texto de la 404) */
+  --n4l-page-bg: #E8EaEd;
+  background-color: var(--n4l-page-bg);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.n4l-hr-title {
+/*
+ * El encabezado de una sección (N4LDivider): el título centrado con una línea a cada lado. Las líneas son ::before y
+ * ::after de una fila flexible (antes, el borde de una fila de 20 px tapado por el fondo del título): así un título
+ * largo pasa a la línea siguiente sin montarse sobre lo de abajo y queda bien sobre cualquier fondo
+ */
+.n4l-hr-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
   font-size: 1.5rem;
-  background-color: #e7e9ec;
-  padding: 0 10px;
+  font-weight: 400;
+  line-height: 1.3;
+  text-align: center;
+  color: inherit;
+}
+
+.n4l-hr-heading::before,
+.n4l-hr-heading::after {
+  content: '';
+  flex: 1 0 1.5rem;
+  border-top: 1px solid var(--bs-body-color);
+}
+
+/*
+ * Contenedor de las páginas de trabajo (entrenadores, revisión de modelos, menús, datos) y de la cabecera y el pie:
+ * en escritorio aprovecha la pantalla (el .container de Bootstrap se queda en 1140/1320 px) con un margen de 1,5 rem a
+ * cada lado, sin pasar de 1760 px para que formularios y tablas no se estiren de más. Las páginas de lectura (inicio,
+ * manual, glosario…) siguen con el ancho de Bootstrap: con líneas más largas se leen peor.
+ */
+@media (min-width: 1200px) {
+  .n4l-container-wide {
+    max-width: min(calc(100% - 3rem), 1760px);
+  }
+}
+
+/* Entrenadores en escritorio: índice en una columna de ancho fijo y el contenido con todo lo demás */
+@media (min-width: 1200px) {
+  .n4l-section-layout {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+}
+
+/* Imágenes de ejemplo de la clasificación de imágenes: cada una es un botón que la clasifica */
+.n4l-example-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: .5rem;
+}
+
+.n4l-example-grid-small {
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+}
+
+.n4l-example-image {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.n4l-example-image:hover:not(:disabled) {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb), .25);
+}
+
+.n4l-example-image:disabled {
+  cursor: progress;
+  opacity: .6;
+}
+
+/* KMNIST: cada carácter de hoy junto a sus formas antiguas (información del modelo y ejemplos) */
+.n4l-character-forms {
+  margin-bottom: 1rem;
+}
+.n4l-character-modern {
+  width: 4.5rem;
+  text-align: center;
+}
+.n4l-character-glyph {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.n4l-character-reading {
+  display: block;
+  font-size: .75rem;
+  font-weight: 400;
+  color: var(--bs-secondary-color);
+}
+.n4l-character-old-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+}
+/* Cada forma antigua, con el kanji del que viene debajo */
+.n4l-character-old {
+  margin: 0;
+  text-align: center;
+}
+/* Las imágenes son de papel (negro sobre blanco), también en el tema oscuro */
+.n4l-character-old img {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 2px;
+}
+.n4l-character-old figcaption,
+.n4l-character-example-origin {
+  font-size: .7rem;
+  line-height: 1.2;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-character-examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.25rem, 1fr));
+  gap: .5rem;
+}
+.n4l-character-example {
+  padding: .5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+}
+.n4l-character-example-title {
+  margin-bottom: .25rem;
+  font-weight: 600;
+}
+.n4l-character-example-title [lang="ja"] {
+  font-size: 1.25rem;
+}
+.n4l-character-example-modern {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.n4l-character-example-old-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .125rem;
+}
+.n4l-character-example-old {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: #fff;
+}
+.n4l-character-example-modern img,
+.n4l-character-example-old img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.n4l-character-example-label {
+  font-size: .75rem;
+  color: var(--bs-secondary-color);
+}
+/* En el móvil, cada carácter en una fila: su nombre a la izquierda y sus imágenes a la derecha */
+@media (max-width: 575.98px) {
+  .n4l-character-examples {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .n4l-character-example {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .n4l-character-example-title {
+    display: flex;
+    flex: 0 0 2.5rem;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+  .n4l-character-example-title .n4l-character-example-separator {
+    display: none;
+  }
+  .n4l-character-example-modern {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  .n4l-character-example-old {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+/* Índice de las secciones en los entrenadores (escritorio): fijo en su columna mientras se baja por la página */
+.n4l-section-nav {
+  position: sticky;
+  top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  max-height: calc(100vh - var(--n4l-navbar-height, 0px) - 2rem);
+  overflow-y: auto;
+  padding-top: 1rem;
+}
+
+.n4l-section-nav-title {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: .5rem;
+}
+
+.n4l-section-nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid var(--bs-border-color);
+}
+
+.n4l-section-nav-link {
+  display: block;
+  margin-left: -2px;
+  padding: .3rem .75rem;
+  border-left: 2px solid transparent;
+  color: var(--bs-secondary-color);
+  font-size: .9rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.n4l-section-nav-link:hover {
+  color: var(--bs-body-color);
+  border-left-color: var(--bs-secondary-color);
+}
+
+.n4l-section-nav-link.active {
+  color: var(--bs-primary);
+  border-left-color: var(--bs-primary);
+  font-weight: 600;
+}
+
+/*
+ * Índice en pantallas estrechas (N4LSectionBar): fijo arriba, aparece al bajar de la cabecera de la página. Una
+ * pestaña por sección que se desliza en horizontal.
+ */
+.n4l-section-bar-wrapper {
+  position: fixed;
+  /* Debajo de la barra de navegación (fija); al esconderse sube por detrás de ella */
+  top: var(--n4l-navbar-height, 0px);
+  left: 0;
+  right: 0;
+  z-index: 1015;
+  background-color: var(--bs-tertiary-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .08);
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition: transform .2s ease, visibility .2s;
+}
+
+.n4l-section-bar-wrapper.is-visible {
+  transform: none;
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n4l-section-bar-wrapper {
+    transition: none;
+  }
+}
+
+.n4l-section-bar ol {
+  display: flex;
+  gap: .25rem;
+  margin: 0;
+  padding: .375rem .75rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.n4l-section-bar ol::-webkit-scrollbar {
+  display: none;
+}
+
+.n4l-section-bar-link {
+  display: flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0 .75rem;
+  border-radius: 999px;
+  color: var(--bs-secondary-color);
+  font-size: .9rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.n4l-section-bar-link.active {
+  background-color: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary-text-emphasis);
+  font-weight: 600;
+}
+
+/* Lo que va fijo arriba en las páginas (sticky-top: tarjeta del modelo, editor de hiperparámetros…) se queda debajo
+   de la barra de navegación, que también es fija */
+.sticky-top:not(.navbar) {
+  top: var(--n4l-navbar-height, 0px);
+}
+
+/* El visor de tfjs-vis (panel a la derecha) va por encima de la barra de navegación: si no, ella taparía sus botones */
+#tfjs-visor-container .visor {
+  z-index: 1035;
+}
+
+/* Al saltar desde el índice, el título no queda pegado al borde (ni debajo de la barra del índice en pantallas
+   estrechas); el foco del salto con ratón no se dibuja */
+/* Las secciones con ancla propia (/accessibility#feedback) llegan igual que su encabezado: sin quedar bajo las barras */
+.n4l-hr-row,
+.n4l-a11y-section {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 3.75rem);
+}
+
+@media (min-width: 1200px) {
+  .n4l-hr-row,
+  .n4l-a11y-section {
+    scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  }
+}
+
+.n4l-hr-row:focus:not(:focus-visible) {
+  outline: none;
 }
 
 :root {
-  --bc-drag-and-drop: #e5e5e5
+  --bc-drag-and-drop: #e5e5e5;
+  /* Columna objetivo (la que se predice o clasifica) en las tablas: el mismo que TARGET_COLOR en DataFrameTable.ts */
+  --n4l-target-color: #d63384;
 }
 
 :root[data-theme="dark"] {
   --bc-drag-and-drop: var(--bs-dark)
 }
 
+/* Color de cada tarea: los mismos que sus botones en la home (primary, danger, info, warning, success y el morado) */
+[data-task="tabular-classification"] { --n4l-task-color: var(--bs-primary); }
+[data-task="regression"] { --n4l-task-color: var(--bs-danger); }
+[data-task="image-classification"] { --n4l-task-color: var(--bs-info); }
+[data-task="object-detection"] { --n4l-task-color: var(--bs-warning); }
+[data-task="clustering"] { --n4l-task-color: var(--bs-success); }
+[data-task="time-series"] { --n4l-task-color: var(--bs-purple); }
+
+/* Bootstrap no tiene una variante morada: la de las series temporales (blanco sobre morado, 6,6:1) */
+.btn-purple {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--bs-purple);
+  --bs-btn-border-color: var(--bs-purple);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #5e38a4;
+  --bs-btn-hover-border-color: #59359a;
+  --bs-btn-focus-shadow-rgb: 133, 94, 202;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #59359a;
+  --bs-btn-active-border-color: #533291;
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: var(--bs-purple);
+  --bs-btn-disabled-border-color: var(--bs-purple);
+}
+
+.border-purple {
+  border-color: var(--bs-purple) !important;
+}
+
+.n4l-task-card {
+  border-top: 4px solid var(--n4l-task-color);
+}
+
+/* Cabeceras de acordeón con el tamaño de h2/h3: el nivel lo da `as` de Accordion.Header (sin encabezados anidados) */
+.n4l-accordion-h2 .accordion-button {
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.n4l-accordion-h3 .accordion-button {
+  font-size: 1.65rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Pie de página (N4LFooter) */
+.n4l-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: .75rem;
+}
+
+.n4l-footer-heading {
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--bs-secondary-color);
+  margin-bottom: .75rem;
+}
+
+.n4l-footer-label {
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.n4l-footer dd {
+  margin-bottom: .5rem;
+}
+
+.n4l-footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.n4l-footer-links li + li {
+  margin-top: .35rem;
+}
+
+/* Logos de las instituciones: todos a la misma altura, en una fila centrada bajo el resto */
+.n4l-footer-logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem 2.5rem;
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+.n4l-footer-logo-link {
+  display: block;
+  padding: .5rem .75rem;
+  border-radius: var(--bs-border-radius);
+}
+
+.n4l-footer-logo {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+@media (max-width: 575.98px) {
+  .n4l-footer-logos {
+    gap: .75rem 1.5rem;
+  }
+
+  .n4l-footer-logo {
+    height: 32px;
+  }
+}
+
+/* En tema oscuro, SIMIDAT y DaSCI (oscuros sobre transparente) no se verían: todos sobre el mismo fondo claro */
+html[data-theme="dark"] .n4l-footer-logo-link {
+  background-color: #f8f9fa;
+}
+
+/* El gris de link-secondary apenas contrasta con el fondo oscuro del pie: se usa uno más claro (gray-500) */
+html[data-theme="dark"] .n4l-footer {
+  --bs-secondary-rgb: 173, 181, 189;
+}
+
+/* Recuadro de cada gráfica de las curvas de entrenamiento (N4LTrainingCurves) */
+.n4l-training-curve {
+  border: 1px solid black;
+  padding: 0.25rem;
+}
+
+/* Color de cada modelo en la comparación (N4LModelComparison), el mismo que sus curvas */
+.n4l-compare-swatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.35rem;
+  border-radius: 2px;
+  vertical-align: -0.05rem;
+}
+
+/* Matriz de confusión (N4LConfusionMatrix): celdas amplias y centradas, con el recuento grande y el porcentaje debajo */
+.n4l-confusion-matrix {
+  text-align: center;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.n4l-confusion-matrix th,
+.n4l-confusion-matrix td {
+  padding: 0.5rem 0.9rem;
+}
+.n4l-confusion-matrix tbody td {
+  min-width: 5.5rem;
+}
+.n4l-confusion-matrix tfoot {
+  border-top-width: 2px;
+}
+.n4l-confusion-matrix .n4l-confusion-corner {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.n4l-confusion-count {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.n4l-confusion-percent {
+  display: block;
+  font-size: 0.75rem;
+}
+
+/* Sin color de fondo, el porcentaje va en gris; sobre el verde o el rojo, con el color del texto (el gris no llegaba a
+   4,5:1 sobre ellos) */
+.n4l-confusion-matrix td:not([style*="background"]) .n4l-confusion-percent {
+  color: var(--bs-secondary-color);
+}
+/* "Clase real" en vertical, a la izquierda de las filas */
+.n4l-confusion-axis {
+  width: 2.5rem;
+}
+.n4l-confusion-axis span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* Agrupamiento: los grupos frente a las clases, con el aspecto de la matriz de confusión */
+.n4l-cluster-comparison tbody td {
+  min-width: 4.5rem;
+}
+/* El porcentaje va sobre el fondo de la celda: del color del texto, para que se lea */
+.n4l-cluster-comparison .n4l-confusion-percent {
+  color: inherit;
+}
+.n4l-cluster-agreement {
+  flex: 1 1 14rem;
+}
+@media (max-width: 575.98px) {
+  .n4l-cluster-comparison th,
+  .n4l-cluster-comparison td {
+    padding: 0.4rem 0.5rem;
+  }
+  .n4l-cluster-comparison tbody td {
+    min-width: 3.5rem;
+  }
+}
+
+/* Término con definición emergente (etiquetas de los hiperparámetros) */
+.n4l-help-term {
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+/* Es un botón (N4LHelpTerm), pero se ve como el texto que lo rodea */
+button.n4l-help-term {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+/* Aviso de que falta un paso del usuario (N4LEmptyState) */
+.n4l-empty-state {
+  margin: 0;
+  padding: 1.5rem 1rem;
+  border: 2px dashed var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  color: var(--bs-secondary-color);
+  text-align: center;
+}
+
+/*
+ * Migas de pan (N4LBreadcrumb): enlaces en gris sin subrayar (se subrayan al pasar por encima), separador ›, la miga
+ * actual en el color del texto y siempre en una línea: si no cabe, los nombres se recortan con puntos suspensivos
+ */
+.n4l-breadcrumb {
+  font-size: .9375rem;
+}
+
+.n4l-breadcrumb .breadcrumb {
+  --bs-breadcrumb-divider: "›";
+  --bs-breadcrumb-item-padding-x: .5rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.n4l-breadcrumb .breadcrumb-item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.n4l-breadcrumb .breadcrumb-item > * {
+  min-width: 0;
+}
+
+.n4l-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+/* Si no caben, se recorta antes la lista (modelos preentrenados o entrenar) que el modelo o dataset abierto */
+.n4l-breadcrumb .n4l-breadcrumb-kind {
+  flex-shrink: 4;
+  min-width: 3rem;
+}
+
+.n4l-breadcrumb .n4l-breadcrumb-current {
+  flex-shrink: 1;
+}
+
+.n4l-breadcrumb a:not(.dropdown-item) {
+  color: var(--bs-secondary-color);
+  text-decoration: none;
+}
+
+.n4l-breadcrumb a:not(.dropdown-item):hover,
+.n4l-breadcrumb a:not(.dropdown-item):focus-visible {
+  color: var(--bs-body-color);
+  text-decoration: underline;
+}
+
+.n4l-breadcrumb .breadcrumb-item.active {
+  color: var(--bs-body-color);
+  font-weight: 600;
+}
+
+/* La última miga: el modelo o dataset abierto, como un selector (borde del color de la tarea al pasar por encima) */
+.n4l-breadcrumb-toggle.btn {
+  --bs-btn-padding-y: .125rem;
+  --bs-btn-padding-x: .75rem;
+  --bs-btn-font-size: inherit;
+  --bs-btn-font-weight: 600;
+  --bs-btn-color: var(--bs-body-color);
+  --bs-btn-bg: var(--bs-body-bg);
+  --bs-btn-border-color: var(--bs-border-color);
+  --bs-btn-border-radius: 999px;
+  --bs-btn-hover-color: var(--bs-body-color);
+  --bs-btn-hover-bg: var(--bs-tertiary-bg);
+  --bs-btn-hover-border-color: var(--n4l-task-color, var(--bs-primary));
+  --bs-btn-active-color: var(--bs-body-color);
+  --bs-btn-active-bg: var(--bs-tertiary-bg);
+  --bs-btn-active-border-color: var(--n4l-task-color, var(--bs-primary));
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  max-width: 100%;
+  text-decoration: none;
+}
+
+.n4l-breadcrumb-toggle.btn::after {
+  flex: none;
+  margin-left: 0;
+}
+
+.n4l-breadcrumb-menu {
+  /* Tan ancho como el nombre más largo (no como el botón), sin salirse de la pantalla */
+  width: max-content;
+  max-width: min(calc(100vw - 2rem), 28rem);
+}
+
+.n4l-breadcrumb-menu .dropdown-item {
+  white-space: normal;
+}
+
+/*
+ * Cabeceras de tarjeta con título y controles (selectores, interruptores, botones): si no caben en una línea, los
+ * controles bajan bajo el título en vez de estrujarlo o salirse de la tarjeta
+ */
+.card-header.d-flex {
+  flex-wrap: wrap;
+  column-gap: .75rem;
+}
+
+/* Selector de instancias de ejemplo (N4LVirtualSelect) en la cabecera de una tarjeta */
+.n4l-instance-select {
+  min-width: 16rem;
+}
+
+@media (max-width: 575.98px) {
+  /* En el móvil los controles de la cabecera bajan a su propia línea y la ocupan entera */
+  .n4l-card-header-controls {
+    flex-basis: 100%;
+  }
+
+  .n4l-instance-select {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  /* La tarea ya es el título de la página: la miga de pan se queda en inicio › lista › modelo o dataset */
+  .n4l-breadcrumb .n4l-breadcrumb-task {
+    display: none;
+  }
+}
+
+/*
+ * Tablas de pocas columnas con acciones (lista de conjuntos de datos): en el móvil cada fila es un bloque, con el
+ * nombre arriba y las acciones debajo, en vez de una tabla que hay que deslizar en horizontal
+ */
+@media (max-width: 575.98px) {
+  .table.n4l-stack-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .table.n4l-stack-table tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .75rem;
+    padding: .75rem .25rem;
+    border-bottom: var(--bs-border-width) solid var(--bs-border-color);
+  }
+
+  .table.n4l-stack-table td {
+    padding: 0;
+    border-bottom: 0;
+    box-shadow: none;
+  }
+
+  .table.n4l-stack-table td:first-child {
+    flex-basis: 100%;
+  }
+
+  .table.n4l-stack-table td:empty {
+    display: none;
+  }
+}
+
+/* Pantallas táctiles: el desplegable de la miga de pan, más fácil de pulsar */
+@media (pointer: coarse) {
+  .n4l-breadcrumb-toggle.btn {
+    --bs-btn-padding-y: .375rem;
+  }
+}
+
 html[data-theme="dark"] .body {
-  background-color: #212529;
+  --n4l-page-bg: #212529;
   min-height: 100vh;
 }
 
-html[data-theme="dark"] .n4l-hr-title {
-  font-size: 1.5rem;
-  background-color: #212529;
-  padding: 0 10px;
+/*
+ * Contraste mínimo del texto (WCAG AA, 4,5:1). En el tema claro, el azul de Bootstrap (#0d6efd) sobre el fondo gris de
+ * la aplicación se queda en 3,7:1: los enlaces, el texto de los botones de contorno y la sección activa del índice usan
+ * el azul más oscuro de Bootstrap (#0a58ca, el de pasar el ratón por un enlace: 5,3:1). Los botones rellenos no cambian.
+ * El gris de los enlaces secundarios (#6c757d: 4,4:1 en el pie, 3,9:1 sobre el fondo) pasa a #565e64 (más de 5,4:1).
+ * El rosa del código (#d63384: 4,5:1 sobre blanco, menos sobre una cabecera o una fila resaltada) pasa a #ab296a (5,3:1
+ * sobre el fondo gris).
+ */
+html:not([data-theme="dark"]) {
+  --bs-code-color: #ab296a;
+  --bs-link-color: #0a58ca;
+  --bs-link-color-rgb: 10, 88, 202;
+  --bs-link-hover-color: #084298;
+  --bs-link-hover-color-rgb: 8, 66, 152;
+}
+
+html:not([data-theme="dark"]) .btn-outline-primary {
+  --bs-btn-color: #0a58ca;
+  --bs-btn-border-color: #0a58ca;
+}
+
+html:not([data-theme="dark"]) .n4l-section-nav-link.active {
+  color: #0a58ca;
+  border-left-color: #0a58ca;
+}
+
+html:not([data-theme="dark"]) .link-secondary {
+  --bs-secondary-rgb: 86, 94, 100;
+}
+
+/* Los enlaces de color primario (.link-primary), con el mismo azul que los demás enlaces: 4,2:1 sobre gris claro */
+html:not([data-theme="dark"]) .link-primary {
+  --bs-primary-rgb: 10, 88, 202;
+}
+
+/*
+ * En el tema oscuro, Bootstrap deja los botones de contorno y los enlaces secundarios con los colores del claro
+ * (#0d6efd, #6c757d, #dc3545, #198754: entre 3,2 y 3,4:1 sobre el fondo): usan los tonos de texto del tema oscuro de
+ * Bootstrap (más de 6:1). El relleno al pasar el ratón no cambia.
+ */
+html[data-theme="dark"] .btn-outline-primary {
+  --bs-btn-color: #6ea8fe;
+  --bs-btn-border-color: #6ea8fe;
+}
+
+html[data-theme="dark"] .btn-outline-secondary {
+  --bs-btn-color: #a7acb1;
+  --bs-btn-border-color: #a7acb1;
+}
+
+html[data-theme="dark"] .btn-outline-danger {
+  --bs-btn-color: #ea868f;
+  --bs-btn-border-color: #ea868f;
+}
+
+html[data-theme="dark"] .btn-outline-success {
+  --bs-btn-color: #75b798;
+  --bs-btn-border-color: #75b798;
+}
+
+html[data-theme="dark"] .link-secondary {
+  --bs-secondary-rgb: 167, 172, 177;
+}
+
+html[data-theme="dark"] .link-primary {
+  --bs-primary-rgb: 110, 168, 254;
+}
+
+html[data-theme="dark"] .n4l-section-nav-link.active {
+  color: #6ea8fe;
+  border-left-color: #6ea8fe;
 }
 
 
@@ -117,14 +928,7 @@ code {
 .n4l-hr-container {
   width: 100%;
   height: 20px;
-  border-bottom: 1px solid black;
-  text-align: center;
-}
-
-.n4l-hr-row {
-  width: 100%;
-  height: 20px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--bs-body-color);
   text-align: center;
 }
 
@@ -247,4 +1051,815 @@ h6 {
 
 .cursor-pointer {
   cursor: pointer;
+}
+/* Tablas de dataframes (Plotly): si las columnas no caben, se desplazan en horizontal */
+.n4l-dataframe-table {
+  overflow-x: auto;
+}
+
+.n4l-dataframe-table-caption {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.25rem;
+  row-gap: 0.25rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-target-swatch {
+  display: inline-block;
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 0.4em;
+  border-radius: 0.2em;
+  background-color: var(--n4l-target-color);
+  vertical-align: -0.05em;
+}
+
+/* La columna objetivo en las tablas de Bootstrap (N4LTablePagination): cabecera del color y celdas teñidas */
+.n4l-table-paginator-table th.n4l-table-target {
+  --bs-table-bg: var(--n4l-target-color);
+  --bs-table-color: #fff;
+}
+
+.n4l-table-paginator-table td.n4l-table-target {
+  --bs-table-bg: color-mix(in srgb, var(--n4l-target-color) 12%, var(--bs-body-bg));
+  --bs-table-striped-bg: color-mix(in srgb, var(--n4l-target-color) 18%, var(--bs-body-bg));
+}
+
+/* Análisis exploratorio (/analyze) */
+.n4l-target-badge {
+  background-color: var(--n4l-target-color);
+  color: #fff;
+}
+
+.n4l-eda-tile {
+  border-left: 4px solid var(--bs-primary);
+}
+
+.n4l-eda-variable-target {
+  border-color: var(--n4l-target-color);
+  box-shadow: inset 0 3px 0 var(--n4l-target-color);
+}
+
+.n4l-eda-histogram {
+  display: block;
+  width: 100%;
+  height: 56px;
+  fill: var(--bs-primary);
+  opacity: 0.8;
+}
+
+.n4l-eda-histogram-target {
+  fill: var(--n4l-target-color);
+}
+
+.n4l-eda-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr));
+  gap: 0.25rem 0.5rem;
+}
+
+.n4l-eda-stats dt {
+  font-weight: normal;
+  font-size: 0.75rem;
+  color: var(--bs-secondary-color);
+}
+
+.n4l-eda-stats dd {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.n4l-eda-top {
+  display: grid;
+  grid-template-columns: minmax(0, 8rem) minmax(2rem, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.n4l-eda-top-bar {
+  display: block;
+  height: 0.5rem;
+  min-width: 2px;
+  border-radius: 0.25rem;
+  background-color: var(--bs-secondary);
+  opacity: 0.6;
+}
+
+.n4l-eda-top-bar-target {
+  background-color: var(--n4l-target-color);
+  opacity: 0.85;
+}
+
+.n4l-eda-table .n4l-eda-target-row > * {
+  --bs-table-bg: color-mix(in srgb, var(--n4l-target-color) 10%, var(--bs-body-bg));
+}
+
+.n4l-eda-swatch {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.4em;
+  border-radius: 0.2em;
+  vertical-align: -0.05em;
+}
+
+.n4l-eda-chip {
+  display: inline-block;
+  margin: 0 0.25rem 0.25rem 0;
+  padding: 0.05rem 0.5rem;
+  border-radius: 1rem;
+  background-color: var(--bs-secondary-bg);
+  white-space: nowrap;
+}
+
+.n4l-eda-encodings > div {
+  display: grid;
+  grid-template-columns: minmax(6rem, max-content) 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.n4l-eda-encodings dd {
+  margin: 0;
+}
+
+/* Mientras llega el código de una página (Loading.tsx): en medio del espacio de la página, sin empujar el pie fuera */
+.n4l-page-loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aviso de cookies: con el detalle desplegado en un móvil no pasa de la pantalla (se desplaza por dentro) */
+.n4l-cookies-banner {
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+
+/* Mientras se ve el aviso de cookies (fijo abajo), la página deja libre su alto al final */
+.body {
+  padding-bottom: var(--n4l-cookies-height, 0px);
+}
+
+/* Aceptar y rechazar, del mismo tamaño; en pantallas estrechas se reparten el ancho */
+.n4l-cookies-button {
+  min-width: 8.5rem;
+}
+
+@media (max-width: 991.98px) {
+  .n4l-cookies-actions .n4l-cookies-button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .n4l-cookies-text {
+    font-size: .9rem;
+  }
+}
+
+.n4l-cookies-details > summary {
+  width: fit-content;
+  cursor: pointer;
+}
+
+/* Procesamiento de un conjunto de datos subido (N4LDatasetProcessForm): pasos, bloques y una tarjeta por columna. La
+   columna que se predice, del mismo color que en las tablas */
+.n4l-process-steps .nav-link {
+  border: 1px solid var(--bs-border-color);
+}
+
+.n4l-process-block {
+  padding: 1rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+}
+
+.n4l-process-block > legend {
+  float: none;
+  width: auto;
+  margin-bottom: 0.5rem;
+}
+
+.n4l-process-column {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-body-bg);
+}
+
+.n4l-process-column.is-target {
+  border-color: var(--n4l-target-color);
+  box-shadow: inset 4px 0 0 var(--n4l-target-color);
+}
+
+.n4l-process-column.is-unused {
+  opacity: 0.6;
+}
+
+.n4l-target-badge {
+  background-color: var(--n4l-target-color);
+  color: #fff;
+}
+
+.n4l-process-summary {
+  padding: 1rem;
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-tertiary-bg);
+}
+
+/*
+ * Al llegar a una sección por su ancla (/terms-and-conditions#cookies, /learn#challenges…), su título no queda debajo
+ * de la barra de navegación, que va fija arriba. Sin especificidad (:where): las secciones con su propio margen (el
+ * índice de los entrenadores, los términos del glosario) lo conservan.
+ */
+:where(main [id]) {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+}
+
+/* Número (o ✓) de cada paso de «Empieza aquí» (/learn) */
+.n4l-learn-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+/* QR para compartir un ejercicio (N4LShareSession): grande para que lo lea la cámara, sin salirse en el móvil */
+.n4l-share-qr {
+  width: min(100%, 18rem);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Las referencias BibTeX de las descripciones (dentro de un <details>): con las líneas partidas no hace falta
+   desplazarlas en horizontal (una zona con desplazamiento tendría que poder recorrerse con el teclado) */
+details > pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * Al imprimir (el informe de un modelo, o cualquier página): solo el contenido, sin la barra de navegación, el pie,
+ * los índices de secciones, los avisos ni el visor; en blanco y sin partir las tarjetas, las tablas ni las gráficas
+ */
+@media print {
+  .n4l-navbar,
+  .n4l-footer,
+  .n4l-cookies-banner,
+  .n4l-section-bar-wrapper,
+  .n4l-section-nav,
+  .toast-container,
+  #tfjs-visor-container {
+    display: none !important;
+  }
+
+  .body {
+    --n4l-page-bg: #fff;
+    min-height: 0;
+  }
+
+  table,
+  figure,
+  .alert,
+  .n4l-training-curve {
+    break-inside: avoid;
+  }
+
+  /* Las gráficas del informe, como imágenes (ver TrainingReport) */
+  .n4l-print-image {
+    display: block !important;
+    width: 100%;
+    height: auto;
+  }
+
+  .n4l-print-hidden {
+    display: none !important;
+  }
+}
+
+.n4l-print-image {
+  display: none;
+}
+
+/* La columna de la tarjeta del modelo (N4LModelAside): fija al bajar en pantallas grandes, con su propio scroll si no cabe */
+@media (min-width: 1200px) {
+  .n4l-model-aside {
+    position: sticky;
+    top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+    max-height: calc(100vh - var(--n4l-navbar-height, 0px) - 2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Sin conexión (N4LOfflineBar): justo debajo de la barra de navegación, que va fija arriba */
+.n4l-offline-bar {
+  position: sticky;
+  top: var(--n4l-navbar-height, 0px);
+  z-index: 1010;
+}
+
+/* Los botones de la paginación, de al menos 32 × 32 px (WCAG 2.5.8 pide 24): con size="sm" una flecha medía 23 px */
+.n4l-pagination-nav .page-link {
+  min-width: 2rem;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* «Saltar al contenido»: oculto hasta recibir el foco, entonces arriba a la izquierda y por encima de la barra */
+.n4l-skip-link:focus {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1100;
+  padding: 0.5rem 1rem;
+  background: var(--bs-body-bg);
+  color: var(--bs-link-color);
+  border: 2px solid currentColor;
+  border-radius: var(--bs-border-radius);
+}
+
+/*
+ * Foco (WCAG 2.4.7): un anillo de 3 px bien visible en los dos temas en todo lo que se maneja con el teclado. El de
+ * Bootstrap (una sombra al 25 %) se pierde sobre algunos fondos. Solo con :focus-visible: al pulsar con el ratón no sale.
+ * Lo que recibe el foco desde el código (tabindex -1: el título de la página nueva, el <main>…) no lleva anillo
+ */
+:root {
+  --n4l-focus-color: #0a58ca;
+}
+
+html[data-theme="dark"] {
+  --n4l-focus-color: #8bb9fe;
+}
+
+:is(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), .btn, .page-link, .nav-link, .dropdown-item,
+.accordion-button, .form-check-input):focus-visible {
+  outline: var(--n4l-focus-width, 3px) solid var(--n4l-focus-color) !important;
+  outline-offset: 2px;
+}
+
+/* Los que van pegados a su contenedor: el anillo, por dentro (si no, el borde del contenedor lo corta) */
+:is(.accordion-button, .dropdown-item, .list-group-item):focus-visible {
+  outline-offset: -3px;
+}
+
+/*
+ * Que la barra de navegación fija (y, en pantallas estrechas, el índice de secciones debajo) no tape lo que recibe el
+ * foco (WCAG 2.4.11): al tabular, el navegador deja este margen. Sin especificidad, para no cambiar los saltos de las
+ * secciones, que tienen el suyo
+ */
+:where(a, button, input, select, textarea, summary, [tabindex]) {
+  scroll-margin-top: calc(var(--n4l-navbar-height, 0px) + 4rem);
+  scroll-margin-bottom: calc(var(--n4l-cookies-height, 0px) + 2rem);
+}
+
+/*
+ * Salvo en lo que ya está siempre a la vista (barras fijas o pegadas al borde): con ese margen, al pulsar un enlace de
+ * la barra de navegación el navegador movía la página para «enseñarlo», y al volver atrás se perdía la posición
+ */
+:is(.n4l-navbar, .n4l-section-nav, .n4l-section-bar, .n4l-cookies-banner, .n4l-skip-link, .swal2-container)
+:where(a, button, input, select, textarea, summary, [tabindex]),
+.n4l-skip-link {
+  scroll-margin: 0;
+}
+
+/*
+ * Los bordes de los campos (WCAG 1.4.11): el gris claro de Bootstrap (1,3:1 sobre blanco) apenas se ve y no deja
+ * saber dónde se escribe o qué se marca. Con estos, al menos 3:1 sobre el fondo de la página y de las tarjetas en los
+ * dos temas. Al recibir el foco, al marcarse o con error siguen los colores de Bootstrap (reglas más concretas)
+ */
+:root {
+  --n4l-input-border-color: #858d94;
+}
+
+html[data-theme="dark"] {
+  --n4l-input-border-color: #7d848b;
+}
+
+.form-control,
+.form-select,
+.form-check-input {
+  border-color: var(--n4l-input-border-color);
+}
+
+/*
+ * /settings: las pestañas de los apartados (en pantallas anchas), en una tarjeta como la del apartado (sin ella, sobre
+ * el fondo de la página, parecían enlaces sueltos). La abierta, con su fondo y una raya a la izquierda; las demás, del
+ * color del texto y con fondo al pasar por encima
+ */
+.n4l-settings-tabs {
+  gap: 0.125rem;
+  padding: 0.5rem;
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color-translucent);
+  border-radius: var(--bs-border-radius-lg);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.n4l-settings-tabs .nav-link {
+  position: relative;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  color: var(--bs-body-color);
+  text-align: start;
+  border-radius: var(--bs-border-radius);
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.n4l-settings-tabs .nav-link:hover {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.n4l-settings-tabs .nav-link.active {
+  color: var(--bs-primary-text-emphasis);
+  font-weight: 600;
+  background-color: var(--bs-primary-bg-subtle);
+}
+
+.n4l-settings-tabs .nav-link.active::before {
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.25rem;
+  width: 3px;
+  content: "";
+  background-color: var(--bs-primary);
+  border-radius: 3px;
+}
+
+/*
+ * El editor de capas (N4LEditorLayers): el asa de cada capa para arrastrarla, la capa que se arrastra, más tenue, y una
+ * raya donde caerá. touch-action: none, para que con el dedo se arrastre la capa y no la página
+ */
+.n4l-layer-handle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0 0.5rem;
+  color: var(--bs-secondary-color);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  border-inline-end: var(--bs-border-width) solid var(--bs-border-color-translucent);
+}
+
+.n4l-layer-handle:hover {
+  color: var(--bs-primary);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.n4l-layer-handle:active {
+  cursor: grabbing;
+}
+
+.n4l-layer-handle-locked {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.n4l-layer-handle-locked:hover {
+  color: var(--bs-secondary-color);
+  background-color: transparent;
+}
+
+.n4l-layer-dragging {
+  opacity: 0.55;
+}
+
+/* La raya, por encima de la cabecera de la capa (su fondo la taparía) y a todo su ancho */
+.n4l-layer-drop-before,
+.n4l-layer-drop-after {
+  position: relative;
+}
+
+.n4l-layer-drop-before::before,
+.n4l-layer-drop-after::after {
+  position: absolute;
+  inset-inline: 0;
+  z-index: 5;
+  height: 4px;
+  pointer-events: none;
+  content: "";
+  background-color: var(--bs-primary);
+  border-radius: 2px;
+}
+
+.n4l-layer-drop-before::before {
+  top: -2px;
+}
+
+.n4l-layer-drop-after::after {
+  bottom: -2px;
+}
+
+/* «Ver el código» (N4LModelCode): la cabecera de la tarjeta abre y cierra el código */
+.n4l-model-code-summary {
+  cursor: pointer;
+}
+
+.n4l-model-code-summary::marker {
+  color: var(--bs-secondary-color);
+}
+
+details:not([open]) > .n4l-model-code-summary {
+  border-bottom: 0;
+}
+
+/* «Datos guardados en este navegador»: cada cosa guardada con lo que ocupa y su botón (debajo, si no cabe al lado) */
+.n4l-stored-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.875rem 1rem;
+}
+
+.n4l-stored-item-text {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.n4l-stored-item-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem 1rem;
+  margin-left: auto;
+}
+
+.n4l-stored-amount {
+  line-height: 1.25;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Lo que hay dentro de una cosa guardada (los modelos descargados), debajo, cada uno con lo que ocupa */
+.n4l-stored-list {
+  flex-basis: 100%;
+  padding: 0.25rem 0.75rem;
+  margin: 0;
+  font-size: 0.875em;
+  list-style: none;
+  background-color: var(--bs-tertiary-bg);
+  border-radius: var(--bs-border-radius);
+}
+
+.n4l-stored-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+}
+
+/* El nombre se parte en varias líneas si no cabe; lo que ocupa y su botón, a la derecha (debajo, si no caben) */
+.n4l-stored-list-name {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.n4l-stored-list-side {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.n4l-stored-list > li + li {
+  border-top: var(--bs-border-width) dashed var(--bs-border-color);
+}
+
+.n4l-stored-list-size {
+  color: var(--bs-secondary-color);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Restablecer todo, aparte y con el borde rojo: no se puede deshacer */
+.n4l-danger-zone {
+  padding: 1rem;
+  border: var(--bs-border-width) solid var(--bs-danger-border-subtle);
+  border-radius: var(--bs-border-radius-lg);
+}
+
+/* /settings en el móvil y el índice de /accessibility: filas cómodas para el dedo con una flecha */
+.n4l-settings-list-link,
+.n4l-a11y-index-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 1rem;
+  color: var(--bs-body-color);
+  text-decoration: none;
+}
+
+.n4l-settings-list-link:focus-visible,
+.n4l-a11y-index-link:focus-visible {
+  outline-offset: -3px;
+}
+
+/* /accessibility: listas con aire entre elementos (frases largas) */
+.n4l-a11y-list {
+  padding-left: 1.25rem;
+}
+
+.n4l-a11y-list > li + li {
+  margin-top: 0.5rem;
+}
+
+/* Cada contenido no accesible y su alternativa, separados por una raya a la izquierda */
+.n4l-a11y-problems > li {
+  padding: 0.25rem 0 0.25rem 0.875rem;
+  border-left: 3px solid var(--n4l-input-border-color);
+}
+
+.n4l-a11y-problems > li + li {
+  margin-top: 1rem;
+}
+
+/* Las teclas, como teclas en los dos temas */
+.n4l-a11y-section kbd {
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  /* La columna de pestañas se queda a la vista al bajar por un apartado largo */
+  .n4l-settings-tabs {
+    position: sticky;
+    top: calc(var(--n4l-navbar-height, 0px) + 1rem);
+  }
+}
+
+/*
+ * Ajustes de accesibilidad de /settings (src/core/a11y/displaySettings.ts), en <html>
+ */
+
+/* Tamaño del texto: todo lo que se mide en rem (casi todo en Bootstrap) crece con él */
+html[data-n4l-text-size="125"] {
+  font-size: 125%;
+}
+
+html[data-n4l-text-size="150"] {
+  font-size: 150%;
+}
+
+html[data-n4l-text-size="200"] {
+  font-size: 200%;
+}
+
+/* El espaciado máximo que pide WCAG 1.4.12: interlineado 1,5, párrafos separados el doble y letras y palabras más */
+html.n4l-text-spacing body,
+html.n4l-text-spacing body * {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+html.n4l-text-spacing p {
+  margin-bottom: 2em !important;
+}
+
+/* Enlaces siempre subrayados (no solo al pasar el ratón); los botones y los menús no */
+html.n4l-underline-links a:not(.btn, .nav-link, .navbar-brand, .dropdown-item, .page-link, .n4l-skip-link) {
+  text-decoration: underline !important;
+  text-underline-offset: 0.15em;
+}
+
+/* Un anillo de foco más grueso, con un halo del color del fondo para que se vea sobre cualquier cosa */
+html.n4l-strong-focus {
+  --n4l-focus-width: 5px;
+}
+
+html.n4l-strong-focus :is(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), .btn, .page-link, .nav-link,
+.dropdown-item, .accordion-button, .form-check-input):focus-visible {
+  box-shadow: 0 0 0 calc(var(--n4l-focus-width) + 4px) var(--bs-body-bg) !important;
+}
+
+/* Menos movimiento aunque el sistema no lo pida: sin animaciones, transiciones ni desplazamiento suave */
+html.n4l-reduce-motion,
+html.n4l-reduce-motion *,
+html.n4l-reduce-motion *::before,
+html.n4l-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Y si lo pide el sistema: también lo de las librerías que no lo miran (los avisos de SweetAlert2, la guía…) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Alto contraste (elegido en /settings o pedido por el sistema con prefers-contrast: more): texto y bordes negros en
+ * el tema claro y blancos en el oscuro, sin grises, el fondo de la página como el de las tarjetas y enlaces más oscuros
+ */
+html.n4l-high-contrast:not([data-theme="dark"]) {
+  --bs-body-color: #000;
+  --bs-body-color-rgb: 0, 0, 0;
+  --bs-emphasis-color: #000;
+  --bs-secondary-color: #000;
+  --bs-secondary-color-rgb: 0, 0, 0;
+  --bs-tertiary-color: #000;
+  --bs-border-color: #000;
+  --n4l-input-border-color: #000;
+  --bs-link-color: #052c65;
+  --bs-link-color-rgb: 5, 44, 101;
+  --bs-link-hover-color: #031633;
+  --n4l-focus-color: #000;
+}
+
+html.n4l-high-contrast[data-theme="dark"] {
+  --bs-body-bg: #000;
+  --bs-body-bg-rgb: 0, 0, 0;
+  --bs-body-color: #fff;
+  --bs-body-color-rgb: 255, 255, 255;
+  --bs-emphasis-color: #fff;
+  --bs-secondary-color: #fff;
+  --bs-secondary-color-rgb: 255, 255, 255;
+  --bs-tertiary-color: #fff;
+  --bs-tertiary-bg: #000;
+  --bs-tertiary-bg-rgb: 0, 0, 0;
+  --bs-secondary-bg: #000;
+  --bs-secondary-bg-rgb: 0, 0, 0;
+  --bs-border-color: #fff;
+  --n4l-input-border-color: #fff;
+  --bs-link-color: #9ec5fe;
+  --bs-link-color-rgb: 158, 197, 254;
+  --bs-link-hover-color: #cfe2ff;
+  --n4l-focus-color: #fff;
+}
+
+html.n4l-high-contrast .body {
+  --n4l-page-bg: var(--bs-body-bg);
+}
+
+html.n4l-high-contrast :is(.card, .navbar, .n4l-footer, .modal-content, .dropdown-menu, .alert, .n4l-cookies-banner) {
+  border: 1px solid var(--bs-border-color);
+}
+
+html.n4l-high-contrast :is(.text-body-secondary, .text-muted, .form-text, .small) {
+  color: var(--bs-body-color) !important;
+}
+
+/*
+ * Colores forzados (alto contraste de Windows): el sistema pone sus colores y quita fondos y sombras. Lo que solo se
+ * distinguía por el fondo (insignias, barras de progreso, las casillas de la matriz de confusión, la zona para soltar
+ * ficheros) lleva un borde, y el foco usa el color de resaltado del sistema
+ */
+@media (forced-colors: active) {
+  :root {
+    --n4l-focus-color: Highlight;
+  }
+
+  .badge,
+  .progress,
+  .n4l-confusion-matrix td,
+  .n4l-eda-swatch,
+  .n4l-compare-swatch,
+  .alert {
+    border: 1px solid CanvasText;
+  }
+
+  .progress-bar {
+    background-color: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .n4l-eda-swatch,
+  .n4l-compare-swatch {
+    forced-color-adjust: none;
+  }
+
+  .form-check-input:checked {
+    background-color: Highlight;
+  }
 }

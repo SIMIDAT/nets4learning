@@ -1,30 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Accordion, Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 import * as _Types from '@core/types'
-import ReactGA from 'react-ga4'
 
 import type I_MODEL_IMAGE_CLASSIFICATION from './models/_model'
 import * as ImageClassificationUtils from './utils/utils'
 
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
-import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LSectionLayout from '@components/divider/N4LSectionLayout'
+import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
+import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import { useStoredModels } from '@hooks/useStoredModels'
+import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
+import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import { reportTrainResult } from '@core/training/trainResult'
+import { checkImageLayers } from '@core/nn-utils/checkLayers'
+import { historyFromData } from '@core/training/modelStore'
+import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
+import { trainerGuide } from '@components/guide/trainerGuide'
+import { layersGuide } from '@pages/playground/3_ImageClassification/layersGuide'
+import { SessionError, type TrainingSession_t } from '@core/session/trainingSession'
+import { useTrainerSession } from '@hooks/useTrainerSession'
+import { layersAreValid } from '@components/neural-network/alertLayerError'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
 
 import ImageClassificationClassify from '@pages/playground/3_ImageClassification/ImageClassificationClassify'
+import { makeImagePrediction, type ImagePrediction_t } from '@pages/playground/3_ImageClassification/utils/imagePrediction'
 import { ImageExplainResults, type ImageExplainResult_t } from '@core/explainability/ImageExplainPanel'
 import { explainErrorKey } from '@core/explainability/explainError'
-import { runImageClassificationExplainLrp, supportsLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
+import { runImageClassificationExplainLrp, supportsLrp, warmUpLrp } from '@pages/playground/3_ImageClassification/explainPrediction/runImageClassificationExplain'
+import { warmUpModel } from '@core/nn-utils/warmUpModel'
 import ImageClassificationManual from '@pages/playground/3_ImageClassification/ImageClassificationManual'
 import ImageClassificationEditorLayers from '@pages/playground/3_ImageClassification/ImageClassificationEditorLayers'
 import ImageClassificationEditorHyperparameters from '@pages/playground/3_ImageClassification/ImageClassificationEditorHyperparameters'
 import ImageClassificationTableModels from '@pages/playground/3_ImageClassification/ImageClassificationTableModels'
 
 import alertHelper from '@utils/alertHelper'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import { VERBOSE } from '@/CONSTANTS'
 import {
   DEFAULT_NUMBER_EPOCHS,
@@ -37,8 +55,14 @@ import {
 } from './CONSTANTS'
 import { MAP_IC_CLASSES } from '@pages/playground/3_ImageClassification/models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
+import { trackEvent } from '@core/analytics'
 import { useNavigate } from 'react-router'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
+import type { SpriteImageDataset } from '@pages/playground/3_ImageClassification/models/SpriteImageDataset'
+import type { VirtualSelectOption_t } from '@components/select/N4LVirtualSelect'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { imageCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 
 /**
  * @typedef {Object} ImageClassificationProps_t
@@ -47,12 +71,18 @@ import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 type ImageClassificationProps_t = {
   dataset: string;
 }
+/** Lo que se guarda de cada modelo entrenado (con el modelo): sus hiperparámetros, su evaluación y el historial */
+type StoredImageModel_t = Omit<_Types.ImageClassificationGeneratedModel_t, 'model' | 'history'> & { history: TrainingHistory_t }
+
 /**
  * @param {ImageClassificationProps_t} props
  */
 export default function ImageClassification(props: ImageClassificationProps_t) {
   const { dataset } = props
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const training = useTrainingProgress()
+  // Secciones de la página en orden: numeran los separadores (N4LDivider)
+  const steps = ['hr.information', 'hr.model', 'hr.generated-models', 'hr.classify', 'hr.explainability']
   const navigate = useNavigate()
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_IMAGE_CLASSIFICATION | null>(null)
 
@@ -62,6 +92,14 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
 
   const [Layers, setLayers] = useState(DEFAULT_LAYERS)
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso, con un paso por capa, que explica lo que hace cada una (se rehace al cambiar las capas)
+  const guideSteps = useMemo(() => trainerGuide(t, '3-image-classification', dataset, {
+    upload      : false,
+    datasetTable: false,
+    testSize    : 'hp-test-size',
+    stepByStep  : false,
+    layerSteps  : layersGuide(t, i18n.language, dataset, Layers),
+  }), [t, i18n.language, dataset, Layers])
 
   const [idOptimizer, setIdOptimizer] = useState<IdOptimizer_t>(DEFAULT_ID_OPTIMIZATION)
   const [idLoss, setIdLoss] = useState<IdLoss_t | IdMetric_t>(DEFAULT_ID_LOSS)
@@ -69,17 +107,66 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
 
   const [LearningRate, setLearningRate] = useState(DEFAULT_LEARNING_RATE)
   const [NumberEpochs, setNumberEpochs] = useState(DEFAULT_NUMBER_EPOCHS)
+  // El código equivalente de la red (Ver el código), entrenada en lotes de 512 como la aplicación
+  const codeSpec = useMemo((): ModelCode_t => {
+    const { inputShape, layers } = imageCodeLayers(Layers)
+    return {
+      inputShape,
+      layers,
+      optimizer   : idOptimizer,
+      learningRate: LearningRate,
+      loss        : createLoss(idLoss as IdLoss_t, {}),
+      metrics     : createMetricsList(idMetricsList as IdMetric_t[], {}),
+      epochs      : NumberEpochs,
+      batchSize   : 512,
+      dataComment : t('model-code.data-image'),
+    }
+  }, [Layers, idOptimizer, LearningRate, idLoss, idMetricsList, NumberEpochs, t])
   const [TestSize, setTestSize] = useState(DEFAULT_TEST_SIZE)
 
-  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
+  // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
+
+  const currentSession = (): TrainingSession_t => ({
+    app            : 'nets4learning',
+    version        : 1,
+    task           : TASKS.IMAGE_CLASSIFICATION,
+    dataset        : dataset,
+    layers         : Layers,
+    hyperparameters: { learningRate: LearningRate, epochs: NumberEpochs, testSize: TestSize, optimizer: idOptimizer, loss: idLoss, metrics: idMetricsList },
+  })
+
+  const applySession = ({ layers: importedLayers, hyperparameters: h }: TrainingSession_t) => {
+    // Las capas de imágenes tienen tipo (conv2d, maxPooling2d, flatten, dense) y sus propios parámetros
+    if (!importedLayers.every((layer) => typeof layer._class === 'string')) throw new SessionError('session.error-not-session')
+    setLayers(importedLayers as unknown as typeof Layers)
+    setLearningRate(h.learningRate)
+    setNumberEpochs(h.epochs)
+    setTestSize(h.testSize)
+    setIdOptimizer(h.optimizer as IdOptimizer_t)
+    setIdLoss(h.loss as IdLoss_t)
+    setIdMetricsList(h.metrics as IdMetric_t[])
+  }
+  // endregion
+
   /**
    * @type {ReturnType<typeof useState<tfjs.Sequential>>}
    */
   const [Model, setModel] = useState<tfjs.Sequential | null>(null)
+  // Modelo de la tabla con el que se clasifica (el último entrenado, salvo que se elija otro) y su última predicción
+  const [selectedModelIndex, setSelectedModelIndex] = useState(-1)
+  const [prediction, setPrediction] = useState<ImagePrediction_t | null>(null)
+  // Imágenes de test del dataset (las que no se usan para entrenar): se pueden clasificar en lugar de dibujar
+  const [testDataset, setTestDataset] = useState<SpriteImageDataset | null>(null)
+  const [selectedInstance, setSelectedInstance] = useState<number | null>(null)
+  const [instanceImage, setInstanceImage] = useState<ImageData | null>(null)
+  // Clase real de lo clasificado, si es una imagen del dataset (no un dibujo)
+  const [actualClassIndex, setActualClassIndex] = useState<number | null>(null)
 
   // === Explicabilidad (LRP) — en el train solo se ofrece LRP ===
   // Entrada exacta que recibió el modelo (28×28) y la imagen base del mapa de calor.
   const explainInput_ref = useRef<{ imageData: ImageData, imageSrc: string } | null>(null)
+  // Compilar los shaders de LRP del último modelo entrenado (warmUpLrp)
+  const lrpWarmUp_ref = useRef<Promise<void>>(Promise.resolve())
   const [hasExplainInput, setHasExplainInput] = useState(false)
   const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
@@ -96,9 +183,23 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
    */
   const [GeneratedModels, setGeneratedModels] = useState<Array<_Types.ImageClassificationGeneratedModel_t>>([])
 
-  useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/ImageClassification/${dataset}`, title: dataset })
-  }, [dataset])
+  // Los modelos entrenados antes con este conjunto (guardados en el navegador): vuelven a la tabla, y se clasifica con
+  // el último
+  const storedModels = useStoredModels<StoredImageModel_t>('image-classification', dataset, true, (stored) => {
+    const restored = stored.map(({ model, data }) => ({ ...data, model: model as tfjs.Sequential, history: historyFromData(data.history) }))
+    setGeneratedModels((current) => [...restored, ...current])
+    setSelectedModelIndex((current) => (current >= 0 ? current + restored.length : restored.length - 1))
+    setModel((current) => current ?? restored.at(-1)!.model)
+  })
+  const handleClear_StoredModels = async () => {
+    await storedModels.clear()
+    setGeneratedModels([])
+    setSelectedModelIndex(-1)
+    setModel(null)
+    setPrediction(null)
+    clearExplainResult()
+  }
+
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t ]')
@@ -111,6 +212,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         const _iModelInstance = new _iModelClass(t)
         setIModelInstance(_iModelInstance)
         setLayers(_iModelInstance.DEFAULT_LAYERS())
+        // Lo que proponga el conjunto para empezar a entrenar (con CIFAR-10, una tasa menor y más épocas)
+        const { learningRate, epochs } = _iModelInstance.DEFAULT_TRAINING()
+        setLearningRate(learningRate ?? DEFAULT_LEARNING_RATE)
+        setNumberEpochs(epochs ?? DEFAULT_NUMBER_EPOCHS)
       } else {
         console.error('Error, opción not valid')
         navigate('/404')
@@ -123,6 +228,9 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
     return () => { tfvis.visor().close() }
   }, [dataset, navigate, t])
 
+  // Lista después de las capas por defecto del modelo (init)
+  const { sessionVersion, importSession } = useTrainerSession(TASKS.IMAGE_CLASSIFICATION, iModelInstance !== null, applySession)
+
   const classLabel = (index: number) => iModelInstance?.CLASS_LABELS[index] ?? String(index)
 
   // region CREACIÓN DEL MODELO
@@ -133,6 +241,8 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       await alertHelper.alertWarning(t('warning.the-first-layer-need-to-be-__value__', { value: 'conv2d' }))
       return
     }
+    if (!(await layersAreValid(t, checkImageLayers(Layers, iModelInstance.CLASS_LABELS.length)))) return
+    training.start({ epochs: NumberEpochs, learningRate: LearningRate, optimizer: idOptimizer, loss: idLoss, layers: Layers.length })
     try {
       const params = {
         learningRate : LearningRate,
@@ -143,55 +253,123 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
         idMetricsList: idMetricsList,
         layers       : Layers,
       }
-      const tranin_model = await iModelInstance.TRAIN_MODEL(params)
+      const tranin_model = await iModelInstance.TRAIN_MODEL(params, training.callbacks)
       if (tranin_model === null) {
         await alertHelper.alertError(t('alert.model-train-error'))
         return
       }
-      const { model, history } = tranin_model
-      setModel(model)
-      setGeneratedModels((oldModels: Array<_Types.ImageClassificationGeneratedModel_t>) => {
-        const newModel: _Types.ImageClassificationGeneratedModel_t = {
-          model  : model,
-          history: history,
-          params : {
-            learning_rate  : LearningRate,
-            n_epochs       : NumberEpochs,
-            test_size      : TestSize,
-            layers         : Layers,
-            id_optimizer   : idOptimizer,
-            id_loss        : idLoss,
-            id_metrics_list: idMetricsList,
-          },
-        }
-        return [
-          ...oldModels,
-          newModel
-        ]
-      })
-      await alertHelper.alertSuccess(t('alert.model-train-success'))
+      const { model, history, evaluation } = tranin_model
+      const newModel: _Types.ImageClassificationGeneratedModel_t = {
+        model     : model,
+        history   : history,
+        evaluation: evaluation && { classes: iModelInstance.CLASS_LABELS, ...evaluation },
+        params    : {
+          learning_rate  : LearningRate,
+          n_epochs       : NumberEpochs,
+          test_size      : TestSize,
+          layers         : Layers,
+          id_optimizer   : idOptimizer,
+          id_loss        : idLoss,
+          id_metrics_list: idMetricsList,
+        },
+      }
+      setGeneratedModels((oldModels) => [...oldModels, newModel])
+      storedModels.save(model, { evaluation: newModel.evaluation, params: newModel.params, history: historyData(history) })
+      reportTrainResult({ history: history.history, layers: Layers, evaluation })
+      // Shaders del modelo nuevo compilados antes de clasificar con él, y los de LRP mientras tanto ("Explicar" espera)
+      await warmUpModel(model)
+      lrpWarmUp_ref.current = warmUpLrp(iModelInstance, model)
+      // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
+      await selectModel(GeneratedModels.length, model)
+      // El entrenamiento ya lo ha descargado: sus imágenes de test pasan al selector
+      setTestDataset(await iModelInstance.LOAD_DATASET())
+      training.complete()
+      // Sin esperar a que se cierre el aviso: el botón de entrenar vuelve a estar disponible enseguida
+      void alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
+    } finally {
+      training.finish()
     }
   }
   // endregion
 
   // region PRUEBA DEL MODELO
+  /** Salida del modelo para una imagen como las del conjunto (lectura asíncrona: con WebGPU las síncronas detienen la GPU) */
+  const predictImageData = async (model: tfjs.Sequential, imgData: ImageData) => {
+    const channels = iModelInstance?.IMAGE?.channels ?? 1
+    const output = tfjs.tidy(() => model.predict(ImageClassificationUtils.imageDataToTensor4d(imgData, channels)) as tfjs.Tensor)
+    const values = Array.from(await output.data<'float32'>())
+    output.dispose()
+    return values
+  }
+
   /**
-   * Reduce el lienzo a 28×28 (entrada del modelo), muestra esa versión en `canvas_small` como
-   * vista previa y predice. Devuelve la ImageData usada, que también es la entrada de LRP.
+   * Reduce el lienzo al tamaño de las imágenes del conjunto (entrada del modelo), muestra esa versión en `canvas_small`
+   * como vista previa y predice. Devuelve la ImageData usada, que también es la entrada de LRP.
    */
-  const predictDrawing = (canvas: HTMLCanvasElement, canvas_small: HTMLCanvasElement, model: tfjs.Sequential) => {
-    const { canvasToImageData, resampleImageData, thresholdImageData, imageDataToMnistTensor4d } = ImageClassificationUtils
-    const imgData = thresholdImageData(resampleImageData(canvasToImageData(canvas), 28, 28))
+  const predictDrawing = async (canvas: HTMLCanvasElement, canvas_small: HTMLCanvasElement, model: tfjs.Sequential) => {
+    const { canvasToImageData, resampleImageData, thresholdImageData } = ImageClassificationUtils
+    const { width = 28, height = 28 } = iModelInstance?.IMAGE ?? {}
+    const imgData = thresholdImageData(resampleImageData(canvasToImageData(canvas), width, height))
     canvas_small.getContext('2d')?.putImageData(imgData, 0, 0)
-    const predictions = Array.from(tfjs.tidy(() => (model.predict(imageDataToMnistTensor4d(imgData)) as tfjs.Tensor).dataSync()))
-    return { imgData, index: predictions.indexOf(Math.max(...predictions)) }
+    return { imgData, values: await predictImageData(model, imgData) }
+  }
+
+  /** Pasa a clasificar con otro modelo y, si ya hay un dibujo clasificado, lo vuelve a clasificar con él para comparar */
+  const selectModel = async (index: number, model: tfjs.Sequential) => {
+    setModel(model)
+    setSelectedModelIndex(index)
+    clearExplainResult()
+    const input = explainInput_ref.current
+    setPrediction(input === null ? null : makeImagePrediction(await predictImageData(model, input.imageData), index))
+  }
+
+  const handleChange_Model = async (index: number) => {
+    await selectModel(index, GeneratedModels[index].model)
+  }
+
+  // Al borrar el lienzo no queda nada clasificado: ni resultado ni entrada que explicar
+  const handleClear_Drawing = () => {
+    explainInput_ref.current = null
+    setHasExplainInput(false)
+    setPrediction(null)
+    setSelectedInstance(null)
+    setInstanceImage(null)
+    setActualClassIndex(null)
+  }
+
+  // Al dibujar encima de una imagen del dataset deja de ser esa imagen
+  const handleDrawStart = () => {
+    setSelectedInstance(null)
+    setActualClassIndex(null)
+  }
+
+  const instanceOptions = useMemo<VirtualSelectOption_t[]>(() => {
+    if (testDataset === null || iModelInstance === null) return []
+    return testDataset.testClasses().map((label, index) => ({ value: index, label: `#${index}: ${iModelInstance.CLASS_LABELS[label] ?? label}` }))
+  }, [testDataset, iModelInstance])
+
+  /** Pinta en el lienzo una imagen de test y la clasifica tal cual (sin pasar por el lienzo: es la entrada exacta) */
+  const handleChange_Instance = async (index: number) => {
+    if (testDataset === null) return
+    const { pixels, label } = testDataset.testExample(index)
+    const imageData = ImageClassificationUtils.spriteToImageData(pixels, testDataset.image)
+    setSelectedInstance(index)
+    setInstanceImage(imageData)
+    setActualClassIndex(label)
+    explainInput_ref.current = { imageData, imageSrc: ImageClassificationUtils.imageDataToDataUrl(imageData, 200) }
+    setHasExplainInput(true)
+    clearExplainResult()
+    if (Model !== null) {
+      setPrediction(makeImagePrediction(await predictImageData(Model, imageData), selectedModelIndex))
+      trackEvent('predict', { input: 'test_sample' })
+    }
   }
 
   const handleSubmit_VectorTest = async (canvas: HTMLCanvasElement | null, context: CanvasRenderingContext2D | null, canvas_small: HTMLCanvasElement | null) => {
     if (Model === null) {
-      await alertHelper.alertWarning('Antes debes de crear y entrenar el modelo.')
+      await alertHelper.alertWarning(t('error.need-model'))
       return
     }
     if (canvas === null || canvas_small === null || context === null) {
@@ -199,10 +377,24 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       return
     }
 
-    const { imgData, index: prediction_index } = predictDrawing(canvas, canvas_small, Model)
+    const { imgData, values } = await predictDrawing(canvas, canvas_small, Model)
     setExplainInput(imgData, canvas)
-    await alertHelper.alertInfo(t('alert.prediction', { index: classLabel(prediction_index) }), { text: '', footer: '', html: <></> })
+    setPrediction(makeImagePrediction(values, selectedModelIndex))
+    trackEvent('predict', { input: 'drawing' })
+  }
 
+  /** En color: la imagen de la vista previa (subida o del conjunto), reducida al tamaño de las del conjunto */
+  const handleClassify_Image = async (canvas: HTMLCanvasElement) => {
+    if (Model === null || iModelInstance === null) {
+      await alertHelper.alertWarning(t('warning.need-a-model'))
+      return
+    }
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D
+    const imgData = await iModelInstance.GET_IMAGE_DATA(canvas, context)
+    const isTestImage = selectedInstance !== null
+    setExplainInput(imgData, canvas)
+    setPrediction(makeImagePrediction(await predictImageData(Model, imgData), selectedModelIndex))
+    trackEvent('predict', { input: isTestImage ? 'test_sample' : 'image' })
   }
 
   const handleSubmit_VectorTestImageUpload = async (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, canvas_small: HTMLCanvasElement) => {
@@ -215,10 +407,10 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       return
     }
 
-    const { imgData, index } = predictDrawing(canvas, canvas_small, Model)
-
+    const { imgData, values } = await predictDrawing(canvas, canvas_small, Model)
     setExplainInput(imgData, canvas)
-    await alertHelper.alertInfo(t('alert.prediction', { index: classLabel(index) }), { text: '', footer: '', html: <></> })
+    setPrediction(makeImagePrediction(values, selectedModelIndex))
+    trackEvent('predict', { input: 'image' })
   }
   // endregion
 
@@ -247,8 +439,11 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
       return
     }
 
+    trackEvent('explain', { method: 'lrp' })
     setIsCalculo(true)
     try {
+      // Hasta que acaba el calentamiento, los programas de LRP no se pueden usar
+      await lrpWarmUp_ref.current
       const result = await runImageClassificationExplainLrp({
         iModel       : iModelInstance,
         modelInstance: Model,
@@ -282,45 +477,29 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
   if (VERBOSE) console.debug('render ImageClassification')
   return (
     <>
-      <N4LJoyride
-        joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.JOYRIDE()}
-        TASK={'image-classification'}
-        KEY={'ImageClassification'}
-      />
-
       {/* MANUAL */}
-      <Container>
-        <Row className={'mt-3'}>
-          <Col xl={12}>
-            <div className="d-flex justify-content-between">
-              <h1><Trans i18nKey={'modality.3'} /></h1>
-              <Button
-                size={'sm'}
-                variant={'outline-primary'}
-                onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                <Trans i18nKey={'datasets-models.3-image-classification.joyride.title'} />
-              </Button>
-            </div>
-          </Col>
-        </Row>
+      <N4LSectionLayout steps={steps}>
+        <N4LPageHeader intro={'train'} title={<Trans i18nKey={'modality.3'} />} guideId={'train.image-classification.' + dataset} guideSteps={guideSteps}
+          getSession={currentSession} onImport={importSession} className={'mt-3'} />
 
-        <N4LDivider i18nKey={'hr.information'} />
+        <N4LDivider i18nKey={'hr.information'} steps={steps} />
 
 
         <Row className={'mt-3'}>
           <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
             <Accordion>
-              <Accordion.Item eventKey={'manual'} className={'joyride-step-1-manual'}>
-                <Accordion.Header><h2>Manual</h2></Accordion.Header>
+              <Accordion.Item eventKey={'manual'} data-guide={'manual'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
+                  <Trans i18nKey={'pages.playground.3-image-classification.generator.manual.title'} />
+                </Accordion.Header>
                 <Accordion.Body>
                   <ImageClassificationManual />
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey={'description-dataset'} className={'joyride-step-2-dataset-info'}>
-                <Accordion.Header>
-                  <h3><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} /></h3>
+              <Accordion.Item eventKey={'description-dataset'} data-guide={'dataset-info'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h3'}>
+                  <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
                 <Accordion.Body>
                   {iModelInstance.DESCRIPTION()}
@@ -330,13 +509,13 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
           </Col>
         </Row>
 
-        <N4LDivider i18nKey={'hr.model'} />
+        <N4LDivider i18nKey={'hr.model'} steps={steps} />
 
         {/* EDITOR */}
         <Form onSubmit={handleSubmit_Play} id={'ImageClassification'}>
 
           <Row className={'mt-3'}>
-            <Col xl={12} className={'joyride-step-5-layer'}>
+            <Col xl={12} data-guide={'layer-design'}>
               <N4LLayerDesign layers={Layers} />
             </Col>
           </Row>
@@ -346,12 +525,19 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             <Col xl={6} className={'mt-3'}>
               <ImageClassificationEditorLayers
                 Layers={Layers}
-                setLayers={setLayers} />
+                setLayers={setLayers}
+                classes={iModelInstance?.CLASS_LABELS.length ?? 10} />
             </Col>
 
             {/* GENERAL PARAMETERS */}
             <Col xl={6} className={'mt-3'}>
               <ImageClassificationEditorHyperparameters
+                key={sessionVersion}
+                learningRate={LearningRate}
+                numberEpochs={NumberEpochs}
+                testSize={TestSize}
+                idOptimizer={idOptimizer}
+                idLoss={idLoss}
                 setIdOptimizer={setIdOptimizer}
                 setIdLoss={setIdLoss}
                 idMetricsList={idMetricsList}
@@ -363,61 +549,90 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             </Col>
           </Row>
 
+          {/* El código equivalente de la red */}
           <Row className={'mt-3'}>
-            <Col>
+            <Col xl={12}>
+              <N4LModelCode spec={codeSpec} task={'image-classification'} />
+            </Col>
+          </Row>
+
+          <Row className={'mt-3'}>
+            <Col data-guide={'train'}>
               {/* BLOCK  BUTTON */}
-              <div className="d-grid gap-2">
-                <Button variant={'primary'}
-                  size={'lg'}
-                  type={'submit'}>
-                  <Trans i18nKey={prefix + 'models.button-submit'} />
-                </Button>
-              </div>
+              <N4LTrainingPrediction nextModel={GeneratedModels.length + 1} disabled={training.isTraining} />
+              <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
+                progress={training.progress}
+                isStopping={training.isStopping}
+                onStop={training.stop}
+                resultSection={'hr.generated-models'}>
+                <Trans i18nKey={prefix + 'models.button-submit'} />
+              </N4LTrainButton>
+              {!training.isTraining &&
+                <N4LTrainingDiagnosis history={GeneratedModels.at(-1)?.history.history} model={GeneratedModels.length} />}
             </Col>
           </Row>
 
         </Form>
 
-        <N4LDivider i18nKey={'hr.generated-models'} />
+        <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
 
+        <N4LStoredModelsNotice count={storedModels.restored} onClear={handleClear_StoredModels} />
         {/* GENERATED MODELS */}
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-8-list-of-models'}>
+          <Col data-guide={'models'}>
             <ImageClassificationTableModels
               rowsPerPage={3}
               GeneratedModels={GeneratedModels}
+              pkg={iModelInstance?.N4L_PACKAGE() ?? null}
+              classes={iModelInstance?.CLASS_IDS ?? []}
             />
           </Col>
         </Row>
 
-        <N4LDivider i18nKey={'hr.classify'} />
+        <N4LDivider i18nKey={'hr.classify'} steps={steps} />
 
         {/* BLOCK 2 */}
         <Row className={'mt-3'}>
-          <Col className={'joyride-step-9-classify'}>
+          <Col data-guide={'predict'}>
             <ImageClassificationClassify
               handleSubmit_VectorTest={handleSubmit_VectorTest}
               handleSubmit_VectorTestImageUpload={handleSubmit_VectorTestImageUpload}
               GeneratedModels={GeneratedModels}
               onResetExplain={clearExplainResult}
+              onClear={handleClear_Drawing}
+              onDrawStart={handleDrawStart}
+              instanceOptions={instanceOptions}
+              selectedInstance={selectedInstance}
+              onChangeInstance={handleChange_Instance}
+              instanceImage={instanceImage}
+              actualClassIndex={actualClassIndex}
+              prediction={prediction}
+              classLabels={iModelInstance.CLASS_LABELS}
+              selectedModelIndex={selectedModelIndex}
+              onChangeModel={handleChange_Model}
+              drawable={iModelInstance.DRAWABLE}
+              onClassifyImage={handleClassify_Image}
             />
           </Col>
         </Row>
 
         {/* EXPLAINABILITY (LRP) */}
+        <N4LDivider i18nKey={'hr.explainability'} steps={steps} />
+
         <Row className={'mt-3'}>
           <Col xl={12}>
-            <Card data-testid={'explainability-card'}>
+            <Card data-testid={'explainability-card'} data-guide={'explain'}>
               <Card.Header>
                 <h3>{t('pages.playground.0-tabular-classification.general.explain-panel-title')} (LRP)</h3>
               </Card.Header>
               <Card.Body>
                 {showExplain && explainResult && <ImageExplainResults result={explainResult} />}
 
+                {!hasExplainInput && <N4LEmptyState i18nKey={'ui.explain.waiting-for-prediction'} />}
                 <div className="mt-3">
                   <Button
                     type="button"
-                    variant={'outline-info'}
+                    variant={'outline-primary'}
                     onClick={handleRequest_ExplainPrediction}
                     disabled={isCalculo || !hasExplainInput}
                   >
@@ -445,7 +660,7 @@ export default function ImageClassification(props: ImageClassificationProps_t) {
             </Col>
           </Row>
         }
-      </Container>
+      </N4LSectionLayout>
     </>
   )
 }

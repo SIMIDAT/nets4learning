@@ -1,0 +1,67 @@
+{
+  "columns": {
+    "cylinders": "cylinders",
+    "displacement": "displacement",
+    "horsepower": "horsepower",
+    "weight": "weight",
+    "acceleration": "acceleration",
+    "model-year": "model-year",
+    "mpg": "mpg"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Auto MPG",
+      "name": "Auto MPG",
+      "summary": "The fuel consumption of 70s and 80s cars, in miles per gallon, from their engine, weight and year.",
+      "description": {
+        "text": [
+          "The <i>AUTO MPG</i> dataset was taken from the StatLib library maintained at Carnegie Mellon University. The dataset was used at the 1983 American Statistical Association Exposition.",
+          "The term \"Auto MPG\" refers to miles per gallon, a unit of fuel efficiency measurement commonly used in the United States. This measure indicates how many miles a vehicle can travel on one gallon of fuel. However, \"Auto MPG\" is an English term and there is no direct translation in Spanish.\n\nIn Spanish, terms such as \"consumo de combustible\" or \"rendimiento de combustible\" are often used to refer to the fuel efficiency of a car. These terms indicate how many kilometres or miles a vehicle can travel on one litre or gallon of fuel, respectively.\n\nIt is important to note that different countries use different units of measurement for fuel consumption. For example, in some places the litre per 100 kilometres travelled (L/100 km) is used to indicate fuel efficiency.",
+          "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Information",
+            "items": [
+              "<b>MPG</b>: MPG is Miles Per Gallon. This is the amount of fuel consumed by the particular vehicle of an instance. This variable can also be used as the variable to be predicted for any car",
+              "<b>cylinders</b>: This attribute describes the number of cylinders of each car. This is a discrete valued attribute",
+              "<b>displacement</b>: This is another attribute of the vehicle which has a quantitative continuous value describing the engine displacement",
+              "<b>horsepower</b>: This attribute tells about the horsepower of a car and is a continuous valued variable",
+              "<b>weight</b>: This refers to the weight of each car which is a continuous valued quantitative variable",
+              "<b>acceleration</b>: The acceleration of the car",
+              "<b>model year</b>: The year the model was released is mentioned in this attribute",
+              "<b>origin</b>: The origin attribute has 3 discrete values. 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
+              "<b>car name</b>: This is the name of the car in string"
+            ]
+          },
+          {
+            "title": "Input data",
+            "items": [
+              "<b>MPG</b>: continuous",
+              "<b>cylinders</b>: multi-valued discrete, 4, 6, 8",
+              "<b>displacement</b>: continuous",
+              "<b>horsepower</b>: continuous",
+              "<b>weight</b>: continuous",
+              "<b>acceleration</b>: continuous",
+              "<b>model Year</b>: multi-valued discrete",
+              "<b>origin</b>: multi-valued discrete, 1 refers to cars made in USA, 2 for Europe and 3 for Asia",
+              "<b>car name</b>: string (unique for each instance)"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "Calculated regression (<b>MPG/b>)"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Auto MPG</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

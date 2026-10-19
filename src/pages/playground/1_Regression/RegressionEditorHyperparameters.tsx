@@ -4,14 +4,9 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import alertHelper from '@utils/alertHelper'
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
-import {
-  DEFAULT_LEARNING_RATE,
-  DEFAULT_NUMBER_OF_EPOCHS,
-  DEFAULT_TEST_SIZE,
-} from './CONSTANTS'
-import { HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
+import { HyperparameterLearningRate, HyperparameterNumber, HyperparameterSelect, LossOptions, MetricsList, OptimizerOptions } from '@components/neural-network/N4LHyperparameterFields'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 
 export default function RegressionEditorHyperparameters() {
@@ -107,15 +102,15 @@ export default function RegressionEditorHyperparameters() {
       </Card.Header>
       <Card.Body>
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {show && <>
-          <HyperparameterNumber controlId={'FormControl_Trainer-LearningRate'} name="learning-rate" min={1} max={100}
-            defaultValue={DEFAULT_LEARNING_RATE} onChange={handlerChange_LearningRate} />
+          <HyperparameterLearningRate controlId={'FormControl_Trainer-LearningRate'}
+            defaultValue={params.params_training.learning_rate} onChange={handlerChange_LearningRate} />
           <HyperparameterNumber controlId={'FormControl_Trainer_n_of_epochs'} name="number-of-epochs" min={1} max={1000}
-            defaultValue={DEFAULT_NUMBER_OF_EPOCHS} onChange={handlerChange_NumberOfEpochs} />
+            defaultValue={params.params_training.n_of_epochs} onChange={handlerChange_NumberOfEpochs} />
           <HyperparameterNumber controlId={'FormControl_Trainer_train_rate'} name="train-rate" min={1} max={100}
-            defaultValue={DEFAULT_TEST_SIZE} onChange={handlerChange_TestSize} />
+            defaultValue={params.params_training.test_size} onChange={handlerChange_TestSize} />
           <hr />
           <HyperparameterSelect controlId={'FormControl_IdOptimizer'} label="optimizer-id" info="optimizer-id-info"
             value={params.params_training.id_optimizer} onChange={(value) => change_params_training('id_optimizer', value as IdOptimizer_t)}>
@@ -124,7 +119,7 @@ export default function RegressionEditorHyperparameters() {
           <hr />
           <HyperparameterSelect controlId={'FormControl_IdLoss'} label="loss-id" info="loss-id-info"
             value={params.params_training.id_loss} onChange={(value) => change_params_training('id_loss', value as IdLoss_t)}>
-            <LossOptions />
+            <LossOptions task={'regression'} />
           </HyperparameterSelect>
           <hr />
           <MetricsList

@@ -1,0 +1,67 @@
+{
+  "columns": {
+    "cylinders": "cylinders",
+    "displacement": "displacement",
+    "horsepower": "horsepower",
+    "weight": "weight",
+    "acceleration": "acceleration",
+    "model-year": "model-year",
+    "mpg": "mpg"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Rendimiento de combustible",
+      "name": "Auto MPG",
+      "summary": "El consumo de coches de los años 70 y 80, en millas por galón, a partir de su motor, su peso y su año.",
+      "description": {
+        "text": [
+          "El conjunto de datos <i>AUTO MPG</i> se tomó de la biblioteca StatLib que se mantiene en la Universidad Carnegie Mellon. El conjunto de datos se utilizó en la Exposición de la Asociación Estadounidense de Estadística de 1983.",
+          "El término \"Auto MPG\" se refiere a las millas por galón, una unidad de medida de eficiencia de combustible utilizada comúnmente en los Estados Unidos. Esta medida indica cuántas millas puede recorrer un vehículo con un galón de combustible. Sin embargo, \"Auto MPG\" es un término en inglés y no hay una traducción directa en español.\n\nEn español, para referirse a la eficiencia de combustible de un automóvil, se suelen utilizar términos como \"consumo de combustible\" o \"rendimiento de combustible\". Estos términos indican cuántos kilómetros o millas puede recorrer un vehículo con un litro o galón de combustible, respectivamente.\n\nEs importante tener en cuenta que en diferentes países se utilizan unidades de medida distintas para el consumo de combustible. Por ejemplo, en algunos lugares se utiliza el litro por cada 100 kilómetros recorridos (L/100 km) para indicar la eficiencia de combustible.",
+          "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>ics.uci.edu</link1>."
+        ],
+        "sections": [
+          {
+            "title": "Información",
+            "items": [
+              "<b>MPG</b>: MPG son las siglas en inglés de Millas por Galón. Es la cantidad de combustible consumido por el vehículo particular de una instancia. Esta variable también se puede utilizar como la variable a predecir para cualquier coche.",
+              "<b>cylinders</b>: Este atributo describe el número de cilindros de cada coche. Se trata de un atributo de valor discreto",
+              "<b>displacement</b>: Este es otro atributo del vehículo que tiene un valor cuantitativo continuo que describe el desplazamiento del motor",
+              "<b>horsepower</b>: Este atributo informa sobre los caballos de un coche y es una variable de valor continuo",
+              "<b>weight</b>: Se refiere al peso de cada coche que es una variable cuantitativa de valor continuo",
+              "<b>acceleration</b>: La aceleración del coche",
+              "<b>model year</b>: El año de lanzamiento del modelo",
+              "<b>origin</b>: El atributo origen tiene 3 valores discretos. 1 se refiere a coches fabricados en EE.UU., 2 para Europa y 3 para Asia",
+              "<b>car name</b>: Es el nombre del coche en cadena."
+            ]
+          },
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<b>MPG</b>: continuo",
+              "<b>cylinders</b>: discreto multivalor, 4, 6, 8",
+              "<b>displacement</b>: continuo",
+              "<b>horsepower</b>: continua",
+              "<b>weight</b>: continuo",
+              "<b>acceleration</b>: continua",
+              "<b>model Year</b>: discreto de varios valores",
+              "<b>origin</b>: discreto multivalor, 1 se refiere a automóviles fabricados en EE. UU., 2 para Europa y 3 para Asia",
+              "<b>car name</b>: texto (única para cada instancia)"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada (<b>MPG</b>)"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Auto MPG</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

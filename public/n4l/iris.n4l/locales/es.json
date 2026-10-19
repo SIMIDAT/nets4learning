@@ -1,0 +1,60 @@
+{
+  "columns": {
+    "sepal_length": "Longitud sépalo",
+    "sepal_width": "Anchura sépalo",
+    "petal_length": "Longitud pétalo",
+    "petal_width": "Anchura pétalo",
+    "class": "Clase"
+  },
+  "classes": {
+    "Setosa": "Iris setosa",
+    "Versicolor": "Iris versicolor",
+    "Virginica": "Iris virginica"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "IRIS - Clasificación de iris",
+      "name": "Clasificación de flor iris",
+      "summary": "El clásico para empezar: la especie de una flor a partir de las medidas de sus pétalos y sus sépalos.",
+      "description": {
+        "text": [
+          "El conjunto de datos de Iris-Data permite detectar que tipo de planta iris es a partir de altitud y longitud de su pétalo y sépalo."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<b>Longitud del sépalo</b>: continuo",
+              "<b>Anchura del sépalo</b>: continuo",
+              "<b>Longitud del pétalo</b>: continuo",
+              "<b>Anchura del pétalo</b>: continuo"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "<b>0</b>: Iris Setosa",
+              "<b>1</b>: Iris Versicolor",
+              "<b>2</b>: Iris Virginica"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Conjunto de datos</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Introduce los valores correspondientes a la flor que se va a evaluar:",
+        "items": "(longitud sépalo; anchura sépalo; longitud pétalo; anchura pétalo).",
+        "examples": "Ejemplos:"
+      }
+    },
+    "clustering": {
+      "name": "Flores iris (sin la especie)",
+      "summary": "Las medidas de 150 flores, sin decirle la especie: una especie se separa sola y las otras dos se tocan."
+    }
+  }
+}

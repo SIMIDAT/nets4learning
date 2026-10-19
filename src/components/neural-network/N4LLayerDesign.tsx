@@ -1,15 +1,17 @@
 import React, { useRef, useState } from 'react'
-import { Link } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
 import { Card, Form } from 'react-bootstrap'
 
 import * as _Types from '@core/types'
-import type { Layer_t as ImageLayer_t } from '@/types/types'
+import type { ImageLayer_t as ImageLayer_t } from '@/types/types'
 import { VERBOSE } from '@/CONSTANTS'
 import NeuralNetwork from './NeuralNetwork'
 import type { Network } from 'react-vis-graph-wrapper'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import { NEURAL_NETWORK_MODES } from './neural_network'
+import N4LHelpLink from '@components/helpLink/N4LHelpLink'
+import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
+import { useMaximize } from '@components/maximize/useMaximize'
 
 /**
  * @typedef N4LLayerDesignProps_t
@@ -43,20 +45,22 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
   const prefix = 'pages.playground.generator.'
   const { t } = useTranslation()
 
-  const [mode, setMode] = useState<"EXTEND" | "COMPACT">(NEURAL_NETWORK_MODES.COMPACT)
+  const [mode, setMode] = useState<'EXTEND' | 'COMPACT'>(NEURAL_NETWORK_MODES.COMPACT)
   const networkRef = useRef<Network | undefined>(undefined)
+  // A pantalla completa se ve mejor una red con muchas capas o en modo extendido
+  const maximize = useMaximize()
 
   const handleChange_mode = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedMode = e.target.value as "EXTEND" | "COMPACT"
+    const selectedMode = e.target.value as 'EXTEND' | 'COMPACT'
     setMode(selectedMode)
   }
 
   if (VERBOSE) console.debug('render N4LLayerDesign')
   return <>
-    <Card>
+    <Card className={maximize.className}>
       <Card.Header className={'d-flex align-items-center justify-content-between'}>
         <h3><Trans i18nKey={prefix + 'layer-design'} /></h3>
-        <div className={'ms-3'}>
+        <div className={'d-flex align-items-center gap-2'}>
           <Form.Group controlId={'mode'}>
             <Form.Select
               disabled={show === false}
@@ -68,6 +72,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <option value={NEURAL_NETWORK_MODES.EXTEND}>{t(prefix + 'neural_network_modes.extend')}</option>
             </Form.Select>
           </Form.Group>
+          <N4LMaximizeButton maximized={maximize.maximized} onToggle={maximize.toggle} disabled={show === false} />
         </div>
       </Card.Header>
       <Card.Body id={'RegressionLayerDesign'}>
@@ -77,10 +82,11 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
             layers={layers}
             mode={mode}
             networkRef={networkRef}
+            fill={maximize.maximized}
           />
         </>}
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
       </Card.Body>
       {(actions.length > 0 || glossary_action !== '' || manual_action !== '') && <>
@@ -99,14 +105,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <Trans
                 i18nKey={'more-information-in-link'}
                 components={{
-                  link1: <Link className={'text-info'}
-                    state={{
-                      action: glossary_action,
-                    }}
-                    to={{
-                      pathname: '/glossary/',
-                    }}
-                  />,
+                  link1: <N4LHelpLink page={'glossary'} action={glossary_action} />,
                 }}
               />
             </p>}
@@ -115,14 +114,7 @@ export default function N4LLayerDesign(props: N4LLayerDesignProps_t) {
               <Trans
                 i18nKey={'more-information-in-tutorial'}
                 components={{
-                  link1: <Link className={'text-info'}
-                    state={{
-                      action: manual_action,
-                    }}
-                    to={{
-                      pathname: '/manual/',
-                    }}
-                  />,
+                  link1: <N4LHelpLink page={'manual'} action={manual_action} />,
                 }}
               />
             </p>

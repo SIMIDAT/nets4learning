@@ -1,0 +1,24 @@
+{
+  "columns": {
+    "Alcohol": "Alcohol",
+    "Malic acid": "Malic acid",
+    "Ash": "Ash",
+    "Alcalinity of ash": "Alcalinity of ash",
+    "Magnesium": "Magnesium",
+    "Total phenols": "Total phenols",
+    "Flavanoids": "Flavanoids",
+    "Nonflavanoid phenols": "Nonflavanoid phenols",
+    "Proanthocyanins": "Proanthocyanins",
+    "Color intensity": "Color intensity",
+    "Hue": "Hue",
+    "OD280/OD315 of diluted wines": "OD280/OD315 of diluted wines",
+    "Proline": "Proline",
+    "Target": "Target"
+  },
+  "tasks": {
+    "clustering": {
+      "name": "Wine cultivars (without the cultivar)",
+      "summary": "13 chemical components of 178 wines: unscaled, proline rules; scaled, the groups are almost the three cultivars."
+    }
+  }
+}

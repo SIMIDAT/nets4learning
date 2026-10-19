@@ -1,0 +1,54 @@
+{
+  "classes": {
+    "airplane": "avión",
+    "automobile": "automóvil",
+    "bird": "pájaro",
+    "cat": "gato",
+    "deer": "ciervo",
+    "dog": "perro",
+    "frog": "rana",
+    "horse": "caballo",
+    "ship": "barco",
+    "truck": "camión"
+  },
+  "tasks": {
+    "image-classification": {
+      "title": "CIFAR-10 - Clasificación de fotos",
+      "name": "CIFAR-10 - Clasificación de fotos",
+      "summary": "Fotos en color de 32×32 de diez clases, de aviones a camiones: el paso de los dígitos a las fotos de verdad.",
+      "description": {
+        "text": [
+          "<strong>CIFAR-10</strong> es un conjunto de 60.000 fotos en color de <strong>32 x 32</strong> píxeles repartidas en 10 clases: avión, automóvil, pájaro, gato, ciervo, perro, rana, caballo, barco y camión. Lo prepararon Alex Krizhevsky, Vinod Nair y Geoffrey Hinton en 2009 a partir de la colección de 80 millones de imágenes pequeñas.",
+          "A diferencia de MNIST, cada imagen tiene tres canales (rojo, verde y azul) y el objeto puede aparecer en cualquier posición, tamaño, color o fondo. Con tan pocos píxeles, a veces cuesta incluso a una persona: un gato y un perro, o un automóvil y un camión, se confunden con facilidad."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "Foto en color (RGB) de <strong>32 x 32</strong> píxeles, cada valor entre 0 y 1"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Una de las 10 clases: avión, automóvil, pájaro, gato, ciervo, perro, rana, caballo, barco o camión"
+            ]
+          },
+          {
+            "title": "Modelos",
+            "items": [
+              "Modelo ya entrenado: red convolucional (tres bloques de dos capas convolucionales y dos capas densas) entrenada con las 50.000 imágenes de entrenamiento, volteadas y desplazadas al azar para que aprenda más. Acierta el <strong>{{test_accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> de las {{test_images, number}} imágenes de prueba del conjunto, que no vio al entrenar.",
+              "Entrenamiento en el navegador: se usa un subconjunto equilibrado, con <strong>500</strong> imágenes de entrenamiento y <strong>200</strong> de prueba por clase. Con tan pocas fotos y pocas épocas, una red pequeña se queda lejos del modelo ya entrenado."
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Conjunto de datos</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

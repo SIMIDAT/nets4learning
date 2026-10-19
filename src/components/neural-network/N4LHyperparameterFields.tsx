@@ -1,11 +1,40 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Accordion, Button, Form } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { TYPE_LOSSES, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
+import N4LNumberField from '@components/form/N4LNumberField'
+import N4LHelpTerm from '@components/helpLink/N4LHelpTerm'
+
+import { TYPE_LOSSES_CLASSIFICATION, TYPE_LOSSES_REGRESSION, TYPE_METRICS, TYPE_OPTIMIZER } from '@core/nn-utils/ArchitectureTypesHelper'
 
 // Campos comunes de los editores de hiperparámetros de las tareas que entrenan modelos
 const prefix = 'pages.playground.generator.general-parameters.'
+
+// Definición breve de cada campo (pages.playground.generator.help.*), según la clave de su etiqueta
+const HELP_KEYS: Record<string, string> = {
+  'learning-rate'   : 'learning-rate',
+  'number-of-epochs': 'epochs',
+  'batch-size'      : 'batch-size',
+  'train-rate'      : 'test-size',
+  'test-size'       : 'test-size',
+  'optimizer-id'    : 'optimizer',
+  'loss-id'         : 'loss',
+  'metrics-id'      : 'metric',
+  'metric-id-select': 'metric',
+}
+
+/** Lo que dice la etiqueta de un campo; si el término tiene definición, se ve al pasar el ratón o al llegar con el teclado */
+function FieldLabelContent({ name }: { name: string }) {
+  const { t } = useTranslation()
+  const help = HELP_KEYS[name]
+  if (help === undefined) return <Trans i18nKey={prefix + name} />
+  return <N4LHelpTerm label={<Trans i18nKey={prefix + name} />} help={t('pages.playground.generator.help.' + help)} />
+}
+
+/** Etiqueta de un campo */
+function FieldLabel({ name }: { name: string }) {
+  return <Form.Label><FieldLabelContent name={name} /></Form.Label>
+}
 
 type HyperparameterNumberProps = {
   controlId   : string
@@ -17,26 +46,43 @@ type HyperparameterNumberProps = {
   onChange    : (value: number) => void
 }
 
-/** Campo numérico de un hiperparámetro. El valor se ajusta a [min, max] (vacío → min). */
+/**
+ * Campo numérico de un hiperparámetro, entre min y max. Lo que no vale se dice junto al campo (y se sigue usando el
+ * último valor bueno) en vez de recortarlo en silencio
+ */
 export function HyperparameterNumber({ controlId, name, min, max, defaultValue, onChange }: HyperparameterNumberProps) {
-  const { t } = useTranslation()
+  const [value, setValue] = useState(defaultValue)
   return (
-    <Form.Group className="mb-3" controlId={controlId}>
-      <Form.Label><Trans i18nKey={prefix + name} /></Form.Label>
-      <Form.Control
-        type="number"
-        inputMode={'numeric'}
-        min={min}
-        max={max}
-        step={1}
-        required={true}
-        placeholder={t(prefix + name + '-placeholder')}
+    <N4LNumberField className={'mb-3'} controlId={controlId} guide={'hp-' + name} label={<FieldLabelContent name={name} />}
+      help={<Trans i18nKey={prefix + name + '-info'} />} value={value} min={min} max={max}
+      onChange={(next) => {
+        setValue(next)
+        onChange(next)
+      }} />
+  )
+}
+
+// Valores habituales de la tasa de aprendizaje, en escala logarítmica
+const LEARNING_RATES = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]
+
+type HyperparameterLearningRateProps = {
+  controlId   : string
+  defaultValue: number
+  onChange    : (value: number) => void
+}
+
+/** Selector de la tasa de aprendizaje con su valor real (0.01, no "1 %"). */
+export function HyperparameterLearningRate({ controlId, defaultValue, onChange }: HyperparameterLearningRateProps) {
+  return (
+    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-learning-rate'}>
+      <FieldLabel name={'learning-rate'} />
+      <Form.Select
+        aria-describedby={controlId + '-info'}
         defaultValue={defaultValue}
-        onChange={(e) => {
-          const value = parseInt(e.target.value)
-          onChange(Number.isNaN(value) ? min : Math.min(max, Math.max(min, value)))
-        }} />
-      <Form.Text className="text-muted"><Trans i18nKey={prefix + name + '-info'} /></Form.Text>
+        onChange={(e) => onChange(parseFloat(e.target.value))}>
+        {LEARNING_RATES.map((value) => <option key={value} value={value}>{value}</option>)}
+      </Form.Select>
+      <Form.Text id={controlId + '-info'} className="text-muted"><Trans i18nKey={prefix + 'learning-rate-info'} /></Form.Text>
     </Form.Group>
   )
 }
@@ -54,19 +100,19 @@ type HyperparameterSelectProps = {
 }
 
 export function HyperparameterSelect({ controlId, label, info, value, defaultValue, disabled, onChange, children }: HyperparameterSelectProps) {
-  const { t } = useTranslation()
+  // El nombre es la etiqueta que se ve (WCAG 2.5.3); la ayuda, su descripción
   return (
-    <Form.Group className="mb-3" controlId={controlId}>
-      <Form.Label><Trans i18nKey={prefix + label} /></Form.Label>
+    <Form.Group className="mb-3" controlId={controlId} data-guide={'hp-' + label.replace(/-id$/, '')}>
+      <FieldLabel name={label} />
       <Form.Select
-        aria-label={t(prefix + info)}
+        aria-describedby={controlId + '-info'}
         value={value}
         defaultValue={defaultValue}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}>
         {children}
       </Form.Select>
-      <Form.Text className="text-muted"><Trans i18nKey={prefix + info} /></Form.Text>
+      <Form.Text id={controlId + '-info'} className="text-muted"><Trans i18nKey={prefix + info} /></Form.Text>
     </Form.Group>
   )
 }
@@ -76,15 +122,20 @@ export function OptimizerOptions({ valuePrefix = '' }: { valuePrefix?: string })
   return <>{TYPE_OPTIMIZER.map(({ key, label }) => <option key={key} value={valuePrefix + key}>{label}</option>)}</>
 }
 
-/** Opciones de función de pérdida; con `withMetrics` también se pueden usar las métricas como pérdida. */
-export function LossOptions({ withMetrics = false }: { withMetrics?: boolean }) {
-  const losses = TYPE_LOSSES.map(({ key, label }) => <option key={key} value={'losses-' + key}>{label}</option>)
-  if (!withMetrics) return <>{losses}</>
+/** Opciones de función de pérdida, agrupadas por tipo de tarea; primero va el grupo de `task`. */
+export function LossOptions({ task }: { task: 'classification' | 'regression' }) {
+  const { t } = useTranslation()
+  const groups = [
+    { name: 'classification', losses: TYPE_LOSSES_CLASSIFICATION },
+    { name: 'regression', losses: TYPE_LOSSES_REGRESSION },
+  ]
+  if (task === 'regression') groups.reverse()
   return <>
-    <optgroup label={'Losses'}>{losses}</optgroup>
-    <optgroup label={'Metrics'}>
-      {TYPE_METRICS.map(({ key, label }) => <option key={key} value={'metrics-' + key}>{label}</option>)}
-    </optgroup>
+    {groups.map(({ name, losses }) => (
+      <optgroup key={name} label={t(prefix + 'loss-group-' + name)}>
+        {losses.map(({ key, label }) => <option key={key} value={'losses-' + key}>{label}</option>)}
+      </optgroup>
+    ))}
   </>
 }
 
@@ -102,10 +153,10 @@ type MetricsListProps = {
 /** Lista editable de métricas de entrenamiento: una por pestaña, cada una con su botón de borrar. */
 export function MetricsList({ metrics, onChange, onRemove, valuePrefix = '' }: MetricsListProps) {
   return (
-    <Accordion className={'mt-2'}>
+    <Accordion className={'mt-2'} data-guide={'hp-metrics'}>
       {metrics.map((metric, index) => (
         <Accordion.Item key={index} eventKey={index.toString()}>
-          <Accordion.Header>
+          <Accordion.Header as={'h4'}>
             <Trans i18nKey={prefix + 'metric-id-__index__'} values={{ index: index + 1 }} />
           </Accordion.Header>
           <Accordion.Body>

@@ -30,3 +30,18 @@
   display: flex;
   justify-content: center;
 }
+
+/*
+ * Lienzo de dibujo: tan grande como quepa (hasta 260 px) junto a la miniatura de 28×28. Con el dedo dibuja en vez de
+ * mover la página.
+ */
+.n4l-draw-canvas {
+  width: min(260px, calc(100% - 36px));
+  aspect-ratio: 1;
+  border: 1px solid black;
+  background: white;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}

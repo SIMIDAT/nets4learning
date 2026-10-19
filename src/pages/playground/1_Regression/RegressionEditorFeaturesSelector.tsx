@@ -6,7 +6,7 @@ import { Trans } from 'react-i18next'
 
 import { DEFAULT_SELECTOR_DATASET_INDEX, VERBOSE } from '@/CONSTANTS'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 /**
  * 
@@ -68,8 +68,11 @@ export default function RegressionEditorFeaturesSelector() {
     if (datasets && datasets.data.length > 0 && datasets.index !== DEFAULT_SELECTOR_DATASET_INDEX && datasets.index >= 0 && datasets.data[datasets.index].is_dataset_processed) {
       setParams((prevState) => {
         const _index: number = datasets.index as number
-        const Y_target = datasets.data[_index].dataframe_processed.columns[datasets.data[_index].dataframe_processed.columns.length - 1]
-        const X_features = new Set(datasets.data[_index].dataframe_processed.columns)
+        const { dataframe_processed, data_processed } = datasets.data[_index]
+        // Lo que de verdad usa el entrenamiento (data_processed): el objetivo no siempre es la última columna
+        // (California housing lo tiene en la primera)
+        const Y_target = data_processed?.column_name_target ?? dataframe_processed.columns[dataframe_processed.columns.length - 1]
+        const X_features = new Set(data_processed?.dataframe_X.columns ?? dataframe_processed.columns)
         X_features.delete(Y_target)
 
         return Object.assign({}, prevState, {
@@ -99,18 +102,18 @@ export default function RegressionEditorFeaturesSelector() {
       </Card.Header>
       <Card.Body>
         {!show && <>
-          <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+          <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
         </>}
         {show && <>
           <Accordion defaultActiveKey="Target">
             <Accordion.Item eventKey="Target">
-              <Accordion.Header><Trans i18nKey={prefix + 'feature-selector-y'} /></Accordion.Header>
+              <Accordion.Header as={'h4'}><Trans i18nKey={prefix + 'feature-selector-y'} /></Accordion.Header>
               <Accordion.Body>
                 <Form.Group controlId={'feature-selector-y'}>
                   <Form.Label>
                     <Trans i18nKey={prefix + 'feature-selector-y'} />
                   </Form.Label>
-                  <Form.Select aria-label={'feature selector y'}
+                  <Form.Select
                     className={styles.border_green}
                     value={params.params_features.Y_target}
                     onChange={(e) => handleChange_FeatureSelector_Y(e)}>
@@ -128,7 +131,7 @@ export default function RegressionEditorFeaturesSelector() {
               </Accordion.Body>
             </Accordion.Item>
             <Accordion.Item eventKey="Features">
-              <Accordion.Header><Trans i18nKey={prefix + 'feature-selector-x'} /></Accordion.Header>
+              <Accordion.Header as={'h4'}><Trans i18nKey={prefix + 'feature-selector-x'} /></Accordion.Header>
               <Accordion.Body>
                 {datasets
                   .data[datasets.index]

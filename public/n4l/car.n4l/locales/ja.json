@@ -1,0 +1,80 @@
+{
+  "columns": {
+    "Buying": "購入価格",
+    "Maint": "メンテナンス費用",
+    "Doors": "ドアの数",
+    "Persons": "乗車定員",
+    "Lug_boot": "トランクの大きさ",
+    "Safety": "車の推定安全性",
+    "Result": "結果"
+  },
+  "classes": {
+    "unacc": "不可",
+    "acc": "可",
+    "vgood": "優",
+    "good": "良"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "CAR - 車両評価分類",
+      "name": "車両評価分類",
+      "summary": "価格、維持費、定員、荷室、安全性から、車が受け入れられるかどうかを判定します。すべてカテゴリ値です。",
+      "description": {
+        "text": [
+          "<i>Car Evaluation</i> データセットは、次の構造を通じて車両を評価できます",
+          "このデータセットの詳細については、<link1>ics.uci.edu</link1>リポジトリをご覧ください。"
+        ],
+        "sections": [
+          {
+            "title": "情報",
+            "items": [
+              "<b>buying:</b> 購入価格。",
+              "<b>maint:</b> 維持費。",
+              "<b>doors:</b> ドア数。",
+              "<b>persons:</b> 乗車定員。",
+              "<b>lug_boot:</b> トランクのサイズ。",
+              "<b>safety:</b> 車両の推定安全性。"
+            ]
+          },
+          {
+            "title": "入力データ",
+            "text": [
+              "車両の特徴"
+            ],
+            "items": [
+              "<b>buying:</b> vhigh (非常に高い), high (高い), med (中), low (低い)。",
+              "<b>maint:</b> vhigh, high, med, low。",
+              "<b>doors:</b> 2, 3, 4, 5more (5以上)。",
+              "<b>persons:</b> 2, 4, more (それ以上)。",
+              "<b>lug_boot:</b> small (小), med (中), big (大)。",
+              "<b>safety:</b> low, med, high (高)。"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "text": [
+              "車両の受容性"
+            ],
+            "items": [
+              "<b>unacc</b>: 受け入れられない",
+              "<b>acc</b>: 受け入れられる",
+              "<b>good</b>: 良い",
+              "<b>vgood</b>: 非常に良い"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>データセット</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "評価する車両の対応する値を入力してください：",
+        "items": "(buying; maint; doors; persons; lug_boot; safety)",
+        "examples": "例:"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "columns": {
+    "Month": "Mes",
+    "Passengers": "Pasajeros"
+  },
+  "tasks": {
+    "time-series": {
+      "name": "Pasajeros de avión",
+      "summary": "Los pasajeros de líneas aéreas internacionales de cada mes, de 1949 a 1960: cada año hay más, y en verano más todavía.",
+      "description": {
+        "text": [
+          "La serie clásica de Box y Jenkins: el total de pasajeros de líneas aéreas internacionales de cada mes, en miles, de enero de 1949 a diciembre de 1960 (144 meses). Con ella se explican casi todos los métodos de predicción de series temporales.",
+          "Tiene <b>tendencia</b>, porque cada año vuela más gente (en 1960, casi cuatro veces más que en 1949), y <b>estacionalidad</b> de 12 meses: los picos son en julio y agosto, y los meses más flojos, en invierno. Además, los picos crecen con la serie (la estacionalidad es multiplicativa), y por eso a menudo se predice su logaritmo."
+        ],
+        "sections": [
+          {
+            "title": "Variables",
+            "items": [
+              "<b>Month</b>: el mes (año-mes).",
+              "<b>Passengers</b>: los pasajeros de ese mes, en miles. Es lo que se predice."
+            ]
+          },
+          {
+            "title": "Modelo ya entrenado",
+            "items": [
+              "Una red con una capa Dense de 32 neuronas que ve los 24 meses anteriores. Con la prueba (de agosto de 1958 a diciembre de 1960, que no vio al entrenar) se equivoca <b>{{test_mae, number(maximumFractionDigits: 1)}}</b> miles de pasajeros de media a un paso y {{test_recursive_mae, number(maximumFractionDigits: 1)}} prediciendo toda la prueba seguida; repetir el valor de hace un año se equivoca {{test_seasonal_mae, number(maximumFractionDigits: 1)}}."
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>AirPassengers en la documentación de R</link1>, con su fuente original.",
+              "<link2>El CSV</link2>, del repositorio jbrownlee/Datasets."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

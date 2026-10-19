@@ -26,7 +26,7 @@ export default function TabularClassificationDatasetShowInfo({ datasets }: Tabul
       <Col lg={10}>
         <details>
           <summary className={'n4l-summary-1-25'}><Trans i18nKey={prefix + 'attributes.title'} /></summary>
-          <main>
+          <div>
             <Row xs={3} sm={3} md={3} lg={4}>
               {attributes.map((item: any, i1: number) => {
                 return <Col key={i1}>
@@ -44,13 +44,13 @@ export default function TabularClassificationDatasetShowInfo({ datasets }: Tabul
                 </Col>
               })}
             </Row>
-          </main>
+          </div>
         </details>
       </Col>
       <Col lg={2}>
         <details>
           <summary className={'n4l-summary-1-25'}><Trans i18nKey={prefix + 'attributes.classes'} /></summary>
-          <main>
+          <div>
             <Row>
               <Col>
                 <p className={'mb-0'}><b>{dataProcessed.column_name_target}</b></p>
@@ -62,7 +62,7 @@ export default function TabularClassificationDatasetShowInfo({ datasets }: Tabul
                 </ol>
               </Col>
             </Row>
-          </main>
+          </div>
         </details>
       </Col>
     </Row>

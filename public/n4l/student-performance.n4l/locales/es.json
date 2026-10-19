@@ -1,0 +1,100 @@
+{
+  "columns": {
+    "school": "school",
+    "sex": "sex",
+    "age": "age",
+    "address": "address",
+    "famsize": "famsize",
+    "Pstatus": "Pstatus",
+    "Medu": "Medu",
+    "Fedu": "Fedu",
+    "Mjob": "Mjob",
+    "Fjob": "Fjob",
+    "reason": "reason",
+    "guardian": "guardian",
+    "traveltime": "traveltime",
+    "studytime": "studytime",
+    "failures": "failures",
+    "schoolsup": "schoolsup",
+    "famsup": "famsup",
+    "paid": "paid",
+    "activities": "activities",
+    "nursery": "nursery",
+    "higher": "higher",
+    "internet": "internet",
+    "romantic": "romantic",
+    "famrel": "famrel",
+    "freetime": "freetime",
+    "goout": "goout",
+    "Dalc": "Dalc",
+    "Walc": "Walc",
+    "health": "health",
+    "absences": "absences",
+    "G3": "G3"
+  },
+  "tasks": {
+    "regression": {
+      "title": "Rendimiento de estudiantes",
+      "name": "Student performance",
+      "summary": "La nota final de alumnos de secundaria portugueses, en matemáticas y en portugués, según su entorno y sus hábitos.",
+      "description": {
+        "text": [
+          "El conjunto de datos incluye datos del rendimiento académico de alumnos de dos centros escolares portugueses. Los datos incluyen características demográficas, sociales, calificaciones de los estudiantes, etc. Se incluyen dos conjuntos de datos uno con el desempeño de dos materias distintas: Matemáticas (mat) y lengua portuguesa (por).",
+          "El conjunto de datos contiene datos de tipo multivariado, atributos de tipo reales, 649 instancias y 12 atributos distintos.",
+          "Nota importante: el atributo objetivo G3 tiene una fuerte correlación con los atributos G2 y G1. Esto ocurre porque G3 es la calificación del último año (emitida en el 3er período), mientras que G1 y G2 corresponden a las calificaciones del 1er y 2do período. Es más difícil predecir G3 sin G2 y G1, pero dicha predicción es mucho más útil.",
+          "El fichero <kbd>student-por.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de portugués y <kbd>student-mat.csv</kbd> corresponde al conjunto de datos de calificaciones de estudiantes de matemáticas.",
+          "<link1>Entrada del conjunto de datos UCI</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<strong>school</strong> - escuela del estudiante (binario: 'GP' - Gabriel Pereira o 'MS' - Mousinho da Silveira)",
+              "<strong>sex</strong> - sexo del estudiante (binario: 'F' - femenino o 'M' - masculino)",
+              "<strong>age</strong> - edad del estudiante (numérica: de 15 a 22)",
+              "<strong>address</strong>: tipo de dirección particular del estudiante (binario: 'U' - urbana o 'R' - rural)",
+              "<strong>famsize</strong> - tamaño de la familia (binario: 'LE3' - menor o igual a 3 o 'GT3' - mayor que 3)",
+              "<strong>Pstatus</strong> - estado de convivencia de los padres (binario: 'T' - viviendo juntos o 'A' - separados)",
+              "<strong>Medu</strong> - educación de la madre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
+              "<strong>Fedu</strong> - educación del padre (numérica: 0 - ninguna, 1 - educación primaria (4º grado), 2 - 5º a 9º grado, 3 - educación secundaria o 4 - educación superior)",
+              "<strong>Mjob</strong> - trabajo de la madre (nominal: 'maestra', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
+              "<strong>Fjob</strong> - trabajo del padre (nominal: 'maestro', 'relacionado con la atención sanitaria', 'servicios' civiles (por ejemplo, administrativos o policiales), 'en_casa' u 'otros')",
+              "<strong>razón</strong>: motivo para elegir esta escuela (nominal: cerca de \"casa\", \"reputación\" de la escuela, preferencia de \"curso\" u \"otro\")",
+              "<strong>tutor</strong> - tutor del estudiante (nominal: 'madre', 'padre' u 'otro')",
+              "<strong>tiempo de viaje</strong>: tiempo de viaje de casa a la escuela (numérico: 1 - <15 min., 2 - 15 a 30 min., 3 - 30 min. a 1 hora, o 4 - >1 hora)",
+              "<strong>tiempo de estudio</strong>: tiempo de estudio semanal (numérico: 1 - &lt; 2 horas, 2 - 2 a 5 horas, 3 - 5 a 10 horas o 4 - &gt; 10 horas)",
+              "<strong>reprobados</strong>: número de reprobados en clases anteriores (numérico: n si 1 &lg;=n &lg;3, en caso contrario 4)",
+              "<strong>schoolsup</strong> - apoyo educativo adicional (binario: sí o no)",
+              "<strong>famsup</strong> - apoyo educativo familiar (binario: sí o no)",
+              "<strong>pagado</strong> - clases extra pagadas dentro de la materia del curso (Matemáticas o Portugués) (binario: sí o no)",
+              "<strong>actividades</strong> - actividades extracurriculares (binario: sí o no)",
+              "<strong>guardería</strong>: asistió a la guardería (binario: sí o no)",
+              "<strong>superior</strong> - quiere cursar estudios superiores (binario: sí o no)",
+              "<strong>internet</strong> - Acceso a Internet en casa (binario: sí o no)",
+              "<strong>romántico</strong> - con una relación romántica (binario: sí o no)",
+              "<strong>famrel</strong> - calidad de las relaciones familiares (numérica: de 1 - muy mala a 5 - excelente)",
+              "<strong>tiempo libre</strong>: tiempo libre después de la escuela (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "<strong>goout</strong> - salir con amigos (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "<strong>Dalc</strong> - consumo de alcohol en jornada laboral (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "<strong>Walc</strong> - consumo de alcohol durante el fin de semana (numérico: de 1 - muy bajo a 5 - muy alto)",
+              "<strong>salud</strong>: estado de salud actual (numérico: de 1: muy malo a 5: muy bueno)",
+              "<strong>ausencias</strong> - número de ausencias escolares (numérico: de 0 a 93)"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "Regresión calculada"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Student Performance</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

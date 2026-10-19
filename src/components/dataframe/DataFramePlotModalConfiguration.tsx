@@ -1,6 +1,6 @@
 import { Col, Container, Form, Modal, Row, Button } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
-import React, { useContext } from 'react'
+import React, { useContext, useId } from 'react'
 
 import { VERBOSE } from '@/CONSTANTS'
 import {
@@ -22,6 +22,8 @@ type DataFramePlotModalConfigurationProps = {
 }
 
 export default function DataFramePlotModalConfiguration(props: DataFramePlotModalConfigurationProps) {
+  // El diálogo se llama como su título (WCAG 4.1.2) y su botón de cerrar, en el idioma de la página
+  const titleId = useId()
   const { updateUI } = props
 
   const {
@@ -113,9 +115,9 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
 
   if (VERBOSE) console.debug('render DataFramePlotConfiguration')
   return <>
-    <Modal show={showOptions} onHide={() => setShowOptions(false)} size={'xl'} fullscreen={'md-down'}>
-      <Modal.Header closeButton>
-        <Modal.Title>
+    <Modal aria-labelledby={titleId} show={showOptions} onHide={() => setShowOptions(false)} size={'xl'} fullscreen={'md-down'}>
+      <Modal.Header closeButton closeLabel={t('modal.close')}>
+        <Modal.Title id={titleId}>
           <Trans i18nKey={`dataframe-plot.${dataframePlotConfig.PLOT_ENABLE}.title`} /> | <Trans i18nKey={'dataframe-plot.configuration.title'} />
         </Modal.Title>
         <div className={'d-flex'}>
@@ -221,8 +223,7 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
                   <Form.Label><Trans i18nKey={prefix + 'pie-charts.labels'} /></Form.Label>
                   <Form.Select
                     onChange={(e) => handleChange_PlotConfig_PieCharts(e, 'labels')}
-                    value={dataframePlotConfig.PIE_CHARTS.config.labels}
-                    aria-label="dataframe-plot.pie-charts.labels">
+                    value={dataframePlotConfig.PIE_CHARTS.config.labels}>
                     <option value="_disabled_" disabled><Trans i18nKey={'Labels'} /></option>
                     {dataframePlotConfig.COLUMNS.map((column_name, index) => {
                       return <option key={index} value={column_name}> nUnique {getFromColumnOfDataFrame_nUnique_PieCharts_Labels(column_name)} | {column_name}</option>
@@ -238,8 +239,7 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
                       <Form.Label><Trans i18nKey={'dataframe-plot.scatter-plots.form.x'} /></Form.Label>
                       <Form.Select
                         onChange={(e) => handleChange_PlotConfig_Scatter(e, 'x')}
-                        value={dataframePlotConfig.SCATTER_PLOTS.config.x}
-                        aria-label="dataframe-plot.scatter-plots.form.x">
+                        value={dataframePlotConfig.SCATTER_PLOTS.config.x}>
                         <option value="_disabled_" disabled>
                           <Trans i18nKey={'dataframe-plot.scatter-plots.form.x'} />
                         </option>
@@ -260,8 +260,7 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
                       <Form.Label><Trans i18nKey={'dataframe-plot.scatter-plots.form.y'} /></Form.Label>
                       <Form.Select
                         onChange={(e) => handleChange_PlotConfig_Scatter(e, 'y')}
-                        value={dataframePlotConfig.SCATTER_PLOTS.config.y}
-                        aria-label="dataframe-plot.scatter-plots.form.y">
+                        value={dataframePlotConfig.SCATTER_PLOTS.config.y}>
                         <option value="_disabled_" disabled>
                           <Trans i18nKey={'dataframe-plot.scatter-plots.form.y'} />
                         </option>
@@ -285,9 +284,8 @@ export default function DataFramePlotModalConfiguration(props: DataFramePlotModa
                     <Form.Label><Trans i18nKey={'dataframe-plot.time-series-plots.form.index'} /></Form.Label>
                     <Form.Select
                       onChange={(e) => handleChange_PlotConfig_TimeSeries(e, 'index')}
-                      value={dataframePlotConfig.TIME_SERIES_PLOTS.config.index}
-                      aria-label="dataframe-plot.time-series-plots.form.index">
-                      <option value="_disabled_" disabled>Index</option>
+                      value={dataframePlotConfig.TIME_SERIES_PLOTS.config.index}>
+                      <option value="_disabled_" disabled><Trans i18nKey={'dataframe-plot.time-series-plots.form.index'} /></option>
                       {columnsTimeSeriesValidForIndex(dataFrameLocal, dataframePlotConfig.COLUMNS).map((value, index) => {
                         return <option key={index} value={value}>{value}</option>
                       })}

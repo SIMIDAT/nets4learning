@@ -1,0 +1,119 @@
+/* Paso a paso: la red a la izquierda y la explicación a la derecha (debajo, en pantallas estrechas) */
+.n4l-sbs {
+  /* El color de los gradientes y los deltas (lo que va hacia atrás) */
+  --n4l-sbs-gradient: #fd7e14;
+}
+
+.n4l-sbs-body {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(16rem, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 991.98px) {
+  .n4l-sbs-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.n4l-sbs-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* A pantalla completa, la red cabe entera a lo alto */
+.n4l-maximized .n4l-sbs-diagram {
+  max-height: calc(100dvh - 14rem);
+}
+
+.n4l-sbs-column {
+  font-size: 12px;
+  fill: var(--bs-secondary-color);
+}
+
+.n4l-sbs-label {
+  font-size: 11px;
+  fill: var(--bs-body-color);
+}
+
+.n4l-sbs-target {
+  font-weight: 600;
+  fill: var(--bs-success-text-emphasis);
+}
+
+.n4l-sbs-value {
+  font-size: 8px;
+  fill: var(--bs-body-color);
+  pointer-events: none;
+}
+
+.n4l-sbs-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.n4l-sbs-node:focus-visible circle {
+  stroke: var(--bs-primary);
+  stroke-width: 3;
+}
+
+.n4l-sbs-selected {
+  fill: none;
+  stroke: var(--bs-emphasis-color);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+/* Las conexiones de la capa que se calcula: el trazo avanza hacia la derecha (hacia delante) o hacia la izquierda
+   (hacia atrás) */
+.n4l-sbs-flow-forward,
+.n4l-sbs-flow-backward {
+  stroke-dasharray: 6 4;
+  animation: n4l-sbs-flow 0.9s linear infinite;
+}
+
+.n4l-sbs-flow-backward {
+  animation-direction: reverse;
+}
+
+@keyframes n4l-sbs-flow {
+  from {
+    stroke-dashoffset: 10;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n4l-sbs-flow-forward,
+  .n4l-sbs-flow-backward {
+    animation: none;
+  }
+}
+
+.n4l-sbs-formula {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-tertiary-bg);
+  color: var(--bs-body-color);
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.n4l-sbs-history {
+  display: block;
+  width: 100%;
+  height: 3rem;
+}
+
+.n4l-sbs-history polyline {
+  stroke: var(--n4l-sbs-gradient);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}

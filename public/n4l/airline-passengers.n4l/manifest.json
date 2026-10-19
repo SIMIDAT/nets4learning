@@ -1,0 +1,95 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "airline-passengers",
+  "version": "1.1.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/AirPassengers.html",
+    "links": {
+      "link2": "https://github.com/jbrownlee/Datasets/blob/master/airline-passengers.csv"
+    },
+    "citation": "@book{box1994time,\n  author    = {Box, George E. P. and Jenkins, Gwilym M. and Reinsel, Gregory C.},\n  title     = {Time Series Analysis: Forecasting and Control},\n  edition   = {3},\n  publisher = {Prentice Hall},\n  year      = {1994},\n  isbn      = {978-0130607744}\n}"
+  },
+  "datasets": [
+    {
+      "id": "airline-passengers",
+      "file": "data/airline-passengers.csv",
+      "rows": 144,
+      "frequency": "month",
+      "columns": [
+        {
+          "name": "Month",
+          "role": "ID",
+          "type": "Date",
+          "missing": 0,
+          "description": "month (YYYY-MM)"
+        },
+        {
+          "name": "Passengers",
+          "role": "Target",
+          "type": "Integer",
+          "missing": 0,
+          "units": "thousands",
+          "description": "total international airline passengers in the month"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "time-series",
+      "key": "AIRLINE-PASSENGERS",
+      "runtime": "time-series",
+      "datasets": [
+        "airline-passengers"
+      ],
+      "order": 1,
+      "preprocessing": [],
+      "models": [
+        {
+          "id": "forecast",
+          "format": "tfjs-layers",
+          "path": "models/forecast/model.json",
+          "dataset": "airline-passengers",
+          "input": "scaled",
+          "metrics": {
+            "test_mae": 12.1231,
+            "test_rmse": 15.2024,
+            "test_recursive_mae": 14.8255,
+            "test_naive_mae": 44.7241,
+            "test_seasonal_mae": 41.3103
+          }
+        }
+      ],
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 32,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 1,
+            "activation": "linear",
+            "locked": true
+          }
+        ],
+        "learningRate": 0.01,
+        "epochs": 100
+      },
+      "forecast": {
+        "window": 24,
+        "season": 12,
+        "difference": false,
+        "testSize": 20
+      }
+    }
+  ]
+}

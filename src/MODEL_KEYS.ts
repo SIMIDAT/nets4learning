@@ -32,5 +32,7 @@ export const IC_MODEL_KEYS = {
   MNIST    : 'IMAGE-MNIST',
   KMNIST   : 'IMAGE-KMNIST',
   MOBILENET: 'IMAGE-MOBILENET',
-  RESNET   : 'IMAGE-RESNET',
+  CIFAR10  : 'IMAGE-CIFAR10',
 } as const
+
+// Agrupamiento: sus conjuntos (IRIS, WINE, NEW-THYROID) están en paquetes .n4l (public/n4l/)

@@ -2,12 +2,12 @@ import { Col, Form, Row } from 'react-bootstrap'
 import { Trans, useTranslation } from 'react-i18next'
 import { TYPE_ACTIVATION } from '@core/nn-utils/ArchitectureTypesHelper'
 import { VERBOSE } from '@/CONSTANTS'
-import type { Layer_t } from '@/types/types'
+import type { ImageLayer_t } from '@/types/types'
 
 type Props = {
-  item             : Layer_t,
+  item             : ImageLayer_t,
   indexLayer       : number,
-  handleChange_Attr: (e: React.ChangeEvent<any>, indexLayer: number, _param_name_: keyof Layer_t) => void
+  handleChange_Attr: (e: React.ChangeEvent<any>, indexLayer: number, _param_name_: keyof ImageLayer_t) => void
 }
 
 export default function ImageClassificationEditorLayersItem(props: Props) {

@@ -1,8 +1,8 @@
 import * as _Types from '@core/types'
 import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
-import { trainDenseModel } from '@core/controller/trainDenseModel'
+import { trainDenseModel, type TrainDenseModelParams_t } from '@core/controller/trainDenseModel'
 
-type CustomRegression_DatasetParams_t = {
+type CustomRegression_DatasetParams_t = Pick<TrainDenseModelParams_t, 'onEpochEnd' | 'shouldStop'> & {
   dataset_processed: _Types.DatasetProcessed_t,
   name_model?      : string,
   layerList        : _Types.Layer_t[] | _Types.CustomParamsLayerModel_t[],

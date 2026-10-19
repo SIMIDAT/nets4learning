@@ -1,25 +1,32 @@
 import { lazy, Suspense } from 'react'
 import { useParams } from 'react-router'
+import { Container } from 'react-bootstrap'
 
 import NotFoundPage from '../notFound/NotFoundPage'
 import Loading from '../Loading'
-import { RegressionProvider } from '@context/RegressionContext'
-import { TabularClassificationProvider } from '@context/TabularClassificationContext'
 import { TASKS } from '@/TASKS'
+import N4LBreadcrumb from '@components/breadcrumb/N4LBreadcrumb'
+import { isTask } from '@components/task/taskInfo'
 
 // Cada vista se carga bajo demanda: así una tarea no descarga los modelos y librerías
-// de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe).
+// de las demás (p. ej. la clasificación tabular no necesita face-api ni mediapipe). Las de entrenar de la clasificación
+// tabular y la regresión llevan su contexto, que importa danfo.js: tampoco va con el playground
 // Tabular Classification
-const TabularClassification = lazy(() => import('./0_TabularClassification/TabularClassification'))
+const TabularClassification = lazy(() => import('./0_TabularClassification/TabularClassificationPage'))
 const ModelReviewTabularClassification = lazy(() => import('./0_TabularClassification/ModelReviewTabularClassification'))
 // Regression
-const Regression = lazy(() => import('./1_Regression/Regression'))
+const Regression = lazy(() => import('./1_Regression/RegressionPage'))
 const ModelReviewRegression = lazy(() => import('./1_Regression/ModelReviewRegression'))
 // Object Detection
 const ModelReviewObjectDetection = lazy(() => import('./2_ObjectDetection/ModelReviewObjectDetection'))
 // Image Classification
 const ImageClassification = lazy(() => import('./3_ImageClassification/ImageClassification'))
 const ModelReviewImageClassification = lazy(() => import('./3_ImageClassification/ModelReviewImageClassification'))
+
+const Clustering = lazy(() => import('./4_Clustering/Clustering'))
+// Time series
+const TimeSeries = lazy(() => import('./5_TimeSeries/TimeSeries'))
+const ModelReviewTimeSeries = lazy(() => import('./5_TimeSeries/ModelReviewTimeSeries'))
 
 
 type MisParams = {
@@ -34,12 +41,8 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       if (option === 'model') {
         return <ModelReviewTabularClassification dataset={example} />
       } else if (option === 'dataset') {
-        return (
-          // key: cada dataset empieza con su propio estado (modelos entrenados, predicción…)
-          <TabularClassificationProvider key={example}>
-            <TabularClassification dataset={example} />
-          </TabularClassificationProvider>
-        )
+        // key: cada dataset empieza con su propio estado (modelos entrenados, predicción…)
+        return <TabularClassification key={example} dataset={example} />
       }
       break
     }
@@ -47,11 +50,7 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       if (option === 'model') {
         return <ModelReviewRegression dataset={example} />
       } else if (option === 'dataset') {
-        return <>
-          <RegressionProvider key={example}>
-            <Regression dataset={example} />
-          </RegressionProvider>
-        </>
+        return <Regression key={example} dataset={example} />
       }
       break
     }
@@ -70,6 +69,16 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
       }
       break
     }
+    case TASKS.CLUSTERING: {
+      // Se agrupa al momento: no hay modelos preentrenados
+      if (option === 'dataset') return <Clustering key={example} dataset={example} />
+      break
+    }
+    case TASKS.TIME_SERIES: {
+      if (option === 'model') return <ModelReviewTimeSeries key={example} dataset={example} />
+      if (option === 'dataset') return <TimeSeries key={example} dataset={example} />
+      break
+    }
   }
   // Tarea u opción no reconocida
   return <NotFoundPage />
@@ -78,12 +87,21 @@ const PrintHTMLPlaygroundView = ({ id, option, example }: MisParams) => {
 export default function Playground() {
   const { id, option, example } = useParams<MisParams>()
   if (!id || !option || !example) return null
+  const kind = option === 'model' || option === 'dataset' ? option : undefined
 
   return (
     <>
       <main className={'mb-3'} data-title={'Playground'} data-testid={'Test-Playground'}>
+        {isTask(id) && kind !== undefined &&
+          <Container className={'mt-3 n4l-container-wide'}>
+            <N4LBreadcrumb task={id} kind={kind} example={example} />
+          </Container>
+        }
         <Suspense fallback={<Loading />}>
+          {/* Otra tarea, opción o ejemplo (p. ej. desde el desplegable de las migas de pan) es otra página: se monta de
+              nuevo en vez de reutilizar el estado del anterior (el modelo de Car con los datos del formulario de Iris) */}
           <PrintHTMLPlaygroundView
+            key={`${id}/${option}/${example}`}
             id={id}
             option={option}
             example={example}

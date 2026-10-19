@@ -1,35 +1,58 @@
 import './TabularClassification.css'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { Trans, useTranslation } from 'react-i18next'
-import { Accordion, Button, Card, Col, Container, Form, Row } from 'react-bootstrap'
-import ReactGA from 'react-ga4'
+import { Accordion, Card, Col, Form, Row } from 'react-bootstrap'
 import * as _dfd from 'danfojs'
 import * as tfjs from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import * as _Types from '@core/types'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import { MAP_TC_CLASSES } from '@pages/playground/0_TabularClassification/models'
 import { hasModel, loadModelClass } from '@core/models/modelRegistry'
 import { createTabularClassificationCustomModel } from '@core/controller/00-tabular-classification/TabularClassificationModelController'
 
 import alertHelper from '@utils/alertHelper'
 
-import N4LJoyride from '@components/joyride/N4LJoyride'
 import N4LDivider from '@components/divider/N4LDivider'
+import N4LSectionLayout from '@components/divider/N4LSectionLayout'
+import { argMax } from '@core/nn-utils/classificationOutput'
 import N4LLayerDesign from '@components/neural-network/N4LLayerDesign'
+import N4LTrainButton from '@components/neural-network/N4LTrainButton'
+import N4LTrainingPrediction from '@components/neural-network/N4LTrainingPrediction'
+import { useTrainingProgress } from '@hooks/useTrainingProgress'
+import { useStoredModels } from '@hooks/useStoredModels'
+import N4LStoredModelsNotice from '@components/neural-network/N4LStoredModelsNotice'
+import N4LTrainingDiagnosis from '@components/neural-network/N4LTrainingDiagnosis'
+import { checkDenseLayers } from '@core/nn-utils/checkLayers'
+import { historyFromData } from '@core/training/modelStore'
+import { reportTrainResult } from '@core/training/trainResult'
+import { historyData, type TrainingHistory_t } from '@core/training/buildModels'
+import { trainerGuide } from '@components/guide/trainerGuide'
+import N4LStepByStep from '@components/neural-network/stepByStep/N4LStepByStep'
+import { useStepByStepEnabled } from '@components/neural-network/stepByStep/stepByStepSetting'
+import type { TrainingSession_t } from '@core/session/trainingSession'
+import { useTrainerSession } from '@hooks/useTrainerSession'
+import { layersAreValid } from '@components/neural-network/alertLayerError'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import type { IdLoss_t, IdMetric_t, IdOptimizer_t } from '@/types/nn-types'
 import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 
 import TabularClassificationManual from '@pages/playground/0_TabularClassification/TabularClassificationManual'
 import TabularClassificationDataset from '@pages/playground/0_TabularClassification/TabularClassificationDataset'
 import TabularClassificationDatasetShow from '@pages/playground/0_TabularClassification/TabularClassificationDatasetShow'
 import TabularClassificationEditorHyperparameters from '@pages/playground/0_TabularClassification/TabularClassificationEditorHyperparameters'
 import TabularClassificationEditorLayers from '@pages/playground/0_TabularClassification/TabularClassificationEditorLayers'
+import N4LModelCode from '@components/neural-network/N4LModelCode'
+import { denseCodeLayers, type ModelCode_t } from '@core/nn-utils/modelCode'
+import { createLoss, createMetricsList } from '@core/nn-utils/ArchitectureHelper'
 import TabularClassificationTableModels from '@pages/playground/0_TabularClassification/TabularClassificationTableModels'
 import TabularClassificationPrediction from '@pages/playground/0_TabularClassification/TabularClassificationPrediction'
 import TabularShapPanel from '@core/explainability/TabularShapPanel'
 import { dataframeRowsToNumbers } from '@core/explainability/shapSampling'
+import { trackEvent } from '@core/analytics'
 
 import { VERBOSE } from '@/CONSTANTS'
 
@@ -85,6 +108,9 @@ import { useTabularClassificationContext } from '@context/useTabularClassificati
 type Props = {
   dataset: string
 }
+/** Lo que se guarda de cada modelo entrenado (con el modelo): todo menos el modelo, y el historial como datos */
+type StoredTabularModel_t = Omit<_Types.TabularClassificationGeneratedModel_t, 'model' | 'history'> & { history: TrainingHistory_t }
+
 export default function TabularClassification(props: Props) {
   const { dataset } = props
   const navigate = useNavigate()
@@ -97,14 +123,15 @@ export default function TabularClassification(props: Props) {
     iModelInstance, setIModelInstance,
     datasets, setDatasets,
     layers, setLayers,
-    learningRate,
-    numberEpochs,
-    testSize,
-    idOptimizer,
-    idLoss,
-    idMetrics,
+    learningRate, setLearningRate,
+    numberEpochs, setNumberEpochs,
+    testSize, setTestSize,
+    idOptimizer, setIdOptimizer,
+    idLoss, setIdLoss,
+    idMetrics, setIdMetrics,
     isTraining, setIsTraining,
-    setGeneratedModels,
+    generatedModels, setGeneratedModels,
+    setGeneratedModelsIndex,
     model, setModel,
     inputDataToPredict,
     inputVectorToPredict,
@@ -116,18 +143,80 @@ export default function TabularClassification(props: Props) {
   const predictedVector_ref = useRef<number[] | null>(null)
   const predictedDisplay_ref = useRef<Array<string | number> | null>(null)
   const [predictedClassIndex, setPredictedClassIndex] = useState(0)
-  const joyrideButton_ref = useRef<_Types.JoyrideHandle_t>({})
+  const training = useTrainingProgress()
 
-  useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/TabularClassification/${dataset}`, title: dataset })
-  }, [dataset])
+  // Los modelos entrenados antes con este conjunto (guardados en el navegador): vuelven a la tabla, y se clasifica con
+  // el último. Los de un conjunto subido no se guardan
+  const storedModels = useStoredModels<StoredTabularModel_t>('tabular-classification', dataset, dataset !== UPLOAD, (stored) => {
+    const restored = stored.map(({ model, data }) => ({ ...data, model: model as tfjs.Sequential, history: historyFromData(data.history) }))
+    setGeneratedModels((current) => [...restored, ...current])
+    setGeneratedModelsIndex((current) => (current >= 0 ? current + restored.length : restored.length - 1))
+    setModel((current) => current ?? restored.at(-1)!.model)
+  })
+  const handleClear_StoredModels = async () => {
+    await storedModels.clear()
+    setGeneratedModels([])
+    setGeneratedModelsIndex(-1)
+    setModel(null)
+  }
+
+  // region SESIÓN: exportar, importar y compartir capas e hiperparámetros
+  const currentSession = (): TrainingSession_t => ({
+    app            : 'nets4learning',
+    version        : 1,
+    task           : TASKS.TABULAR_CLASSIFICATION,
+    dataset        : dataset,
+    layers         : layers,
+    hyperparameters: { learningRate, epochs: numberEpochs, testSize, optimizer: idOptimizer, loss: idLoss, metrics: [idMetrics] },
+  })
+
+  const applySession = ({ layers: importedLayers, hyperparameters: h }: TrainingSession_t) => {
+    setLayers(importedLayers.map((layer) => ({ _class: 'dense', units: Number(layer.units), activation: String(layer.activation ?? 'relu') })))
+    setLearningRate(h.learningRate)
+    setNumberEpochs(h.epochs)
+    setTestSize(h.testSize)
+    setIdOptimizer(h.optimizer as IdOptimizer_t)
+    setIdLoss(h.loss as IdLoss_t)
+    setIdMetrics((h.metrics[0] ?? idMetrics) as IdMetric_t)
+  }
+  // Lista cuando ya están los datos: antes, la página pone sus capas por defecto
+  const { sessionVersion, importSession } = useTrainerSession(TASKS.TABULAR_CLASSIFICATION, datasets.datasets.length > 0, applySession)
+  // endregion
+  // Secciones de la página en orden: numeran los separadores (N4LDivider)
+  // Paso a paso solo si se ha activado en /settings
+  const stepByStep = useStepByStepEnabled()
+  const steps = ['hr.information', ...(dataset === UPLOAD ? ['hr.process-dataset'] : []), 'hr.dataset', 'hr.model', ...(stepByStep ? ['hr.step-by-step'] : []), 'hr.generated-models', 'hr.classify', 'hr.explainability']
+  // La guía de la página (botón Guía): de los datos al modelo entrenado, paso a paso
+  const guideSteps = useMemo(() => trainerGuide(t, '0-tabular-classification', dataset, { upload: dataset === UPLOAD, datasetTable: true, testSize: 'hp-train-rate', stepByStep: stepByStep ? 'after-train' : false }), [t, dataset, stepByStep])
+  // El paso a paso (N4LStepByStep): las capas del editor y las filas ya procesadas, como las recibe la red
+  const stepLayers = useMemo(() => layers.map(({ units, activation }) => ({ units, activation: activation ?? 'linear' })), [layers])
+  const stepProcessed = datasets.datasets[datasets.index]?.data_processed
+  // El código equivalente de la red (Ver el código): sus entradas son las columnas de los datos ya procesados
+  const codeSpec = useMemo((): ModelCode_t | null => (stepProcessed?.X === undefined ? null : {
+    inputShape : [stepProcessed.X.shape[1]],
+    layers     : denseCodeLayers(layers),
+    optimizer  : idOptimizer,
+    learningRate,
+    loss       : createLoss(idLoss, {}),
+    metrics    : createMetricsList([idMetrics], {}),
+    epochs     : numberEpochs,
+    batchSize  : 32,
+    dataComment: t('model-code.data-classification'),
+  }), [stepProcessed, layers, idOptimizer, learningRate, idLoss, idMetrics, numberEpochs, t])
+  const stepData = useMemo(() => ({
+    X       : dataframeRowsToNumbers(stepProcessed?.X.values),
+    y       : (stepProcessed?.y.values ?? []) as number[][],
+    features: (stepProcessed?.X.columns ?? []) as string[],
+  }), [stepProcessed])
+
 
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     const init = async () => {
       await tfjs.ready()
-      if (hasModel(MAP_TC_CLASSES, dataset)) {
-        const _iModelClass = await loadModelClass(MAP_TC_CLASSES, dataset)
+      // Un paquete .n4l abierto que ya no está guardado: como una clave que no existe
+      const _iModelClass = hasModel(MAP_TC_CLASSES, dataset) ? await loadModelClass(MAP_TC_CLASSES, dataset).catch(() => null) : null
+      if (_iModelClass !== null) {
         const _iModelInstance = new _iModelClass(t, () => {})
         setIModelInstance(_iModelInstance)
         const _datasets = await _iModelInstance.DATASETS()
@@ -160,27 +249,19 @@ export default function TabularClassification(props: Props) {
 
     const { data_processed } = datasets.datasets[datasets.index]
     if (!data_processed || !data_processed.classes) {
-      await alertHelper.alertError(t('error'))
+      await alertHelper.alertError(t('error.dataset-not-processed'))
       console.error('Error, dataset not processed')
       return
     }
 
-    const last_layer_units = layers[layers.length - 1].units ?? 0
-    const classes_length = data_processed.classes.length
-
-    if (last_layer_units !== classes_length) {
-      await alertHelper.alertWarning(t('error.tensor-shape'), {
-        footer: '',
-        text  : '',
-        html  : <Trans i18nKey={'error.tensor-shape-change'} values={{ last_layer_units: last_layer_units, class_length: classes_length }} />,
-      })
-      return
-    }
+    // Lo que está mal en las capas (la salida con tantas neuronas como clases, unidades válidas…) impide entrenar
+    if (!(await layersAreValid(t, checkDenseLayers(layers, { units: data_processed.classes.length, activation: 'softmax' })))) return
 
     try {
       setIsTraining(true)
+      training.start({ epochs: numberEpochs, learningRate, optimizer: idOptimizer, loss: idLoss, layers: layers.length })
       const _dataset_processed = datasets.datasets[datasets.index]
-      const _learningRate = learningRate / 100
+      const _learningRate = learningRate
       const _numberOfEpoch = numberEpochs
       const _testSize = testSize / 100
       const _layerList = layers
@@ -188,7 +269,7 @@ export default function TabularClassification(props: Props) {
       const _idLoss = idLoss
       const _idMetrics = idMetrics
 
-      const { model, history } = await createTabularClassificationCustomModel({
+      const { model, history, evaluation } = await createTabularClassificationCustomModel({
         dataset_processed: _dataset_processed,
         learningRate     : _learningRate,
         numberOfEpoch    : _numberOfEpoch,
@@ -197,8 +278,8 @@ export default function TabularClassification(props: Props) {
         idOptimizer      : _idOptimizer,
         idLoss           : _idLoss,
         idMetrics        : _idMetrics,
+        ...training.callbacks,
       })
-      /**@type {_Types.TabularClassificationGeneratedModel_t} */
       const newModel: _Types.TabularClassificationGeneratedModel_t = {
         model        : model,
         history      : history,
@@ -209,6 +290,7 @@ export default function TabularClassification(props: Props) {
         idOptimizer  : _idOptimizer,
         idLoss       : _idLoss,
         idMetrics    : _idMetrics,
+        evaluation   : evaluation && { classes: data_processed.classes, ...evaluation },
       }
       setGeneratedModels((oldArray) => ([
         ...oldArray,
@@ -216,12 +298,20 @@ export default function TabularClassification(props: Props) {
       ]))
       setIsTraining(false)
 
+      // Se clasifica con el modelo recién entrenado (durante el entrenamiento no se añaden otros)
       setModel(model)
-      await alertHelper.alertSuccess(t('alert.model-train-success'))
+      const { model: _model, history: _history, ...stored } = newModel
+      storedModels.save(model, { ...stored, history: historyData(history) })
+      reportTrainResult({ history: history.history, layers: _layerList, evaluation })
+      setGeneratedModelsIndex(generatedModels.length)
+      training.complete()
+      // Sin esperar a que se cierre el aviso: el botón de entrenar vuelve a estar disponible enseguida
+      void alertHelper.alertSuccess(t('alert.model-train-success'))
     } catch (error) {
       console.error(error)
     } finally {
       setIsTraining(false)
+      training.finish()
     }
   }
   // endregion
@@ -231,50 +321,41 @@ export default function TabularClassification(props: Props) {
     e.preventDefault()
     if (dataset === UPLOAD) {
       if (datasets.datasets.length === 0) {
-        await alertHelper.alertError('First you must load a dataset')
+        await alertHelper.alertError(t('error.need-dataset'))
         return
       }
     }
     if (model === undefined || model === null) {
-      await alertHelper.alertError('First you must load a model')
+      await alertHelper.alertError(t('error.need-model'))
       return
     }
     try {
       const { data_processed } = datasets.datasets[datasets.index]
       if (!data_processed) {
-        await alertHelper.alertError('Error, dataset not processed')
+        await alertHelper.alertError(t('error.dataset-not-processed'))
         console.error('Error, dataset not processed')
         return
       }
       const { scaler, classes } = data_processed
       if (!scaler || !classes) {
-        await alertHelper.alertError('Error, dataset not processed')
+        await alertHelper.alertError(t('error.dataset-not-processed'))
         console.error('Error, dataset not processed')
         return
       }
       const input_vector_to_predict_scaled = scaler.transform(inputVectorToPredict)
-      const tensor = tfjs.tensor([input_vector_to_predict_scaled])
-      // FIX 
-      // TypeScript error
-      const prediction = model.predict(tensor) as tfjs.Tensor
-      const predictionDataSync = prediction.dataSync()
-      const predictionWithArgMaxDataSync = prediction.argMax(-1).dataSync()
-      if (VERBOSE) {
-        console.debug({ prediction, predictionDataSync, predictionWithArgMaxDataSync })
-      }
+      const prediction = tfjs.tidy(() => model.predict(tfjs.tensor([input_vector_to_predict_scaled])) as tfjs.Tensor)
+      // Lectura asíncrona: con WebGPU las síncronas detienen la GPU
+      const predictionValues = Array.from(await prediction.data<'float32'>())
+      prediction.dispose()
+      if (VERBOSE) console.debug({ predictionValues })
       predictedVector_ref.current = input_vector_to_predict_scaled as number[]
       predictedDisplay_ref.current = inputDataToPredict.map((value) => (Array.isArray(value) ? value.join(', ') : String(value)))
-      setPredictedClassIndex(predictionWithArgMaxDataSync[0])
-      setPredictionBar((_prevState) => {
-        return {
-          classes: classes,
-          labels : classes,
-          data   : [...predictionDataSync],
-        }
-      })
+      setPredictedClassIndex(argMax(predictionValues))
+      setPredictionBar({ classes: classes, labels: classes, data: predictionValues })
+      trackEvent('predict', { input: 'form' })
     } catch (error) {
       console.error(error)
-      await alertHelper.alertError('Error, model not valid')
+      await alertHelper.alertError(t('error.model-not-valid'))
     }
   }
   // endregion
@@ -286,44 +367,26 @@ export default function TabularClassification(props: Props) {
   if (VERBOSE) console.debug('render TabularClassificationCustomDataset')
   return (
     <>
-      <N4LJoyride joyrideButton_ref={joyrideButton_ref}
-        JOYRIDE_state={iModelInstance.JOYRIDE()}
-        TASK={'tabular-classification'}
-        KEY={'TabularClassification'}
-      />
-
-      <Container className={'mb-3'}>
-        <Row className={'mt-3 mb-3'}>
-          <Col xl={12}>
-            <div className="d-flex justify-content-between">
-              <h1><Trans i18nKey={'modality.0'} /></h1>
-              {import.meta.env.VITE_SHOW_NEW_FEATURE === 'true' &&
-                <Button size={'sm'}
-                  variant={'outline-primary'}
-                  onClick={() => joyrideButton_ref.current.handleClick_StartJoyride?.()}>
-                  <Trans i18nKey={'datasets-models.0-tabular-classification.joyride.title'} />
-                </Button>
-              }
-            </div>
-          </Col>
-        </Row>
+      <N4LSectionLayout steps={steps} className={'mb-3'}>
+        <N4LPageHeader intro={'train'} title={<Trans i18nKey={'modality.0'} />} guideId={'train.tabular-classification.' + dataset} guideSteps={guideSteps}
+          getSession={currentSession} onImport={importSession} />
 
         {/* INFORMATION */}
-        <N4LDivider i18nKey={'hr.information'} />
+        <N4LDivider i18nKey={'hr.information'} steps={steps} />
         <Row className={'mt-3'}>
           <Col>
             <Accordion defaultActiveKey={dataset === UPLOAD ? ['dataset_info'] : []}>
-              <Accordion.Item className={'joyride-step-manual'} key={UPLOAD} eventKey={'manual'}>
-                <Accordion.Header>
-                  <h2><Trans i18nKey={prefixManual + 'manual.title'} /></h2>
+              <Accordion.Item data-guide={'manual'} key={UPLOAD} eventKey={'manual'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
+                  <Trans i18nKey={prefixManual + 'manual.title'} />
                 </Accordion.Header>
                 <Accordion.Body>
                   <TabularClassificationManual />
                 </Accordion.Body>
               </Accordion.Item>
-              <Accordion.Item className={'joyride-step-dataset-info'} key={'1'} eventKey={'dataset_info'}>
-                <Accordion.Header>
-                  <h2><Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} /></h2>
+              <Accordion.Item data-guide={'dataset-info'} key={'1'} eventKey={'dataset_info'}>
+                <Accordion.Header as={'h3'} className={'n4l-accordion-h2'}>
+                  <Trans i18nKey={dataset !== UPLOAD ? iModelInstance.TITLE : prefix + 'dataset.upload-dataset'} />
                 </Accordion.Header>
                 <Accordion.Body>
                   <TabularClassificationDataset dataset={dataset} />
@@ -335,8 +398,8 @@ export default function TabularClassification(props: Props) {
 
         {/* PROCESS DATASET */}
         {dataset === UPLOAD && <>
-          <N4LDivider i18nKey={'hr.process-dataset'} />
-          <Row className={'mt-3 joyride-step-process-dataset'}>
+          <N4LDivider i18nKey={'hr.process-dataset'} steps={steps} />
+          <Row className={'mt-3'} data-guide={'process'}>
             <Col>
               <TabularClassificationDatasetProcess />
             </Col>
@@ -344,22 +407,22 @@ export default function TabularClassification(props: Props) {
         </>}
 
         {/* SHOW DATASET */}
-        <N4LDivider i18nKey={'hr.dataset'} />
-        <Row className={'mt-3 joyride-step-dataset'}>
+        <N4LDivider i18nKey={'hr.dataset'} steps={steps} />
+        <Row className={'mt-3'} data-guide={'dataset'}>
           <Col>
             <TabularClassificationDatasetShow />
           </Col>
         </Row>
 
         {/* GENERATOR */}
-        <N4LDivider i18nKey={'hr.model'} />
+        <N4LDivider i18nKey={'hr.model'} steps={steps} />
         {datasets.index < 0 && <>
           <Card>
             <Card.Header className={'d-flex align-items-center justify-content-between'}>
               <h3><Trans i18nKey={'pages.playground.generator.layer-design'} /></h3>
             </Card.Header>
             <Card.Body>
-              <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-process'} />
+              <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-process'} />
             </Card.Body>
           </Card>
         </>}
@@ -367,7 +430,7 @@ export default function TabularClassification(props: Props) {
           <Form onSubmit={handleSubmit_CreateModel} id={'TabularClassificationCustomDataset'}>
             {/* BLOCK 1 */}
             <Row className={'mt-3'}>
-              <Col xl={12} className={'joyride-step-layer'}>
+              <Col xl={12} data-guide={'layer-design'}>
                 <N4LLayerDesign
                   layers={layers}
                   show={datasets.index >= 0}
@@ -378,51 +441,74 @@ export default function TabularClassification(props: Props) {
 
             <Row className={'mt-3'}>
               {/* LAYERS EDITOR */}
-              <Col className={'mt-3 joyride-step-editor-layers'} xl={6}>
+              <Col className={'mt-3'} xl={6}>
                 <TabularClassificationEditorLayers />
               </Col>
 
               {/* HYPERPARAMETERS EDITOR */}
-              <Col className={'mt-3 joyride-step-editor-trainer'} xl={6}>
-                <TabularClassificationEditorHyperparameters />
+              <Col className={'mt-3'} xl={6}>
+                <TabularClassificationEditorHyperparameters key={sessionVersion} />
+              </Col>
+            </Row>
+
+            {/* El código equivalente de la red */}
+            <Row className={'mt-3'}>
+              <Col xl={12}>
+                <N4LModelCode spec={codeSpec} task={'tabular-classification'} />
               </Col>
             </Row>
 
             {/* BLOCK BUTTON SUBMIT */}
             <Row className={'mt-3'}>
-              <Col xl={12}>
-                <div className="d-grid gap-2">
-                  <Button
-                    variant={'primary'}
-                    size={'lg'}
-                    type={'submit'}
-                    disabled={isTraining || !datasets.datasets[datasets.index] || (!datasets.datasets[datasets.index].is_dataset_processed)}>
-                    <Trans i18nKey={prefix + 'models.button-submit'} />
-                  </Button>
-                </div>
+              <Col xl={12} data-guide={'train'}>
+                <N4LTrainingPrediction nextModel={generatedModels.length + 1} disabled={isTraining} />
+                <N4LTrainButton lastRun={training.lastRun} isTraining={training.isTraining}
+                  progress={training.progress}
+                  isStopping={training.isStopping}
+                  onStop={training.stop}
+                  resultSection={'hr.generated-models'}
+                  disabled={isTraining || !datasets.datasets[datasets.index] || (!datasets.datasets[datasets.index].is_dataset_processed)}>
+                  <Trans i18nKey={prefix + 'models.button-submit'} />
+                </N4LTrainButton>
+                {!training.isTraining &&
+                  <N4LTrainingDiagnosis history={generatedModels.at(-1)?.history.history} model={generatedModels.length} />}
               </Col>
             </Row>
           </Form>
         }
 
+        {/* STEP BY STEP (si se ha activado en /settings) */}
+        {stepByStep && <>
+          <N4LDivider i18nKey={'hr.step-by-step'} steps={steps} />
+          <Row className={'mt-3'} data-guide={'step-by-step'}>
+            <Col>
+              <N4LStepByStep kind={'classification'} layers={stepLayers} X={stepData.X} y={stepData.y}
+                featureNames={stepData.features} outputNames={stepProcessed?.classes ?? []} learningRate={learningRate} />
+            </Col>
+          </Row>
+        </>}
+
+        <N4LStoredModelsNotice count={storedModels.restored} onClear={handleClear_StoredModels} />
         {/* TABLE MODELS */}
-        <N4LDivider i18nKey={'hr.generated-models'} />
-        <Row className={'mt-3 joyride-step-list-of-models'}>
+        <N4LDivider i18nKey={'hr.generated-models'} steps={steps} />
+        <Row className={'mt-3'} data-guide={'models'}>
           <Col>
             <TabularClassificationTableModels />
           </Col>
         </Row>
 
-        {/* PREDICTION */}
-        <N4LDivider i18nKey={'hr.predict'} />
+        {/* CLASSIFICATION */}
+        <N4LDivider i18nKey={'hr.classify'} steps={steps} />
 
-        <Row className={'mt-3 joyride-step-classify-visualization'}>
+        <Row className={'mt-3'} data-guide={'predict'}>
           <Col xl={12}>
             <TabularClassificationPrediction dataset={dataset} handleSubmit_PredictVector={handleSubmit_PredictVector} />
           </Col>
         </Row>
 
         {/* EXPLAINABILITY */}
+        <N4LDivider i18nKey={'hr.explainability'} steps={steps} />
+
         <Row>
           <Col xl={12}>
             <TabularShapPanel
@@ -430,6 +516,8 @@ export default function TabularClassification(props: Props) {
               classes={dataProcessed?.classes ?? []}
               predictedClassIndex={predictedClassIndex}
               inputKey={predictionBar}
+              modelReady={model !== null && model !== undefined}
+              hasPrediction={predictionBar.data.length > 0}
               getModel={() => model}
               getInstance={() => predictedVector_ref.current}
               getPool={() => dataframeRowsToNumbers(dataProcessed?.X.values)}
@@ -438,7 +526,7 @@ export default function TabularClassification(props: Props) {
             />
           </Col>
         </Row>
-      </Container>
+      </N4LSectionLayout>
     </>
   )
 }

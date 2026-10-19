@@ -1,36 +1,43 @@
-import { useMemo } from 'react'
+import { useId, useMemo } from 'react'
 import { useDropzone, type DropEvent, type DropzoneRootProps, type FileRejection } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
+
+import { trackEvent } from '@core/analytics'
+
+// Para las analíticas, del fichero solo la extensión: el nombre puede ser personal
+const fileFormat = (fileName: string) => fileName.includes('.') ? fileName.split('.').pop()!.toLowerCase() : 'none'
 
 const baseStyle = {
   flex           : 1,
   display        : 'flex',
+  flexWrap       : 'wrap',
   alignItems     : 'center',
+  gap            : '0.75rem',
   padding        : '20px',
   borderWidth    : 2,
   borderRadius   : 3,
-  borderColor    : '#b1b1b1',
+  // El borde dice dónde está la zona: al menos 3:1 sobre la tarjeta en los dos temas (WCAG 1.4.11; el #b1b1b1 de antes
+  // se quedaba en 2,1:1 sobre blanco)
+  borderColor    : 'var(--n4l-input-border-color)',
   borderStyle    : 'dashed',
   backgroundColor: 'var(--bc-drag-and-drop)',
-  color          : '#bdbdbd',
-  outline        : 'none',
+  // El gris secundario del tema: se lee sobre el fondo de la zona en el tema claro y en el oscuro (el #bdbdbd de antes
+  // se quedaba en 1,5:1 sobre el gris claro)
+  color          : 'var(--bs-secondary-color)',
   transition     : 'border .24s ease-in-out',
-}
-//     border-color: rgb(177 177 177);
-//     border-style: dashed;
-//     background-color: rgb(229 229 229);
+} as const
 
-const focusedStyle = {
-  borderColor: '#2196f3',
-}
-
+// Al arrastrar un fichero encima: verde si se admite y rojo si no (los de Bootstrap, con contraste en los dos temas)
 const acceptStyle = {
-  borderColor: '#00e676',
+  borderColor: 'var(--bs-success)',
 }
 
 const rejectStyle = {
-  borderColor: '#ff1744',
+  borderColor: 'var(--bs-danger)',
 }
+
+/** Los motivos de rechazo de react-dropzone que se traducen (el resto, con su mensaje en inglés) */
+const REJECTION_CODES = ['file-invalid-type', 'file-too-large', 'file-too-small', 'too-many-files']
 
 /**
  * Properties for the drop zone component.
@@ -77,28 +84,36 @@ export default function DragAndDrop (props: DragAndDropProps) {
   const {
     getRootProps,
     getInputProps,
-    isFocused,
+    open,
     isDragAccept,
     isDragReject,
     acceptedFiles,
     fileRejections,
   } = useDropzone({
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-    onDropAccepted: (files, event) => function_DropAccepted(files, event),
-    onDropRejected: (files, event) => function_DropRejected(files, event) ,
-    accept        : accept,
-    multiple      : multiple,
+    onDropAccepted: (files, event) => {
+      for (const file of files) trackEvent('file_upload', { zone: name, format: fileFormat(file.name), size_kb: Math.round(file.size / 1024) })
+      function_DropAccepted(files, event)
+    },
+    onDropRejected: (files, event) => {
+      for (const { file } of files) trackEvent('file_rejected', { zone: name, format: fileFormat(file.name) })
+      function_DropRejected(files, event)
+    },
+    accept    : accept,
+    multiple  : multiple,
+    // Con el teclado se usa el botón «Elegir fichero» (un botón de verdad, con su nombre): la zona no recibe el foco
+    noKeyboard: true,
+    noClick   : true,
   })
   const styles = useMemo(() => ({
     ...baseStyle,
-    ...(isFocused ? focusedStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
     ...(isDragReject ? rejectStyle : {}),
   }), [
-    isFocused,
     isDragAccept,
     isDragReject,
   ])
+  const helpId = useId()
 
   const acceptedFileItems = acceptedFiles.map((file) => (
     <li key={file.name}>
@@ -110,25 +125,35 @@ export default function DragAndDrop (props: DragAndDropProps) {
       <li key={file.name}>
         {file.name} - {file.size} bytes
         <ul>
-          {errors.map(e => <li key={e.code}>{e.message}</li>)}
+          {errors.map(e => <li key={e.code}>{REJECTION_CODES.includes(e.code) ? t('drag-and-drop.errors.' + e.code) : e.message}</li>)}
         </ul>
       </li>
     )
   })
 
-  const dropzone_root_props: DropzoneRootProps = { style: styles, name }
+  // Con el ratón, un clic en cualquier parte de la zona también abre el selector de ficheros
+  const dropzone_root_props: DropzoneRootProps = { style: styles, name, onClick: open }
 
   return (
     <section className="container p-0">
+      {/* Se suelta el fichero en la zona o se elige con el botón; el botón dice qué formatos admite (aria-describedby) */}
       <div {...getRootProps(dropzone_root_props)}>
-        <input id={id}{...getInputProps()} />
-        <p className={'mb-0'}>{text}</p>
+        <input id={id} {...getInputProps({ 'aria-label': text })} />
+        <button type={'button'} className={'btn btn-outline-primary btn-sm'} aria-describedby={helpId}
+          onClick={(event) => {
+            event.stopPropagation()
+            open()
+          }}>
+          {t(multiple ? 'drag-and-drop.choose-files' : 'drag-and-drop.choose-file')}
+        </button>
+        <p id={helpId} className={'mb-0'}>{text}</p>
       </div>
-      <aside className={'mt-2'}>
+      {/* Lo aceptado y lo rechazado se anuncia al cambiar, sin mover el foco (WCAG 4.1.3) */}
+      <div className={'mt-2'} role={'status'} aria-live={'polite'}>
         <p className={'text-muted'}>{labelFiles ?? t('Files')}</p>
         <ul>{acceptedFileItems}</ul>
-        <ul>{rejectionFileItems}</ul>
-      </aside>
+        <ul className={'text-danger-emphasis'}>{rejectionFileItems}</ul>
+      </div>
     </section>
   )
 }

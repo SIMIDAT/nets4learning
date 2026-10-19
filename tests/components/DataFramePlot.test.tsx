@@ -1,12 +1,12 @@
-import { describe, test, expect } from "vitest"
-import { render } from "@testing-library/react"
-import * as dfd from "danfojs"
+import { describe, test, expect } from 'vitest'
+import { render } from '@testing-library/react'
+import * as dfd from 'danfojs'
 
-import DataFramePlot from "@components/dataframe/DataFramePlot"
-import { DataFramePlotProvider } from "@components/_context/DataFramePlotContext"
+import DataFramePlot from '@components/dataframe/DataFramePlot'
+import { DataFramePlotProvider } from '@components/_context/DataFramePlotContext'
 
-describe("DataFramePlot", () => {
-  test("renders DataFramePlot", () => {
+describe('DataFramePlot', () => {
+  test('renders DataFramePlot', () => {
     const dataframe = new dfd.DataFrame()
     const { getByText } = render(
       <DataFramePlotProvider>

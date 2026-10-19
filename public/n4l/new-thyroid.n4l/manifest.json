@@ -1,0 +1,84 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "new-thyroid",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/102/thyroid+disease"
+  },
+  "datasets": [
+    {
+      "id": "new-thyroid",
+      "file": "data/new-thyroid.csv",
+      "rows": 215,
+      "columns": [
+        {
+          "name": "T3resin",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "%",
+          "description": "T3-resin uptake test"
+        },
+        {
+          "name": "thyroxin",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "total serum thyroxin as measured by the isotopic displacement method"
+        },
+        {
+          "name": "triiodothyronine",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "total serum triiodothyronine as measured by radioimmuno assay"
+        },
+        {
+          "name": "thyroidstimulating",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "basal thyroid-stimulating hormone (TSH) as measured by radioimmuno assay"
+        },
+        {
+          "name": "TSH_value",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "description": "maximal absolute difference of TSH value after injection of 200 micro grams of thyrotropin-releasing hormone as compared to the basal value"
+        },
+        {
+          "name": "class",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "normal, hyper, hypo",
+          "options": [
+            "normal",
+            "hyper",
+            "hypo"
+          ]
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "clustering",
+      "key": "NEW-THYROID",
+      "runtime": "clustering",
+      "datasets": [
+        "new-thyroid"
+      ],
+      "preprocessing": [],
+      "models": []
+    }
+  ]
+}

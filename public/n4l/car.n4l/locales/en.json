@@ -1,0 +1,80 @@
+{
+  "columns": {
+    "Buying": "Buying price",
+    "Maint": "Price of the maintenance",
+    "Doors": "number of doors",
+    "Persons": "Capacity in terms of persons to carry",
+    "Lug_boot": "The size of luggage boot",
+    "Safety": "Estimated safety of the car",
+    "Result": "Result"
+  },
+  "classes": {
+    "unacc": "Unacceptable",
+    "acc": "Acceptable",
+    "vgood": "Very good",
+    "good": "Good"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "CAR - Car classification",
+      "name": "Car classification",
+      "summary": "Whether a car is acceptable given its price, maintenance, seats, boot and safety: everything is a category.",
+      "description": {
+        "text": [
+          "The dataset <i> car evaluation </i> allows to evaluate vehicles through the following structure",
+          "For more information about this dataset, visit the <link1>ICS.UCI.edu repository.</link1>"
+        ],
+        "sections": [
+          {
+            "title": "Information",
+            "items": [
+              "<b>buying:</b> Purchase price.",
+              "<b>maint: </b> Maintenance cost.",
+              "<b>doors: </b> Number of doors.",
+              "<b>persons: </b> Number of places.",
+              "<b>lug_boot: </b> Trunk size.",
+              "<b>safety: </b> Estimated vehicle security."
+            ]
+          },
+          {
+            "title": "Input data",
+            "text": [
+              "Characteristics of the car"
+            ],
+            "items": [
+              "<b>buying: </b> vhigh, high, med, low.",
+              "<b>maint: </b> vhigh, high, med, low.",
+              "<b>doors: </b> 2, 3, 4, 5more.",
+              "<b>persons: </b> 2, 4, more.",
+              "<b>lug_boot: </b> small, med, big.",
+              "<b>safety: </b> low, med, high."
+            ]
+          },
+          {
+            "title": "Output data",
+            "text": [
+              "Vehicle acceptance"
+            ],
+            "items": [
+              "<b>unacc </b>: Inaccessible",
+              "<b>acc </b>: Accessible",
+              "<b>good </b>: Good",
+              "<b>vgood </b>: Very good"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Data set</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Enter the values corresponding to the car to be evaluated:",
+        "items": "(Buying; Maint; Doors; Persons; Lug_boot; Safety)",
+        "examples": "Examples:"
+      }
+    }
+  }
+}

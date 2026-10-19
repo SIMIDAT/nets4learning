@@ -1,0 +1,172 @@
+{
+  "columns": {
+    "lymphatics": "Vasos linfáticos",
+    "block of affere": "Bloqueo de los vasos aferentes",
+    "bl_ of lymph_ c": "Bloqueo linfático (c)",
+    "bl_ of lymph_ s": "Bloqueo linfático (s)",
+    "by pass": "Derivación (bypass)",
+    "extravasates": "Extravasación",
+    "regeneration of": "Regeneración",
+    "early uptake in": "Captación temprana",
+    "lym_nodes dimin": "Ganglios disminuidos",
+    "lym_nodes enlar": "Ganglios agrandados",
+    "changes in lym_": "Forma de los vasos linfáticos",
+    "defect in node": "Defecto en el ganglio",
+    "changes in node": "Cambios en el ganglio",
+    "changes in stru": "Cambios en la estructura",
+    "special forms": "Formas especiales",
+    "dislocation of": "Desplazamiento",
+    "exclusion of no": "Exclusión de ganglios",
+    "no_ of nodes in": "Número de ganglios",
+    "class": "Diagnóstico"
+  },
+  "classes": {
+    "1": "Hallazgo normal",
+    "2": "Metástasis",
+    "3": "Linfoma maligno",
+    "4": "Fibrosis"
+  },
+  "options": {
+    "lymphatics": {
+      "1": "normales",
+      "2": "arqueados",
+      "3": "deformados",
+      "4": "desplazados"
+    },
+    "block of affere": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "bl_ of lymph_ c": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "bl_ of lymph_ s": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "by pass": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "extravasates": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "regeneration of": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "early uptake in": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "changes in lym_": {
+      "1": "de judía",
+      "2": "ovalada",
+      "3": "redonda"
+    },
+    "defect in node": {
+      "1": "no",
+      "2": "lacunar",
+      "3": "lacunar marginal",
+      "4": "lacunar central"
+    },
+    "changes in node": {
+      "1": "no",
+      "2": "lacunar",
+      "3": "lacunar marginal",
+      "4": "lacunar central"
+    },
+    "changes in stru": {
+      "1": "no",
+      "2": "granular",
+      "3": "en gotas",
+      "4": "grueso",
+      "5": "diluido",
+      "6": "reticular",
+      "7": "estriado",
+      "8": "tenue"
+    },
+    "special forms": {
+      "1": "no",
+      "2": "cálices",
+      "3": "vesículas"
+    },
+    "dislocation of": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "exclusion of no": {
+      "1": "No",
+      "2": "Sí"
+    },
+    "no_ of nodes in": {
+      "1": "0-9",
+      "2": "10-19",
+      "3": "20-29",
+      "4": "30-39",
+      "5": "40-49",
+      "6": "50-59",
+      "7": "60-69",
+      "8": "≥ 70"
+    }
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "LYMPHOGRAPHY - Clasificación por datos de linfomas",
+      "name": "Clasificación de linfomas",
+      "summary": "El diagnóstico de un linfoma a partir de los rasgos de una linfografía: pocas filas y clases muy desequilibradas.",
+      "description": {
+        "text": [
+          "El conjunto de datos <i>Lymphography</i> recoge los rasgos de la linfografía de 148 pacientes y su diagnóstico: hallazgo normal, metástasis, linfoma maligno o fibrosis."
+        ],
+        "sections": [
+          {
+            "title": "Datos de entrada",
+            "items": [
+              "<b>Vasos linfáticos</b>: normales, arqueados, deformados, desplazados",
+              "<b>Bloqueo de los vasos aferentes</b>: No, Sí",
+              "<b>Bloqueo linfático (c)</b>: No, Sí",
+              "<b>Bloqueo linfático (s)</b>: No, Sí",
+              "<b>Derivación (bypass)</b>: No, Sí",
+              "<b>Extravasación</b>: No, Sí",
+              "<b>Regeneración</b>: No, Sí",
+              "<b>Captación temprana</b>: No, Sí",
+              "<b>Ganglios disminuidos</b>: 0-3",
+              "<b>Ganglios agrandados</b>: 1-4",
+              "<b>Forma de los vasos linfáticos</b>: de judía, ovalada, redonda",
+              "<b>Defecto en el ganglio</b>: no, lacunar, lacunar marginal, lacunar central",
+              "<b>Cambios en el ganglio</b>: no, lacunar, lacunar marginal, lacunar central",
+              "<b>Cambios en la estructura</b>: no, granular, en gotas, grueso, diluido, reticular, estriado, tenue",
+              "<b>Formas especiales</b>: no, cálices, vesículas",
+              "<b>Desplazamiento</b>: No, Sí",
+              "<b>Exclusión de ganglios</b>: No, Sí",
+              "<b>Número de ganglios</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, ≥ 70"
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "items": [
+              "<b>Hallazgo normal</b>",
+              "<b>Metástasis</b>",
+              "<b>Linfoma maligno</b>",
+              "<b>Fibrosis</b>"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Conjunto de datos</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Introduce los valores correspondientes del paciente que se va a evaluar:",
+        "items": "(Vasos linfáticos, Bloqueo de los vasos aferentes, Bloqueo linfático (c), Bloqueo linfático (s), Derivación (bypass), Extravasación, Regeneración, Captación temprana, Ganglios disminuidos, Ganglios agrandados, Forma de los vasos linfáticos, Defecto en el ganglio, Cambios en el ganglio, Cambios en la estructura, Formas especiales, Desplazamiento, Exclusión de ganglios, Número de ganglios).",
+        "examples": "Ejemplos:"
+      }
+    }
+  }
+}

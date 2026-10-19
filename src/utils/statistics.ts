@@ -1,4 +1,4 @@
-import * as dfd from "danfojs"
+import * as dfd from 'danfojs'
 
 /**
  *

@@ -1,0 +1,60 @@
+{
+  "columns": {
+    "sepal_length": "Sepal length",
+    "sepal_width": "Sepal width",
+    "petal_length": "Petal length",
+    "petal_width": "Petal width",
+    "class": "Class"
+  },
+  "classes": {
+    "Setosa": "Iris setosa",
+    "Versicolor": "Iris versicolor",
+    "Virginica": "Iris virginica"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "IRIS - Iris classification",
+      "name": "Iris classification",
+      "summary": "The classic to start with: the species of a flower from the measurements of its petals and sepals.",
+      "description": {
+        "text": [
+          "The Iris-Data dataset allows to detect what type of iris plant is from the altitude and length of its petal and sepalo."
+        ],
+        "sections": [
+          {
+            "title": "Input data",
+            "items": [
+              "<b>Sepal length</b>: continuous",
+              "<b>Sepal width</b>: continuous",
+              "<b>Petal length</b>: continuous",
+              "<b>Petal width</b>: continuous"
+            ]
+          },
+          {
+            "title": "Output data",
+            "items": [
+              "<b>0</b>: Setosa",
+              "<b>1</b>: Versicolor",
+              "<b>2</b>: Virginica"
+            ]
+          },
+          {
+            "title": "References",
+            "items": [
+              "<link1>Data set</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Enter the values corresponding to the plant to be evaluated:",
+        "items": "(sepal length; sepalo width; petal length; petal width).",
+        "examples": "Examples:"
+      }
+    },
+    "clustering": {
+      "name": "Iris flowers (without the species)",
+      "summary": "The measurements of 150 flowers, without the species: one species separates on its own and the other two touch."
+    }
+  }
+}

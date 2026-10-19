@@ -1,15 +1,23 @@
 import { useState } from 'react'
 import { Table, Card, Button, Container, Row, Col } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import * as tfvis from '@tensorflow/tfjs-vis'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { parseLogs } from '@core/history/utils'
+import { bestModelIndex, formatEpochs } from '@core/history/trainingSummary'
+import N4LFinalMetrics, { N4LBestBadge } from '@components/neural-network/N4LFinalMetrics'
+import N4LTrainingCurves from '@components/neural-network/N4LTrainingCurves'
 import { nnLabel } from '@core/nn-utils/ArchitectureTypesHelper'
+import { layersSummary } from '@components/neural-network/layerSummary'
 import { useRegressionContext } from '@context/useRegressionContext'
-import WaitingPlaceholder from '@components/loading/WaitingPlaceholder'
+import N4LEmptyState from '@components/loading/N4LEmptyState'
 import type { CustomModelGenerated_t } from '@core/types'
 import N4LPagination from '@components/table/N4LPagination'
+import { useParams } from 'react-router'
+import { TASKS } from '@/TASKS'
+import N4LReportButton from '@components/report/N4LReportButton'
+import { historyNumbers } from '@core/report/trainingReport'
+import { denseLayerSummary } from '@components/neural-network/layerSummary'
 
 export default function RegressionTableModels({ rowsPerPage = 3 }) {
   const prefix = 'generator.table-models.'
@@ -22,6 +30,21 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
 
   const showTable = listModels.data.length > 0
   const pageCount = Math.ceil(listModels.data.length / rowsPerPage)
+
+  // Historial de cada modelo (mismo orden que la tabla) y el de menor pérdida final, si hay con quién comparar
+  const histories = listModels.data.map((generated) => generated.history.history)
+  const bestIndex = histories.length > 1 ? bestModelIndex(histories) : -1
+  // Para compararlos: lo que cambia de un entrenamiento a otro (las métricas solo se miden, no cambian cómo aprende)
+  const { t } = useTranslation()
+  const { example } = useParams()
+  const parameters = listModels.data.map(({ params_training, params_layers }) => ({
+    'learning-rate': String(params_training.learning_rate),
+    'n-of-epochs'  : String(params_training.n_of_epochs),
+    'test-size'    : params_training.test_size + '%',
+    'layers'       : layersSummary(t, params_layers),
+    'id-optimizer' : nnLabel(params_training.id_optimizer),
+    'id-loss'      : nnLabel(params_training.id_loss),
+  }))
 
   const handleClick_ChangePage = (pageNumber: number) => {
     setActivePage(pageNumber)
@@ -41,20 +64,20 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
   if (VERBOSE) console.debug('render RegressionTableModels')
   return <>
     <Card>
-      <Card.Header className={'d-flex align-items-center justify-content-between'}>
-        <h2><Trans i18nKey={prefix + 'list-models-generated'} /> | {listModels.data.length}</h2>
-        <div className="d-flex">
+      <Card.Header className={'d-flex flex-wrap align-items-center justify-content-between gap-2'}>
+        <h3><Trans i18nKey={prefix + 'list-models-generated'} /> | {listModels.data.length}</h3>
+        <div className="d-flex gap-1">
           <Button 
             variant={'outline-primary'}
             size={'sm'}
-            className={'ms-3'}
+            className={'text-nowrap'}
             onClick={handleClick_OpenVisor}>
             <Trans i18nKey={prefix + 'open-visor'} />
           </Button>
           <Button 
             variant={'outline-primary'}
             size={'sm'}
-            className={'ms-1'}
+            className={'text-nowrap'}
             onClick={handleClick_CloseVisor}>
             <Trans i18nKey={prefix + 'close-visor'} />
           </Button>
@@ -63,7 +86,7 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
       <Card.Body>
         <Container fluid={true}>
           {!showTable && <>
-            <WaitingPlaceholder i18nKey_title={'pages.playground.generator.waiting-for-training'} />
+            <N4LEmptyState i18nKey={'pages.playground.generator.waiting-for-training'} />
           </>}
           {showTable && <>
             <Row>
@@ -91,10 +114,10 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
                       .slice(activePage * rowsPerPage, (activePage * rowsPerPage) + rowsPerPage)
                       .map((value: CustomModelGenerated_t, index: number) => {
                         return <tr key={index}>
-                          <th>{(activePage * rowsPerPage) + index + 1}</th>
-                          <td>{value.params_training.learning_rate}%</td>
+                          <th className={'text-nowrap'}>{(activePage * rowsPerPage) + index + 1}{(activePage * rowsPerPage) + index === bestIndex && <N4LBestBadge />}</th>
+                          <td>{value.params_training.learning_rate}</td>
                           <td>{value.params_training.test_size}%</td>
-                          <td>{value.params_training.n_of_epochs}</td>
+                          <td>{formatEpochs(value.history.epoch.length, value.params_training.n_of_epochs)}</td>
                           <td>
                             {value.params_layers
                               .map((value, index2) => {
@@ -116,21 +139,26 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
                               })}
                           </td>
                           <td>
-                            {Object.entries(value.history.history)
-                              .map(([key, logs], index2) => {
-                                return <span key={index2} className={'n4l-table-cell'}>
-                                  <small>{key} {parseLogs(logs as any)}</small><br />
-                                </span>
-                              })}
+                            <N4LFinalMetrics logs={value.history.history} />
                           </td>
                           <td>
                             <Button
                               variant={'outline-primary'}
                               size={'sm'}
-                              onClick={() => handleClick_DownloadGeneratedModel(value, index)}
+                              onClick={() => handleClick_DownloadGeneratedModel(value, (activePage * rowsPerPage) + index + 1)}
                             >
                               <Trans i18nKey={prefix + 'download'} />
                             </Button>
+                            <N4LReportButton getReport={() => ({
+                                version   : 1,
+                                task      : TASKS.REGRESSION,
+                                dataset   : example ?? '',
+                                model     : (activePage * rowsPerPage) + index + 1,
+                                createdAt : new Date().toISOString(),
+                                layers    : value.params_layers.map((layer) => denseLayerSummary(t, layer)),
+                                parameters: parameters[(activePage * rowsPerPage) + index],
+                                history   : historyNumbers(value.history.history),
+                              })} />
                           </td>
                         </tr>
                       })}
@@ -141,6 +169,11 @@ export default function RegressionTableModels({ rowsPerPage = 3 }) {
             <Row>
               <Col>
                 <N4LPagination activePage={activePage} pageCount={pageCount} onChange={handleClick_ChangePage} />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <N4LTrainingCurves histories={histories} parameters={parameters} />
               </Col>
             </Row>
           </>}

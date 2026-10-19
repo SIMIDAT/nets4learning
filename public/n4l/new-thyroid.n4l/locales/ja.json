@@ -1,0 +1,16 @@
+{
+  "columns": {
+    "T3resin": "T3resin",
+    "thyroxin": "thyroxin",
+    "triiodothyronine": "triiodothyronine",
+    "thyroidstimulating": "thyroidstimulating",
+    "TSH_value": "TSH_value",
+    "class": "class"
+  },
+  "tasks": {
+    "clustering": {
+      "name": "甲状腺（診断なし）",
+      "summary": "甲状腺の5つの検査：ほとんどが正常なので、機能低下症と亢進症のグループは小さくなります。"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "columns": {
+    "Alcohol": "Alcohol",
+    "Malic acid": "Malic acid",
+    "Ash": "Ash",
+    "Alcalinity of ash": "Alcalinity of ash",
+    "Magnesium": "Magnesium",
+    "Total phenols": "Total phenols",
+    "Flavanoids": "Flavanoids",
+    "Nonflavanoid phenols": "Nonflavanoid phenols",
+    "Proanthocyanins": "Proanthocyanins",
+    "Color intensity": "Color intensity",
+    "Hue": "Hue",
+    "OD280/OD315 of diluted wines": "OD280/OD315 of diluted wines",
+    "Proline": "Proline",
+    "Target": "Target"
+  },
+  "tasks": {
+    "clustering": {
+      "name": "ワインの品種（品種なし）",
+      "summary": "178本のワインの13の化学成分：スケーリングしないとプロリンが支配し、スケーリングするとグループは3品種とほぼ同じになります。"
+    }
+  }
+}

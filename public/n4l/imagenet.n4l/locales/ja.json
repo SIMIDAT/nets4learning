@@ -1,0 +1,39 @@
+{
+  "tasks": {
+    "image-classification": {
+      "title": "MobileNet - 画像分類",
+      "name": "MobileNet - 画像分類器",
+      "summary": "あらゆる写真：ImageNet で学習済みの MobileNet V2 が、動物・物・食べ物など 1,000 のカテゴリを認識します。",
+      "description": {
+        "text": [
+          "MobileNet V2は、画像分類などに使用されるニューラルネットワークアーキテクチャのファミリーです。",
+          "このモデルは、画像の主要なコンテキストを識別することで、1001のカテゴリを区別できます。"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>224 x 224</strong>ピクセルサイズで、[0, 1]の色の値を持つ画像。"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "この<link2>リスト</link2>の各カテゴリに対応する0から1001までの数字"
+            ]
+          },
+          {
+            "title": "参照元",
+            "text": [
+              "Mark Sandler、Andrew Howard、Menglong Zhu、Andrey Zhmoginov、Liang-Chieh Chenによって最初に公開されました："
+            ],
+            "items": [
+              "<link3>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link3> 2018",
+              "<link1>ImageNet</link1>：学習に使われたデータセットです。100 万枚を超える写真があるため、パッケージには含まれていません。"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

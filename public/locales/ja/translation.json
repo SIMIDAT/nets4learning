@@ -142,32 +142,110 @@
     "dataset-web": "元のウェブサイト",
     "dataset-reference": "参照元",
     "download-dataset-car": "車両評価データセット",
-    "download-dataset-hepatitis-c": "C型肝炎データセット",
+    "download-dataset-hepatitis-c": "C型肝炎",
     "download-dataset-iris": "アヤメ (Iris) データセット",
-    "download-dataset-titanic": "タイタニック生存データセット*",
-    "download-dataset-new-thyroid": "New Thyroid データセット",
-    "download-dataset-wine": "ワインデータセット",
-    "download-dataset-ecoli": "E.coli データセット",
+    "download-dataset-titanic": "タイタニック号の生存",
+    "download-dataset-new-thyroid": "甲状腺 (New Thyroid)",
+    "download-dataset-wine": "ワインの品種",
+    "download-dataset-ecoli": "大腸菌 (E. coli)",
     "download": {
       "dataset": {
         "1-regression": {
           "salary": "給与データセット",
           "auto-mpg": "燃費消費量データセット",
           "housing-prices": "住宅価格データセット",
-          "breast-cancer-original": "ウィスコンシン乳がんデータセット",
-          "breast-cancer-wdbc": "ウィスコンシン乳がん (診断) データセット",
-          "breast-cancer-wpbc": "ウィスコンシン乳がん (予後) データセット",
+          "breast-cancer-original": "乳がん (ウィスコンシン)",
+          "breast-cancer-wdbc": "乳がん：診断 (WDBC)",
+          "breast-cancer-wpbc": "乳がん：予後 (WPBC)",
           "student-performance-mathematics": "数学の学生成績データセット",
           "student-performance-portuguese": "ポルトガル語の学生成績データセット",
           "wine-red": "赤ワインデータセット",
           "wine-white": "白ワインデータセット"
         }
       }
+    },
+    "dataset-info": "データ",
+    "extra-title": "その他のデータセット",
+    "extra-text": "アプリのモデルでは使われていません。データの準備を練習するためのものです。「学習」を押すとアップロードのページに読み込まれ、目的変数の列や各列の扱いを選べます。",
+    "dataset-details": "情報",
+    "show-info": "情報を見る",
+    "variables": {
+      "title": "変数",
+      "name": "変数名",
+      "role": "役割",
+      "type": "型",
+      "description": "説明",
+      "units": "単位",
+      "missing": "欠損値",
+      "roles": {
+        "ID": "ID",
+        "Feature": "特徴量",
+        "Target": "目的変数",
+        "Other": "その他"
+      },
+      "types": {
+        "Integer": "整数",
+        "Continuous": "連続値",
+        "Categorical": "カテゴリ",
+        "Binary": "二値",
+        "Date": "日付"
+      },
+      "note": "役割・型・説明（英語）・単位はデータセットの出典ページによるものです。欠損値はここでダウンロードできるファイルで数えています。",
+      "images": "このデータセットは画像で構成されているため、変数の表はありません。"
+    },
+    "analyze-action": "分析する",
+    "analyze-title": "「{{name}}」を探索的データ分析で開く",
+    "data": {
+      "title": "データ",
+      "describe": "統計",
+      "file": "ファイル",
+      "error": "CSV を読み込めませんでした。",
+      "describe-help": "数値の列ごとに 1 行：値の数（count）、平均（mean）、標準偏差（std）、最小値、四分位数、最大値。"
+    },
+    "intro": "Nets4Learningのデータセットをタスク別に紹介します。学習に使ったり（クラスタリングしたり）、学習済みモデルを試したり、探索的データ分析（EDA）で開いたり、ダウンロードして他のツールで使ったりできます。",
+    "models-title": "すぐに学習できる",
+    "models-text": "アプリのモデルが使うデータセットです。準備済みなので、選んで学習するだけです。",
+    "train": "学習",
+    "try-model": "モデルを試す",
+    "files": "ファイル",
+    "summary": {
+      "extra": {
+        "hepatitis-c": "献血者と患者の血液検査から、C型肝炎、線維化、肝硬変を見分けます。",
+        "ecoli": "大腸菌の中でタンパク質がどこにあるかを当てます。8クラスあり、ごく少数のクラスもあります。",
+        "new-thyroid": "5つの検査結果から、甲状腺の働きが正常か、亢進か、低下かを判定します。",
+        "wine": "13の化学成分からイタリアワインの3品種を見分けます。簡単ですが、列ごとのスケールが大きく異なります。",
+        "titanic": "客室の等級、性別、年齢、同乗の家族から、タイタニック号の沈没で誰が生き残ったかを予測します。",
+        "breast-cancer-wisconsin": "細胞の9つの特徴から、乳房の腫瘍が良性か悪性かを判定します（欠損値があります）。",
+        "wpbc": "腫瘍と細胞の測定値から、乳がんが再発するかを予測します。症例は198件だけです。",
+        "wdbc": "画像に写った細胞核の30の測定値から、乳房の腫瘍が良性か悪性かを判定します。"
+      },
+      "clustering": {
+        "breast-cancer-wisconsin": "699の腫瘍の細胞の9つの特徴（1〜10）：2グループにすると、良性と悪性にほぼ一致します。",
+        "wdbc": "569の腫瘍の細胞核の30の測定値：2グループにすると、k-meansは良性と悪性をかなりよく分けます。",
+        "ecoli": "336のタンパク質の7つのスコアと、細菌内の8つの場所（2〜3件しかないものも）：その小さなグループは埋もれてしまいます。",
+        "hepatitis-c": "589人の血液検査：ほとんどが献血者なので純度は高く出ますが、ランド指数は本当のことを示します。グループは診断に似ていません。"
+      }
+    },
+    "clustering": {
+      "examples-title": "すぐにクラスタリングできる",
+      "examples-text": "本当のクラスが入っていますが、k-meansはそれを使いません。ほかの列でグループ分けし、最後にグループとクラスを比べます。",
+      "extra-text": "クラスタリングに使えるプロジェクトのほかのデータセットです。「グループ分け」でアップロードしたのと同じように読み込まれます。どれも同じようにクラスに似るわけではなく、それも学びになります。",
+      "run": "グループ分け"
+    },
+    "time-series": {
+      "examples-title": "代表的な時系列",
+      "examples-text": "時系列では各行がある時点（1 日、1 か月…）を表し、順序に意味があります。過去の値から次の値を予測するので、行はシャッフルしません。それぞれトレンド、季節性、周期といった異なるパターンを持っています。"
     }
   },
   "dataframe-original": "データフレーム | 元データ",
   "dataframe-form": "データフレーム | 前処理フォーム",
   "dataframe": {
+    "table": {
+      "target": "<code>{{column}}</code>: 目的列(予測・分類する列)",
+      "shape": "{{rows}} 行 × {{columns}} 列",
+      "scroll-rows": "残りは表の中をスクロールして表示",
+      "column": "列"
+    },
     "dataframe": {
       "title": "データフレーム | データセット"
     },
@@ -203,6 +281,8 @@
       "no-numeric": "説明できる数値列がありません。すべての列がカテゴリ列です。"
     },
     "query": {
+      "error": "クエリが正しくありません: {{message}}",
+      "no-rows": "クエリに一致する行はありません。",
       "title": "データフレーム | クエリ",
       "description": {
         "0": "論理比較またはブールマスクの結果に基づいてデータフレームをクエリします。",
@@ -210,15 +290,202 @@
         "title": "説明"
       },
       "query": "クエリ",
-      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください"
+      "link": "詳細は<link1>こちらのリンク</link1>をご覧ください",
+      "column": "列"
     },
     "plot": {
       "link": "詳細は<link1>こちらのリンク</link1>をご覧ください"
     }
   },
   "dataframe-processed": "データフレーム | 処理済み",
-  "dataframe-scatterplot": {
-    "title": "散布図"
+  "dataset-process": {
+    "tabs": {
+      "original": "1. 元のデータ",
+      "form": "2. 処理の方法",
+      "processed": "3. 処理済みのデータ"
+    },
+    "original-help": "ファイルのままの{{rows}}行、{{columns}}列です。強調表示された列が予測する列です。",
+    "classification": {
+      "target-title": "どの列がクラスですか？",
+      "target-help": "ネットワークは、各行がどのクラスに属するかを答えられるように学習します。ふつうは最後の列です。",
+      "target-badge": "クラス",
+      "target-transform": "学習のために、各クラスは数値に変換されます。",
+      "summary_other": "ネットワークには{{count}}列が入力され、「{{target}}」（{{classes}}クラス）を予測します。スケーリングは{{scaler}}です。"
+    },
+    "regression": {
+      "target-title": "どの数値を予測しますか？",
+      "target-help": "ネットワークは、ほかの列からこの列の値を計算できるように学習します。数値の列である必要があります。",
+      "target-badge": "予測対象",
+      "target-transform": "そのまま使います。これが予測する数値です。",
+      "summary_other": "ネットワークには{{count}}列が入力され、「{{target}}」を予測します。スケーリングは{{scaler}}です。"
+    },
+    "target-classes": "「{{name}}」には{{count}}個のクラスがあります（{{sample}}）。ネットワークの出力ニューロンは{{count}}個になります。",
+    "target-too-many": "{{count}}個のクラスは分類には多すぎます。本当にこの列でよいですか？連続した数値なら、回帰のほうが合っているかもしれません。",
+    "target-range": "「{{name}}」は{{min}}から{{max}}まで、平均は{{mean}}です。",
+    "target-not-numeric": "「{{name}}」はテキストの列ですが、回帰は数値を予測します。数値の列を選ぶか、表形式の分類を使ってください。",
+    "scaler-title": "入力のスケーリング",
+    "scaler-help": "列ごとに単位（年、ユーロ、センチメートル）が違います。スケーリングすると、どの列も同じくらいの重みになり、ネットワークが学びやすくなります。",
+    "scalers": {
+      "min-max-scaler": {
+        "name": "Min-Max",
+        "help": "各列を0から1の範囲にします。"
+      },
+      "standard-scaler": {
+        "name": "標準化",
+        "help": "平均を引いて標準偏差で割ります（平均0、標準偏差1）。極端な値に強くなります。"
+      }
+    },
+    "columns-title": "入力の列",
+    "columns-help": "ネットワークが使う列と、その数値への変換方法を選んでください。テキストの列はカテゴリーとして、異なる値ごとに1つの数値に変換されます。",
+    "use": "使う",
+    "types": {
+      "int32": "整数",
+      "float32": "小数",
+      "string": "テキスト",
+      "boolean": "はい/いいえ",
+      "datetime": "日付"
+    },
+    "transforms": {
+      "int32": "整数として",
+      "float32": "小数として",
+      "label-encoder": "カテゴリーとして（値ごとに1つの数値）",
+      "drop": "使わない",
+      "string": "テキストとして",
+      "boolean": "はい/いいえとして",
+      "one-hot-encoder": "値ごとに1列（one-hot）"
+    },
+    "transform-of": "「{{name}}」の変換方法",
+    "distinct_other": "異なる値が{{count}}個（例：{{sample}}）",
+    "range_other": "{{min}}から{{max}}まで（異なる値が{{count}}個）",
+    "no-inputs": "入力の列がありません。少なくとも1つ有効にしてください。",
+    "submit": "データを処理する",
+    "done_other": "データの準備ができました：{{rows}}行、入力の列が{{count}}個、予測するのは「{{target}}」です。下でネットワークを設計できます。",
+    "view": "表示するデータ",
+    "views": {
+      "scaled": "スケーリング済み",
+      "encoded": "エンコード済み",
+      "scaled-help": "スケーリング済みの入力の列です。ネットワークが受け取るのはまさにこれです。",
+      "encoded-help": "スケーリング前の、各カテゴリーを数値に変換したデータです。各列の下に変換方法を示しています。"
+    }
+  },
+  "dataset-view": {
+    "file": "ファイル",
+    "original": "元データ",
+    "encoded": "エンコード済み",
+    "scaled": "スケーリング済み（ネットワークの入力）",
+    "original-help": "ファイルのままのデータです：{{rows}}行、{{columns}}列。強調表示された列「{{target}}」が予測する列です。",
+    "encoded-help": "テキストのカテゴリーはすでに数値になっていて、使わない列は除かれています。まだスケーリングしていません。",
+    "scaled-help": "スケーリング済み（{{scaler}}）の{{columns}}個の入力の列で、ネットワークが受け取るのはまさにこれです。最後の強調表示された列は予測する「{{target}}」で、スケーリングしません。",
+    "statistics": "各列の統計"
+  },
+  "stored-models": {
+    "restored_other": "このデータセットで以前に学習した{{count}}個のモデルを復元しました。再読み込みしても失われないよう、モデルはこのブラウザーに保存されます。",
+    "delete-ask": "このデータセットのモデルを削除",
+    "confirm": "本当によいですか？このデータセットの保存済みモデルが削除され、表からも消えます。",
+    "delete": "はい、削除します",
+    "cancel": "キャンセル"
+  },
+  "training-diagnosis": {
+    "title": "モデル {{model}} の学習の様子",
+    "diverged": {
+      "title": "損失が発散しました",
+      "text": "エポック {{epoch}} から損失が数値ではなくなりました（NaN）。重みが制御できないほど大きくなっています。",
+      "tip": "学習率を下げて（たとえば10分の1）、もう一度学習してください。"
+    },
+    "worse": {
+      "title": "損失が悪化しました",
+      "text": "損失が{{first}}から{{last}}に上がりました。重みの更新が大きすぎて、行き過ぎています。",
+      "tip": "学習率を下げて、もう一度学習してください。"
+    },
+    "unstable": {
+      "title": "損失が大きく揺れています",
+      "text": "学習の後半で、損失がエポックごとに大きく上下しています（{{min}}〜{{max}}）。これでは本当に学習しているかどうかわかりません。",
+      "tip": "学習率を下げましょう。それでも変わらなければ、テストデータの割合を増やしましょう。テストデータが少ないと、エポックごとの変化が大きくなります。"
+    },
+    "not-learning": {
+      "title": "ほとんど学習していません",
+      "text": "損失は{{first}}から{{last}}までしか下がっていません。",
+      "tip": "学習率やエポック数を上げるか、層のニューロンを増やしてみてください。最後の層の活性化関数が適切かも確認しましょう。"
+    },
+    "overfitting": {
+      "title": "データを暗記しています（過学習）",
+      "text": "テストデータでの損失はエポック {{epoch}}（{{min}}）で最小になり、その後{{last}}まで上がりました。その間、学習データでの損失は下がり続けています。",
+      "tip": "エポック数を減らす（{{epoch}}くらい）か、もっと小さいネットワークを使ってください。"
+    },
+    "still-improving": {
+      "title": "まだ改善中でした",
+      "text": "{{epochs}}エポックで損失は{{first}}から{{last}}まで下がり、最後もまだ下がっていました。",
+      "tip": "エポック数を増やせば、もっと学習できそうです。"
+    },
+    "good": {
+      "title": "うまく学習しました",
+      "text": "損失は{{first}}から{{last}}まで下がり、テストデータでは{{validation}}になりました。",
+      "tip": "比べるために、1つだけ（ニューロン数や学習率など）変えて、もう一度学習してみましょう。"
+    }
+  },
+  "layer-check": {
+    "title-error": "層を確認してください：このままでは学習できません",
+    "title-warning": "層を改善できます",
+    "error": "エラー",
+    "warning": "注意",
+    "params": {
+      "units": "ニューロン数",
+      "kernelSize": "カーネルサイズ",
+      "filters": "フィルター数",
+      "poolSize": "プールサイズ",
+      "strides": "ストライド"
+    },
+    "param": {
+      "text": "層{{layer}}：「{{param}}」の値が正しくありません。",
+      "fix": "{{value}}にする"
+    },
+    "hidden-softmax": {
+      "text": "層{{layer}}：softmaxはニューロン全体で100 %を分け合うため、出力層でのみ意味があります。隠れ層では学習が遅くなります。",
+      "fix": "ReLUを使う"
+    },
+    "output-units": {
+      "text": "最後の層のニューロンは{{units}}個ですが、クラスは{{classes}}個です。クラスごとに1つのニューロンが必要です。",
+      "fix": "{{classes}}にする"
+    },
+    "output-activation": {
+      "text": "最後の層は{{activation}}を使っています。{{expected}}にすると、出力が各クラスの確率（合計1）になります。",
+      "fix": "{{expected}}を使う"
+    },
+    "output-missing": {
+      "text": "ネットワークの最後は、ニューロン{{classes}}個（クラスごとに1つ）とSoftmaxのDense層である必要があります。",
+      "fix": "最後に追加する"
+    },
+    "after-flatten": {
+      "text": "層{{layer}}：Flattenの後、画像はすでに数値のリストになっていますが、{{type}}には2次元の画像が必要です。",
+      "fix": "この層を削除"
+    },
+    "flatten-again": {
+      "text": "層{{layer}}：データはすでに平坦化されているため、このFlattenは不要です。",
+      "fix": "この層を削除"
+    },
+    "dense-before-flatten": {
+      "text": "層{{layer}}：Dense層は数値のリストを受け取ります。その前に画像を平坦化するFlattenが必要です。",
+      "fix": "前にFlattenを追加"
+    },
+    "too-small": {
+      "text": "層{{layer}}：この時点で画像は{{height}}×{{width}}で、{{type}}の{{window}}×{{window}}のウィンドウが入りません。",
+      "fix": "この層を削除"
+    },
+    "recurrent-after-dense": {
+      "text": "層 {{layer}}：{{type}} は系列を値 1 つずつ読みますが、Dense 層の後には数値のリストしか残りません。再帰型の層は Dense 層より前に置きます。",
+      "fix": "再帰型の層を先頭に移す"
+    },
+    "all-fixed": "層に確認すべき点はなくなりました"
+  },
+  "download-consent": {
+    "title": "このモデルは約{{mb}} MBをダウンロードします",
+    "reason": {
+      "save-data": "ブラウザのデータセーバーがオンです。指示したときだけダウンロードします。",
+      "slow": "通信が遅いようです。ダウンロードに時間がかかる場合があります。",
+      "always": "設定で、モデルをダウンロードする前に確認するよう指定しています。"
+    },
+    "accept": "ダウンロード（{{mb}} MB）",
+    "settings": "<link1>設定</link1>で変更できます。"
   },
   "model-selector": {
     "title": "モデル選択"
@@ -227,7 +494,13 @@
     "select-dataset": {
       "title": "データセットを選択",
       "info": "データセットを選択"
-    }
+    },
+    "number": {
+      "range": "{{min}} から {{max}} までの整数を入力してください。",
+      "at-least": "{{min}} 以上の整数を入力してください。",
+      "in-use": "それまでは {{value}} を使います。"
+    },
+    "cancel": "キャンセル"
   },
   "preprocessing": {
     "title": "前処理",
@@ -241,9 +514,27 @@
   "predict": "予測",
   "cookies-policies": {
     "title": "クッキーポリシー",
-    "text-0": "このウェブサイトは、ユーザーエクスペリエンスを向上させ、アプリケーションの使用状況を分析するためにクッキーを使用しています。クッキーは、お客様が当社のウェブサイトを訪問したときにデバイスに保存される小さなテキストファイルです。これらのクッキーは、ユーザーが当社のウェブサイトとどのようにやり取りしているか、どのページが最も訪問されているか、およびユーザーエクスペリエンスをどのように改善できるかを理解するのに役立ちます。",
-    "text-1": "当社は、広告目的でお客様のデータを処理することはありません。クッキーは、分析目的およびウェブサイトの機能を向上させる目的でのみ使用します。当社のウェブサイトを引き続き使用する場合、お客様は当社のプライバシーポリシーに記載されているクッキーの使用に同意したものと見なされます。",
-    "accept": "同意する"
+    "banner-title": "Nets4Learning の改善にご協力いただけますか？",
+    "accept": "同意する",
+    "banner": "Nets4Learning はハエン大学の研究グループ SIMIDAT による教育プロジェクトです。Google Analytics の Cookie に同意いただくと、どのモデル・データセット・セクションが使われ、何がうまくいかないかを匿名で把握でき、改善すべき点を判断できます。同意した場合にのみ有効になり、いつでも変更できます。",
+    "more-info": "詳細",
+    "reject": "拒否する",
+    "settings": "設定",
+    "close": "変更せずに閉じる",
+    "details": "計測する内容としない内容",
+    "measured-title": "計測する内容",
+    "measured": [
+      "閲覧したページと滞在時間。",
+      "使用したモデルとデータセット、押したボタン。",
+      "学習（エポック数、オプティマイザー、所要時間）、予測、モデルの読み込み時間。",
+      "発生したエラー、言語、テーマ、TensorFlow.js のバックエンド。"
+    ],
+    "never-title": "送信しない内容",
+    "never": [
+      "アップロードしたファイル、その名前やデータ、描いた絵、カメラの映像。",
+      "個人情報（アカウントもフォームもありません）。",
+      "広告に関するもの（Google の広告シグナルは無効です）。"
+    ]
   },
   "error": {
     "load-json-csv": "エラー：ファイルを読み込めませんでした",
@@ -259,13 +550,22 @@
     "layers-length": "ニューロン数とその活性化関数を持つレイヤーが少なくとも1つ必要です",
     "parsing-csv": "データセットの準備エラー",
     "file-not-valid": "エラー：ファイルが無効です",
-    "metrics-length": "エラー：メトリクス数は1から10の間である必要があります"
+    "metrics-length": "エラー：メトリクス数は1から10の間である必要があります",
+    "need-model": "まずモデルを作成して学習させてください",
+    "dataset-not-processed": "データセットが処理されていません",
+    "model-not-valid": "このデータには使えないモデルです",
+    "model-compile": "モデルをコンパイルできませんでした。詳細はコンソールを確認してください。",
+    "option-not-valid": "無効なオプションです",
+    "prediction": "予測できませんでした",
+    "load-dataset": "データセットを読み込めませんでした。"
   },
   "warning": {
     "the-first-layer-need-to-be-__value__": "警告：最初のレイヤーはタイプ {{value}} である必要があります",
     "not-more-layers": "警告：これ以上レイヤーを追加することはできません",
     "error-layers": "警告：レイヤーは1から10の間である必要があります",
-    "need-a-model": "警告：最初にモデルを作成し、トレーニングする必要があります。"
+    "need-a-model": "警告：最初にモデルを作成し、トレーニングする必要があります。",
+    "first-layer-cant-be-removed": "最初の層は削除できません",
+    "first-layer-cant-be-changed": "最初の層は変更できません"
   },
   "success": {
     "file-upload": "ファイルのアップロードに成功しました"
@@ -291,7 +591,8 @@
     "model-train-error": "モデルのトレーニングに失敗しました",
     "prediction": "予測結果: {{index}}",
     "file-upload-success": "ファイルのアップロードに成功しました",
-    "file-upload-error-incorrect-format": "ファイルの形式が正しくありません"
+    "file-upload-error-incorrect-format": "ファイルの形式が正しくありません",
+    "close": "お知らせを閉じる"
   },
   "header": {
     "language": "言語",
@@ -299,9 +600,24 @@
     "glossary": "用語集",
     "home": "ホーム",
     "datasets": "データセット",
-    "theme": "テーマ",
     "dataframe": "データフレーム",
-    "analyze": "AED (探索的データ分析)"
+    "analyze": "AED (探索的データ分析)",
+    "theme": "テーマ",
+    "theme-light": "ライト",
+    "theme-dark": "ダーク",
+    "backend": "バックエンド",
+    "backend-default": "既定",
+    "backend-unavailable": "利用不可",
+    "backend-software": "ソフトウェア・低速",
+    "backend-error": "{{backend}} に切り替えられませんでした",
+    "backend-error-fallback": "このブラウザでは使用できません。TensorFlow.js は引き続き {{backend}} を使用します。",
+    "menu": "メニュー",
+    "tasks": "タスク",
+    "lab": "2D ラボ",
+    "packages": ".n4l パッケージ",
+    "packages-saved_other": "このブラウザに {{count}} 個のパッケージを保存済み",
+    "github": "GitHub（新しいタブで開きます）",
+    "main-navigation": "メインナビゲーション"
   },
   "footer": {
     "description-app": "深層学習モデルの設計と実行のためのウェブプラットフォーム。",
@@ -312,7 +628,12 @@
     "terms": "利用規約",
     "contribute": "貢献する",
     "documentation": "ドキュメント",
-    "version": "バージョン"
+    "version": "バージョン",
+    "cookies": "Cookie の設定",
+    "links": "リンク",
+    "institutions": "機関",
+    "settings": "設定",
+    "accessibility": "アクセシビリティ"
   },
   "drag-and-drop": {
     "label-files-one": "ファイル:",
@@ -321,24 +642,33 @@
     "binary": "バイナリファイルを追加",
     "json": "JSONファイルを追加",
     "csv": "CSVファイルを追加",
-    "csv-json": "テンプレートデータファイル template.json を入力"
+    "csv-json": "テンプレートデータファイル template.json を入力",
+    "dataset": "データファイル（CSV、ARFF、JSON、JSONL、Parquet）を追加",
+    "choose-file": "ファイルを選択",
+    "choose-files": "ファイルを選択",
+    "errors": {
+      "file-invalid-type": "対応していない形式です",
+      "file-too-large": "ファイルが大きすぎます",
+      "file-too-small": "ファイルが小さすぎます",
+      "too-many-files": "アップロードできるファイルは 1 つだけです"
+    }
   },
   "ui": {
     "blur": {
-      "enable": "マスクされた領域にブラーを適用",
-      "kernelSize": "ブラーカーネルサイズ（奇数）",
-      "passes": "ブラーの回数"
+      "enable": "隠した領域をぼかす（単色で塗る代わりに）",
+      "kernelSize": "ぼかしのサイズ（奇数）",
+      "passes": "ぼかす回数"
     },
     "explain": {
-      "title": "説明可能性 (SHAP)",
+      "title": "モデルの説明可能性",
       "method": "手法",
       "about-lrp": "LRP（層ごとの関連性伝播）は、予測されたクラスからネットワークを逆向きにたどり、その関連性を入力ピクセルまで分配します。ヒートマップは、モデルの予測を支える画像の領域を示します。",
       "about-shap": "画像をセグメント（スーパーピクセル）に分割し、さまざまな組み合わせで各セグメントを隠したり表示したりして予測の変化を観察することで、各セグメントの重要度を測定します。ヒートマップは、各セグメントが予測にどれだけ寄与するかで色付けします。",
       "perturbationSamples": "摂動サンプル:",
-      "gridSide": "1辺あたりの領域数（画像を N×N のセグメントに分割）",
-      "nSamples": "nSamples (SHAP)",
+      "gridSide": "1辺あたりの領域数",
+      "nSamples": "試す組み合わせの数",
       "mask": "マスク (SHAP)",
-      "maskRange": "マスク (0..1)",
+      "maskRange": "隠した領域の色",
       "calculating": "計算中...",
       "explainPrediction": "予測を説明",
       "hideExplanation": "説明を非表示",
@@ -389,12 +719,32 @@
         "presence-only": "このモデルは「顔がある」か「顔がない」か（0 か 100%）しか答えません。そのため、説明は顔を見つけるために最低限何を見る必要があるかを示します。通常は肌だけで十分です。",
         "body-parts": "ポーズ全体と体の各部位に対する信頼度を説明します。モデルはまず人物を見つける必要があるため、胴体の領域も腕や脚の位置を特定するのに役立ちます。",
         "wrong-prediction": "モデルが間違えましたか？それでも説明は役に立ちます。モデルがその答えに至るまでにどこを見ていたかを示します。"
-      }
-    }
+      },
+      "waiting-for-prediction": "説明するには、まず予測してください。",
+      "waiting-for-model": "予測を説明するには、まずモデルを学習させてください。",
+      "gridSide-help": "画像を N × N の領域に分けます。多いほど説明は細かくなりますが、時間がかかります。",
+      "nSamples-help": "各領域の寄与を測るために、異なる領域を隠す回数です（SHAP）。",
+      "maskRange-help": "0（黒）から1（白）まで。",
+      "bar-description": "各変数の SHAP 値（予測をどれだけ上げ下げするか）を、影響の大きい順に示します：{{values}}。",
+      "beeswarm-description": "各変数について {{count}} 個の例の SHAP 値を示します。変数は影響の大きい順（絶対値の平均）です：{{features}}。",
+      "bar-data": "各変数の SHAP 値",
+      "beeswarm-data": "{{count}} 件の例における各変数の SHAP 値",
+      "variable": "変数",
+      "mean-abs": "絶対値の平均",
+      "min": "最小",
+      "max": "最大"
+    },
+    "take-screenshot": "スクリーンショットを撮る",
+    "table-scroll-hint": "横にスクロールするとすべての列が表示されます →",
+    "maximize": "最大化",
+    "minimize": "元のサイズに戻す"
   },
   "custom-canvas-drawer": {
-    "validate": "検証",
-    "clear": "クリア"
+    "validate": "分類する",
+    "clear": "クリア",
+    "canvas": "マウス、ペン、指で描くキャンバス",
+    "preview": "ネットワークが受け取るもの：28 × 28 ピクセルの絵",
+    "alternative": "描けない場合は、例かテスト画像のいずれかを分類してください。"
   },
   "table": {
     "dataset": "データセット"
@@ -407,7 +757,8 @@
     "tabular-classification": "表形式分類",
     "regression": "回帰",
     "object-detection": "物体認識",
-    "image-classification": "画像分類"
+    "image-classification": "画像分類",
+    "time-series": "時系列"
   },
   "graphic-red": {
     "input": "入力",
@@ -420,556 +771,6 @@
           "text": "値をセミコロンで区切って入力してください。",
           "items": "(パラメータ-1; パラメータ-2; パラメータ-3; ... ; パラメータ-n)。"
         }
-      },
-      "car": {
-        "title": "CAR - 車両評価分類",
-        "description": {
-          "text-1": "<i>Car Evaluation</i> データセットは、次の構造を通じて車両を評価できます",
-          "text-2": "このデータセットの詳細については、<link1>ics.uci.edu</link1>リポジトリをご覧ください。",
-          "details-1": {
-            "title": "情報",
-            "list": {
-              "1": "<b>buying:</b> 購入価格。",
-              "2": "<b>maint:</b> 維持費。",
-              "3": "<b>doors:</b> ドア数。",
-              "4": "<b>persons:</b> 乗車定員。",
-              "5": "<b>lug_boot:</b> トランクのサイズ。",
-              "6": "<b>safety:</b> 車両の推定安全性。"
-            }
-          },
-          "details-2": {
-            "title": "入力データ",
-            "text-1": "車両の特徴",
-            "list": {
-              "1": "<b>buying:</b> vhigh (非常に高い), high (高い), med (中), low (低い)。",
-              "2": "<b>maint:</b> vhigh, high, med, low。",
-              "3": "<b>doors:</b> 2, 3, 4, 5more (5以上)。",
-              "4": "<b>persons:</b> 2, 4, more (それ以上)。",
-              "5": "<b>lug_boot:</b> small (小), med (中), big (大)。",
-              "6": "<b>safety:</b> low, med, high (高)。"
-            }
-          },
-          "details-3": {
-            "title": "出力データ",
-            "text-1": "車両の受容性",
-            "list": {
-              "1": "<b>unacc</b>: 受け入れられない",
-              "2": "<b>acc</b>: 受け入れられる",
-              "3": "<b>good</b>: 良い",
-              "4": "<b>vgood</b>: 非常に良い"
-            }
-          },
-          "details-4": {
-            "title": "参照元",
-            "list": {
-              "1": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する車両の対応する値を入力してください：",
-          "items": "(buying; maint; doors; persons; lug_boot; safety)",
-          "examples": "例:"
-        }
-      },
-      "iris": {
-        "title": "IRIS - アヤメ分類",
-        "description": {
-          "text-1": "Iris-Data データセットは、花弁と萼の長さと幅から、アヤメのどのタイプかを検出できます。",
-          "details-1": {
-            "title": "入力データ",
-            "list": {
-              "1": "<b>Sepal length (萼の長さ)</b>: 連続値",
-              "2": "<b>Sepal width (萼の幅)</b>: 連続値",
-              "3": "<b>Petal length (花弁の長さ)</b>: 連続値",
-              "4": "<b>Petal width (花弁の幅)</b>: 連続値"
-            }
-          },
-          "details-2": {
-            "title": "出力データ",
-            "list": {
-              "1": "<b>0</b>: Iris Setosa",
-              "2": "<b>1</b>: Iris Versicolor",
-              "3": "<b>2</b>: Iris Virginica"
-            }
-          },
-          "details-3": {
-            "title": "参照元",
-            "list": {
-              "1": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する植物に対応する値を入力してください：",
-          "items": "(萼の長さ; 萼の幅; 花弁の長さ; 花弁の幅)。",
-          "examples": "例:"
-        }
-      },
-      "lymphography": {
-        "title": "LYMPHOGRAPHY - リンパ腫データ分類",
-        "description": {
-          "text-1": "<i>lymphography</i> データセットは、リンパ腫の可能な病期と状態を検出できます。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<b>lymphatics</b>: normal (正常), arched (アーチ状), deformed (変形), displaced (変位)",
-              "1": "<b>block of affere (流入リンパ管の閉塞)</b>: no (なし), yes (あり)",
-              "2": "<b>bl. of lymph. c (リンパ管の閉塞 C)</b>: no, yes",
-              "3": "<b>bl. of lymph. s (リンパ管の閉塞 S)</b>: no, yes",
-              "4": "<b>by pass</b>: no, yes",
-              "5": "<b>extravasates (漏出)</b>: no, yes",
-              "6": "<b>regeneration of (再生)</b>: no, yes",
-              "7": "<b>early uptake in (早期取り込み)</b>: no, yes",
-              "8": "<b>lym.nodes dimin (リンパ節の縮小)</b>: 0-3",
-              "9": "<b>lym.nodes enlar (リンパ節の肥大)</b>: 1-4",
-              "10": "<b>changes in lym. (リンパ管の変化)</b>: bean (豆状), oval (卵型), round (円形)",
-              "11": "<b>defect in node (節の欠陥)</b>: no, lacunar (空隙), lac. marginal (空隙縁), lac. central (空隙中央)",
-              "12": "<b>changes in node (節の変化)</b>: No, lacunar, lac. margin, lac. central",
-              "13": "<b>changes in stru (構造の変化)</b>: no, grainy (粒状), drop-like (滴状), coarse (粗い), diluted (希釈), reticular (網状), stripped (縞状), faint (かすか),",
-              "14": "<b>special forms (特殊な形態)</b>: no, chalices (杯状), vesicles (小胞)",
-              "15": "<b>dislocation of (転位)</b>: no, yes",
-              "16": "<b>exclusion of no (除外なし)</b>: no, yes",
-              "17": "<b>no. of nodes in (節の数)</b>: 0-9, 10-19, 20-29, 30-39, 40-49, 50-59, 60-69, >=70"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "<b>normal find (正常所見)</b>: normal",
-              "1": "<b>metastases (転移)</b>: Metastasis",
-              "2": "<b>malign lymph (悪性リンパ腫)</b>: Malignant lymphoma",
-              "3": "<b>fibrosis (線維症)</b>: fibrosis"
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "list": {
-              "0": "データセット"
-            }
-          }
-        },
-        "html-example": {
-          "text": "評価する患者の対応する値を入力してください：",
-          "items": "(lymphatics, block of affere, bl. of lymph. c, bl. of lymph. s, by pass, extravasates, regeneration of, early uptake in, lym.nodes dimin, lym.nodes enlar, changes in lym., defect in node, changes in node, changes in stru, special forms, dislocation of, exclusion of no, no. of nodes in)。",
-          "examples": "例:"
-        }
-      },
-      "list-datasets": {
-        "0-option-1": "データセット - 車両評価分類",
-        "0-option-2": "データセット - アヤメ分類",
-        "0-option-3": "データセット - リンパ腫分類"
-      },
-      "list-models": {
-        "0-option-1": "モデル - 車両評価分類",
-        "0-option-2": "モデル - アヤメ分類",
-        "0-option-3": "モデル - リンパ腫分類"
-      },
-      "joyride": {
-        "title": "チュートリアルをアクティブ化",
-        "steps": {
-          "manual": {
-            "title": "マニュアル",
-            "content": "情報を探すためにマニュアルを参照できます"
-          },
-          "dataset-info": {
-            "title": "データセット情報",
-            "content": "データセットを分析します"
-          },
-          "dataset": {
-            "title": "データセット",
-            "content": "データセットを表示し、その説明から統計情報を抽出できます"
-          },
-          "dataset-plot": {
-            "title": "データセットのグラフ",
-            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
-          },
-          "layer-visualizer": {
-            "title": "ニューラルネットワーク層のビジュアライザー",
-            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
-          },
-          "layer-editor": {
-            "title": "レイヤーエディタ",
-            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
-          },
-          "params-editor": {
-            "title": "ハイパーパラメータエディタ",
-            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
-          },
-          "list-of-models": {
-            "title": "モデルリスト",
-            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、分類を実行できます。"
-          },
-          "classify-and-visualizer": {
-            "title": "分類と可視化",
-            "content": "表形式分類のモデルをロードしたら、分類を実行し、結果を可視化できます"
-          }
-        }
-      }
-    },
-    "1-regression": {
-      "salary": {
-        "title": "経験年数に基づく給与",
-        "description": {
-          "text": {
-            "0": "「Salary」データセットは、個人の職務経験年数とそれに対応する給与の関係を関連付ける情報のコレクションです。",
-            "1": "データセットの各エントリは、「Years of Experience」（経験年数）と「Salary」（給与）の2つの主要な変数で構成されています。「Years of Experience」変数は、従業員が特定の分野で働いた年数を表し、「Salary」変数は、その従業員が年間稼ぐ金額を表します。"
-          },
-          "link": "このデータセットの詳細については、<link1>www.kaggle.com</link1>リポジトリをご覧ください。",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "Years of experience - 経験年数",
-              "1": "Salary - 給与"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰 (<b>Salary</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "データセット 1",
-              "1": "データセット 2"
-            }
-          }
-        }
-      },
-      "auto-mpg": {
-        "title": "燃費性能",
-        "description": {
-          "text": {
-            "0": "<i>AUTO MPG</i> データセットは、カーネギーメロン大学で管理されているStatLibライブラリから取得されました。このデータセットは、1983年の米国統計学会の展示会で使用されました。",
-            "1": "「Auto MPG」（ガロンあたりのマイル）という用語は、一般的に米国で使用される燃費効率の測定単位を指します。この尺度は、車両が1ガロンの燃料で走行できるマイル数を示します。スペイン語では、通常、「consumo de combustible」（燃料消費量）または「rendimiento de combustible」（燃費性能）という用語が使用されます。国によって測定単位が異なることに注意することが重要です。"
-          },
-          "link": "このデータセットの詳細は<link1>ICS.UCI.edu リポジトリ</link1>をご覧ください。",
-          "details-0": {
-            "title": "情報",
-            "list": {
-              "0": "<b>MPG</b>: MPG は Miles Per Gallon（1ガロンあたりの走行マイル）の略で、各インスタンスの車両の燃費を表します。任意の車について予測対象の変数としても使用できます",
-              "1": "<b>cylinders</b>: 各車のシリンダー数を表す属性です。離散値の属性です",
-              "2": "<b>displacement</b>: エンジンの排気量を表す、連続値の量的属性です",
-              "3": "<b>horsepower</b>: 車の馬力を表す連続値の変数です",
-              "4": "<b>weight</b>: 各車の重量を表す連続値の量的変数です",
-              "5": "<b>acceleration</b>: 車の加速性能です",
-              "6": "<b>model year</b>: そのモデルが発売された年です",
-              "7": "<b>origin</b>: 3つの離散値をとる属性で、1 は米国製、2 は欧州製、3 はアジア製の車を表します",
-              "8": "<b>car name</b>: 車名を表す文字列です"
-            }
-          },
-          "details-1": {
-            "title": "入力データ",
-            "list": {
-              "0": "<b>MPG</b>: 連続値",
-              "1": "<b>cylinders</b>: 多値の離散値（4, 6, 8）",
-              "2": "<b>displacement</b>: 連続値",
-              "3": "<b>horsepower</b>: 連続値",
-              "4": "<b>weight</b>: 連続値",
-              "5": "<b>acceleration</b>: 連続値",
-              "6": "<b>model year</b>: 多値の離散値",
-              "7": "<b>origin</b>: 多値の離散値。1 は米国製、2 は欧州製、3 はアジア製の車を表します",
-              "8": "<b>car name</b>: 文字列（インスタンスごとに一意）"
-            }
-          },
-          "details-2": {
-            "title": "出力データ",
-            "list": {
-              "0": "回帰による計算値（<b>MPG</b>）"
-            }
-          },
-          "details-3": {
-            "title": "参考文献",
-            "list": {
-              "0": "<link1>Auto MPG</link1>"
-            }
-          }
-        }
-      },
-      "housing-prices": {
-        "title": "住宅価格",
-        "description": {
-          "text": {
-            "0": "ボストン住宅データセットは、米国国勢調査局がボストン地域の住宅について収集した情報から派生しています。",
-            "1": "このデータセットは、米国マサチューセッツ州ボストン地域のさまざまな近隣地域の住宅価格の回帰およびモデリングの問題に対処するように設計されています。このデータセットは、教育および研究の例や実践に一般的に使用されています。"
-          },
-          "link": "<link1>UCIデータセットエントリ</link1>",
-          "details-input": {
-            "title": "入力データ",
-            "california": {
-              "list": {
-                "0": "<strong>Median House Value</strong>: ブロック内の世帯の平均住宅価値（米ドル）[$]。",
-                "1": "<strong>Median Income</strong>: ブロック内の世帯の収入中央値（数万米ドル）[10k$]。",
-                "2": "<strong>Median Age</strong>: ブロック内の住宅の年齢中央値。値が低いほど新しい建物を意味します [年]。",
-                "3": "<strong>Total Rooms</strong>: ブロック内の総部屋数",
-                "4": "<strong>Total Bedrooms</strong>: ブロック内の総寝室数",
-                "5": "<strong>Population</strong>: ブロック内に居住する総人数",
-                "6": "<strong>Households</strong>: ブロック内の世帯総数",
-                "7": "<strong>Latitude</strong>: 住宅が北にある距離の測定値 [°]。",
-                "8": "<strong>Longitude</strong>: 住宅が西にある距離の測定値 [°]。",
-                "9": "<strong>Distance to coast</strong>: 最も近い海岸線までの距離 [m]",
-                "10": "<strong>Distance to Los Angeles</strong>: ロサンゼルス中心部までの距離 [m]。",
-                "11": "<strong>Distance to San Diego</strong>: サンディエゴ中心部までの距離 [m]",
-                "12": "<strong>Distance to San Jose</strong>: サンホセ中心部までの距離 [m]",
-                "13": "<strong>Distance to San Francisco</strong>: サンフランシスコ中心部までの距離 [m]",
-                "14": null
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<strong>CRIM</strong> 市内の一人当たりの犯罪率",
-                "1": "<strong>ZN</strong> 25,000平方フィート以上の区画の住宅地の割合。",
-                "2": "<strong>INDUS</strong> 市内の一人当たりの非小売業の割合",
-                "3": "<strong>CHAS</strong> チャールズ川ダミー変数（トラクトが川と接している場合は1、それ以外の場合は0）",
-                "4": "<strong>NOX</strong> 窒素酸化物濃度（1000万分の1）",
-                "5": "<strong>RM</strong> 住宅あたりの平均部屋数",
-                "6": "<strong>AGE</strong> 1940年より前に建てられた所有者居住ユニットの割合",
-                "7": "<strong>DIS</strong> 5つのボストン雇用センターまでの加重距離",
-                "8": "<strong>RAD</strong> ラジアル高速道路へのアクセス指数",
-                "9": "<strong>TAX</strong> 10,000ドルあたりの固定資産税",
-                "10": "<strong>PTRATIO</strong> 生徒と教師の比率",
-                "11": "<strong>B</strong> 1000 (Bk - 0.63)^2 (Bkは市内の一人当たりの黒人の割合)",
-                "12": "<strong>LSTAT</strong> 人口の低所得者層の割合",
-                "13": "<strong>MEDV</strong> 所有者居住住宅の平均価値（1000ドル）"
-              }
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "california": {
-              "list": {
-                "0": "計算された回帰"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "計算された回帰"
-              }
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "california": {
-              "list": {
-                "0": "<link1>Kaggle California Housing Prices Data (5 new features!)</link1>"
-              }
-            },
-            "boston": {
-              "list": {
-                "0": "<link1>UCIデータセット情報</link1>",
-                "1": "<link1>ボストン住宅データセットに関する論争</link1>"
-              }
-            }
-          }
-        }
-      },
-      "breast-cancer": {
-        "title": "ウィスコンシン乳がん (診断と予後)",
-        "description": {
-          "text": {
-            "0": "ウィスコンシン大学病院の乳がん関連データセットです。良性か悪性かを区別し、乳がん腫瘍の予測と識別に役立ちます。",
-            "1": "各レコードは、1984年以来Dr. Wolbergによって治療された浸潤性乳がんの症例追跡データであり、転移の証拠がない症例のみが含まれます。",
-            "2": "最初の30の特徴量は、乳腺腫瘤の穿刺吸引細胞診（FNAB）のデジタル画像から計算され、画像に存在する細胞核の特徴を記述しています。いくつかの画像は<link1>cs wisc</link1>で見つけることができます。",
-            "3": "ファイル <kbd>wdbc.csv</kbd> は診断データセットに対応し、<kbd>wpbc.csv</kbd> は予後データセットに対応します。"
-          },
-          "link": "<link1>UCIデータセット入力</link1>",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>ID番号</strong>",
-              "1": "<strong>結果</strong> (R = 再発, N = 非再発)",
-              "2": "<strong>時間</strong> (フィールド 2 = R の場合は再発までの時間、フィールド 2 = N の場合は無病期間)",
-              "3": "4-33 各細胞核について10個の実数値特徴量が計算されます：",
-              "4": "<strong>半径</strong> (中心から周囲までの距離の平均)",
-              "5": "<strong>テクスチャ</strong> (グレースケール値の標準偏差)",
-              "6": "<strong>周囲長</strong>",
-              "7": "<strong>面積</strong>",
-              "8": "<strong>平滑性</strong> (半径の長さの局所的な変動)",
-              "9": "<strong>コンパクトさ</strong> (周囲長^2 / 面積 - 1.0)",
-              "10": "<strong>凹面</strong> (輪郭の凹状部分の重症度)",
-              "11": "<strong>凹点</strong> (輪郭の凹状部分の数)",
-              "12": "<strong>対称性</strong>",
-              "13": "<strong>フラクタル次元</strong> (「海岸線近似」 - 1)"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰 (<b>給与</b>)"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>Breast Cancer Wisconsin</link1>",
-              "1": "<link1>Breast Cancer Wisconsin (Prognostic)</link1>",
-              "2": "<link1>Breast Cancer Wisconsin (Diagnostic)</link1>"
-            }
-          }
-        }
-      },
-      "student-performance": {
-        "title": "学生の成績",
-        "description": {
-          "text": {
-            "0": "このデータセットには、2つのポルトガル学校の生徒の学業成績データが含まれています。データには、生徒の人口統計、社会的な特徴、成績などが含まれています。数学（mat）とポルトガル語（por）の2つの異なる科目に関する成績データセットが含まれています。",
-            "1": "データセットには多変量データ、実数型の属性、649インスタンス、および12個の異なる属性が含まれています。",
-            "2": "重要な注意: ターゲット属性G3は、G2およびG1属性と強い相関があります。これは、G3が最終学年の成績（3学期に発行）であり、G1およびG2が1学期と2学期の成績に対応しているためです。G2とG1なしでG3を予測することはより困難ですが、そのような予測はより有用です。",
-            "3": "ファイル <kbd>student-por.csv</kbd> はポルトガル語の学生成績データセットに対応し、<kbd>student-mat.csv</kbd> は数学の学生成績データセットに対応します。"
-          },
-          "link": "<link1>UCIデータセット入力</link1>",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>school</strong> - 生徒の学校（バイナリ: 'GP' - Gabriel Pereira または 'MS' - Mousinho da Silveira）",
-              "1": "<strong>sex</strong> - 生徒の性別（バイナリ: 'F' - 女性 または 'M' - 男性）",
-              "2": "<strong>age</strong> - 生徒の年齢（数値: 15歳から22歳）",
-              "3": "<strong>address</strong> - 生徒の住居の種類（バイナリ: 'U' - 都市 または 'R' - 地方）",
-              "4": "<strong>famsize</strong> - 家族のサイズ（バイナリ: 'LE3' - 3人以下 または 'GT3' - 3人以上）",
-              "5": "<strong>Pstatus</strong> - 両親の同居状況（バイナリ: 'T' - 同居 または 'A' - 別居）",
-              "6": "<strong>Medu</strong> - 母親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
-              "7": "<strong>Fedu</strong> - 父親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
-              "8": "<strong>Mjob</strong> - 母親の職業（名義尺度: 'teacher' (教師), 'health' (医療関連), 'services' (サービス業) (例: 管理職や警察), 'at_home' (主婦) または 'other' (その他)）",
-              "9": "<strong>Fjob</strong> - 父親の職業（名義尺度: 'teacher', 'health', 'services', 'at_home' または 'other'）",
-              "10": "<strong>reason</strong> - 学校を選んだ理由（名義尺度: 'home'（家が近い）, 'reputation'（評判）, 'course'（コース） または 'other'（その他）",
-              "11": "<strong>guardian</strong> - 生徒の保護者（名義尺度: 'mother' (母), 'father' (父) または 'other' (その他)）",
-              "12": "<strong>traveltime</strong> - 通学時間（数値: 1 - 15分未満, 2 - 15分から30分, 3 - 30分から1時間, または 4 - 1時間以上）",
-              "13": "<strong>studytime</strong> - 週間の学習時間（数値: 1 - 2時間未満, 2 - 2時間から5時間, 3 - 5時間から10時間, または 4 - 10時間以上）",
-              "14": "<strong>failures</strong> - 以前のクラスでの落第回数（数値: nが1 <= n <= 3の場合 n, それ以外の場合は4）",
-              "15": "<strong>schoolsup</strong> - 追加の教育サポート（バイナリ: yes または no）",
-              "16": "<strong>famsup</strong> - 家族の教育サポート（バイナリ: yes または no）",
-              "17": "<strong>paid</strong> - 有料追加クラス（科目内）の有無（バイナリ: yes または no）",
-              "18": "<strong>activities</strong> - 課外活動（バイナリ: yes または no）",
-              "19": "<strong>nursery</strong> - 幼稚園に通っていたか（バイナリ: yes または no）",
-              "20": "<strong>higher</strong> - 高等教育を希望するか（バイナリ: yes または no）",
-              "21": "<strong>internet</strong> - 自宅でのインターネットアクセス（バイナリ: yes または no）",
-              "22": "<strong>romantic</strong> - 恋愛関係にあるか（バイナリ: yes または no）",
-              "23": "<strong>famrel</strong> - 家族関係の質（数値: 1 - 非常に悪い から 5 - 非常に良い）",
-              "24": "<strong>freetime</strong> - 放課後の自由時間（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "25": "<strong>goout</strong> - 友達と外出（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "26": "<strong>Dalc</strong> - 平日のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "27": "<strong>Walc</strong> - 週末のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
-              "28": "<strong>health</strong> - 現在の健康状態（数値: 1 - 非常に悪い から 5 - 非常に良い）",
-              "29": "<strong>absences</strong> - 学校の欠席日数（数値: 0から93）"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>Student Performance</link1>"
-            }
-          }
-        }
-      },
-      "wine": {
-        "title": "ワインの品質",
-        "description": {
-          "text": {
-            "0": "この2つのデータセットは関連しており、ポルトガルワインの赤ワインと白ワインのバリアントが含まれています。このデータセットには、理化学変数（入力）と感覚変数（出力）のみが含まれており、ブドウの品種、ワインのブランド、または販売価格のデータは含まれていません。",
-            "1": "データセットには多変量データ、実数型の属性、4898インスタンス、および12個の異なる属性が含まれています。",
-            "2": "このデータセットは、分類タスクまたは回帰タスクに使用できます。クラスは順序付けされていますが、データセットは不均衡です。",
-            "3": "ファイル <kbd>wine-quality-red.csv</kbd> は赤ワインデータセットに対応し、<kbd>wine-quality-white.csv</kbd> は白ワインデータセットに対応します。"
-          },
-          "link": "このデータセットの詳細については、<link1>archive.ics.uci.edu</link1>リポジトリをご覧ください。",
-          "details-1-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>Fixed Acidity (固定酸度)</strong>: ワイン中の非揮発性酸の濃度を指します。新鮮さと安定性に貢献します。",
-              "1": "<strong>Volatile Acidity (揮発性酸度)</strong>: 酢酸などの揮発性酸の濃度を指します。過剰に存在すると不快な味を与える可能性があります。",
-              "2": "<strong>Citric Acid (クエン酸)</strong>: ワインに存在する天然の有機酸の1つです。風味と新鮮さに影響を与える可能性があります。",
-              "3": "<strong>Residual Sugar (残糖)</strong>: 発酵後にワインに残る砂糖の量です。",
-              "4": "<strong>Chlorides (塩化物)</strong>: ワイン中の塩化物濃度は、その風味と香りに影響を与えます。",
-              "5": "<strong>Free Sulfur Dioxide (遊離二酸化硫黄)</strong>: 酸化や不要な微生物の増殖を防ぐ一般的な防腐剤です。",
-              "6": "<strong>Total Sulfur Dioxide (総二酸化硫黄)</strong>: 遊離二酸化硫黄と結合した二酸化硫黄の合計を表します。ワインの保存にも関連しています。",
-              "7": "<strong>Density (密度)</strong>: 単位体積あたりのワインの質量を指します。アルコールと砂糖の濃度に関する情報を提供できます。",
-              "8": "<strong>pH</strong>: ワインの酸性度またはアルカリ度を測定します。",
-              "9": "<strong>Sulphates (硫酸塩)</strong>: ワインの生産で時々使用される添加剤です。安定性と香りに影響を与える可能性があります。",
-              "10": "<strong>Alcohol (アルコール)</strong>: ワイン中のアルコール濃度。風味と口当たりに影響します。",
-              "11": "<strong>Quality (品質)</strong>: テイスターの評価に従って、通常0から10のスケールで、ワインの全体的な品質スコア。"
-            }
-          },
-          "details-2-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "計算された回帰"
-            }
-          },
-          "details-3-references": {
-            "title": "参照元",
-            "list": {
-              "0": "<link1>ワインの品質</link1>"
-            }
-          }
-        }
-      },
-      "list-datasets": {
-        "salary": "データセット - 給与",
-        "auto-mpg": "データセット - 燃費性能",
-        "housing-prices": "データセット - 住宅価格",
-        "breast-cancer": "データセット - 乳がん",
-        "student-performance": "データセット - 学生成績",
-        "wine": "データセット - ワイン"
-      },
-      "list-models": {
-        "salary": "モデル - 給与",
-        "auto-mpg": "モデル - 燃費性能",
-        "housing-prices": "モデル - 住宅価格",
-        "breast-cancer": "モデル - 乳がん",
-        "student-performance": "モデル - 学生成績",
-        "wine": "モデル - ワイン"
-      },
-      "joyride": {
-        "title": "チュートリアルをアクティブ化",
-        "steps": {
-          "manual": {
-            "title": "マニュアル",
-            "content": "情報を探すためにマニュアルを参照できます"
-          },
-          "dataset-info": {
-            "title": "データセット情報",
-            "content": "データセットの情報を参照します"
-          },
-          "dataset": {
-            "title": "データセット",
-            "content": "データセットを表示し、その説明から統計情報を抽出できます"
-          },
-          "pre-process-dataset": {
-            "title": "前処理",
-            "content": "データセットのクリーニングと準備"
-          },
-          "dataset-plot": {
-            "title": "データセットのグラフ",
-            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
-          },
-          "layer-visualizer": {
-            "title": "ニューラルネットワーク層のビジュアライザー",
-            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
-          },
-          "layer-editor": {
-            "title": "レイヤーエディタ",
-            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
-          },
-          "params-editor": {
-            "title": "ハイパーパラメータエディタ",
-            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
-          },
-          "list-of-models": {
-            "title": "モデルリスト",
-            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、予測を実行できます。"
-          },
-          "predict-and-visualizer": {
-            "title": "予測と可視化",
-            "content": "回帰モデルをロードしたら、予測を実行し、結果を可視化できます"
-          }
-        }
       }
     },
     "2-object-detection": {
@@ -977,11 +778,76 @@
         "process-webcam": {
           "title": "リアルタイム認識",
           "sub-title": "Webカメラ",
-          "button": "Webカメラ"
+          "button": "Webカメラ",
+          "device": "カメラ"
         },
         "process-image": {
           "title": "画像処理",
           "sub-title": "画像をアップロード"
+        },
+        "device-info": {
+          "camera": "使用中のカメラ",
+          "camera-off": "カメラの情報を見るにはWebカメラをオンにしてください。",
+          "name": "名前",
+          "resolution": "解像度",
+          "frames": "受信した画像",
+          "aspect": "アスペクト比",
+          "frame-rate": "フレームレート（fps）",
+          "facing": "カメラ",
+          "facing-user": "前面",
+          "facing-environment": "背面",
+          "resize-mode": "リサイズモード",
+          "displayed": "画面上のサイズ",
+          "mirrored": "ミラー表示",
+          "state": "状態",
+          "state-live": "配信中",
+          "state-ended": "停止",
+          "device-id": "デバイスID",
+          "capabilities": "カメラの機能",
+          "capabilities-none": "ブラウザがカメラの機能を報告していません。",
+          "detection": "検出",
+          "model": "モデル",
+          "predictions": "1秒あたりの予測数",
+          "prediction-time": "1回の予測時間",
+          "limit": "上限",
+          "limit-value": "1秒あたり{{fps}}回",
+          "backend": "TensorFlow.jsのバックエンド",
+          "tensors": "TensorFlow.jsのメモリ",
+          "devices": "利用できるカメラ",
+          "devices-none": "カメラが見つかりません。",
+          "unnamed": "カメラ{{index}}",
+          "in-use": "使用中",
+          "browser": "ブラウザとシステム",
+          "browser-name": "ブラウザ",
+          "platform": "システム",
+          "mobile": "モバイル",
+          "architecture": "アーキテクチャ",
+          "cores": "CPUコア数",
+          "memory": "メモリ（概算）",
+          "language": "言語",
+          "permission": "カメラの許可",
+          "permission-granted": "許可済み",
+          "permission-denied": "拒否",
+          "permission-prompt": "未許可",
+          "webview": "WebView",
+          "secure": "安全な接続（HTTPS）",
+          "user-agent": "ユーザーエージェント",
+          "screen": "画面とGPU",
+          "screen-size": "画面",
+          "window": "ウィンドウ",
+          "pixel-ratio": "ピクセル密度",
+          "orientation": "向き",
+          "gpu": "GPU",
+          "webgl2": "WebGL 2",
+          "software": "ソフトウェアレンダリング",
+          "yes": "はい",
+          "no": "いいえ"
+        },
+        "detections": {
+          "nothing": "何も検出されていません",
+          "detected": "検出：{{list}}",
+          "waiting": "最初の検出を待っています…",
+          "announce": "検出内容を読み上げる"
         }
       },
       "face-detection": {
@@ -1006,6 +872,16 @@
               "0": "<link1>tensorflowリポジトリのモデルエントリ</link1>"
             }
           }
+        },
+        "render": {
+          "face": "顔",
+          "face-number": "顔 {{number}}",
+          "eye-right": "右目",
+          "eye-left": "左目",
+          "nose": "鼻",
+          "mouth": "口",
+          "ear-right": "右耳",
+          "ear-left": "左耳"
         }
       },
       "face-mesh": {
@@ -1030,6 +906,14 @@
               "0": "<link1>tensorflowリポジトリのモデルエントリ</link1>"
             }
           }
+        },
+        "render": {
+          "face": "顔",
+          "face-number": "顔 {{number}}",
+          "points": "{{count}} 点",
+          "eye-right": "右目",
+          "eye-left": "左目",
+          "lips": "唇"
         }
       },
       "move-net--pose-net": {
@@ -1056,6 +940,23 @@
               "1": "<link1>TFHubモデル</link1>"
             }
           }
+        },
+        "render": {
+          "person": "人物",
+          "person-number": "人物 {{number}}",
+          "score": "{{percent}}%",
+          "shoulder-left": "左肩",
+          "shoulder-right": "右肩",
+          "elbow-left": "左ひじ",
+          "elbow-right": "右ひじ",
+          "wrist-left": "左手首",
+          "wrist-right": "右手首",
+          "hip-left": "左腰",
+          "hip-right": "右腰",
+          "knee-left": "左ひざ",
+          "knee-right": "右ひざ",
+          "ankle-left": "左足首",
+          "ankle-right": "右足首"
         }
       },
       "coco-ssd": {
@@ -1166,7 +1067,10 @@
           "hair drier": "ヘアドライヤー",
           "toothbrush": "歯ブラシ"
         },
-        "render-label": "{{label}}（信頼度 {{score}}%）"
+        "render": {
+          "numbered": "{{label}} {{number}}",
+          "score": "{{percent}}%"
+        }
       },
       "face-api": {
         "title": "FaceAPI - 顔の表情",
@@ -1194,12 +1098,18 @@
           "details-references": {
             "title": "参照元"
           }
+        },
+        "render": {
+          "face": "顔",
+          "face-number": "顔 {{number}}",
+          "age": "約{{age}}歳",
+          "percent": "{{percent}}%"
         }
       },
       "hand-sign": {
         "title": "手話",
         "description": {
-          "text-0": "手の検出とランドマーク検出のためのニューラルネットワーク。位置記述子と組み合わせて、アメリカ手話（ASL）またはスペイン手話（SSL）の可能なサインを分類するために使用されます。",
+          "text-0": "手とその21個の点（MediaPipe Hands）を見つけ、指文字のアルファベットを認識するニューラルネットワーク。アメリカ手話（ASL）は実際の2122の手と比較し、スペイン手話（SSL）は各指を記述したルールで認識します。右手でも左手でも使えます。",
           "details-input": {
             "title": "入力データ",
             "list": {
@@ -1213,21 +1123,34 @@
               "1": "対応する文字"
             }
           },
+          "details-movement": {
+            "title": "動きのある文字",
+            "list": {
+              "0": "LL と RR（SSL）：L または R を作り、手をその手の側へ（手のひらの半分以上）動かして止めます。止めるとすぐに文字が出ます。",
+              "1": "Ñ（SSL）：N を作り、手を左右に動かすか、手首をひねる動きを 2〜3 回くり返します。",
+              "2": "動いている間も文字の形を保ってください。画像がぶれても大丈夫です。動きの前後に見えた形で判断します。"
+            }
+          },
           "details-references": {
             "title": "参照元",
             "list": {
               "0": "TFJS hand pose detection"
             }
           }
+        },
+        "render": {
+          "left": "左手",
+          "right": "右手",
+          "movement": "動きあり"
         }
       },
       "list-models": {
-        "2-option-1": "モデル - FaceDetector - 顔の幾何学",
-        "2-option-2": "モデル - FaceMesh - 顔メッシュ",
-        "2-option-3": "モデル - MoveNet - 関節検出器",
-        "2-option-4": "モデル - COCO SSD - 物体検出器",
-        "2-option-5": "モデル - Face API - 顔マネージャー",
-        "2-option-6": "モデル - HandSign - サイン検出器"
+        "2-option-1": "FaceDetector - 顔の幾何学",
+        "2-option-2": "FaceMesh - 顔メッシュ",
+        "2-option-3": "MoveNet - 関節検出器",
+        "2-option-4": "COCO SSD - 物体検出器",
+        "2-option-5": "Face API - 顔マネージャー",
+        "2-option-6": "HandSign - サイン検出器"
       }
     },
     "3-image-classifier": {
@@ -1237,153 +1160,36 @@
           "sub-title": "最初に.jsonファイル、次に.binファイル"
         },
         "process-examples": {
-          "title": "サンプルを使用した処理"
+          "title": "サンプル画像",
+          "help": "画像をクリックすると分類します。",
+          "classify-example": "例 {{index}} を分類",
+          "forms-help": "各文字の今の書き方と、3 つの昔の字形（変体仮名）を字母とともにフォントで描いています。どれかを押すと分類します。昔の字形はいつも正しく分類されるわけではありません。ネットワークは本に手書きされた字で学習しており、活字では学習していないからです。",
+          "modern": "今",
+          "old": "昔",
+          "classify-modern": "今の{{char}}を分類",
+          "classify-old": "{{origin}}から生まれた昔の{{char}}を分類",
+          "classify-example-label": "例 {{index}} を分類：{{label}}"
         },
         "process-draw": {
           "title": "描画"
         },
         "process-image": {
-          "title": "画像処理",
+          "title": "画像をアップロード",
           "sub-title": "-",
-          "validate": "検証"
+          "validate": "分類する"
         },
         "result": "結果",
         "button-accept": "受け入れる",
         "modal": {
           "title": "予測"
-        }
-      },
-      "mnist": {
-        "title": "MNIST - 数字の分類",
-        "description": {
-          "text-0": "<strong>MNISTデータベース</strong>は、手書き数字の大規模なデータベースです。このデータベースは、機械学習の分野でのトレーニングとテストに広く使用されています。",
-          "text-1": "元のNISTデータセットのサンプルを「再混合」して作成されました。",
-          "text-2": "NISTトレーニングデータセットは、米国国勢調査局から取得されました。さらに、NISTの白黒画像は、<strong>28 x 28</strong>ピクセルの境界ボックスに収まるように正規化され、平滑化されました。これにより、グレースケールレベルが導入されました。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>28 x 28</strong>ピクセルサイズのグレースケール画像"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "0から9までの数字"
-            }
-          },
-          "details-references": {
-            "title": "参照元"
-          }
-        }
-      },
-      "kmnist": {
-        "title": "KMNIST - くずし字の分類",
-        "description": {
-          "text-0": "<strong>Kuzushiji-MNIST（KMNIST）</strong>は MNIST と同じ形式のデータセットです。<strong>28 x 28</strong> ピクセルのグレースケール画像で 10 クラスですが、数字の代わりに<i>くずし字</i>で書かれた手書きの日本語の文字が含まれています。",
-          "text-1": "くずし字は千年以上にわたって日本語の一般的な書き方でしたが、20 世紀初めの表記改革以降は学校で教えられなくなり、現在読める人はごくわずかです。画像は国文学研究資料館がデジタル化した古典籍から取られ、ROIS-DS 人文学オープンデータ共同利用センター（CODH）が作成しました。",
-          "text-2": "各クラスはひらがな 1 文字（お、き、す、つ、な、は、ま、や、れ、を）で、同じ文字にもさまざまな書き方があるため、MNIST より難しい課題です。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>28 x 28</strong> ピクセルのグレースケール画像"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "10 種類のひらがなのいずれか：お、き、す、つ、な、は、ま、や、れ、を"
-            }
-          },
-          "details-model": {
-            "title": "モデル",
-            "list": {
-              "0": "学習済みモデル：学習用画像 55,000 枚（ほかに検証用 5,000 枚）で学習した畳み込みニューラルネットワークで、テスト画像 10,000 枚での正解率は <strong>{{accuracy, number(style: percent; minimumFractionDigits: 1)}}</strong> です。",
-              "1": "ブラウザでの学習：各文字について学習用 <strong>2,000</strong> 枚、テスト用 <strong>500</strong> 枚のバランスの取れたサブセットを使用します。"
-            }
-          }
-        }
-      },
-      "mobilenet": {
-        "title": "MobileNet - 画像分類",
-        "description": {
-          "text-0": "MobileNet V2は、画像分類などに使用されるニューラルネットワークアーキテクチャのファミリーです。",
-          "text-1": "このモデルは、画像の主要なコンテキストを識別することで、1001のカテゴリを区別できます。",
-          "details-input": {
-            "title": "入力データ",
-            "list": {
-              "0": "<strong>224 x 224</strong>ピクセルサイズで、[0, 1]の色の値を持つ画像。"
-            }
-          },
-          "details-output": {
-            "title": "出力データ",
-            "list": {
-              "0": "この<link1>リスト</link1>の各カテゴリに対応する0から1001までの数字"
-            }
-          },
-          "details-references": {
-            "title": "参照元",
-            "text-0": "Mark Sandler、Andrew Howard、Menglong Zhu、Andrey Zhmoginov、Liang-Chieh Chenによって最初に公開されました：",
-            "list": {
-              "0": "<link1>Inverted Residuals and Linear Bottlenecks: Mobile Networks for Classification, Detection and Segmentation</link1> 2018"
-            }
-          }
+        },
+        "test-images": {
+          "load": "テスト画像を読み込む",
+          "loading": "画像を読み込み中…"
         }
       },
       "face-mesh": {
         "title": "-"
-      },
-      "list-models": {
-        "3-option-1": "モデル - MNIST - 数字の分類",
-        "3-option-2": "モデル - MobileNet - 画像分類器",
-        "3-option-3": "モデル - ResNet - 画像分類器",
-        "3-option-4": "モデル - KMNIST - くずし字の分類"
-      }
-    },
-    "3-image-classification": {
-      "list-datasets": {
-        "mnist": "データセット - MNIST",
-        "kmnist": "データセット - KMNIST"
-      },
-      "joyride": {
-        "title": "チュートリアルをアクティブ化",
-        "steps": {
-          "manual": {
-            "title": "マニュアル",
-            "content": "情報を探すためにマニュアルを参照できます"
-          },
-          "dataset-info": {
-            "title": "データセット情報",
-            "content": "データセットの情報を照会します"
-          },
-          "dataset": {
-            "title": "データセット",
-            "content": "データセットを表示し、その説明から統計情報を抽出できます"
-          },
-          "dataset-plot": {
-            "title": "データセットのグラフ",
-            "content": "さまざまなグラフ（棒グラフ、円グラフなど）を使用して、データセットを分析することで非常に重要な情報を抽出できます"
-          },
-          "layer-visualizer": {
-            "title": "ニューラルネットワーク層のビジュアライザー",
-            "content": "コンパクトモードと拡張モードの2つの形式で、レイヤー、活性化関数を表示できます"
-          },
-          "layer-editor": {
-            "title": "レイヤーエディタ",
-            "content": "ニューラルネットワークのレイヤーを編集したり、各レイヤーのニューロン数、活性化関数を変更したり、新しいレイヤーを追加したり削除したりできます。"
-          },
-          "params-editor": {
-            "title": "ハイパーパラメータエディタ",
-            "content": "トレーニングがデータセットに合わせてカスタマイズされるように、ニューラルネットワークのハイパーパラメータを設定できます。"
-          },
-          "list-of-models": {
-            "title": "モデルリスト",
-            "content": "モデルが生成されたら、モデルをロードまたはダウンロードして、各モデルをテストし、予測を実行できます。"
-          },
-          "classify": {
-            "title": "予測と可視化",
-            "content": "回帰モデルをロードしたら、予測を実行し、結果を可視化できます"
-          }
-        }
       }
     }
   },
@@ -1607,7 +1413,8 @@
           "0": "バイオリンプロットは、データ分布を視覚化および比較するための便利なツールです。データの形状、分散、対称性、および外れ値の存在を分析でき、複数のグループまたはカテゴリ間の比較が必要な場合に特に役立ちます。その魅力的で簡潔なグラフィカルな表現は、複雑な情報を理解しやすい方法で伝達するための効果的なツールになります。"
         }
       }
-    }
+    },
+    "select-plot": "グラフの種類"
   },
   "face-api": {
     "years": "年齢",
@@ -1621,7 +1428,23 @@
   },
   "pages": {
     "version": {
-      "title": "バージョン"
+      "title": "バージョン",
+      "app": "アプリのバージョン",
+      "environment": "環境・モード",
+      "backend": "使用中のバックエンド",
+      "runtime": "このインストール",
+      "changes": "変更点",
+      "changes-text": "各バージョンでの変更はすべてリポジトリの履歴に記録されています。",
+      "commits": "変更履歴（コミット）",
+      "releases": "公開されたバージョン",
+      "dependencies": "依存関係",
+      "dependencies-help": "アプリが依存しているライブラリと、package.jsonで指定しているバージョンです。",
+      "runtime-dependencies": "アプリ",
+      "dev-dependencies": "開発用",
+      "package": "パッケージ",
+      "declared": "指定バージョン",
+      "search": "パッケージを検索",
+      "no-results": "検索に一致するパッケージはありません。"
     },
     "index": {
       "tabular-classification": {
@@ -1684,6 +1507,33 @@
           "6": "メトリクス関数を定義します。"
         },
         "2-button": "モデルを作成して訓練する"
+      },
+      "hero": {
+        "text": "Nets4Learning は、ニューラルネットワークの仕組みを学ぶためのウェブプラットフォームです。タスクを選び、ネットワークを設計し、学習させて試すまでを、インストール不要でブラウザだけで行えます。学生と教員向けに作られています。"
+      },
+      "clustering": {
+        "1-title": "クラスタリング",
+        "1-description-1": "各行が何かを教えずにデータをグループ分けします（教師なし学習）。k-meansは互いに似た行のk個のグループを探します。",
+        "1-description-2": "グループが少しずつできあがる様子を見られます。本当のクラスがあるデータセットでは、見ていないのにグループがクラスと似ているかもわかります。",
+        "1-button": "データセットを選ぶ"
+      },
+      "time-series": {
+        "1-title": "時系列",
+        "1-description-1": "時系列（毎月の乗客数、毎日の気温など）の次の値を、それまでの値から予測します。ネットワークは過去の値のウィンドウから学習します。",
+        "1-description-2": "3 つの代表的な系列（航空旅客数、メルボルンの気温、太陽黒点）で学習済みのモデルを試せます。学習で見ていない系列の最後の部分をどう予測するか、最も単純な予測（直前の値や 1 季節前の値を繰り返す）より良いか、そしてその先に何が来るかが分かります。",
+        "1-button": "学習済みモデル",
+        "2-title": "系列を予測するアーキテクチャの設計・作成・編集",
+        "2-description-1": "このツールでは、系列の次の値をそれまでの値から予測するニューラルネットワークを、例の系列または自分の系列で作成できます。",
+        "2-description-2": "独自のアーキテクチャを設計・作成・学習・評価するには、次のことを行います。",
+        "2-description-list": {
+          "1": "ウィンドウを決める：ネットワークが見る直前の値の数。",
+          "2": "テストのために取り分ける系列の最後の割合と、差分を取るかどうかを決める。",
+          "3": "層の数、種類（Dense または再帰型：SimpleRNN、LSTM、GRU）、活性化関数を決める。",
+          "4": "学習率を決める。",
+          "5": "エポック数とバッチサイズを決める。",
+          "6": "オプティマイザと損失関数を決める。"
+        },
+        "2-button": "モデルを作成して学習する"
       }
     },
     "contribute": {
@@ -1692,22 +1542,93 @@
         "title": "GitHubのプロジェクト"
       },
       "license": {
-        "title": "ライセンス"
+        "title": "ライセンス",
+        "text": "コードはMITライセンスです。著作権表示を残せば、自由に使用、複製、改変、配布できます。第三者のデータセットやモデルにはそれぞれのライセンスがあり、各説明に記載されています。",
+        "full": "ライセンスの全文"
+      },
+      "intro": "Nets4Learningは、ハエン大学の研究グループSIMIDATによるMITライセンスのフリーソフトウェアです。バグの報告、改善の提案、翻訳、データセットやモデルの追加、コードの改善など、どんな協力も歓迎します。",
+      "ways": {
+        "title": "協力する方法",
+        "issues": {
+          "title": "バグを報告する、改善を提案する",
+          "text": "GitHubでissueを作成し、何が起きたか、どのページでどのブラウザーを使っていたか、またはアプリにどんな機能がほしいかを教えてください。",
+          "link": "issueを作成する"
+        },
+        "translate": {
+          "title": "アプリを翻訳する",
+          "text": "テキストはpublic/localesに言語ごとに1ファイル（スペイン語、英語、日本語）、マニュアルはpublic/docsにあります。修正でも新しい言語でも助かります。",
+          "link": "翻訳を見る"
+        },
+        "datasets": {
+          "title": "データセットやモデルを追加する",
+          "text": "それぞれがタスクのmodelsフォルダーにあるクラスで、MODEL_KEYS.tsのキー、DATA_MODEL.tsのメニュー項目、テキスト、ファイルを持ちます。",
+          "link": "タスクを見る"
+        },
+        "code": {
+          "title": "コードを改善する",
+          "text": "リポジトリをフォークし、変更を加えたブランチを作ってプルリクエストを作成してください。統合する前に自動テストが確認します。",
+          "link": "プルリクエストを見る"
+        }
+      },
+      "setup": {
+        "title": "自分のパソコンで動かす",
+        "requirements": "Node.js 22以降とpnpm 12が必要です。pnpmの正確なバージョンはCorepackがインストールします。",
+        "url": "アプリの場所：",
+        "scripts": [
+          "保存すると再読み込みされる開発サーバー",
+          "単体テスト（Vitest）を1回実行",
+          "Netlify版でのブラウザーテスト（Playwright）",
+          "ESLintによるコードチェック",
+          "型を確認してSIMIDAT版をビルド"
+        ]
+      },
+      "checklist": {
+        "title": "変更を送る前に",
+        "items": [
+          "コミットはConventional Commits（feat:、fix:、docs:など）で書いてください。commitlintが確認します。",
+          "pnpm lint、pnpm test run、pnpm build:simidatを実行してください。GitHubのチェックではpnpm test:e2eも実行されます。",
+          "インターフェースの新しいテキストは、3つの翻訳ファイルすべてに入れてください。",
+          "データセットやモデルを追加する場合は、その説明に出典とライセンスを記載してください。"
+        ]
+      },
+      "cite": {
+        "title": "論文を引用する",
+        "text": "授業、課題、論文でNets4Learningを使う場合は、このプラットフォームについての論文を引用してください。",
+        "copy": "BibTeXをコピー",
+        "copied": "コピーしました"
+      },
+      "docs": {
+        "title": "技術文書",
+        "text": "コードに手を加えたい人のための、リポジトリのガイドです（英語）。",
+        "i18n": "翻訳（i18n）",
+        "directory-structure": "フォルダー構成",
+        "introduction": "表形式データの分類：はじめに",
+        "add-entry": "表形式データの分類：データセットの追加",
+        "create-model": "表形式データの分類：モデルの作成"
       }
     },
     "menu-selection-dataset": {
       "0-tabular-classification": {
-        "csv": "データセットをアップロード - CSV",
-        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+        "csv": "データセットをアップロード",
+        "csv-text": "<code>.csv</code>、<code>.arff</code>、<code>.json</code>、<code>.jsonl</code>、<code>.parquet</code> 形式のデータセットファイルをアップロード"
       },
-      "form-description-1": "次に、作業するデータセットを選択するか、独自のデータセットをロードします。",
+      "form-description-1": "学習に使うデータセットを選ぶか、自分のデータセットをアップロードしてください。",
       "form-label": "データセットを選択",
       "form-option-_-1": "データセットを選択",
       "form-upload-description": "次に、必要に応じて独自のアーキテクチャをロードできます。そうしない場合は、続行をクリックすると、デフォルトの例のアーキテクチャがロードされます。",
       "form-submit": "続行",
       "1-regression": {
-        "csv": "データセットをアップロード - CSV",
-        "csv-text": "<code>.csv</code> 形式の処理済みデータセットファイル​​をアップロード"
+        "csv": "データセットをアップロード",
+        "csv-text": "<code>.csv</code>、<code>.arff</code>、<code>.json</code>、<code>.jsonl</code>、<code>.parquet</code> 形式のデータセットファイルをアップロード"
+      },
+      "upload-text": "自分のデータセット（CSV、ARFF、JSON、JSONL、Parquet）をアップロードし、学習の前に準備します。",
+      "own-dataset": "自分のデータセット",
+      "example-datasets": "サンプルのデータセット",
+      "clustering": {
+        "csv": "CSVをアップロード"
+      },
+      "time-series": {
+        "csv": "系列をアップロード"
       }
     },
     "menu-selection-model": {
@@ -1728,12 +1649,17 @@
         "parameter-categorical": "カテゴリパラメータ",
         "data-to-check": "テストするデータ",
         "vector-to-check": "テストするベクトル",
-        "button-check-result": "予測"
+        "button-check-result": "予測",
+        "type-categorical": "カテゴリ、{{count}} 個の値",
+        "type-integer": "整数",
+        "type-decimal": "小数",
+        "range": "データ内: {{min}} – {{max}}"
       },
       "0-tabular-classification": {
         "general": {
           "model": "モデル",
           "description-input": "データエントリの説明",
+          "dataframe-processed-help": "カテゴリ値をそれぞれ数値に変換した同じデータです(LabelEncoder。対応は「属性」と「クラス」にあります)。モデルはこの形でデータを受け取ります。最後の列が予測すべきクラスです。",
           "description-features": "特徴量編集フォーム",
           "description-data": "フォームデータ",
           "description-vector": "データベクトル",
@@ -1788,7 +1714,7 @@
               "title": "ハイパーパラメータエディタ",
               "text-0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。",
               "list": {
-                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "0": "<b>学習率</b>:<br />学習の各ステップでネットワークの重みをどれだけ更新するかを表します（例: 0.01）。",
                 "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
                 "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
                 "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
@@ -1817,9 +1743,9 @@
               "text-0": "モデルを正しく作成した場合、生成されたモデルのテーブルにエントリが追加されます。生成されたモデルをエクスポートしてローカルに保存できます。"
             },
             "details-prediction": {
-              "title": "予測",
+              "title": "分類",
               "text-0": "最終フォームでは、クラスを決定するために使用される主要な特徴量を選択できます。",
-              "text-1": "「結果を表示」ボタンを押すと、要素の入力特徴量から出力クラスの予測が取得されます。"
+              "text-1": "「分類する」ボタンを押すと、モデルは入力特徴量から例のクラスを予測し、各クラスの確率を表示します。"
             }
           }
         }
@@ -1863,6 +1789,12 @@
           "add-layer-start": "最初にレイヤーを追加",
           "add-layer-end": "最後にレイヤーを追加",
           "delete-layer": "レイヤー {{index}}を削除",
+          "move-up": "層 {{index}} を上へ",
+          "move-down": "層 {{index}} を下へ",
+          "move-group": "層 {{index}} の順番",
+          "moved": "層 {{index}} を {{position}} 番目に移動しました。",
+          "drag": "ドラッグして層 {{index}} を移動",
+          "drag-help": "順番を変えるには、各層の左にあるハンドルをドラッグするか、層を開いて「上へ」「下へ」を使います。",
           "layer-id": "レイヤー {{index}}",
           "kernel-size": "カーネルサイズ",
           "kernel-size-placeholder": "レイヤーのカーネルサイズを入力してください",
@@ -1875,7 +1807,12 @@
           "strides": "ストライド",
           "strides-placeholder": "レイヤーのストライドを入力してください",
           "pool-size": "プールサイズ",
-          "pool-size-placeholder": "レイヤーのプールサイズを入力してください"
+          "pool-size-placeholder": "レイヤーのプールサイズを入力してください",
+          "layer-class": "層の種類",
+          "removed": "層 {{index}} を削除しました。層の上の「元に戻す」で取り消せます。",
+          "removed-short": "層 {{index}} を削除しました。",
+          "restored": "層 {{index}} を元に戻しました。",
+          "undo": "元に戻す"
         },
         "editor-feature-selector": {
           "title": "特徴量セレクター",
@@ -1888,7 +1825,7 @@
           "title": "ハイパーパラメータエディタ",
           "learning-rate": "学習率",
           "learning-rate-placeholder": "学習率を入力してください",
-          "learning-rate-info": "0から100までの値（パーセンテージ）",
+          "learning-rate-info": "学習の各ステップで重みをどれだけ更新するかを表します。大きい値は学習が速いものの収束しないことがあり、小さい値は安定しますが時間がかかります。",
           "number-of-epochs": "エポック数",
           "number-of-epochs-placeholder": "エポック数",
           "number-of-epochs-info": "値が高いほど、トレーニングの実行に時間がかかります",
@@ -1908,13 +1845,18 @@
           "add-metric": "メトリクス関数を追加",
           "metric-id-__index__": "メトリクス {{index}}",
           "metric-id-select": "メトリクス関数を選択",
-          "metric-id-info": "メトリクス関数の一つになります"
+          "metric-id-info": "メトリクス関数の一つになります",
+          "loss-group-classification": "分類",
+          "loss-group-regression": "回帰",
+          "batch-size": "バッチサイズ",
+          "batch-size-placeholder": "1 バッチあたりの例の数",
+          "batch-size-info": "重みを 1 回更新するのに使うウィンドウの数です。小さいバッチではノイズの多い学習になり、大きいバッチでは各エポックが速くなります。"
         },
         "loaded": "ロード済み",
         "load": "ロード",
-        "waiting-for-file": "ファイルを待機中",
-        "waiting-for-process": "データセット処理を待機中",
-        "waiting-for-training": "モデルトレーニングを待機中",
+        "waiting-for-file": "始めるにはデータファイル（CSV、ARFF、JSON、JSONL、Parquet）をアップロードしてください。",
+        "waiting-for-process": "続けるにはデータセットを処理してください。",
+        "waiting-for-training": "まだ学習済みモデルはありません。ネットワークを設定して学習させると、ここに表示されます。",
         "models": {
           "title": "モデル",
           "history-train": "トレーニング履歴",
@@ -1937,8 +1879,8 @@
           "download": "ダウンロード"
         },
         "dynamic-form-dataset": {
-          "title": "予測",
-          "text-0-__column_name_target__": "予測する例の各入力特徴量の値を入力してください <b>{{column_name_target}}</b>",
+          "title": "分類",
+          "text-0-__column_name_target__": "分類したい例(<b>{{column_name_target}}</b>)の各入力特徴量の値を入力するか、上のセレクターでデータセットのエンティティを選んでください。",
           "select-option": "オプションを選択",
           "input-data": "テストするデータを入力",
           "input-vector": "テストするベクトルを入力",
@@ -1946,7 +1888,11 @@
           "test-input-data": "フォームデータ",
           "test-input-vector": "テストするベクトル",
           "selector-entity": "エンティティを選択",
-          "selector-model": "モデルを選択"
+          "search-entity": "番号またはクラスで検索…",
+          "entity-count": "{{total}} 件中 {{shown}} 件",
+          "no-entity": "検索に一致するものはありません",
+          "selector-model": "モデルを選択",
+          "classify-button": "分類する"
         },
         "list-models-generated": "生成されたモデルのリスト",
         "visor": {
@@ -1969,7 +1915,84 @@
           "confusion-matrix": "混同行列",
           "line-chart": "折れ線グラフ"
         },
-        "waiting-for-models": "モデルの作成を待機中"
+        "waiting-for-models": "予測するには、まずモデルを学習させてください。",
+        "classify": {
+          "waiting": "例を分類すると、ここに結果が表示されます。",
+          "predicted-class": "予測されたクラス",
+          "confidence": "確率 {{value}}",
+          "chart-title": "各クラスの確率",
+          "chart-title-output": "各クラスに対するネットワークの出力",
+          "chart-help": "強調表示されたバーがモデルの選んだクラス(最も確率の高いもの)です。モデルが迷っているときは、いくつかのバーが同じくらいの高さになります。",
+          "chart-help-output": "最後の層がソフトマックスを使っていないため、これらの値は確率ではありません。モデルは値が最も高いクラス(強調表示されたバー)を選びます。",
+          "axis-class": "クラス",
+          "axis-probability": "確率 (%)",
+          "axis-output": "出力",
+          "select-image": "データセットから画像を選択",
+          "actual-class": "実際のクラス: {{label}}",
+          "chart-title-top": "最も確率の高い {{count}} クラス",
+          "chart-help-top": "モデルはさらに多くのクラスを区別します。ここでは確率の高いクラスだけをその確率とともに表示しています。",
+          "hit": "正解",
+          "miss": "不正解",
+          "test-image": "テスト画像",
+          "class": "クラス"
+        },
+        "waiting-for-prediction": "予測すると、ここに結果が表示されます。",
+        "training": {
+          "epoch": "学習中… エポック {{epoch}} / {{total}}",
+          "preparing": "データとモデルを準備しています…",
+          "stop": "停止",
+          "stopping": "停止しています…",
+          "curves-title": "学習曲線",
+          "curves-model": "曲線を表示するモデル",
+          "curves-compare": "モデルを比較",
+          "compare-pick": "比較するモデル（最大{{max}}個）",
+          "compare-pick-more": "比較するには、モデルを2つ以上選んでください。",
+          "compare-same": "ハイパーパラメータは同じです。違いは偶然によるものです（各ネットワークの初期の重みとデータの分け方）。",
+          "compare-one": "変わっているのは{{name}}だけです。結果の違いは主にそれによるものです。",
+          "compare-some": "複数の項目が変わっています（{{names}}）。一度に複数を変えると、どれが影響したのかわかりません。それぞれの効果を知るには、学習ごとに1つだけ変えてみましょう。",
+          "compare-quote": "「{{name}}」",
+          "compare-caption": "各モデルのハイパーパラメータ（変わっている項目は強調表示）と最後のエポックの値（括弧内は検証データでの値）。",
+          "compare-parameter": "パラメータ",
+          "compare-changed": "変更",
+          "compare-final": "最終的な{{name}}",
+          "epoch-axis": "エポック",
+          "train": "学習",
+          "validation": "検証",
+          "best": "最良",
+          "best-title": "最終エポックの検証損失が最も小さいモデル",
+          "confusion-title": "混同行列（検証）",
+          "confusion-accuracy": "正解: {{accuracy}}（学習に使っていない {{total}} 件中 {{correct}} 件）。",
+          "confusion-real": "実際のクラス",
+          "confusion-predicted": "予測クラス",
+          "confusion-total": "合計",
+          "confusion-recall": "再現率",
+          "confusion-precision": "適合率",
+          "confusion-legend": "各セルは、実際のクラス（行）の例のうち列のクラスと予測された件数と、その行に占める割合を示します。緑は正解、赤は誤りで、色が濃いほど件数が多いことを表します。",
+          "curve-description": "{{epochs}} エポックの {{name}}：学習データでは {{first}} から {{last}}。",
+          "curve-description-validation": "検証データでは {{first}} から {{last}}。",
+          "announce-start_other": "学習を開始しました：{{count}} エポック",
+          "announce-stopped": "エポック {{epoch}}/{{total}} で学習を停止しました。そこまでのモデルを保存します",
+          "announce-error": "学習を完了できませんでした",
+          "go-to-result": "結果へ移動",
+          "curve-data": "各エポックの {{name}}",
+          "remaining": "残り約 {{time}}",
+          "last-run_other": "前回の学習には {{time}} かかりました（{{count}} エポック、1 エポックあたり {{perEpoch}}）。エポックを増やすと時間がかかりますが、いつでも停止できます。"
+        },
+        "help": {
+          "learning-rate": "データのバッチごとに、オプティマイザーがネットワークの重みを修正する歩幅の大きさです。",
+          "epochs": "1 エポックは学習データ全体を 1 回通すことです。エポックを増やすと学習の機会が増えますが、過学習もしやすくなります。",
+          "test-size": "学習中に見ていない例でモデルを確認するために取り分けておくデータの割合（検証用）です。",
+          "optimizer": "誤差をもとに重みをどう変えるかを決めるアルゴリズムです。Adam は特に調整しなくてもよく機能します。",
+          "loss": "モデルがどれだけ間違えているかを測ります。学習はこの値をできるだけ小さくしようとします。",
+          "metric": "学習中にモデルの調子を知るために計算する指標（例: 正解率）です。重みの修正には使われません。",
+          "recall": "再現率（recall）: このクラスに属する例のうち、モデルが正しく予測した割合。",
+          "precision": "適合率（precision）: モデルがこのクラスと予測したうち、正しかった割合。",
+          "accuracy": "正解率（accuracy）: 検証用の全例のうち、正しく予測できた割合。",
+          "batch-size": "ネットワークが重みを更新する前に見る例の数です。",
+          "units": "層にあるニューロンの数です。多いほど複雑な関係を学べますが、学習に時間がかかり、データを丸暗記することがあります。",
+          "activation": "各ニューロンが受け取った和に対して行う処理です。ReLU、シグモイド、tanh を使うと直線ではない関係を学べます。最後の層の softmax は確率をクラスに配分します。"
+        },
+        "example-from-dataset": "データセットの例"
       },
       "1-regression": {
         "generator": {
@@ -1993,7 +2016,7 @@
                 "0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。"
               },
               "list": {
-                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "0": "<b>学習率</b>:<br />学習の各ステップでネットワークの重みをどれだけ更新するかを表します（例: 0.01）。",
                 "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
                 "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
                 "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
@@ -2036,7 +2059,8 @@
           "multiple-regression": "重回帰"
         },
         "dataframe": {
-          "title": "処理済みデータフレーム"
+          "title": "処理済みデータフレーム",
+          "help": "カテゴリ値をそれぞれ数値に変換した同じデータです(LabelEncoder)。モデルに入る前に属性はスケーリングされます。<code>{{target}}</code> 列が予測すべき値です。"
         },
         "selector-instance": {
           "option": "インスタンスセレクター"
@@ -2061,7 +2085,14 @@
           "button-submit": "予測",
           "list-models-generated": "生成されたモデルのリスト",
           "list-models": "生成されたモデルのリスト",
-          "list-instances": "インスタンスのリスト"
+          "list-instances": "インスタンスのリスト",
+          "predicted-value": "{{target}} の予測値",
+          "actual-value": "実際の値: {{value}}",
+          "error": "誤差: {{value}} ({{percent}})",
+          "input-details": "モデルへの入力(各段階)",
+          "choose-instance": "データセットのインスタンスを選ぶとフォームに入力されます。その後、値を変更できます。",
+          "no-models": "このデータセットには事前学習済みモデルがありません。別のデータセットを選ぶか、回帰のプレイグラウンドで独自のモデルを学習してください。",
+          "model-selector": "予測に使うモデル"
         },
         "model-selector": {
           "title": "モデルセレクター",
@@ -2098,7 +2129,7 @@
               "title": "ハイパーパラメータエディタ",
               "text-0": "モデルの作成に必要な一般的なパラメータを編集できます。 <br /> これらのパラメータは次のとおりです。",
               "list": {
-                "0": "<b>学習率</b>: <br /> 0から100までの値で、重み付けされた重みのパーセンテージを示します。",
+                "0": "<b>学習率</b>:<br />学習の各ステップでネットワークの重みをどれだけ更新するかを表します（例: 0.01）。",
                 "1": "<b>エポック数</b>: <br /> トレーニング中にトレーニングデータセットがネットワークに提示される回数（数が多いほど、トレーニングに時間がかかります）。",
                 "2": "<b>テストセットサイズ</b>: <br /> モデルテスト（テストデータ）に使用されるデータセットのパーセンテージ。残りのデータはネットワークトレーニング（トレーニングデータ）に使用されます。",
                 "3": "<b>オプティマイザー</b>: <br /> ネットワークの重みを調整するために使用される関数です。",
@@ -2133,11 +2164,443 @@
             }
           }
         }
+      },
+      "step-by-step": {
+        "title": "ステップごと",
+        "intro": "ネットワークはこうして学びます。例が左から入り、ネットワークを前向きに進み、どれだけ間違えたかを測り、その誤差が後ろ向きに戻って各重みを修正します。上で設計したネットワークで、初期の重みはランダムです。ニューロンをクリックすると計算が見られます。",
+        "intro-pretrained": "学習済みのこのモデルは、こうして答えを計算します。例が左から入り、ネットワークを前向きに進み、正しい答えと比べられます。後ろ向きでは、もう1ステップ学習したら各重みがどれだけ変わるかが見られます。ページのモデルは変わりません。ニューロンをクリックすると計算が見られます。",
+        "too-big": "このネットワークには入力を含めて{{nodes}}個のニューロンがあります（{{detail}}）。ステップごとの表示は、追えるように{{max}}個未満のときだけ描かれます。層エディターで層やニューロンを減らしてください。たとえば8個の隠れ層を2つにします。",
+        "too-big-pretrained": "このモデルには入力を含めて{{nodes}}個のニューロンがあります（{{detail}}）。ステップごとの表示は、追えるように{{max}}個未満のときだけ描かれます。このデータセットの学習ページなら、小さいネットワークで見られます。",
+        "not-dense": "このモデルは全結合層だけのネットワークではありません。ステップごとの表示は、その種類のネットワークだけを描きます。",
+        "mismatch": "最後の層のニューロンは{{units}}個ですが、ネットワークは{{classes}}個の出力を出す必要があります。ステップごとに見るには、層エディターで変更してください。",
+        "example": "例を選ぶ",
+        "search": "例を検索",
+        "no-results": "一致する例はありません",
+        "back": "前のフェーズ",
+        "next": "次へ",
+        "play": "再生",
+        "pause": "一時停止",
+        "ten": "10個の例でまとめて学習",
+        "speed": "速度",
+        "speeds": {
+          "slow": "遅い",
+          "normal": "普通",
+          "fast": "速い"
+        },
+        "same-example": "同じ例を繰り返す",
+        "reset": "重みをリセット",
+        "reset-pretrained": "モデルの重みに戻す",
+        "legend": "青は正の値や重み、赤は負の値。濃いほど、太いほど大きい値です。オレンジは後ろ向きに戻るもの、つまりニューロンのデルタと重みの勾配です。",
+        "phase-count": "フェーズ {{current}} / {{total}}",
+        "phase-title": {
+          "input": "入力",
+          "forward": "前向き：第{{layer}}層",
+          "loss": "誤差",
+          "backward": "後ろ向き：第{{layer}}層",
+          "update": "重みの更新"
+        },
+        "phase": {
+          "input": "例 {{row}} が入ります。学習のときと同じようにスケーリングされた{{count}}個の特徴が、入力ニューロンの値になります。",
+          "input-pretrained": "例 {{row}} が入ります。このモデルが受け取る形の{{count}}個の特徴が、入力ニューロンの値になります。",
+          "forward": "第{{layer}}層の各ニューロンは、各入力に接続の重みを掛けて、その積とバイアスを足し合わせ（z）、{{activation}} 活性化関数を適用します。強調された接続が関わっている部分です。",
+          "forward-softmax": "第{{layer}}層は入力に重みを掛けて足し合わせ（z）、softmax がその和を、クラスごとの確率（合計1）に変えます。",
+          "loss-classification": "ネットワークは正解の「{{target}}」に{{probability}}の確率を与えています。損失（交差エントロピー）は −log({{probability}}) = {{loss}} で、正解のクラスの確率が低いほど大きくなります。今の時点でネットワークは「{{predicted}}」と答えます。",
+          "loss-regression": "ネットワークの予測は{{prediction}}で、実際の値は{{actual}}です。ステップごとの表示では目標を0から1にスケーリングしており（{{output}} と {{target}}）、損失は二乗誤差 ({{output}} − {{target}})² = {{loss}} です。",
+          "loss-regression-raw": "ネットワークの予測は{{prediction}}で、実際の値は{{actual}}です。損失は二乗誤差 ({{output}} − {{target}})² = {{loss}} です。",
+          "backward-output": "後ろ向きの計算が始まります。各出力ニューロンのデルタは、和 z が変わったら損失がどれだけ変わるかを表します。そこに届く各重みの勾配は、デルタにその接続の入力を掛けたものです。オレンジの接続がそれです。",
+          "backward": "誤差は第{{layer}}層まで戻ります。各ニューロンのデルタは、次の層のデルタにそれらをつなぐ重みを掛けて足したものに、{{activation}} の導関数を掛けたものです。こうして各重みは、誤差にどれだけ関わったかがわかります。",
+          "update": "各重みは勾配と反対の向きに少し動きます。w ← w − η × g で、η = {{rate}} は学習率です。この例では、損失が{{before}}から{{after}}になります。学習とは、すべての例でこれをエポックごとに繰り返すことです。選んだオプティマイザーは、各ステップをもっと工夫して調整します。"
+        },
+        "focus": "第{{layer}}層のニューロン {{index}}",
+        "focus-input": "入力 {{index}}",
+        "formula-input": "{{name}} = {{value}}",
+        "formula-pending": "第{{layer}}層のニューロン {{index}} はまだ計算されていません。",
+        "formula-update": "バイアスは{{before}}から{{after}}になります。最も大きく変わる重み（{{from}}からの重み）は{{weight}}から{{weightAfter}}になります。",
+        "from-neuron": "第{{layer}}層のニューロン {{index}}",
+        "history_other": "更新ごとの、データの{{sample}}個の例の平均損失：{{first}}から{{last}}へ（使った例は{{count}}個）。ネットワークが学習していれば、線は下がります。",
+        "history-empty": "各例が終わるたびに、ここで損失の変化が見られます。",
+        "diagram": "ニューラルネットワーク（層ごと）",
+        "node-input": "入力 {{name}}：{{value}}",
+        "node": "第{{layer}}層のニューロン {{index}}：{{value}}",
+        "column-input": "入力",
+        "column-layer": "第{{layer}}層（{{activation}}）",
+        "column-output": "出力（{{activation}}）",
+        "update-rule": "w ← w − {{rate}} × 勾配"
+      },
+      "clustering": {
+        "intro": "k-meansはk個の重心を置き、各行を最も近い重心に割り当て、各重心をその行の中心に動かします。どの行もグループが変わらなくなるまで繰り返します。ラベルは使わず、選んだ列だけを使います。",
+        "upload": "データをアップロード",
+        "rows_other": "{{count}}行",
+        "features": "グループ分けに使う列",
+        "features-help": "数値の列だけです。多いほど想像しにくくなりますが、グループはよくなることがあります。",
+        "label": "本当のクラスの列（任意）",
+        "label-none": "なし",
+        "label-help": "グループ分けには使わず、最後に比較するためだけに使います。",
+        "scale": "列をスケーリングする",
+        "scale-help": "各列を平均0・標準偏差1にします。しないと、値の大きい列（例：ワインのプロリン）だけで決まってしまいます。",
+        "k": "グループの数（k）",
+        "k-help": "いくつあるかわからなければ、グループ分けの後でエルボーを見てください。",
+        "run": "グループ分け",
+        "reseed": "別の初期重心で試す",
+        "waiting": "列とグループの数を選び、「グループ分け」を押してください。",
+        "groups": "グループ",
+        "iterations": "反復回数",
+        "inertia": "慣性",
+        "silhouette": "シルエット",
+        "silhouette-good": "シルエットが高い（0.5超）：グループがよく分かれています。",
+        "silhouette-fair": "シルエットが中程度（0.25〜0.5）：グループはありますが、互いに接しています。",
+        "silhouette-weak": "シルエットが低い（0.25未満）：グループがほとんど区別できません。別のkや別の列を試してください。",
+        "scatter-title": "グループ",
+        "play": "できる様子を見る",
+        "pause": "一時停止",
+        "iteration": "反復 {{number}}",
+        "scatter-help": "各点が1行、×印が重心です。2Dで描くためにPCA（データが最も大きく変化する2方向）で投影していますが、k-meansは選んだすべての列を使います。",
+        "axis": "成分{{number}}（分散の{{variance}}）",
+        "cluster": "グループ{{number}}",
+        "centroids": "重心",
+        "comparison-title": "グループと本当のクラス（{{column}}）",
+        "comparison-help": "各クラスの行が各グループにいくつ入り、グループのどれだけを占めるか。k-meansは各クラスが何かを知らないので、グループに名前はありません。各グループの多数派クラスが、どのクラスに似ているかを示します。",
+        "group": "グループ",
+        "purity": "純度",
+        "ari": "調整ランド指数",
+        "elbow-title": "エルボー",
+        "elbow-help": "kを増やすと慣性は必ず下がります。下がり方が急に小さくなる「ひじ」が、よいグループ数の目安です。",
+        "profiles-title": "各グループの特徴",
+        "size": "行数",
+        "profiles-help": "各グループの各列の平均（元の単位）。グループに名前を付ける手がかりになります。",
+        "variable": "変数",
+        "purity-help": "各グループを多数派クラスの名前で呼んだときに正しくなる行の割合。kを増やすと必ず上がります（1行ごとに1グループなら100%）。",
+        "ari-help": "行のペアで見て、グループがクラスにどれだけ似ているか：同じクラスの行は同じグループに入っているか。同じグループなら1、偶然と同程度なら0前後。グループを増やすだけでは上がりません。",
+        "ari-high": "グループはクラスとほぼ同じです。",
+        "ari-medium": "グループはクラスにかなり似ていますが、分かれたり混ざったりしているクラスがあります。",
+        "ari-low": "グループはクラスにあまり似ていません。",
+        "ari-none": "グループはクラスに似ていません：偶然と同じです。",
+        "majority": "多数派クラス",
+        "mixed": "混在",
+        "total": "合計",
+        "comparison-legend": "背景が濃いほど、グループの中でそのクラスが占める割合が大きいです。「混在」：どのクラスもグループの3分の2に届きません。",
+        "scatter-data": "グループ、行数、重心",
+        "rows-column": "行数"
+      },
+      "time-series": {
+        "manual": {
+          "title": "しくみ",
+          "windows": {
+            "title": "ウィンドウ",
+            "text": "ネットワークは系列全体を見るのではなく、<b>直前の値</b>（ウィンドウ）を受け取って<b>次の値</b>を予測します。系列の各位置が 1 つの例になります。12 か月のウィンドウなら、1949 年の 12 か月で 1950 年 1 月を予測し、その次の 12 か月で 2 月を予測します。"
+          },
+          "split": {
+            "title": "過去で学習し、未来でテストする",
+            "text": "テスト部分は系列の<b>最後</b>で、シャッフルしません。月を混ぜると、ネットワークが学習中に未来を見てしまうからです。学習用のウィンドウは、それぞれが自分の履歴を持っているのでシャッフルします。"
+          },
+          "scale": {
+            "title": "スケーリングと差分",
+            "text": "値は学習部分の最小値と最大値で 0〜1 にスケーリングします（テスト部分は見ません）。系列が増え続けると、テスト部分がその範囲を超えることがあります。<b>差分</b>を取ると、ネットワークは値そのものではなく直前の値からの変化を学習し、トレンドが取り除かれます。"
+          },
+          "modes": {
+            "title": "1 ステップか、続けてか",
+            "text": "<b>1 ステップ先</b>では、テストの各値を直前の実際の値で予測します。今日を知って明日を予測するようなものです。<b>続けて</b>（再帰的）では、学習の終わりから、各値をすでに予測した値で予測します。未来の予測はこの方法で行い、誤差が積み重なります。"
+          },
+          "baselines": {
+            "title": "最も単純な予測より良い？",
+            "text": "ネットワークを使わない 2 つの予測と比べます。<b>ナイーブ</b>予測（直前の値、続けて予測する場合は最後に分かっている値）と<b>季節</b>予測（1 季節前の値：12 か月前、7 日前など）です。これらより良くないネットワークは役に立ちません。"
+          },
+          "networks": {
+            "title": "Dense か再帰型か",
+            "text": "<b>Dense</b> 層はウィンドウ全体を一度に受け取ります。<b>再帰型</b>の層（SimpleRNN、LSTM、GRU）は値を 1 つずつ読み、それまでの内容を覚えています。Dense 層より前に置き、学習は遅くなります。出力は線形のニューロン 1 つで、予測する値です。"
+          }
+        },
+        "upload": {
+          "title": "あなたの系列",
+          "text": "1 行が 1 時点のファイル（CSV、ARFF、JSON、JSONL、Parquet）をアップロードし、値の列を選んでください。日付の列があれば、行の並べ替えと予測値の日付に使います。",
+          "no-numeric": "ファイルに数値の列がありません。予測する値がありません。",
+          "value-column": "値の列",
+          "value-column-help": "予測する系列です。",
+          "date-column": "日付の列",
+          "date-column-help": "省略できます。ない場合は値に 1、2、3… と番号を付けます。",
+          "no-date": "日付なし（1、2、3…）",
+          "info": "自分の時系列をアップロードします。値の列と、あれば各値の日付の列です。",
+          "waiting": "ファイルをアップロードすると、ここに系列が表示されます。"
+        },
+        "data": {
+          "summary_other": "{{count}} 個の値（{{first}} から {{last}} まで）",
+          "value-column": "予測する列：{{column}}",
+          "dropped_other": "値の列に数値がない {{count}} 行を取り除きました。",
+          "sorted": "行が順番に並んでいなかったので、日付順に並べ替えました。",
+          "range_other": "{{first}} – {{last}}（{{count}} 個の値）",
+          "split": "<b>学習：</b>{{train}}、<b>テスト：</b>{{test}}"
+        },
+        "frequency": {
+          "hour": "1 時間に 1 つの値",
+          "day": "1 日に 1 つの値",
+          "week": "1 週間に 1 つの値",
+          "month": "1 か月に 1 つの値",
+          "quarter": "四半期に 1 つの値",
+          "year": "1 年に 1 つの値"
+        },
+        "chart": {
+          "test": "テスト",
+          "description": "{{name}}：{{count}} 個の値（{{first}} から {{last}} まで）。",
+          "train-prediction": "ネットワーク（学習、1 ステップ）",
+          "test-one-step": "ネットワーク（テスト、1 ステップ）",
+          "test-recursive": "ネットワーク（テスト、続けて）",
+          "future": "この先",
+          "forecast-description": "{{model}} の予測：テスト部分での誤差は平均 {{mae}}。その後に続く {{steps}} 個の値。"
+        },
+        "prep": {
+          "title": "準備",
+          "window": "ウィンドウ（直前の値の数）",
+          "window-help": "ネットワークが次の値を予測するのに使う直前の値の数です。",
+          "window-season": "繰り返すパターンを捉えるには、1 季節分（{{season}} 個の値）をカバーするとよいでしょう。",
+          "test-size": "テスト（系列の最後の %）",
+          "test-size-help": "最後の値です。ネットワークは学習中にこれらを見ません。系列では未来を過去から予測するので、シャッフルしません。",
+          "difference": "変化を予測する（差分）",
+          "difference-help": "ネットワークは直前の値からの変化を学習し、予測時にはそれを直前の値に足します。トレンドが取り除かれます。",
+          "season": "季節（値の数）",
+          "season-help": "パターンが何個の値ごとに繰り返すか（12 か月、7 日など）。季節予測との比較に使います。0 は季節なしです。",
+          "too-short": "このウィンドウとテスト部分では、データが足りません。学習には少なくとも 10 個のウィンドウ、テストには 2 個の値が必要です。ウィンドウを短くするか、テストを減らしてください。"
+        },
+        "windows": {
+          "title": "ネットワークが学習するもの",
+          "text": "各例は直前の {{window}} 個の値と、予測すべき次の値です。最初のいくつか：",
+          "text-difference": "各例は直前の {{window}} 個の変化（各値から直前の値を引いたもの）と、予測すべき次の変化です。最初のいくつか：",
+          "date": "日付",
+          "inputs": "直前の値（{{window}} 個）",
+          "inputs-difference": "直前の変化（{{window}} 個）",
+          "output": "予測する値",
+          "output-difference": "予測する変化",
+          "scaled_other": "ネットワークはこれらを 0〜1 にスケーリングして受け取ります。この準備では学習用の例が {{count}} 個あります。"
+        },
+        "layers": {
+          "class": "層の種類",
+          "class-help": "Dense はウィンドウ全体を受け取り、SimpleRNN、LSTM、GRU は値を 1 つずつ読みます（Dense 層より前に置きます）。"
+        },
+        "models": {
+          "yes": "はい",
+          "no": "いいえ",
+          "mae-one-step": "1 ステップの誤差（MAE）",
+          "mae-recursive": "続けた場合の誤差（MAE）",
+          "show": "表示",
+          "help": "誤差はテストデータでの平均絶対誤差で、系列の単位で表します。平均してどれだけ外れるかです。",
+          "evaluating": "予測を計算しています…"
+        },
+        "forecast": {
+          "title": "予測：{{model}}",
+          "model": "モデル",
+          "one-step": "1 ステップ",
+          "recursive": "続けて（再帰的）",
+          "range-all": "系列全体",
+          "range-test": "拡大",
+          "show-train": "学習部分も表示",
+          "one-step-help": "テストの各値を、直前の実際の値で予測します。",
+          "recursive-help": "学習の終わりから、テスト部分を見ずに、各値をすでに予測した値で予測します。未来の予測はこの方法で行い、誤差が積み重なります。",
+          "errors-title": "テストデータでの誤差",
+          "prediction": "予測",
+          "mae-title": "平均絶対誤差：平均してどれだけ外れるか",
+          "rmse-title": "二乗平均平方根誤差：大きな誤差をより重く扱う",
+          "network": "ニューラルネットワーク（{{model}}）",
+          "naive-one-step": "ナイーブ：直前の値",
+          "naive-recursive": "ナイーブ：最後に分かっている値の繰り返し",
+          "seasonal-one-step": "季節：{{season}} 個前の値",
+          "seasonal-recursive": "季節：最後の季節の繰り返し",
+          "verdict-better": "ネットワークの誤差は、最も良い単純な予測（{{baseline}}）より <b>{{percent}} 小さい</b>です。",
+          "verdict-similar": "ネットワークの誤差は、最も良い単純な予測（{{baseline}}）とほぼ同じです。あまり役に立っていません。",
+          "verdict-worse": "ネットワークの誤差は、最も良い単純な予測（{{baseline}}）より <b>{{percent}} 大きい</b>です。別のウィンドウ、より多いエポック、差分、再帰型の層を試してください。",
+          "baseline-naive": "ナイーブ予測",
+          "baseline-seasonal": "季節予測",
+          "train-vs-test": "学習データでの誤差は平均 {{train}}、テストデータ（1 ステップ）では {{test}} です。",
+          "overfitting": "テストデータでの誤差が 2 倍以上あります。学習データを丸暗記しているのかもしれません。",
+          "future-title": "この先",
+          "future-steps": "予測する値の数",
+          "future-help": "1 つずつ続けて、すでに予測した値で予測します。先になるほど信頼性は下がります。"
+        },
+        "model": {
+          "name": "学習済みモデル",
+          "train-yours": "この系列で自分のネットワークを学習する"
+        },
+        "review": {
+          "tab-chart": "系列",
+          "tab-windows": "ネットワーク用に準備したもの",
+          "preparation": "ネットワークは<b>直前の {{window}} 個の値</b>を受け取り、次の値を予測します。{{last}} までの系列で学習し、テスト部分（{{first}} から最後まで）は見ていません。値は学習部分の最小値（{{min}}）と最大値（{{max}}）で 0〜1 にスケーリングします。",
+          "preparation-difference": "ネットワークは<b>直前の {{window}} 個の変化</b>（各値から直前の値を引いたもの）を受け取り、次の変化を予測します。{{last}} までの系列で学習し、テスト部分（{{first}} から最後まで）は見ていません。変化は学習部分の最小値（{{min}}）と最大値（{{max}}）で 0〜1 にスケーリングします。",
+          "predict-title": "予測",
+          "test": "テスト",
+          "model-select": "予測に使うモデル",
+          "choose-instance_other": "系列の値を選ぶと、ネットワークが使う直前の {{count}} 個の値でフォームが埋まります。その後で変更できます。",
+          "vector": "ネットワークが受け取るもの",
+          "vector-help": "各値を、学習部分の最小値と最大値で 0〜1 にスケーリングしたものです。",
+          "vector-help-difference": "各変化（値から直前の値を引いたもの）を、学習部分の最小値と最大値で 0〜1 にスケーリングしたものです。",
+          "button-submit": "予測",
+          "predicted-value": "{{target}} の予測値（{{date}}）",
+          "actual-value": "実際の値：{{value}}",
+          "error": "誤差：{{value}}（{{percent}}）",
+          "input-details": "モデルの入力（ステップごと）",
+          "step-values": {
+            "title": "直前の値",
+            "text": "系列のまま"
+          },
+          "step-changes": {
+            "title": "変化",
+            "text": "各値から直前の値を引いたもの"
+          },
+          "step-scaled": {
+            "title": "スケーリング後",
+            "text": "ネットワークが受け取る 0〜1 の値"
+          },
+          "metrics": "学習時に取り分けた系列の最後の {{testSize}} % では、1 ステップ先で平均 {{mae}} 外れます。直前の値を繰り返すと {{naive}} です。",
+          "metrics-seasonal": "1 季節前の値を繰り返すと {{seasonal}} です。",
+          "metrics-no-better": "最も単純な予測より良くありません。このウィンドウでは、この系列はそれほどうまく予測できません。"
+        },
+        "chart-data": "{{value}}：各日付の実際の値と予測",
+        "chart-data-series": "各日付の {{value}}"
       }
     },
     "dataframe": {
       "title": "データセットを分析",
-      "upload-csv": "データセットをアップロード"
+      "upload-csv": "データセットをアップロード",
+      "intro": "モデルを学習する前にデータセットを探索します。サイズ、各変数の型と分布、欠損値、変数同士や目的変数との関係、そしてその準備方法を確認できます。",
+      "waiting": "プロジェクトのデータセットを選ぶか、独自のファイル（CSV、ARFF、JSON、JSONL、Parquet）をアップロードして分析を始めてください。",
+      "sections": {
+        "data": "データセット",
+        "summary": "概要",
+        "variables": "変数",
+        "distributions": "分布",
+        "relations": "関係",
+        "table": "データとクエリ",
+        "preprocess": "前処理",
+        "charts": "その他のグラフ"
+      },
+      "picker": {
+        "project": "プロジェクトのデータセット",
+        "project-help": "Nets4Learning のモデルが使う CSV と練習用の CSV。各変数の説明付きです。",
+        "placeholder": "データセットを選択",
+        "upload": "独自のファイル",
+        "upload-help": "CSV（「,」または「;」区切り）、ARFF、JSON、JSONL、Parquet。ブラウザ内で読み込まれ、ファイルはどのサーバーにも送信されません。",
+        "loading": "読み込み中…"
+      },
+      "info": {
+        "shape": "{{rows}} 行 × {{columns}} 列",
+        "source": "出典",
+        "variables-sheet": "変数の説明あり",
+        "target": "目的変数",
+        "target-none": "なし",
+        "target-help": "予測または分類したい変数です。分析全体で強調表示され、グラフをクラスごとに分けます。",
+        "problem-classification": "分類、{{count}} クラス",
+        "problem-regression": "回帰",
+        "problem-none": "目的変数なし"
+      },
+      "summary": {
+        "rows": "行",
+        "columns": "列",
+        "columns-detail": "数値: {{numeric}}、カテゴリ: {{categorical}}",
+        "missing": "欠損値",
+        "missing-detail": "セルの {{percent}}",
+        "duplicates": "重複行",
+        "duplicates-detail": "行の {{percent}}",
+        "target-distribution": "<code>{{target}}</code> の分布",
+        "target-distribution-none": "目的変数の分布",
+        "no-target": "目的変数を選ぶと、その値の分布が表示されます。",
+        "warnings": "データに関する注意",
+        "no-warnings": "問題は見つかりませんでした。欠損値、重複行、定数列、識別子、不均衡なクラスはありません。"
+      },
+      "warnings": {
+        "missing": "<code>{{column}}</code> には欠損値が {{count}} 個あります ({{percent}})。",
+        "constant": "<code>{{column}}</code> は常に同じ値で、情報を持ちません。",
+        "identifier": "<code>{{column}}</code> は属性ではなく識別子 (レコードごとのコード) のようです。学習には使わない方がよいでしょう。",
+        "outliers": "<code>{{column}}</code> には四分位範囲の規則による外れ値が {{count}} 個あります ({{percent}})。",
+        "imbalance": "<code>{{column}}</code> のクラスは不均衡です。「{{minority}}」の行数は最も多いクラスの {{percent}} です。",
+        "correlation": "<code>{{column}}</code> と <code>{{other}}</code> は強く相関しています (r = {{value}})。ほぼ同じ情報を持っています。",
+        "duplicates": "重複行が {{count}} 行あります。"
+      },
+      "variables": {
+        "title": "各変数のプロファイル",
+        "search": "変数を検索",
+        "type": "型",
+        "all": "すべて",
+        "numeric": "数値",
+        "categorical": "カテゴリ",
+        "view-cards": "カード",
+        "view-table": "表",
+        "kind-numeric": "数値",
+        "kind-categorical": "カテゴリ",
+        "target": "目的",
+        "missing": "欠損",
+        "distinct": "異なる値",
+        "mean": "平均",
+        "std": "標準偏差",
+        "min": "最小",
+        "median": "中央値",
+        "max": "最大",
+        "top": "最も多い値",
+        "more": "ほか {{count}} 個",
+        "show-distribution": "分布を見る →",
+        "no-results": "検索に一致する変数はありません。",
+        "units": "単位: {{units}}",
+        "column": "変数",
+        "histogram-of": "{{column}} のヒストグラム"
+      },
+      "distributions": {
+        "title": "変数の分布",
+        "variable": "変数",
+        "bins": "区間数",
+        "bins-auto": "自動",
+        "by-class": "<code>{{target}}</code> のクラスごとに分ける",
+        "histogram": "ヒストグラム",
+        "frequencies": "各値の度数",
+        "boxplot": "箱ひげ図",
+        "count": "行",
+        "class": "クラス",
+        "by-class-table": "<code>{{target}}</code> の各クラスにおける <code>{{column}}</code>",
+        "help-histogram": "各区間に値を持つ行の数です。クラス同士の重なりが少なければ、その変数はクラスの区別に役立ちます。",
+        "help-frequencies": "各値を持つ行の数です (多い順に 30 個)。",
+        "help-boxplot": "箱は第1四分位数から第3四分位数まで、中央の線は中央値です。離れた点は外れ値です。"
+      },
+      "relations": {
+        "title": "相関と散布図",
+        "correlation": "相関行列",
+        "correlation-help": "数値変数の各ペアのピアソン相関です。1 は正の線形関係、−1 は負の線形関係、0 は関係なしを表します。",
+        "target-correlation": "<code>{{target}}</code> との相関",
+        "target-correlation-help": "目的変数と相関の強い変数ほど、予測に役立つことが多いです。",
+        "scatter": "散布図",
+        "x": "X 軸",
+        "y": "Y 軸",
+        "color-help": "各点は 1 行で、<code>{{target}}</code> で色分けされています。",
+        "not-enough": "数値変数が少なくとも 2 つ必要です。"
+      },
+      "table": {
+        "title": "データ表"
+      },
+      "preprocess": {
+        "title": "モデル用にデータを準備",
+        "help": "モデルは数値しか受け取れません。テキストはエンコード (ラベルエンコーダ) し、不要なものは除外します。結果は変更ごとに更新され、CSV としてダウンロードできます。",
+        "missing": "欠損値",
+        "missing-keep": "そのままにする",
+        "missing-drop-rows": "欠損のある行を削除",
+        "missing-impute": "補完 (平均または最頻値)",
+        "scaler": "数値属性のスケーリング",
+        "scaler-none": "なし",
+        "scaler-min-max": "Min-max (0 から 1)",
+        "scaler-standard": "標準化 (平均 0、標準偏差 1)",
+        "scaler-help": "目的変数はスケーリングしません。",
+        "duplicates": "重複行を削除",
+        "action": "変換",
+        "action-keep": "変更なし",
+        "action-label-encoder": "エンコード (ラベルエンコーダ)",
+        "action-drop": "除外",
+        "result": "結果",
+        "download": "CSV をダウンロード",
+        "removed-rows": "削除した行: 重複 {{duplicates}} 行、欠損のある行 {{missing}} 行。",
+        "encodings": "テキスト列のエンコード",
+        "imputed": "補完に使った値",
+        "imputed-value": "<code>{{column}}</code>: {{value}}"
+      },
+      "analyzing": "データセットを分析中…",
+      "charts-sample": "行数が多いため、これらのグラフは {{rows}} 行のうち {{sample}} 行のランダムサンプルを使います。",
+      "essentials": {
+        "tab": "分析",
+        "help": "データセットの探索的分析の要点：サイズ、欠損値と重複行、目的変数の分布、注意点、目的変数と関係のある変数。",
+        "open": "完全な分析を見る（探索的データ分析）"
+      }
     },
     "menu": {
       "select-model": {
@@ -2145,6 +2608,24 @@
       },
       "select-dataset": {
         "description": "説明"
+      },
+      "open": "開く",
+      "info": {
+        "rows": "{{value}} 行",
+        "rows-files": "{{files}} ファイル（{{values}} 行）",
+        "features": "特徴量 {{value}}",
+        "classes": "{{value}} クラス",
+        "target": "目的変数: {{value}}",
+        "images": "{{size}} の画像 {{value}} 枚",
+        "images-color": "{{size}} のカラー画像 {{value}} 枚",
+        "series": {
+          "hour": "{{value}} 時間",
+          "day": "{{value}} 日",
+          "week": "{{value}} 週",
+          "month": "{{value}} か月",
+          "quarter": "{{value}} 四半期",
+          "year": "{{value}} 年"
+        }
       }
     },
     "documentation": {
@@ -2172,7 +2653,7 @@
           "title": "ステップ 6: 学習とモデル一覧"
         },
         "prediction": {
-          "title": "ステップ 7: 予測"
+          "title": "ステップ 7: 分類"
         }
       },
       "app": {
@@ -2260,6 +2741,32 @@
     },
     "glossary": {
       "title": "用語集",
+      "intro": "Nets4Learning に出てくる用語：タスク、ネットワークのエディター、オプティマイザー、活性化関数・損失関数・評価指標。",
+      "search": "用語集を検索",
+      "search-placeholder": "例：ReLU、Adam、エポック…",
+      "results_other": "{{count}} 件の用語",
+      "no-results": "「{{query}}」に一致する用語はありません。",
+      "anchor": "「{{term}}」へのリンク",
+      "plot": "{{term}} のグラフ",
+      "plot-tabs": {
+        "image": "画像",
+        "animation": "アニメーション"
+      },
+      "animation": {
+        "slider": "{{name}} の x の位置",
+        "play": "再生",
+        "pause": "一時停止"
+      },
+      "references-title": "参考文献",
+      "confusion-legend": {
+        "abbreviation": "略語",
+        "english": "英語",
+        "meaning": "意味",
+        "tp": "真陽性",
+        "tn": "真陰性",
+        "fp": "偽陽性",
+        "fn": "偽陰性"
+      },
       "table-head": {
         "name": "名前",
         "description": "説明",
@@ -2305,6 +2812,14 @@
         "sub-title-3": "非線形活性化（その他）",
         "text-1": "活性化関数は、人工ニューラルネットワークにおいて、受け取った入力に基づいてニューロン（またはニューロンの集まり）の出力を決める数学的な関数です。活性化関数はニューラルネットワークに非線形性を導入し、入力データのより複雑なパターンを学習できるようにします。代表的な活性化関数は次のとおりです。",
         "table": {
+          "linear": {
+            "title": "Linear",
+            "description": "入力をそのまま返します（恒等関数）。回帰の出力層で使う活性化関数で、ネットワークが任意の数値を出力できるようにします。",
+            "characteristics": {
+              "0": "出力の範囲を制限しません。",
+              "1": "線形層だけのネットワークは 1 つの線形層と同じで、非線形な関係を学習できません。"
+            }
+          },
           "softmax": {
             "title": "Softmax",
             "description": "出力を確率の形に変換し、すべての確率の合計が 1 になるようにします",
@@ -2402,11 +2917,11 @@
       "editor-layers": {
         "title": "層エディタの用語集",
         "table": {
-          "activation-function": {
+          "units": {
             "title": "層のニューロン（Layer Neurons）",
             "description": "ネットワークの特定の層にある個々のユニット（ノード）です。各ニューロンは入力を受け取り、計算を行い、次の層に渡す出力を生成します。層のニューロン数は変えることができ、通常はモデルのハイパーパラメータです。層のニューロン数の選び方は、モデルがデータの表現を学習する能力に影響します。"
           },
-          "units": {
+          "activation-function": {
             "title": "層の活性化関数（Layer Activation Function）",
             "description": "ニューラルネットワークの層の各ニューロンでは、モデルに非線形性を導入するために活性化関数が適用されます。活性化関数は、入力と対応する重みに応じてニューロンの出力を決めます。"
           }
@@ -2480,50 +2995,50 @@
         "text": {
           "0": "機械学習において、損失関数（コスト関数とも呼ばれる）は、モデルが予測した出力と実際の（期待される）出力との差を数値化する指標です。言い換えると、損失関数はモデルが学習データにどれだけよく適合しているかを測ります。",
           "1": "機械学習アルゴリズムの目的は損失関数を最小化すること、つまり学習データに最もよく適合するモデルのパラメータを見つけることです。そのため損失関数の選択は非常に重要で、モデルがデータのパターンを正しく学習し、新しいデータに対して正確に予測する能力に影響します。",
-          "2": "TensorFlow.js にはさまざまな損失関数があり、どれを使うかは扱う問題の種類によって決まります。以下にいくつかの例を示します。"
+          "2": "Nets4Learning で選べる損失関数を、それぞれが適したタスクの種類ごとに示します。"
         },
         "table": {
-          "AbsoluteDifference": {
-            "references": "絶対差\n (Acervolima, s.f.)",
-            "description": "目標値との距離を絶対値で計算します。"
+          "categoricalCrossentropy": {
+            "description": "モデルが予測した確率と正解クラス（one-hot 表現）との差を測ります。softmax 出力の多クラス分類でよく使われる損失です。"
           },
-          "ComputeWeightedLoss": {
-            "references": "加重平均\n (Acervolima, s.f.)",
-            "description": "2つのテンソル間の重み付き損失を計算します。"
+          "binaryCrossentropy": {
+            "description": "2 クラス、または互いに独立した複数ラベルのための交差エントロピーです。sigmoid 出力と組み合わせて使います。"
           },
-          "CosineDistance": {
-            "references": "コサイン距離\n (Acervolima, s.f.)",
-            "description": "2つのテンソル間の距離のコサインを使って損失を計算します。"
+          "kullbackLeiblerDivergence": {
+            "description": "予測した確率分布が正解の分布からどれだけ離れているかを測ります。モデルの出力が分布のときに使います。"
           },
-          "HingeLoss": {
-            "references": "ヒンジ損失\n (Rennie & Srebro, 2005)",
-            "description": "2つのテンソル間のヒンジ損失を計算します。分類問題で使われます。"
+          "hinge": {
+            "description": "正解クラスに対して一定のマージンを超えない予測にペナルティを与えます。サポートベクターマシン由来で、-1 と 1 のラベルを想定しています。"
           },
-          "HuberLoss": {
-            "references": "(Huber 損失)",
-            "description": "推定手法によって生じる損失を計算します。"
+          "squaredHinge": {
+            "description": "ヒンジ損失を二乗したものです。大きな誤差をより強く罰します。"
           },
-          "LogLoss": {
-            "references": "対数損失\n (Shen, 2005)",
-            "description": "<i>LogLoss</i>（<i>Logistic Loss</i>）は、負の数に対して線形に増加する凸関数で、外れ値の影響を受けにくい性質を持ちます。2つのテンソル間の対数損失を計算します。"
+          "categoricalHinge": {
+            "description": "多クラス用のヒンジ損失です。正解クラスのスコアを、最も高い不正解クラスのスコアと比べます。"
           },
-          "MeanSquaredError": {
-            "references": "平均二乗誤差\n (Acervolima, s.f.)",
-            "description": "目標値との二乗距離を幾何的に計算します。この関数は回帰問題で使われます。"
+          "meanSquaredError": {
+            "description": "正解値と予測値の差の二乗の平均です。大きな誤差を強く罰し、回帰でよく使われる損失です。"
           },
-          "CategoricalCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "確率分布間の距離を測ります。出力層が確率を表すネットワークで使われます。"
+          "meanAbsoluteError": {
+            "description": "正解値と予測値の差の絶対値の平均です。二乗誤差よりも外れ値の影響を受けにくいです。"
           },
-          "SigmoidCrossEntropy": {
-            "references": "(Acervolima, s.f.)",
-            "description": "<i>CategoricalCrossEntropy</i> 関数の変種で、損失を 0 から 1 の間の値として計算します。"
+          "meanAbsolutePercentageError": {
+            "description": "平均絶対誤差を正解値に対する割合（%）で表したものです。大きさの異なる値の誤差を比べるのに便利ですが、正解値が 0 の場合は使えません。"
           },
-          "SoftmaxCrossEntropy": {
-            "references": "(Bendersky, 2016)",
-            "description": "<i>softmax</i> 関数と <i>CrossEntropy</i> 関数を組み合わせてネットワークの損失を計算します。"
+          "meanSquaredLogarithmicError": {
+            "description": "値の対数に対する平均二乗誤差です。相対的な誤差を測り、大きな値での誤差をあまり罰しません。"
+          },
+          "logcosh": {
+            "description": "誤差の双曲線余弦の対数です。小さな誤差では二乗誤差のように、大きな誤差では絶対誤差のように振る舞います。"
+          },
+          "poisson": {
+            "description": "訪問数や発生件数のような、負でない整数（カウント）を予測するための損失です。"
+          },
+          "cosineProximity": {
+            "description": "正解ベクトルと予測ベクトルの向き（なす角）を比べます。ベクトルの大きさは考慮しません。"
           }
-        }
+        },
+        "related": "その他の関連する式"
       },
       "metric-functions": {
         "title": "評価指標",
@@ -2564,15 +3079,597 @@
             "references": "平均二乗誤差",
             "description": "ラベルと予測の間の平均二乗誤差を求めます。"
           }
+        },
+        "confusion": {
+          "title": "混同行列の評価指標",
+          "description": "混同行列の各クラスの正解と誤りから計算します：陽性と予測したうち正しいものの割合（適合率）、実際の陽性のうち見つけられた割合（再現率・感度）、その調和平均（F1）、実際の陰性のうち正しく認識された割合（特異度）。"
         }
-      }
+      },
+      "time-series": {
+        "title": "時系列",
+        "text-1": "時系列とは、一定の間隔で順番に測った値の並びです。毎月の乗客数、毎日の気温、毎週の売上などです。表とは違い順序に意味があり、各値はそれまでの値に左右されます。",
+        "text-2": "系列を予測するとは、過去の値から次の値を推定することです。ニューラルネットワークはウィンドウで学習します。直前の値を受け取り、次の値を予測します。",
+        "text-3": "テストでは、系列の最後をシャッフルせずに取り分け、直前の値や 1 季節前の値を繰り返すといった単純な予測と比べます。",
+        "group-title": "時系列",
+        "window": {
+          "title": "ウィンドウ",
+          "text": "ネットワークが次の値を予測するのに使う直前の値です。月ごとの系列で 12 のウィンドウなら、直近の 1 年を見ます。季節より短いと繰り返すパターンが見えず、長すぎると学習用の例が少なくなります。"
+        },
+        "trend-seasonality": {
+          "title": "トレンドと季節性",
+          "text": "トレンドは系列の長期的な向きです（乗客数は年々増えます）。季節性は一定の周期で繰り返すパターンです（毎年夏は乗客が多い）。太陽黒点のようなサイクルは、一定の周期なしに繰り返します。"
+        },
+        "differencing": {
+          "title": "差分",
+          "text": "各値を直前の値からの変化に置き換えることです。トレンドが取り除かれ、ネットワークは学習とテストでより似ている変化を学習します。値に戻すには、各変化を直前の値に足します。"
+        },
+        "one-step-recursive": {
+          "title": "1 ステップ予測と再帰的予測",
+          "text": "1 ステップ先では、各値をそれ以前の実際の値で予測します。再帰的（続けて）では、予測した値を次の予測に使います。未来を何ステップも予測する唯一の方法で、誤差が積み重なります。"
+        },
+        "baselines": {
+          "title": "ナイーブ予測と季節予測",
+          "text": "モデルと比べる最も単純な予測です。ナイーブ予測は最後に分かっている値を、季節予測は 1 季節前（12 か月前、7 日前など）の値を繰り返します。モデルが役に立つのは、これらより誤差が小さいときだけです。"
+        },
+        "recurrent": {
+          "title": "再帰型の層（SimpleRNN、LSTM、GRU）",
+          "text": "系列を値 1 つずつ読み、それまでに見たものをまとめた状態を保ちます。SimpleRNN は最も単純ですぐに忘れます。LSTM と GRU には何を覚え何を忘れるかを決めるゲートがあり、より長い依存関係を学習します。"
+        },
+        "mae-rmse": {
+          "title": "MAE と RMSE",
+          "text": "系列の単位で誤差を測る 2 つの方法です。MAE（平均絶対誤差）は平均してどれだけ外れるか、RMSE（二乗平均平方根誤差）は大きな誤差をより重く扱います。"
+        }
+      },
+      "formula": "{{term}} の数式"
     },
     "terms": {
-      "title": "プライバシーポリシーと Cookie",
-      "privacy-title": "プライバシーポリシー",
-      "privacy-text": "当サイトでは、サイトの性能と機能を改善するために、訪問に関する統計情報のみを収集しています。ユーザーの個人情報を収集・保存することはありません。訪問者数の把握と閲覧体験の向上のために Cookie を使用しています。プライバシーポリシーについてご質問やご不明な点があれば、お問い合わせページからお気軽にご連絡ください。",
-      "cookies-title": "Cookie",
-      "cookies-text": "当サイトでは、訪問者数を把握するために Google Analytics の Cookie を使用しています。これらの Cookie により、当サイトの利用状況に関する匿名の統計情報を収集し、性能と機能の改善に役立てています。Google Analytics の Cookie はユーザーの個人情報を収集しません。当サイトを閲覧することで、これらの Cookie の使用に同意したものとみなされます。Cookie の使用方法について詳しくは、プライバシーポリシーをご覧ください。"
+      "title": "利用規約",
+      "updated": "最終更新日：2026年10月2日",
+      "summary-title": "要点",
+      "summary": [
+        "Nets4Learningは無料の教育用ツールです。アカウントや登録はありません。",
+        "データはブラウザーの中にとどまります。モデルの学習と利用はあなたのパソコンで行われます。",
+        "Google AnalyticsのCookieは同意した場合にのみ有効になり、いつでも変更できます。"
+      ],
+      "index": "項目",
+      "use": {
+        "title": "アプリの利用",
+        "items": [
+          "Nets4Learningは、深層学習を学び教えるための無料の教育用プラットフォームです。",
+          "コードはMITライセンスのフリーソフトウェアです。第三者のデータセットやモデルにはそれぞれのライセンスがあり、各説明に記載されています。",
+          "モデルの結果は学習のためのものです。医療や金銭、人に関する判断など、実際の判断には使わないでください。",
+          "アプリは現状のまま、保証なしで提供されます。誤りを含むことがあり、いつでも変更されることがあります。"
+        ]
+      },
+      "privacy": {
+        "title": "あなたのデータ",
+        "text": "機械学習はすべてTensorFlow.jsによりブラウザーの中で実行されます。あなたのデータを受け取るサーバーはありません。",
+        "items": [
+          "アップロードしたファイル（データセット、モデル、画像）、描いた絵、カメラの映像はあなたのパソコンで処理され、どこにも送られません。",
+          "サンプルのデータセットで学習したモデルは、ページを再読み込みしても失われないよう、ブラウザーに保存されます（データセットごとに最大10個）。設定から削除でき、持ち出すにはダウンロードしてください。",
+          "個人情報を求めたり保存したりすることはありません。アカウントもフォームもメールもありません。"
+        ]
+      },
+      "storage": {
+        "title": "ブラウザーに保存されるもの",
+        "text": "設定を覚えておくため、アプリはブラウザーのローカルストレージ（私たちのサーバーではありません）に次のものを保存します。",
+        "items": [
+          "選んだ言語、テーマ、TensorFlow.jsのバックエンド。",
+          "ガイドの音声の設定と、各ガイドがどのステップまで進んだか。",
+          "サンプルのデータセットで学習したモデルと、「ステップごと」を表示するかどうか。",
+          "Cookieについてのあなたの選択（専用のCookieに保存）。"
+        ],
+        "settings": "変更やすべての削除はこちらから行えます："
+      },
+      "third-parties": {
+        "title": "外部サービス",
+        "items": [
+          "Google Analytics（Cookieに同意した場合のみ）。どのセクション・モデル・データセットがどれくらいの時間使われ、どのボタンが押され、どんなエラーが起きたかを知るためです。",
+          "一部の学習済みモデル（検出モデルとMobileNet）は、開いたときにGoogleとjsDelivrのサーバーからダウンロードされます。どのWebサイトとも同じく、それらのサーバーはリクエストを見ますが、あなたのデータや画像は見ません。",
+          "ガイドで「オンライン」の音声を選ぶと、ブラウザーは読み上げのためにガイドのテキストを音声サービスへ送ります。"
+        ]
+      },
+      "cookies": {
+        "title": "Cookie",
+        "text": "Cookieの一覧です。Google AnalyticsのCookieは匿名の利用統計を集めるもので、広告には使われず、同意した場合にのみ作成されます。後から拒否すると削除されます。",
+        "name": "Cookie",
+        "purpose": "用途",
+        "duration": "期間",
+        "consent": {
+          "purpose": "Google AnalyticsのCookieに同意したか拒否したかを覚えておきます。",
+          "duration": "120日"
+        },
+        "ga": {
+          "purpose": "Google Analytics：訪問者を匿名で区別します。",
+          "duration": "13か月"
+        },
+        "ga-session": {
+          "purpose": "Google Analytics：訪問の状態を保持します。",
+          "duration": "13か月"
+        }
+      },
+      "contact": {
+        "title": "お問い合わせ",
+        "text": "Nets4Learningは、ハエン大学の研究グループSIMIDAT（知的システムとデータマイニング）が開発しています。質問や問題があれば：",
+        "issues": "GitHubでissueを作成する",
+        "simidat": "SIMIDATグループのWebサイト"
+      }
+    },
+    "not-found": {
+      "title": "ページが見つかりません",
+      "return-home": "ホームに戻る"
+    },
+    "settings": {
+      "title": "設定",
+      "intro": "アプリで調整できることのすべてです。設定はこのブラウザーにだけ保存されます。",
+      "appearance": {
+        "title": "言語と外観",
+        "language": "言語",
+        "theme": "テーマ",
+        "theme-system": "システムに合わせる",
+        "theme-help": "「システムに合わせる」は、OSのライトモードまたはダークモードに従います。",
+        "summary": "言語とライト・ダークテーマ"
+      },
+      "backend": {
+        "title": "TensorFlow.jsのバックエンド",
+        "help": "学習と予測のときにTensorFlow.jsが計算を行う場所です。変更はすぐに反映され、すでにあるモデルもそのまま使えます。",
+        "active": "使用中",
+        "webgl": "WebGLでグラフィックカードを使います。ほとんどのパソコンで最も高速です。",
+        "webgpu": "最新のAPIであるWebGPUでグラフィックカードを使います。より高速なこともありますが、対応していないブラウザーもあります。",
+        "wasm": "WebAssemblyでプロセッサーを使って計算します。グラフィックカードで問題が起きるときに便利です。",
+        "cpu": "JavaScriptでプロセッサーを使って計算します。どこでも動きますが、最も遅いです。",
+        "summary": "TensorFlow.js の計算場所：GPU か CPU"
+      },
+      "downloads": {
+        "title": "モデルのダウンロード",
+        "help": "一部の学習済みモデル（物体検出、MobileNetなど）は、ページを開くと2〜18 MBをダウンロードします。事前に確認するよう設定できます。",
+        "auto": "データセーバー使用時や通信が遅いときに確認",
+        "auto-help": "ブラウザのデータセーバーがオンのとき、または通信が2G・3Gのとき。",
+        "always": "常に確認",
+        "always-help": "まだダウンロードしていない2 MBを超えるモデルをダウンロードする前に。",
+        "never": "確認しない",
+        "never-help": "ページを開くとモデルをダウンロードします。",
+        "now-save-data": "現在、ブラウザのデータセーバーがオンです。",
+        "now-slow": "現在、通信が遅いようです。",
+        "now-normal": "現在、データセーバーはオフで、通信も遅くないようです（またはブラウザが情報を提供していません）。",
+        "summary": "大きなモデルをダウンロードする前に確認する",
+        "saved": "ダウンロードしたモデルは、再ダウンロードしなくて済むようにこのブラウザーに保存されます。容量の確認と削除は<link1>このブラウザーに保存されたデータ</link1>でできます。"
+      },
+      "speech": {
+        "title": "ガイドの音声",
+        "help": "モデルのページのガイドは、システムの音声で各ステップを読み上げることができます。",
+        "voice": "ガイドを音声で読み上げる",
+        "auto": "各ステップを読み終えたら自動で進む",
+        "voice-help": "「オンライン」の音声はブラウザーのサーバーで動作し、ガイドのテキストは読み上げのためにそこへ送られます。",
+        "no-voices": "システムにこの言語の音声がありません。ブラウザーが選んだ音声を使います。",
+        "rate": "速さ：{{rate}}×",
+        "test": "音声を試す",
+        "stop": "停止",
+        "sample": "こんにちは。Nets4Learningの各ページのガイドは、このように聞こえます。",
+        "screen-reader": "スクリーンリーダーを使う場合はオフにしてください。スクリーンリーダーがガイドの各ステップを読み上げるので、2 つの声が重なると聞き取れません。",
+        "summary": "ガイドの読み上げ、声と速さ"
+      },
+      "tutorials": {
+        "title": "ガイド",
+        "guides-help": "各ガイドは今どのステップにいるかを覚えています。リセットすると、すべて最初からやり直せます。",
+        "guides-reset": "ガイドをリセット",
+        "done": "完了",
+        "summary": "ページのガイドを最初からやり直す"
+      },
+      "learning": {
+        "title": "学習用",
+        "help": "ページが重くならないよう、初期設定では表示されないツールです。",
+        "step-by-step": "「ステップごと」を表示：ネットワークが例ごとに、前向きと後ろ向きにどう学ぶか",
+        "step-by-step-help": "学習ページと、表形式の分類・回帰のモデルページに表示されます。ニューロンが64個未満のネットワークが対象です。",
+        "summary": "ステップバイステップなどの学習ツール"
+      },
+      "privacy": {
+        "title": "プライバシーとCookie",
+        "help": "Google AnalyticsのCookieは、どのセクション・モデル・データセットが使われ、何がうまくいかないかを匿名で教えてくれます。個人情報やアップロードした内容は含みません。同意した場合にのみ有効になります。",
+        "analytics": "Google AnalyticsのCookieを許可する",
+        "status-accepted": "現在：Cookieに同意しています。",
+        "status-rejected": "現在：Cookieを拒否しています。",
+        "status-undecided": "まだ選択していません。今のところ使われていません。",
+        "more": "Cookieについての詳細",
+        "summary": "Google Analytics の Cookie"
+      },
+      "data": {
+        "title": "このブラウザーに保存されたデータ",
+        "help": "アプリがこのブラウザーに保存しているデータです。外部に送られることはなく、いつでも削除できます。",
+        "summary": "保存されているもの、使用容量、すべてのリセット",
+        "total": "このサイトは、このブラウザーで合計 <strong>{{used}}</strong> を使用しています。",
+        "trained": {
+          "title": "学習させたモデル",
+          "help": "学習させて保存したモデルです。そのページに戻ると復元されます。",
+          "count_zero": "なし",
+          "count_other": "{{count}} 個のモデル",
+          "delete": "学習させたモデルを削除",
+          "question_other": "学習させたモデル {{count}} 個を削除します。元に戻せません。"
+        },
+        "pretrained": {
+          "title": "ダウンロードした事前学習済みモデル",
+          "help": "物体検出や MobileNet など。再ダウンロードしなくて済むように、初めて使うときに保存されます。",
+          "count_zero": "なし",
+          "count_other": "{{count}} 個のモデル",
+          "delete": "ダウンロードした事前学習済みモデルを削除",
+          "delete-one": "{{model}} を削除",
+          "question": "次に使うときに再ダウンロードされます。",
+          "question-one": "{{model}} をこのブラウザーから削除します。次に使うときに再ダウンロードされます。",
+          "mobilenet": "MobileNet - 画像分類",
+          "other": "その他のファイル"
+        },
+        "offline": {
+          "title": "オフライン用",
+          "help": "すでに開いたページです。インターネットなしでも使えます。",
+          "count_zero": "なし",
+          "count_other": "{{count}} 個のファイル",
+          "delete": "オフライン用に保存したデータを削除",
+          "question": "開いたものは、もう一度開くまでインターネットなしでは使えなくなります。"
+        },
+        "settings": {
+          "title": "設定と進み具合",
+          "help": "言語、テーマ、アクセシビリティ、バックエンド、ガイドの音声と進み具合、ステップごと、ダウンロードの確認、Cookie についての選択。"
+        },
+        "delete": "削除",
+        "delete-confirm": "はい、削除します",
+        "reset": "すべての設定をリセット",
+        "reset-help": "上記をすべて削除し、初期設定に戻します。ページは再読み込みされます。",
+        "confirm": "本当によろしいですか？このブラウザーに保存されたすべての設定が削除されます。",
+        "confirm-button": "はい、削除します",
+        "cancel": "キャンセル"
+      },
+      "accessibility": {
+        "title": "アクセシビリティ",
+        "help": "必要に合わせてアプリを調整できます。このブラウザに保存されます。",
+        "text-size": "文字の大きさ",
+        "spacing": "行・文字・単語の間隔を広げる",
+        "spacing-help": "読みやすくするために WCAG が勧める間隔です。",
+        "highContrast": "ハイコントラスト",
+        "highContrast-help": "文字と枠線を黒（ダークテーマでは白）にし、灰色を使いません。",
+        "reduceMotion": "動きを減らす",
+        "reduceMotion-help": "グラフも含め、アニメーションやなめらかなスクロールをなくします。",
+        "underlineLinks": "リンクに常に下線を引く",
+        "underlineLinks-help": "色に頼らずに本文と区別できます。",
+        "strongFocus": "フォーカスを太くする",
+        "strongFocus-help": "キーボード操作時の現在位置を示す枠をより見やすくします。",
+        "openVisor": "学習時に TensorFlow.js のビジュアライザーを開く",
+        "openVisor-help": "スクリーンリーダーでは使えないライブラリのパネルです。ページのグラフが同じ内容を示します。",
+        "system-on": "システムがすでに求めているため、チェックしなくても有効です。",
+        "guide": "ガイドの音声と自動で進む設定は次で変更します：",
+        "summary": "文字の大きさ、コントラスト、動き、フォーカス"
+      },
+      "sections": "設定の項目",
+      "back": "すべての項目"
+    },
+    "learn": {
+      "title": "ここから始める",
+      "intro": "ニューラルネットワークの基本を手を動かして学ぶ8つの短いステップです。学習済みのネットワークを試すところから、判断の理由を尋ねるところまで。各ステップは実行すると自動でチェックされます。",
+      "progress": "{{total}}ステップ中{{count}}ステップ完了",
+      "step": "ステップ{{number}}",
+      "done": "完了",
+      "next": "次",
+      "go": "このステップへ",
+      "again": "もう一度やる",
+      "mark-done": "完了にする",
+      "mark-undone": "チェックを外す",
+      "reset": "最初からやり直す",
+      "reset-confirm": "よろしいですか？すべてのステップのチェックが外れます。",
+      "reset-yes": "はい、やり直す",
+      "reset-no": "キャンセル",
+      "finished": {
+        "title": "コースを完了しました！",
+        "text": "ニューラルネットワークの学習、比較、修正、説明ができるようになりました。次は自分のデータで試しましょう。表形式の分類や回帰でCSVをアップロードするか、まずEDAで分析してみてください。"
+      },
+      "steps": {
+        "lab": {
+          "title": "ネットワークで遊ぶ",
+          "text": "ラボでは、小さなネットワークが平面上の点を分け、学習中の境界が見られます。「試してみよう」の例をやってみましょう。"
+        },
+        "glossary": {
+          "title": "キーワード",
+          "text": "用語集で、ニューラルネットワーク、層、ニューロン、エポックとは何かを読みましょう。どのページにも出てきます。"
+        },
+        "pretrained": {
+          "title": "学習済みのネットワークを試す",
+          "text": "数字を描いて、何千もの手書き数字（MNIST）で学習したネットワークがどう認識するか見てみましょう。"
+        },
+        "train": {
+          "title": "初めてのネットワークを学習する",
+          "text": "アヤメ（Iris）のデータで「モデルを訓練」を押し、損失がエポックごとに下がる様子を見ましょう。下に、学習の結果が言葉で表示されます。"
+        },
+        "step-by-step": {
+          "title": "ネットワークの学習を見る",
+          "text": "アヤメの花のデータで、ステップごとに 1 つの例がネットワークを順方向に進み、誤差が逆方向に戻って、各重みがどう変わるかを見せます。少なくとも 1 ステップ進めてください。"
+        },
+        "compare": {
+          "title": "1つだけ変えて比較する",
+          "text": "学習率だけを変えてもう一度学習し、曲線の横の「モデルを比較」をオンにしましょう。何が変わり、どちらがよく学習するかがわかります。"
+        },
+        "fix-layers": {
+          "title": "間違った構成のネットワークを直す",
+          "text": "層エディタで、最後の層のニューロン数をクラス数と違う値にすると警告が表示されます。ボタンで直すと、出力層がクラスごとに1つのニューロンを持つ理由がわかります。"
+        },
+        "regression": {
+          "title": "数値を予測する",
+          "text": "回帰では、ネットワークはクラスを選ぶのではなく値を出します。Auto MPGで学習して車の燃費を予測しましょう。"
+        },
+        "cnn": {
+          "title": "画像用のネットワークを学習する",
+          "text": "畳み込みネットワークは画像の中の線や形を探します。MNISTで学習してみましょう（他より少し時間がかかります）。"
+        },
+        "explain": {
+          "title": "モデルに理由を尋ねる",
+          "text": "車のモデル（CAR）で予測を行い、その説明を表示しましょう。判断にどの属性が最も影響したかがわかります。"
+        }
+      },
+      "challenges": {
+        "title": "チャレンジ",
+        "intro": "学習のしかたがわかったら、学んだことを試してみましょう。層とハイパーパラメータを調整して達成を目指します。学習すると自動でチェックされます。",
+        "progress": "{{total}}個中{{count}}個のチャレンジを達成",
+        "passed": "達成",
+        "result": "正解率{{value}}で達成しました。",
+        "hint": "ヒント",
+        "go": "挑戦する",
+        "again": "もう一度挑戦する",
+        "iris-accuracy": {
+          "title": "完璧なIris",
+          "goal": "Irisで、テスト用の花（学習中にネットワークが見ないデータ）をすべて正解しましょう。正解率100 %です。",
+          "hint": "エポック数を増やし（50）、学習率を少し上げてみましょう（0.05）。一度でうまくいかなければ、もう一度学習しましょう。毎回、ネットワークは異なる重みから始まります。"
+        },
+        "iris-tiny": {
+          "title": "ごく少ないニューロンで",
+          "goal": "Irisで、隠れニューロン4個以下（出力層を除く）で正解率90 %に到達しましょう。",
+          "hint": "4ニューロンの隠れ層を1つだけ（または2ニューロンを2つ）にして、エポック数を増やしましょう。簡単な問題に大きなネットワークは不要です。"
+        },
+        "iris-fast": {
+          "title": "少ないエポックで",
+          "goal": "Irisで、5エポック以内に正解率90 %に到達しましょう。",
+          "hint": "エポックが少ないときは、一歩一歩が重要です。学習率を上げ（0.1）、Adamを使いましょう。"
+        },
+        "regression-good": {
+          "title": "お手本のような学習",
+          "goal": "回帰で、どのデータセットでもよいので、診断で「よく学習した」と判定される学習を行いましょう。損失が下がって安定し、過学習がない状態です。",
+          "hint": "まずSalaryで40エポック程度から始めましょう。診断が「まだ改善中」ならエポック数を増やし、損失が大きく揺れている・発散していると表示されたら学習率を下げましょう。"
+        },
+        "mnist-fast": {
+          "title": "急いで数字を認識",
+          "goal": "MNISTで、2エポック以内にテスト画像の正解率93 %以上を達成しましょう。",
+          "hint": "2エポックでは、ネットワークがデータを見るのは2回だけです。学習率を少しずつ上げてみましょう（0.005、0.01…）。上げすぎると、診断で損失が大きく揺れている・発散していると表示されます。"
+        }
+      },
+      "toast": {
+        "title": "ステップ{{number}}/{{total}}完了",
+        "next": "次：{{title}} →",
+        "finished": "コースを完了しました！ →",
+        "close": "閉じる",
+        "challenge": "チャレンジ達成！",
+        "challenges": "チャレンジを見る →"
+      },
+      "home": {
+        "first": "初めてですか？<link1>ここから始める</link1>：手を動かして学ぶ8つの短いステップです。",
+        "continue": "<link1>ここから始める</link1>の{{total}}ステップ中{{count}}ステップを完了しています。続きから進めましょう。",
+        "finished": "<link1>ここから始める</link1>を完了しました。自分のデータで試してみましょう。"
+      }
+    },
+    "regression-description": {
+      "title": "線形回帰",
+      "subtitle": "問題とモデルの説明",
+      "paragraphs": [
+        "データ分析における回帰問題とは、いくつかの入力変数から数値を予測・推定する問題です。線形回帰は、その予測を行うための数学的モデルです。",
+        "線形回帰モデルは、応答変数（従属変数）と1つ以上の説明変数（独立変数）の間の線形な関係を求める統計的手法です。観測データに最もよく当てはまる直線を見つけ、それを使って説明変数から応答変数を予測することが目的です。",
+        "モデルはこの関係を直線の式で表し、応答変数の値を説明変数の線形結合として推定します。その係数（回帰係数）は、観測値と予測値の差ができるだけ小さくなるように統計的手法で求めます。",
+        "当てはめたモデルは、説明変数が分かっているときに応答変数を予測するのに使えます。また、応答のばらつきを説明するうえで各説明変数がどれだけ寄与しているかも分かります。",
+        "まとめると、線形回帰モデルは、説明変数との線形な関係にもとづいて数値を予測する統計的な道具です。経済学、科学、工学、社会調査などの分野で役立ちます。"
+      ],
+      "example": "家の広さ（平方メートル、説明変数 $x$）から家の価格（応答変数 $Y$）を予測したいとします。2つの変数の関係は、次の線形回帰の式で表せます：",
+      "where": "ここで：",
+      "terms": [
+        "$Y$ は家の価格です。",
+        "$x$ は家の広さです。",
+        "$\\beta_0$ は切片で、$x$ が0のときの $Y$ の値です。",
+        "$\\beta_1$ は直線の傾きで、1平方メートル増えるごとに価格がどれだけ変わるかを表します。",
+        "$\\epsilon$ は誤差項で、モデルが説明できないばらつきです。"
+      ],
+      "closing": [
+        "線形回帰の目的は、観測データから $\\beta_0$ と $\\beta_1$ を推定し、散布図の点に最もよく当てはまる直線を求めることです。",
+        "当てはめたモデルを使えば、新しい家の価格を広さから予測できます。式の $x$ に値を入れて $Y$ を計算するだけです。",
+        "この例は単純な単回帰の場合です。実際には、多くの説明変数を持ち、それらの組み合わせも考慮するモデルがあります。"
+      ]
+    },
+    "task": {
+      "pretrained-title": "学習済みモデル",
+      "pretrained-text": "すでに学習したモデルです。学習を待たずにすぐ試せて、なぜその判断をしたのかも見られます。",
+      "pretrained-count_other": "{{count}} 個のモデル",
+      "pretrained-button": "モデルを選ぶ",
+      "design-title": "アーキテクチャを設計・作成・編集する",
+      "design-text": "データセットを選び（または自分のものをアップロードし）、ネットワークの層を設計し、学習を調整して、学ぶ様子を見ます。",
+      "design-count_other": "{{count}} 個のデータセット",
+      "design-button": "データセットを選ぶ",
+      "cluster-title": "データセットをクラスタリングする",
+      "cluster-text": "列とグループの数を選ぶと、k-means が少しずつグループを探します。データセットに本当のクラスがあれば、最後に比較します。",
+      "upload": "自分のものをアップロード",
+      "only-pretrained": "このタスクには学習済みモデルしかありません。",
+      "only-cluster": "クラスタリングはネットワークも学習済みモデルも使いません。k-means がデータを直接グループ分けします。"
+    },
+    "accessibility": {
+      "title": "アクセシビリティ",
+      "updated": "2026 年 10 月 12 日に作成し、同日に最終確認しました。",
+      "summary-title": "概要",
+      "summary": [
+        "スクリーンリーダー、キーボードのみ、ロービジョン、大きな文字でも、だれもが Nets4Learning を使えるようにしたいと考えています。",
+        "このアプリは WCAG 2.2 レベル AA に部分的に適合しています。以下で説明する点を除き、ほぼすべてが適合しています。",
+        "使えないところがあればお知らせください。それが改善のいちばんの近道です。"
+      ],
+      "index": "項目",
+      "status": {
+        "title": "適合状況",
+        "text": "Nets4Learning は、「アクセシブルでないコンテンツ」に挙げた例外のため、Web コンテンツ・アクセシビリティ・ガイドライン（WCAG）2.2 レベル AA に部分的に適合しています。",
+        "standard": "WCAG 2.2 AA は、スペインの王令 1112/2018 が公共部門の Web に適用する規格 EN 301 549（WCAG 2.1 AA）の要件を含みます。"
+      },
+      "not-accessible": {
+        "title": "アクセシブルでないコンテンツ",
+        "text": "次の点は完全には適合していません。代わりに使えるものも示します。",
+        "items": [
+          {
+            "problem": "学習時に開く TensorFlow.js のビジュアライザーはライブラリのもので、キーボードで操作できず、グラフにテキストがありません。",
+            "instead": "同じ曲線がページにあり、データは表で見られます。「設定」でビジュアライザーを開かないようにできます。"
+          },
+          {
+            "problem": "データ分析のグラフ（Plotly）のズームボタンはキーボードで操作できません。",
+            "instead": "各グラフのデータはその表（「データを表示」）にあります。"
+          },
+          {
+            "problem": "キャンバスに数字を描くにはマウス、ペン、指が必要です。",
+            "instead": "ページ上の例やテスト画像を分類してください。"
+          },
+          {
+            "problem": "物体検出のカメラ映像には説明がありません。",
+            "instead": "検出結果は下にテキストで示され、ボタンで読み上げられます。写真をアップロードすることもできます。"
+          },
+          {
+            "problem": "数式はスクリーンリーダー向けに MathML で生成していますが、すべてのスクリーンリーダーではまだ確認していません。",
+            "instead": "うまく読み上げられない数式があればお知らせください（「問題を知らせる」）。"
+          }
+        ],
+        "out-of-scope": "このステートメントの対象外：アプリが使う第三者のモデルやライブラリ、およびリンク先の外部ページ。",
+        "instead": "代わりに："
+      },
+      "use": {
+        "title": "アプリの使い方",
+        "keyboard-title": "キーボードで",
+        "keyboard": [
+          "<kbd>Tab</kbd> キーでページを順に移動します。最初は「メインコンテンツへスキップ」で、メニューを飛ばして本文へ移動します。",
+          "<kbd>Enter</kbd> キーまたは<kbd>スペース</kbd>キーでボタンとリンクを操作します。矢印キーでタブ、ドロップダウン、選択肢の一覧、ガイドのステップを移動します。",
+          "<kbd>Esc</kbd> キーでダイアログ、ドロップダウン、モバイルのメニュー、ガイド、用語のヘルプを閉じ、フォーカスは元の位置に戻ります。",
+          "長いページでは「このページの内容」の目次から各項目へ移動できます。"
+        ],
+        "reader-title": "スクリーンリーダーで",
+        "reader": [
+          "各ページにはタイトルと主見出しが 1 つあり、項目の見出しは順序どおりです。",
+          "各グラフには説明と、描かれた内容をすべて表で示す「データを表示」ボタンがあります。",
+          "フォーカスを動かさずに変わる内容（予測の結果、読み込んだデータ、学習の進み具合、層の警告、言語やテーマの変更）は読み上げられます。",
+          "各ページのガイドはスクリーンリーダーで読めます。使う場合は、二つの声が重ならないよう「設定」でガイドの音声をオフにしてください。"
+        ],
+        "settings-title": "アクセシビリティの設定",
+        "settings": "文字を大きくする、行や文字の間隔を広げる、ハイコントラスト、動きを減らす、リンクに下線を引く、フォーカスを太くする、といった設定ができます。ブラウザに保存されます。",
+        "settings-link": "アクセシビリティの設定へ"
+      },
+      "feedback": {
+        "title": "問題を知らせる",
+        "text": "使えないところや、適合していないと思うところがあればお知らせください。改善のために、次の情報があると助かります。",
+        "items": [
+          "どのページで、何をしようとしていたか。",
+          "何が起きたか。",
+          "使っているブラウザと、使っていればスクリーンリーダーなどの支援技術。"
+        ],
+        "issue": "GitHub で問題を知らせる（テンプレートあり）",
+        "simidat": "ハエン大学 SIMIDAT グループの Web サイト（連絡用）",
+        "response": "できるだけ早くお返事し、改善するまでの間に目的を達成する方法があればお伝えします。"
+      },
+      "preparation": {
+        "title": "作成方法と見直し",
+        "items": [
+          "方法：開発チームによる自己評価。",
+          "変更のたびに自動テスト：全ページと操作中に現れる状態（ライト・ダークテーマ、アクセシビリティ設定あり）での axe による WCAG 2.2 A・AA の確認、キーボードのみでの操作、幅 320 px と文字 200 % での表示、リンターのアクセシビリティ規則。",
+          "未実施：スクリーンリーダー（NVDA、VoiceOver、TalkBack）による手動確認と、さまざまな障害のある人によるテスト。"
+        ],
+        "review": "このステートメントは毎年、およびアプリのメジャーバージョンごとに見直します。"
+      },
+      "new-tab": "（新しいタブで開きます）"
+    },
+    "lab": {
+      "title": "ラボ：2D のネットワーク",
+      "intro": "小さなニューラルネットワークが、オレンジの点と青の点を分けることを学びます。データやネットワークへの入力、層を変えて、学習中に境界がどう変わるかを見てみましょう。",
+      "data": {
+        "title": "データ",
+        "dataset": "データセット",
+        "noise": "ノイズ：{{value}}",
+        "count": "点の数",
+        "new": "別の点"
+      },
+      "datasets": {
+        "blobs": "2 つの雲",
+        "circles": "円",
+        "xor": "XOR（象限）",
+        "spiral": "らせん"
+      },
+      "features": {
+        "title": "ネットワークへの入力",
+        "help": "各点の座標と、必要ならそこから計算した値。",
+        "x": "x",
+        "y": "y",
+        "x2": "x²",
+        "y2": "y²",
+        "xy": "x × y"
+      },
+      "network": {
+        "title": "ネットワーク",
+        "help": "入力と出力の間の隠れ層。それぞれにニューロンがあります。",
+        "none": "隠れ層なし：入力がそのまま出力につながります。",
+        "layer": "層 {{number}}：ニューロン {{units}} 個",
+        "fewer": "層 {{number}} のニューロンを 1 つ減らす",
+        "more": "層 {{number}} のニューロンを 1 つ増やす",
+        "add": "層を追加",
+        "remove": "最後の層を削除",
+        "activation": "活性化関数"
+      },
+      "training": {
+        "title": "学習のしかた",
+        "learning-rate": "学習率",
+        "speed": "速度",
+        "speeds": {
+          "slow": "ゆっくり（境界が見える）",
+          "normal": "ふつう",
+          "fast": "できるだけ速く"
+        },
+        "batch-size": "バッチあたりの点の数"
+      },
+      "train": "学習",
+      "pause": "一時停止",
+      "step": "1 エポック",
+      "restart": "最初から",
+      "restarted": "ネットワークを新しいランダムな重みで最初からやり直します。",
+      "show-test": "テスト用の点を表示",
+      "canvas": "{{dataset}} の点がある平面。背景は、各領域でネットワークが予測するクラスです",
+      "legend": "オレンジ（円）と青（四角）が 2 つのクラスです。塗りつぶしは学習に使う点、白はテスト用の点で、学習中には見ません。背景はネットワークの予測で、濃いほど確信が強いことを表します。",
+      "not-trained": "まだ学習していません。「学習」か「1 エポック」を押してください。",
+      "summary": "エポック {{epoch}}：テスト用の点の {{testAccuracy}}、学習用の点の {{trainAccuracy}} を正解。損失：学習用 {{trainLoss}}、テスト用 {{testLoss}}。",
+      "diverged": "損失が発散し、ネットワークが学習しなくなりました。学習率を下げて最初からやり直してください。",
+      "loss": {
+        "title": "損失",
+        "empty": "学習すると、ここで損失が下がる様子が見られます。",
+        "train": "学習",
+        "test": "テスト",
+        "help": "学習用の損失が下がるのにテスト用が上がるなら、点を丸暗記しています（過学習）。"
+      },
+      "experiments": {
+        "title": "試してみよう",
+        "xor-line": {
+          "title": "隠れ層なしの XOR",
+          "lesson": "隠れ層がないと直線しか引けません。XOR では半分も正解できません。"
+        },
+        "xor-hidden": {
+          "title": "ニューロン 4 個の層がある XOR",
+          "lesson": "隠れ層があると複数の直線を組み合わせて XOR を分けられます。隠れ層はそのためにあります。"
+        },
+        "circles-features": {
+          "title": "x² と y² を使った円",
+          "lesson": "x² と y² を入力にすると、隠れ層なしで円を分けられます。入力をうまく選ぶと層を節約できます。"
+        },
+        "spiral": {
+          "title": "いちばん難しいらせん",
+          "lesson": "らせんにはより多くのニューロンと特徴量、そして根気が必要です。数百エポック学習させましょう。"
+        },
+        "learning-rate": {
+          "title": "とても大きな学習率",
+          "lesson": "学習率が 3 だと毎回行き過ぎて、損失が下がらずに上下します。0.1 を試してみてください。"
+        },
+        "overfitting": {
+          "title": "少ない点、多いノイズ、大きなネットワーク",
+          "lesson": "点を丸暗記してしまい、学習用の損失は下がるのにテスト用は上がります。これが過学習です。"
+        }
+      },
+      "next": "感覚がつかめたら、次は"
     }
   },
   "generator": {
@@ -2590,7 +3687,10 @@
       "features": "特徴量",
       "open-visor": "ビューアを開く",
       "close-visor": "ビューアを閉じる",
-      "history": "結果"
+      "history": "最終値（検証）",
+      "window": "ウィンドウ",
+      "difference": "差分",
+      "batch-size": "バッチサイズ"
     }
   },
   "hr": {
@@ -2598,9 +3698,12 @@
     "editor": "エディタ",
     "dataset": "データセット",
     "model": "モデル",
+    "step-by-step": "ステップごと",
     "generated-models": "生成されたモデル",
     "predict": "予測",
     "classify": "分類",
+    "explainability": "説明可能性",
+    "on-this-page": "このページの内容",
     "tasks": "タスク",
     "00-tabular-classification": "表形式データの分類",
     "tutorial-00-tabular-classification": "表形式データ分類のモデルを学習",
@@ -2627,75 +3730,1546 @@
     "ignored": "無視",
     "submit": "データフレームを処理"
   },
-  "joyride": {
-    "back": "戻る",
-    "close": "閉じる",
-    "last": "最後",
-    "next": "次へ",
-    "open": "開く",
-    "skip": "スキップ"
-  },
   "upload-dataset-info": "タスクを実行するにはデータセットをアップロードする必要があります。",
   "upload-model": "モデルをアップロード",
   "upload-model-info": "タスクを実行するにはモデルをアップロードする必要があります。",
-  "select-attr": "属性を選択",
   "upload-dataset": "データセットをアップロード",
-  "00-tc": {
-    "car": {
-      "buying": "購入価格",
-      "maint": "メンテナンス費用",
-      "doors": "ドアの数",
-      "persons": "乗車定員",
-      "lug_boot": "トランクの大きさ",
-      "safety": "車の推定安全性",
-      "result": "結果",
-      "unacc": "不可",
-      "acc": "可",
-      "good": "良",
-      "vgood": "優"
-    },
-    "iris": {
-      "sepal_length": "がく片の長さ",
-      "sepal_width": "がく片の幅",
-      "petal_length": "花弁の長さ",
-      "petal_width": "花弁の幅",
-      "class": "クラス",
-      "Iris-setosa": "ヒオウギアヤメ (setosa)",
-      "Iris-versicolor": "ブルーフラッグ (versicolor)",
-      "Iris-virginica": "バージニカ (virginica)"
-    },
-    "lymphography": {
-      "lymphatics": "リンパ管",
-      "block of affere": "輸入リンパ管の閉塞",
-      "bl": {
-        " of lymph": {
-          " c": "リンパ管(c)の閉塞",
-          " s": "リンパ管(s)の閉塞"
+  "model-summary": "モデルの概要",
+  "breadcrumb": {
+    "label": "パンくずリスト",
+    "models": "学習済みモデル",
+    "datasets": "モデルを学習する",
+    "change": "リストの別の項目に切り替える",
+    "train-with-dataset": "このデータセットで学習する",
+    "try-pretrained": "学習済みモデルを試す"
+  },
+  "neural-network": {
+    "layer": "レイヤー {{index}}",
+    "units": "ニューロン {{units}}",
+    "kernel-size": "カーネル {{value}}",
+    "filters": "フィルター {{value}}",
+    "pool-size": "プール {{value}}",
+    "strides": "ストライド {{value}}",
+    "description": "入力から出力までのネットワークの層"
+  },
+  "session": {
+    "export": "設定をエクスポート",
+    "import": "設定をインポート",
+    "imported": "設定をインポートしました",
+    "error-not-json": "ファイルが有効な JSON ではありません",
+    "error-not-session": "Nets4Learning の設定ファイルではありません",
+    "error-other-task": "別のタスクの設定です",
+    "error-link": "リンクに有効な設定が含まれていません（コピーの際に途切れた可能性があります）",
+    "share": {
+      "button": "共有",
+      "title": "この課題を共有",
+      "text": "リンクを開いた人は、同じネットワークとハイパーパラメータを使って、同じデータセットですぐに学習できます。データと学習済みモデルは共有されません。",
+      "link": "共有用リンク",
+      "copy": "コピー",
+      "copied": "コピーしました！",
+      "native": "他のアプリで共有…",
+      "qr": "またはスマートフォンでスキャン",
+      "close": "閉じる"
+    }
+  },
+  "guide": {
+    "button": "ガイド",
+    "button-title": "このページのステップごとのガイド（音声で読み上げます）",
+    "resume": "ガイドを続ける（ステップ {{current}} / {{total}}）",
+    "restart": "最初に戻る",
+    "step": "ステップ {{current}} / {{total}}",
+    "back": "戻る",
+    "next": "次へ",
+    "finish": "終了",
+    "close": "ガイドを閉じる",
+    "voice-on": "音声で読み上げる",
+    "voice-off": "音声をミュート",
+    "no-voice": "このブラウザーは音声の読み上げに対応していません",
+    "repeat": "このステップをもう一度読む",
+    "auto-on": "各ステップの後に自動で進む",
+    "auto-off": "自動で進むのをやめる",
+    "0-tabular-classification": {
+      "CAR": {
+        "intro": {
+          "title": "自動車の分類",
+          "content": "このページでは、学習済みのニューラルネットワークが、購入価格、メンテナンス費用、ドアの数、乗車定員、トランクの大きさ、安全性の6つの特徴から、車が受け入れられるかどうかを判定します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。データの出典であるUCIリポジトリのCar Evaluationデータセット、ネットワークが受け取る特徴、予測できるクラスが書かれています。"
+        },
+        "model-summary": {
+          "title": "モデルの概要",
+          "content": "このボタンでネットワークの概要を開きます。各層とそのニューロン数、そしてパラメーター数、つまり学習中に調整された重みの数がわかります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "これはネットワークの学習に使われた1728台の車です。各行が1台の車、各列がその特徴の1つです。強調表示された最後の列がクラス、つまりネットワークが予測するように学習したものです。"
+        },
+        "dataset-processed": {
+          "title": "処理済みデータ",
+          "content": "ニューラルネットワークは数値しか扱えません。このタブでは、同じ車の各カテゴリーが数値に変換されています。たとえば、4種類の価格は0から3の数値になります。モデルが実際に受け取るのはこの形です。"
+        },
+        "instances": {
+          "title": "例と行",
+          "content": "このセレクターでフォームを一度に入力できます。上には星印の付いた例がクラスごとに1つずつ、下にはデータセットのすべての行が実際のクラスとともに並んでいます。"
+        },
+        "fields": {
+          "Buying": {
+            "title": "購入価格",
+            "content": "車を買うのにかかる金額です。非常に高い、高い、普通、低いのいずれかです。"
+          },
+          "Maint": {
+            "title": "メンテナンス費用",
+            "content": "点検や修理など、車の維持にかかる費用です。これも非常に高いから低いまであります。"
+          },
+          "Doors": {
+            "title": "ドアの数",
+            "content": "2、3、4、または5以上です。判定への影響が最も小さい特徴です。"
+          },
+          "Persons": {
+            "title": "乗車定員",
+            "content": "乗れる人数で、2人、4人、それ以上のいずれかです。このデータでは、2人乗りの車は必ず「不可」になります。"
+          },
+          "Lug_boot": {
+            "title": "トランクの大きさ",
+            "content": "小、中、大のいずれかです。トランクが大きいほど、車は受け入れられやすくなります。"
+          },
+          "Safety": {
+            "title": "安全性",
+            "content": "車の推定安全性で、低、中、高のいずれかです。最も重要な特徴で、安全性が低い車は必ず「不可」になります。"
+          }
+        },
+        "vector": {
+          "title": "言葉から数値へ",
+          "content": "左はフォームの値、右はネットワークに入るベクトルです。同じ6つの特徴が、学習時に覚えた符号化で数値に変換されています。"
+        },
+        "classify": {
+          "title": "分類",
+          "content": "このボタンを押すと、ネットワークがベクトルを受け取り、層ごとに計算して各クラスの確率を出します。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに各クラスの確率が表示され、最も高いものが予測です。例や行を変更せずに分類すると実際のクラスも表示されるので、ネットワークが正解したかどうかを確認できます。このモデルの出力は「不可」「可」「優」の3つだけです。「良」の出力はないため、予測されることはありません。"
+        },
+        "explain": {
+          "title": "解釈性",
+          "content": "分類した後、ここでネットワークがなぜそう判断したのかを確認できます。SHAPは判断を特徴ごとに分け、どれがそのクラスへ押し上げ、どれが逆に働いたかを示します。全体の重要度は多くの行で同じことを行い、一般にどの特徴が最も効いているかを示します。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "例を選んで分類し、そのあと安全性や乗車定員を変えて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
         }
       },
-      "by pass": "バイパス",
-      "extravasates": "血管外漏出",
-      "regeneration": "再生",
-      "early uptake in": "早期取り込み",
-      "lym": {
-        "nodes dimin": "リンパ節の縮小",
-        "nodes enlar": "リンパ節の腫大"
+      "common": {
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。データの出典、ネットワークが受け取る特徴、予測できるクラスが書かれています。"
+        },
+        "model-summary": {
+          "title": "モデルの概要",
+          "content": "このボタンでネットワークの概要を開きます。各層とそのニューロン数、そしてパラメーター数、つまり学習中に調整された重みの数がわかります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "これはネットワークの学習に使われたデータです。各行が1つの例、各列が1つの特徴です。強調表示された最後の列がクラス、つまりネットワークが予測するように学習したものです。"
+        },
+        "dataset-processed": {
+          "title": "処理済みデータ",
+          "content": "ニューラルネットワークは数値しか扱えません。このタブでは、同じデータをモデルが受け取る形で表示しています。各カテゴリーは数値に変換されています。"
+        },
+        "dataset-analysis": {
+          "title": "分析",
+          "content": "このタブはデータセットの探索的分析をまとめたものです。サイズ、欠損値、各クラスの例の数、クラスの偏りなどの注意点、そして互いに関係のある特徴がわかります。分類する前にデータを理解するのに便利です。"
+        },
+        "instances": {
+          "title": "例と行",
+          "content": "このセレクターでフォームを一度に入力できます。上には星印の付いた例、下にはデータセットのすべての行が実際のクラスとともに並んでいます。"
+        },
+        "form": {
+          "title": "フォーム",
+          "content": "ここに分類したいものの値を、特徴ごとに1つの欄に入力します。各欄の下には、データセットでの名前と入力できる値が表示されます。"
+        },
+        "vector": {
+          "title": "データからベクトルへ",
+          "content": "左はフォームの値、右はネットワークに入るベクトルです。同じ特徴が、学習時に覚えた符号化で数値に変換されています。"
+        },
+        "classify": {
+          "title": "分類",
+          "content": "このボタンを押すと、ネットワークがベクトルを受け取り、層ごとに計算して各クラスの確率を出します。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに各クラスの確率が表示され、最も高いものが予測です。例や行を変更せずに分類すると実際のクラスも表示されるので、ネットワークが正解したかどうかを確認できます。"
+        },
+        "explain": {
+          "title": "解釈性",
+          "content": "分類した後、ここでネットワークがなぜそう判断したのかを確認できます。SHAPは判断を特徴ごとに分け、どれがそのクラスへ押し上げ、どれが逆に働いたかを示します。全体の重要度は多くの行で同じことを行い、一般にどの特徴が最も効いているかを示します。"
+        },
+        "step-by-step": {
+          "title": "ステップごと",
+          "content": "ここでは、このモデルが実際の重みでどう答えを計算するかが見られます。層ごとの前向きの計算、誤差、そして後ろ向きに、もう1ステップ学習したら各重みがどれだけ変わるかです。ニューロンをクリックすると計算が見られます。ニューロンが64個未満のモデルのときだけ描かれます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "例を選んで分類し、そのあと特徴を変えて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
       },
-      "changes in lym": "リンパ管の変化",
-      "defect in node": "リンパ節の欠損",
-      "changes in node": "リンパ節の変化",
-      "changes in stru": "構造の変化",
-      "special forms": "特殊な形態",
-      "dislocation of": "転位",
-      "exclusion of": "除外",
-      "no": {
-        " of nodes in": "リンパ節の数"
+      "IRIS": {
+        "intro": {
+          "title": "アヤメの分類",
+          "content": "このページでは、学習済みのニューラルネットワークが、がく片と花弁の長さと幅という4つの測定値から、アヤメの種類を判定します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "統計学者ロナルド・フィッシャーが1936年に紹介した有名なIrisデータセットです。150本の花があり、各種類50本ずつです。各行が1本の花とそのセンチメートル単位の4つの測定値で、強調表示された最後の列がその種類です。"
+        },
+        "fields": {
+          "sepal_length": {
+            "title": "がく片の長さ",
+            "content": "がく片は、花が開く前に花を守る緑の葉です。この欄はその長さで、単位はセンチメートルです。"
+          },
+          "sepal_width": {
+            "title": "がく片の幅",
+            "content": "がく片の幅で、単位はセンチメートルです。種類の区別に最も役立たない測定値です。"
+          },
+          "petal_length": {
+            "title": "花弁の長さ",
+            "content": "花弁の長さで、単位はセンチメートルです。花弁の幅とともに、種類を最もよく分ける測定値です。setosaは他の2種類よりずっと小さな花弁をしています。"
+          },
+          "petal_width": {
+            "title": "花弁の幅",
+            "content": "花弁の幅で、単位はセンチメートルです。このデータでは、花弁の幅が1センチメートル未満の花は必ずsetosaです。"
+          }
+        },
+        "vector": {
+          "title": "データからベクトルへ",
+          "content": "ここでは4つの測定値がすでに数値なので、ネットワークに入るベクトルは同じ測定値を同じ順番で並べたものです。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここにsetosa、versicolor、virginicaの各種類の確率が表示され、最も高いものが予測です。setosaは見分けやすいですが、残りの2種類は似ているため、ネットワークが迷うのはそこです。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "versicolorの例を選んで分類し、花弁の長さと幅を少しずつ大きくしてみましょう。ネットワークが迷い始め、最後にはvirginicaと答えるのがわかります。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
       },
-      "Category": "カテゴリ",
-      "normal find": "正常所見",
-      "metastases": "転移",
-      "malign lymph": "悪性リンパ腫",
-      "fibrosis": "線維症"
+      "LYMPHOGRAPHY": {
+        "intro": {
+          "title": "リンパ管造影の分類",
+          "content": "このページでは、学習済みのニューラルネットワークが、リンパ系の画像検査であるリンパ管造影の結果を、正常所見、転移、悪性リンパ腫、線維症の4つの診断に分類します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "リュブリャナ大学医療センター腫瘍学研究所の148人の患者のデータです。各行が1人の患者、各列がリンパ管造影で観察された項目です。クラスは大きく偏っていて、転移が81件、悪性リンパ腫が61件ある一方、線維症は4件、正常所見は2件しかありません。"
+        },
+        "form": {
+          "title": "リンパ管造影でわかること",
+          "content": "フォームには18の特徴があります。リンパ管が正常か、弓状か、変形しているか、ずれているかを示すもの、閉塞や迂回、造影剤の漏れがあるかを示すもの、そしてリンパ節の数、大きくなったか小さくなったか、形、構造の欠損や変化を表すものです。医学用語ですが、すべてを理解しなくても予測の変化は確認できます。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに各診断の確率が表示され、最も高いものが予測です。線維症と正常所見の例がとても少ないため、ネットワークは主に転移と悪性リンパ腫の区別を学習しています。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "各診断の例を選んで分類し、解釈性でそれぞれどの特徴が最も効いたかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      }
+    },
+    "1-regression": {
+      "common": {
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。データの出典、ネットワークが受け取る変数、予測する変数が書かれています。"
+        },
+        "model-summary": {
+          "title": "モデルの概要",
+          "content": "このボタンでネットワークの概要を開きます。各層とそのニューロン数、そしてパラメーター数、つまり学習中に調整された重みの数がわかります。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "ここでデータセットを選びます。それぞれに学習済みのネットワークがあります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "これはネットワークの学習に使われたデータです。各行が1つの例、各列が1つの変数です。強調表示された列が目的変数、つまりネットワークが予測するように学習した数値です。"
+        },
+        "dataset-processed": {
+          "title": "処理済みデータ",
+          "content": "このタブでは、同じデータをモデルが受け取る形で表示しています。テキストは数値に変換され、その下に各列の統計的な説明があります。"
+        },
+        "dataset-analysis": {
+          "title": "分析",
+          "content": "このタブはデータセットの探索的分析をまとめたものです。サイズ、欠損値、目的変数の分布、目的変数と最も関係のある変数がわかります。予測する前にデータを理解するのに便利です。"
+        },
+        "instances": {
+          "title": "データセットの行",
+          "content": "このセレクターで、データセットの任意の行をフォームに入力できます。行番号の横には実際の値が表示されるので、あとで予測と比べられます。"
+        },
+        "models": {
+          "title": "モデル",
+          "content": "ここで、このデータセット用に学習済みのネットワークを1つ選びます。"
+        },
+        "form": {
+          "title": "フォーム",
+          "content": "ここに入力変数の値を、変数ごとに1つの欄に入力します。各欄の下には、その種類とデータでの値の範囲が表示されます。"
+        },
+        "predict": {
+          "title": "予測",
+          "content": "このボタンを押すと、ネットワークが符号化とスケーリング済みの値を受け取り、層ごとに計算して1つの数値、つまり予測を返します。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測値が表示されます。データセットの行を変更せずに使った場合は、実際の値と誤差、つまり両者の差も表示されます。その下には、ネットワークに入る前にデータが通る各段階があります。"
+        },
+        "explain": {
+          "title": "解釈性",
+          "content": "予測した後、ここでネットワークがなぜその値を出したのかを確認できます。SHAPは予測を変数ごとに分け、平均的な予測と比べてどれが値を上げ、どれが下げたかを示します。全体の重要度は多くの行で同じことを行い、一般にどの変数が最も効いているかを示します。"
+        },
+        "step-by-step": {
+          "title": "ステップごと",
+          "content": "ここでは、このモデルが実際の重みでどう答えを計算するかが見られます。層ごとの前向きの計算、誤差、そして後ろ向きに、もう1ステップ学習したら各重みがどれだけ変わるかです。ニューロンをクリックすると計算が見られます。ニューロンが64個未満のモデルのときだけ描かれます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "行を選んで値を予測し、そのあと変数を変えて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "AUTO_MPG": {
+        "intro": {
+          "title": "燃費性能",
+          "content": "このページでは、学習済みのニューラルネットワークが、シリンダー数、排気量、馬力、重量、加速、モデル年の6つの情報から、車が燃料1ガロンで何マイル走るかを予測します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "このモデルのデータセットはAuto MPGの1つだけです。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "Auto MPGデータセットの、1970年から1982年までの396台の車です。強調表示された列mpgは1ガロンあたりのマイル数で、高いほど燃費の良い車です。このデータでは9から46までです。"
+        },
+        "fields": {
+          "cylinders": {
+            "title": "シリンダー数",
+            "content": "エンジンのシリンダーの数で、3から8までです。シリンダーが多いほど、たいてい燃費は悪くなります。"
+          },
+          "displacement": {
+            "title": "排気量",
+            "content": "エンジンのシリンダーの総容積で、単位は立方インチです。大きいほど、車は燃料を多く使います。"
+          },
+          "horsepower": {
+            "title": "馬力",
+            "content": "エンジンの出力です。馬力の大きい車ほど、1ガロンあたりに走れる距離はたいてい短くなります。"
+          },
+          "weight": {
+            "title": "重量",
+            "content": "車の重さで、単位はポンドです。燃費と最も関係のある変数で、重い車ほど1ガロンあたりに走れる距離は短くなります。"
+          },
+          "acceleration": {
+            "title": "加速",
+            "content": "時速0マイルから60マイルまでにかかる秒数です。数値が大きいほど加速がゆるやかな車で、たいてい燃費が良くなります。"
+          },
+          "model-year": {
+            "title": "モデル年",
+            "content": "モデルが発売された年を2桁で表したもので、70から82までです。このデータセットでは新しい車ほど燃費が良く、その一因は当時の燃費規制です。"
+          }
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された燃費が、1ガロンあたりのマイル数で表示されます。行を変更せずに使った場合は、実際の値と誤差も表示されます。その下には、ネットワークに入る前にデータが通る各段階があります。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "車を選んで燃費を予測し、そのあと重量や馬力を上げてみましょう。ネットワークが予測する1ガロンあたりのマイル数が減るのがわかります。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "STUDENT_PERFORMANCE": {
+        "intro": {
+          "title": "学生の成績",
+          "content": "このページでは、学習済みのニューラルネットワークが、学校生活、家庭、交友に関する30の情報から、中等教育の学生の最終成績を0から20の範囲で予測します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。データの出典、ネットワークが受け取る変数、予測する変数が書かれています。そこにあるG1とG2についての注記は元のデータの話で、このバージョンでは意図的に除いています。理由はこのあと説明します。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "ポルトガルの2つの中等学校の、数学の学生とポルトガル語の学生の2つのデータセットがあります。それぞれに学習済みのネットワークがあります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "各行が1人の学生で、数学は395人、ポルトガル語は649人です。強調表示された列G3は学年末の最終成績で、0から20までです。ここでは元のデータにあるG1とG2の2列、つまり1学期と2学期の成績を、意図的に除いています。"
+        },
+        "form": {
+          "title": "学生のデータ",
+          "content": "フォームには30の変数があります。年齢や性別などの個人に関するもの、母親と父親の学歴や職業などの家庭に関するもの、勉強時間、過去の落第、欠席などの学校に関するもの、そして友人との外出や飲酒などの交友に関するものです。過去の落第の数は、最終成績が低いことと最も関係しています。学期の成績はここにはありません。その理由は次のステップで説明します。"
+        },
+        "grades": {
+          "title": "G1とG2の成績は？",
+          "content": "G1とG2は1学期と2学期の成績で、最終成績ととてもよく似ています。G3との相関は0.8から0.92です。これがあると、ネットワークはほとんど何も学ぶ必要がなく、2学期の成績を写すだけで済んでしまいます。これがなければ、学生の学校生活、家庭、交友だけから最終成績を予測しなければなりません。ずっと難しくなりますが、そのぶん役に立ちます。成績がまだ1つもない時点で予測でき、助けが必要な学生を早めに支援できるからです。そのため、このページのネットワークはG1とG2なしで学習しています。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに0から20の範囲で予測された最終成績が表示されます。行を変更せずに使った場合は、実際の成績と誤差も表示されます。ネットワークは学期の成績を知らないので、数点ずれるのは普通です。成績が出る前に予測できることの代償です。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "学生を選んで成績を予測し、そのあと過去の落第の数や勉強時間を変えて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "WINE": {
+        "intro": {
+          "title": "ワインの品質",
+          "content": "このページでは、学習済みのニューラルネットワークが、11の化学的な測定値から、ポルトガル産ワインの品質、つまりテイスターが付けた点数を予測します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "ヴィーニョ・ヴェルデ地方の赤ワインと白ワインの2つのデータセットがあります。それぞれに学習済みのネットワークがあります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "各行が1本のワインで、赤が1599本、白が4898本です。強調表示された列qualityはテイスターの点数で0から10までですが、このデータでは3から9までしかなく、ほとんどのワインが5か6です。"
+        },
+        "form": {
+          "title": "ワインの測定値",
+          "content": "フォームには11の化学的な測定値があります。固定酸度と揮発酸度、クエン酸、残留糖分、塩化物、遊離二酸化硫黄と総二酸化硫黄、密度、pH、硫酸塩、アルコールです。品質と最も関係があるのはアルコールで、アルコール度数の高いワインほど点数が高い傾向があります。赤ワインでは、揮発酸度が高いと点数が下がります。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された品質が表示されます。整数とは限らず、たとえば5.6のような値になることもあります。行を変更せずに使った場合は、実際の点数と誤差も表示されます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "ワインを選んで品質を予測し、そのあとアルコールを上げて、予測がどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "SALARY": {
+        "intro": {
+          "title": "給与",
+          "content": "このページでは、学習済みのニューラルネットワークが経験年数から給与を予測します。それぞれが何かを順番に説明します。「次へ」で進んだり、戻ったり、音声を消したり、ガイドを自動で進めたりできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "データセットは 2 つあります。経験年数だけのものと、年齢・性別・学歴・職種を含むものです。学習済みのネットワークは 1 つ目のものです。2 つ目ではデータを見られますが、予測するには自分でネットワークを学習させる必要があります。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "1 つ目には 1000 人分のデータがあります。強調された列 Salary が給与で、経験年数（1 年未満から 50 年近くまで）とともに上がる傾向があります。回帰の練習用のサンプルデータです。"
+        },
+        "form": {
+          "title": "人のデータ",
+          "content": "1 つ目のデータセットでは、フォームの項目は経験年数だけです。年数が多いほど、ネットワークは高い給与を予測する傾向があります。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された給与が、データセットと同じ単位で表示されます。行を変更せずに使った場合は、実際の給与と誤差も表示されます。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "人を選んで給与を予測し、そのあと経験年数を変えて予測がどう変わるか見てください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "HOUSING_PRICES": {
+        "intro": {
+          "title": "住宅価格",
+          "content": "このページでは、学習済みのニューラルネットワークがボストンの地区の住宅価格の中央値を、その地区の 12 のデータから予測します。それぞれが何かを順番に説明します。「次へ」で進んだり、戻ったり、音声を消したり、ガイドを自動で進めたりできます。"
+        },
+        "dataset-select": {
+          "title": "データセット",
+          "content": "このモデルのデータセットは Boston Housing の 1 つだけです。"
+        },
+        "dataset": {
+          "title": "データセット",
+          "content": "各行は 1970 年代のボストンの 506 地区のひとつです。強調された列 MEDV が住宅価格の中央値（千ドル単位、5〜50）です。このバージョンには元のデータセットの列 B はありません。倫理的な理由で削除されました。"
+        },
+        "form": {
+          "title": "地区のデータ",
+          "content": "フォームには 12 の項目があります：犯罪率（CRIM）、住宅用地（ZN）と工業用地（INDUS）の割合、チャールズ川に面しているか（CHAS）、大気汚染（NOX）、住宅あたりの部屋数（RM）、築年数（AGE）、雇用中心地までの距離（DIS）、高速道路へのアクセス（RAD）、税金（TAX）、教師一人あたりの生徒数（PTRATIO）、低所得層の割合（LSTAT）。価格と最も関係が深いのは部屋数と LSTAT です。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測された価格の中央値が千ドル単位で表示されます。行を変更せずに使った場合は、実際の値と誤差も表示されます。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "地区を選んで価格を予測し、そのあと部屋数（RM）を増やして予測がどう変わるか見てください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      }
+    },
+    "2-object-detection": {
+      "common": {
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。何を検出し、何を受け取り、何を返すかが書かれています。学習済みのモデルなので、ここでは使うだけで学習はしません。"
+        },
+        "explain-about": {
+          "title": "説明の仕方",
+          "content": "この欄は解釈性の計算方法をまとめたものです。画像を小さな部分に分け、さまざまな組み合わせで隠して結果がどれだけ変わるかを調べます。こうして、どの部分が最も効いたかがわかります。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "ここにはカメラの映像が表示され、モデルが検出したものが1秒間に最大20回、その上に描かれます。"
+        },
+        "webcam-controls": {
+          "title": "カメラの操作",
+          "content": "スイッチでWebカメラをオンにします。初回はブラウザーが許可を求めます。カメラが複数ある場合は、ドロップダウンで選べます。カメラのボタンでキャプチャーをダウンロードし、最後のボタンでカメラを全画面表示にします。"
+        },
+        "device-info": {
+          "title": "デバイス情報",
+          "content": "ここには、カメラ、ブラウザー、画面の情報と、検出の様子、つまり1秒あたりの予測数と1回の予測時間が表示されます。"
+        },
+        "image": {
+          "title": "画像での認識",
+          "content": "カメラがない場合は、ここに写真をドラッグするか、パソコンから選んでください。モデルが処理し、検出したものを上に描きます。"
+        },
+        "explain": {
+          "title": "解釈性",
+          "content": "写真を処理した後、ここで説明を計算できます。画像の上のヒートマップで、モデルの検出に最も効いた部分がわかります。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにするか写真をアップロードして、モデルが何を検出するかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "FACE-DETECTOR": {
+        "intro": {
+          "title": "顔の検出",
+          "content": "このページでは、MediaPipeのFace Detectorモデルが、写真やカメラの中から最大4つの顔を見つけ、それぞれに目、鼻、口、耳の6つの特徴点を付けます。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、顔の上に特徴点とその名前がリアルタイムで表示されます。映像は鏡のように表示されます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、顔を回したり、顔の一部を隠したりして、いつ見つからなくなるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "FACE-MESH": {
+        "intro": {
+          "title": "顔メッシュ",
+          "content": "このページでは、MediaPipeのFace Meshモデルが、写真やカメラの中から最大4つの顔を見つけ、それぞれに数百の点を置いて、顔の表面の立体的なメッシュを作ります。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、顔の上に点のメッシュが表示され、表情の動きにリアルタイムで追従します。映像は鏡のように表示されます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、口を開けたり、ウインクしたり、眉を上げたりして、メッシュが表情に追従する様子を見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "MOVE-NET--POSE-NET": {
+        "intro": {
+          "title": "関節検出器",
+          "content": "このページでは、MoveNetモデルが体の姿勢を推定します。最大5人まで、1人につき目、耳、肩、肘、手首、腰、膝、足首などの17点を検出します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、各人の点が線で結ばれ、一緒に動く骨格のように表示されます。全身が映るように少し離れてください。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、全身が映るまで離れ、腕や脚を動かしてみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "COCO-SSD": {
+        "intro": {
+          "title": "物体検出器",
+          "content": "このページでは、COCO-SSDモデルが写真やカメラの中から物体を見つけ、枠で囲んで、それが何かとその確信度を表示します。人、動物、乗り物、食べ物、家具など、COCOデータセットの80クラスを認識します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、認識した物体がそれぞれ枠で囲まれ、名前と確信度のパーセンテージが表示されます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、カップ、ボトル、本、スマートフォンなどをかざし、何をどれくらいの確信度で認識するかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "FACE-API": {
+        "intro": {
+          "title": "顔の表情",
+          "content": "このページでは、複数のニューラルネットワークを組み合わせたface-apiが、写真やカメラの中から顔を見つけ、それぞれのおおよその年齢と表情（無表情、喜び、悲しみ、怒り、恐れ、嫌悪、驚き）を推定します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、各顔が枠で囲まれ、推定年齢と、表情が各感情にどれくらい近いかが表示されます。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、笑ったり、驚いたり、怒った顔をしたりして、各表情のパーセンテージがどう変わるかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "HAND-SIGN": {
+        "intro": {
+          "title": "手話",
+          "content": "このページでは、ニューラルネットワークが手を見つけ、指と関節の21点を検出します。そのあと別のプログラムが指の位置を指文字のアルファベットと比べます。アプリがスペイン語のときはスペイン手話、それ以外の言語ではアメリカ手話の指文字です。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "webcam": {
+          "title": "リアルタイム認識",
+          "content": "カメラをオンにすると、手の点と認識した文字が表示されます。手をカメラに向け、明るい場所で、画面からはみ出さないようにしてください。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "Webカメラをオンにして、モデルの説明にあるアルファベットの画像を見ながら、手でいくつかの文字を作ってみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      }
+    },
+    "3-image-classification": {
+      "common": {
+        "model": {
+          "title": "モデル",
+          "content": "これはモデルの説明です。どんな画像で学習したか、何を受け取り、どのクラスを認識できるかが書かれています。"
+        },
+        "model-summary": {
+          "title": "モデルの概要",
+          "content": "このボタンでネットワークの概要を開きます。各層とそのニューロン数、そしてパラメーター数、つまり学習中に調整された重みの数がわかります。"
+        },
+        "explain-about": {
+          "title": "説明の仕方",
+          "content": "この欄は予測の説明に使う手法をまとめたものです。LRPはネットワークを逆にたどって判断を画素まで分配し、SHAPは画像の一部をさまざまな組み合わせで隠して結果がどれだけ変わるかを調べます。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "これらの画像のどれかを押すと分類されます。結果は下に表示されます。"
+        },
+        "test-images": {
+          "title": "テスト画像",
+          "content": "このボタンで、ネットワークが学習中に見なかったテスト画像を読み込みます。そのあと同じ場所で好きな画像を選んで分類し、予測を実際のクラスと比べられます。"
+        },
+        "upload": {
+          "title": "画像のアップロード",
+          "content": "自分の画像をここにドラッグするか、パソコンから選び、ボタンを押して分類することもできます。"
+        },
+        "draw": {
+          "title": "描く",
+          "content": "または、ここにマウスや指で描き、ボタンを押して絵を分類します。絵は、ネットワークが学習した画像と同じ28×28画素に縮小されます。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに分類された画像と、その横に各クラスの確率が表示されます。最も高いものが予測です。"
+        },
+        "explain": {
+          "title": "解釈性",
+          "content": "分類した後、ここで画像の上にヒートマップを計算し、ネットワークの判断に最も効いた画素を示します。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "例を分類し、自分の画像をアップロードして、解釈性でネットワークがどこに注目したかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "IMAGE-MNIST": {
+        "intro": {
+          "title": "数字の認識",
+          "content": "このページでは、学習済みの畳み込みニューラルネットワークが、手書きの0から9までの数字を認識します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "このネットワークはMNISTで学習しました。MNISTは7万個の手書き数字（学習用6万個、テスト用1万個）を28×28画素のグレースケール画像にしたもので、機械学習を始めるときに最もよく使われるデータセットの1つです。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "これらの数字のどれかを押すと分類されます。結果は下に表示されます。"
+        },
+        "draw": {
+          "title": "数字を描く",
+          "content": "ここにマウスや指で0から9の数字を描き、ボタンを押して分類します。絵はMNISTと同じ28×28画素に縮小されるので、大きく中央に描いてください。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここにネットワークが見た画像と、各数字の確率が表示されます。最も高いものが予測です。テスト画像を分類した場合は、実際の数字も表示されます。"
+        },
+        "explain": {
+          "title": "LRPによる解釈性",
+          "content": "分類した後、ここでLRPのヒートマップを計算します。LRPはネットワークの判断を層ごとに逆向きに画素まで分配するので、絵のどの線が最も効いたかがわかります。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "横線の入った7や台の付いた1など、自分なりの書き方で数字を描き、ネットワークが認識できるか、どこに注目したかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "IMAGE-KMNIST": {
+        "intro": {
+          "title": "くずし字",
+          "content": "このページでは、学習済みの畳み込みニューラルネットワークが、何世紀にもわたって日本で使われた草書体、くずし字で手書きされたひらがな10文字を認識します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "このネットワークはKuzushiji-MNISTで学習しました。MNISTと同じ28×28画素の画像ですが、数字の代わりに文字が書かれています。同じ文字でもまったく違う書き方があるため、MNISTより難しいデータセットです。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "各文字が今の書き方と、3 つの昔の字形（変体仮名）とその字母で表示されます。どれほど違うか見てください。どれかを押すと分類され、結果は下に表示されます。"
+        },
+        "draw": {
+          "title": "文字を描く",
+          "content": "ここにマウスや指で10文字のどれかを描き、ボタンを押して分類します。ネットワークが学習したのは昔の草書体なので、今のひらがなとは似ていないこともあります。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここにネットワークが見た画像と、各文字の確率が表示されます。最も高いものが予測です。テスト画像を分類した場合は、実際の文字も表示されます。"
+        },
+        "explain": {
+          "title": "LRPによる解釈性",
+          "content": "分類した後、ここでLRPのヒートマップを計算します。LRPはネットワークの判断を層ごとに逆向きに画素まで分配するので、どの線が最も効いたかがわかります。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "テスト画像を読み込み、同じ文字のいろいろな書き方を比べてみましょう。まったく違う線でもネットワークが正解するのがわかります。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "IMAGE-CIFAR10": {
+        "intro": {
+          "title": "写真の分類",
+          "content": "このページでは、学習済みの畳み込みニューラルネットワークが、飛行機、自動車、鳥、猫、鹿、犬、カエル、馬、船、トラックの 10 クラスの小さなカラー写真を認識します。それぞれが何かを順番に説明します。「次へ」で進み、戻ったり、音声をミュートしたり、ガイドを自動で進めたりできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "このネットワークは CIFAR-10 で学習しました。32×32 ピクセルのカラー写真で、学習用が 50,000 枚、テスト用が 10,000 枚です。各写真には赤、緑、青の 3 つのチャンネルがあるので、ネットワークが受け取る数は MNIST のほぼ 4 倍です。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "各クラスのテスト写真が 1 枚ずつ、ピクセルが見えるように拡大して並んでいます。どれかを押すと分類され、結果は下に表示されます。"
+        },
+        "upload": {
+          "title": "画像をアップロード",
+          "content": "ここに自分の写真をドラッグするか、パソコンから選び、ボタンを押して分類します。データセットと同じ 32×32 ピクセルに縮小されるので、物が写真のほとんどを占めているとうまくいきます。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ネットワークが見た画像（縮小後）と、各クラスの確率がここに表示されます。いちばん高いものが予測です。テスト画像を分類した場合は、本当のクラスも表示されます。"
+        },
+        "explain": {
+          "title": "説明可能性",
+          "content": "分類したあと、ここで写真の上にヒートマップを計算します。LRP では判断を層ごとに後ろへピクセルまで割り振り、SHAP では写真の一部を隠して予測がどれだけ変わるかを見ます。ネットワークがどこに注目したかがわかります。"
+        },
+        "end": {
+          "title": "やってみよう",
+          "content": "テスト画像を読み込み、ネットワークがどのクラスでよく間違えるか探してみましょう。猫と犬、自動車とトラックをよく取り違えます。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      },
+      "IMAGE-MOBILENET": {
+        "intro": {
+          "title": "画像分類",
+          "content": "このページでは、スマートフォン向けに設計された畳み込みニューラルネットワークMobileNetが、動物、物、乗り物、食べ物など1000のカテゴリーの中から、写真に写っているものを認識します。それぞれの意味を順番に説明します。「次へ」で進み、「戻る」で戻れます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "ImageNetの1000カテゴリー、100万枚以上の写真で学習したMobileNetです。224×224画素のカラー画像を受け取ります。"
+        },
+        "examples": {
+          "title": "例の画像",
+          "content": "これらの写真のどれかを押すと分類されます。結果は下に表示されます。"
+        },
+        "upload": {
+          "title": "画像のアップロード",
+          "content": "自分の写真をここにドラッグするか、パソコンから選び、ボタンを押して分類します。認識したいものが写真のほぼ全体を占めていると、よりうまくいきます。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここにネットワークが見た写真と、可能性の高いカテゴリーが高い順に表示されます。カテゴリーが1000もあるので、2つの犬種のように似たものの間で迷うのは普通です。"
+        },
+        "explain": {
+          "title": "SHAPによる解釈性",
+          "content": "分類した後、ここでSHAPのヒートマップを計算します。写真を小さな部分に分け、さまざまな組み合わせで隠して予測がどれだけ変わるかを調べるので、写真のどの部分が最も効いたかがわかります。"
+        },
+        "end": {
+          "title": "試してみよう",
+          "content": "身近なものの写真をアップロードして、ネットワークが認識できるか、どこに注目したかを見てみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+        }
+      }
+    },
+    "go-to": "ステップへ移動",
+    "voice": "音声",
+    "voice-auto": "自動",
+    "voice-online": "オンライン",
+    "train": {
+      "0-tabular-classification": {
+        "common": {
+          "intro": {
+            "title": "ネットワークを学習させよう",
+            "content": "このページでは、データセットを分類する自分のニューラルネットワークを設計して学習させ、そのあと試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "session": {
+            "title": "設定の保存",
+            "content": "これらのボタンで、選んだ層とハイパーパラメータをファイルに保存し、別の日に読み込んで続きから再開したり、共有したりできます。データと学習済みモデルは保存されません。"
+          },
+          "manual": {
+            "title": "マニュアル",
+            "content": "初めての場合はマニュアルを開いてください。このページの各部分と、それぞれのオプションの意味をていねいに説明しています。"
+          },
+          "layers-add": {
+            "title": "層の追加と削除",
+            "content": "これらのボタンで、ネットワークの最初または最後に層を追加します。層を削除したり、ニューロン数や活性化関数を変えたりするには、一覧でその層を開いてください。"
+          },
+          "learning-rate": {
+            "title": "学習率",
+            "content": "各ステップで重みをどれだけ修正するかです。大きいと速く学習しますが、行き過ぎて安定しないことがあります。小さいと安定しますが、より多くのエポックが必要です。0.01 から始めるのがおすすめです。"
+          },
+          "test-size": {
+            "title": "テストデータ",
+            "content": "この割合のデータは取り分けられ、学習中のネットワークには見せません。あとで新しいデータでどれだけ正解するかを確かめるために使います。本当に大事なのはそこです。見たことのあるデータにしか正解できないネットワークは、学んだのではなく暗記しただけです。"
+          },
+          "optimizer": {
+            "title": "オプティマイザー",
+            "content": "誤差をもとに重みを調整する方法です。Adam はたいてい何も変えずにうまく動きます。SGD は最もシンプルで、RMSprop、Adagrad、Adadelta は重みごとに更新の幅を調整します。"
+          },
+          "step-by-step": {
+            "title": "ステップごと",
+            "content": "本番の学習の前に、ここでネットワークが1つずつ例から学ぶ様子を見られます。層ごとの前向きの計算、誤差、そして誤差が後ろ向きに戻って各重みを修正する様子です。フェーズごとに進めるか再生を押し、ニューロンをクリックすると計算が見られます。追えるように、ニューロンが64個未満のネットワークのときだけ描かれます。"
+          },
+          "models": {
+            "title": "生成されたモデル",
+            "content": "学習するたびに、その設定と結果がここに1行追加され、比べることができます。テストデータでの誤差が最も小さいモデルには印が付きます。ここから学習履歴を見たり、モデルをダウンロードしたりもできます。"
+          },
+          "dataset-info": {
+            "title": "データセット",
+            "content": "データセットの説明です。データの出典、各列の意味、予測するクラスが書かれています。ネットワークを設計する前に読んでおきましょう。"
+          },
+          "dataset": {
+            "title": "データ",
+            "content": "これが学習に使う表です。各行が1つの例、各列が1つの特徴で、強調表示された列がクラスです。下の項目では、処理の前と後の各列の統計を見られます。ネットワークは数値しか扱えないので、カテゴリーはそれぞれ数値に変換されます。"
+          },
+          "layer-design": {
+            "title": "あなたのネットワーク",
+            "content": "この図が学習させるネットワークです。左が入力層で、特徴ごとに1つのニューロンがあります。中央が隠れ層、右が出力層で、クラスごとに1つのニューロンがあります。層を編集するとすぐに変わり、隅のボタンで全画面表示にできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、汎化せずにデータを暗記してしまうことがあります。最後の層が答えを出します。クラスの数と同じだけのニューロンと、出力を確率に変える softmax 活性化関数が必要です。"
+          },
+          "epochs": {
+            "title": "エポック",
+            "content": "1エポックは、学習データ全体を1回通すことです。少なすぎるとネットワークは学びきれず、多すぎると時間がかかり、データを暗記してしまうことがあります。10 から始めて、最後まで精度が上がり続けるなら増やしましょう。"
+          },
+          "loss": {
+            "title": "損失関数",
+            "content": "各例でネットワークがどれだけ間違えているかを測るもので、オプティマイザーはこれを小さくしようとします。複数のクラスから選ぶには、最初から選ばれているカテゴリカル交差エントロピーを使います。"
+          },
+          "metrics": {
+            "title": "評価指標",
+            "content": "学習中に表示され、うまく進んでいるかを判断するためのものです。たとえば正解率は、正しく分類できた例の割合です。ネットワークの学び方は変わらず、見えるものだけが変わります。"
+          },
+          "train": {
+            "title": "学習",
+            "content": "「学習」を押すと、ネットワークはエポックごとに学習します。ここに進み具合が表示され、ビューアーでは学習データとテストデータの両方で、損失が下がり正解率が上がる様子を見られます。時間がかかりすぎる場合は止められます。"
+          },
+          "predict": {
+            "title": "分類",
+            "content": "学習済みのモデルで、データセットの行を選ぶか例の値を入力して「分類」を押してください。各クラスの確率が表示されます。上でどのモデルで分類するかを選べるので、比べてみましょう。"
+          },
+          "explain": {
+            "title": "説明可能性",
+            "content": "分類したあと、SHAP がネットワークの判断の理由を示します。どの特徴が予測されたクラスに押し上げ、どの特徴が反対に働いたかがわかります。全体の重要度は、多くの行で同じことを行い、どの特徴が一般に最も重要かを示します。"
+          },
+          "end": {
+            "title": "試してみよう",
+            "content": "最初の値で学習させて、正解率を見てみましょう。次に、エポック数や層のニューロン数など1つだけ変えて学習し直し、表で2つのモデルを比べてください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+          }
+        },
+        "CAR": {
+          "intro": {
+            "title": "自動車の分類",
+            "content": "このページでは、価格、メンテナンス費用、安全性などの6つの特徴から、車が受け入れられるかどうかを判定するネットワークを、1728台の例で学習させます。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、汎化せずにデータを暗記してしまうことがあります。最後の層が答えを出します。クラス（不可、可、良、優）ごとに1つ、計4つのニューロンがあり、softmax 活性化関数で確率に変換されます。"
+          }
+        },
+        "IRIS": {
+          "intro": {
+            "title": "アヤメの分類",
+            "content": "このページでは、花びらとがく片の4つの測定値から、3種類のうちどのアヤメかを見分けるネットワークを、150本の花の例で学習させます。小さなデータセットなので一瞬で学習でき、いろいろ試すのにぴったりです。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、汎化せずにデータを暗記してしまうことがあります。最後の層が答えを出します。種（setosa、versicolor、virginica）ごとに1つ、計3つのニューロンがあり、softmax 活性化関数で確率に変換されます。"
+          }
+        },
+        "LYMPHOGRAPHY": {
+          "intro": {
+            "title": "リンパ管造影",
+            "content": "このページでは、18の特徴からリンパ管造影の検査結果を4つの診断に分類するネットワークを、148人の患者の例で学習させます。一部のクラスは例がとても少ないので、クラスごとの正解の具合に注目してください。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、患者がこれだけ少ないとデータを暗記しやすくなります。最後の層が答えを出します。診断ごとに1つ、計4つのニューロンがあり、softmax 活性化関数で確率に変換されます。"
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "自分のデータ",
+            "content": "このページでは、自分のデータでネットワークを学習させます。データをアップロードし、予測したい列を選び、ネットワークを設計して学習させます。データがブラウザーの外に出ることはありません。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "dataset-info": {
+            "title": "データのアップロード",
+            "content": "ここにファイルをドラッグするか、クリックして選んでください。CSV、TSV、ARFF、JSON、JSON Lines、Parquet に対応しています。各行が1つの例で、列の1つが予測したいクラスである必要があります。"
+          },
+          "process": {
+            "title": "データの準備",
+            "content": "学習の前にデータを準備します。予測したい列、テキストの列を数値に変換する方法、値のスケーリング方法を選んでください。ボタンを押すとデータの準備が整い、ネットワークが表示されます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、データを暗記してしまうことがあります。最後の層が答えを出します。予測する列のクラスの数と同じだけのニューロンと、確率に変換する softmax 活性化関数が必要です。"
+          }
+        }
+      },
+      "1-regression": {
+        "common": {
+          "intro": {
+            "title": "回帰ネットワークを学習させよう",
+            "content": "このページでは、ほかの列から価格や成績などの数値を予測するニューラルネットワークを設計して学習させ、そのあと試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "session": {
+            "title": "設定の保存",
+            "content": "これらのボタンで、選んだ層とハイパーパラメータをファイルに保存し、別の日に読み込んで続きから再開したり、共有したりできます。データと学習済みモデルは保存されません。"
+          },
+          "manual": {
+            "title": "マニュアル",
+            "content": "初めての場合はマニュアルを開いてください。このページの各部分と、それぞれのオプションの意味をていねいに説明しています。"
+          },
+          "layers-add": {
+            "title": "層の追加と削除",
+            "content": "これらのボタンで、ネットワークの最初または最後に層を追加します。層を削除したり、ニューロン数や活性化関数を変えたりするには、一覧でその層を開いてください。"
+          },
+          "learning-rate": {
+            "title": "学習率",
+            "content": "各ステップで重みをどれだけ修正するかです。大きいと速く学習しますが、行き過ぎて安定しないことがあります。小さいと安定しますが、より多くのエポックが必要です。0.01 から始めるのがおすすめです。"
+          },
+          "test-size": {
+            "title": "テストデータ",
+            "content": "この割合のデータは取り分けられ、学習中のネットワークには見せません。あとで新しいデータでどれだけ正解するかを確かめるために使います。本当に大事なのはそこです。見たことのあるデータにしか正解できないネットワークは、学んだのではなく暗記しただけです。"
+          },
+          "optimizer": {
+            "title": "オプティマイザー",
+            "content": "誤差をもとに重みを調整する方法です。最初から選ばれている RMSprop は回帰に向いています。Adam もたいてい何も変えずにうまく動き、SGD は最もシンプルです。"
+          },
+          "step-by-step": {
+            "title": "ステップごと",
+            "content": "本番の学習の前に、ここでネットワークが1つずつ例から学ぶ様子を見られます。層ごとの前向きの計算、誤差、そして誤差が後ろ向きに戻って各重みを修正する様子です。フェーズごとに進めるか再生を押し、ニューロンをクリックすると計算が見られます。追えるように、ニューロンが64個未満のネットワークのときだけ描かれます。"
+          },
+          "models": {
+            "title": "生成されたモデル",
+            "content": "学習するたびに、その設定と結果がここに1行追加され、比べることができます。テストデータでの誤差が最も小さいモデルには印が付きます。ここから学習履歴を見たり、モデルをダウンロードしたりもできます。"
+          },
+          "dataset-info": {
+            "title": "データセット",
+            "content": "データセットの説明です。データの出典、各列の意味、予測する数値が書かれています。ネットワークを設計する前に読んでおきましょう。"
+          },
+          "dataset": {
+            "title": "データ",
+            "content": "これが学習に使う表で、統計とグラフも見られます。予測する列と一緒に変化する列に注目してください。それがネットワークの一番の手がかりになります。学習の前に、すべての列が同じくらいの重みになるよう値がスケーリングされます。"
+          },
+          "layer-design": {
+            "title": "あなたのネットワーク",
+            "content": "この図が学習させるネットワークです。左が入力層で、特徴ごとに1つのニューロンがあります。中央が隠れ層、右は出力ニューロン1つだけで、それが予測する数値です。層を編集するとすぐに変わり、隅のボタンで全画面表示にできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "各層にはニューロンの数と活性化関数があります。ニューロンや層を増やすと、より複雑な関係を学べますが、学習が遅くなり、データを暗記してしまうことがあります。最後の層は変更できません。結果は確率ではなく任意の数値なので、線形活性化関数のニューロン1つです。"
+          },
+          "epochs": {
+            "title": "エポック",
+            "content": "1エポックは、学習データ全体を1回通すことです。少なすぎるとネットワークは学びきれず、多すぎると時間がかかり、データを暗記してしまうことがあります。最初の値で始めて、最後まで誤差が下がり続けているかを確かめましょう。"
+          },
+          "loss": {
+            "title": "損失関数",
+            "content": "予測が実際の値からどれだけ離れているかを測るもので、オプティマイザーはこれを小さくしようとします。最初から選ばれている平均二乗誤差は大きな誤差を強く罰し、平均絶対誤差はすべての誤差を同じように扱います。"
+          },
+          "metrics": {
+            "title": "評価指標",
+            "content": "学習中に表示され、うまく進んでいるかを判断するためのものです。複数追加できます。たとえば平均絶対誤差は、予測する値と同じ単位で、平均してどれだけ外れているかを示します。"
+          },
+          "train": {
+            "title": "学習",
+            "content": "「学習」を押すと、ネットワークはエポックごとに学習します。ここに進み具合が表示され、ビューアーでは学習データとテストデータの両方で誤差が下がる様子を見られます。時間がかかりすぎる場合は止められます。"
+          },
+          "predict": {
+            "title": "予測",
+            "content": "学習済みのモデルで、データセットの行を選ぶか値を入力して「予測」を押してください。ネットワークが予測した数値が表示され、行を変更せずに選んだ場合は比較のために実際の値も表示されます。上でどのモデルで予測するかを選べます。"
+          },
+          "explain": {
+            "title": "説明可能性",
+            "content": "予測したあと、SHAP がネットワークがその数値を出した理由を示します。どの特徴が値を押し上げ、どの特徴が押し下げたかがわかります。全体の重要度は、多くの行で同じことを行い、どの特徴が一般に最も重要かを示します。"
+          },
+          "end": {
+            "title": "試してみよう",
+            "content": "最初の値で学習させて、誤差を見てみましょう。次に、学習率や層のニューロン数など1つだけ変えて学習し直し、表で2つのモデルを比べてください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+          }
+        },
+        "SALARY": {
+          "intro": {
+            "title": "経験年数と給与",
+            "content": "このページでは、職歴から給与を予測するネットワークを、1000人の例で学習させます。列が少ないので、ネットワークが何を学ぶかがわかりやすいです。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          }
+        },
+        "AUTO_MPG": {
+          "intro": {
+            "title": "自動車の燃費",
+            "content": "このページでは、シリンダー数、馬力、重量などの6つの特徴から、車の燃費（マイル毎ガロン）を予測するネットワークを、396台の例で学習させます。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          }
+        },
+        "HOUSING_PRICES": {
+          "intro": {
+            "title": "住宅価格",
+            "content": "このページでは、部屋の数や地域の犯罪率などの12の特徴から、ボストンの地区ごとの住宅価格の中央値を予測するネットワークを、506地区の例で学習させます。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          }
+        },
+        "STUDENT_PERFORMANCE": {
+          "intro": {
+            "title": "生徒の成績",
+            "content": "このページでは、勉強時間、欠席数、最初の2学期の成績 G1 と G2 などの30の特徴から、生徒の最終成績（0〜20）を予測するネットワークを学習させます。数学（395人）とポルトガル語（649人）の2科目のデータがあります。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          }
+        },
+        "WINE": {
+          "intro": {
+            "title": "ワインの品質",
+            "content": "このページでは、酸度やアルコール度数などの11の化学的な測定値から、ワインの品質（0〜10）を予測するネットワークを学習させます。赤ワイン1599本と白ワイン4898本の2つのファイルがあります。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          }
+        },
+        "UPLOAD": {
+          "intro": {
+            "title": "自分のデータ",
+            "content": "このページでは、自分のデータでネットワークを学習させます。データをアップロードし、予測したい数値の列を選び、ネットワークを設計して学習させます。データがブラウザーの外に出ることはありません。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "dataset-info": {
+            "title": "データのアップロード",
+            "content": "ここにファイルをドラッグするか、クリックして選んでください。CSV、TSV、ARFF、JSON、JSON Lines、Parquet に対応しています。各行が1つの例で、列の1つが予測したい数値である必要があります。"
+          },
+          "process": {
+            "title": "データの準備",
+            "content": "学習の前にデータを準備します。予測したい列、テキストの列を数値に変換する方法、値のスケーリング方法を選んでください。ボタンを押すと、ネットワークを設計する準備が整います。"
+          }
+        }
+      },
+      "3-image-classification": {
+        "common": {
+          "intro": {
+            "title": "画像のネットワークを学習させよう",
+            "content": "このページでは、28×28ピクセルの画像を認識する畳み込みネットワークを設計して学習させ、そのあと絵を描いて試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "session": {
+            "title": "設定の保存",
+            "content": "これらのボタンで、選んだ層とハイパーパラメータをファイルに保存し、別の日に読み込んで続きから再開したり、共有したりできます。データと学習済みモデルは保存されません。"
+          },
+          "manual": {
+            "title": "マニュアル",
+            "content": "初めての場合はマニュアルを開いてください。このページの各部分と、それぞれのオプションの意味をていねいに説明しています。"
+          },
+          "layers-add": {
+            "title": "層の追加と削除",
+            "content": "このボタンで最後に層を追加します。各層を開いて、種類、フィルターの数と大きさ、ニューロン数を選んだり、削除したりできます。最初の層は畳み込み層である必要があります。"
+          },
+          "learning-rate": {
+            "title": "学習率",
+            "content": "各ステップで重みをどれだけ修正するかです。大きいと速く学習しますが、行き過ぎて安定しないことがあります。小さいと安定しますが、より多くのエポックが必要です。0.01 から始めるのがおすすめです。"
+          },
+          "test-size": {
+            "title": "テストデータ",
+            "content": "この割合のデータは取り分けられ、学習中のネットワークには見せません。あとで新しいデータでどれだけ正解するかを確かめるために使います。本当に大事なのはそこです。見たことのあるデータにしか正解できないネットワークは、学んだのではなく暗記しただけです。"
+          },
+          "optimizer": {
+            "title": "オプティマイザー",
+            "content": "誤差をもとに重みを調整する方法です。Adam はたいてい何も変えずにうまく動きます。SGD は最もシンプルで、RMSprop、Adagrad、Adadelta は重みごとに更新の幅を調整します。"
+          },
+          "models": {
+            "title": "生成されたモデル",
+            "content": "学習するたびに、その設定と結果がここに1行追加され、比べることができます。テストデータでの誤差が最も小さいモデルには印が付きます。ここから学習履歴を見たり、モデルをダウンロードしたりもできます。"
+          },
+          "dataset-info": {
+            "title": "画像データセット",
+            "content": "データセットの説明です。画像の出典、枚数、10個のクラスがそれぞれ何を表すかが書かれています。"
+          },
+          "layer-design": {
+            "title": "あなたのネットワーク",
+            "content": "この図が学習させるネットワークです。画像は左から入り、畳み込み層とプーリング層を通り、平坦化されて、右のクラスごとに1つのニューロンを持つ全結合層で終わります。隅のボタンで全画面表示にできます。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "画像用のネットワークは、いくつかの種類の層を組み合わせます。畳み込み層は、画像の上を動く小さなフィルターで、エッジや曲線などのパターンを探します。プーリング層（max pooling）は、目立つ値だけを残して画像を小さくします。平坦化層は結果を数値のリストに変え、全結合層がクラスを決めます。最後の層には、クラスごとに1つ、計10個のニューロンと softmax 活性化関数が必要です。ここから1層ずつ見ていきましょう。"
+          },
+          "epochs": {
+            "title": "エポック",
+            "content": "1エポックは、学習用の画像全体を1回通すことです。画像では表よりも1エポックにずっと時間がかかるので、最初の5のように少なめから始めて、精度が上がり続けるなら増やしましょう。"
+          },
+          "loss": {
+            "title": "損失関数",
+            "content": "各画像でネットワークがどれだけ間違えているかを測るもので、オプティマイザーはこれを小さくしようとします。10個のクラスから選ぶには、最初から選ばれているカテゴリカル交差エントロピーを使います。"
+          },
+          "metrics": {
+            "title": "評価指標",
+            "content": "学習中に表示され、うまく進んでいるかを判断するためのものです。正しく分類できた画像の割合である正解率など、複数追加できます。ネットワークの学び方は変わらず、見えるものだけが変わります。"
+          },
+          "train": {
+            "title": "学習",
+            "content": "「学習」を押すと、まず画像がダウンロードされ、そのあとネットワークがエポックごとに学習します。表より時間がかかりますが、進み具合とビューアーで損失と正解率の様子がわかり、必要なら止められます。"
+          },
+          "predict": {
+            "title": "ネットワークを試す",
+            "content": "学習済みのモデルで、キャンバスに描くか、データセットのテスト画像を選ぶか、自分の画像をアップロードすると、ネットワークが何に見えるかを各クラスの確率とともに答えます。上でどのモデルで試すかを選べます。"
+          },
+          "explain": {
+            "title": "説明可能性",
+            "content": "分類したあと、LRP が判断にどれだけ影響したかに応じてピクセルを色分けします。ネットワークが絵のどの部分を見て判断したかがわかります。"
+          },
+          "end": {
+            "title": "試してみよう",
+            "content": "最初のネットワークで学習させて、絵を描いてみましょう。次に畳み込み層を追加したり削除したりして学習し直し、表でどのモデルがより正解するかを比べてください。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+          },
+          "layer": {
+            "class-name": "記号",
+            "conv-first": {
+              "title": "第{{number}}層：畳み込み",
+              "content": "最初の層で、{{inputSize}}ピクセルのグレースケール画像を受け取ります。{{kernel}}×{{kernel}}のフィルター{{filters}}個が画像の上をなぞり、それぞれが小さなパターン（線、縁、曲線など）を見分けることを学び、それが見つかった場所のマップを作ります。そのため、フィルターごとに1枚、{{outputSize}}のマップが{{outputChannels}}枚出力されます。フィルターが端からはみ出さないので、画像より少し小さくなります。学習する重みは{{params}}個です。"
+            },
+            "conv": {
+              "title": "第{{number}}層：畳み込み",
+              "content": "前の層から{{inputSize}}のマップ{{inputChannels}}枚を受け取り、{{kernel}}×{{kernel}}のフィルター{{filters}}個でなぞります。各フィルターはすべてのマップを同時に見るので、単純なパターンを組み合わせて、{{class}}の一部のような、より複雑な形にします。{{outputSize}}のマップが{{outputChannels}}枚出力され、学習する重みは{{params}}個です。"
+            },
+            "relu": "ReLUでは負の値が0になり、見つかったものだけが先に進みます。",
+            "activation": "活性化関数は{{activation}}です。",
+            "pool": {
+              "title": "第{{number}}層：最大プーリング",
+              "content": "{{pool}}×{{pool}}の窓を{{strides}}ずつずらしながら、各窓の最大値だけを残してマップを縮小します。各領域で最も目立つ部分です。{{inputChannels}}枚のマップは{{inputSize}}から{{outputSize}}になります。重みはなく何も学習しませんが、ネットワークを速くし、線が少しずれても影響を受けにくくします。"
+            },
+            "flatten": {
+              "title": "第{{number}}層：平坦化（Flatten）",
+              "content": "{{inputSize}}のマップ{{inputChannels}}枚を1列に並べ、{{values}}個の数値のリストにします。全結合層は画像ではなくリストを扱うためです。この層も何も学習しません。"
+            },
+            "dense": {
+              "title": "第{{number}}層：全結合",
+              "content": "{{units}}個のニューロンのそれぞれが、前の層の{{inputValues}}個の値すべてとつながっています。画像のどこにあっても、フィルターが見つけたものをすべて組み合わせます。学習する重みは{{params}}個で、このようなネットワークでは全結合層の重みが最も多くなるのが普通です。"
+            },
+            "output": {
+              "title": "第{{number}}層：出力",
+              "content": "最後の層には{{class}}ごとに1つ、計{{units}}個のニューロンがあり、前の{{inputValues}}個の値とつながっています（重み{{params}}個）。softmaxにより、出力は各{{class}}の確率になり、合計は1です。ネットワークの答えは最も高いものです。",
+              "content-other": "最後の層には{{units}}個のニューロンがあり、前の{{inputValues}}個の値とつながっています（重み{{params}}個）。活性化関数は{{activation}}です。softmaxなら、出力は各{{class}}の確率になります。エディタ上部の警告を確認してください。"
+            },
+            "broken": {
+              "title": "第{{number}}層：形が合いません",
+              "content": "データが必要な形で届いていません（またはパラメータが足りません）。エディタ上部の警告に原因が表示され、ボタンで修正できます。"
+            }
+          }
+        },
+        "IMAGE-MNIST": {
+          "intro": {
+            "title": "手書きの数字",
+            "content": "このページでは、0から9までの手書きの数字を認識する畳み込みネットワークを、MNIST データセットの画像で学習させ、そのあと自分で数字を描いて試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "layer": {
+            "class-name": "数字"
+          }
+        },
+        "IMAGE-KMNIST": {
+          "intro": {
+            "title": "日本語の文字",
+            "content": "このページでは、くずし字 MNIST データセットの、古典的な日本語の手書きのひらがな10文字を認識する畳み込みネットワークを学習させ、そのあと文字を描いて試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+          },
+          "layer": {
+            "class-name": "文字"
+          }
+        },
+        "IMAGE-CIFAR10": {
+          "intro": {
+            "title": "カラー写真",
+            "content": "このページでは、CIFAR-10 データセットの画像を使って、飛行機からトラックまで 10 クラスのカラー写真を認識する畳み込みネットワークを学習させ、そのあとテスト写真や自分の写真で試します。それぞれの部分を順番に説明します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりもできます。"
+          },
+          "predict": {
+            "title": "ネットワークを試す",
+            "content": "学習済みのモデルがあれば、データセットのテスト写真を選ぶか自分の写真をアップロードしてボタンを押すと、ネットワークが何が見えるかを各クラスの確率とともに答えます。上でどのモデルで試すかを選びます。"
+          },
+          "explain": {
+            "title": "説明可能性",
+            "content": "分類したあと、LRP は判断にどれだけ効いたかに応じてピクセルを色分けします。ネットワークが写真のどこに注目して判断したかがわかります。"
+          },
+          "end": {
+            "title": "やってみよう",
+            "content": "最初のネットワークで学習させ、表で正解率を見てみましょう。写真もエポックも少ないので、学習済みモデルよりかなり低くなります。次にエポックを増やしたり畳み込み層を追加したりして比べてみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+          },
+          "layer": {
+            "class-name": "クラス",
+            "conv-first": {
+              "title": "第 {{number}} 層：畳み込み",
+              "content": "最初の層で、{{inputSize}} ピクセルのカラー写真、つまり赤、緑、青の {{inputChannels}} 枚のマップを受け取ります。{{kernel}}×{{kernel}} のフィルター {{filters}} 個がその上をなぞり、各フィルターは 3 つの色を同時に見て小さなパターン（縁、色のまとまり、角）を見分けることを学び、それが見つかった場所のマップを残します。フィルターごとに 1 枚、{{outputSize}} のマップが {{outputChannels}} 枚出てきます。フィルターが端からはみ出さないので、写真より少し小さくなります。学習する重みは {{params}} 個です。"
+            }
+          }
+        }
+      },
+      "5-time-series": {
+        "common": {
+          "intro": {
+            "title": "時系列でネットワークを学習する",
+            "content": "このページでは系列を準備し、各値をそれまでの値から予測するネットワークを設計・学習して、見ていない部分をどう予測するかを確認します。各部分を順に説明します。「次へ」で進む、セレクターで任意のステップに移動する、音声を消す、自動で進めるといった操作ができます。"
+          },
+          "session": {
+            "title": "設定の保存",
+            "content": "これらのボタンで、ネットワーク、ハイパーパラメータ、準備（ウィンドウと差分の有無）をファイルに保存し、後日読み込んだり共有したりできます。データと学習済みモデルは保存されません。"
+          },
+          "manual": {
+            "title": "しくみ",
+            "content": "初めての場合はここを開いてください。ウィンドウ、テスト部分が系列の最後である理由、スケーリング、1 ステップ予測と続けた予測、ネットワークを何と比べるかを説明しています。"
+          },
+          "dataset-info": {
+            "title": "系列",
+            "content": "系列の説明です。データの出典と、トレンド・季節・周期といった特徴が書かれています。"
+          },
+          "process": {
+            "title": "系列のアップロード",
+            "content": "ここにファイルをドロップし、値の列と、あれば日付の列を選びます。日付は行の並べ替えと予測値の日付に使います。"
+          },
+          "dataset": {
+            "title": "データ",
+            "content": "順番に並んだ系列全体です。破線はテスト部分の始まりを示します。系列の最後の部分で、ネットワークは学習中に見ません。"
+          },
+          "preparation": {
+            "title": "準備",
+            "content": "ウィンドウはネットワークが見る直前の値の数で、1 季節分をカバーするとよいでしょう。テストは最後に取り分ける割合です。差分を取ると値ではなく変化を学習し、季節は季節予測との比較に使います。"
+          },
+          "windows": {
+            "title": "ネットワークが学習するもの",
+            "content": "系列はこのように例に変わります。各行は直前の値（ウィンドウ）と、予測すべき次の値です。ウィンドウや差分を変えて、どう変わるか見てみましょう。"
+          },
+          "layers": {
+            "title": "層",
+            "content": "ネットワークの最後は線形のニューロン 1 つで、予測する値です。その前に、ウィンドウ全体を受け取る Dense 層や、値を 1 つずつ読む再帰型の層（SimpleRNN、LSTM、GRU、Dense より前に置く）を追加できます。"
+          },
+          "layers-add": {
+            "title": "層の追加と削除",
+            "content": "これらのボタンで、先頭または出力の前に層を追加します。削除したり、種類・ニューロン数・活性化関数を変えたりするには、一覧で開いてください。"
+          },
+          "learning-rate": {
+            "title": "学習率",
+            "content": "各ステップで重みをどれだけ修正するかです。高いと速く学習しますが安定しないことがあり、低いと安定しますがより多くのエポックが必要です。"
+          },
+          "epochs": {
+            "title": "エポック",
+            "content": "ネットワークが学習用のウィンドウ全体を何回見るかです。少なすぎると学習が間に合わず、多すぎると学習データを丸暗記することがあります。モデルの曲線で分かります。"
+          },
+          "batch-size": {
+            "title": "バッチサイズ",
+            "content": "重みを修正する前にネットワークが見るウィンドウの数です。小さいと頻繁にノイズの多い修正をし、大きいと各エポックが速くなります。"
+          },
+          "optimizer": {
+            "title": "オプティマイザ",
+            "content": "誤差から重みを調整する方法です。選択されている Adam は、たいていそのままでうまく動きます。"
+          },
+          "loss": {
+            "title": "損失関数",
+            "content": "学習中に誤差をどう測るかです。平均二乗誤差は大きな誤差をより重く、平均絶対誤差はすべての誤差を同じように扱います。"
+          },
+          "train": {
+            "title": "学習",
+            "content": "押すと、ネットワークは学習用のウィンドウで学習し、各エポックでテスト用のウィンドウで検証します。いつでも止められ、それまでに学んだ内容は残ります。"
+          },
+          "models": {
+            "title": "学習済みのモデル",
+            "content": "学習するたびに、準備、ネットワーク、テスト部分での誤差（1 ステップと続けた場合）の行が追加されます。最も良いものに印が付きます。その下に、比較のための学習曲線があります。"
+          },
+          "predict": {
+            "title": "予測",
+            "content": "選んだモデルがテスト部分をどう予測するか（1 ステップか続けてか）、最後の値や最後の季節を繰り返す予測と比べた誤差、そして最後の値の後に来るものが分かります。"
+          },
+          "end": {
+            "title": "予測してみよう！",
+            "content": "これでこのページは分かりました。別のウィンドウ、差分、LSTM 層を試して比べてみましょう。大切なのは、見ていない部分でネットワークが単純な予測より良いことです。"
+          }
+        }
+      }
+    },
+    "glossary": {
+      "intro": {
+        "title": "用語集",
+        "content": "Nets4Learning で使うすべての概念を説明しています。タスク、層、ハイパーパラメータ、オプティマイザー、活性化関数、損失関数、評価指標です。特に大事なものと、その場所を紹介します。「次へ」で進み、セレクターで好きなステップに移動できます。音声をミュートしたり、ガイドを自動で進めたりすることもできます。"
+      },
+      "search": {
+        "title": "検索",
+        "content": "「エポック」や「ReLU」など、好きな用語を入力すると、それを含むカードだけが残ります。"
+      },
+      "index": {
+        "title": "目次",
+        "content": "用語集のセクションの一覧です。クリックするとそこへ移動し、スクロールすると今いるセクションが強調されます。"
+      },
+      "tasks": {
+        "title": "タスク",
+        "content": "まずは、アプリの各タスクが解く問題です。表の行の分類、回帰による数値の予測、画像の分類、物体の識別があります。"
+      },
+      "units": {
+        "title": "ニューロン",
+        "content": "ネットワークの各層にはニューロンがあります。各ニューロンは入力に重みを掛けて足し合わせ、活性化関数を適用します。ニューロンを増やすと、より複雑な関係を学べます。"
+      },
+      "activation-function": {
+        "title": "活性化関数",
+        "content": "各ニューロンが何を通すかを決めます。これがないと、層をいくつ重ねても線形の関係しか学べません。"
+      },
+      "learning-rate": {
+        "title": "学習率",
+        "content": "学習の各ステップで重みをどれだけ修正するかです。おそらく最も重要なハイパーパラメータで、大きすぎると安定せず、小さすぎるととても遅く学びます。"
+      },
+      "epochs": {
+        "title": "エポック",
+        "content": "ネットワークが学習データ全体を何回通すかです。少なすぎると学びきれず、多すぎると汎化せずにデータを暗記してしまいます。"
+      },
+      "test-size": {
+        "title": "テストデータ",
+        "content": "取り分けておき、最後に見たことのないデータでどれだけ正解するかを確かめるためのデータです。何を学んだかを正直に測るものです。"
+      },
+      "optimizer": {
+        "title": "オプティマイザー",
+        "content": "誤差をもとに重みを調整する方法で、それぞれに数式があります。ほとんどの場合に最初から選ばれている Adam は、Momentum と RMSProp の考え方を組み合わせたものです。"
+      },
+      "activation-plots": {
+        "title": "グラフ",
+        "content": "各活性化関数には数式とグラフがあり、アニメーションのタブでは各値をどう変換するかが見られます。隠れ層で最もよく使われる ReLU は、正の値を通し、負の値を0にします。"
+      },
+      "softmax": {
+        "title": "Softmax",
+        "content": "分類のときに最後の層で使います。出力を、クラスごとの確率（合計1）に変換します。"
+      },
+      "loss": {
+        "title": "損失関数",
+        "content": "ネットワークがどれだけ間違えているかを測るもので、学習はこれを小さくしようとします。複数のクラスから選ぶには、カテゴリカル交差エントロピーを使います。"
+      },
+      "loss-regression": {
+        "title": "回帰の損失",
+        "content": "数値を予測するときに最もよく使うのは平均二乗誤差で、大きな誤差を強く罰します。そのすぐ下の平均絶対誤差は、すべての誤差を同じように扱います。"
+      },
+      "metrics": {
+        "title": "評価指標",
+        "content": "正解率（正しく答えた割合）のように、ネットワークがどれだけうまく動いているかをわかりやすく示します。学び方は変わりません。"
+      },
+      "confusion-matrix": {
+        "title": "混同行列",
+        "content": "実際のクラスと予測されたクラスを組み合わせた表です。どれだけ正解するかだけでなく、どのクラスを取り違えるかもわかります。"
+      },
+      "anchor": {
+        "title": "各用語へのリンク",
+        "content": "各カードには共有用のリンク（#）があります。プレイグラウンドの「詳細」リンクからは、必要な用語に直接移動できます。"
+      },
+      "end": {
+        "title": "試してみよう",
+        "content": "知らない用語を検索したり、活性化関数まで下りてアニメーションを見たりしてみましょう。このガイドは「ガイド」ボタンでいつでも開き直せます。"
+      }
+    },
+    "5-time-series": {
+      "common": {
+        "intro": {
+          "title": "時系列のモデル",
+          "content": "このページでは、それまでの値から系列の次の値を予測する学習済みネットワークを試します。学習で見ていない系列の最後の部分をどう予測するか、最も単純な予測より良いか、そしてその先に何が来るかが分かります。"
+        },
+        "model": {
+          "title": "モデル",
+          "content": "モデルのカードです。学習で見ていない系列の最後の部分をどう予測するかを、直前の値や 1 季節前の値を繰り返す予測と比べています。その下に系列の説明があります。"
+        },
+        "model-summary": {
+          "title": "モデルの概要",
+          "content": "このボタンでネットワークの概要を開きます。層、各層のニューロン数、学習で調整した重みの数が分かります。その下に、ダウンロード用の .n4l パッケージと、この系列で自分のネットワークを学習するリンクがあります。"
+        },
+        "dataset": {
+          "title": "データ",
+          "content": "系列そのものです。日付ごとに 1 行で、予測する値が強調されています。"
+        },
+        "dataset-chart": {
+          "title": "系列",
+          "content": "このタブではグラフで見られます。破線はテスト部分の始まりを示し、ネットワークは学習中にこの部分を見ていません。"
+        },
+        "dataset-windows": {
+          "title": "ネットワーク用に準備したもの",
+          "content": "系列がどう準備されたかが分かります。ネットワークが受け取る直前の値の数（ウィンドウ）、スケーリングの方法、学習に使った最初の例です。"
+        },
+        "instances": {
+          "title": "系列の値",
+          "content": "このセレクターで系列の値を選ぶと、直前の値でフォームが埋まります。「テスト」と付いたものは、ネットワークが見ていない部分です。"
+        },
+        "form": {
+          "title": "フォーム",
+          "content": "日付ごとの直前の値で、ネットワークが予測に使うものです。変更すると予測がどう変わるか確かめられます。"
+        },
+        "vector": {
+          "title": "ネットワークが受け取るもの",
+          "content": "学習部分の最小値と最大値で 0〜1 にスケーリングして、ネットワークに渡します。"
+        },
+        "predict": {
+          "title": "予測",
+          "content": "このボタンを押すと、ネットワークはスケーリングしたウィンドウを受け取り、次の値を予測します。"
+        },
+        "result": {
+          "title": "結果",
+          "content": "ここに予測値が表示されます。フォームを変更していなければ、実際の値と誤差も表示されます。その下に、ネットワークの入力をステップごとに示します。"
+        },
+        "mode": {
+          "title": "1 ステップか、続けてか",
+          "content": "1 ステップ先では、テストの各値を直前の実際の値で予測します。続けてでは、学習の終わりから、各値をすでに予測した値で予測します。未来の予測はこの方法で行い、誤差が積み重なります。「拡大」ではテスト部分だけを表示します。"
+        },
+        "chart": {
+          "title": "予測",
+          "content": "灰色が実際の系列、オレンジがテスト部分でのネットワークの予測、紫がその先の予測です。学習データでの予測を加えることもできます。"
+        },
+        "errors": {
+          "title": "最も単純な予測より良い？",
+          "content": "ネットワークの平均誤差（系列の単位での MAE と RMSE）を、最後の値を繰り返す予測と最後の季節を繰り返す予測の誤差と並べています。その下に、ネットワークがそれらより良いか、テストデータで学習データよりずっと大きく外れていないかが書かれています。"
+        },
+        "future": {
+          "title": "この先",
+          "content": "最後の値の後にいくつの値を予測するか選びます。1 つずつ続けて、すでに予測した値で予測するので、先になるほど信頼性は下がります。"
+        },
+        "end": {
+          "title": "完了！",
+          "content": "これで時系列の予測の読み方が分かりました。この系列で自分のネットワークを学習するには、「この系列で自分のネットワークを学習する」ボタンを使ってください。"
+        }
+      }
     }
+  },
+  "loading-status": {
+    "page": "ページを読み込んでいます…",
+    "slow": "初回は少し時間がかかります。このセクションのライブラリをダウンロードしています。次回からはもっと速くなります。",
+    "model": "モデルを読み込んでいます…",
+    "model-progress": "モデルをダウンロード中：{{loaded}} / {{total}} MB",
+    "model-loaded": "モデルをダウンロード中：{{loaded}} MB",
+    "model-help": "初回は時間がかかることがあります。モデルをインターネットからダウンロードしています。"
+  },
+  "report": {
+    "button": "レポート",
+    "title": "学習レポート",
+    "created": "作成日時：{{date}}",
+    "print": "印刷・PDFで保存",
+    "back": "学習に戻る",
+    "network": "ネットワーク",
+    "hyperparameters": "ハイパーパラメータ",
+    "results": "学習結果",
+    "results-caption": "最後のエポックの値。",
+    "metric": "指標",
+    "uploaded": "アップロードしたデータセット",
+    "empty": "まだレポートはありません。モデルを学習し、モデル一覧の行にある「レポート」を押してください。",
+    "error-storage": "ブラウザがレポートを保存できません（ストレージが無効か容量不足です）。"
+  },
+  "offline": {
+    "bar": "オフラインです。すでに開いたものは引き続き使えます。それ以外は接続が戻ると使えるようになります。"
+  },
+  "n4l": {
+    "download": ".n4l をダウンロード",
+    "download-title": "このモデルをデータとテキストごと .n4l ファイルでダウンロードし、共有したり後で開いたりできます",
+    "local": {
+      "title": "あなたの .n4l パッケージ",
+      "text": ".n4l ファイル（データとテキスト付きのモデル）を開くと、このブラウザに保存されてここに表示されます。",
+      "drop": ".n4l ファイルをここにドラッグするか、クリックして選択",
+      "files": ".n4l ファイル",
+      "version": "バージョン {{version}}、{{size}}",
+      "remove": "削除",
+      "remove-title": "「{{name}}」をこのブラウザから削除",
+      "imported": "「{{name}}」の準備ができました。カードから開いてください。",
+      "error": "ファイルを開けませんでした：",
+      "open-title": ".n4l ファイルを開く",
+      "how": "どこで手に入りますか？学習済みモデルの各ページにある「.n4l をダウンロード」で、そのパッケージ（モデル、データ、テキスト）を取得できます。学習後は、表の各モデルも学習に使ったデータセットと一緒に同じようにダウンロードできます。人から受け取ったものも開けます。中身と使い方を記述しているだけで、コードは含まれていません。",
+      "saved": "このブラウザに保存済み",
+      "empty": "まだありません。上で .n4l ファイルを開いてください。",
+      "remove-confirm": "「{{name}}」をこのブラウザから削除します。もう一度使うには .n4l ファイルを開き直す必要があります。"
+    },
+    "download-trained-title": "このモデルをデータセット、前処理、テキストとともに .n4l ファイルでダウンロードします。後で「.n4l パッケージ」から開けます",
+    "metrics": {
+      "title": "見たことのないデータでは",
+      "text": "学習時に取り分けたデータセットの 20% では、平均誤差は {{mae}} です。常に平均を予測した場合の誤差は {{baseline}} です。R²：{{r2}}（1 は常に正解、0 は平均を予測するのと同じ）。",
+      "no-better": "常に平均を答えるより良い予測はできていません。このデータからはこれ以上わかりません。"
+    }
+  },
+  "pagination": {
+    "label": "表のページ",
+    "first": "最初のページ",
+    "previous": "前のページ",
+    "next": "次のページ",
+    "last": "最後のページ",
+    "page": "{{page}} ページ"
+  },
+  "skip-to-content": "メインコンテンツへスキップ",
+  "modal": {
+    "close": "閉じる"
+  },
+  "model-summary-table": {
+    "layer": "層",
+    "output-shape": "出力の形",
+    "params": "パラメーター",
+    "total": "パラメーターの合計（学習で調整される重み）",
+    "trainable": "そのうち学習可能",
+    "batch-note": "出力の形の「—」は一度に入る例の数（バッチ）です。"
+  },
+  "chart-data": {
+    "show": "データを表示",
+    "rows": "{{total}} 行中 {{from}}–{{to}} 行",
+    "columns": {
+      "variable": "変数",
+      "value": "値",
+      "rows": "行数",
+      "percent": "割合",
+      "bin": "区間の中央",
+      "group": "グループ",
+      "lower": "下限",
+      "q1": "第 1 四分位数",
+      "median": "中央値",
+      "q3": "第 3 四分位数",
+      "upper": "上限",
+      "mean": "平均"
+    }
+  },
+  "page-intro": {
+    "train": {
+      "text": "ここではニューラルネットワークを設計し、選んだデータセットで学習させます。そのまま「学習」を押してもかまいません。",
+      "steps": [
+        "データセットを確認します：どんな列があり、何を予測するか。",
+        "必要なら層とハイパーパラメーターを変更します。",
+        "「学習」を押し、ネットワークが学ぶ様子を見ます。",
+        "例でモデルを試し、どこに注目しているかを見ます。"
+      ]
+    },
+    "review": {
+      "text": "このモデルは学習済みです。ここでは例で試し、どこに注目しているかを見ます。",
+      "steps": [
+        "モデルの働きと、学習に使ったデータを読みます。",
+        "例を選ぶか、自分で値を入力します。",
+        "予測と、必要ならその説明を見ます。"
+      ]
+    },
+    "detect": {
+      "text": "このモデルは画像の中の物を探します。カメラをオンにするか写真をアップロードすると、見つけた物に印を付けます。",
+      "steps": [
+        "カメラをオンにするか、写真をアップロードします。",
+        "モデルが印を付けたものを見ます（テキストでも示されます）。",
+        "必要なら、見つけたものの説明を求めます。"
+      ]
+    }
+  },
+  "model-code": {
+    "title": "コードを見る",
+    "summary": "設計したネットワークを TensorFlow.js または Keras（Python）で書いたものです。アプリが学習させるものと同じです。",
+    "language": "コードの言語",
+    "copy": "コードをコピー",
+    "copied": "コードをコピーしました",
+    "code": "{{language}} のコード",
+    "help-tfjs": "自分のプロジェクトで使うには、TensorFlow.js をインストール（npm install @tensorflow/tfjs）し、このページと同じように処理したデータで XTrain、yTrain、XTest、yTest をテンソルとして用意します。",
+    "help-keras": "Python で使うには、Keras をインストール（pip install keras tensorflow）し、このページと同じように処理したデータで X_train、y_train、X_test、y_test を NumPy 配列として用意します。",
+    "data-classification": "X: 処理済み（スケーリング済み）の各行の属性、y: one-hot 形式のクラス",
+    "data-regression": "X: 処理済み（スケーリング済み）の各行の属性、y: 予測する値",
+    "data-image": "X: 0〜1 の値の画像、y: one-hot 形式のクラス",
+    "data-series": "X: 直前の {{window}} 個の値のウィンドウ、y: 各ウィンドウの次の値"
+  },
+  "training-prediction": {
+    "title": "学習の前に、どうなると思いますか？",
+    "optional": "（任意）",
+    "chosen": "あなたの予想：{{prediction}}",
+    "help": "予想を選んでください。終わったら、実際に起きたことと比べます。",
+    "none": "わからない",
+    "options": {
+      "good": "うまく学習する",
+      "still-improving": "エポックが足りない（終わってもまだ改善している）",
+      "overfitting": "データを丸暗記する（過学習）",
+      "not-learning": "ほとんど学習しない",
+      "unstable": "上下に跳ねる（不安定）",
+      "diverged": "損失が発散する"
+    },
+    "right": "予想：「{{prediction}}」。当たりです！",
+    "wrong": "予想：「{{prediction}}」。今回は別のことが起きました。下で何が起きたか、その理由を確認できます。"
   }
 }

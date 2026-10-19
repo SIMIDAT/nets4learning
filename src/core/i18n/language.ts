@@ -1,13 +1,23 @@
-import type { i18n } from 'i18next'
+import i18next, { type i18n } from 'i18next'
+
+import { trackEvent } from '@core/analytics'
+import { announce } from '@core/a11y/announce'
 
 /** Idiomas con traducción en public/locales/<idioma>/translation.json */
 export const SUPPORTED_LANGUAGES = ['en', 'es', 'ja'] as const
 export type Language_t = typeof SUPPORTED_LANGUAGES[number]
 
+/** Cada idioma con su nombre en ese idioma (sin banderas: un idioma no es un país) */
+export const LANGUAGE_OPTIONS: Array<{ language: Language_t, label: string }> = [
+  { language: 'en', label: 'English' },
+  { language: 'es', label: 'Español' },
+  { language: 'ja', label: '日本語' },
+]
+
 /** Idioma cuando no hay traducción para el del usuario */
 export const DEFAULT_LANGUAGE: Language_t = 'en'
 
-const LANGUAGE_STORAGE_KEY = 'language'
+export const LANGUAGE_STORAGE_KEY = 'language'
 
 export const isSupportedLanguage = (value: string): value is Language_t => (SUPPORTED_LANGUAGES as readonly string[]).includes(value)
 
@@ -44,5 +54,11 @@ export function changeUserLanguage(i18nInstance: i18n, language: Language_t) {
   } catch {
     // Sin almacenamiento: el idioma solo dura esta visita
   }
-  return i18nInstance.changeLanguage(language)
+  trackEvent('settings_change', { setting: 'language', value: language })
+  // El cambio, ya en el idioma nuevo, también para el lector de pantalla (WCAG 4.1.3): «Idioma: English»
+  const label = LANGUAGE_OPTIONS.find((option) => option.language === language)?.label ?? language
+  return i18nInstance.changeLanguage(language).then((result) => {
+    announce(`${i18next.t('header.language')}: ${label}`)
+    return result
+  })
 }

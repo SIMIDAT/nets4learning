@@ -1,0 +1,180 @@
+{
+  "$schema": "../n4l.schema.json",
+  "format": "n4l",
+  "formatVersion": 1,
+  "id": "iris",
+  "version": "1.0.0",
+  "locales": [
+    "es",
+    "en",
+    "ja"
+  ],
+  "source": {
+    "url": "https://archive.ics.uci.edu/dataset/53/iris",
+    "citation": "@misc{misc_iris_53,\n  author       = {Fisher,R. A.},\n  title        = {{Iris}},\n  year         = {1988},\n  howpublished = {UCI Machine Learning Repository},\n  note         = {{DOI}: https://doi.org/10.24432/C56C76}\n}"
+  },
+  "datasets": [
+    {
+      "id": "iris",
+      "file": "data/iris.csv",
+      "info": "data/iris.names",
+      "rows": 150,
+      "columns": [
+        {
+          "name": "sepal_length",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "cm"
+        },
+        {
+          "name": "sepal_width",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "cm"
+        },
+        {
+          "name": "petal_length",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "cm"
+        },
+        {
+          "name": "petal_width",
+          "role": "Feature",
+          "type": "Continuous",
+          "missing": 0,
+          "units": "cm"
+        },
+        {
+          "name": "class",
+          "role": "Target",
+          "type": "Categorical",
+          "missing": 0,
+          "description": "class of iris plant: Iris Setosa, Iris Versicolour or Iris Virginica",
+          "options": [
+            "Setosa",
+            "Versicolor",
+            "Virginica"
+          ]
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "task": "tabular-classification",
+      "key": "IRIS",
+      "runtime": "tabular-classification",
+      "datasets": [
+        "iris"
+      ],
+      "preprocessing": [
+        {
+          "op": "label-encoder",
+          "columns": "categorical"
+        },
+        {
+          "op": "min-max",
+          "columns": "features"
+        }
+      ],
+      "classes": [
+        {
+          "id": "Setosa",
+          "aliases": [
+            "Iris-setosa"
+          ]
+        },
+        {
+          "id": "Versicolor",
+          "aliases": [
+            "Iris-versicolor"
+          ]
+        },
+        {
+          "id": "Virginica",
+          "aliases": [
+            "Iris-virginica"
+          ]
+        }
+      ],
+      "models": [
+        {
+          "id": "mlp",
+          "format": "tfjs-layers",
+          "path": "models/mlp/model.json",
+          "dataset": "iris"
+        }
+      ],
+      "prediction": {
+        "defaults": {
+          "sepal_length": 5.1,
+          "sepal_width": 3.5,
+          "petal_length": 1.4,
+          "petal_width": 0.2
+        },
+        "examples": [
+          {
+            "values": {
+              "sepal_length": 5.1,
+              "sepal_width": 3.5,
+              "petal_length": 1.4,
+              "petal_width": 0.2
+            },
+            "expected": "Setosa"
+          },
+          {
+            "values": {
+              "sepal_length": 6.1,
+              "sepal_width": 3,
+              "petal_length": 4.6,
+              "petal_width": 1.4
+            },
+            "expected": "Versicolor"
+          },
+          {
+            "values": {
+              "sepal_length": 5.8,
+              "sepal_width": 2.7,
+              "petal_length": 5.1,
+              "petal_width": 1.9
+            },
+            "expected": "Virginica"
+          }
+        ]
+      },
+      "training": {
+        "layers": [
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 10,
+            "activation": "relu"
+          },
+          {
+            "class": "dense",
+            "units": 3,
+            "activation": "softmax"
+          }
+        ]
+      }
+    },
+    {
+      "task": "clustering",
+      "key": "IRIS",
+      "runtime": "clustering",
+      "datasets": [
+        "iris"
+      ],
+      "preprocessing": [],
+      "models": []
+    }
+  ]
+}

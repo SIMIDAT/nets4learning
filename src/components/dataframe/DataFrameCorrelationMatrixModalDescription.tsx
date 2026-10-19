@@ -1,5 +1,6 @@
+import { useId } from 'react'
 import { Modal } from 'react-bootstrap'
-import { Trans } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import N4LLatex from '@components/latex/N4LLatex'
 
 type DataFrameCorrelationMatrixModalDescriptionProps = {
@@ -7,17 +8,20 @@ type DataFrameCorrelationMatrixModalDescriptionProps = {
   setShowDescription: (show: boolean) => void
 }
 export default function DataFrameCorrelationMatrixModalDescription(props: DataFrameCorrelationMatrixModalDescriptionProps) {
+  const { t } = useTranslation()
+  // El diálogo se llama como su título (WCAG 4.1.2) y su botón de cerrar, en el idioma de la página
+  const titleId = useId()
   const { showDescription, setShowDescription } = props
   const URL = 'https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html'
 
   return <>
-    <Modal
+    <Modal aria-labelledby={titleId}
       show={showDescription}
       onHide={() => setShowDescription(false)}
       size={'xl'}
       fullscreen={'md-down'}>
-      <Modal.Header closeButton>
-        <Modal.Title><Trans i18nKey={'dataframe.correlation-matrix.title'} /></Modal.Title>
+      <Modal.Header closeButton closeLabel={t('modal.close')}>
+        <Modal.Title id={titleId}><Trans i18nKey={'dataframe.correlation-matrix.title'} /></Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <p><Trans i18nKey={'dataframe.correlation-matrix.description.0'} /></p>
@@ -47,7 +51,7 @@ export default function DataFrameCorrelationMatrixModalDescription(props: DataFr
         <p className={'text-muted'}>
           <Trans i18nKey={'dataframe.correlation-matrix.link'}
             components={{
-              link1: <a href={URL} target={'_blank'} rel="noreferrer" className={'text-info'}>link</a>
+              link1: <a href={URL} target={'_blank'} rel="noreferrer">link</a>
             }} />
         </p>
       </Modal.Footer>

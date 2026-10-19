@@ -1,0 +1,100 @@
+{
+  "columns": {
+    "school": "school",
+    "sex": "sex",
+    "age": "age",
+    "address": "address",
+    "famsize": "famsize",
+    "Pstatus": "Pstatus",
+    "Medu": "Medu",
+    "Fedu": "Fedu",
+    "Mjob": "Mjob",
+    "Fjob": "Fjob",
+    "reason": "reason",
+    "guardian": "guardian",
+    "traveltime": "traveltime",
+    "studytime": "studytime",
+    "failures": "failures",
+    "schoolsup": "schoolsup",
+    "famsup": "famsup",
+    "paid": "paid",
+    "activities": "activities",
+    "nursery": "nursery",
+    "higher": "higher",
+    "internet": "internet",
+    "romantic": "romantic",
+    "famrel": "famrel",
+    "freetime": "freetime",
+    "goout": "goout",
+    "Dalc": "Dalc",
+    "Walc": "Walc",
+    "health": "health",
+    "absences": "absences",
+    "G3": "G3"
+  },
+  "tasks": {
+    "regression": {
+      "title": "学生の成績",
+      "name": "学生成績",
+      "summary": "ポルトガルの中等学校の生徒の最終成績（数学とポルトガル語）を、環境や習慣から予測します。",
+      "description": {
+        "text": [
+          "このデータセットには、2つのポルトガル学校の生徒の学業成績データが含まれています。データには、生徒の人口統計、社会的な特徴、成績などが含まれています。数学（mat）とポルトガル語（por）の2つの異なる科目に関する成績データセットが含まれています。",
+          "データセットには多変量データ、実数型の属性、649インスタンス、および12個の異なる属性が含まれています。",
+          "重要な注意: ターゲット属性G3は、G2およびG1属性と強い相関があります。これは、G3が最終学年の成績（3学期に発行）であり、G1およびG2が1学期と2学期の成績に対応しているためです。G2とG1なしでG3を予測することはより困難ですが、そのような予測はより有用です。",
+          "ファイル <kbd>student-por.csv</kbd> はポルトガル語の学生成績データセットに対応し、<kbd>student-mat.csv</kbd> は数学の学生成績データセットに対応します。",
+          "<link1>UCIデータセット入力</link1>"
+        ],
+        "sections": [
+          {
+            "title": "入力データ",
+            "items": [
+              "<strong>school</strong> - 生徒の学校（バイナリ: 'GP' - Gabriel Pereira または 'MS' - Mousinho da Silveira）",
+              "<strong>sex</strong> - 生徒の性別（バイナリ: 'F' - 女性 または 'M' - 男性）",
+              "<strong>age</strong> - 生徒の年齢（数値: 15歳から22歳）",
+              "<strong>address</strong> - 生徒の住居の種類（バイナリ: 'U' - 都市 または 'R' - 地方）",
+              "<strong>famsize</strong> - 家族のサイズ（バイナリ: 'LE3' - 3人以下 または 'GT3' - 3人以上）",
+              "<strong>Pstatus</strong> - 両親の同居状況（バイナリ: 'T' - 同居 または 'A' - 別居）",
+              "<strong>Medu</strong> - 母親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
+              "<strong>Fedu</strong> - 父親の学歴（数値: 0 - なし, 1 - 小学校（4年生）, 2 - 5年生から9年生, 3 - 中等教育 または 4 - 高等教育）",
+              "<strong>Mjob</strong> - 母親の職業（名義尺度: 'teacher' (教師), 'health' (医療関連), 'services' (サービス業) (例: 管理職や警察), 'at_home' (主婦) または 'other' (その他)）",
+              "<strong>Fjob</strong> - 父親の職業（名義尺度: 'teacher', 'health', 'services', 'at_home' または 'other'）",
+              "<strong>reason</strong> - 学校を選んだ理由（名義尺度: 'home'（家が近い）, 'reputation'（評判）, 'course'（コース） または 'other'（その他）",
+              "<strong>guardian</strong> - 生徒の保護者（名義尺度: 'mother' (母), 'father' (父) または 'other' (その他)）",
+              "<strong>traveltime</strong> - 通学時間（数値: 1 - 15分未満, 2 - 15分から30分, 3 - 30分から1時間, または 4 - 1時間以上）",
+              "<strong>studytime</strong> - 週間の学習時間（数値: 1 - 2時間未満, 2 - 2時間から5時間, 3 - 5時間から10時間, または 4 - 10時間以上）",
+              "<strong>failures</strong> - 以前のクラスでの落第回数（数値: nが1 <= n <= 3の場合 n, それ以外の場合は4）",
+              "<strong>schoolsup</strong> - 追加の教育サポート（バイナリ: yes または no）",
+              "<strong>famsup</strong> - 家族の教育サポート（バイナリ: yes または no）",
+              "<strong>paid</strong> - 有料追加クラス（科目内）の有無（バイナリ: yes または no）",
+              "<strong>activities</strong> - 課外活動（バイナリ: yes または no）",
+              "<strong>nursery</strong> - 幼稚園に通っていたか（バイナリ: yes または no）",
+              "<strong>higher</strong> - 高等教育を希望するか（バイナリ: yes または no）",
+              "<strong>internet</strong> - 自宅でのインターネットアクセス（バイナリ: yes または no）",
+              "<strong>romantic</strong> - 恋愛関係にあるか（バイナリ: yes または no）",
+              "<strong>famrel</strong> - 家族関係の質（数値: 1 - 非常に悪い から 5 - 非常に良い）",
+              "<strong>freetime</strong> - 放課後の自由時間（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "<strong>goout</strong> - 友達と外出（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "<strong>Dalc</strong> - 平日のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "<strong>Walc</strong> - 週末のアルコール消費量（数値: 1 - 非常に少ない から 5 - 非常に多い）",
+              "<strong>health</strong> - 現在の健康状態（数値: 1 - 非常に悪い から 5 - 非常に良い）",
+              "<strong>absences</strong> - 学校の欠席日数（数値: 0から93）"
+            ]
+          },
+          {
+            "title": "出力データ",
+            "items": [
+              "計算された回帰"
+            ]
+          },
+          {
+            "title": "参照元",
+            "items": [
+              "<link1>Student Performance</link1>"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

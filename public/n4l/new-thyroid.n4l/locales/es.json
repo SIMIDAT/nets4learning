@@ -1,0 +1,16 @@
+{
+  "columns": {
+    "T3resin": "T3resin",
+    "thyroxin": "thyroxin",
+    "triiodothyronine": "triiodothyronine",
+    "thyroidstimulating": "thyroidstimulating",
+    "TSH_value": "TSH_value",
+    "class": "class"
+  },
+  "tasks": {
+    "clustering": {
+      "name": "Tiroides (sin el diagnóstico)",
+      "summary": "Cinco análisis del tiroides: casi todos son normales, así que los grupos del hipo y del hipertiroidismo son pequeños."
+    }
+  }
+}

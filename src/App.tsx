@@ -1,14 +1,26 @@
-import { lazy, Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
-import ReactGA from 'react-ga4'
+import { lazy, Suspense, use, useEffect, type ReactNode } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router'
 
 import Loading from './pages/Loading'
 import N4LNavbar from './components/header/N4LNavbar'
 import N4LFooter from './components/footer/N4LFooter'
+import N4LCookiesBanner from './components/cookiesBanner/N4LCookiesBanner'
+import N4LAnalytics from './components/analytics/N4LAnalytics'
+import N4LScrollManager from './components/navigation/N4LScrollManager'
+import N4LPageTitle from '@components/navigation/N4LPageTitle'
+import N4LSkipLink, { SKIP_LINK_TARGET } from '@components/navigation/N4LSkipLink'
+import N4LAnnouncer from '@components/a11y/N4LAnnouncer'
+import N4LDialogFocusWrap from '@components/a11y/N4LDialogFocusWrap'
+import { readConsent, startAnalytics } from '@core/analytics'
+import { startupTFBackend } from '@core/tfBackend'
+import { trackLearningPath } from '@core/learning/learningPath'
+import N4LLearningToast from './components/learning/N4LLearningToast'
+import N4LOfflineBar from './components/offline/N4LOfflineBar'
 
 import './ConfigChartJS'
 
 const PageHome = lazy(() => import( './pages/_home/Home'))
+const PageTask = lazy(() => import( './pages/task/Task'))
 const PageMenuSelectModel = lazy(() => import( './pages/menu/MenuSelectModel'))
 const PageMenuSelectDataset = lazy(() => import( './pages/menu/MenuSelectDataset'))
 const PagePlayground = lazy(() => import( './pages/playground/Playground'))
@@ -16,11 +28,17 @@ const PageDescriptionRegression = lazy(() => import( './pages/playground/1_Regre
 const PageManual = lazy(() => import( './pages/manual/Manual'))
 const PageGlossary = lazy(() => import( './pages/glossary/Glossary'))
 const PageDatasets = lazy(() => import( './pages/datasets/Datasets'))
+const PagePackages = lazy(() => import( './pages/packages/Packages'))
 const PageAnalyzeDataFrame = lazy(() => import( './pages/analyze/AnalyzeDataFrame'))
 const PageContribute = lazy(() => import( './pages/contribute/Contribute'))
 const PageTermsAndConditions = lazy(() => import( './pages/terms/TermsAndConditions'))
 const PageNotFoundPage = lazy(() => import( './pages/notFound/NotFoundPage'))
 const PageVersion = lazy(() => import( './pages/version/Version'))
+const PageSettings = lazy(() => import( './pages/settings/Settings'))
+const PageLearn = lazy(() => import( './pages/learn/Learn'))
+const PageLab = lazy(() => import( './pages/lab/Lab'))
+const PageReport = lazy(() => import( './pages/report/TrainingReport'))
+const PageAccessibility = lazy(() => import( './pages/accessibility/Accessibility'))
 // Páginas de pruebas para desarrollo: no se publican en producción.
 // /*#__PURE__*/ permite a Rollup descartar sus chunks cuando no se usan.
 const SHOW_DEV_PAGES = import.meta.env.VITE_ENVIRONMENT !== 'production'
@@ -29,48 +47,91 @@ const TestPageEasy_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageEasy'
 const TestPageAdvanced_lazy = /*#__PURE__*/ lazy(() => import( '@pages/TestPageAdvanced'))
 
 const VITE_PATH = import.meta.env.VITE_PATH
-const VITE_GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
+
+// «Empieza aquí» marca sus pasos con los eventos de la aplicación desde el principio (también la primera página vista)
+trackLearningPath()
+
+// Las páginas usan TF.js en cuanto se montan: esperan a que esté activo el backend elegido en el menú
+function TFBackendReady({ children }: { children: ReactNode }) {
+  const startup = startupTFBackend()
+  if (startup !== null) use(startup)
+  return children
+}
+
+// Una ruta que no existe lleva a la 404 diciéndole cuál era (para las analíticas: enlaces rotos)
+function NotFoundRedirect() {
+  const { pathname } = useLocation()
+  return <Navigate to="/404" replace state={{ missingPath: pathname }} />
+}
 
 function App() {
   
+  // Google Analytics solo se carga si el usuario lo ha aceptado (N4LCookiesBanner)
   useEffect(() => {
-    ReactGA.initialize(VITE_GA_MEASUREMENT_ID)
+    if (readConsent() === 'accepted') startAnalytics()
   }, [])
 
   return (
     <div className="body">
-      <BrowserRouter basename={VITE_PATH}>
+      {/* Sin transiciones: con ellas, React deja a la vista la página anterior mientras llega el código de la nueva y no se
+          ve que está cargando; sin ellas, se ve Loading (el fallback de Suspense) */}
+      <BrowserRouter basename={VITE_PATH} useTransitions={false}>
+        {/* Primero «Saltar al contenido» y después el aviso de cookies (aunque se vea abajo): con el teclado se llega a
+            él enseguida, no después de toda la página */}
+        <Suspense fallback={''}>
+          <N4LSkipLink />
+          <N4LCookiesBanner />
+        </Suspense>
+        <N4LPageTitle />
+        <N4LAnnouncer />
+        <N4LDialogFocusWrap />
+        <N4LAnalytics />
+        <N4LScrollManager />
         <Suspense fallback={''}>
           <N4LNavbar />
         </Suspense>
+        <N4LOfflineBar />
+        {/* El destino de «Saltar al contenido» (N4LSkipLink): las páginas, sin la barra de navegación */}
+        <div id={SKIP_LINK_TARGET}>
         <Suspense fallback={<Loading />}>
-          <Routes>
-            <Route index path={'/'} element={<PageHome />}></Route>
-            <Route path={'/home'} element={<PageHome />}></Route>
-            <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
-            <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
-            <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>
-            <Route path={'/playground/description-regression'} element={<PageDescriptionRegression />}></Route>
-            <Route path={'/manual/'} element={<PageManual />}></Route>
-            <Route path={'/glossary'} element={<PageGlossary />}></Route>
-            <Route path={'/datasets'} element={<PageDatasets />}></Route>
-            <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
-            <Route path={'/contribute/'} element={<PageContribute />}></Route>
-            <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
-            <Route path={'/version'} element={<PageVersion />}></Route>
+          <TFBackendReady>
+            <Routes>
+              <Route index path={'/'} element={<PageHome />}></Route>
+              <Route path={'/home'} element={<PageHome />}></Route>
+              <Route path={'/task/:id'} element={<PageTask />}></Route>
+              <Route path={'/select-dataset/:id'} element={<PageMenuSelectDataset />}></Route>
+              <Route path={'/select-model/:id'} element={<PageMenuSelectModel />}></Route>
+              <Route path={'/playground/:id/:option/:example'} element={<PagePlayground />}></Route>
+              <Route path={'/playground/description-regression'} element={<PageDescriptionRegression />}></Route>
+              <Route path={'/manual/'} element={<PageManual />}></Route>
+              <Route path={'/glossary'} element={<PageGlossary />}></Route>
+              <Route path={'/datasets'} element={<PageDatasets />}></Route>
+              <Route path={'/packages'} element={<PagePackages />}></Route>
+              <Route path={'/analyze'} element={<PageAnalyzeDataFrame />}></Route>
+              <Route path={'/contribute/'} element={<PageContribute />}></Route>
+              <Route path={'/terms-and-conditions'} element={<PageTermsAndConditions />}></Route>
+              <Route path={'/version'} element={<PageVersion />}></Route>
+              <Route path={'/settings'} element={<PageSettings />}></Route>
+              <Route path={'/learn'} element={<PageLearn />}></Route>
+              <Route path={'/lab'} element={<PageLab />}></Route>
+              <Route path={'/report'} element={<PageReport />}></Route>
+              <Route path={'/accessibility'} element={<PageAccessibility />}></Route>
 
-            {SHOW_DEV_PAGES && <>
-              <Route path={'/debug'} element={<PageDebug />}></Route>
-              <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
-              <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
-            </>}
+              {SHOW_DEV_PAGES && <>
+                <Route path={'/debug'} element={<PageDebug />}></Route>
+                <Route path={'/test-page-easy-lazy'} element={<TestPageEasy_lazy />}></Route>
+                <Route path={'/test-page-advanced-lazy/:id/:option/:example'} element={<TestPageAdvanced_lazy />}></Route>
+              </>}
 
-            <Route path="/404" element={<PageNotFoundPage />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
+              <Route path="/404" element={<PageNotFoundPage />} />
+              <Route path="*" element={<NotFoundRedirect />} />
+            </Routes>
+          </TFBackendReady>
         </Suspense>
+        </div>
         <Suspense fallback={''}>
           <N4LFooter />
+          <N4LLearningToast />
         </Suspense>
       </BrowserRouter>
     </div>

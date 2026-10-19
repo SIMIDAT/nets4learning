@@ -1,0 +1,80 @@
+{
+  "columns": {
+    "Buying": "Precio de compra",
+    "Maint": "Precio del mantenimiento",
+    "Doors": "Número de puertas",
+    "Persons": "Capacidad de personas",
+    "Lug_boot": "Tamaño del maletero",
+    "Safety": "Seguridad estimada del coche.",
+    "Result": "Resultado"
+  },
+  "classes": {
+    "unacc": "Inaceptable",
+    "acc": "Aceptable",
+    "vgood": "Muy bueno",
+    "good": "Bueno"
+  },
+  "tasks": {
+    "tabular-classification": {
+      "title": "CAR - Clasificación de coches",
+      "name": "Clasificación de coches",
+      "summary": "Si un coche es aceptable según su precio, su mantenimiento, sus plazas, su maletero y su seguridad: todo son categorías.",
+      "description": {
+        "text": [
+          "El conjunto de datos <i>Car Evaluation</i> permite evaluar vehículos a través de la siguiente estructura",
+          "Para obtener más información acerca de este conjunto de datos visita el repositorio <link1>ics.uci.edu</link1>."
+        ],
+        "sections": [
+          {
+            "title": "Información",
+            "items": [
+              "<b>buying:</b> Precio de compra.",
+              "<b>maint:</b> Costo del mantenimiento.",
+              "<b>doors:</b> Número de puertas.",
+              "<b>persons:</b> Número de plazas.",
+              "<b>lug_boot:</b> Tamaño del maletero.",
+              "<b>safety:</b> Seguridad estimada del vehículo."
+            ]
+          },
+          {
+            "title": "Datos de entrada",
+            "text": [
+              "Características del coche"
+            ],
+            "items": [
+              "<b>buying:</b> vhigh, high, med, low.",
+              "<b>maint:</b> vhigh, high, med, low.",
+              "<b>doors:</b> 2, 3, 4, 5more.",
+              "<b>persons:</b> 2, 4, more.",
+              "<b>lug_boot:</b> small, med, big.",
+              "<b>safety:</b> low, med, high."
+            ]
+          },
+          {
+            "title": "Datos de salida",
+            "text": [
+              "Aceptación del vehículo"
+            ],
+            "items": [
+              "<b>UNACC</b>: Inaccesible",
+              "<b>ACC</b>: Accesible",
+              "<b>GOOD</b>: Bien",
+              "<b>VGOOD</b>: Muy bien"
+            ]
+          },
+          {
+            "title": "Referencias",
+            "items": [
+              "<link1>Conjunto de datos</link1>"
+            ]
+          }
+        ]
+      },
+      "example": {
+        "text": "Introduce los valores correspondientes a el coche que se va a evaluar:",
+        "items": "(buying; maint; doors; persons; lug_boot; safety)",
+        "examples": "Ejemplos:"
+      }
+    }
+  }
+}

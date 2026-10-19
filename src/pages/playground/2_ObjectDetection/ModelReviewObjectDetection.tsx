@@ -1,21 +1,25 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Col, Container, Form, Row, Button } from 'react-bootstrap'
 import { Camera as IconCamera } from 'react-bootstrap-icons'
-import ReactGA from 'react-ga4'
 import Webcam from 'react-webcam'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
-import * as tfjs from '@tensorflow/tfjs'
 
 import { VERBOSE } from '@/CONSTANTS'
-import { UPLOAD } from '@/TASKS'
+import { TASKS, UPLOAD } from '@/TASKS'
 import DragAndDrop from '@components/dragAndDrop/DragAndDrop'
-import FakeProgressBar from '@components/loading/FakeProgressBar'
+import N4LDownloadProgress from '@components/loading/N4LDownloadProgress'
+import { trackDownloads } from '@core/downloadProgress'
+import { askBeforeDownload } from '@core/models/downloadConsent'
+import N4LMaximizeButton from '@components/maximize/N4LMaximizeButton'
+import { useMaximize } from '@components/maximize/useMaximize'
 import { MAP_OD_CLASSES } from '@pages/playground/2_ObjectDetection/models'
 import { createReviewModelInstance } from '@core/models/createReviewModelInstance'
+import { restoreTFBackend } from '@core/tfBackend'
 import alertHelper from '@utils/alertHelper'
 import type I_MODEL_OBJECT_DETECTION from './models/_model'
+import { DetectionSmoother } from './models/smoothing'
 import { delay } from '@utils/utils'
 import {
   ImageExplainResults,
@@ -24,18 +28,33 @@ import {
 } from '@core/explainability/ImageExplainPanel'
 import { DEFAULT_SHAP_IMAGE_OPTIONS } from '@core/explainability/shapImageOptions'
 import { explainErrorKey } from '@core/explainability/explainError'
+import { trackEvent } from '@core/analytics'
 import { runObjectDetectionExplain } from './explainPrediction/runObjectDetectionExplain'
+import WebcamDeviceInfo, { type DetectionStats_t } from './WebcamDeviceInfo'
+import N4LPageHeader from '@components/neural-network/N4LPageHeader'
+import N4LModelCard from '@components/neural-network/N4LModelCard'
+import N4LModelAside from '@components/neural-network/N4LModelAside'
+import { objectDetectionReviewGuide } from './modelReviewGuide'
+import { detectionSummary, detectionText, type DetectedItem_t } from './detectionSummary'
+import { announce } from '@core/a11y/announce'
+
+// Cada cuánto se actualiza el texto de lo que ve la cámara
+const LIVE_SUMMARY_MS = 2000
 
 const WebcamComponent = (Webcam as unknown) as React.FC<any>;
 
-tfjs.setBackend('webgl').then(() => {
-  if (VERBOSE) console.debug('setBackend: WebGL')
-})
+// El vídeo de la cámara y el lienzo con las detecciones ocupan todo #webcamContainer y se encajan igual dentro, sin
+// recortar (contain): las detecciones caen sobre el vídeo aunque el contenedor no tenga su proporción (maximizado)
+// Predicciones por segundo con la cámara, como mucho
+const DETECTION_FPS = 20
 
-/**
- * @typedef {'ratio-9x16'|'ratio-2x3'|'ratio-3x4'|'ratio-1x1'|'ratio-4x3'|'ratio-3x2'|'ratio-16x9'} Ratio_t
- */
-type Ratio_t = 'ratio-9x16' | 'ratio-2x3' | 'ratio-3x4' | 'ratio-1x1' | 'ratio-4x3' | 'ratio-3x2' | 'ratio-16x9'
+const WEBCAM_LAYER_STYLE: React.CSSProperties = {
+  position : 'absolute',
+  inset    : 0,
+  width    : '100%',
+  height   : '100%',
+  objectFit: 'contain',
+}
 
 type ModelReviewObjectDetectionProps = {
   dataset: string
@@ -44,7 +63,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const { dataset } = props
   const isWebView = navigator.userAgent.toLowerCase().indexOf('wv') !== -1
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
 
   const [isLoading, setLoading] = useState(true)
@@ -62,10 +81,17 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
 
   const [iModelInstance, setIModelInstance] = useState<I_MODEL_OBJECT_DETECTION | null>(null)
-  /**
-   * @type {ReturnType<typeof useState<Ratio_t>>}
-   */
-  const [ratioCamera, setRatioCamera] = useState<Ratio_t>('ratio-16x9')
+  // Proporción (ancho / alto) de los fotogramas de la cámara: la toma su contenedor, así el vídeo lo llena sin bandas.
+  // Sale del propio vídeo y no de getSettings().aspectRatio, que Firefox no da (el contenedor quedaba cuadrado)
+  const [cameraAspect, setCameraAspect] = useState(16 / 9)
+  // La tarjeta de la cámara, a pantalla completa
+  const webcamMaximize = useMaximize()
+  // Predicciones hechas con la cámara y lo que han tardado: los lee la información del dispositivo
+  const detectionStats_ref = useRef<DetectionStats_t>({ predictions: 0, totalMs: 0 })
+  // La carga del modelo (ENABLE_MODEL), para esperarla si se sube una imagen antes de que termine
+  const modelReady_ref = useRef<Promise<void> | null>(null)
+  // Guía paso a paso de la página (con voz): solo con el botón "Guía"
+  const guideSteps = useMemo(() => (iModelInstance === null ? null : objectDetectionReviewGuide(t, dataset)), [t, dataset, iModelInstance])
 
   /**
    * @type {ReturnType<typeof useRef<number>>}
@@ -98,14 +124,15 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
   // === Explicabilidad (SHAP) ===
   const imgData_ref = useRef<ImageData | null>(null)
+  // Lo detectado en texto: en la foto subida, al terminar; con la cámara, cada pocos segundos (sin anunciarlo solo:
+  // saturaría el lector), y se anuncia al pulsar «Decir lo que se detecta»
+  const [imageDetections, setImageDetections] = useState<DetectedItem_t[] | null>(null)
+  const [liveDetections, setLiveDetections] = useState<DetectedItem_t[] | null>(null)
   const [explainResult, setExplainResult] = useState<ImageExplainResult_t | null>(null)
   const [showExplain, setShowExplain] = useState(false)
   const [isCalculo, setIsCalculo] = useState(false)
   const [shapOptions, setShapOptions] = useState({ ...DEFAULT_SHAP_IMAGE_OPTIONS, maskValue: 0 })
 
-  useEffect(() => {
-    ReactGA.send({ hitType: 'pageview', page: `/ModelReviewObjectDetection/${dataset}`, title: dataset })
-  }, [dataset])
 
   const handleDevices = useCallback(async () => {
     if (VERBOSE) console.debug('useCallback[handleDevices]')
@@ -171,16 +198,17 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   useEffect(() => {
     if (VERBOSE) console.debug('useEffect[init][ dataset, t, history ]')
     async function init() {
-      await tfjs.ready()
-      if (tfjs.getBackend() !== 'webgl') {
-        console.error('Error tensorflow backend webgl not installed in your browser')
-        return
-      }
+      // Los modelos de pose (pose-detection) registran WebGPU con más prioridad: se vuelve al backend elegido en el menú
+      await restoreTFBackend()
       const _iModelInstance = await createReviewModelInstance(MAP_OD_CLASSES, dataset, (ModelClass) => new ModelClass(t), navigate)
       if (_iModelInstance === null) return
       try {
         setIModelInstance(_iModelInstance)
-        await _iModelInstance.ENABLE_MODEL()
+        // Con ahorro de datos o conexión lenta, antes se pregunta; luego, con el progreso real (COCO-SSD pesa unos 18 MB)
+        await askBeforeDownload(TASKS.OBJECT_DETECTION, dataset)
+        const ready = trackDownloads(() => _iModelInstance.ENABLE_MODEL(), 'model_load')
+        modelReady_ref.current = ready
+        await ready
         setLoading(false)
         await alertHelper.alertSuccess(t('model-loaded-successfully'))
       } catch (error) {
@@ -212,13 +240,12 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // Get Video Properties
     const video = WebCam_ref.current.video
 
-    // Set canvas width
-    canvas_ref.current.width = WebCam_ref.current.video.videoWidth
-    canvas_ref.current.height = WebCam_ref.current.video.videoHeight
+    // Set canvas width (solo si cambia: asignarlo, aunque sea el mismo valor, vuelve a crear el lienzo)
+    if (canvas_ref.current.width !== video.videoWidth) canvas_ref.current.width = video.videoWidth
+    if (canvas_ref.current.height !== video.videoHeight) canvas_ref.current.height = video.videoHeight
 
     const ctx = canvas_ref.current.getContext('2d') as CanvasRenderingContext2D
     ctx.clearRect(0, 0, canvas_ref.current.width, canvas_ref.current.height)
-    // ctx.setTransform(-1, 0, 0, 1, canvas_ref.current.width, 0)
 
     return { ctx, video }
   }, [])
@@ -234,9 +261,10 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     input_img_or_video: ImageData | HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
     config: { flipHorizontal: boolean }
   ) => {
-    if (iModelInstance === null) return
+    if (iModelInstance === null) return []
     const predictions = await iModelInstance.PREDICTION(input_img_or_video, config)
     iModelInstance.RENDER(ctx, predictions)
+    return predictions
   }, [iModelInstance])
 
   useEffect(() => {
@@ -248,21 +276,55 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       }
     }
 
+    // La predicción puede acabar después de apagar la cámara o cambiar de modelo: entonces no se pinta
+    let isCancelled = false
     try {
-      const fps = 20
+      const fps = DETECTION_FPS
       let fpsInterval: number, now: number, then: number, elapsed: number
+      // Una predicción cada vez: si la anterior no ha terminado se salta el fotograma. Si no, mientras el modelo
+      // espera a la GPU (lecturas asíncronas) empezaban predicciones nuevas que se pisaban y el vídeo iba a saltos.
+      let isPredicting = false
+      let summarizedAt = 0
+      // Las detecciones, seguidas de un fotograma al siguiente y suavizadas (si el modelo dice cómo): sin temblar ni
+      // parpadear. Si su RENDER solo dibuja, se dibujan en cada fotograma de la pantalla, acercándose a la última
+      // predicción, en vez de a saltos con cada una
+      const smoother = iModelInstance?.SMOOTHING ? new DetectionSmoother(iModelInstance.SMOOTHING) : null
+      const renderEveryFrame = iModelInstance?.RENDER_EVERY_FRAME ?? false
       const animate = async () => {
         if (isCameraEnable) {
           requestAnimation_ref.current = requestAnimationFrame(animate)
+          if (smoother !== null && renderEveryFrame && iModelInstance !== null) {
+            const _processWebcam = processWebcam()
+            if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, smoother.frame(performance.now()))
+          }
           now = Date.now()
           elapsed = now - then
-          if (elapsed > fpsInterval) {
+          const video = WebCam_ref.current?.video
+          if (elapsed > fpsInterval && !isPredicting && iModelInstance !== null && video?.readyState === 4) {
             then = now - (elapsed % fpsInterval)
-            const _processWebcam = processWebcam()
-            if (_processWebcam !== null) {
-              if (_processWebcam.ctx !== null && _processWebcam.video !== null) {
-                await processData(_processWebcam.ctx, _processWebcam.video, { flipHorizontal: iModelInstance?.mirror ?? false })
+            isPredicting = true
+            try {
+              const start = performance.now()
+              const predictions = await iModelInstance.PREDICTION(video, { flipHorizontal: iModelInstance.mirror ?? false })
+              detectionStats_ref.current.predictions += 1
+              detectionStats_ref.current.totalMs += performance.now() - start
+              if (isCancelled) return
+              smoother?.update(predictions, performance.now())
+              // Lo que se ve: el texto de lo detectado dice lo mismo que la pantalla
+              const shown = smoother === null ? predictions : smoother.latest()
+              if (smoother === null || !renderEveryFrame) {
+                // El canvas se limpia justo antes de pintar: limpiarlo antes de predecir lo dejaba vacío mientras tanto
+                const _processWebcam = processWebcam()
+                if (_processWebcam !== null) iModelInstance.RENDER(_processWebcam.ctx, shown)
               }
+              if (now - summarizedAt >= LIVE_SUMMARY_MS) {
+                summarizedAt = now
+                setLiveDetections(detectionSummary(iModelInstance, shown))
+              }
+            } catch (error) {
+              console.error(error)
+            } finally {
+              isPredicting = false
             }
           }
         }
@@ -285,15 +347,25 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     // Limpia la animación cuando el componente se desmonta
     return () => {
       if (VERBOSE) console.debug(`delete AnimationFrame(${requestAnimation_ref.current});`)
+      isCancelled = true
       if (requestAnimation_ref.current !== null) {
         cancelAnimationFrame(requestAnimation_ref.current)
       }
     }
-  }, [isCameraEnable, iModelInstance, processWebcam, processData])
+  }, [isCameraEnable, iModelInstance, processWebcam])
+
+  // Analíticas: cuánto tiempo se usa la cámara en tiempo real
+  useEffect(() => {
+    if (!isCameraEnable) return
+    const startedAt = performance.now()
+    trackEvent('webcam_start')
+    return () => trackEvent('webcam_end', { duration_sec: Math.round((performance.now() - startedAt) / 1000) })
+  }, [isCameraEnable])
 
   const handleChange_Camera = (e: React.ChangeEvent<HTMLInputElement>) => {
     const webcamChecked = e.target.checked
     setCameraEnable(!!webcamChecked)
+    setLiveDetections(null)
   }
 
   const handleChange_Device = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -301,26 +373,19 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     setDeviceId(_deviceId)
   }
 
-  const onUserMediaEvent = (mediaStream: MediaStream) => {
-    const aspectRatio = mediaStream.getVideoTracks()[0].getSettings().aspectRatio || 1
-    if (aspectRatio >= 0.5 && aspectRatio < 0.6) {
-      setRatioCamera('ratio-9x16')
-    } else if (aspectRatio >= 0.6 && aspectRatio < 0.7) {
-      setRatioCamera('ratio-2x3')
-    } else if (aspectRatio >= 0.7 && aspectRatio < 0.8) {
-      setRatioCamera('ratio-3x4')
-    } else if (aspectRatio === 1) {
-      setRatioCamera('ratio-1x1')
-    } else if (aspectRatio >= 1.3 && aspectRatio < 1.4) {
-      setRatioCamera('ratio-4x3')
-    } else if (aspectRatio >= 1.4 && aspectRatio < 1.6) {
-      setRatioCamera('ratio-3x2')
-    } else if (aspectRatio >= 1.7 && aspectRatio < 1.8) {
-      setRatioCamera('ratio-16x9')
-    } else {
-      setRatioCamera('ratio-1x1')
-    }
-    // mediaStream.scale(-1, 1)
+  // La cámara ya emite: el permiso está concedido aunque permissions.query no lo diga (Firefox, con el permiso dado
+  // solo para esta visita, sigue diciendo "prompt": el selector pedía permisos y la lista de cámaras se quedaba vacía)
+  const handleUserMedia = async () => {
+    setCameraPermission('granted')
+    if (!navigator?.mediaDevices?.enumerateDevices) return
+    const mediaDevices = await navigator.mediaDevices.enumerateDevices()
+    setDevices(mediaDevices.filter(({ kind }) => kind === 'videoinput'))
+  }
+
+  // Al llegar los primeros fotogramas y cada vez que cambian de tamaño (otra cámara, el móvil girado)
+  const handleVideoSize = (event: React.SyntheticEvent<HTMLVideoElement>) => {
+    const { videoWidth, videoHeight } = event.currentTarget
+    if (videoWidth > 0 && videoHeight > 0) setCameraAspect(videoWidth / videoHeight)
   }
 
   const onUserMediaErrorEvent = (error: any) => {
@@ -364,7 +429,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     const resultCanvas = canvasImage_ref.current;
 
     if (!originalCanvas || !resultCanvas || !processCanvas) {
-      console.error("Canvas references not found");
+      console.error('Canvas references not found');
       return;
     }
 
@@ -372,17 +437,20 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
     const resultCtx = resultCanvas.getContext('2d');
 
     if (!originalCtx || !resultCtx) {
-      console.error("Canvas 2D context not available");
+      console.error('Canvas 2D context not available');
       return;
     }
 
     if (iModelInstance === null) {
-      console.error("Model not loaded");
+      console.error('Model not loaded');
       return;
     }
 
-    // 2. Reload Model
-    await iModelInstance.ENABLE_MODEL();
+    // 2. El modelo de la página, cuando termine de cargarse si aún se está cargando, sin lo que siguió en la webcam. No se
+    // vuelve a cargar: se creaba otro detector en cada imagen (sin liberar el anterior) y, si se subía mientras el de la
+    // página aún se cargaba, los dos de MediaPipe se pisaban y abortaba (Module.arguments has been replaced…)
+    await modelReady_ref.current
+    iModelInstance.RESET();
 
     const objectUrl = URL.createObjectURL(_files[0]);
     const img = new Image();
@@ -415,13 +483,17 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
 
         // Process detection
         // Una imagen subida no se muestra en espejo (la webcam sí): nunca se refleja.
-        await processData(resultCtx, imgData, { flipHorizontal: false });
+        const predictions = await processData(resultCtx, imgData, { flipHorizontal: false });
+        trackEvent('predict', { input: 'image' })
+        const detected = detectionSummary(iModelInstance, predictions)
+        setImageDetections(detected)
+        announce(detectionText(t, detected, i18n.language))
 
         await delay(2000); // Artificial delay if needed for UI/UX
 
         setProcessImage({ isProcessing: false, isProcessed: true });
       } catch (error) {
-        console.error("Processing failed:", error);
+        console.error('Processing failed:', error);
         setProcessImage({ isProcessing: false, isProcessed: false });
       } finally {
         // 3. Clean up memory
@@ -465,6 +537,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
       return
     }
 
+    trackEvent('explain', { method: 'shap' })
     setIsCalculo(true)
     try {
       const result = await runObjectDetectionExplain({
@@ -500,39 +573,23 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
   if (VERBOSE) console.debug('render ModelReviewObjectDetection')
   return (
     <>
-      <Container id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
-        <Row className={'mt-2'}>
-          <Col>
-            <h1>
-              <Trans i18nKey={'modality.2'} />
-            </h1>
-          </Col>
-        </Row>
+      <Container className={'n4l-container-wide'} id={'ModelReviewObjectDetection'} data-testid={'Test-ModelReviewObjectDetection'}>
+        <N4LPageHeader intro={'detect'} title={<Trans i18nKey={'modality.2'} />} guideId={'object-detection.' + dataset} guideSteps={guideSteps} className={'mt-2'} />
 
         <Row>
           <Col>
-            <FakeProgressBar isLoading={isLoading} />
+            <N4LDownloadProgress isLoading={isLoading} />
           </Col>
         </Row>
 
         <Row>
           <Col xs={12} sm={12} md={12} xl={3} xxl={3}>
-            <div className={'sticky-top'} style={{ zIndex: 0 }}>
-              <Card className={'mt-3 mb-3 border-info'}>
-                <Card.Header
-                  className={'d-flex align-items-center justify-content-between'}
-                >
-                  <h2>
-                    {iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}
-                  </h2>
-                </Card.Header>
-                <Card.Body>
-                  {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
-                </Card.Body>
-              </Card>
-
-              {/* Panel narrativo del método (idéntico patrón al review tabular). OD usa SHAP. */}
-              <Card className={'mb-3 border-success'}>
+            <N4LModelAside>
+              <N4LModelCard title={iModelInstance !== null && <Trans i18nKey={iModelInstance.TITLE} />}>
+                {dataset !== UPLOAD && iModelInstance?.DESCRIPTION()}
+              </N4LModelCard>
+              {/* Cómo se explica la predicción (SHAP) */}
+              <Card className={'border-success'} data-guide={'explain-about'}>
                 <Card.Header>
                   <h2 className={'h5 mb-0'}>
                     <Trans i18nKey={'pages.playground.0-tabular-classification.general.explain-panel-title'} />
@@ -542,173 +599,167 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                   <p className={'small mb-0'}>{t('ui.explain.about-shap')}</p>
                 </Card.Body>
               </Card>
-            </div>
+            </N4LModelAside>
           </Col>
 
           <Col xs={12} sm={12} md={12} xl={9} xxl={9}>
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
-              <Card className={'mt-3'}>
-                <Card.Header>
-                  <div className='d-flex align-items-center justify-content-between'>
-                    <h3>
-                      <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
-                    </h3>
-                    <div className='d-flex align-items-center justify-content-end'>
+              <Card className={'mt-3 ' + webcamMaximize.className} data-testid={'Test-WebcamCard'} data-guide={'webcam'}>
+                <Card.Header className={'d-flex align-items-center justify-content-between'}>
+                  <h3>
+                    <Trans i18nKey='datasets-models.2-object-detection.interface.process-webcam.title' />
+                  </h3>
+                  <div className={'d-flex align-items-center gap-2 n4l-card-header-controls'} data-guide={'webcam-controls'}>
 
-                      <div key={'default-switch'}>
-                        <Form.Check
-                          type="switch"
-                          id={'default-switch'}
-                          reverse={true}
-                          name={'switch-webcam'}
-                          label={t(
-                            'datasets-models.2-object-detection.interface.process-webcam.button'
-                          )}
-                          checked={isCameraEnable}
-                          disabled={isLoading || cameraPermission === 'denied'}
-                          onChange={handleChange_Camera}
-                        />
-                      </div>
-                      <Form.Group
-                        controlId={'select-device'}
-                        className={'ms-3 w-50'}
+                    <div key={'default-switch'}>
+                      <Form.Check
+                        type="switch"
+                        id={'default-switch'}
+                        reverse={true}
+                        name={'switch-webcam'}
+                        label={t(
+                          'datasets-models.2-object-detection.interface.process-webcam.button'
+                        )}
+                        checked={isCameraEnable}
+                        disabled={isLoading || cameraPermission === 'denied'}
+                        onChange={handleChange_Camera}
+                      />
+                    </div>
+                    <Form.Group
+                      controlId={'select-device'}
+                      className={'flex-grow-1'}
+                    >
+                      <Form.Select
+                        aria-label={t('datasets-models.2-object-detection.interface.process-webcam.device')}
+                        size={'sm'}
+                        value={deviceId}
+                        disabled={disabledPermissionsCamera()}
+                        onChange={handleChange_Device}
                       >
-                        <Form.Select
-                          aria-label={'select-device'}
-                          size={'sm'}
-                          value={deviceId}
-                          disabled={disabledPermissionsCamera()}
-                          onChange={handleChange_Device}
-                        >
-                          {isWebView && (
-                            <>
+                        {isWebView && (
+                          <>
+                            <option value={'default'} disabled>
+                              <Trans
+                                i18nKey={'Default Android permissions'}
+                              />
+                            </option>
+                          </>
+                        )}
+                        {!isWebView && (
+                          <>
+                            {cameraPermission === 'granted' && (
                               <option value={'default'} disabled>
-                                <Trans
-                                  i18nKey={'Default Android permissions'}
-                                />
+                                <Trans i18nKey={'Default'} />
                               </option>
-                            </>
-                          )}
-                          {!isWebView && (
-                            <>
-                              {cameraPermission === 'granted' && (
+                            )}
+                            {(cameraPermission === 'prompt' ||
+                              cameraPermission === 'denied') && (
                                 <option value={'default'} disabled>
-                                  <Trans i18nKey={'Default'} />
+                                  <Trans i18nKey={'Need permissions'} />
                                 </option>
                               )}
-                              {(cameraPermission === 'prompt' ||
-                                cameraPermission === 'denied') && (
-                                  <option value={'default'} disabled>
-                                    <Trans i18nKey={'Need permissions'} />
-                                  </option>
-                                )}
-                            </>
-                          )}
-                          {devices.map((device, index) => {
-                            return (
-                              <option
-                                key={'device-id-' + index}
-                                value={device.deviceId}
-                              >
-                                {device.label !== ''
-                                  ? device.label
-                                  : 'Camera ' + index}
-                              </option>
-                            )
-                          })}
-                        </Form.Select>
-                      </Form.Group>
-                      <Button size={'sm'}
-                        disabled={!isCameraEnable}
-                        className='ms-2'
-                        variant={'outline-info'}
-                        onClick={handleClick_getScreenshot}>
-                        <IconCamera color="royalblue" />
-                      </Button>
-                    </div>
+                          </>
+                        )}
+                        {devices.map((device, index) => {
+                          return (
+                            <option
+                              key={'device-id-' + index}
+                              value={device.deviceId}
+                            >
+                              {device.label !== ''
+                                ? device.label
+                                : 'Camera ' + index}
+                            </option>
+                          )
+                        })}
+                      </Form.Select>
+                    </Form.Group>
+                    <Button size={'sm'}
+                      disabled={!isCameraEnable}
+                      variant={'outline-primary'}
+                      aria-label={t('ui.take-screenshot')}
+                      title={t('ui.take-screenshot')}
+                      onClick={handleClick_getScreenshot}>
+                      <IconCamera aria-hidden={true} />
+                    </Button>
+                    <N4LMaximizeButton maximized={webcamMaximize.maximized} onToggle={webcamMaximize.toggle} />
                   </div>
                 </Card.Header>
                 <Card.Body>
-                  <Card.Title className={'text-center'}>
+                  {/* Con la cámara encendida sobra: ya se ve */}
+                  {!isCameraEnable && <Card.Title className={'text-center'}>
                     <Trans
                       i18nKey={
                         'datasets-models.2-object-detection.interface.process-webcam.sub-title'
                       }
                     />
-                  </Card.Title>
-                  <Row className={'mt-3'}>
-                    <Col>
-                      {isCameraEnable && (
-                        <>
-                          <div
-                            id={'webcamContainer'}
-                            ref={WebCamContainer_ref}
-                            className={'ratio ' + ratioCamera}
-                            style={{
-                              position: 'relative',
-                              overflow: 'hidden',
-                              // paddingBottom: '56.25%'
-                            }}
-                          >
-                            <WebcamComponent
-                              ref={WebCam_ref}
-                              forceScreenshotSourceSize={true}
-                              onUserMedia={onUserMediaEvent}
-                              onUserMediaError={onUserMediaErrorEvent}
-                              videoConstraints={{
-                                deviceId: deviceId,
-                                width   : {
-                                  min  : 640,
-                                  ideal: 1280,
-                                  max  : 1920
-                                },
-                                height: {
-                                  min  : 480,
-                                  ideal: 720,
-                                  max  : 1080
-                                }
-                              }}
-                              mirrored={iModelInstance?.mirror ?? false}
-                              style={{
-                                position: 'absolute',
-                                width   : '100%',
-                                height  : '100%',
-                              }}
-                            />
-                            <canvas
-                              ref={canvas_ref}
-                              style={{
-                                objectFit: 'contain',
-                                position : 'absolute',
-                                width    : '100%',
-                                height   : '100%',
-                              }}
-                            ></canvas>
-                          </div>
-                        </>
-                      )}
-                    </Col>
-                  </Row>
+                  </Card.Title>}
+                  {/* Directamente en el cuerpo de la tarjeta: maximizada, la cámara ocupa el alto que queda y el vídeo y
+                      el lienzo (con su tamaño y object-fit: contain) se encajan igual dentro */}
+                  {isCameraEnable && (
+                    <div
+                      id={'webcamContainer'}
+                      ref={WebCamContainer_ref}
+                      className={'ratio n4l-maximized-fill'}
+                      style={{
+                        position           : 'relative',
+                        overflow           : 'hidden',
+                        // El alto de .ratio de Bootstrap, con la proporción exacta de la cámara
+                        '--bs-aspect-ratio': `${100 / cameraAspect}%`,
+                      } as React.CSSProperties}
+                    >
+                      <WebcamComponent
+                        ref={WebCam_ref}
+                        forceScreenshotSourceSize={true}
+                        onUserMedia={handleUserMedia}
+                        onUserMediaError={onUserMediaErrorEvent}
+                        onLoadedMetadata={handleVideoSize}
+                        onResize={handleVideoSize}
+                        videoConstraints={{
+                          deviceId: deviceId,
+                          width   : {
+                            min  : 640,
+                            ideal: 1280,
+                            max  : 1920
+                          },
+                          height: {
+                            min  : 480,
+                            ideal: 720,
+                            max  : 1080
+                          }
+                        }}
+                        mirrored={iModelInstance?.mirror ?? false}
+                        style={WEBCAM_LAYER_STYLE}
+                      />
+                      <canvas ref={canvas_ref} style={WEBCAM_LAYER_STYLE} aria-hidden={true}></canvas>
+                    </div>
+                  )}
+                  {isCameraEnable &&
+                    <div className={'d-flex flex-wrap align-items-center gap-2 mt-2'}>
+                      <p className={'mb-0 flex-grow-1'} data-testid={'Test-WebcamDetections'}>
+                        {liveDetections === null ? t('datasets-models.2-object-detection.interface.detections.waiting') : detectionText(t, liveDetections, i18n.language)}
+                      </p>
+                      <Button size={'sm'} variant={'outline-primary'} disabled={liveDetections === null}
+                        onClick={() => liveDetections !== null && announce(detectionText(t, liveDetections, i18n.language))}>
+                        {t('datasets-models.2-object-detection.interface.detections.announce')}
+                      </Button>
+                    </div>}
                 </Card.Body>
-                <Card.Footer>
-                  <details>
-                    <summary>{t('Device info')}</summary>
-                    <ol>
-                      {devices.map((device, index) => {
-                        return (
-                          <li key={index}>
-                            {device.kind} | {device.label}
-                          </li>
-                        )
-                      })}
-                    </ol>
-                  </details>
+                <Card.Footer data-guide={'device-info'}>
+                  <WebcamDeviceInfo getVideo={() => WebCam_ref.current?.video}
+                    devices={devices}
+                    cameraPermission={cameraPermission}
+                    isWebView={isWebView}
+                    mirrored={iModelInstance?.mirror ?? false}
+                    model={iModelInstance ? t(iModelInstance.TITLE) : '—'}
+                    fpsLimit={DETECTION_FPS}
+                    stats={detectionStats_ref} />
                 </Card.Footer>
               </Card>
             </Col>
 
             <Col xs={12} sm={12} md={12} xl={12} xxl={12}>
-              <Card className={'mt-3'}>
+              <Card className={'mt-3'} data-guide={'image'}>
                 <Card.Header>
                   <h3>
                     <Trans
@@ -778,7 +829,9 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         <canvas
                           id="resultCanvas"
                           ref={canvasImage_ref}
-                          className={'ratio ' + ratioCamera}
+                          role={'img'}
+                          aria-label={imageDetections === null ? undefined : detectionText(t, imageDetections, i18n.language)}
+                          className={'ratio'}
                           style={{
                             //position: 'absolute',
                             width : '100%',
@@ -787,11 +840,13 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                         ></canvas>
                       </Col>
                     </Row>
+                    {processImage.isProcessed && imageDetections !== null &&
+                      <p className={'mt-2 mb-0'} data-testid={'Test-ImageDetections'}>{detectionText(t, imageDetections, i18n.language)}</p>}
                   </Container>
                 </Card.Body>
               </Card>
 
-              <Card className={'mt-3'} data-testid={'explainability-card'}>
+              <Card className={'mt-3'} data-testid={'explainability-card'} data-guide={'explain'}>
                 <Card.Header className="d-flex justify-content-between align-items-center">
                   <h3>{t('ui.explain.title')}</h3>
                 </Card.Header>
@@ -804,7 +859,7 @@ export default function ModelReviewObjectDetection(props: ModelReviewObjectDetec
                     <ShapImageControls idPrefix={'od-explain'} options={shapOptions} onChange={setShapOptions} />
                     <Button
                       type="button"
-                      variant={'outline-info'}
+                      variant={'outline-primary'}
                       onClick={handleRequest_ExplainPrediction}
                       disabled={isCalculo || !processImage.isProcessed}
                     >
