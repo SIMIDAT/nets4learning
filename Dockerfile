@@ -14,8 +14,10 @@ RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 WORKDIR /app
 
-# pnpm-workspace.yaml contiene las overrides: debe estar antes del install
+# pnpm-workspace.yaml contiene las overrides y patchedDependencies: debe estar antes del install,
+# junto con patches/ (los parches que referencia), o pnpm no puede aplicarlos
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY patches ./patches
 
 RUN pnpm install --frozen-lockfile
 
