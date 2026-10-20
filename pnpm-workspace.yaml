@@ -31,5 +31,10 @@ overrides:
 # canvas: la página de FACE-API iba muy lenta. El parche cambia su código fuente (src/) para usar data()/array();
 # la app compila face-api desde ese código (alias en vite.config.ts), no usa dist/. Las detecciones no cambian.
 # Al actualizar face-api hay que rehacer el parche.
+# tfjs-backend-webgl: el shader de log() devuelve NaN con la constante 0./0.; Firefox en Linux traduce los shaders a
+# GLSL 1.50 y la escribe como uintBitsToFloat(), que el driver de NVIDIA no compila ("Failed to compile fragment shader"
+# al entrenar clasificadores con WebGL: la entropía cruzada usa log()). El parche usa el uniform NAN, que TF.js ya pone
+# a NaN en todos los shaders. Al actualizar TF.js hay que comprobar si sigue haciendo falta.
 patchedDependencies:
+  '@tensorflow/tfjs-backend-webgl@4.22.0': patches/@tensorflow__tfjs-backend-webgl@4.22.0.patch
   '@vladmandic/face-api@1.7.15': patches/@vladmandic__face-api@1.7.15.patch
