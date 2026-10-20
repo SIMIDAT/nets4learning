@@ -72,6 +72,14 @@ const DEFAULT_LAYOUT = [
           file_name : '00. Tabular Classification - Step 6. Predict.md',
         },
       },
+      {
+        key   : '00-tabular-classification-explain',
+        action: MANUAL_ACTIONS.TABULAR_CLASSIFICATION.STEP_8_EXPLAIN,
+        file  : {
+          i18n_title: 'pages.manual.00-tabular-classification.explain.title',
+          file_name : '00. Tabular Classification - Step 8. Explain.md',
+        },
+      },
     ],
   },
 ]
