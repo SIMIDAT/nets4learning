@@ -2644,6 +2644,9 @@
         },
         "prediction": {
           "title": "Paso 7: Clasificación"
+        },
+        "explain": {
+          "title": "Paso 8: Explicar la predicción"
         }
       },
       "app": {

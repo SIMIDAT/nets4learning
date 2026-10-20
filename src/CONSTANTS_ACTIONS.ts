@@ -36,7 +36,8 @@ export const MANUAL_ACTIONS = {
     STEP_3_LAYERS            : 'tabular-classification-editor-layers-open',
     STEP_4_HYPERPARAMETERS   : 'tabular-classification-editor-hyperparameters-open',
     STEP_5_TABLE_OF_MODELS   : 'tabular-classification-table-of-models-open',
-    STEP_6_PREDICT           : 'tabular-classification-predict-open'
+    STEP_6_PREDICT           : 'tabular-classification-predict-open',
+    STEP_8_EXPLAIN           : 'tabular-classification-explain-open'
   },
   IMAGE_CLASSIFICATION: {
     STEP_1_UPLOAD_AND_PROCESS: 'image-classification-upload-and-process-open',

@@ -2644,6 +2644,9 @@
         },
         "prediction": {
           "title": "Step 7: Classification"
+        },
+        "explain": {
+          "title": "Step 8: Explain the prediction"
         }
       },
       "app": {
